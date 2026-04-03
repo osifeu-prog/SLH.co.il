@@ -1,0 +1,16 @@
+﻿{
+    "Files":  [
+                  "App.js",
+                  "app.json",
+                  "package.json",
+                  "package-lock.json",
+                  "tsconfig.json",
+                  ".env",
+                  "src",
+                  "assets"
+              ],
+    "ProjectPath":  "D:\\SLH\\CryptoWallet54",
+    "BackupDate":  "2026-02-07 19:35:39",
+    "BackupName":  "Backup_20260207_193539",
+    "BackupPath":  "D:\\Backups\\CryptoWallet54\\Backup_20260207_193539"
+}

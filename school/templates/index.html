@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto-Class - מערכת ניהול נוכחות מבוססת טוקנים</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .hero {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+            border-radius: 0 0 30px 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 30px;
+            opacity: 0.9;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            display: inline-block;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-number {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #4c51bf;
+            margin: 10px 0;
+        }
+        
+        .stat-label {
+            color: #718096;
+            font-size: 0.95rem;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 60px 0;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-top: 4px solid #4c51bf;
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #4c51bf;
+        }
+        
+        .feature-card h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+        }
+        
+        .feature-card p {
+            color: #718096;
+            line-height: 1.6;
+        }
+        
+        .cta-section {
+            background: var(--secondary-gradient);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            border-radius: 20px;
+            margin: 60px 0;
+        }
+        
+        .cta-section h2 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+        }
+        
+        .bot-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 40px auto;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .bot-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .status-active {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+        
+        .status-inactive {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+        
+        .quick-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+        
+        .quick-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 25px;
+            background: white;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #4c51bf;
+            font-weight: 600;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+        }
+        
+        .quick-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            color: #434190;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .hero {
+                padding: 60px 15px;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-links {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .quick-link {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+        
+        .system-status {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+        
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 25px;
+            background: white;
+            border-radius: 10px;
+            min-width: 200px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
+        .dot-green {
+            background: #48bb78;
+            box-shadow: 0 0 10px rgba(72, 187, 120, 0.5);
+        }
+        
+        .dot-red {
+            background: #f56565;
+            box-shadow: 0 0 10px rgba(245, 101, 101, 0.5);
+        }
+        
+        .dot-yellow {
+            background: #ed8936;
+            box-shadow: 0 0 10px rgba(237, 137, 54, 0.5);
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #718096;
+            border-top: 1px solid #e2e8f0;
+            margin-top: 60px;
+        }
+        
+        .today-stats {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        
+        .today-stats h3 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .today-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .today-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .today-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4c51bf;
+            margin: 5px 0;
+        }
+        
+        .today-label {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+        
+        .level-distribution {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .level-bars {
+            display: flex;
+            height: 200px;
+            align-items: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .level-bar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .bar {
+            width: 100%;
+            background: linear-gradient(to top, #667eea, #764ba2);
+            border-radius: 5px 5px 0 0;
+            transition: height 0.5s ease;
+        }
+        
+        .level-number {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #2d3748;
+        }
+        
+        .level-count {
+            font-size: 0.9rem;
+            color: #718096;
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <h1>🎓 Crypto-Class</h1>
+        <p>מערכת ניהול נוכחות ומשימות מבוססת טוקנים בלוקצ'יין</p>
+        <div class="quick-links">
+            <a href="#stats" class="quick-link">📊 סטטיסטיקות</a>
+            <a href="/stats" class="quick-link">🏆 טבלת מובילים</a>
+            <a href="/teacher/login" class="quick-link">👨‍🏫 כניסת מורה</a>
+            <a href="/health" class="quick-link">🩺 בריאות מערכת</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <!-- סטטוס מערכת -->
+        <div class="system-status">
+            <div class="status-item">
+                <span class="status-dot dot-green"></span>
+                <div>
+                    <div style="font-weight: bold; color: #2d3748;">בוט טלגרם</div>
+                    <div style="font-size: 0.9rem; color: #718096;">מחובר ועובד</div>
+                </div>
+            </div>
+            
+            <div class="status-item">
+                <span class="status-dot dot-green"></span>
+                <div>
+                    <div style="font-weight: bold; color: #2d3748;">מסד נתונים</div>
+                    <div style="font-size: 0.9rem; color: #718096;">מחובר ועובד</div>
+                </div>
+            </div>
+            
+            <div class="status-item">
+                <span class="status-dot dot-green"></span>
+                <div>
+                    <div style="font-weight: bold; color: #2d3748;">Webhook</div>
+                    <div style="font-size: 0.9rem; color: #718096;">מוגדר ועובד</div>
+                </div>
+            </div>
+            
+            <div class="status-item">
+                <span class="status-dot dot-green"></span>
+                <div>
+                    <div style="font-weight: bold; color: #2d3748;">אפליקציה</div>
+                    <div style="font-size: 0.9rem; color: #718096;">פעילה ומעודכנת</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- סטטיסטיקות היום -->
+        {% if today_stats %}
+        <div class="today-stats">
+            <h3>📅 פעילות היום</h3>
+            <div class="today-grid">
+                <div class="today-item">
+                    <div class="today-label">משתמשים חדשים</div>
+                    <div class="today-value">{{ today_stats.new_users_today }}</div>
+                </div>
+                <div class="today-item">
+                    <div class="today-label">צ'ק-אין היום</div>
+                    <div class="today-value">{{ today_stats.checkins_today }}</div>
+                </div>
+                <div class="today-item">
+                    <div class="today-label">משימות שהושלמו</div>
+                    <div class="today-value">{{ today_stats.tasks_completed_today }}</div>
+                </div>
+                <div class="today-item">
+                    <div class="today-label">הפניות חדשות</div>
+                    <div class="today-value">{{ today_stats.new_referrals_today }}</div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- סטטיסטיקות מהירות -->
+        <div id="stats" class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-number">{{ stats.total_users|default(0) }}</div>
+                <div class="stat-label">משתמשים רשומים</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">📅</div>
+                <div class="stat-number">{{ stats.active_today|default(0) }}</div>
+                <div class="stat-label">פעילים היום</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-number">{{ stats.total_tokens|default(0) }}</div>
+                <div class="stat-label">טוקנים כוללים</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-number">{{ stats.total_tasks_completed|default(0) }}</div>
+                <div class="stat-label">משימות שהושלמו</div>
+            </div>
+        </div>
+        
+        <!-- התפלגות רמות -->
+        {% if stats.level_distribution %}
+        <div class="level-distribution">
+            <h3 style="color: #2d3748; margin-bottom: 20px; text-align: center;">📊 התפלגות רמות משתמשים</h3>
+            <div class="level-bars">
+                {% for level in range(1, 11) %}
+                {% set count = stats.level_distribution.get('level_' ~ level|string, 0) %}
+                {% set max_count = stats.level_distribution.values()|max if stats.level_distribution.values() else 1 %}
+                {% set height = (count / max_count * 150) if max_count > 0 else 0 %}
+                <div class="level-bar">
+                    <div class="bar" style="height: {{ height }}px;"></div>
+                    <div class="level-number">{{ level }}</div>
+                    <div class="level-count">{{ count }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- תכונות המערכת -->
+        <h2 style="text-align: center; margin: 60px 0 30px; color: #2d3748;">✨ תכונות המערכת</h2>
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <h3>בוט טלגרם חכם</h3>
+                <p>בוט אינטראקטיבי עם פקודות מתקדמות, כפתורים ואינטראקציה מלאה. תמיכה בעברית וממשק ידידותי.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">💰</div>
+                <h3>כלכלת טוקנים</h3>
+                <p>מערכת טוקנים עשירה עם רמות, הטבות ובונוסים. צבר טוקנים דרך צ'ק-אין, משימות והפניות.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">👥</div>
+                <h3>מערכת הפניות</h3>
+                <p>הזמן חברים וקבל טוקנים. מערכת הפניות עם סטטיסטיקות מתקדמות ובונוסים מיוחדים.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">✅</div>
+                <h3>משימות ואתגרים</h3>
+                <p>משימות יומיות, שבועיות וחודשיות עם הטבות שונות. מערכת אישור משימות מתקדמת.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🏆</div>
+                <h3>טבלת מובילים</h3>
+                <p>תחרות בריאה עם טבלת מובילים דינמית. דירוג לפי טוקנים, רמות והפניות.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>דשבורד ניהול</h3>
+                <p>דשבורד מורים מתקדם עם סטטיסטיקות, ניהול משתמשים ואישור משימות.</p>
+            </div>
+        </div>
+        
+        <!-- בוט טלגרם -->
+        <div class="bot-card">
+            <div class="bot-icon">🤖</div>
+            <h2 style="color: #2d3748; margin-bottom: 10px;">הבוט שלנו בטלגרם</h2>
+            <p style="color: #718096; margin-bottom: 20px;">
+                הצטרף לבוט כדי להתחיל לצבור טוקנים ולהתקדם במערכת
+            </p>
+            
+            <div class="status-badge status-active">
+                ✅ מחובר ועובד
+            </div>
+            
+            <p style="margin: 20px 0;">
+                <strong>שם הבוט:</strong> @{{ bot_username }}
+            </p>
+            
+            <a href="https://t.me/{{ bot_username }}" target="_blank" 
+               style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                      color: white; padding: 12px 30px; border-radius: 25px; text-decoration: none; 
+                      font-weight: bold; margin-top: 10px;">
+                📲 פתח בטלגרם
+            </a>
+        </div>
+        
+        <!-- קישורים מהירים -->
+        <div class="cta-section">
+            <h2>מוכנים להתחיל?</h2>
+            <p style="max-width: 600px; margin: 0 auto 30px; font-size: 1.1rem;">
+                הצטרפו לאלפי משתמשים שכבר משתמשים במערכת כדי לנהל נוכחות, 
+                לבצע משימות ולצבור טוקנים יקרי ערך.
+            </p>
+            
+            <div class="quick-links">
+                <a href="https://t.me/{{ bot_username }}" target="_blank" 
+                   class="quick-link" style="background: white; color: #764ba2;">
+                    🤖 התחל עם הבוט
+                </a>
+                <a href="/stats" class="quick-link" style="background: rgba(255,255,255,0.2); color: white;">
+                    📊 צפה בסטטיסטיקות
+                </a>
+                <a href="/teacher/login" class="quick-link" style="background: rgba(255,255,255,0.2); color: white;">
+                    👨‍🏫 דשבורד מורים
+                </a>
+            </div>
+        </div>
+        
+        <!-- מידע טכני -->
+        <div style="background: #f8f9fa; border-radius: 15px; padding: 30px; margin: 40px 0;">
+            <h3 style="color: #2d3748; margin-bottom: 20px;">ℹ️ מידע טכני</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                <div>
+                    <h4 style="color: #4c51bf; font-size: 1rem; margin-bottom: 10px;">📡 Webhook</h4>
+                    <p style="color: #718096; font-size: 0.9rem;">
+                        המערכת משתמשת ב-Webhook לעדכונים בזמן אמת.
+                        <a href="/setwebhook" style="color: #667eea;">לבדיקת הגדרות</a>
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 style="color: #4c51bf; font-size: 1rem; margin-bottom: 10px;">💾 מסד נתונים</h4>
+                    <p style="color: #718096; font-size: 0.9rem;">
+                        SQLite עם SQLAlchemy. גיבוי אוטומטי ושחזור נתונים.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 style="color: #4c51bf; font-size: 1rem; margin-bottom: 10px;">🔐 אבטחה</h4>
+                    <p style="color: #718096; font-size: 0.9rem;">
+                        הצפנת SSL, אימות משתמשים וניהול הרשאות מתקדם.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 style="color: #4c51bf; font-size: 1rem; margin-bottom: 10px;">🚀 ביצועים</h4>
+                    <p style="color: #718096; font-size: 0.9rem;">
+                        שרת מרובה threads, caching ואופטימיזציות למסד הנתונים.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>Crypto-Class © 2026 | גרסה 2.2.0 | פיתוח: אוסיף אונגר</p>
+        <p style="margin-top: 10px; font-size: 0.9rem;">
+            <a href="/health" style="color: #718096; margin: 0 10px;">בריאות מערכת</a>
+            <a href="/setwebhook" style="color: #718096; margin: 0 10px;">הגדרות Webhook</a>
+            <a href="/api/v1/stats" style="color: #718096; margin: 0 10px;">API</a>
+            <a href="https://github.com/username/Crypto-Class" style="color: #718096; margin: 0 10px;">GitHub</a>
+        </p>
+    </div>
+    
+    <script>
+        // עדכון סטטוס אוטומטי
+        function updateSystemStatus() {
+            fetch('/health')
+                .then(response => response.json())
+                .then(data => {
+                    // עדכן את הסטטוסים לפי הנתונים
+                    console.log('System status updated:', data);
+                })
+                .catch(error => {
+                    console.error('Error updating status:', error);
+                });
+        }
+        
+        // עדכן כל 30 שניות
+        setInterval(updateSystemStatus, 30000);
+        
+        // אנימציה לקלפים
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.stat-card, .feature-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+            
+            // אנימציה לברים
+            const bars = document.querySelectorAll('.bar');
+            bars.forEach((bar, index) => {
+                const originalHeight = bar.style.height;
+                bar.style.height = '0';
+                
+                setTimeout(() => {
+                    bar.style.transition = 'height 1s ease';
+                    bar.style.height = originalHeight;
+                }, 500 + index * 100);
+            });
+        });
+        
+        // ניווט חלק
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

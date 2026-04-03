@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLH Airdrop Admin</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            color: white;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            color: #333;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+        }
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .users-table th, .users-table td {
+            padding: 12px;
+            border: 1px solid #dee2e6;
+            text-align: right;
+        }
+        .users-table th {
+            background: #667eea;
+            color: white;
+        }
+        .users-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 SLH Airdrop - פאנל ניהול</h1>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="total-users">0</div>
+                <div class="stat-label">👥 משתמשים רשומים</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="total-payments">0</div>
+                <div class="stat-label">💰 תשלומים</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">1,000</div>
+                <div class="stat-label">🎁 טוקנים למשתמש</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">44.4 ₪</div>
+                <div class="stat-label">💸 מחיר למשתמש</div>
+            </div>
+        </div>
+        
+        <h2>📊 משתמשים אחרונים</h2>
+        <table class="users-table" id="users-table">
+            <thead>
+                <tr>
+                    <th>מזהה</th>
+                    <th>שם</th>
+                    <th>Username</th>
+                    <th>תאריך</th>
+                    <th>סטטוס</th>
+                </tr>
+            </thead>
+            <tbody id="users-list">
+                <tr><td colspan="5" style="text-align:center">טוען נתונים...</td></tr>
+            </tbody>
+        </table>
+        
+        <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+            <h3>🔗 קישורים חשובים:</h3>
+            <ul>
+                <li><a href="https://t.me/SLH_AIR_bot" target="_blank">🤖 הבוט: @SLH_AIR_bot</a></li>
+                <li><a href="https://slhisrael.com/" target="_blank">🌐 אתר רשמי: slhisrael.com</a></li>
+                <li><a href="https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022" target="_blank">📝 חוזה BSC</a></li>
+                <li><a href="https://web-production-112f6.up.railway.app/investors/" target="_blank">📊 דשבורד משקיעים</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        // נתונים לדוגמה - בפועל יתחבר ל-API
+        const demoData = {
+            total_users: 1,
+            total_payments: 0,
+            users: [
+                {
+                    id: "7757102350",
+                    name: "Osif",
+                    username: "Osif83",
+                    date: "07/02/2026 01:09",
+                    status: "רשום"
+                }
+            ]
+        };
+        
+        // הצג את הנתונים
+        document.getElementById('total-users').textContent = demoData.total_users;
+        document.getElementById('total-payments').textContent = demoData.total_payments;
+        
+        const usersList = document.getElementById('users-list');
+        usersList.innerHTML = '';
+        
+        demoData.users.forEach(user => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${user.id}</td>
+                <td>${user.name}</td>
+                <td>@${user.username}</td>
+                <td>${user.date}</td>
+                <td>${user.status}</td>
+            `;
+            usersList.appendChild(row);
+        });
+        
+        // רענון אוטומטי כל 30 שניות
+        setInterval(() => {
+            console.log('רענון נתונים...');
+            // כאן יהיה קוד אמיתי לקבלת נתונים מ-API
+        }, 30000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+﻿{
+    "Python":  "Python 3.13.4",
+    "Timestamp":  {
+                      "value":  "\/Date(1770464141340)\/",
+                      "DisplayHint":  2,
+                      "DateTime":  "Saturday, February 7, 2026 1:35:41 PM"
+                  },
+    "DatabaseExists":  true,
+    "APITested":  true,
+    "BotFileExists":  true,
+    "System":  {
+                   "Platform":  2,
+                   "ServicePack":  "",
+                   "Version":  {
+                                   "Major":  10,
+                                   "Minor":  0,
+                                   "Build":  26200,
+                                   "Revision":  0,
+                                   "MajorRevision":  0,
+                                   "MinorRevision":  0
+                               },
+                   "VersionString":  "Microsoft Windows NT 10.0.26200.0"
+               },
+    "IssuesFound":  [
+                        "בוט ישן כנראה רץ ב-Railway",
+                        "צריך לוודא Form data ב-API"
+                    ]
+}

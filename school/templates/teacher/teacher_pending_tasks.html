@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>משימות ממתינות - Crypto-Class</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .teacher-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 30px;
+        }
+        
+        .teacher-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .teacher-nav h1 {
+            margin: 0;
+            font-size: 1.8rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .tasks-container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .task-item {
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: #f8f9fa;
+        }
+        
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .task-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .task-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 0.9rem;
+            color: #718096;
+        }
+        
+        .task-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .user-name {
+            font-weight: 500;
+            color: #2d3748;
+        }
+        
+        .user-id {
+            font-size: 0.9rem;
+            color: #718096;
+        }
+        
+        .proof-section {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .proof-label {
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .proof-content {
+            color: #2d3748;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            font-family: monospace;
+            background: #f7fafc;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: flex-end;
+        }
+        
+        .btn-approve {
+            background: #48bb78;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        
+        .btn-approve:hover {
+            background: #38a169;
+        }
+        
+        .btn-reject {
+            background: #f56565;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        
+        .btn-reject:hover {
+            background: #e53e3e;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #718096;
+        }
+        
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        
+        .logout-btn {
+            background: #f56565;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .logout-btn:hover {
+            background: #e53e3e;
+        }
+        
+        @media (max-width: 768px) {
+            .teacher-nav {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .task-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="teacher-header">
+        <div class="container">
+            <div class="teacher-nav">
+                <h1>👨‍🏫 משימות ממתינות לאישור</h1>
+                <div class="nav-links">
+                    <a href="/teacher" class="nav-link">🏠 דשבורד</a>
+                    <a href="/teacher/users" class="nav-link">👥 משתמשים</a>
+                    <a href="/teacher/pending_tasks" class="nav-link">✅ משימות</a>
+                    <a href="/" class="nav-link">🌐 אתר ראשי</a>
+                    <a href="/teacher/logout" class="logout-btn">🚪 יציאה</a>
+                </div>
+            </div>
+            
+            <p>ניהול משימות שדורשות אישור מורה</p>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="tasks-container">
+            {% if pending_tasks %}
+                <p style="color: #4a5568; margin-bottom: 20px;">
+                    יש <strong>{{ pending_tasks|length }}</strong> משימות הממתינות לאישור שלך.
+                </p>
+                
+                {% for task in pending_tasks %}
+                <div class="task-item" id="task-{{ task.id }}">
+                    <div class="task-header">
+                        <div class="task-title">🎯 {{ task.task.name if task.task else "משימה לא ידועה" }}</div>
+                        <div class="task-meta">
+                            <span>💎 {{ task.tokens_earned }} טוקנים</span>
+                            <span>🕒 {{ task.completed_at.strftime('%d/%m/%Y %H:%M') }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="task-user">
+                        <div class="user-avatar">
+                            {{ task.user.first_name[0] if task.user and task.user.first_name else '?' }}
+                        </div>
+                        <div>
+                            <div class="user-name">
+                                {{ task.user.first_name if task.user else "משתמש לא ידוע" }}
+                                {% if task.user and task.user.username %}
+                                (@{{ task.user.username }})
+                                {% endif %}
+                            </div>
+                            <div class="user-id">
+                                מזהה: {{ task.telegram_id }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if task.proof_text %}
+                    <div class="proof-section">
+                        <span class="proof-label">📄 הוכחה שהוגשה:</span>
+                        <div class="proof-content">{{ task.proof_text }}</div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="actions">
+                        <button class="btn-approve" onclick="approveTask({{ task.id }})">
+                            ✅ אישור משימה
+                        </button>
+                        <button class="btn-reject" onclick="rejectTask({{ task.id }})">
+                            ❌ דחיית משימה
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">✅</div>
+                    <h3 style="color: #2d3748;">אין משימות ממתינות</h3>
+                    <p>כל המשימות אושרו או שלא הוגשו משימות חדשות.</p>
+                    <p>חזור לבדוק מאוחר יותר.</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- מידע נוסף -->
+        <div style="background: #f8f9fa; border-radius: 15px; padding: 25px; margin: 30px 0;">
+            <h3 style="color: #2d3748; margin-bottom: 20px;">ℹ️ מדריך לאישור משימות</h3>
+            <div style="color: #4a5568; line-height: 1.6;">
+                <p><strong>אישור משימה:</strong></p>
+                <ul style="margin-right: 20px; margin-bottom: 15px;">
+                    <li>ודא שהמשתמש אכן ביצע את המשימה</li>
+                    <li>בדוק את ההוכחה שהוגשה (אם קיימת)</li>
+                    <li>לחץ על "אישור משימה" כדי לאשר</li>
+                </ul>
+                
+                <p><strong>דחיית משימה:</strong></p>
+                <ul style="margin-right: 20px;">
+                    <li>השתמש בלחצן דחייה רק אם המשימה לא הושלמה כראוי</li>
+                    <li>ניתן להוסיף הערות בתיבת הדיאלוג שתופיע</li>
+                    <li>המשתמש יקבל הודעה על הדחייה</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div style="text-align: center; padding: 40px 20px; color: #718096; border-top: 1px solid #e2e8f0; margin-top: 40px;">
+        <p>Crypto-Class © 2026 | ניהול משימות | גרסה 2.3.0</p>
+    </div>
+    
+    <script>
+        async function approveTask(taskId) {
+            if (!confirm('האם לאשר את המשימה?\nהמשתמש יקבל את הטוקנים מיד.')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/v1/tasks/approve/${taskId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    alert('✅ המשימה אושרה בהצלחה!');
+                    document.getElementById(`task-${taskId}`).remove();
+                    
+                    // בדיקה אם נשארו משימות
+                    const tasks = document.querySelectorAll('.task-item');
+                    if (tasks.length === 0) {
+                        location.reload();
+                    }
+                } else {
+                    alert(`❌ שגיאה: ${result.message}`);
+                }
+            } catch (error) {
+                alert('❌ שגיאה בתקשורת עם השרת');
+                console.error(error);
+            }
+        }
+        
+        async function rejectTask(taskId) {
+            const reason = prompt('הזן סיבה לדחיית המשימה (אופציונלי):');
+            
+            try {
+                const response = await fetch(`/api/v1/tasks/reject/${taskId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ reason: reason || '' })
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    alert('✅ המשימה נדחתה!');
+                    document.getElementById(`task-${taskId}`).remove();
+                    
+                    // בדיקה אם נשארו משימות
+                    const tasks = document.querySelectorAll('.task-item');
+                    if (tasks.length === 0) {
+                        location.reload();
+                    }
+                } else {
+                    alert(`❌ שגיאה: ${result.message}`);
+                }
+            } catch (error) {
+                alert('❌ שגיאה בתקשורת עם השרת');
+                console.error(error);
+            }
+        }
+        
+        // רענון אוטומטי כל דקה
+        setTimeout(function() {
+            window.location.reload();
+        }, 60000);
+    </script>
+</body>
+</html>

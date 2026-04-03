@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סטטיסטיקות - Crypto-Class</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .stats-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 0 0 30px 30px;
+            margin-bottom: 40px;
+        }
+        
+        .stats-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .stats-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-number {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #4c51bf;
+            margin: 10px 0;
+        }
+        
+        .stat-label {
+            color: #718096;
+            font-size: 0.95rem;
+        }
+        
+        .leaderboard {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 40px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .leaderboard h2 {
+            color: #2d3748;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .leaderboard-table th {
+            background: #f8f9fa;
+            padding: 15px;
+            text-align: right;
+            color: #4a5568;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .leaderboard-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #4a5568;
+        }
+        
+        .leaderboard-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .rank {
+            font-weight: bold;
+            color: #4c51bf;
+            font-size: 1.2rem;
+        }
+        
+        .rank-1 { color: #FFD700; }
+        .rank-2 { color: #C0C0C0; }
+        .rank-3 { color: #CD7F32; }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .user-name {
+            font-weight: 500;
+            color: #2d3748;
+        }
+        
+        .user-details {
+            font-size: 0.9rem;
+            color: #718096;
+        }
+        
+        .tokens-cell {
+            font-weight: bold;
+            color: #4c51bf;
+            font-size: 1.1rem;
+        }
+        
+        .level-badge {
+            display: inline-block;
+            background: #4c51bf;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .update-time {
+            text-align: center;
+            color: #718096;
+            margin-top: 30px;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-header h1 {
+                font-size: 2rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .leaderboard-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .user-info {
+                min-width: 200px;
+            }
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #718096;
+        }
+        
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        
+        .section-title {
+            color: #2d3748;
+            margin: 50px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .quick-nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            background: white;
+            border: 2px solid #4c51bf;
+            color: #4c51bf;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .nav-btn:hover {
+            background: #4c51bf;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="stats-header">
+        <h1>📊 סטטיסטיקות Crypto-Class</h1>
+        <p>נתונים ומידע על פעילות המערכת והמשתמשים</p>
+        
+        <div class="quick-nav">
+            <a href="/" class="nav-btn">🏠 דף הבית</a>
+            <a href="/teacher/login" class="nav-btn">👨‍🏫 דשבורד מורה</a>
+            <a href="/health" class="nav-btn">🩺 בריאות מערכת</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <!-- סטטיסטיקות מהירות -->
+        <h2 class="section-title">📈 סטטיסטיקות מערכת</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-number">{{ intcomma(stats.total_users|default(0)) }}</div>
+                <div class="stat-label">משתמשים רשומים</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">📅</div>
+                <div class="stat-number">{{ intcomma(stats.active_today|default(0)) }}</div>
+                <div class="stat-label">פעילים היום</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-number">{{ intcomma(stats.total_tokens|default(0)) }}</div>
+                <div class="stat-label">טוקנים כוללים</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-number">{{ intcomma(stats.total_tasks_completed|default(0)) }}</div>
+                <div class="stat-label">משימות שהושלמו</div>
+            </div>
+        </div>
+        
+        <!-- טבלת מובילים -->
+        <div class="leaderboard">
+            <h2>🏆 טבלת המובילים</h2>
+            
+            {% if top_users %}
+            <table class="leaderboard-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>משתמש</th>
+                        <th>טוקנים</th>
+                        <th>רמה</th>
+                        <th>הפניות</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in top_users %}
+                    <tr>
+                        <td>
+                            <span class="rank rank-{{ loop.index }}">{{ loop.index }}</span>
+                        </td>
+                        <td>
+                            <div class="user-info">
+                                <div class="user-avatar">
+                                    {{ user.first_name[0] if user.first_name else '?' }}
+                                </div>
+                                <div>
+                                    <div class="user-name">
+                                        {{ user.first_name or user.username or ("משתמש " ~ user.telegram_id) }}
+                                    </div>
+                                    <div class="user-details">
+                                        {{ user.telegram_id }}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="tokens-cell">
+                            {{ intcomma(user.tokens) }} 🪙
+                        </td>
+                        <td>
+                            <span class="level-badge">רמה {{ user.level }}</span>
+                        </td>
+                        <td>
+                            {{ user.total_referrals }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            <div class="update-time">
+                🕒 עדכון אחרון: {{ now().strftime('%H:%M') }}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">📭</div>
+                <h3 style="color: #2d3748;">אין משתמשים עדיין</h3>
+                <p>המערכת מחכה למשתמשים הראשונים שיצטרפו.</p>
+                <p>הזמן חברים והתחל לצבור טוקנים!</p>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- סטטיסטיקות נוספות -->
+        <h2 class="section-title">📊 נתונים נוספים</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+            <div style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                <h3 style="color: #4c51bf; margin-bottom: 15px;">📅 פעילות</h3>
+                <div style="color: #718096; line-height: 2;">
+                    <div>🔗 הפניות: {{ intcomma(stats.total_referrals|default(0)) }}</div>
+                    <div>✅ צ'ק-אין: {{ intcomma(stats.total_checkins|default(0)) }}</div>
+                    <div>📈 ממוצע יומי: {{ intcomma(stats.avg_daily_active|default(0)|round) }}</div>
+                </div>
+            </div>
+            
+            <div style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                <h3 style="color: #4c51bf; margin-bottom: 15px;">📈 ממוצעים</h3>
+                <div style="color: #718096; line-height: 2;">
+                    <div>💰 טוקנים למשתמש: {{ intcomma(stats.avg_tokens|default(0)|round) }}</div>
+                    <div>🏆 רמה ממוצעת: {{ intcomma(stats.avg_level|default(0)|round(1)) }}</div>
+                    <div>👥 משתמשים חדשים: בהמשך...</div>
+                </div>
+            </div>
+            
+            <div style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                <h3 style="color: #4c51bf; margin-bottom: 15px;">ℹ️ מידע</h3>
+                <div style="color: #718096; line-height: 2;">
+                    <div>🕒 זמן מערכת: {{ now().strftime('%H:%M') }}</div>
+                    <div>📅 תאריך: {{ now().strftime('%d/%m/%Y') }}</div>
+                    <div>🚀 גרסה: 2.3.0</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- תובנות -->
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 15px; margin: 40px 0; text-align: center;">
+            <h2 style="margin-bottom: 15px;">💡 תובנות</h2>
+            <p style="font-size: 1.1rem; opacity: 0.9;">
+                {% if stats.total_users > 100 %}
+                מערכת חזקה עם קהילה פעילה! המשך כך.
+                {% elif stats.total_users > 50 %}
+                קהילה גדלה ופעילה. מצוין!
+                {% elif stats.total_users > 10 %}
+                מתחילים לצבור תאוצה. מעולה!
+                {% else %}
+                בתחילת הדרך. הזמן חברים והגדל את הקהילה!
+                {% endif %}
+            </p>
+            <p style="margin-top: 15px; font-size: 0.9rem;">
+                סטטיסטיקות מתעדכנות כל שעה
+            </p>
+        </div>
+        
+        <!-- קישורים מהירים -->
+        <div style="text-align: center; margin: 50px 0;">
+            <h3 style="color: #2d3748; margin-bottom: 20px;">🔗 קישורים שימושיים</h3>
+            <div class="quick-nav">
+                <a href="/api/v1/stats" class="nav-btn">📊 API סטטיסטיקות</a>
+                <a href="/health" class="nav-btn">🩺 בריאות מערכת</a>
+                <a href="/setwebhook" class="nav-btn">🔗 בדיקת Webhook</a>
+                <a href="/teacher/login" class="nav-btn">👨‍🏫 כניסת מורה</a>
+            </div>
+        </div>
+    </div>
+    
+    <div style="text-align: center; padding: 40px 20px; color: #718096; border-top: 1px solid #e2e8f0; margin-top: 40px;">
+        <p>Crypto-Class © 2026 | גרסה 2.3.0 | נתונים סטטיסטיים</p>
+        <p style="margin-top: 10px; font-size: 0.9rem;">
+            הנתונים מתעדכנים באופן אוטומטי ומשקפים את מצב המערכת בזמן אמת.
+        </p>
+    </div>
+    
+    <script>
+        // רענון נתונים אוטומטי כל 5 דקות
+        setTimeout(function() {
+            window.location.reload();
+        }, 300000); // 5 דקות
+        
+        // פונקציית עזר לפורמט מספרים
+        function intcomma(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+        
+        // החל פורמט מספרים על כל המספרים בדף
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.stat-number').forEach(el => {
+                const text = el.textContent;
+                const number = text.replace(/,/g, '');
+                if (!isNaN(number) && number.trim() !== '') {
+                    el.textContent = intcomma(parseInt(number));
+                }
+            });
+            
+            document.querySelectorAll('.tokens-cell').forEach(el => {
+                const text = el.textContent;
+                const number = text.match(/\d+/g);
+                if (number) {
+                    el.textContent = intcomma(number[0]) + ' 🪙';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

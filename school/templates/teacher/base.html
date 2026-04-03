@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Crypto-Class - דשבורד מורים{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="container">
+        <header style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 0 0 10px 10px; margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1 style="margin: 0; font-size: 1.8rem;">👨‍🏫 Crypto-Class - דשבורד מורים</h1>
+                    <p style="margin: 5px 0 0 0; opacity: 0.9;">ניהול כיתה מתקדם מבוסס טוקנים</p>
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <a href="/teacher" style="color: white; text-decoration: none; padding: 8px 15px; border-radius: 5px; background: rgba(255,255,255,0.1);">🏠 דשבורד</a>
+                    <a href="/teacher/users" style="color: white; text-decoration: none; padding: 8px 15px; border-radius: 5px; background: rgba(255,255,255,0.1);">👥 משתמשים</a>
+                    <a href="/teacher/logout" style="color: white; text-decoration: none; padding: 8px 15px; border-radius: 5px; background: #f56565;">🚪 יציאה</a>
+                </div>
+            </div>
+        </header>
+        
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+        
+        <footer style="text-align: center; padding: 30px 0; color: #718096; border-top: 1px solid #e2e8f0; margin-top: 40px;">
+            <p>Crypto-Class © 2026 | גרסה 2.2.0 | דשבורד מורים</p>
+            <p style="margin-top: 10px; font-size: 0.9rem;">
+                <a href="/" style="color: #667eea; margin: 0 10px;">אתר ראשי</a>
+                <a href="/stats" style="color: #667eea; margin: 0 10px;">סטטיסטיקות</a>
+                <a href="/health" style="color: #667eea; margin: 0 10px;">בריאות מערכת</a>
+            </p>
+        </footer>
+    </div>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>

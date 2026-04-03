@@ -1,0 +1,143 @@
+﻿Pager usage is off.
+=== TABLE: users ===
+                                                                             Table "public.users"
+    Column     |            Type             | Collation | Nullable |                      Default                       | Storage  | Compression | Stats target | Description 
+---------------+-----------------------------+-----------+----------+----------------------------------------------------+----------+-------------+--------------+-------------
+ user_id       | bigint                      |           | not null |                                                    | plain    |             |              | 
+ username      | text                        |           |          |                                                    | extended |             |              | 
+ role          | text                        |           |          | 'user'::text                                       | extended |             |              | 
+ balance       | double precision            |           |          | 0                                                  | plain    |             |              | 
+ last_claim    | timestamp without time zone |           |          | '1970-01-01 00:00:00'::timestamp without time zone | plain    |             |              | 
+ invited_count | integer                     |           |          | 0                                                  | plain    |             |              | 
+ total_sold    | numeric                     |           |          | 0                                                  | main     |             |              | 
+ joined_at     | timestamp without time zone |           |          | CURRENT_TIMESTAMP                                  | plain    |             |              | 
+Indexes:
+    "users_pkey" PRIMARY KEY, btree (user_id)
+Referenced by:
+    TABLE "claims" CONSTRAINT "claims_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+    TABLE "invites" CONSTRAINT "invites_invited_user_id_fkey" FOREIGN KEY (invited_user_id) REFERENCES users(user_id) ON DELETE CASCADE
+    TABLE "invites" CONSTRAINT "invites_inviter_user_id_fkey" FOREIGN KEY (inviter_user_id) REFERENCES users(user_id) ON DELETE CASCADE
+    TABLE "user_balances" CONSTRAINT "user_balances_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+Access method: heap
+
+
+=== TABLE: user_balances ===
+                                                       Table "public.user_balances"
+   Column   |            Type             | Collation | Nullable |      Default      | Storage | Compression | Stats target | Description 
+------------+-----------------------------+-----------+----------+-------------------+---------+-------------+--------------+-------------
+ user_id    | bigint                      |           | not null |                   | plain   |             |              | 
+ available  | numeric(18,8)               |           | not null | 0                 | main    |             |              | 
+ locked     | numeric(18,8)               |           | not null | 0                 | main    |             |              | 
+ updated_at | timestamp without time zone |           | not null | CURRENT_TIMESTAMP | plain   |             |              | 
+Indexes:
+    "user_balances_pkey" PRIMARY KEY, btree (user_id)
+Foreign-key constraints:
+    "user_balances_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+Access method: heap
+
+
+=== TABLE: claims ===
+                                                                   Table "public.claims"
+   Column   |            Type             | Collation | Nullable |              Default               | Storage  | Compression | Stats target | Description 
+------------+-----------------------------+-----------+----------+------------------------------------+----------+-------------+--------------+-------------
+ id         | bigint                      |           | not null | nextval('claims_id_seq'::regclass) | plain    |             |              | 
+ user_id    | bigint                      |           | not null |                                    | plain    |             |              | 
+ amount     | numeric(18,8)               |           | not null | 0                                  | main     |             |              | 
+ claim_type | text                        |           | not null | 'daily'::text                      | extended |             |              | 
+ created_at | timestamp without time zone |           | not null | CURRENT_TIMESTAMP                  | plain    |             |              | 
+Indexes:
+    "claims_pkey" PRIMARY KEY, btree (id)
+    "idx_claims_user_id_created_at" btree (user_id, created_at DESC)
+Foreign-key constraints:
+    "claims_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+Access method: heap
+
+
+=== TABLE: invites ===
+                                                                      Table "public.invites"
+     Column      |            Type             | Collation | Nullable |               Default               | Storage  | Compression | Stats target | Description 
+-----------------+-----------------------------+-----------+----------+-------------------------------------+----------+-------------+--------------+-------------
+ id              | bigint                      |           | not null | nextval('invites_id_seq'::regclass) | plain    |             |              | 
+ inviter_user_id | bigint                      |           | not null |                                     | plain    |             |              | 
+ invited_user_id | bigint                      |           | not null |                                     | plain    |             |              | 
+ invite_code     | text                        |           |          |                                     | extended |             |              | 
+ created_at      | timestamp without time zone |           | not null | CURRENT_TIMESTAMP                   | plain    |             |              | 
+ reward_granted  | boolean                     |           | not null | false                               | plain    |             |              | 
+Indexes:
+    "invites_pkey" PRIMARY KEY, btree (id)
+    "idx_invites_inviter_user_id" btree (inviter_user_id)
+    "invites_invited_user_id_key" UNIQUE CONSTRAINT, btree (invited_user_id)
+Foreign-key constraints:
+    "invites_invited_user_id_fkey" FOREIGN KEY (invited_user_id) REFERENCES users(user_id) ON DELETE CASCADE
+    "invites_inviter_user_id_fkey" FOREIGN KEY (inviter_user_id) REFERENCES users(user_id) ON DELETE CASCADE
+Access method: heap
+
+
+=== TABLE: tasks ===
+                                                       Table "public.tasks"
+ Column |  Type   | Collation | Nullable |              Default              | Storage  | Compression | Stats target | Description 
+--------+---------+-----------+----------+-----------------------------------+----------+-------------+--------------+-------------
+ id     | integer |           | not null | nextval('tasks_id_seq'::regclass) | plain    |             |              | 
+ title  | text    |           |          |                                   | extended |             |              | 
+ reward | numeric |           |          |                                   | main     |             |              | 
+ type   | text    |           |          |                                   | extended |             |              | 
+Indexes:
+    "tasks_pkey" PRIMARY KEY, btree (id)
+Access method: heap
+
+
+=== TABLE: audit_log ===
+                                                                    Table "public.audit_log"
+    Column    |            Type             | Collation | Nullable |                Default                | Storage  | Compression | Stats target | Description 
+--------------+-----------------------------+-----------+----------+---------------------------------------+----------+-------------+--------------+-------------
+ id           | bigint                      |           | not null | nextval('audit_log_id_seq'::regclass) | plain    |             |              | 
+ user_id      | bigint                      |           |          |                                       | plain    |             |              | 
+ event_type   | text                        |           | not null |                                       | extended |             |              | 
+ payload_json | text                        |           |          |                                       | extended |             |              | 
+ created_at   | timestamp without time zone |           | not null | CURRENT_TIMESTAMP                     | plain    |             |              | 
+Indexes:
+    "audit_log_pkey" PRIMARY KEY, btree (id)
+    "idx_audit_log_event_type" btree (event_type)
+    "idx_audit_log_user_id" btree (user_id)
+Access method: heap
+
+
+=== INDEXES ===
+ schemaname |   tablename   |           indexname           |                                              indexdef                                              
+------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------
+ public     | audit_log     | audit_log_pkey                | CREATE UNIQUE INDEX audit_log_pkey ON public.audit_log USING btree (id)
+ public     | audit_log     | idx_audit_log_event_type      | CREATE INDEX idx_audit_log_event_type ON public.audit_log USING btree (event_type)
+ public     | audit_log     | idx_audit_log_user_id         | CREATE INDEX idx_audit_log_user_id ON public.audit_log USING btree (user_id)
+ public     | claims        | claims_pkey                   | CREATE UNIQUE INDEX claims_pkey ON public.claims USING btree (id)
+ public     | claims        | idx_claims_user_id_created_at | CREATE INDEX idx_claims_user_id_created_at ON public.claims USING btree (user_id, created_at DESC)
+ public     | invites       | idx_invites_inviter_user_id   | CREATE INDEX idx_invites_inviter_user_id ON public.invites USING btree (inviter_user_id)
+ public     | invites       | invites_invited_user_id_key   | CREATE UNIQUE INDEX invites_invited_user_id_key ON public.invites USING btree (invited_user_id)
+ public     | invites       | invites_pkey                  | CREATE UNIQUE INDEX invites_pkey ON public.invites USING btree (id)
+ public     | tasks         | tasks_pkey                    | CREATE UNIQUE INDEX tasks_pkey ON public.tasks USING btree (id)
+ public     | user_balances | user_balances_pkey            | CREATE UNIQUE INDEX user_balances_pkey ON public.user_balances USING btree (user_id)
+ public     | users         | users_pkey                    | CREATE UNIQUE INDEX users_pkey ON public.users USING btree (user_id)
+(11 rows)
+
+
+=== SEQUENCES ===
+ sequence_schema |   sequence_name    | data_type | start_value | minimum_value |    maximum_value    | increment 
+-----------------+--------------------+-----------+-------------+---------------+---------------------+-----------
+ public          | audit_log_id_seq   | bigint    | 1           | 1             | 9223372036854775807 | 1
+ public          | blacklist_id_seq   | integer   | 1           | 1             | 2147483647          | 1
+ public          | claims_id_seq      | bigint    | 1           | 1             | 9223372036854775807 | 1
+ public          | invites_id_seq     | bigint    | 1           | 1             | 9223372036854775807 | 1
+ public          | sell_orders_id_seq | integer   | 1           | 1             | 2147483647          | 1
+ public          | tasks_id_seq       | integer   | 1           | 1             | 2147483647          | 1
+ public          | withdrawals_id_seq | integer   | 1           | 1             | 2147483647          | 1
+(7 rows)
+
+
+=== FOREIGN KEYS ===
+  table_name   |       constraint_name        |   column_name   | foreign_table_name | foreign_column_name 
+---------------+------------------------------+-----------------+--------------------+---------------------
+ claims        | claims_user_id_fkey          | user_id         | users              | user_id
+ invites       | invites_invited_user_id_fkey | invited_user_id | users              | user_id
+ invites       | invites_inviter_user_id_fkey | inviter_user_id | users              | user_id
+ user_balances | user_balances_user_id_fkey   | user_id         | users              | user_id
+(4 rows)
+

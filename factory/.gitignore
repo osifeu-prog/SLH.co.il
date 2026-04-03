@@ -1,0 +1,48 @@
+__pycache__/
+*.py[cod]
+
+# local snapshots
+BOT_FACTORY_SNAPSHOT.txt
+*_SNAPSHOT.txt
+.venv/
+.env
+# local encrypted secrets
+tools/.vault/
+# local secrets input + vault
+tools/railway.vars.txt
+local.db
+*.bak.*
+# Private project state (do not commit)
+STATE.md
+project_scan_report.txt
+tools/db_check.py
+tools/db_probe.py
+tools/seed_position.py
+*.bak
+.admin_key.local
+rv.json
+start.py
+Main.py
+# local secrets / env
+*.env
+tools/env.local.ps1
+*.local.ps1
+# backups
+alembic/env.py.bak_*
+*.bak_*
+# venv / cache
+*.pyc
+.env.local
+.uvicorn.pid
+# local runtime / smoke artifacts (local-only)
+.run_port.txt
+/tools/smoke*.ps1
+/tools/run_*.ps1
+/tools/stop_*.ps1
+/_smoke_logs/
+/utils/
+/.run_port.txt
+/tools/run_8012*.ps1
+/tools/run_local_a.ps1
+/utils/**
+app/bot/investor_wallet_bot.py.bak

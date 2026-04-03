@@ -1,0 +1,51 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+
+# Data
+data/airdrop.db
+*.db
+*.sqlite
+*.log
+bot.log
+test_results.json
+
+# Secrets
+*.env
+.env.local
+.secrets/
+config.json
+secrets.txt
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Railway
+.railway/
+railway.json
+
+# Temp
+tmp/
+temp/
+logs/
+
+# קבצים אישיים
+*.ps1
+*.md
+FACEBOOK_POST_COMPLETE.md
+amazing_bot.py
+simple_bot.py
+slh_connected_bot.py

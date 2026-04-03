@@ -1,0 +1,43 @@
+=== DB TABLES ===
+               List of relations
+ Schema |       Name        | Type  |  Owner   
+--------+-------------------+-------+----------
+ public | commerce_events   | table | slh_user
+ public | purchase_receipts | table | slh_user
+ public | users             | table | slh_user
+(3 rows)
+
+
+=== USERS DDL LIVE ===
+                                                                     Table "public.users"
+    Column     |            Type             | Collation | Nullable |              Default              | Storage  | Compression | Stats target | Description 
+---------------+-----------------------------+-----------+----------+-----------------------------------+----------+-------------+--------------+-------------
+ id            | integer                     |           | not null | nextval('users_id_seq'::regclass) | plain    |             |              | 
+ user_id       | bigint                      |           | not null |                                   | plain    |             |              | 
+ username      | text                        |           |          |                                   | extended |             |              | 
+ xp_total      | integer                     |           |          | 0                                 | plain    |             |              | 
+ level         | integer                     |           |          | 1                                 | plain    |             |              | 
+ invited_count | integer                     |           |          | 0                                 | plain    |             |              | 
+ created_at    | timestamp without time zone |           |          | CURRENT_TIMESTAMP                 | plain    |             |              | 
+ updated_at    | timestamp without time zone |           |          | CURRENT_TIMESTAMP                 | plain    |             |              | 
+Indexes:
+    "users_pkey" PRIMARY KEY, btree (id)
+    "users_user_id_key" UNIQUE CONSTRAINT, btree (user_id)
+Access method: heap
+
+
+=== SCHEMA CANDIDATES ===
+
+Score Path                                                             
+----- ----                                                             
+    2 D:\SLH_PROJECT_V2\ops\sql\patch_commerce_foundation_v1.sql       
+    1 D:\SLH_PROJECT_V2\_diag_focus_20260306_130127\CODE_REPORT.txt    
+    1 D:\SLH_PROJECT_V2\_handoff\run_20260305_171049\FILES\bot.py      
+    1 D:\SLH_PROJECT_V2\_handoff\run_20260305_171049\FILES\init_db.sql 
+    1 D:\SLH_PROJECT_V2\ops\sql\patch_commerce_groups_and_flags_v1.sql 
+    1 D:\SLH_PROJECT_V2\state\schema_repair_v1.sql                     
+    1 D:\SLH_PROJECT_V2\state\schema_v2.sql                            
+    1 D:\SLH_PROJECT_V2\state\secret_quarantine_20260314_134916\bot.py 
+    1 D:\SLH_PROJECT_V2\state\secret_quarantine_20260314_134916\LOG.txt
+
+

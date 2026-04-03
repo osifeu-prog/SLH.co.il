@@ -1,0 +1,10 @@
+﻿fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-telegram-bot==20.6
+requests==2.31.0
+python-dotenv==1.0.0
+httpx==0.25.1
+aiohttp==3.13.3
+redis==5.0.5
+psycopg2-binary==2.9.10
+pydantic==2.5.3

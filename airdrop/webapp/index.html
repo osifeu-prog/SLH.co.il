@@ -1,0 +1,103 @@
+<<<<<<< HEAD
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Airdrop WebApp</title>
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>🎁 Airdrop Platform</h1>
+    <p class="muted">Telegram WebApp + FastAPI + Postgres + Redis</p>
+
+    <div class="card">
+      <h2>Profile</h2>
+      <div id="profile">Loading...</div>
+    </div>
+
+    <div class="card">
+      <h2>Balance</h2>
+      <div id="balance">Loading...</div>
+      <button id="refreshBalance">Refresh</button>
+    </div>
+
+    <div class="card">
+      <h2>Request Airdrop</h2>
+      <input id="amount" type="number" min="1" step="1" placeholder="Amount" />
+      <button id="requestAirdrop">Request</button>
+      <div id="airdropResult" class="muted"></div>
+    </div>
+
+    <div class="card">
+      <h2>Token Config</h2>
+      <div id="tokenConfig">Loading...</div>
+    </div>
+
+    <p class="footer muted">If you are not inside Telegram, DEV mode uses a fake telegram_id.</p>
+  </div>
+
+  <script src="./js/app.js"></script>
+=======
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>SLH Admin Dashboard</title>
+    <style>
+        body { background: #0f172a; color: #22d3ee; font-family: 'Segoe UI', sans-serif; text-align: center; padding: 20px; }
+        .container { max-width: 800px; margin: auto; border: 2px solid #22d3ee; border-radius: 20px; padding: 30px; background: #1e293b; box-shadow: 0 0 20px rgba(34, 211, 238, 0.2); }
+        h1 { font-size: 2.5em; text-shadow: 0 0 10px #22d3ee; margin-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; color: white; }
+        th, td { padding: 12px; border-bottom: 1px solid #334155; text-align: center; }
+        th { color: #22d3ee; font-size: 1.1em; }
+        tr:hover { background: rgba(34, 211, 238, 0.1); }
+        .badge { background: #22d3ee; color: #0f172a; padding: 2px 10px; border-radius: 10px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SLH NETWORK ADMIN</h1>
+        <p>סטטוס מערכת: <span style="color: #4ade80;">פעיל (LIVE)</span></p>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>שם משתמש</th>
+                    <th>Telegram ID</th>
+                    <th>חברים שהוזמנו</th>
+                </tr>
+            </thead>
+            <tbody id="stats-table">
+                <tr><td colspan="3">טוען נתונים...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        async function loadStats() {
+            try {
+                const res = await fetch('/api/admin/stats');
+                const data = await res.json();
+                const table = document.getElementById('stats-table');
+                table.innerHTML = '';
+                data.forEach(user => {
+                    table.innerHTML += 
+                        <tr>
+                            <td></td>
+                            <td><code></code></td>
+                            <td><span class="badge"></span></td>
+                        </tr>
+                    ;
+                });
+            } catch (e) {
+                console.error("Error loading stats", e);
+            }
+        }
+        loadStats();
+        setInterval(loadStats, 10000); // עדכון אוטומטי כל 10 שניות
+    </script>
+>>>>>>> 03e5c1437b28768ba89ff31f6cea0fc62306fdf0
+</body>
+</html>

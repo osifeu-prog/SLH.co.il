@@ -1,0 +1,8 @@
+#!/bin/sh
+set -eu
+if [ -f "tools/precommit_check.py" ]; then
+  python tools/precommit_check.py
+else
+  echo "WARN: tools/precommit_check.py not found; skipping." 1>&2
+fi
+git diff --cached --check >/dev/null

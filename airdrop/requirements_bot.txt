@@ -1,0 +1,4 @@
+﻿# requirements.txt for bot service
+requests==2.31.0
+python-telegram-bot==20.6
+python-dotenv==1.0.0

@@ -1,0 +1,78 @@
+# secrets
+/.env
+/.env.*
+/_setwebhook.json
+
+# python
+/__pycache__/
+/venv/
+*.pyc
+*.pyo
+*.pyd
+
+# runtime + logs
+/runtime/
+/logs/
+*.log
+
+# backups + diagnostics
+/backups/
+/_db_backups/
+/_DIAG_*/
+/_diag_*/
+/_diag_full_*/
+/_diag_live_*/
+/_diag_focus_*/
+/_handoff/
+
+# exports / archives only
+*.csv
+*.zip
+
+# local backup source files
+*.bak
+*.bak_*
+*.tmp
+
+# local one-off files
+LOG.txt
+main_backup_*.py
+
+# OS
+Thumbs.db
+.DS_Store
+db_backup.sql
+
+slh_db_backup.sql
+runtime/*.log
+runtime/*.pid
+state/snapshot_*/
+state/crash_report_*/
+_snapshot_state_*/
+_backup_withdraw_bot_*/
+.env
+.env.*
+ops/local/*.local.*
+
+# local secrets
+.env
+.env.*
+!.env.example
+
+# logs and transient diagnostics
+LOG.txt
+*.log
+
+# local state / dumps / handoffs
+state/secret_quarantine_*/
+state/live_sessions/
+state/tasks/
+state/handoff_*/
+state/proj_backup_*/
+state/commerce_full_check_*/
+_diag_*/
+_handoff/
+
+# python cache
+__pycache__/
+*.pyc

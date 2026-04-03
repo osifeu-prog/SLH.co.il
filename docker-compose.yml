@@ -1,0 +1,167 @@
+# ============================================================
+# SLH ECOSYSTEM - Unified Docker Compose
+# All Telegram bots + shared infrastructure
+# ============================================================
+
+services:
+
+  # ---- SHARED INFRASTRUCTURE ----
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: slh-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-slh_secure_2026}
+      POSTGRES_DB: slh_main
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/01-init.sql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: slh-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ---- BOT SERVICES ----
+
+  # 1. SLH Academia Bot (Main Bot - Store, Tasks, Economy)
+  core-bot:
+    build:
+      context: ../SLH_PROJECT_V2
+      dockerfile: ../SLH_ECOSYSTEM/dockerfiles/Dockerfile.core
+    container_name: slh-core-bot
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      BOT_TOKEN: ${CORE_BOT_TOKEN}
+      BOT_USERNAME: ${CORE_BOT_USERNAME:-SLH_Academia_bot}
+      DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
+      REDIS_URL: redis://redis:6379/0
+      REDIS_STREAM: slh:updates
+      ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+      ADMIN_ID: ${ADMIN_USER_ID:-224223270}
+      MODE: polling
+      ENV: prod
+    volumes:
+      - core-logs:/app/logs
+
+  # 2. Guardian Bot (Security + Monitoring)
+  guardian-bot:
+    build:
+      context: ../telegram-guardian-DOCKER-COMPOSE-ENTERPRISE
+      dockerfile: ../SLH_ECOSYSTEM/dockerfiles/Dockerfile.guardian
+    container_name: slh-guardian-bot
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      BOT_TOKEN: ${GUARDIAN_BOT_TOKEN}
+      TELEGRAM_TOKEN: ${GUARDIAN_BOT_TOKEN}
+      DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_guardian
+      REDIS_URL: redis://redis:6379/1
+      ADMIN_CHAT_ID: ${ADMIN_USER_ID:-224223270}
+      MODE: polling
+      ENV: prod
+    ports:
+      - "8001:8080"
+
+  # 3. GATE BotShop (Product Store Bot)
+  botshop:
+    build:
+      context: ./botshop
+      dockerfile: ../dockerfiles/Dockerfile.botshop
+    container_name: slh-botshop
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      BOT_TOKEN: ${BOTSHOP_BOT_TOKEN}
+      TELEGRAM_BOT_TOKEN: ${BOTSHOP_BOT_TOKEN}
+      DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_botshop
+      WEBHOOK_URL: ""
+      ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-slh_admin_2026}
+      MODE: polling
+      ENV: prod
+
+  # 4. Wallet Bot (TON/BNB Wallet Management)
+  wallet-bot:
+    build:
+      context: ./wallet
+      dockerfile: ../dockerfiles/Dockerfile.wallet
+    container_name: slh-wallet
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      BOT_TOKEN: ${WALLET_BOT_TOKEN}
+      TELEGRAM_BOT_TOKEN: ${WALLET_BOT_TOKEN}
+      DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_wallet
+      ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+      TON_API_KEY: ${TON_API_KEY}
+      ENV: prod
+
+  # 5. BOT Factory (Investment + Staking)
+  factory-bot:
+    build:
+      context: ./factory
+      dockerfile: ../dockerfiles/Dockerfile.factory
+    container_name: slh-factory
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      BOT_TOKEN: ${FACTORY_BOT_TOKEN}
+      TELEGRAM_TOKEN: ${FACTORY_BOT_TOKEN}
+      DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_factory
+      ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+      MODE: polling
+      ENV: prod
+
+  # 6. FUN Bot (Promo/Premium)
+  fun-bot:
+    build:
+      context: ./fun
+      dockerfile: ../dockerfiles/Dockerfile.fun
+    container_name: slh-fun
+    restart: always
+    environment:
+      BOT_TOKEN: ${FUN_BOT_TOKEN}
+      ADMIN_CHAT_ID: ${ADMIN_USER_ID:-224223270}
+      WEBHOOK_BASE: ""
+      MODE: polling
+      ENV: prod
+    ports:
+      - "8002:8080"
+
+volumes:
+  pgdata:
+    driver: local
+  core-logs:
+    driver: local

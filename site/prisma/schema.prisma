@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             Int       @id @default(autoincrement())
+  telegramUserId String    @unique
+  createdAt      DateTime  @default(now())
+  wallets        Wallet[]
+  aiRequests     AiRequestLog[]
+}
+
+model Wallet {
+  id        Int                     @id @default(autoincrement())
+  user      User                    @relation(fields: [userId], references: [id])
+  userId    Int
+  address   String
+  verified  Boolean                 @default(false)
+  createdAt DateTime                @default(now())
+  snapshots WalletBalanceSnapshot[]
+
+  @@index([userId])
+  @@unique([address])
+}
+
+model AiRequestLog {
+  id          Int      @id @default(autoincrement())
+  user        User?    @relation(fields: [userId], references: [id])
+  userId      Int?
+  telegramId  String?
+  prompt      String
+  response    String?
+  createdAt   DateTime @default(now())
+}
+
+model WalletBalanceSnapshot {
+  id        Int      @id @default(autoincrement())
+  wallet    Wallet   @relation(fields: [walletId], references: [id])
+  walletId  Int
+  balance   String   // נשמר כטקסט של ETH
+  takenAt   DateTime @default(now())
+
+  @@index([walletId, takenAt])
+}
+
+model MigrationProposal {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  prismaDiff  String   // קטע schema או diff מוצע
+  createdAt   DateTime @default(now())
+  approvedAt  DateTime?
+  appliedAt   DateTime?
+}

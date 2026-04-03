@@ -1,0 +1,15 @@
+﻿{
+    "Date":  "2026-02-07 19:57:56",
+    "ProjectPath":  "D:\\SLH\\CryptoWallet54",
+    "Name":  "Backup_20260207_195756",
+    "FilesBackedUp":  [
+                          "App.js",
+                          "app.json",
+                          "package.json",
+                          "package-lock.json",
+                          ".env",
+                          "src",
+                          "assets"
+                      ],
+    "SuccessCount":  5
+}

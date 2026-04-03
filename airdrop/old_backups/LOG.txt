@@ -1,0 +1,1798 @@
+
+(venv) PS C:\Users\USER\Desktop\airdrop-main\airdrop-main\airdrop>
+
+(venv) PS C:\Users\USER\Desktop\airdrop-main\airdrop-main\airdrop> TREE
+
+Folder PATH listing
+
+Volume serial number is 76E2-ED44
+
+C:.
+
+├───.githooks
+
+├───.venv
+
+│   ├───Include
+
+│   │   └───site
+
+│   │       └───python3.13
+
+│   │           └───greenlet
+
+│   ├───Lib
+
+│   │   └───site-packages
+
+│   │       ├───alembic
+
+│   │       │   ├───autogenerate
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───ddl
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───operations
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───runtime
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───script
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───templates
+
+│   │       │   │   ├───async
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───generic
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   └───multidb
+
+│   │       │   │       └───__pycache__
+
+│   │       │   ├───testing
+
+│   │       │   │   ├───plugin
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───suite
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───util
+
+│   │       │   │   └───__pycache__
+
+│   │       │   └───__pycache__
+
+│   │       ├───alembic-1.13.2.dist-info
+
+│   │       ├───annotated_doc
+
+│   │       │   └───__pycache__
+
+│   │       ├───annotated_doc-0.0.4.dist-info
+
+│   │       │   └───licenses
+
+│   │       ├───annotated_types
+
+│   │       │   └───__pycache__
+
+│   │       ├───annotated_types-0.7.0.dist-info
+
+│   │       │   └───licenses
+
+│   │       ├───anyio
+
+│   │       │   ├───abc
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───streams
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───_backends
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───_core
+
+│   │       │   │   └───__pycache__
+
+│   │       │   └───__pycache__
+
+│   │       ├───anyio-4.12.1.dist-info
+
+│   │       │   └───licenses
+
+│   │       ├───certifi
+
+│   │       │   └───__pycache__
+
+│   │       ├───certifi-2026.1.4.dist-info
+
+│   │       │   └───licenses
+
+│   │       ├───click
+
+│   │       │   └───__pycache__
+
+│   │       ├───click-8.3.1.dist-info
+
+│   │       │   └───licenses
+
+│   │       ├───colorama
+
+│   │       │   ├───tests
+
+│   │       │   │   └───__pycache__
+
+│   │       │   └───__pycache__
+
+│   │       ├───colorama-0.4.6.dist-info
+
+│   │       │   └───licenses
+
+│   │       ├───dotenv
+
+│   │       │   └───__pycache__
+
+│   │       ├───fastapi
+
+│   │       │   ├───dependencies
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───middleware
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───openapi
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───security
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───_compat
+
+│   │       │   │   └───__pycache__
+
+│   │       │   └───__pycache__
+
+│   │       ├───fastapi-0.128.0.dist-info
+
+│   │       │   └───licenses
+
+│   │       ├───greenlet
+
+│   │       │   ├───platform
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───tests
+
+│   │       │   │   └───__pycache__
+
+│   │       │   └───__pycache__
+
+│   │       ├───greenlet-3.3.1.dist-info
+
+│   │       │   └───licenses
+
+│   │       ├───h11
+
+│   │       │   └───__pycache__
+
+│   │       ├───h11-0.16.0.dist-info
+
+│   │       │   └───licenses
+
+│   │       ├───httpcore
+
+│   │       │   ├───_async
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───_backends
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───_sync
+
+│   │       │   │   └───__pycache__
+
+│   │       │   └───__pycache__
+
+│   │       ├───httpcore-1.0.9.dist-info
+
+│   │       │   └───licenses
+
+│   │       ├───httptools
+
+│   │       │   ├───parser
+
+│   │       │   │   └───__pycache__
+
+│   │       │   └───__pycache__
+
+│   │       ├───httptools-0.7.1.dist-info
+
+│   │       │   └───licenses
+
+│   │       ├───httpx
+
+│   │       │   ├───_transports
+
+│   │       │   │   └───__pycache__
+
+│   │       │   └───__pycache__
+
+│   │       ├───httpx-0.28.1.dist-info
+
+│   │       │   └───licenses
+
+│   │       ├───idna
+
+│   │       │   └───__pycache__
+
+│   │       ├───idna-3.11.dist-info
+
+│   │       │   └───licenses
+
+│   │       ├───mako
+
+│   │       │   ├───ext
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───testing
+
+│   │       │   │   └───__pycache__
+
+│   │       │   └───__pycache__
+
+│   │       ├───mako-1.3.10.dist-info
+
+│   │       │   └───licenses
+
+│   │       ├───markupsafe
+
+│   │       │   └───__pycache__
+
+│   │       ├───markupsafe-3.0.3.dist-info
+
+│   │       │   └───licenses
+
+│   │       ├───multipart
+
+│   │       │   └───__pycache__
+
+│   │       ├───pip
+
+│   │       │   ├───_internal
+
+│   │       │   │   ├───cli
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───commands
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───distributions
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───index
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───locations
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───metadata
+
+│   │       │   │   │   ├───importlib
+
+│   │       │   │   │   │   └───__pycache__
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───models
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───network
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───operations
+
+│   │       │   │   │   ├───build
+
+│   │       │   │   │   │   └───__pycache__
+
+│   │       │   │   │   ├───install
+
+│   │       │   │   │   │   └───__pycache__
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───req
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───resolution
+
+│   │       │   │   │   ├───legacy
+
+│   │       │   │   │   │   └───__pycache__
+
+│   │       │   │   │   ├───resolvelib
+
+│   │       │   │   │   │   └───__pycache__
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───utils
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───vcs
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───_vendor
+
+│   │       │   │   ├───cachecontrol
+
+│   │       │   │   │   ├───caches
+
+│   │       │   │   │   │   └───__pycache__
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───certifi
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───dependency_groups
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───distlib
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───distro
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───idna
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───msgpack
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───packaging
+
+│   │       │   │   │   ├───licenses
+
+│   │       │   │   │   │   └───__pycache__
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───pkg_resources
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───platformdirs
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───pygments
+
+│   │       │   │   │   ├───filters
+
+│   │       │   │   │   │   └───__pycache__
+
+│   │       │   │   │   ├───formatters
+
+│   │       │   │   │   │   └───__pycache__
+
+│   │       │   │   │   ├───lexers
+
+│   │       │   │   │   │   └───__pycache__
+
+│   │       │   │   │   ├───styles
+
+│   │       │   │   │   │   └───__pycache__
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───pyproject_hooks
+
+│   │       │   │   │   ├───_in_process
+
+│   │       │   │   │   │   └───__pycache__
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───requests
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───resolvelib
+
+│   │       │   │   │   ├───resolvers
+
+│   │       │   │   │   │   └───__pycache__
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───rich
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───tomli
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───tomli_w
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───truststore
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───urllib3
+
+│   │       │   │   │   ├───contrib
+
+│   │       │   │   │   │   ├───_securetransport
+
+│   │       │   │   │   │   │   └───__pycache__
+
+│   │       │   │   │   │   └───__pycache__
+
+│   │       │   │   │   ├───packages
+
+│   │       │   │   │   │   ├───backports
+
+│   │       │   │   │   │   │   └───__pycache__
+
+│   │       │   │   │   │   └───__pycache__
+
+│   │       │   │   │   ├───util
+
+│   │       │   │   │   │   └───__pycache__
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   └───__pycache__
+
+│   │       │   └───__pycache__
+
+│   │       ├───pip-26.0.dist-info
+
+│   │       │   └───licenses
+
+│   │       │       └───src
+
+│   │       │           └───pip
+
+│   │       │               └───_vendor
+
+│   │       │                   ├───cachecontrol
+
+│   │       │                   ├───certifi
+
+│   │       │                   ├───dependency_groups
+
+│   │       │                   ├───distlib
+
+│   │       │                   ├───distro
+
+│   │       │                   ├───idna
+
+│   │       │                   ├───msgpack
+
+│   │       │                   ├───packaging
+
+│   │       │                   ├───pkg_resources
+
+│   │       │                   ├───platformdirs
+
+│   │       │                   ├───pygments
+
+│   │       │                   ├───pyproject_hooks
+
+│   │       │                   ├───requests
+
+│   │       │                   ├───resolvelib
+
+│   │       │                   ├───rich
+
+│   │       │                   ├───tomli
+
+│   │       │                   ├───tomli_w
+
+│   │       │                   ├───truststore
+
+│   │       │                   └───urllib3
+
+│   │       ├───psycopg2
+
+│   │       │   └───__pycache__
+
+│   │       ├───psycopg2_binary-2.9.11.dist-info
+
+│   │       │   └───licenses
+
+│   │       ├───psycopg2_binary.libs
+
+│   │       ├───pydantic
+
+│   │       │   ├───deprecated
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───experimental
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───plugin
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───v1
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───_internal
+
+│   │       │   │   └───__pycache__
+
+│   │       │   └───__pycache__
+
+│   │       ├───pydantic-2.12.5.dist-info
+
+│   │       │   └───licenses
+
+│   │       ├───pydantic_core
+
+│   │       │   └───__pycache__
+
+│   │       ├───pydantic_core-2.41.5.dist-info
+
+│   │       │   └───licenses
+
+│   │       ├───pydantic_settings
+
+│   │       │   ├───sources
+
+│   │       │   │   ├───providers
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   └───__pycache__
+
+│   │       │   └───__pycache__
+
+│   │       ├───pydantic_settings-2.12.0.dist-info
+
+│   │       │   └───licenses
+
+│   │       ├───python_dotenv-1.2.1.dist-info
+
+│   │       │   └───licenses
+
+│   │       ├───python_multipart
+
+│   │       │   └───__pycache__
+
+│   │       ├───python_multipart-0.0.22.dist-info
+
+│   │       │   └───licenses
+
+│   │       ├───python_telegram_bot-21.11.1.dist-info
+
+│   │       │   └───licenses
+
+│   │       ├───pyyaml-6.0.3.dist-info
+
+│   │       │   └───licenses
+
+│   │       ├───redis
+
+│   │       │   ├───asyncio
+
+│   │       │   │   ├───http
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───multidb
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───auth
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───commands
+
+│   │       │   │   ├───bf
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───json
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───search
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───timeseries
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───vectorset
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───http
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───multidb
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───_parsers
+
+│   │       │   │   └───__pycache__
+
+│   │       │   └───__pycache__
+
+│   │       ├───redis-7.1.0.dist-info
+
+│   │       │   └───licenses
+
+│   │       ├───sqlalchemy
+
+│   │       │   ├───connectors
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───cyextension
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───dialects
+
+│   │       │   │   ├───mssql
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───mysql
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───oracle
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───postgresql
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───sqlite
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───engine
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───event
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───ext
+
+│   │       │   │   ├───asyncio
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───declarative
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───mypy
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───future
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───orm
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───pool
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───sql
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───testing
+
+│   │       │   │   ├───fixtures
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───plugin
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───suite
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───util
+
+│   │       │   │   └───__pycache__
+
+│   │       │   └───__pycache__
+
+│   │       ├───sqlalchemy-2.0.46.dist-info
+
+│   │       │   └───licenses
+
+│   │       ├───starlette
+
+│   │       │   ├───middleware
+
+│   │       │   │   └───__pycache__
+
+│   │       │   └───__pycache__
+
+│   │       ├───starlette-0.50.0.dist-info
+
+│   │       │   └───licenses
+
+│   │       ├───telegram
+
+│   │       │   ├───ext
+
+│   │       │   │   ├───_handlers
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───_utils
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───request
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───_files
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───_games
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───_inline
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───_passport
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───_payment
+
+│   │       │   │   ├───stars
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───_utils
+
+│   │       │   │   └───__pycache__
+
+│   │       │   └───__pycache__
+
+│   │       ├───typing_extensions-4.15.0.dist-info
+
+│   │       │   └───licenses
+
+│   │       ├───typing_inspection
+
+│   │       │   └───__pycache__
+
+│   │       ├───typing_inspection-0.4.2.dist-info
+
+│   │       │   └───licenses
+
+│   │       ├───uvicorn
+
+│   │       │   ├───lifespan
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───loops
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───middleware
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───protocols
+
+│   │       │   │   ├───http
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   ├───websockets
+
+│   │       │   │   │   └───__pycache__
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───supervisors
+
+│   │       │   │   └───__pycache__
+
+│   │       │   └───__pycache__
+
+│   │       ├───uvicorn-0.40.0.dist-info
+
+│   │       │   └───licenses
+
+│   │       ├───watchfiles
+
+│   │       │   └───__pycache__
+
+│   │       ├───watchfiles-1.1.1.dist-info
+
+│   │       │   └───licenses
+
+│   │       ├───websockets
+
+│   │       │   ├───asyncio
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───extensions
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───legacy
+
+│   │       │   │   └───__pycache__
+
+│   │       │   ├───sync
+
+│   │       │   │   └───__pycache__
+
+│   │       │   └───__pycache__
+
+│   │       ├───websockets-16.0.dist-info
+
+│   │       │   └───licenses
+
+│   │       ├───yaml
+
+│   │       │   └───__pycache__
+
+│   │       ├───_yaml
+
+│   │       │   └───__pycache__
+
+│   │       └───__pycache__
+
+│   └───Scripts
+
+├───admin_panel
+
+│   ├───templates
+
+│   └───views
+
+├───airdrop
+
+│   ├───.githooks
+
+│   ├───backend
+
+│   │   ├───app
+
+│   │   │   ├───api
+
+│   │   │   │   └───v1
+
+│   │   │   │       └───endpoints
+
+│   │   │   ├───core
+
+│   │   │   ├───db
+
+│   │   │   │   └───__pycache__
+
+│   │   │   ├───models
+
+│   │   │   ├───redis
+
+│   │   │   ├───services
+
+│   │   │   ├───tests
+
+│   │   │   ├───utils
+
+│   │   │   └───__pycache__
+
+│   │   └───migrations
+
+│   │       └───versions
+
+│   ├───bot
+
+│   │   ├───handlers
+
+│   │   │   └───__pycache__
+
+│   │   └───__pycache__
+
+│   ├───docs
+
+│   ├───infra
+
+│   ├───migrations
+
+│   │   ├───versions
+
+│   │   │   └───__pycache__
+
+│   │   └───__pycache__
+
+│   ├───tools
+
+│   ├───venv
+
+│   │   ├───Include
+
+│   │   │   └───site
+
+│   │   │       └───python3.13
+
+│   │   │           └───greenlet
+
+│   │   ├───Lib
+
+│   │   │   └───site-packages
+
+│   │   │       ├───alembic
+
+│   │   │       │   ├───autogenerate
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───ddl
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───operations
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───runtime
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───script
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───templates
+
+│   │   │       │   │   ├───async
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───generic
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   └───multidb
+
+│   │   │       │   │       └───__pycache__
+
+│   │   │       │   ├───testing
+
+│   │   │       │   │   ├───plugin
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───suite
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───util
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   └───__pycache__
+
+│   │   │       ├───alembic-1.13.2.dist-info
+
+│   │   │       ├───annotated_doc
+
+│   │   │       │   └───__pycache__
+
+│   │   │       ├───annotated_doc-0.0.4.dist-info
+
+│   │   │       │   └───licenses
+
+│   │   │       ├───annotated_types
+
+│   │   │       │   └───__pycache__
+
+│   │   │       ├───annotated_types-0.7.0.dist-info
+
+│   │   │       │   └───licenses
+
+│   │   │       ├───anyio
+
+│   │   │       │   ├───abc
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───streams
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───_backends
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───_core
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   └───__pycache__
+
+│   │   │       ├───anyio-4.12.1.dist-info
+
+│   │   │       │   └───licenses
+
+│   │   │       ├───certifi
+
+│   │   │       │   └───__pycache__
+
+│   │   │       ├───certifi-2026.1.4.dist-info
+
+│   │   │       │   └───licenses
+
+│   │   │       ├───click
+
+│   │   │       │   └───__pycache__
+
+│   │   │       ├───click-8.3.1.dist-info
+
+│   │   │       │   └───licenses
+
+│   │   │       ├───colorama
+
+│   │   │       │   ├───tests
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   └───__pycache__
+
+│   │   │       ├───colorama-0.4.6.dist-info
+
+│   │   │       │   └───licenses
+
+│   │   │       ├───dotenv
+
+│   │   │       │   └───__pycache__
+
+│   │   │       ├───fastapi
+
+│   │   │       │   ├───dependencies
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───middleware
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───openapi
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───security
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───_compat
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   └───__pycache__
+
+│   │   │       ├───fastapi-0.128.0.dist-info
+
+│   │   │       │   └───licenses
+
+│   │   │       ├───greenlet
+
+│   │   │       │   ├───platform
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───tests
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   └───__pycache__
+
+│   │   │       ├───greenlet-3.3.1.dist-info
+
+│   │   │       │   └───licenses
+
+│   │   │       ├───h11
+
+│   │   │       │   └───__pycache__
+
+│   │   │       ├───h11-0.16.0.dist-info
+
+│   │   │       │   └───licenses
+
+│   │   │       ├───httpcore
+
+│   │   │       │   ├───_async
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───_backends
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───_sync
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   └───__pycache__
+
+│   │   │       ├───httpcore-1.0.9.dist-info
+
+│   │   │       │   └───licenses
+
+│   │   │       ├───httptools
+
+│   │   │       │   ├───parser
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   └───__pycache__
+
+│   │   │       ├───httptools-0.7.1.dist-info
+
+│   │   │       │   └───licenses
+
+│   │   │       ├───httpx
+
+│   │   │       │   ├───_transports
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   └───__pycache__
+
+│   │   │       ├───httpx-0.28.1.dist-info
+
+│   │   │       │   └───licenses
+
+│   │   │       ├───idna
+
+│   │   │       │   └───__pycache__
+
+│   │   │       ├───idna-3.11.dist-info
+
+│   │   │       │   └───licenses
+
+│   │   │       ├───mako
+
+│   │   │       │   ├───ext
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───testing
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   └───__pycache__
+
+│   │   │       ├───mako-1.3.10.dist-info
+
+│   │   │       │   └───licenses
+
+│   │   │       ├───markupsafe
+
+│   │   │       │   └───__pycache__
+
+│   │   │       ├───markupsafe-3.0.3.dist-info
+
+│   │   │       │   └───licenses
+
+│   │   │       ├───multipart
+
+│   │   │       │   └───__pycache__
+
+│   │   │       ├───pip
+
+│   │   │       │   ├───_internal
+
+│   │   │       │   │   ├───cli
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───commands
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───distributions
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───index
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───locations
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───metadata
+
+│   │   │       │   │   │   ├───importlib
+
+│   │   │       │   │   │   │   └───__pycache__
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───models
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───network
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───operations
+
+│   │   │       │   │   │   ├───build
+
+│   │   │       │   │   │   │   └───__pycache__
+
+│   │   │       │   │   │   ├───install
+
+│   │   │       │   │   │   │   └───__pycache__
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───req
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───resolution
+
+│   │   │       │   │   │   ├───legacy
+
+│   │   │       │   │   │   │   └───__pycache__
+
+│   │   │       │   │   │   ├───resolvelib
+
+│   │   │       │   │   │   │   └───__pycache__
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───utils
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───vcs
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───_vendor
+
+│   │   │       │   │   ├───cachecontrol
+
+│   │   │       │   │   │   ├───caches
+
+│   │   │       │   │   │   │   └───__pycache__
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───certifi
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───dependency_groups
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───distlib
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───distro
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───idna
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───msgpack
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───packaging
+
+│   │   │       │   │   │   ├───licenses
+
+│   │   │       │   │   │   │   └───__pycache__
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───pkg_resources
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───platformdirs
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───pygments
+
+│   │   │       │   │   │   ├───filters
+
+│   │   │       │   │   │   │   └───__pycache__
+
+│   │   │       │   │   │   ├───formatters
+
+│   │   │       │   │   │   │   └───__pycache__
+
+│   │   │       │   │   │   ├───lexers
+
+│   │   │       │   │   │   │   └───__pycache__
+
+│   │   │       │   │   │   ├───styles
+
+│   │   │       │   │   │   │   └───__pycache__
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───pyproject_hooks
+
+│   │   │       │   │   │   ├───_in_process
+
+│   │   │       │   │   │   │   └───__pycache__
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───requests
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───resolvelib
+
+│   │   │       │   │   │   ├───resolvers
+
+│   │   │       │   │   │   │   └───__pycache__
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───rich
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───tomli
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───tomli_w
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───truststore
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───urllib3
+
+│   │   │       │   │   │   ├───contrib
+
+│   │   │       │   │   │   │   ├───_securetransport
+
+│   │   │       │   │   │   │   │   └───__pycache__
+
+│   │   │       │   │   │   │   └───__pycache__
+
+│   │   │       │   │   │   ├───packages
+
+│   │   │       │   │   │   │   ├───backports
+
+│   │   │       │   │   │   │   │   └───__pycache__
+
+│   │   │       │   │   │   │   └───__pycache__
+
+│   │   │       │   │   │   ├───util
+
+│   │   │       │   │   │   │   └───__pycache__
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   └───__pycache__
+
+│   │   │       ├───pip-26.0.dist-info
+
+│   │   │       │   └───licenses
+
+│   │   │       │       └───src
+
+│   │   │       │           └───pip
+
+│   │   │       │               └───_vendor
+
+│   │   │       │                   ├───cachecontrol
+
+│   │   │       │                   ├───certifi
+
+│   │   │       │                   ├───dependency_groups
+
+│   │   │       │                   ├───distlib
+
+│   │   │       │                   ├───distro
+
+│   │   │       │                   ├───idna
+
+│   │   │       │                   ├───msgpack
+
+│   │   │       │                   ├───packaging
+
+│   │   │       │                   ├───pkg_resources
+
+│   │   │       │                   ├───platformdirs
+
+│   │   │       │                   ├───pygments
+
+│   │   │       │                   ├───pyproject_hooks
+
+│   │   │       │                   ├───requests
+
+│   │   │       │                   ├───resolvelib
+
+│   │   │       │                   ├───rich
+
+│   │   │       │                   ├───tomli
+
+│   │   │       │                   ├───tomli_w
+
+│   │   │       │                   ├───truststore
+
+│   │   │       │                   └───urllib3
+
+│   │   │       ├───psycopg2
+
+│   │   │       │   └───__pycache__
+
+│   │   │       ├───psycopg2_binary-2.9.11.dist-info
+
+│   │   │       │   └───licenses
+
+│   │   │       ├───psycopg2_binary.libs
+
+│   │   │       ├───pydantic
+
+│   │   │       │   ├───deprecated
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───experimental
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───plugin
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───v1
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───_internal
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   └───__pycache__
+
+│   │   │       ├───pydantic-2.12.5.dist-info
+
+│   │   │       │   └───licenses
+
+│   │   │       ├───pydantic_core
+
+│   │   │       │   └───__pycache__
+
+│   │   │       ├───pydantic_core-2.41.5.dist-info
+
+│   │   │       │   └───licenses
+
+│   │   │       ├───pydantic_settings
+
+│   │   │       │   ├───sources
+
+│   │   │       │   │   ├───providers
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   └───__pycache__
+
+│   │   │       ├───pydantic_settings-2.12.0.dist-info
+
+│   │   │       │   └───licenses
+
+│   │   │       ├───python_dotenv-1.2.1.dist-info
+
+│   │   │       │   └───licenses
+
+│   │   │       ├───python_multipart
+
+│   │   │       │   └───__pycache__
+
+│   │   │       ├───python_multipart-0.0.22.dist-info
+
+│   │   │       │   └───licenses
+
+│   │   │       ├───python_telegram_bot-21.11.1.dist-info
+
+│   │   │       │   └───licenses
+
+│   │   │       ├───pyyaml-6.0.3.dist-info
+
+│   │   │       │   └───licenses
+
+│   │   │       ├───redis
+
+│   │   │       │   ├───asyncio
+
+│   │   │       │   │   ├───http
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───multidb
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───auth
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───commands
+
+│   │   │       │   │   ├───bf
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───json
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───search
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───timeseries
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───vectorset
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───http
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───multidb
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───_parsers
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   └───__pycache__
+
+│   │   │       ├───redis-7.1.0.dist-info
+
+│   │   │       │   └───licenses
+
+│   │   │       ├───sqlalchemy
+
+│   │   │       │   ├───connectors
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───cyextension
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───dialects
+
+│   │   │       │   │   ├───mssql
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───mysql
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───oracle
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───postgresql
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───sqlite
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───engine
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───event
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───ext
+
+│   │   │       │   │   ├───asyncio
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───declarative
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───mypy
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───future
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───orm
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───pool
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───sql
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───testing
+
+│   │   │       │   │   ├───fixtures
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───plugin
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   ├───suite
+
+│   │   │       │   │   │   └───__pycache__
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   ├───util
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   └───__pycache__
+
+│   │   │       ├───sqlalchemy-2.0.46.dist-info
+
+│   │   │       │   └───licenses
+
+│   │   │       ├───starlette
+
+│   │   │       │   ├───middleware
+
+│   │   │       │   │   └───__pycache__
+
+│   │   │       │   └───__pycache__
+
+│   │   │       ├───starlette-0.50.0.dist-info
+
+│   │   │       │   └───licenses
+
+│   │   │       ├───telegram
+
+│   │   │       │   ├───ext
+
+│   │   │

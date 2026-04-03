@@ -1,0 +1,37 @@
+﻿{
+    "expo":  {
+                 "slug":  "cryptowallet54",
+                 "ios":  {
+                             "bundleIdentifier":  "com.yourcompany.cryptowallet",
+                             "supportsTablet":  true
+                         },
+                 "assetBundlePatterns":  [
+                                             "**/*"
+                                         ],
+                 "version":  "1.0.0",
+                 "orientation":  "portrait",
+                 "icon":  "./assets/icon.png",
+                 "android":  {
+                                 "adaptiveIcon":  {
+                                                      "backgroundColor":  "#ffffff",
+                                                      "foregroundImage":  "./assets/adaptive-icon.png"
+                                                  },
+                                 "package":  "com.yourcompany.cryptowallet"
+                             },
+                 "name":  "CryptoWallet54",
+                 "web":  {
+                             "favicon":  "./assets/favicon.png"
+                         },
+                 "userInterfaceStyle":  "light",
+                 "extra":  {
+                               "eas":  {
+                                           "projectId":  "your-project-id"
+                                       }
+                           },
+                 "splash":  {
+                                "backgroundColor":  "#ffffff",
+                                "resizeMode":  "contain",
+                                "image":  "./assets/splash.png"
+                            }
+             }
+}

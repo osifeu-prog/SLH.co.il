@@ -1,0 +1,18 @@
+﻿[build]
+builder = "nixpacks"
+
+# שירות API - רץ על פורט 8000
+[[services]]
+name = "web"
+port = 8000
+startCommand = "uvicorn app.api_server:app --host 0.0.0.0 --port 8000"
+
+# שירות בוט - ללא פורט
+[[services]]
+name = "bot"
+startCommand = "python app/bot_server.py"
+
+# משתנים משותפים
+[environments.production.variables]
+TON_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+ADMIN_KEY = "airdrop_admin_2026"

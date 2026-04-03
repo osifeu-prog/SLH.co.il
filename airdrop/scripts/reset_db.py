@@ -1,0 +1,1 @@
+print('DB reset script')

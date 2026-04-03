@@ -1,0 +1,24 @@
+__pycache__/
+*.py[cod]
+
+# local snapshots
+BOT_FACTORY_SNAPSHOT.txt
+*_SNAPSHOT.txt
+
+
+.venv/
+
+
+.env
+
+
+# local encrypted secrets
+tools/.vault/
+
+
+# local secrets input + vault
+tools/.vault/
+tools/railway.vars.txt
+local.db
+
+*.bak.*
