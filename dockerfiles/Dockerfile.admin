@@ -1,0 +1,10 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+RUN pip install --no-cache-dir aiogram==3.26.0 asyncpg python-dotenv
+
+COPY shared/ /app/shared/
+COPY admin-bot/ /app/
+
+CMD ["python", "main.py"]

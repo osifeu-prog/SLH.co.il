@@ -160,6 +160,203 @@ services:
     ports:
       - "8002:8080"
 
+  # 7. Super Admin Bot (Mission Control)
+  admin-bot:
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.admin
+    container_name: slh-admin
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      BOT_TOKEN: ${ADMIN_BOT_TOKEN}
+      DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
+      ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+
+  # ---- TEMPLATE BOTS (minimal bots using shared template) ----
+
+  campaign-bot:
+    build: {context: ., dockerfile: dockerfiles/Dockerfile.template}
+    container_name: slh-campaign
+    restart: always
+    depends_on: {postgres: {condition: service_healthy}}
+    environment:
+      BOT_TOKEN: ${CAMPAIGN_TOKEN}
+      BOT_KEY: campaign
+      BOT_DISPLAY_NAME: "SLH Campaign"
+      BOT_DESCRIPTION: "\u05e7\u05de\u05e4\u05d9\u05d9\u05e0\u05d9\u05dd \u05e9\u05d9\u05d5\u05d5\u05e7\u05d9\u05d9\u05dd \u05d5\u05d4\u05e4\u05e6\u05ea \u05e7\u05d4\u05d9\u05dc\u05d4"
+      PRICE_ILS: "59"
+      PRICE_TON: "3.0"
+      DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
+      ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+
+  game-bot:
+    build: {context: ., dockerfile: dockerfiles/Dockerfile.template}
+    container_name: slh-game
+    restart: always
+    depends_on: {postgres: {condition: service_healthy}}
+    environment:
+      BOT_TOKEN: ${GAME_BOT_TOKEN}
+      BOT_KEY: game
+      BOT_DISPLAY_NAME: "SLH Games"
+      BOT_DESCRIPTION: "\u05de\u05e9\u05d7\u05e7\u05d9\u05dd \u05d5\u05ea\u05d7\u05e8\u05d5\u05d9\u05d5\u05ea \u05e2\u05dd \u05e4\u05e8\u05e1\u05d9\u05dd"
+      PRICE_ILS: "29"
+      PRICE_TON: "1.5"
+      DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
+      ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+
+  ton-mnh-bot:
+    build: {context: ., dockerfile: dockerfiles/Dockerfile.template}
+    container_name: slh-ton-mnh
+    restart: always
+    depends_on: {postgres: {condition: service_healthy}}
+    environment:
+      BOT_TOKEN: ${TON_MNH_TOKEN}
+      BOT_KEY: ton_mnh
+      BOT_DISPLAY_NAME: "TON MNH"
+      BOT_DESCRIPTION: "TON \u05e0\u05d9\u05d4\u05d5\u05dc \u05d5\u05de\u05e2\u05e7\u05d1"
+      PRICE_ILS: "69"
+      PRICE_TON: "3.5"
+      DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
+      ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+
+  slh-ton-bot:
+    build: {context: ., dockerfile: dockerfiles/Dockerfile.template}
+    container_name: slh-ton
+    restart: always
+    depends_on: {postgres: {condition: service_healthy}}
+    environment:
+      BOT_TOKEN: ${SLH_TON_TOKEN}
+      BOT_KEY: slh_ton
+      BOT_DISPLAY_NAME: "SLH TON"
+      BOT_DESCRIPTION: "\u05d0\u05e8\u05e0\u05e7 TON \u05d5\u05d4\u05e2\u05d1\u05e8\u05d5\u05ea"
+      PRICE_ILS: "79"
+      PRICE_TON: "4.0"
+      DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
+      ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+
+  ledger-bot:
+    build: {context: ., dockerfile: dockerfiles/Dockerfile.template}
+    container_name: slh-ledger
+    restart: always
+    depends_on: {postgres: {condition: service_healthy}}
+    environment:
+      BOT_TOKEN: ${SLH_LEDGER_TOKEN}
+      BOT_KEY: ledger
+      BOT_DISPLAY_NAME: "SLH Ledger"
+      BOT_DESCRIPTION: "\u05e0\u05d9\u05d4\u05d5\u05dc \u05e4\u05d9\u05e0\u05e0\u05e1\u05d9 \u05d5\u05de\u05e2\u05e7\u05d1 \u05d4\u05d5\u05e6\u05d0\u05d5\u05ea"
+      PRICE_ILS: "49"
+      PRICE_TON: "2.5"
+      DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
+      ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+
+  osif-shop-bot:
+    build: {context: ., dockerfile: dockerfiles/Dockerfile.template}
+    container_name: slh-osif-shop
+    restart: always
+    depends_on: {postgres: {condition: service_healthy}}
+    environment:
+      BOT_TOKEN: ${OSIF_SHOP_TOKEN}
+      BOT_KEY: osif_shop
+      BOT_DISPLAY_NAME: "Osif Shop"
+      BOT_DESCRIPTION: "\u05d7\u05e0\u05d5\u05ea \u05d0\u05d5\u05e0\u05dc\u05d9\u05d9\u05df + \u05de\u05d5\u05e6\u05e8\u05d9\u05dd \u05d3\u05d9\u05d2\u05d9\u05d8\u05dc\u05d9\u05d9\u05dd"
+      PRICE_ILS: "49"
+      PRICE_TON: "2.5"
+      DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
+      ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+
+  nifti-bot:
+    build: {context: ., dockerfile: dockerfiles/Dockerfile.template}
+    container_name: slh-nifti
+    restart: always
+    depends_on: {postgres: {condition: service_healthy}}
+    environment:
+      BOT_TOKEN: ${NIFTI_PUBLISHER_TOKEN}
+      BOT_KEY: nifti
+      BOT_DISPLAY_NAME: "NIFTI Publisher"
+      BOT_DESCRIPTION: "\u05e4\u05e8\u05e1\u05d5\u05dd NFT + \u05d2\u05dc\u05e8\u05d9\u05d4 \u05d3\u05d9\u05d2\u05d9\u05d8\u05dc\u05d9\u05ea"
+      PRICE_ILS: "89"
+      PRICE_TON: "4.5"
+      DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
+      ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+
+  chance-bot:
+    build: {context: ., dockerfile: dockerfiles/Dockerfile.template}
+    container_name: slh-chance
+    restart: always
+    depends_on: {postgres: {condition: service_healthy}}
+    environment:
+      BOT_TOKEN: ${CHANCE_PAIS_TOKEN}
+      BOT_KEY: chance
+      BOT_DISPLAY_NAME: "Chance Pais"
+      BOT_DESCRIPTION: "\u05d4\u05d2\u05e8\u05dc\u05d5\u05ea + \u05de\u05e9\u05d7\u05e7\u05d9 \u05de\u05d6\u05dc"
+      PRICE_ILS: "19"
+      PRICE_TON: "1.0"
+      DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
+      ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+
+  nfty-bot:
+    build: {context: ., dockerfile: dockerfiles/Dockerfile.template}
+    container_name: slh-nfty
+    restart: always
+    depends_on: {postgres: {condition: service_healthy}}
+    environment:
+      BOT_TOKEN: ${NFTY_MADNESS_TOKEN}
+      BOT_KEY: nfty
+      BOT_DISPLAY_NAME: "NFTY Madness"
+      BOT_DESCRIPTION: "NFT Marketplace + \u05de\u05e1\u05d7\u05e8"
+      PRICE_ILS: "69"
+      PRICE_TON: "3.5"
+      DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
+      ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+
+  selha-bot:
+    build: {context: ., dockerfile: dockerfiles/Dockerfile.template}
+    container_name: slh-selha
+    restart: always
+    depends_on: {postgres: {condition: service_healthy}}
+    environment:
+      BOT_TOKEN: ${SLH_SELHA_TOKEN}
+      BOT_KEY: selha
+      BOT_DISPLAY_NAME: "SLH Selha"
+      BOT_DESCRIPTION: "\u05e9\u05d9\u05e8\u05d5\u05ea\u05d9 SLH \u05de\u05ea\u05e7\u05d3\u05de\u05d9\u05dd"
+      PRICE_ILS: "41"
+      PRICE_TON: "2.0"
+      DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
+      ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+
+  crazy-panel-bot:
+    build: {context: ., dockerfile: dockerfiles/Dockerfile.template}
+    container_name: slh-crazy-panel
+    restart: always
+    depends_on: {postgres: {condition: service_healthy}}
+    environment:
+      BOT_TOKEN: ${CRAZY_PANEL_TOKEN}
+      BOT_KEY: crazy_panel
+      BOT_DISPLAY_NAME: "Crazy Panel"
+      BOT_DESCRIPTION: "\u05e4\u05d0\u05e0\u05dc \u05e0\u05d9\u05d4\u05d5\u05dc \u05de\u05ea\u05e7\u05d3\u05dd"
+      PRICE_ILS: "99"
+      PRICE_TON: "5.0"
+      DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
+      ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+
+  ts-set-bot:
+    build: {context: ., dockerfile: dockerfiles/Dockerfile.template}
+    container_name: slh-ts-set
+    restart: always
+    depends_on: {postgres: {condition: service_healthy}}
+    environment:
+      BOT_TOKEN: ${TS_SET_TOKEN}
+      BOT_KEY: ts_set
+      BOT_DISPLAY_NAME: "TS Set"
+      BOT_DESCRIPTION: "\u05d4\u05d2\u05d3\u05e8\u05d5\u05ea + \u05e7\u05d5\u05e0\u05e4\u05d9\u05d2\u05d5\u05e8\u05e6\u05d9\u05d4"
+      PRICE_ILS: "29"
+      PRICE_TON: "1.5"
+      DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
+      ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+
 volumes:
   pgdata:
     driver: local

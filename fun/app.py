@@ -129,12 +129,10 @@ async def learn_second_step(callback: CallbackQuery):
         state["shared_ok"] = True
         await callback.message.edit_text(
             "מצוין! עכשיו שלב התשלום כדי לפתוח את כל ההטבות.\n\n"
-            f"אנא שלח כאן צילום מסך/תמונה של אישור הפקדה על סך {PRICE_TEXT}.\n"
-            "פרטי הפקדה:\n"
-            f"{BANK_DETAILS}\n\n"
-            "או דרך הטלגרם:\n"
-            f"{ALT_TELEGRAM_ROUTE}\n\n"
-            "לאחר שתעלה את התמונה, אשלח לך אישור/דחייה בהתאם."
+            f"שלח {PRICE_TEXT} לכתובת TON:\n"
+            f"`{ALT_TELEGRAM_ROUTE}`\n\n"
+            "לאחר התשלום, שלח כאן צילום מסך של אישור ההעברה.\n"
+            "אשלח לך אישור/דחייה בהתאם."
         )
     else:
         await callback.message.edit_text(

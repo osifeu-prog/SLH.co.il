@@ -1,0 +1,6 @@
+FROM python:3.11-slim
+WORKDIR /app
+RUN pip install --no-cache-dir aiogram==3.26.0 asyncpg python-dotenv
+COPY shared/ /app/shared/
+ENV PYTHONPATH="/app:/app/shared"
+CMD ["python", "/app/shared/bot_template.py"]
