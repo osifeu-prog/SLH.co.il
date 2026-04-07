@@ -1130,3 +1130,179 @@ async def analytics_stats():
             }
         except Exception as e:
             return {"error": str(e)}
+
+
+# === WALLET API ENDPOINTS ===
+# For wallet.html real data integration
+
+class DepositRequest(BaseModel):
+    user_id: int
+    amount: float
+    currency: str = "SLH"
+    tx_hash: str
+
+
+def _generate_bsc_address(user_id: int) -> str:
+    """Generate a deterministic BSC deposit address from user_id."""
+    raw = hashlib.sha256(f"slh-deposit-{user_id}".encode()).hexdigest()
+    return "0x" + raw[:40]
+
+
+SLH_BSC_CONTRACT = "0xACb0A09414CEA1C879c67bB7A877E4e19480f022"
+SLH_TON_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+SLH_PRICE_ILS = 444
+USD_ILS_RATE = 3.65
+
+
+# Static route MUST come before /{user_id} to avoid FastAPI matching "price" as user_id
+@app.get("/api/wallet/price")
+async def get_slh_price():
+    """Return current SLH price in ILS and USD"""
+    slh_usd = round(SLH_PRICE_ILS / USD_ILS_RATE, 4)
+    return {
+        "token": "SLH",
+        "price_ils": SLH_PRICE_ILS,
+        "price_usd": slh_usd,
+        "usd_ils_rate": USD_ILS_RATE,
+        "bsc_contract": SLH_BSC_CONTRACT,
+    }
+
+
+@app.get("/api/wallet/{user_id}")
+async def get_wallet(user_id: int):
+    """Get user wallet info: SLH balance, deposit addresses"""
+    async with pool.acquire() as conn:
+        # Get SLH balance from token_balances
+        balance_row = await conn.fetchrow(
+            "SELECT balance FROM token_balances WHERE user_id=$1 AND token='SLH'",
+            user_id
+        )
+        slh_balance = float(balance_row["balance"]) if balance_row else 0.0
+
+    bsc_address = _generate_bsc_address(user_id)
+    slh_usd = round(SLH_PRICE_ILS / USD_ILS_RATE, 4)
+
+    return {
+        "user_id": user_id,
+        "slh_balance": slh_balance,
+        "slh_value_ils": round(slh_balance * SLH_PRICE_ILS, 2),
+        "slh_value_usd": round(slh_balance * slh_usd, 2),
+        "bsc_deposit_address": bsc_address,
+        "ton_deposit_address": SLH_TON_WALLET,
+        "ton_memo": str(user_id),
+        "bsc_contract": SLH_BSC_CONTRACT,
+    }
+
+
+@app.get("/api/wallet/{user_id}/balances")
+async def get_wallet_balances(user_id: int):
+    """Get all token balances for a user"""
+    async with pool.acquire() as conn:
+        rows = await conn.fetch(
+            "SELECT token, balance FROM token_balances WHERE user_id=$1",
+            user_id
+        )
+    balances = {r["token"]: float(r["balance"]) for r in rows}
+    # Ensure SLH always appears
+    if "SLH" not in balances:
+        balances["SLH"] = 0.0
+
+    slh_usd = round(SLH_PRICE_ILS / USD_ILS_RATE, 4)
+    slh_bal = balances.get("SLH", 0.0)
+
+    return {
+        "user_id": user_id,
+        "balances": balances,
+        "total_slh": slh_bal,
+        "total_value_ils": round(slh_bal * SLH_PRICE_ILS, 2),
+        "total_value_usd": round(slh_bal * slh_usd, 2),
+    }
+
+
+@app.post("/api/wallet/deposit")
+async def record_deposit(req: DepositRequest):
+    """Record a deposit and credit token_balances"""
+    if req.amount <= 0:
+        raise HTTPException(400, "Amount must be positive")
+    if not req.tx_hash.strip():
+        raise HTTPException(400, "tx_hash is required")
+
+    async with pool.acquire() as conn:
+        # Check for duplicate tx_hash
+        existing = await conn.fetchval(
+            "SELECT id FROM deposits WHERE tx_hash=$1", req.tx_hash.strip()
+        )
+        if existing:
+            raise HTTPException(409, "Transaction already recorded")
+
+        async with conn.transaction():
+            # Insert deposit record
+            dep_id = await conn.fetchval("""
+                INSERT INTO deposits (user_id, amount, currency, tx_hash, status, created_at)
+                VALUES ($1, $2, $3, $4, 'confirmed', now())
+                RETURNING id
+            """, req.user_id, req.amount, req.currency, req.tx_hash.strip())
+
+            # Credit token_balances
+            await conn.execute("""
+                INSERT INTO token_balances (user_id, token, balance)
+                VALUES ($1, $2, $3)
+                ON CONFLICT (user_id, token) DO UPDATE SET balance = token_balances.balance + $3
+            """, req.user_id, req.currency, req.amount)
+
+            # Record in token_transfers
+            await conn.execute("""
+                INSERT INTO token_transfers (from_user_id, to_user_id, token, amount, memo, tx_type)
+                VALUES ($1, $2, $3, $4, $5, 'deposit')
+            """, req.user_id, req.user_id, req.currency, req.amount, f"deposit:{req.tx_hash.strip()}")
+
+    return {
+        "status": "ok",
+        "deposit_id": dep_id,
+        "user_id": req.user_id,
+        "amount": req.amount,
+        "currency": req.currency,
+        "tx_hash": req.tx_hash.strip(),
+    }
+
+
+@app.get("/api/wallet/{user_id}/transactions")
+async def get_wallet_transactions(user_id: int, limit: int = Query(50, le=200), offset: int = Query(0)):
+    """Get transaction history from token_transfers for a user"""
+    async with pool.acquire() as conn:
+        rows = await conn.fetch("""
+            SELECT id, from_user_id, to_user_id, token, amount, memo, tx_type, created_at
+            FROM token_transfers
+            WHERE from_user_id=$1 OR to_user_id=$1
+            ORDER BY created_at DESC
+            LIMIT $2 OFFSET $3
+        """, user_id, limit, offset)
+
+        total = await conn.fetchval(
+            "SELECT count(*) FROM token_transfers WHERE from_user_id=$1 OR to_user_id=$1",
+            user_id
+        )
+
+    transactions = []
+    for r in rows:
+        direction = "out" if r["from_user_id"] == user_id and r["to_user_id"] != user_id else "in"
+        if r["tx_type"] == "deposit":
+            direction = "in"
+        transactions.append({
+            "id": r["id"],
+            "direction": direction,
+            "counterparty": r["to_user_id"] if direction == "out" else r["from_user_id"],
+            "token": r["token"],
+            "amount": float(r["amount"]),
+            "memo": r["memo"],
+            "type": r["tx_type"],
+            "timestamp": r["created_at"].isoformat() if r["created_at"] else None,
+        })
+
+    return {
+        "user_id": user_id,
+        "transactions": transactions,
+        "total": total or 0,
+        "limit": limit,
+        "offset": offset,
+    }
