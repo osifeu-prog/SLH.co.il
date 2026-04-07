@@ -89,6 +89,63 @@ async def startup():
             );
             CREATE INDEX IF NOT EXISTS idx_referrals_referrer ON referrals(referrer_id);
             CREATE INDEX IF NOT EXISTS idx_referral_earnings_earner ON referral_earnings(earner_id);
+
+            CREATE TABLE IF NOT EXISTS token_balances (
+                id BIGSERIAL PRIMARY KEY,
+                user_id BIGINT NOT NULL,
+                token TEXT NOT NULL DEFAULT 'SLH',
+                balance NUMERIC(18,8) NOT NULL DEFAULT 0,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(user_id, token)
+            );
+
+            CREATE TABLE IF NOT EXISTS token_transfers (
+                id BIGSERIAL PRIMARY KEY,
+                from_user_id BIGINT,
+                to_user_id BIGINT,
+                token TEXT NOT NULL DEFAULT 'SLH',
+                amount NUMERIC(18,8) NOT NULL,
+                memo TEXT,
+                tx_type TEXT DEFAULT 'transfer',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+
+            CREATE TABLE IF NOT EXISTS deposits (
+                id BIGSERIAL PRIMARY KEY,
+                user_id BIGINT NOT NULL,
+                amount NUMERIC(18,8) NOT NULL,
+                currency TEXT DEFAULT 'SLH',
+                tx_hash TEXT,
+                status TEXT DEFAULT 'pending',
+                plan_key TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+
+            CREATE TABLE IF NOT EXISTS premium_users (
+                id BIGSERIAL PRIMARY KEY,
+                user_id BIGINT NOT NULL,
+                bot_name TEXT NOT NULL,
+                payment_status TEXT DEFAULT 'pending',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(user_id, bot_name)
+            );
+
+            CREATE TABLE IF NOT EXISTS daily_claims (
+                id BIGSERIAL PRIMARY KEY,
+                user_id BIGINT NOT NULL,
+                amount NUMERIC(18,8) NOT NULL DEFAULT 0,
+                streak INT NOT NULL DEFAULT 1,
+                claimed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+
+            CREATE TABLE IF NOT EXISTS users (
+                user_id BIGINT PRIMARY KEY,
+                username TEXT,
+                xp_total NUMERIC(18,2) DEFAULT 0,
+                balance NUMERIC(18,8) DEFAULT 0,
+                level INT DEFAULT 1,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
         """)
 
 
