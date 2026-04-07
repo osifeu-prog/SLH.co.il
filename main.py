@@ -338,17 +338,36 @@ async def get_staking_positions(user_id: int):
     return {"positions": [dict(p) for p in positions]}
 
 
-# === PRICES ===
+# === PRICES (with cache + timeout + retry) ===
+_price_cache = {"data": None, "ts": 0}
+
 @app.get("/api/prices")
 async def get_prices():
-    """Proxy for CoinGecko prices (cached)"""
-    import aiohttp
+    """Proxy for CoinGecko prices — cached 60s, 10s timeout, 2 retries"""
+    import aiohttp, time as _time
+    now = _time.time()
+    # Return cached data if fresh (< 60s)
+    if _price_cache["data"] and (now - _price_cache["ts"]) < 60:
+        return _price_cache["data"]
+
     url = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,the-open-network,binancecoin,solana,ripple,dogecoin&vs_currencies=usd,ils"
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url) as resp:
-            if resp.status == 200:
-                return await resp.json()
-            raise HTTPException(502, "Price API unavailable")
+    timeout = aiohttp.ClientTimeout(total=10)
+    for attempt in range(2):
+        try:
+            async with aiohttp.ClientSession(timeout=timeout) as session:
+                async with session.get(url) as resp:
+                    if resp.status == 200:
+                        data = await resp.json()
+                        _price_cache["data"] = data
+                        _price_cache["ts"] = now
+                        return data
+        except Exception:
+            if attempt == 1:
+                break
+    # Return stale cache if available, else 502
+    if _price_cache["data"]:
+        return _price_cache["data"]
+    raise HTTPException(502, "Price API unavailable")
 
 
 # === ECOSYSTEM STATS ===
@@ -837,3 +856,277 @@ async def global_leaderboard(category: str = Query("xp", enum=["xp", "balance", 
             for i, r in enumerate(rows)
         ]
     }
+
+
+# === COMMUNITY SYSTEM ===
+# Rate limit store (in-memory)
+_community_rate: dict[str, list[float]] = {}
+
+def _check_community_rate(key: str, max_per_hour: int) -> bool:
+    now = time.time()
+    cutoff = now - 3600
+    entries = _community_rate.get(key, [])
+    entries = [t for t in entries if t > cutoff]
+    _community_rate[key] = entries
+    if len(entries) >= max_per_hour:
+        return False
+    entries.append(now)
+    return True
+
+COMMUNITY_SCHEMA = """
+CREATE TABLE IF NOT EXISTS community_posts (
+    id BIGSERIAL PRIMARY KEY,
+    username TEXT NOT NULL,
+    telegram_id TEXT,
+    text TEXT NOT NULL,
+    category TEXT NOT NULL DEFAULT 'general',
+    likes_count INT NOT NULL DEFAULT 0,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE TABLE IF NOT EXISTS community_likes (
+    id BIGSERIAL PRIMARY KEY,
+    post_id BIGINT NOT NULL REFERENCES community_posts(id) ON DELETE CASCADE,
+    username TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    UNIQUE(post_id, username)
+);
+CREATE TABLE IF NOT EXISTS community_comments (
+    id BIGSERIAL PRIMARY KEY,
+    post_id BIGINT NOT NULL REFERENCES community_posts(id) ON DELETE CASCADE,
+    username TEXT NOT NULL,
+    text TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_community_posts_created ON community_posts(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_community_comments_post ON community_comments(post_id, created_at);
+"""
+
+COMMUNITY_SEEDS = [
+    ("SLH Official", "\U0001f4cc \u05de\u05d5\u05e6\u05de\u05d3\n\n\u05d1\u05e8\u05d5\u05e8 \u05e9\u05e4\u05e1\u05e4\u05e1\u05ea\u05dd \u05d0\u05ea \u05d4\u05d1\u05d9\u05d8\u05e7\u05d5\u05d9\u05d9\u05df,\n\u05dc\u05d0 \u05d4\u05d1\u05e0\u05ea\u05dd \u05de\u05d4 \u05d6\u05d4 \u05d0\u05d5\u05de\u05e8,\n\u05d1\u05d9\u05d8, \u05d0\u05d5 \u05e7\u05d5\u05d9\u05d9\u05df..\n\n\u05d4\u05d9\u05d5\u05dd \u05d0\u05ea\u05dd \u05de\u05e9\u05dc\u05de\u05d9\u05dd \u05d1\u05d1\u05d9\u05d8 \u05db\u05de\u05e2\u05d8 \u05d1\u05db\u05dc \u05e8\u05db\u05d9\u05e9\u05d4,\n\u05d0\u05d1\u05dc \u05e2\u05d3\u05d9\u05d9\u05df \u05dc\u05d0 \u05de\u05d1\u05d9\u05e0\u05d9\u05dd \u05e9\u05e7\u05d5\u05d9\u05d9\u05df \u2014 \u05d6\u05d4 \u05dc\u05de\u05e2\u05e9\u05d4 \u05d1\u05d7\u05d9\u05e8\u05d4.\n\nSLH \u05d6\u05d5 \u05d4\u05d1\u05d7\u05d9\u05e8\u05d4 \u05d4\u05d7\u05db\u05de\u05d4 \u2014 \u05e1\u05d5\u05e6\u05d9\u05d5\u05e7\u05e8\u05d8\u05d9\u05d4.\n\u05de\u05e0\u05d4\u05dc, \u05dc\u05d0 \u05de\u05e9\u05d8\u05e8 \u05d5\u05dc\u05d0 \u05de\u05de\u05e9\u05dc.\n\u05e7\u05d4\u05d9\u05dc\u05d4. \U0001f3db\ufe0f", "slh", 147),
+    ("AvivCrypto", "\u05de\u05d9 \u05e2\u05d5\u05d3 \u05e2\u05e9\u05d4 staking \u05e9\u05dc SLH \u05d4\u05e9\u05d1\u05d5\u05e2? \u05d4\u05ea\u05e9\u05d5\u05d0\u05d5\u05ea \u05de\u05d8\u05d5\u05e8\u05e4\u05d5\u05ea! \U0001f680", "slh", 24),
+    ("MosheTrader", "\u05e0\u05d9\u05ea\u05d5\u05d7 \u05e9\u05d5\u05e7 \u05d9\u05d5\u05de\u05d9:\nSLH \u05e0\u05e1\u05d7\u05e8 \u05d1-444\u20aa \u05e2\u05dd \u05e0\u05e4\u05d7 \u05de\u05e1\u05d7\u05e8 \u05d2\u05d1\u05d5\u05d4.", "investments", 31),
+    ("NoaInvest", "\u05e9\u05de\u05e2\u05ea\u05dd \u05e2\u05dc \u05d4\u05d1\u05d5\u05d8 \u05d4\u05d7\u05d3\u05e9? Guardian Bot \u05de\u05d2\u05df \u05e2\u05dc \u05d4\u05e7\u05d1\u05d5\u05e6\u05d5\u05ea \u05e9\u05dc\u05db\u05dd! \U0001f6e1\ufe0f", "slh", 18),
+    ("DanielDeFi", "\u05d8\u05d9\u05e4 \u05dc\u05de\u05e9\u05e7\u05d9\u05e2\u05d9\u05dd \u05d7\u05d3\u05e9\u05d9\u05dd: \u05ea\u05de\u05d9\u05d3 \u05ea\u05e2\u05e9\u05d5 DYOR \u05dc\u05e4\u05e0\u05d9 \u05db\u05dc \u05d4\u05e9\u05e7\u05e2\u05d4.", "investments", 45),
+    ("YosiBlockchain", "\u05de\u05d9\u05e9\u05d4\u05d5 \u05e8\u05d5\u05e6\u05d4 \u05dc\u05d4\u05e6\u05d8\u05e8\u05e3 \u05dc\u05de\u05d9\u05d8\u05d0\u05e4 \u05d1\u05ea\u05dc \u05d0\u05d1\u05d9\u05d1? \U0001f1ee\U0001f1f1", "general", 37),
+]
+
+async def _init_community_tables():
+    """Create community tables and seed if empty. Called after pool is ready."""
+    async with pool.acquire() as conn:
+        await conn.execute(COMMUNITY_SCHEMA)
+        count = await conn.fetchval("SELECT count(*) FROM community_posts")
+        if count == 0:
+            for i, (uname, txt, cat, likes) in enumerate(COMMUNITY_SEEDS):
+                await conn.execute(
+                    "INSERT INTO community_posts (username, text, category, likes_count, created_at) VALUES ($1,$2,$3,$4, now() - interval '1 hour' * $5)",
+                    uname, txt, cat, likes, (len(COMMUNITY_SEEDS) - i) * 4
+                )
+
+# Hook into existing startup
+_original_startup = startup
+async def _extended_startup():
+    await _original_startup()
+    try:
+        await _init_community_tables()
+    except Exception as e:
+        print(f"[community] init warning: {e}")
+app.router.on_startup.clear()
+app.add_event_handler("startup", _extended_startup)
+
+
+class CommunityPostCreate(BaseModel):
+    username: str
+    text: str
+    category: str = "general"
+    telegram_id: Optional[str] = None
+
+class CommunityLikeToggle(BaseModel):
+    username: str
+
+class CommunityCommentCreate(BaseModel):
+    username: str
+    text: str
+
+
+@app.get("/api/community/posts")
+async def community_get_posts(category: str = Query("all"), limit: int = Query(50, le=100), offset: int = Query(0)):
+    """Get community posts with comments"""
+    async with pool.acquire() as conn:
+        if category == "all":
+            rows = await conn.fetch(
+                "SELECT id, username, telegram_id, text, category, likes_count, created_at FROM community_posts ORDER BY created_at DESC LIMIT $1 OFFSET $2",
+                limit, offset
+            )
+        else:
+            rows = await conn.fetch(
+                "SELECT id, username, telegram_id, text, category, likes_count, created_at FROM community_posts WHERE category=$1 ORDER BY created_at DESC LIMIT $2 OFFSET $3",
+                category, limit, offset
+            )
+        posts = []
+        for row in rows:
+            post = dict(row)
+            post["created_at"] = post["created_at"].isoformat()
+            comments = await conn.fetch(
+                "SELECT id, username, text, created_at FROM community_comments WHERE post_id=$1 ORDER BY created_at ASC",
+                post["id"]
+            )
+            post["comments"] = [
+                {"id": c["id"], "username": c["username"], "text": c["text"], "created_at": c["created_at"].isoformat()}
+                for c in comments
+            ]
+            posts.append(post)
+    return {"posts": posts, "count": len(posts), "offset": offset}
+
+
+@app.post("/api/community/posts")
+async def community_create_post(body: CommunityPostCreate):
+    """Create a new community post"""
+    if not body.text.strip() or not body.username.strip():
+        raise HTTPException(400, "Username and text required")
+    if not _check_community_rate(f"post:{body.username}", 10):
+        raise HTTPException(429, "Rate limit: max 10 posts per hour")
+    async with pool.acquire() as conn:
+        row = await conn.fetchrow(
+            "INSERT INTO community_posts (username, telegram_id, text, category) VALUES ($1,$2,$3,$4) RETURNING id, username, telegram_id, text, category, likes_count, created_at",
+            body.username.strip(), body.telegram_id, body.text.strip(), body.category
+        )
+        post = dict(row)
+        post["created_at"] = post["created_at"].isoformat()
+        post["comments"] = []
+        return post
+
+
+@app.post("/api/community/posts/{post_id}/like")
+async def community_toggle_like(post_id: int, body: CommunityLikeToggle):
+    """Toggle like on a post"""
+    async with pool.acquire() as conn:
+        exists = await conn.fetchval("SELECT id FROM community_posts WHERE id=$1", post_id)
+        if not exists:
+            raise HTTPException(404, "Post not found")
+        existing = await conn.fetchval(
+            "SELECT id FROM community_likes WHERE post_id=$1 AND username=$2", post_id, body.username
+        )
+        if existing:
+            await conn.execute("DELETE FROM community_likes WHERE id=$1", existing)
+            await conn.execute("UPDATE community_posts SET likes_count=GREATEST(likes_count-1,0) WHERE id=$1", post_id)
+            return {"action": "unliked", "post_id": post_id}
+        else:
+            await conn.execute("INSERT INTO community_likes (post_id,username) VALUES ($1,$2)", post_id, body.username)
+            await conn.execute("UPDATE community_posts SET likes_count=likes_count+1 WHERE id=$1", post_id)
+            return {"action": "liked", "post_id": post_id}
+
+
+@app.post("/api/community/posts/{post_id}/comments")
+async def community_add_comment(post_id: int, body: CommunityCommentCreate):
+    """Add a comment to a post"""
+    if not body.text.strip() or not body.username.strip():
+        raise HTTPException(400, "Username and text required")
+    if not _check_community_rate(f"comment:{body.username}", 50):
+        raise HTTPException(429, "Rate limit: max 50 comments per hour")
+    async with pool.acquire() as conn:
+        exists = await conn.fetchval("SELECT id FROM community_posts WHERE id=$1", post_id)
+        if not exists:
+            raise HTTPException(404, "Post not found")
+        row = await conn.fetchrow(
+            "INSERT INTO community_comments (post_id, username, text) VALUES ($1,$2,$3) RETURNING id, post_id, username, text, created_at",
+            post_id, body.username.strip(), body.text.strip()
+        )
+        comment = dict(row)
+        comment["created_at"] = comment["created_at"].isoformat()
+        return comment
+
+
+@app.get("/api/community/stats")
+async def community_stats():
+    """Community statistics"""
+    async with pool.acquire() as conn:
+        total_posts = await conn.fetchval("SELECT count(*) FROM community_posts")
+        total_users = await conn.fetchval("SELECT count(DISTINCT username) FROM community_posts")
+        today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+        posts_today = await conn.fetchval("SELECT count(*) FROM community_posts WHERE created_at >= $1", today_start)
+        active_today = await conn.fetchval("SELECT count(DISTINCT username) FROM community_posts WHERE created_at >= $1", today_start)
+    return {"total_posts": total_posts, "total_users": total_users, "posts_today": posts_today, "active_today": active_today}
+
+
+@app.get("/api/community/health")
+async def community_health():
+    return {"status": "ok", "service": "community"}
+
+
+# === ANALYTICS ENDPOINTS ===
+@app.post("/api/analytics/event")
+async def analytics_event(request: Request):
+    """Receive analytics events from the website tracker"""
+    try:
+        data = await request.json()
+        # Store in DB if table exists, otherwise just acknowledge
+        async with pool.acquire() as conn:
+            await conn.execute("""
+                CREATE TABLE IF NOT EXISTS analytics_events (
+                    id BIGSERIAL PRIMARY KEY,
+                    event_type TEXT,
+                    page TEXT,
+                    visitor_id TEXT,
+                    session_id TEXT,
+                    data JSONB,
+                    created_at TIMESTAMPTZ DEFAULT now()
+                )
+            """)
+            await conn.execute(
+                "INSERT INTO analytics_events (event_type, page, visitor_id, session_id, data) VALUES ($1,$2,$3,$4,$5)",
+                data.get("event", "pageview"),
+                data.get("page", ""),
+                data.get("visitor_id", ""),
+                data.get("session_id", ""),
+                json.dumps(data)
+            )
+        return {"status": "ok"}
+    except Exception as e:
+        return {"status": "ok", "note": str(e)}
+
+
+@app.get("/api/analytics/stats")
+async def analytics_stats():
+    """Get aggregated analytics stats for the admin dashboard"""
+    async with pool.acquire() as conn:
+        try:
+            await conn.execute("""
+                CREATE TABLE IF NOT EXISTS analytics_events (
+                    id BIGSERIAL PRIMARY KEY,
+                    event_type TEXT,
+                    page TEXT,
+                    visitor_id TEXT,
+                    session_id TEXT,
+                    data JSONB,
+                    created_at TIMESTAMPTZ DEFAULT now()
+                )
+            """)
+            total_events = await conn.fetchval("SELECT count(*) FROM analytics_events")
+            unique_visitors = await conn.fetchval("SELECT count(DISTINCT visitor_id) FROM analytics_events WHERE visitor_id != ''")
+            today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+            today_views = await conn.fetchval("SELECT count(*) FROM analytics_events WHERE created_at >= $1", today_start)
+            today_visitors = await conn.fetchval("SELECT count(DISTINCT visitor_id) FROM analytics_events WHERE created_at >= $1 AND visitor_id != ''", today_start)
+
+            # Last 7 days breakdown
+            daily = await conn.fetch("""
+                SELECT DATE(created_at) as day, count(*) as views, count(DISTINCT visitor_id) as visitors
+                FROM analytics_events WHERE created_at >= now() - interval '7 days'
+                GROUP BY DATE(created_at) ORDER BY day
+            """)
+
+            # Top pages
+            pages = await conn.fetch("""
+                SELECT page, count(*) as views FROM analytics_events
+                WHERE page != '' GROUP BY page ORDER BY views DESC LIMIT 10
+            """)
+
+            return {
+                "total_events": total_events,
+                "unique_visitors": unique_visitors,
+                "today_views": today_views,
+                "today_visitors": today_visitors,
+                "daily": [{"day": str(r["day"]), "views": r["views"], "visitors": r["visitors"]} for r in daily],
+                "top_pages": [{"page": r["page"], "views": r["views"]} for r in pages],
+            }
+        except Exception as e:
+            return {"error": str(e)}
