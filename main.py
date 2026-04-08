@@ -8,9 +8,11 @@ import hashlib
 import time
 import json
 from datetime import datetime, timedelta
+import jwt
+import secrets
 from typing import Optional
 
-from fastapi import FastAPI, HTTPException, Depends, Query, Request
+from fastapi import FastAPI, HTTPException, Depends, Query, Request, Header
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
@@ -21,8 +23,17 @@ from routes.ai_chat import router as ai_chat_router
 # === CONFIG ===
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:slh_secure_2026@localhost:5432/slh_main")
 BOT_TOKEN = os.getenv("EXPERTNET_BOT_TOKEN", "")
+JWT_SECRET = os.getenv("JWT_SECRET", "")
+JWT_ALGORITHM = "HS256"
+JWT_EXPIRES_HOURS = int(os.getenv("JWT_EXPIRES_HOURS", "12"))
 ADMIN_USER_ID = int(os.getenv("ADMIN_USER_ID", "224223270"))
 CORS_ORIGINS = os.getenv("CORS_ORIGINS", "https://slh-nft.com,http://localhost:8899,http://localhost:3000").split(",")
+
+# Wallet constants (used early by registration endpoints)
+SLH_BSC_CONTRACT = "0xACb0A09414CEA1C879c67bB7A877E4e19480f022"
+SLH_TON_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+SLH_PRICE_ILS = 444
+USD_ILS_RATE = 3.65
 
 app = FastAPI(
     title="SLH Ecosystem API",
@@ -56,7 +67,9 @@ async def startup():
                 first_name TEXT,
                 photo_url TEXT,
                 auth_date BIGINT,
-                last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                is_registered BOOLEAN DEFAULT FALSE,
+                registered_at TIMESTAMP
             );
             CREATE TABLE IF NOT EXISTS staking_positions (
                 id BIGSERIAL PRIMARY KEY,
@@ -115,6 +128,18 @@ async def startup():
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
 
+            CREATE TABLE IF NOT EXISTS wallet_idempotency (
+                id BIGSERIAL PRIMARY KEY,
+                user_id BIGINT NOT NULL,
+                request_id TEXT NOT NULL,
+                tx_transfer_id BIGINT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(user_id, request_id)
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_wallet_idempotency_user_created
+            ON wallet_idempotency(user_id, created_at DESC);
+
             CREATE TABLE IF NOT EXISTS deposits (
                 id BIGSERIAL PRIMARY KEY,
                 user_id BIGINT NOT NULL,
@@ -153,6 +178,25 @@ async def startup():
             );
         """)
 
+        # --- Migration: add is_registered columns to existing DBs ---
+        try:
+            await conn.execute("ALTER TABLE web_users ADD COLUMN IF NOT EXISTS is_registered BOOLEAN DEFAULT FALSE")
+            await conn.execute("ALTER TABLE web_users ADD COLUMN IF NOT EXISTS registered_at TIMESTAMP")
+        except Exception:
+            pass  # columns already exist in CREATE TABLE
+
+        # --- Auto-register admin + existing premium users ---
+        await conn.execute("""
+            UPDATE web_users SET is_registered = TRUE, registered_at = COALESCE(registered_at, CURRENT_TIMESTAMP)
+            WHERE telegram_id = $1 AND is_registered = FALSE
+        """, ADMIN_USER_ID)
+        await conn.execute("""
+            UPDATE web_users SET is_registered = TRUE, registered_at = COALESCE(registered_at, CURRENT_TIMESTAMP)
+            WHERE is_registered = FALSE AND telegram_id IN (
+                SELECT DISTINCT user_id FROM premium_users WHERE payment_status = 'approved'
+            )
+        """)
+
 
 @app.on_event("shutdown")
 async def shutdown():
@@ -164,7 +208,7 @@ async def shutdown():
 def verify_telegram_auth(data: dict) -> bool:
     """Verify Telegram Login Widget data"""
     if not BOT_TOKEN:
-        return True  # Dev mode
+        return False
     check_hash = data.pop("hash", "")
     data_check = "\n".join(f"{k}={v}" for k, v in sorted(data.items()))
     secret = hashlib.sha256(BOT_TOKEN.encode()).digest()
@@ -185,6 +229,55 @@ class TelegramAuth(BaseModel):
     hash: str
 
 
+def create_jwt(user_id: int, username: Optional[str] = None) -> str:
+    if not JWT_SECRET:
+        raise HTTPException(500, "JWT_SECRET is not configured")
+    now = int(time.time())
+    payload = {
+        "sub": str(user_id),
+        "username": username or "",
+        "iat": now,
+        "exp": now + (JWT_EXPIRES_HOURS * 3600),
+        "jti": secrets.token_hex(16),
+    }
+    return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+
+
+def get_current_user_id(authorization: Optional[str] = Header(None)) -> int:
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(401, "Missing bearer token")
+
+    token = authorization.split(" ", 1)[1].strip()
+
+    if not JWT_SECRET:
+        raise HTTPException(500, "JWT_SECRET is not configured")
+
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(401, "Token expired")
+    except jwt.InvalidTokenError:
+        raise HTTPException(401, "Invalid token")
+
+    sub = payload.get("sub")
+    if not sub or not str(sub).isdigit():
+        raise HTTPException(401, "Invalid token payload")
+
+    return int(sub)
+
+
+_wallet_send_rate = {}
+
+
+def _check_wallet_send_rate(user_id: int, cooldown_seconds: int = 5) -> bool:
+    now = time.time()
+    last = _wallet_send_rate.get(user_id, 0)
+    if now - last < cooldown_seconds:
+        return False
+    _wallet_send_rate[user_id] = now
+    return True
+
+
 # === AUTH ENDPOINTS ===
 @app.post("/api/auth/telegram")
 async def auth_telegram(auth: TelegramAuth):
@@ -201,22 +294,230 @@ async def auth_telegram(auth: TelegramAuth):
                 username = $2, first_name = $3, photo_url = $4, last_login = CURRENT_TIMESTAMP
         """, auth.id, auth.username, auth.first_name, auth.photo_url, auth.auth_date)
 
-        # Fetch user balances
+        # Fetch user balances and registration status
         balances = await get_user_balances(conn, auth.id)
         premium = await conn.fetchval(
             "SELECT payment_status FROM premium_users WHERE user_id=$1 AND bot_name='expertnet'", auth.id
         )
+        is_registered = await conn.fetchval(
+            "SELECT is_registered FROM web_users WHERE telegram_id=$1", auth.id
+        ) or False
+
+    jwt_token = create_jwt(auth.id, auth.username)
 
     return {
+        "status": "ok",
+        "token": jwt_token,
         "user": {
             "id": auth.id,
             "username": auth.username,
             "first_name": auth.first_name,
             "photo_url": auth.photo_url,
             "premium": premium == "approved",
+            "is_registered": is_registered,
         },
         "balances": balances,
     }
+
+
+# === REGISTRATION SYSTEM ===
+
+REGISTRATION_PRICE_ILS = 44.4
+REGISTRATION_SLH_AMOUNT = 0.1
+
+
+class RegistrationInitRequest(BaseModel):
+    referrer_id: Optional[int] = None
+
+
+class RegistrationProofRequest(BaseModel):
+    tx_hash: str = ""
+    note: str = ""
+
+
+class RegistrationApproveRequest(BaseModel):
+    user_id: int
+    admin_key: str = ""
+
+
+@app.post("/api/registration/initiate")
+async def registration_initiate(req: RegistrationInitRequest, authorization: Optional[str] = Header(None)):
+    """Start registration — create pending payment record."""
+    user_id = get_current_user_id(authorization)
+
+    async with pool.acquire() as conn:
+        # Check if already registered
+        is_reg = await conn.fetchval("SELECT is_registered FROM web_users WHERE telegram_id=$1", user_id)
+        if is_reg:
+            return {"status": "already_registered"}
+
+        # Check if pending payment exists
+        existing = await conn.fetchrow(
+            "SELECT id, payment_status FROM premium_users WHERE user_id=$1 AND bot_name='ecosystem'", user_id
+        )
+        if existing and existing["payment_status"] in ("submitted", "approved"):
+            return {"status": existing["payment_status"], "message": "Payment already " + existing["payment_status"]}
+
+        # Create or update pending registration
+        await conn.execute("""
+            INSERT INTO premium_users (user_id, bot_name, payment_status)
+            VALUES ($1, 'ecosystem', 'pending')
+            ON CONFLICT (user_id, bot_name) DO UPDATE SET payment_status = 'pending'
+        """, user_id)
+
+        # Register referral if provided
+        if req.referrer_id and req.referrer_id != user_id:
+            existing_ref = await conn.fetchrow("SELECT id FROM referrals WHERE user_id=$1", user_id)
+            if not existing_ref:
+                # Ensure referrer exists in web_users
+                ref_exists = await conn.fetchval("SELECT 1 FROM web_users WHERE telegram_id=$1", req.referrer_id)
+                if ref_exists:
+                    ref_depth = await conn.fetchval("SELECT depth FROM referrals WHERE user_id=$1", req.referrer_id)
+                    depth = (ref_depth or 0) + 1
+                    try:
+                        await conn.execute("""
+                            INSERT INTO referrals (user_id, referrer_id, depth) VALUES ($1, $2, $3)
+                        """, user_id, req.referrer_id, depth)
+                    except Exception:
+                        pass  # referral already registered
+
+    return {
+        "status": "pending",
+        "price_ils": REGISTRATION_PRICE_ILS,
+        "slh_amount": REGISTRATION_SLH_AMOUNT,
+        "ton_wallet": SLH_TON_WALLET,
+        "bsc_contract": SLH_BSC_CONTRACT,
+        "message": f"Send {REGISTRATION_PRICE_ILS} ILS worth of TON to the wallet address"
+    }
+
+
+@app.post("/api/registration/submit-proof")
+async def registration_submit_proof(req: RegistrationProofRequest, authorization: Optional[str] = Header(None)):
+    """User submits payment proof (tx_hash or note)."""
+    user_id = get_current_user_id(authorization)
+
+    async with pool.acquire() as conn:
+        row = await conn.fetchrow(
+            "SELECT id, payment_status FROM premium_users WHERE user_id=$1 AND bot_name='ecosystem'", user_id
+        )
+        if not row:
+            raise HTTPException(400, "No pending registration found. Call /api/registration/initiate first.")
+        if row["payment_status"] == "approved":
+            return {"status": "already_approved"}
+
+        await conn.execute("""
+            UPDATE premium_users SET payment_status = 'submitted'
+            WHERE user_id = $1 AND bot_name = 'ecosystem'
+        """, user_id)
+
+        # Store proof in deposits table
+        if req.tx_hash.strip():
+            await conn.execute("""
+                INSERT INTO deposits (user_id, amount, currency, tx_hash, status, plan_key)
+                VALUES ($1, $2, 'ILS', $3, 'pending', 'registration')
+            """, user_id, REGISTRATION_PRICE_ILS, req.tx_hash.strip())
+
+    print(f"[Registration] User {user_id} submitted payment proof: {req.tx_hash or req.note}")
+    return {"status": "submitted", "message": "Payment proof received. Waiting for admin approval."}
+
+
+@app.post("/api/registration/approve")
+async def registration_approve(req: RegistrationApproveRequest):
+    """Admin approves a registration payment. Credits 0.1 SLH + triggers referral commissions."""
+    # Admin verification: check admin_key or accept from known admin
+    admin_secret = os.getenv("ADMIN_API_KEY", "slh_admin_2026")
+    if req.admin_key != admin_secret:
+        raise HTTPException(403, "Invalid admin key")
+
+    async with pool.acquire() as conn:
+        # Verify pending registration exists
+        row = await conn.fetchrow(
+            "SELECT id, payment_status FROM premium_users WHERE user_id=$1 AND bot_name='ecosystem'", req.user_id
+        )
+        if not row:
+            raise HTTPException(404, "No registration record found for this user")
+        if row["payment_status"] == "approved":
+            return {"status": "already_approved"}
+
+        async with conn.transaction():
+            # 1. Mark registration as approved
+            await conn.execute("""
+                UPDATE premium_users SET payment_status = 'approved'
+                WHERE user_id = $1 AND bot_name = 'ecosystem'
+            """, req.user_id)
+
+            # 2. Set user as registered
+            await conn.execute("""
+                UPDATE web_users SET is_registered = TRUE, registered_at = CURRENT_TIMESTAMP
+                WHERE telegram_id = $1
+            """, req.user_id)
+
+            # 3. Credit 0.1 SLH token
+            await conn.execute("""
+                INSERT INTO token_balances (user_id, token, balance)
+                VALUES ($1, 'SLH', $2)
+                ON CONFLICT (user_id, token) DO UPDATE SET balance = token_balances.balance + $2, updated_at = CURRENT_TIMESTAMP
+            """, req.user_id, REGISTRATION_SLH_AMOUNT)
+
+            # 4. Record token transfer
+            await conn.execute("""
+                INSERT INTO token_transfers (from_user_id, to_user_id, token, amount, memo, tx_type)
+                VALUES ($1, $1, 'SLH', $2, 'Ecosystem registration bonus', 'registration')
+            """, req.user_id, REGISTRATION_SLH_AMOUNT)
+
+            # 5. Update deposit status if exists
+            await conn.execute("""
+                UPDATE deposits SET status = 'confirmed'
+                WHERE user_id = $1 AND plan_key = 'registration' AND status = 'pending'
+            """, req.user_id)
+
+            # 6. Distribute referral commissions
+            commissions = await distribute_referral_commissions(
+                conn, req.user_id, REGISTRATION_PRICE_ILS, 'registration', 'ILS'
+            )
+
+    print(f"[Registration] User {req.user_id} APPROVED. 0.1 SLH credited. {len(commissions)} referral commissions distributed.")
+    return {
+        "status": "approved",
+        "user_id": req.user_id,
+        "slh_credited": REGISTRATION_SLH_AMOUNT,
+        "referral_commissions": commissions
+    }
+
+
+@app.get("/api/registration/status/{user_id}")
+async def registration_status(user_id: int):
+    """Check registration status for a user."""
+    async with pool.acquire() as conn:
+        is_reg = await conn.fetchval("SELECT is_registered FROM web_users WHERE telegram_id=$1", user_id)
+        if is_reg:
+            return {"is_registered": True, "payment_status": "approved"}
+
+        row = await conn.fetchrow(
+            "SELECT payment_status FROM premium_users WHERE user_id=$1 AND bot_name='ecosystem'", user_id
+        )
+        if row:
+            return {"is_registered": False, "payment_status": row["payment_status"]}
+
+    return {"is_registered": False, "payment_status": "none"}
+
+
+# === PENDING REGISTRATIONS (admin) ===
+
+@app.get("/api/registration/pending")
+async def registration_pending():
+    """List all pending/submitted registrations for admin review."""
+    async with pool.acquire() as conn:
+        rows = await conn.fetch("""
+            SELECT p.user_id, w.username, w.first_name, p.payment_status, p.created_at,
+                   d.tx_hash, d.amount as deposit_amount
+            FROM premium_users p
+            LEFT JOIN web_users w ON w.telegram_id = p.user_id
+            LEFT JOIN deposits d ON d.user_id = p.user_id AND d.plan_key = 'registration'
+            WHERE p.bot_name = 'ecosystem' AND p.payment_status IN ('pending', 'submitted')
+            ORDER BY p.created_at DESC
+        """)
+    return [dict(r) for r in rows]
 
 
 async def get_user_balances(conn, user_id: int):
@@ -1210,11 +1511,6 @@ def _generate_bsc_address(user_id: int) -> str:
     return "0x" + raw[:40]
 
 
-SLH_BSC_CONTRACT = "0xACb0A09414CEA1C879c67bB7A877E4e19480f022"
-SLH_TON_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
-SLH_PRICE_ILS = 444
-USD_ILS_RATE = 3.65
-
 
 # Static route MUST come before /{user_id} to avoid FastAPI matching "price" as user_id
 @app.get("/api/wallet/price")
@@ -1370,15 +1666,24 @@ async def get_wallet_transactions(user_id: int, limit: int = Query(50, le=200), 
     }
 
 class WalletSendRequest(BaseModel):
-    from_id: int
     to: str
     amount: float
     currency: str = "SLH"
+    request_id: str
+
 
 @app.post("/api/wallet/send")
-async def wallet_send(req: WalletSendRequest):
+async def wallet_send(req: WalletSendRequest, authorization: Optional[str] = Header(None)):
+    user_id = get_current_user_id(authorization)
+
     if req.amount <= 0:
         raise HTTPException(400, "Amount must be positive")
+
+    if not req.request_id or len(req.request_id.strip()) < 8:
+        raise HTTPException(400, "request_id is required")
+
+    if not _check_wallet_send_rate(user_id, cooldown_seconds=5):
+        raise HTTPException(429, "Too many requests, wait a few seconds")
 
     token = (req.currency or "SLH").upper().strip()
     if token != "SLH":
@@ -1387,16 +1692,104 @@ async def wallet_send(req: WalletSendRequest):
     if not req.to.isdigit():
         raise HTTPException(400, "Recipient must be a Telegram numeric ID for now")
 
-    transfer_req = TransferRequest(
-        from_user_id=req.from_id,
-        to_user_id=int(req.to),
-        token=token,
-        amount=req.amount,
-        memo="wallet send"
-    )
+    to_user_id = int(req.to)
+    if to_user_id == user_id:
+        raise HTTPException(400, "Cannot send to yourself")
 
-    result = await transfer_tokens(transfer_req)
-    return {"success": True, "result": result}
+    async with pool.acquire() as conn:
+        async with conn.transaction():
+            existing = await conn.fetchrow(
+                "SELECT tx_transfer_id FROM wallet_idempotency WHERE user_id=$1 AND request_id=$2",
+                user_id, req.request_id.strip()
+            )
+
+            if existing and existing["tx_transfer_id"]:
+                row = await conn.fetchrow(
+                    """
+                    SELECT id, from_user_id, to_user_id, token, amount, memo, tx_type, created_at
+                    FROM token_transfers
+                    WHERE id=$1
+                    """,
+                    existing["tx_transfer_id"]
+                )
+                if row:
+                    return {
+                        "status": "ok",
+                        "data": {
+                            "transfer_id": row["id"],
+                            "from_id": row["from_user_id"],
+                            "to_id": row["to_user_id"],
+                            "token": row["token"],
+                            "amount": float(row["amount"]),
+                            "memo": row["memo"],
+                            "type": row["tx_type"],
+                            "created_at": row["created_at"].isoformat() if row["created_at"] else None,
+                            "idempotent_replay": True
+                        }
+                    }
+
+            balance = await conn.fetchval(
+                "SELECT balance FROM token_balances WHERE user_id=$1 AND token=$2",
+                user_id, token
+            )
+            if balance is None or float(balance) < req.amount:
+                raise HTTPException(400, "Insufficient balance")
+
+            await conn.execute(
+                "UPDATE token_balances SET balance = balance - $1, updated_at = CURRENT_TIMESTAMP WHERE user_id=$2 AND token=$3",
+                req.amount, user_id, token
+            )
+
+            await conn.execute(
+                """
+                INSERT INTO token_balances (user_id, token, balance, updated_at)
+                VALUES ($1, $2, $3, CURRENT_TIMESTAMP)
+                ON CONFLICT (user_id, token)
+                DO UPDATE SET balance = token_balances.balance + $3, updated_at = CURRENT_TIMESTAMP
+                """,
+                to_user_id, token, req.amount
+            )
+
+            transfer_id = await conn.fetchval(
+                """
+                INSERT INTO token_transfers (from_user_id, to_user_id, token, amount, memo, tx_type)
+                VALUES ($1, $2, $3, $4, $5, 'wallet_send')
+                RETURNING id
+                """,
+                user_id, to_user_id, token, req.amount, f"wallet send | request_id={req.request_id.strip()}"
+            )
+
+            await conn.execute(
+                """
+                INSERT INTO wallet_idempotency (user_id, request_id, tx_transfer_id)
+                VALUES ($1, $2, $3)
+                """,
+                user_id, req.request_id.strip(), transfer_id
+            )
+
+            row = await conn.fetchrow(
+                """
+                SELECT id, from_user_id, to_user_id, token, amount, memo, tx_type, created_at
+                FROM token_transfers
+                WHERE id=$1
+                """,
+                transfer_id
+            )
+
+    return {
+        "status": "ok",
+        "data": {
+            "transfer_id": row["id"],
+            "from_id": row["from_user_id"],
+            "to_id": row["to_user_id"],
+            "token": row["token"],
+            "amount": float(row["amount"]),
+            "memo": row["memo"],
+            "type": row["tx_type"],
+            "created_at": row["created_at"].isoformat() if row["created_at"] else None,
+            "idempotent_replay": False
+        }
+    }
 
 
 # === ADMIN DASHBOARD API ===
