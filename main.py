@@ -1397,3 +1397,129 @@ async def wallet_send(req: WalletSendRequest):
 
     result = await transfer_tokens(transfer_req)
     return {"success": True, "result": result}
+
+
+# === ADMIN DASHBOARD API ===
+
+@app.get("/api/admin/dashboard")
+async def admin_dashboard():
+    """Aggregated admin dashboard data — all stats in one call"""
+    async def safe(conn, query, *args):
+        try:
+            return await conn.fetchval(query, *args) or 0
+        except Exception:
+            return 0
+
+    async with pool.acquire() as conn:
+        total_users = await safe(conn, "SELECT COUNT(*) FROM web_users")
+        premium_users = await safe(conn, "SELECT COUNT(*) FROM premium_users WHERE payment_status='approved'")
+        total_staked = await safe(conn, "SELECT COALESCE(SUM(amount),0) FROM staking_positions WHERE status='active'")
+        total_deposits = await safe(conn, "SELECT COALESCE(SUM(amount),0) FROM deposits WHERE status='active'")
+        pending_payments = await safe(conn, "SELECT COUNT(*) FROM premium_users WHERE payment_status='pending'")
+
+        today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+        today_views = await safe(conn, "SELECT COUNT(*) FROM analytics_events WHERE created_at >= $1", today_start)
+        today_visitors = await safe(conn, "SELECT COUNT(DISTINCT visitor_id) FROM analytics_events WHERE created_at >= $1 AND visitor_id != ''", today_start)
+        total_events = await safe(conn, "SELECT COUNT(*) FROM analytics_events")
+        total_visitors = await safe(conn, "SELECT COUNT(DISTINCT visitor_id) FROM analytics_events WHERE visitor_id != ''")
+
+        # Recent signups
+        today_signups = await safe(conn, "SELECT COUNT(*) FROM web_users WHERE last_login >= $1", today_start)
+
+        # Referral stats
+        referral_count = await safe(conn, "SELECT COUNT(*) FROM referrals")
+
+        # Last 7 days analytics
+        try:
+            daily = await conn.fetch("""
+                SELECT DATE(created_at) as day, COUNT(*) as views, COUNT(DISTINCT visitor_id) as visitors
+                FROM analytics_events WHERE created_at >= now() - interval '7 days'
+                GROUP BY DATE(created_at) ORDER BY day
+            """)
+            daily_data = [{"day": str(r["day"]), "views": r["views"], "visitors": r["visitors"]} for r in daily]
+        except Exception:
+            daily_data = []
+
+        # Top pages
+        try:
+            pages = await conn.fetch("""
+                SELECT page, COUNT(*) as views FROM analytics_events
+                WHERE page != '' GROUP BY page ORDER BY views DESC LIMIT 10
+            """)
+            top_pages = [{"page": r["page"], "views": r["views"]} for r in pages]
+        except Exception:
+            top_pages = []
+
+        # Recent users
+        try:
+            recent = await conn.fetch(
+                "SELECT telegram_id, username, first_name, last_login FROM web_users ORDER BY last_login DESC LIMIT 15"
+            )
+            recent_users = [{"id": r["telegram_id"], "username": r["username"], "name": r["first_name"], "last_login": str(r["last_login"])} for r in recent]
+        except Exception:
+            recent_users = []
+
+    return {
+        "total_users": total_users,
+        "premium_users": premium_users,
+        "pending_payments": pending_payments,
+        "total_staked_ton": float(total_staked),
+        "total_deposits_ton": float(total_deposits),
+        "referral_count": referral_count,
+        "today_signups": today_signups,
+        "analytics": {
+            "total_events": total_events,
+            "total_visitors": total_visitors,
+            "today_views": today_views,
+            "today_visitors": today_visitors,
+            "daily": daily_data,
+            "top_pages": top_pages,
+        },
+        "recent_users": recent_users,
+        "bots_live": 20,
+        "timestamp": datetime.utcnow().isoformat(),
+    }
+
+
+@app.get("/api/admin/activity")
+async def admin_activity(limit: int = Query(20, le=100)):
+    """Recent activity across the ecosystem"""
+    activities = []
+    async with pool.acquire() as conn:
+        # Recent logins
+        try:
+            logins = await conn.fetch(
+                "SELECT telegram_id, username, first_name, last_login FROM web_users ORDER BY last_login DESC LIMIT $1",
+                limit // 2
+            )
+            for r in logins:
+                name = r["username"] or r["first_name"] or str(r["telegram_id"])
+                activities.append({
+                    "type": "login",
+                    "icon": "👤",
+                    "text": f"User @{name} logged in",
+                    "time": r["last_login"].isoformat() if r["last_login"] else ""
+                })
+        except Exception:
+            pass
+
+        # Recent premium payments
+        try:
+            payments = await conn.fetch(
+                "SELECT user_id, amount, payment_status, created_at FROM premium_users ORDER BY created_at DESC LIMIT $1",
+                limit // 2
+            )
+            for r in payments:
+                status = "approved" if r["payment_status"] == "approved" else "pending"
+                activities.append({
+                    "type": "payment",
+                    "icon": "💰",
+                    "text": f"Premium payment ({status}): {r['amount']} from user #{r['user_id']}",
+                    "time": r["created_at"].isoformat() if r["created_at"] else ""
+                })
+        except Exception:
+            pass
+
+    # Sort by time
+    activities.sort(key=lambda x: x.get("time", ""), reverse=True)
+    return activities[:limit]
