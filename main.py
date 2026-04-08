@@ -16,6 +16,8 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import asyncpg
 
+from routes.ai_chat import router as ai_chat_router
+
 # === CONFIG ===
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:slh_secure_2026@localhost:5432/slh_main")
 BOT_TOKEN = os.getenv("EXPERTNET_BOT_TOKEN", "")
@@ -35,6 +37,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# === AI CHAT ROUTER ===
+app.include_router(ai_chat_router)
 
 # === DATABASE ===
 pool: Optional[asyncpg.Pool] = None
@@ -1363,3 +1368,32 @@ async def get_wallet_transactions(user_id: int, limit: int = Query(50, le=200), 
         "limit": limit,
         "offset": offset,
     }
+
+class WalletSendRequest(BaseModel):
+    from_id: int
+    to: str
+    amount: float
+    currency: str = "SLH"
+
+@app.post("/api/wallet/send")
+async def wallet_send(req: WalletSendRequest):
+    if req.amount <= 0:
+        raise HTTPException(400, "Amount must be positive")
+
+    token = (req.currency or "SLH").upper().strip()
+    if token != "SLH":
+        raise HTTPException(400, "Only SLH internal transfer is supported right now")
+
+    if not req.to.isdigit():
+        raise HTTPException(400, "Recipient must be a Telegram numeric ID for now")
+
+    transfer_req = TransferRequest(
+        from_user_id=req.from_id,
+        to_user_id=int(req.to),
+        token=token,
+        amount=req.amount,
+        memo="wallet send"
+    )
+
+    result = await transfer_tokens(transfer_req)
+    return {"success": True, "result": result}
