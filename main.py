@@ -192,6 +192,9 @@ async def startup():
                 category TEXT DEFAULT 'general',
                 stock INT DEFAULT 1,
                 status TEXT DEFAULT 'pending',
+                promotion TEXT DEFAULT 'none',
+                promoted_until TIMESTAMP,
+                views INT DEFAULT 0,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 approved_at TIMESTAMP,
                 FOREIGN KEY (seller_id) REFERENCES web_users(telegram_id)
@@ -272,6 +275,10 @@ async def startup():
             await conn.execute("CREATE INDEX IF NOT EXISTS idx_marketplace_items_status ON marketplace_items(status)")
             await conn.execute("CREATE INDEX IF NOT EXISTS idx_marketplace_items_seller ON marketplace_items(seller_id)")
             await conn.execute("CREATE INDEX IF NOT EXISTS idx_marketplace_items_category ON marketplace_items(category)")
+            # Migration: add promotion/views columns to existing marketplace_items
+            await conn.execute("ALTER TABLE marketplace_items ADD COLUMN IF NOT EXISTS promotion TEXT DEFAULT 'none'")
+            await conn.execute("ALTER TABLE marketplace_items ADD COLUMN IF NOT EXISTS promoted_until TIMESTAMP")
+            await conn.execute("ALTER TABLE marketplace_items ADD COLUMN IF NOT EXISTS views INT DEFAULT 0")
             await conn.execute("CREATE INDEX IF NOT EXISTS idx_marketplace_orders_buyer ON marketplace_orders(buyer_id)")
             await conn.execute("CREATE INDEX IF NOT EXISTS idx_marketplace_orders_seller ON marketplace_orders(seller_id)")
             await conn.execute("CREATE INDEX IF NOT EXISTS idx_marketplace_orders_item ON marketplace_orders(item_id)")
@@ -427,8 +434,8 @@ async def auth_telegram(auth: TelegramAuth):
 
 # === REGISTRATION SYSTEM ===
 
-REGISTRATION_PRICE_ILS = 44.4
-REGISTRATION_SLH_AMOUNT = 0.1
+REGISTRATION_PRICE_ILS = 22.221  # unified price across bot + website + mini-app
+REGISTRATION_SLH_AMOUNT = 0.05    # SLH bonus credited on approval (scaled down from 0.1)
 
 
 class RegistrationInitRequest(BaseModel):
@@ -2079,6 +2086,189 @@ async def admin_dashboard():
     }
 
 
+# === UNIFIED USER ENDPOINT (single call for everything) ===
+@app.get("/api/user/full/{telegram_id}")
+async def get_user_full(telegram_id: int):
+    """Return EVERYTHING about a user in one call.
+
+    Consolidates: profile, registration, wallets (internal + linked Web3),
+    balances (from all sources), premium status, staking, deposits,
+    referrals, recent transactions, marketplace activity.
+
+    Designed to be the single source of truth for the dashboard / mini-app,
+    so the bot / website / mini-app all show the same numbers.
+    """
+    async with pool.acquire() as conn:
+        profile = await conn.fetchrow("""
+            SELECT telegram_id, username, first_name, photo_url, auth_date, last_login,
+                   is_registered, registered_at, eth_wallet, eth_wallet_linked_at,
+                   ton_wallet, ton_wallet_linked_at
+              FROM web_users WHERE telegram_id=$1
+        """, telegram_id)
+        if not profile:
+            raise HTTPException(404, "User not found")
+
+        # All internal token balances
+        balances = {"TON_available": 0.0, "TON_locked": 0.0}
+        try:
+            rows = await conn.fetch(
+                "SELECT token, balance FROM token_balances WHERE user_id=$1", telegram_id
+            )
+            for row in rows:
+                balances[row["token"]] = float(row["balance"])
+        except Exception:
+            pass
+
+        # Bank account balances if available
+        try:
+            bank = await conn.fetchrow(
+                "SELECT COALESCE(available,0) as available, COALESCE(locked,0) as locked_amt "
+                "FROM account_balances WHERE account_id=$1", telegram_id
+            )
+            if bank:
+                balances["TON_available"] = float(bank["available"] or 0)
+                balances["TON_locked"] = float(bank["locked_amt"] or 0)
+        except Exception:
+            pass
+
+        # Deposits
+        deposits = []
+        try:
+            rows = await conn.fetch(
+                "SELECT id, amount, currency, tx_hash, status, plan_key, created_at "
+                "FROM deposits WHERE user_id=$1 ORDER BY created_at DESC LIMIT 20",
+                telegram_id
+            )
+            deposits = [{
+                "id": r["id"], "amount": float(r["amount"]), "currency": r["currency"],
+                "tx_hash": r["tx_hash"], "status": r["status"], "plan_key": r["plan_key"],
+                "created_at": r["created_at"].isoformat() if r["created_at"] else None,
+            } for r in rows]
+        except Exception:
+            pass
+
+        # Active staking positions
+        staking = []
+        try:
+            rows = await conn.fetch("""
+                SELECT id, plan, amount, currency, apy_monthly, lock_days,
+                       start_date, end_date, status, earned
+                  FROM staking_positions
+                 WHERE user_id=$1 AND status='active'
+                 ORDER BY start_date DESC
+            """, telegram_id)
+            staking = [{
+                "id": r["id"], "plan": r["plan"], "amount": float(r["amount"]),
+                "currency": r["currency"], "apy_monthly": float(r["apy_monthly"]),
+                "lock_days": r["lock_days"],
+                "start_date": r["start_date"].isoformat() if r["start_date"] else None,
+                "end_date": r["end_date"].isoformat() if r["end_date"] else None,
+                "status": r["status"], "earned": float(r["earned"] or 0),
+            } for r in rows]
+        except Exception:
+            pass
+
+        # Referral stats
+        referrals = {"direct_count": 0, "total_network": 0, "total_earned": 0.0}
+        try:
+            direct = await conn.fetchval(
+                "SELECT count(*) FROM referrals WHERE referrer_id=$1", telegram_id
+            ) or 0
+            earned = await conn.fetchval(
+                "SELECT COALESCE(SUM(commission_amount), 0) FROM referral_earnings WHERE earner_id=$1",
+                telegram_id
+            ) or 0
+            referrals = {
+                "direct_count": int(direct),
+                "total_network": int(direct),  # TODO: real recursive count
+                "total_earned": float(earned),
+            }
+        except Exception:
+            pass
+
+        # Recent transfers
+        transactions = []
+        try:
+            rows = await conn.fetch("""
+                SELECT id, from_user_id, to_user_id, token, amount, memo, tx_type, created_at
+                  FROM token_transfers
+                 WHERE from_user_id=$1 OR to_user_id=$1
+                 ORDER BY created_at DESC LIMIT 20
+            """, telegram_id)
+            transactions = [{
+                "id": r["id"],
+                "direction": "out" if r["from_user_id"] == telegram_id else "in",
+                "counterparty": r["to_user_id"] if r["from_user_id"] == telegram_id else r["from_user_id"],
+                "token": r["token"], "amount": float(r["amount"]),
+                "memo": r["memo"] or "", "tx_type": r["tx_type"],
+                "created_at": r["created_at"].isoformat() if r["created_at"] else None,
+            } for r in rows]
+        except Exception:
+            pass
+
+        # Marketplace activity
+        marketplace = {"listings": 0, "orders_bought": 0, "orders_sold": 0}
+        try:
+            marketplace["listings"] = int(await conn.fetchval(
+                "SELECT count(*) FROM marketplace_items WHERE seller_id=$1", telegram_id
+            ) or 0)
+            marketplace["orders_bought"] = int(await conn.fetchval(
+                "SELECT count(*) FROM marketplace_orders WHERE buyer_id=$1", telegram_id
+            ) or 0)
+            marketplace["orders_sold"] = int(await conn.fetchval(
+                "SELECT count(*) FROM marketplace_orders WHERE seller_id=$1", telegram_id
+            ) or 0)
+        except Exception:
+            pass
+
+        # Premium status
+        premium_status = "none"
+        try:
+            row = await conn.fetchrow(
+                "SELECT payment_status FROM premium_users WHERE user_id=$1 AND bot_name='expertnet'",
+                telegram_id
+            )
+            if row:
+                premium_status = row["payment_status"]
+        except Exception:
+            pass
+
+    return {
+        "profile": {
+            "telegram_id": profile["telegram_id"],
+            "username": profile["username"],
+            "first_name": profile["first_name"],
+            "photo_url": profile["photo_url"],
+            "last_login": profile["last_login"].isoformat() if profile["last_login"] else None,
+            "is_registered": profile["is_registered"],
+            "registered_at": profile["registered_at"].isoformat() if profile["registered_at"] else None,
+        },
+        "wallets": {
+            "ton_internal": SLH_TON_WALLET,  # shared project wallet
+            "eth_linked": profile["eth_wallet"],
+            "eth_linked_at": profile["eth_wallet_linked_at"].isoformat() if profile["eth_wallet_linked_at"] else None,
+            "ton_linked": profile["ton_wallet"],
+            "ton_linked_at": profile["ton_wallet_linked_at"].isoformat() if profile["ton_wallet_linked_at"] else None,
+        },
+        "balances": balances,
+        "deposits": deposits,
+        "staking": staking,
+        "referrals": referrals,
+        "transactions": transactions,
+        "marketplace": marketplace,
+        "premium": {
+            "status": premium_status,
+            "is_premium": premium_status == "approved",
+        },
+        "price_info": {
+            "slh_ils": SLH_PRICE_ILS,
+            "slh_usd": round(SLH_PRICE_ILS / USD_ILS_RATE, 4),
+            "registration_ils": REGISTRATION_PRICE_ILS,
+            "registration_usd": round(REGISTRATION_PRICE_ILS / USD_ILS_RATE, 4),
+        },
+    }
+
+
 # === MARKETPLACE ENDPOINTS ===
 class MarketplaceListRequest(BaseModel):
     seller_id: int
@@ -2086,9 +2276,10 @@ class MarketplaceListRequest(BaseModel):
     description: Optional[str] = ""
     price: float
     currency: Optional[str] = "SLH"
-    image_url: Optional[str] = ""
+    image_url: Optional[str] = ""  # URL or data:image/... base64
     category: Optional[str] = "general"
     stock: Optional[int] = 1
+    promotion: Optional[str] = "none"  # none | featured | top | homepage
 
 
 class MarketplaceBuyRequest(BaseModel):
@@ -2125,7 +2316,16 @@ async def marketplace_list_item(req: MarketplaceListRequest):
         raise HTTPException(400, f"Category must be one of: {sorted(ALLOWED_CATEGORIES)}")
     stock = max(1, int(req.stock or 1))
     description = (req.description or "").strip()[:2000]
-    image_url = (req.image_url or "").strip()[:500]
+    # Image: accept either regular URL (capped at 500 chars) or data:image/... base64 (3.5MB raw cap)
+    image_url = (req.image_url or "").strip()
+    if image_url.startswith("data:image/"):
+        if len(image_url) > 3_500_000:
+            raise HTTPException(413, "Image too large (max 2MB)")
+    else:
+        image_url = image_url[:500]
+    promotion = (req.promotion or "none").lower()
+    if promotion not in {"none", "featured", "top", "homepage"}:
+        promotion = "none"
 
     async with pool.acquire() as conn:
         exists = await conn.fetchval("SELECT 1 FROM web_users WHERE telegram_id=$1", req.seller_id)
@@ -2138,10 +2338,10 @@ async def marketplace_list_item(req: MarketplaceListRequest):
 
         row = await conn.fetchrow(f"""
             INSERT INTO marketplace_items
-                (seller_id, title, description, price, currency, image_url, category, stock, status, approved_at)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, {approved_at})
+                (seller_id, title, description, price, currency, image_url, category, stock, status, promotion, approved_at)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, {approved_at})
             RETURNING id, status, created_at
-        """, req.seller_id, title, description, req.price, currency, image_url, category, stock, initial_status)
+        """, req.seller_id, title, description, req.price, currency, image_url, category, stock, initial_status, promotion)
 
     print(f"[Marketplace] New listing #{row['id']} by {req.seller_id}: {title} ({req.price} {currency}) status={row['status']}")
     return {
@@ -2160,10 +2360,16 @@ async def marketplace_get_items(
     limit: int = Query(50, le=200),
     offset: int = 0
 ):
-    """List marketplace items. Default: approved only. Supports category filter."""
+    """List marketplace items. Default: approved only. Supports category filter.
+
+    Promoted items (homepage > top > featured > none) sort first.
+    """
     query = """
         SELECT mi.id, mi.seller_id, mi.title, mi.description, mi.price, mi.currency,
-               mi.image_url, mi.category, mi.stock, mi.status, mi.created_at, mi.approved_at,
+               mi.image_url, mi.category, mi.stock, mi.status,
+               COALESCE(mi.promotion, 'none') AS promotion,
+               COALESCE(mi.views, 0) AS views,
+               mi.created_at, mi.approved_at,
                COALESCE(wu.username, wu.first_name, '') AS seller_name
           FROM marketplace_items mi
           LEFT JOIN web_users wu ON wu.telegram_id = mi.seller_id
@@ -2176,7 +2382,16 @@ async def marketplace_get_items(
     if category:
         params.append(category.lower())
         query += f" AND mi.category = ${len(params)}"
-    query += " ORDER BY mi.created_at DESC"
+    query += """
+         ORDER BY
+            CASE COALESCE(mi.promotion, 'none')
+                WHEN 'homepage' THEN 0
+                WHEN 'top' THEN 1
+                WHEN 'featured' THEN 2
+                ELSE 3
+            END,
+            mi.created_at DESC
+    """
     params.append(limit)
     query += f" LIMIT ${len(params)}"
     params.append(offset)
@@ -2199,6 +2414,8 @@ async def marketplace_get_items(
             "category": r["category"],
             "stock": r["stock"],
             "status": r["status"],
+            "promotion": r["promotion"] or "none",
+            "views": r["views"] or 0,
             "created_at": r["created_at"].isoformat() if r["created_at"] else None,
             "approved_at": r["approved_at"].isoformat() if r["approved_at"] else None,
         })
