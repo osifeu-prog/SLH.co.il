@@ -2086,6 +2086,82 @@ async def admin_dashboard():
     }
 
 
+# === AUTO-SYNC FROM TELEGRAM BOT (no login widget required) ===
+class BotSyncRequest(BaseModel):
+    telegram_id: int
+    username: Optional[str] = ""
+    first_name: Optional[str] = ""
+    photo_url: Optional[str] = ""
+    referrer_id: Optional[int] = None
+    bot_secret: str  # required to prevent anyone from creating users via this endpoint
+
+
+BOT_SYNC_SECRET = os.getenv("BOT_SYNC_SECRET", "slh-bot-sync-2026-default-please-override")
+
+
+@app.post("/api/auth/bot-sync")
+async def auth_bot_sync(req: BotSyncRequest):
+    """Called by SLH_AIR_bot whenever a user presses /start.
+
+    Creates / updates the user in web_users so they can log into the
+    website / mini-app using the same Telegram ID WITHOUT going through
+    @userinfobot or the Telegram Login Widget. This is the core of the
+    seamless registration UX: open bot → press /start → you're in.
+
+    The bot passes a shared secret so random clients can't create users.
+    Returns a short-lived JWT so the bot can generate a "login link" that
+    drops the user straight into their dashboard.
+    """
+    if not req.bot_secret or req.bot_secret != BOT_SYNC_SECRET:
+        raise HTTPException(403, "Invalid bot secret")
+    if not req.telegram_id:
+        raise HTTPException(400, "telegram_id required")
+
+    async with pool.acquire() as conn:
+        # Upsert the user
+        await conn.execute("""
+            INSERT INTO web_users
+                (telegram_id, username, first_name, photo_url, auth_date, last_login)
+            VALUES ($1, $2, $3, $4, EXTRACT(EPOCH FROM NOW())::BIGINT, CURRENT_TIMESTAMP)
+            ON CONFLICT (telegram_id) DO UPDATE SET
+                username = COALESCE(NULLIF(EXCLUDED.username, ''), web_users.username),
+                first_name = COALESCE(NULLIF(EXCLUDED.first_name, ''), web_users.first_name),
+                photo_url = COALESCE(NULLIF(EXCLUDED.photo_url, ''), web_users.photo_url),
+                last_login = CURRENT_TIMESTAMP
+        """, req.telegram_id, req.username or "", req.first_name or "", req.photo_url or "")
+
+        # Record referral if given
+        if req.referrer_id and req.referrer_id != req.telegram_id:
+            try:
+                await conn.execute("""
+                    INSERT INTO referrals (user_id, referrer_id, depth)
+                    VALUES ($1, $2, 1)
+                    ON CONFLICT (user_id) DO NOTHING
+                """, req.telegram_id, req.referrer_id)
+            except Exception as e:
+                print(f"[bot-sync] referral write failed: {e}")
+
+        is_registered = await conn.fetchval(
+            "SELECT is_registered FROM web_users WHERE telegram_id=$1", req.telegram_id
+        ) or False
+
+    # Issue JWT for auto-login
+    token = None
+    try:
+        token = create_jwt(req.telegram_id, req.username or "")
+    except Exception as e:
+        print(f"[bot-sync] jwt creation failed: {e}")
+
+    print(f"[bot-sync] Synced user {req.telegram_id} (@{req.username}) — registered={is_registered}")
+    return {
+        "ok": True,
+        "telegram_id": req.telegram_id,
+        "is_registered": is_registered,
+        "jwt": token,
+        "login_url": f"https://slh-nft.com/dashboard.html?uid={req.telegram_id}&jwt={token}" if token else None,
+    }
+
+
 # === UNIFIED USER ENDPOINT (single call for everything) ===
 @app.get("/api/user/full/{telegram_id}")
 async def get_user_full(telegram_id: int):
