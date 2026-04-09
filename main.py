@@ -2145,12 +2145,19 @@ async def auth_bot_sync(req: BotSyncRequest):
             "SELECT is_registered FROM web_users WHERE telegram_id=$1", req.telegram_id
         ) or False
 
-    # Issue JWT for auto-login
+    # Issue JWT for auto-login (graceful fallback if JWT_SECRET missing)
     token = None
     try:
         token = create_jwt(req.telegram_id, req.username or "")
     except Exception as e:
-        print(f"[bot-sync] jwt creation failed: {e}")
+        print(f"[bot-sync] jwt creation failed (JWT_SECRET missing?): {e}")
+
+    # Always return a login URL — even without JWT, the dashboard accepts ?uid=
+    login_url = (
+        f"https://slh-nft.com/dashboard.html?uid={req.telegram_id}&jwt={token}"
+        if token else
+        f"https://slh-nft.com/dashboard.html?uid={req.telegram_id}"
+    )
 
     print(f"[bot-sync] Synced user {req.telegram_id} (@{req.username}) — registered={is_registered}")
     return {
@@ -2158,7 +2165,7 @@ async def auth_bot_sync(req: BotSyncRequest):
         "telegram_id": req.telegram_id,
         "is_registered": is_registered,
         "jwt": token,
-        "login_url": f"https://slh-nft.com/dashboard.html?uid={req.telegram_id}&jwt={token}" if token else None,
+        "login_url": login_url,
     }
 
 
