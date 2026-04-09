@@ -286,8 +286,11 @@ async def startup():
             INSERT INTO web_users (telegram_id, username, first_name, auth_date, last_login, is_registered, registered_at)
             VALUES ($1, $2, $3, EXTRACT(EPOCH FROM NOW())::BIGINT, CURRENT_TIMESTAMP, TRUE, CURRENT_TIMESTAMP)
             ON CONFLICT (telegram_id) DO UPDATE SET
-                username = COALESCE(NULLIF(web_users.username, ''), EXCLUDED.username),
-                first_name = COALESCE(NULLIF(web_users.first_name, ''), EXCLUDED.first_name),
+                username = EXCLUDED.username,
+                first_name = CASE
+                    WHEN web_users.first_name IN ('', 'User') THEN EXCLUDED.first_name
+                    ELSE web_users.first_name
+                END,
                 is_registered = TRUE,
                 registered_at = COALESCE(web_users.registered_at, CURRENT_TIMESTAMP)
         """, ADMIN_USER_ID, admin_username, admin_first_name)
