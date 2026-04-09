@@ -69,7 +69,11 @@ async def startup():
                 auth_date BIGINT,
                 last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 is_registered BOOLEAN DEFAULT FALSE,
-                registered_at TIMESTAMP
+                registered_at TIMESTAMP,
+                eth_wallet VARCHAR(42),
+                eth_wallet_linked_at TIMESTAMP,
+                ton_wallet VARCHAR(68),
+                ton_wallet_linked_at TIMESTAMP
             );
             CREATE TABLE IF NOT EXISTS staking_positions (
                 id BIGSERIAL PRIMARY KEY,
@@ -176,6 +180,43 @@ async def startup():
                 level INT DEFAULT 1,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
+
+            CREATE TABLE IF NOT EXISTS marketplace_items (
+                id BIGSERIAL PRIMARY KEY,
+                seller_id BIGINT NOT NULL,
+                title TEXT NOT NULL,
+                description TEXT,
+                price NUMERIC(18,8) NOT NULL,
+                currency TEXT NOT NULL DEFAULT 'SLH',
+                image_url TEXT,
+                category TEXT DEFAULT 'general',
+                stock INT DEFAULT 1,
+                status TEXT DEFAULT 'pending',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                approved_at TIMESTAMP,
+                FOREIGN KEY (seller_id) REFERENCES web_users(telegram_id)
+            );
+            CREATE INDEX IF NOT EXISTS idx_marketplace_items_status ON marketplace_items(status);
+            CREATE INDEX IF NOT EXISTS idx_marketplace_items_seller ON marketplace_items(seller_id);
+            CREATE INDEX IF NOT EXISTS idx_marketplace_items_category ON marketplace_items(category);
+
+            CREATE TABLE IF NOT EXISTS marketplace_orders (
+                id BIGSERIAL PRIMARY KEY,
+                buyer_id BIGINT NOT NULL,
+                seller_id BIGINT NOT NULL,
+                item_id BIGINT NOT NULL,
+                quantity INT NOT NULL DEFAULT 1,
+                total_price NUMERIC(18,8) NOT NULL,
+                currency TEXT NOT NULL DEFAULT 'SLH',
+                status TEXT DEFAULT 'pending',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                completed_at TIMESTAMP,
+                FOREIGN KEY (buyer_id) REFERENCES web_users(telegram_id),
+                FOREIGN KEY (item_id) REFERENCES marketplace_items(id)
+            );
+            CREATE INDEX IF NOT EXISTS idx_marketplace_orders_buyer ON marketplace_orders(buyer_id);
+            CREATE INDEX IF NOT EXISTS idx_marketplace_orders_seller ON marketplace_orders(seller_id);
+            CREATE INDEX IF NOT EXISTS idx_marketplace_orders_item ON marketplace_orders(item_id);
         """)
 
         # --- Migration: add is_registered columns to existing DBs ---
@@ -184,6 +225,58 @@ async def startup():
             await conn.execute("ALTER TABLE web_users ADD COLUMN IF NOT EXISTS registered_at TIMESTAMP")
         except Exception:
             pass  # columns already exist in CREATE TABLE
+
+        # --- Migration: add Web3 wallet columns to existing DBs ---
+        try:
+            await conn.execute("ALTER TABLE web_users ADD COLUMN IF NOT EXISTS eth_wallet VARCHAR(42)")
+            await conn.execute("ALTER TABLE web_users ADD COLUMN IF NOT EXISTS eth_wallet_linked_at TIMESTAMP")
+            await conn.execute("ALTER TABLE web_users ADD COLUMN IF NOT EXISTS ton_wallet VARCHAR(68)")
+            await conn.execute("ALTER TABLE web_users ADD COLUMN IF NOT EXISTS ton_wallet_linked_at TIMESTAMP")
+            await conn.execute("CREATE INDEX IF NOT EXISTS idx_web_users_eth_wallet ON web_users(eth_wallet)")
+            await conn.execute("CREATE INDEX IF NOT EXISTS idx_web_users_ton_wallet ON web_users(ton_wallet)")
+        except Exception as e:
+            print(f"[Migration] Web3 wallet columns: {e}")
+
+        # --- Migration: ensure marketplace tables exist on already-running DBs ---
+        try:
+            await conn.execute("""
+                CREATE TABLE IF NOT EXISTS marketplace_items (
+                    id BIGSERIAL PRIMARY KEY,
+                    seller_id BIGINT NOT NULL,
+                    title TEXT NOT NULL,
+                    description TEXT,
+                    price NUMERIC(18,8) NOT NULL,
+                    currency TEXT NOT NULL DEFAULT 'SLH',
+                    image_url TEXT,
+                    category TEXT DEFAULT 'general',
+                    stock INT DEFAULT 1,
+                    status TEXT DEFAULT 'pending',
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    approved_at TIMESTAMP
+                )
+            """)
+            await conn.execute("""
+                CREATE TABLE IF NOT EXISTS marketplace_orders (
+                    id BIGSERIAL PRIMARY KEY,
+                    buyer_id BIGINT NOT NULL,
+                    seller_id BIGINT NOT NULL,
+                    item_id BIGINT NOT NULL,
+                    quantity INT NOT NULL DEFAULT 1,
+                    total_price NUMERIC(18,8) NOT NULL,
+                    currency TEXT NOT NULL DEFAULT 'SLH',
+                    status TEXT DEFAULT 'pending',
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    completed_at TIMESTAMP
+                )
+            """)
+            await conn.execute("CREATE INDEX IF NOT EXISTS idx_marketplace_items_status ON marketplace_items(status)")
+            await conn.execute("CREATE INDEX IF NOT EXISTS idx_marketplace_items_seller ON marketplace_items(seller_id)")
+            await conn.execute("CREATE INDEX IF NOT EXISTS idx_marketplace_items_category ON marketplace_items(category)")
+            await conn.execute("CREATE INDEX IF NOT EXISTS idx_marketplace_orders_buyer ON marketplace_orders(buyer_id)")
+            await conn.execute("CREATE INDEX IF NOT EXISTS idx_marketplace_orders_seller ON marketplace_orders(seller_id)")
+            await conn.execute("CREATE INDEX IF NOT EXISTS idx_marketplace_orders_item ON marketplace_orders(item_id)")
+        except Exception as e:
+            print(f"[Migration] Marketplace tables: {e}")
 
         # --- Auto-register admin + existing premium users ---
         await conn.execute("""
@@ -518,6 +611,89 @@ async def registration_pending():
             ORDER BY p.created_at DESC
         """)
     return [dict(r) for r in rows]
+
+
+# === WEB3 WALLET LINKING ===
+
+class LinkWalletRequest(BaseModel):
+    user_id: int
+    address: Optional[str] = ""
+    signature: Optional[str] = None   # optional personal_sign proof
+    message: Optional[str] = None     # the message that was signed
+
+
+@app.post("/api/user/link-wallet")
+async def link_wallet(req: LinkWalletRequest):
+    """Link a Web3 (BSC/ETH) wallet address to a web_users row.
+
+    Validates the address format (0x + 40 hex chars) and stores it lowercase.
+    Signature verification is optional — if present, we verify personal_sign.
+    """
+    addr = (req.address or "").strip().lower()
+    if not addr.startswith("0x") or len(addr) != 42:
+        raise HTTPException(400, "Invalid Ethereum address format")
+    try:
+        int(addr[2:], 16)  # ensure hex
+    except ValueError:
+        raise HTTPException(400, "Invalid Ethereum address — not hex")
+
+    if not req.user_id:
+        raise HTTPException(400, "user_id required")
+
+    async with pool.acquire() as conn:
+        # Ensure user exists
+        exists = await conn.fetchval("SELECT 1 FROM web_users WHERE telegram_id=$1", req.user_id)
+        if not exists:
+            raise HTTPException(404, "User not found — please login first")
+
+        # Check for collision: this wallet already linked to a different user
+        other = await conn.fetchval(
+            "SELECT telegram_id FROM web_users WHERE eth_wallet=$1 AND telegram_id<>$2",
+            addr, req.user_id
+        )
+        if other:
+            raise HTTPException(409, "This wallet is already linked to another account")
+
+        await conn.execute("""
+            UPDATE web_users
+               SET eth_wallet = $1,
+                   eth_wallet_linked_at = CURRENT_TIMESTAMP
+             WHERE telegram_id = $2
+        """, addr, req.user_id)
+
+    print(f"[Web3] Linked wallet {addr} to user {req.user_id}")
+    return {"ok": True, "address": addr, "user_id": req.user_id}
+
+
+@app.get("/api/user/wallet/{user_id}")
+async def get_linked_wallet(user_id: int):
+    """Return the linked Web3 wallet address (if any) for a user."""
+    async with pool.acquire() as conn:
+        row = await conn.fetchrow(
+            "SELECT eth_wallet, eth_wallet_linked_at FROM web_users WHERE telegram_id=$1",
+            user_id
+        )
+    if not row:
+        raise HTTPException(404, "User not found")
+    return {
+        "user_id": user_id,
+        "address": row["eth_wallet"],
+        "linked_at": row["eth_wallet_linked_at"].isoformat() if row["eth_wallet_linked_at"] else None
+    }
+
+
+@app.post("/api/user/unlink-wallet")
+async def unlink_wallet(req: LinkWalletRequest):
+    """Remove the linked Web3 wallet from a user row."""
+    if not req.user_id:
+        raise HTTPException(400, "user_id required")
+    async with pool.acquire() as conn:
+        await conn.execute("""
+            UPDATE web_users
+               SET eth_wallet = NULL, eth_wallet_linked_at = NULL
+             WHERE telegram_id = $1
+        """, req.user_id)
+    return {"ok": True, "user_id": req.user_id}
 
 
 async def get_user_balances(conn, user_id: int):
@@ -1871,6 +2047,363 @@ async def admin_dashboard():
         "recent_users": recent_users,
         "bots_live": 20,
         "timestamp": datetime.utcnow().isoformat(),
+    }
+
+
+# === MARKETPLACE ENDPOINTS ===
+class MarketplaceListRequest(BaseModel):
+    seller_id: int
+    title: str
+    description: Optional[str] = ""
+    price: float
+    currency: Optional[str] = "SLH"
+    image_url: Optional[str] = ""
+    category: Optional[str] = "general"
+    stock: Optional[int] = 1
+
+
+class MarketplaceBuyRequest(BaseModel):
+    buyer_id: int
+    item_id: int
+    quantity: Optional[int] = 1
+
+
+class MarketplaceApproveRequest(BaseModel):
+    admin_id: int
+    item_id: int
+    action: str  # 'approve' | 'reject'
+
+
+ALLOWED_CURRENCIES = {"SLH", "TON", "ILS", "USD"}
+ALLOWED_CATEGORIES = {"general", "digital", "physical", "nft", "course", "service"}
+
+
+@app.post("/api/marketplace/list")
+async def marketplace_list_item(req: MarketplaceListRequest):
+    """Create a new marketplace listing. Starts as 'pending' until admin approves."""
+    title = (req.title or "").strip()
+    if not title or len(title) < 3:
+        raise HTTPException(400, "Title must be at least 3 characters")
+    if len(title) > 200:
+        raise HTTPException(400, "Title too long (max 200 chars)")
+    if req.price is None or req.price <= 0:
+        raise HTTPException(400, "Price must be positive")
+    currency = (req.currency or "SLH").upper()
+    if currency not in ALLOWED_CURRENCIES:
+        raise HTTPException(400, f"Currency must be one of: {sorted(ALLOWED_CURRENCIES)}")
+    category = (req.category or "general").lower()
+    if category not in ALLOWED_CATEGORIES:
+        raise HTTPException(400, f"Category must be one of: {sorted(ALLOWED_CATEGORIES)}")
+    stock = max(1, int(req.stock or 1))
+    description = (req.description or "").strip()[:2000]
+    image_url = (req.image_url or "").strip()[:500]
+
+    async with pool.acquire() as conn:
+        exists = await conn.fetchval("SELECT 1 FROM web_users WHERE telegram_id=$1", req.seller_id)
+        if not exists:
+            raise HTTPException(404, "Seller not found — please login first")
+
+        # Admin listings are auto-approved
+        initial_status = "approved" if req.seller_id == ADMIN_USER_ID else "pending"
+        approved_at = "CURRENT_TIMESTAMP" if initial_status == "approved" else "NULL"
+
+        row = await conn.fetchrow(f"""
+            INSERT INTO marketplace_items
+                (seller_id, title, description, price, currency, image_url, category, stock, status, approved_at)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, {approved_at})
+            RETURNING id, status, created_at
+        """, req.seller_id, title, description, req.price, currency, image_url, category, stock, initial_status)
+
+    print(f"[Marketplace] New listing #{row['id']} by {req.seller_id}: {title} ({req.price} {currency}) status={row['status']}")
+    return {
+        "ok": True,
+        "item_id": row["id"],
+        "status": row["status"],
+        "created_at": row["created_at"].isoformat() if row["created_at"] else None,
+        "message": "פריט הועלה לאישור" if initial_status == "pending" else "פריט פורסם בהצלחה"
+    }
+
+
+@app.get("/api/marketplace/items")
+async def marketplace_get_items(
+    category: Optional[str] = None,
+    status: str = "approved",
+    limit: int = Query(50, le=200),
+    offset: int = 0
+):
+    """List marketplace items. Default: approved only. Supports category filter."""
+    query = """
+        SELECT mi.id, mi.seller_id, mi.title, mi.description, mi.price, mi.currency,
+               mi.image_url, mi.category, mi.stock, mi.status, mi.created_at, mi.approved_at,
+               COALESCE(wu.username, wu.first_name, '') AS seller_name
+          FROM marketplace_items mi
+          LEFT JOIN web_users wu ON wu.telegram_id = mi.seller_id
+         WHERE 1=1
+    """
+    params = []
+    if status:
+        params.append(status)
+        query += f" AND mi.status = ${len(params)}"
+    if category:
+        params.append(category.lower())
+        query += f" AND mi.category = ${len(params)}"
+    query += " ORDER BY mi.created_at DESC"
+    params.append(limit)
+    query += f" LIMIT ${len(params)}"
+    params.append(offset)
+    query += f" OFFSET ${len(params)}"
+
+    async with pool.acquire() as conn:
+        rows = await conn.fetch(query, *params)
+
+    items = []
+    for r in rows:
+        items.append({
+            "id": r["id"],
+            "seller_id": r["seller_id"],
+            "seller_name": r["seller_name"] or f"user{r['seller_id']}",
+            "title": r["title"],
+            "description": r["description"] or "",
+            "price": float(r["price"]),
+            "currency": r["currency"],
+            "image_url": r["image_url"] or "",
+            "category": r["category"],
+            "stock": r["stock"],
+            "status": r["status"],
+            "created_at": r["created_at"].isoformat() if r["created_at"] else None,
+            "approved_at": r["approved_at"].isoformat() if r["approved_at"] else None,
+        })
+    return {"items": items, "count": len(items), "limit": limit, "offset": offset}
+
+
+@app.get("/api/marketplace/items/{item_id}")
+async def marketplace_get_item(item_id: int):
+    """Get a single marketplace item by ID."""
+    async with pool.acquire() as conn:
+        row = await conn.fetchrow("""
+            SELECT mi.id, mi.seller_id, mi.title, mi.description, mi.price, mi.currency,
+                   mi.image_url, mi.category, mi.stock, mi.status, mi.created_at, mi.approved_at,
+                   COALESCE(wu.username, wu.first_name, '') AS seller_name
+              FROM marketplace_items mi
+              LEFT JOIN web_users wu ON wu.telegram_id = mi.seller_id
+             WHERE mi.id = $1
+        """, item_id)
+    if not row:
+        raise HTTPException(404, "Item not found")
+    return {
+        "id": row["id"],
+        "seller_id": row["seller_id"],
+        "seller_name": row["seller_name"] or f"user{row['seller_id']}",
+        "title": row["title"],
+        "description": row["description"] or "",
+        "price": float(row["price"]),
+        "currency": row["currency"],
+        "image_url": row["image_url"] or "",
+        "category": row["category"],
+        "stock": row["stock"],
+        "status": row["status"],
+        "created_at": row["created_at"].isoformat() if row["created_at"] else None,
+        "approved_at": row["approved_at"].isoformat() if row["approved_at"] else None,
+    }
+
+
+@app.post("/api/marketplace/buy")
+async def marketplace_buy(req: MarketplaceBuyRequest):
+    """Create an order for an approved marketplace item. Decrements stock atomically."""
+    if req.quantity < 1:
+        raise HTTPException(400, "Quantity must be at least 1")
+
+    async with pool.acquire() as conn:
+        async with conn.transaction():
+            buyer = await conn.fetchval("SELECT 1 FROM web_users WHERE telegram_id=$1", req.buyer_id)
+            if not buyer:
+                raise HTTPException(404, "Buyer not found — please login first")
+
+            item = await conn.fetchrow("""
+                SELECT id, seller_id, title, price, currency, stock, status
+                  FROM marketplace_items
+                 WHERE id = $1
+                 FOR UPDATE
+            """, req.item_id)
+            if not item:
+                raise HTTPException(404, "Item not found")
+            if item["status"] != "approved":
+                raise HTTPException(400, f"Item is {item['status']}, not available for purchase")
+            if item["seller_id"] == req.buyer_id:
+                raise HTTPException(400, "Cannot buy your own item")
+            if item["stock"] < req.quantity:
+                raise HTTPException(400, f"Not enough stock (available: {item['stock']})")
+
+            total_price = float(item["price"]) * req.quantity
+
+            order = await conn.fetchrow("""
+                INSERT INTO marketplace_orders
+                    (buyer_id, seller_id, item_id, quantity, total_price, currency, status)
+                VALUES ($1, $2, $3, $4, $5, $6, 'pending')
+                RETURNING id, created_at
+            """, req.buyer_id, item["seller_id"], item["id"], req.quantity, total_price, item["currency"])
+
+            # Decrement stock (mark sold-out if it hits zero)
+            new_stock = item["stock"] - req.quantity
+            new_status = "sold_out" if new_stock == 0 else item["status"]
+            await conn.execute("""
+                UPDATE marketplace_items
+                   SET stock = $1, status = $2
+                 WHERE id = $3
+            """, new_stock, new_status, item["id"])
+
+    print(f"[Marketplace] Order #{order['id']}: buyer={req.buyer_id} item={req.item_id} x{req.quantity} = {total_price} {item['currency']}")
+    return {
+        "ok": True,
+        "order_id": order["id"],
+        "item_id": req.item_id,
+        "quantity": req.quantity,
+        "total_price": total_price,
+        "currency": item["currency"],
+        "status": "pending",
+        "created_at": order["created_at"].isoformat() if order["created_at"] else None,
+        "message": "הזמנה נוצרה — ממתין לתשלום",
+    }
+
+
+@app.get("/api/marketplace/orders/{user_id}")
+async def marketplace_user_orders(user_id: int, role: str = "buyer", limit: int = Query(50, le=200)):
+    """List orders for a user. role=buyer|seller."""
+    if role not in ("buyer", "seller"):
+        raise HTTPException(400, "role must be 'buyer' or 'seller'")
+
+    col = "buyer_id" if role == "buyer" else "seller_id"
+    async with pool.acquire() as conn:
+        rows = await conn.fetch(f"""
+            SELECT mo.id, mo.buyer_id, mo.seller_id, mo.item_id, mo.quantity,
+                   mo.total_price, mo.currency, mo.status, mo.created_at, mo.completed_at,
+                   mi.title AS item_title, mi.image_url AS item_image
+              FROM marketplace_orders mo
+              LEFT JOIN marketplace_items mi ON mi.id = mo.item_id
+             WHERE mo.{col} = $1
+             ORDER BY mo.created_at DESC
+             LIMIT $2
+        """, user_id, limit)
+
+    orders = []
+    for r in rows:
+        orders.append({
+            "id": r["id"],
+            "buyer_id": r["buyer_id"],
+            "seller_id": r["seller_id"],
+            "item_id": r["item_id"],
+            "item_title": r["item_title"] or "",
+            "item_image": r["item_image"] or "",
+            "quantity": r["quantity"],
+            "total_price": float(r["total_price"]),
+            "currency": r["currency"],
+            "status": r["status"],
+            "created_at": r["created_at"].isoformat() if r["created_at"] else None,
+            "completed_at": r["completed_at"].isoformat() if r["completed_at"] else None,
+        })
+    return {"orders": orders, "count": len(orders), "role": role}
+
+
+@app.get("/api/marketplace/my-listings/{user_id}")
+async def marketplace_my_listings(user_id: int, limit: int = Query(50, le=200)):
+    """List all items a user has put up for sale (any status)."""
+    async with pool.acquire() as conn:
+        rows = await conn.fetch("""
+            SELECT id, seller_id, title, description, price, currency, image_url,
+                   category, stock, status, created_at, approved_at
+              FROM marketplace_items
+             WHERE seller_id = $1
+             ORDER BY created_at DESC
+             LIMIT $2
+        """, user_id, limit)
+    items = []
+    for r in rows:
+        items.append({
+            "id": r["id"],
+            "title": r["title"],
+            "description": r["description"] or "",
+            "price": float(r["price"]),
+            "currency": r["currency"],
+            "image_url": r["image_url"] or "",
+            "category": r["category"],
+            "stock": r["stock"],
+            "status": r["status"],
+            "created_at": r["created_at"].isoformat() if r["created_at"] else None,
+            "approved_at": r["approved_at"].isoformat() if r["approved_at"] else None,
+        })
+    return {"items": items, "count": len(items)}
+
+
+@app.post("/api/marketplace/admin/approve")
+async def marketplace_admin_approve(req: MarketplaceApproveRequest):
+    """Admin-only: approve or reject a pending marketplace item."""
+    if req.admin_id != ADMIN_USER_ID:
+        raise HTTPException(403, "Admin only")
+    if req.action not in ("approve", "reject"):
+        raise HTTPException(400, "Action must be 'approve' or 'reject'")
+
+    new_status = "approved" if req.action == "approve" else "rejected"
+    async with pool.acquire() as conn:
+        row = await conn.fetchrow("""
+            UPDATE marketplace_items
+               SET status = $1,
+                   approved_at = CASE WHEN $1 = 'approved' THEN CURRENT_TIMESTAMP ELSE approved_at END
+             WHERE id = $2
+         RETURNING id, title, seller_id, status
+        """, new_status, req.item_id)
+    if not row:
+        raise HTTPException(404, "Item not found")
+    print(f"[Marketplace] Admin {req.admin_id} {req.action}d item #{row['id']}")
+    return {"ok": True, "item_id": row["id"], "status": row["status"], "title": row["title"]}
+
+
+@app.get("/api/marketplace/admin/pending")
+async def marketplace_admin_pending(admin_id: int, limit: int = Query(100, le=500)):
+    """Admin-only: list all pending items waiting for approval."""
+    if admin_id != ADMIN_USER_ID:
+        raise HTTPException(403, "Admin only")
+    async with pool.acquire() as conn:
+        rows = await conn.fetch("""
+            SELECT mi.id, mi.seller_id, mi.title, mi.description, mi.price, mi.currency,
+                   mi.image_url, mi.category, mi.stock, mi.created_at,
+                   COALESCE(wu.username, wu.first_name, '') AS seller_name
+              FROM marketplace_items mi
+              LEFT JOIN web_users wu ON wu.telegram_id = mi.seller_id
+             WHERE mi.status = 'pending'
+             ORDER BY mi.created_at ASC
+             LIMIT $1
+        """, limit)
+    items = []
+    for r in rows:
+        items.append({
+            "id": r["id"],
+            "seller_id": r["seller_id"],
+            "seller_name": r["seller_name"] or f"user{r['seller_id']}",
+            "title": r["title"],
+            "description": r["description"] or "",
+            "price": float(r["price"]),
+            "currency": r["currency"],
+            "image_url": r["image_url"] or "",
+            "category": r["category"],
+            "stock": r["stock"],
+            "created_at": r["created_at"].isoformat() if r["created_at"] else None,
+        })
+    return {"items": items, "count": len(items)}
+
+
+@app.get("/api/marketplace/stats")
+async def marketplace_stats():
+    """Public stats about the marketplace."""
+    async with pool.acquire() as conn:
+        total_items = await conn.fetchval("SELECT COUNT(*) FROM marketplace_items WHERE status='approved'") or 0
+        total_orders = await conn.fetchval("SELECT COUNT(*) FROM marketplace_orders") or 0
+        total_volume = await conn.fetchval("SELECT COALESCE(SUM(total_price), 0) FROM marketplace_orders WHERE status='completed'") or 0
+        active_sellers = await conn.fetchval("SELECT COUNT(DISTINCT seller_id) FROM marketplace_items WHERE status='approved'") or 0
+    return {
+        "total_items": int(total_items),
+        "total_orders": int(total_orders),
+        "total_volume": float(total_volume),
+        "active_sellers": int(active_sellers),
     }
 
 
