@@ -279,10 +279,19 @@ async def startup():
             print(f"[Migration] Marketplace tables: {e}")
 
         # --- Auto-register admin + existing premium users ---
+        # Ensure admin row exists with sane defaults (first-run bootstrap)
+        admin_username = os.getenv("ADMIN_USERNAME", "osifeu_prog")
+        admin_first_name = os.getenv("ADMIN_FIRST_NAME", "Osif")
         await conn.execute("""
-            UPDATE web_users SET is_registered = TRUE, registered_at = COALESCE(registered_at, CURRENT_TIMESTAMP)
-            WHERE telegram_id = $1 AND is_registered = FALSE
-        """, ADMIN_USER_ID)
+            INSERT INTO web_users (telegram_id, username, first_name, auth_date, last_login, is_registered, registered_at)
+            VALUES ($1, $2, $3, EXTRACT(EPOCH FROM NOW())::BIGINT, CURRENT_TIMESTAMP, TRUE, CURRENT_TIMESTAMP)
+            ON CONFLICT (telegram_id) DO UPDATE SET
+                username = COALESCE(NULLIF(web_users.username, ''), EXCLUDED.username),
+                first_name = COALESCE(NULLIF(web_users.first_name, ''), EXCLUDED.first_name),
+                is_registered = TRUE,
+                registered_at = COALESCE(web_users.registered_at, CURRENT_TIMESTAMP)
+        """, ADMIN_USER_ID, admin_username, admin_first_name)
+
         await conn.execute("""
             UPDATE web_users SET is_registered = TRUE, registered_at = COALESCE(registered_at, CURRENT_TIMESTAMP)
             WHERE is_registered = FALSE AND telegram_id IN (
@@ -742,7 +751,11 @@ async def get_user(telegram_id: int):
         user = None
         try:
             user = await conn.fetchrow(
-                "SELECT telegram_id, username, first_name, photo_url, auth_date, last_login FROM web_users WHERE telegram_id=$1", telegram_id
+                """SELECT telegram_id, username, first_name, photo_url, auth_date, last_login,
+                          is_registered, registered_at, eth_wallet, eth_wallet_linked_at,
+                          ton_wallet, ton_wallet_linked_at
+                     FROM web_users WHERE telegram_id=$1""",
+                telegram_id
             )
         except Exception:
             pass
@@ -1419,9 +1432,12 @@ CREATE TABLE IF NOT EXISTS community_posts (
     telegram_id TEXT,
     text TEXT NOT NULL,
     category TEXT NOT NULL DEFAULT 'general',
+    image_data TEXT,
     likes_count INT NOT NULL DEFAULT 0,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+-- Migration: add image_data for existing DBs
+ALTER TABLE community_posts ADD COLUMN IF NOT EXISTS image_data TEXT;
 CREATE TABLE IF NOT EXISTS community_likes (
     id BIGSERIAL PRIMARY KEY,
     post_id BIGINT NOT NULL REFERENCES community_posts(id) ON DELETE CASCADE,
@@ -1478,6 +1494,7 @@ class CommunityPostCreate(BaseModel):
     text: str
     category: str = "general"
     telegram_id: Optional[str] = None
+    image_data: Optional[str] = None  # base64 data URL, stored as-is (frontend-capped to 2MB)
 
 class CommunityLikeToggle(BaseModel):
     username: str
@@ -1493,12 +1510,12 @@ async def community_get_posts(category: str = Query("all"), limit: int = Query(5
     async with pool.acquire() as conn:
         if category == "all":
             rows = await conn.fetch(
-                "SELECT id, username, telegram_id, text, category, likes_count, created_at FROM community_posts ORDER BY created_at DESC LIMIT $1 OFFSET $2",
+                "SELECT id, username, telegram_id, text, category, image_data, likes_count, created_at FROM community_posts ORDER BY created_at DESC LIMIT $1 OFFSET $2",
                 limit, offset
             )
         else:
             rows = await conn.fetch(
-                "SELECT id, username, telegram_id, text, category, likes_count, created_at FROM community_posts WHERE category=$1 ORDER BY created_at DESC LIMIT $2 OFFSET $3",
+                "SELECT id, username, telegram_id, text, category, image_data, likes_count, created_at FROM community_posts WHERE category=$1 ORDER BY created_at DESC LIMIT $2 OFFSET $3",
                 category, limit, offset
             )
         posts = []
@@ -1524,10 +1541,19 @@ async def community_create_post(body: CommunityPostCreate):
         raise HTTPException(400, "Username and text required")
     if not _check_community_rate(f"post:{body.username}", 10):
         raise HTTPException(429, "Rate limit: max 10 posts per hour")
+
+    # Image validation: accept data URL only (frontend caps at 2MB), reject suspicious URLs
+    image_data = body.image_data
+    if image_data:
+        if not image_data.startswith("data:image/"):
+            image_data = None  # silently drop if not a proper data URL
+        elif len(image_data) > 3_500_000:  # 2MB base64 ≈ 2.7MB encoded, +safety
+            raise HTTPException(413, "Image too large (max 2MB)")
+
     async with pool.acquire() as conn:
         row = await conn.fetchrow(
-            "INSERT INTO community_posts (username, telegram_id, text, category) VALUES ($1,$2,$3,$4) RETURNING id, username, telegram_id, text, category, likes_count, created_at",
-            body.username.strip(), body.telegram_id, body.text.strip(), body.category
+            "INSERT INTO community_posts (username, telegram_id, text, category, image_data) VALUES ($1,$2,$3,$4,$5) RETURNING id, username, telegram_id, text, category, image_data, likes_count, created_at",
+            body.username.strip(), body.telegram_id, body.text.strip(), body.category, image_data
         )
         post = dict(row)
         post["created_at"] = post["created_at"].isoformat()
