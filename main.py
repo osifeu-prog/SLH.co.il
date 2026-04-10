@@ -240,6 +240,42 @@ async def startup():
         except Exception as e:
             print(f"[Migration] Web3 wallet columns: {e}")
 
+        # --- Migration: beta coupons + beta_user flag ---
+        try:
+            await conn.execute("""
+                CREATE TABLE IF NOT EXISTS beta_coupons (
+                    code TEXT PRIMARY KEY,
+                    max_uses INT NOT NULL DEFAULT 49,
+                    used_count INT NOT NULL DEFAULT 0,
+                    nft_reward TEXT DEFAULT 'SLH Genesis Member #',
+                    slh_bonus NUMERIC(18,8) DEFAULT 100,
+                    expires_at TIMESTAMP,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    active BOOLEAN DEFAULT TRUE
+                )
+            """)
+            await conn.execute("""
+                CREATE TABLE IF NOT EXISTS beta_redemptions (
+                    id BIGSERIAL PRIMARY KEY,
+                    coupon_code TEXT NOT NULL,
+                    user_id BIGINT NOT NULL,
+                    nft_number INT,
+                    redeemed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE(coupon_code, user_id)
+                )
+            """)
+            await conn.execute("ALTER TABLE web_users ADD COLUMN IF NOT EXISTS beta_user BOOLEAN DEFAULT FALSE")
+            await conn.execute("ALTER TABLE web_users ADD COLUMN IF NOT EXISTS beta_coupon_code TEXT")
+            await conn.execute("ALTER TABLE web_users ADD COLUMN IF NOT EXISTS beta_nft_number INT")
+            # Seed the default beta coupon if it doesn't exist
+            await conn.execute("""
+                INSERT INTO beta_coupons (code, max_uses, used_count, nft_reward, slh_bonus)
+                VALUES ($1, $2, 0, 'SLH Genesis Member #', 100)
+                ON CONFLICT (code) DO NOTHING
+            """, BETA_COUPON_DEFAULT_CODE, BETA_COUPON_DEFAULT_LIMIT)
+        except Exception as e:
+            print(f"[Migration] Beta coupons: {e}")
+
         # --- Migration: ensure marketplace tables exist on already-running DBs ---
         try:
             await conn.execute("""
@@ -436,6 +472,8 @@ async def auth_telegram(auth: TelegramAuth):
 
 REGISTRATION_PRICE_ILS = 22.221  # unified price across bot + website + mini-app
 REGISTRATION_SLH_AMOUNT = 0.05    # SLH bonus credited on approval (scaled down from 0.1)
+BETA_COUPON_DEFAULT_LIMIT = 49    # first 49 users get free access via coupon
+BETA_COUPON_DEFAULT_CODE = "GENESIS49"  # the beta code (change to randomize)
 
 
 class RegistrationInitRequest(BaseModel):
@@ -595,6 +633,242 @@ async def registration_approve(req: RegistrationApproveRequest):
         "slh_credited": REGISTRATION_SLH_AMOUNT,
         "referral_commissions": commissions
     }
+
+
+# === SIMPLIFIED UNLOCK ENDPOINT (no JWT needed — works with ?uid= flow) ===
+class UnlockRequest(BaseModel):
+    user_id: int
+    method: str = "payment_proof"  # payment_proof | coupon | admin
+    tx_hash: Optional[str] = ""
+    coupon_code: Optional[str] = ""
+    admin_key: Optional[str] = ""
+    note: Optional[str] = ""
+
+
+@app.post("/api/registration/unlock")
+async def registration_unlock(req: UnlockRequest):
+    """Unlock a user's full access via one of 3 methods:
+
+    1. payment_proof — user submits TX hash, goes to pending_review
+    2. coupon — user enters beta code, instantly unlocked if code valid + available
+    3. admin — admin key bypasses everything, instant unlock
+
+    This is the NEW flow that doesn't require JWT, so it works with the
+    seamless bot → /start → dashboard?uid= onboarding.
+    """
+    if not req.user_id:
+        raise HTTPException(400, "user_id required")
+
+    async with pool.acquire() as conn:
+        # Ensure user exists
+        user = await conn.fetchrow(
+            "SELECT telegram_id, is_registered, beta_user FROM web_users WHERE telegram_id=$1",
+            req.user_id
+        )
+        if not user:
+            # Create a stub row so the unlock succeeds even for first-time users
+            await conn.execute("""
+                INSERT INTO web_users (telegram_id, username, first_name, auth_date, last_login)
+                VALUES ($1, '', 'User', EXTRACT(EPOCH FROM NOW())::BIGINT, CURRENT_TIMESTAMP)
+                ON CONFLICT (telegram_id) DO NOTHING
+            """, req.user_id)
+
+        # If already registered, short-circuit
+        if user and user["is_registered"]:
+            return {
+                "ok": True,
+                "status": "already_registered",
+                "user_id": req.user_id,
+                "message": "User is already registered"
+            }
+
+        # ─── Method 1: Admin override ───
+        if req.method == "admin":
+            admin_secret = os.getenv("ADMIN_API_KEY", "slh_admin_2026")
+            if req.admin_key != admin_secret:
+                raise HTTPException(403, "Invalid admin key")
+            async with conn.transaction():
+                await conn.execute("""
+                    UPDATE web_users SET is_registered = TRUE, registered_at = CURRENT_TIMESTAMP
+                    WHERE telegram_id = $1
+                """, req.user_id)
+                await conn.execute("""
+                    INSERT INTO premium_users (user_id, bot_name, payment_status)
+                    VALUES ($1, 'ecosystem', 'approved')
+                    ON CONFLICT (user_id, bot_name) DO UPDATE SET payment_status = 'approved'
+                """, req.user_id)
+                # Credit SLH bonus
+                await conn.execute("""
+                    INSERT INTO token_balances (user_id, token, balance)
+                    VALUES ($1, 'SLH', $2)
+                    ON CONFLICT (user_id, token) DO UPDATE SET balance = token_balances.balance + $2, updated_at = CURRENT_TIMESTAMP
+                """, req.user_id, REGISTRATION_SLH_AMOUNT)
+                await conn.execute("""
+                    INSERT INTO token_transfers (from_user_id, to_user_id, token, amount, memo, tx_type)
+                    VALUES ($1, $1, 'SLH', $2, 'Admin override registration', 'registration')
+                """, req.user_id, REGISTRATION_SLH_AMOUNT)
+            print(f"[Unlock] Admin override: user {req.user_id}")
+            return {
+                "ok": True,
+                "status": "approved",
+                "method": "admin",
+                "user_id": req.user_id,
+                "slh_credited": REGISTRATION_SLH_AMOUNT,
+                "message": "Admin override — user is now fully registered"
+            }
+
+        # ─── Method 2: Beta coupon ───
+        if req.method == "coupon":
+            code = (req.coupon_code or "").strip().upper()
+            if not code:
+                raise HTTPException(400, "coupon_code required")
+            coupon = await conn.fetchrow("""
+                SELECT code, max_uses, used_count, nft_reward, slh_bonus, active
+                  FROM beta_coupons WHERE code=$1
+            """, code)
+            if not coupon:
+                raise HTTPException(404, f"Coupon '{code}' not found")
+            if not coupon["active"]:
+                raise HTTPException(400, "Coupon is not active")
+            if coupon["used_count"] >= coupon["max_uses"]:
+                raise HTTPException(400, f"Coupon is fully redeemed ({coupon['used_count']}/{coupon['max_uses']})")
+
+            # Check if this user already redeemed this coupon
+            already = await conn.fetchval(
+                "SELECT nft_number FROM beta_redemptions WHERE coupon_code=$1 AND user_id=$2",
+                code, req.user_id
+            )
+            if already:
+                return {
+                    "ok": True,
+                    "status": "already_redeemed",
+                    "nft_number": already,
+                    "message": f"You already redeemed coupon — you are Genesis Member #{already}"
+                }
+
+            async with conn.transaction():
+                # Increment coupon usage + assign NFT number
+                nft_number = int(coupon["used_count"]) + 1
+                await conn.execute(
+                    "UPDATE beta_coupons SET used_count = used_count + 1 WHERE code=$1", code
+                )
+                await conn.execute("""
+                    INSERT INTO beta_redemptions (coupon_code, user_id, nft_number)
+                    VALUES ($1, $2, $3)
+                    ON CONFLICT (coupon_code, user_id) DO NOTHING
+                """, code, req.user_id, nft_number)
+
+                # Mark user as fully registered + beta
+                await conn.execute("""
+                    UPDATE web_users SET
+                        is_registered = TRUE,
+                        registered_at = CURRENT_TIMESTAMP,
+                        beta_user = TRUE,
+                        beta_coupon_code = $2,
+                        beta_nft_number = $3
+                    WHERE telegram_id = $1
+                """, req.user_id, code, nft_number)
+
+                await conn.execute("""
+                    INSERT INTO premium_users (user_id, bot_name, payment_status)
+                    VALUES ($1, 'ecosystem', 'approved')
+                    ON CONFLICT (user_id, bot_name) DO UPDATE SET payment_status = 'approved'
+                """, req.user_id)
+
+                # Credit coupon bonus (100 SLH for beta, much more than 0.05 normal)
+                bonus = float(coupon["slh_bonus"] or 100)
+                await conn.execute("""
+                    INSERT INTO token_balances (user_id, token, balance)
+                    VALUES ($1, 'SLH', $2)
+                    ON CONFLICT (user_id, token) DO UPDATE SET balance = token_balances.balance + $2, updated_at = CURRENT_TIMESTAMP
+                """, req.user_id, bonus)
+                await conn.execute("""
+                    INSERT INTO token_transfers (from_user_id, to_user_id, token, amount, memo, tx_type)
+                    VALUES ($1, $1, 'SLH', $2, $3, 'beta_coupon')
+                """, req.user_id, bonus, f'Beta coupon {code} — Genesis #{nft_number}')
+
+            print(f"[Unlock] Coupon '{code}' redeemed by user {req.user_id} — Genesis #{nft_number}")
+            return {
+                "ok": True,
+                "status": "approved",
+                "method": "coupon",
+                "user_id": req.user_id,
+                "coupon_code": code,
+                "nft_number": nft_number,
+                "nft_name": f"{coupon['nft_reward']}{nft_number}",
+                "slh_credited": bonus,
+                "remaining_slots": int(coupon["max_uses"]) - nft_number,
+                "message": f"🎉 Welcome, Genesis Member #{nft_number}! You got {bonus} SLH + NFT reward."
+            }
+
+        # ─── Method 3: Payment proof (same as submit-proof but no JWT) ───
+        if req.method == "payment_proof":
+            tx_hash = (req.tx_hash or "").strip()
+            async with conn.transaction():
+                await conn.execute("""
+                    INSERT INTO premium_users (user_id, bot_name, payment_status)
+                    VALUES ($1, 'ecosystem', 'submitted')
+                    ON CONFLICT (user_id, bot_name) DO UPDATE SET payment_status = 'submitted'
+                """, req.user_id)
+                if tx_hash:
+                    await conn.execute("""
+                        INSERT INTO deposits (user_id, amount, currency, tx_hash, status, plan_key)
+                        VALUES ($1, $2, 'ILS', $3, 'pending', 'registration')
+                    """, req.user_id, REGISTRATION_PRICE_ILS, tx_hash)
+            print(f"[Unlock] Payment proof submitted by user {req.user_id}: {tx_hash or req.note}")
+            return {
+                "ok": True,
+                "status": "submitted",
+                "method": "payment_proof",
+                "user_id": req.user_id,
+                "tx_hash": tx_hash,
+                "message": "Payment proof received — waiting for admin approval (up to 24 hours)"
+            }
+
+        raise HTTPException(400, f"Unknown method: {req.method}")
+
+
+@app.get("/api/beta/status")
+async def beta_status():
+    """Public: how many beta slots are left across all active coupons."""
+    async with pool.acquire() as conn:
+        rows = await conn.fetch("""
+            SELECT code, max_uses, used_count, slh_bonus, active
+              FROM beta_coupons
+             WHERE active = TRUE
+             ORDER BY created_at
+        """)
+    coupons = [{
+        "code": r["code"],
+        "max_uses": r["max_uses"],
+        "used_count": r["used_count"],
+        "remaining": int(r["max_uses"]) - int(r["used_count"]),
+        "slh_bonus": float(r["slh_bonus"] or 0),
+        "active": r["active"],
+    } for r in rows]
+    total_remaining = sum(c["remaining"] for c in coupons)
+    return {"coupons": coupons, "total_remaining": total_remaining}
+
+
+@app.post("/api/beta/create-coupon")
+async def beta_create_coupon(admin_key: str, code: str, max_uses: int = 49, slh_bonus: float = 100):
+    """Admin: create a new beta coupon code."""
+    admin_secret = os.getenv("ADMIN_API_KEY", "slh_admin_2026")
+    if admin_key != admin_secret:
+        raise HTTPException(403, "Invalid admin key")
+    code = code.strip().upper()
+    if not code or len(code) < 4:
+        raise HTTPException(400, "Code must be at least 4 characters")
+    async with pool.acquire() as conn:
+        await conn.execute("""
+            INSERT INTO beta_coupons (code, max_uses, used_count, slh_bonus, active)
+            VALUES ($1, $2, 0, $3, TRUE)
+            ON CONFLICT (code) DO UPDATE SET
+                max_uses = EXCLUDED.max_uses,
+                slh_bonus = EXCLUDED.slh_bonus,
+                active = TRUE
+        """, code, max_uses, slh_bonus)
+    return {"ok": True, "code": code, "max_uses": max_uses, "slh_bonus": slh_bonus}
 
 
 @app.get("/api/registration/status/{user_id}")
