@@ -240,6 +240,15 @@ async def startup():
         except Exception as e:
             print(f"[Migration] Web3 wallet columns: {e}")
 
+        # --- Migration: custom display_name (user-chosen, not from Telegram) ---
+        try:
+            await conn.execute("ALTER TABLE web_users ADD COLUMN IF NOT EXISTS display_name TEXT")
+            await conn.execute("ALTER TABLE web_users ADD COLUMN IF NOT EXISTS display_name_set_at TIMESTAMP")
+            await conn.execute("ALTER TABLE web_users ADD COLUMN IF NOT EXISTS bio TEXT")
+            await conn.execute("ALTER TABLE web_users ADD COLUMN IF NOT EXISTS language_pref TEXT DEFAULT 'he'")
+        except Exception as e:
+            print(f"[Migration] Display name columns: {e}")
+
         # --- Migration: beta coupons + beta_user flag ---
         try:
             await conn.execute("""
@@ -989,6 +998,77 @@ async def unlink_wallet(req: LinkWalletRequest):
     return {"ok": True, "user_id": req.user_id}
 
 
+# === CUSTOM DISPLAY NAME (user-chosen, persists across Telegram re-auth) ===
+class ProfileUpdateRequest(BaseModel):
+    user_id: int
+    display_name: Optional[str] = None
+    bio: Optional[str] = None
+    language_pref: Optional[str] = None  # he | en | ru | ar | fr
+
+
+@app.post("/api/user/profile")
+async def update_user_profile(req: ProfileUpdateRequest):
+    """Update user's custom profile fields (display_name, bio, language).
+
+    These fields are SET BY THE USER and persist across Telegram re-authentication.
+    Only non-None fields are updated — pass partial objects to avoid wiping.
+    Validation:
+      - display_name: 2-32 chars, stripped
+      - bio: up to 200 chars
+      - language_pref: one of he/en/ru/ar/fr
+    """
+    if not req.user_id:
+        raise HTTPException(400, "user_id required")
+
+    updates = []
+    params = []
+    idx = 1
+
+    if req.display_name is not None:
+        name = req.display_name.strip()
+        if len(name) < 2 or len(name) > 32:
+            raise HTTPException(400, "display_name must be 2-32 characters")
+        updates.append(f"display_name = ${idx}")
+        params.append(name)
+        idx += 1
+        updates.append(f"display_name_set_at = CURRENT_TIMESTAMP")
+
+    if req.bio is not None:
+        bio = req.bio.strip()
+        if len(bio) > 200:
+            raise HTTPException(400, "bio max 200 characters")
+        updates.append(f"bio = ${idx}")
+        params.append(bio)
+        idx += 1
+
+    if req.language_pref is not None:
+        if req.language_pref not in ("he", "en", "ru", "ar", "fr"):
+            raise HTTPException(400, "language_pref must be he/en/ru/ar/fr")
+        updates.append(f"language_pref = ${idx}")
+        params.append(req.language_pref)
+        idx += 1
+
+    if not updates:
+        raise HTTPException(400, "No fields to update")
+
+    params.append(req.user_id)
+    sql = f"UPDATE web_users SET {', '.join(updates)} WHERE telegram_id = ${idx} RETURNING display_name, bio, language_pref, first_name, username"
+
+    async with pool.acquire() as conn:
+        row = await conn.fetchrow(sql, *params)
+        if not row:
+            raise HTTPException(404, "User not found")
+
+    return {
+        "ok": True,
+        "user_id": req.user_id,
+        "display_name": row["display_name"],
+        "bio": row["bio"],
+        "language_pref": row["language_pref"],
+        "fallback_name": row["first_name"] or row["username"] or "User",
+    }
+
+
 async def get_user_balances(conn, user_id: int):
     """Get all token balances for a user"""
     balances = {"TON_available": 0.0, "TON_locked": 0.0}
@@ -1037,7 +1117,8 @@ async def get_user(telegram_id: int):
             user = await conn.fetchrow(
                 """SELECT telegram_id, username, first_name, photo_url, auth_date, last_login,
                           is_registered, registered_at, eth_wallet, eth_wallet_linked_at,
-                          ton_wallet, ton_wallet_linked_at
+                          ton_wallet, ton_wallet_linked_at,
+                          display_name, bio, language_pref
                      FROM web_users WHERE telegram_id=$1""",
                 telegram_id
             )
@@ -2459,7 +2540,8 @@ async def get_user_full(telegram_id: int):
         profile = await conn.fetchrow("""
             SELECT telegram_id, username, first_name, photo_url, auth_date, last_login,
                    is_registered, registered_at, eth_wallet, eth_wallet_linked_at,
-                   ton_wallet, ton_wallet_linked_at
+                   ton_wallet, ton_wallet_linked_at,
+                   display_name, bio, language_pref
               FROM web_users WHERE telegram_id=$1
         """, telegram_id)
         if not profile:
