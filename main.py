@@ -257,7 +257,7 @@ async def startup():
                     max_uses INT NOT NULL DEFAULT 49,
                     used_count INT NOT NULL DEFAULT 0,
                     nft_reward TEXT DEFAULT 'SLH Genesis Member #',
-                    slh_bonus NUMERIC(18,8) DEFAULT 100,
+                    slh_bonus NUMERIC(18,8) DEFAULT 0.44,
                     expires_at TIMESTAMP,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     active BOOLEAN DEFAULT TRUE
@@ -279,7 +279,7 @@ async def startup():
             # Seed the default beta coupon if it doesn't exist
             await conn.execute("""
                 INSERT INTO beta_coupons (code, max_uses, used_count, nft_reward, slh_bonus)
-                VALUES ($1, $2, 0, 'SLH Genesis Member #', 100)
+                VALUES ($1, $2, 0, 'SLH Genesis Member #', 0.44)
                 ON CONFLICT (code) DO NOTHING
             """, BETA_COUPON_DEFAULT_CODE, BETA_COUPON_DEFAULT_LIMIT)
         except Exception as e:
@@ -784,8 +784,8 @@ async def registration_unlock(req: UnlockRequest):
                     ON CONFLICT (user_id, bot_name) DO UPDATE SET payment_status = 'approved'
                 """, req.user_id)
 
-                # Credit coupon bonus (100 SLH for beta, much more than 0.05 normal)
-                bonus = float(coupon["slh_bonus"] or 100)
+                # Credit coupon bonus (0.44 SLH ≈ 195 ILS for beta, much more than 0.05 normal)
+                bonus = float(coupon["slh_bonus"] or 0.44)
                 await conn.execute("""
                     INSERT INTO token_balances (user_id, token, balance)
                     VALUES ($1, 'SLH', $2)
@@ -860,7 +860,7 @@ async def beta_status():
 
 
 @app.post("/api/beta/create-coupon")
-async def beta_create_coupon(admin_key: str, code: str, max_uses: int = 49, slh_bonus: float = 100):
+async def beta_create_coupon(admin_key: str, code: str, max_uses: int = 49, slh_bonus: float = 0.44):
     """Admin: create a new beta coupon code."""
     admin_secret = os.getenv("ADMIN_API_KEY", "slh_admin_2026")
     if admin_key != admin_secret:
