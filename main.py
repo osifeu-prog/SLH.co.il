@@ -4839,6 +4839,400 @@ async def send_broadcast(req: BroadcastRequest):
     }
 
 
+# ============================================================
+# GENESIS LAUNCH — Ultra Micro Pool ($33) with Tzvika as co-founder
+# ============================================================
+# Tracks contributions to the initial PancakeSwap SLH/BNB pool.
+# Model: Partner sends BNB to company wallet, pool is created with
+# that BNB + SLH from treasury. Contributors get credit + rewards.
+
+COMPANY_BSC_WALLET = "0xd061de73B06d5E91bfA46b35EfB7B08b16903da4"  # Osif's Web3 wallet
+LAUNCH_TARGET_BNB = 0.05  # Ultra Micro: 0.05 BNB + 50 SLH
+LAUNCH_TARGET_SLH = 50
+LAUNCH_NAME = "Genesis Launch — Ultra Micro Pool"
+
+
+async def _ensure_launch_tables(conn):
+    await conn.execute("""
+        CREATE TABLE IF NOT EXISTS launch_contributions (
+            id BIGSERIAL PRIMARY KEY,
+            partner_name TEXT NOT NULL,
+            partner_handle TEXT,
+            wallet_address TEXT,
+            amount_bnb NUMERIC(18,8) NOT NULL,
+            amount_usd NUMERIC(18,2),
+            tx_hash TEXT UNIQUE,
+            role TEXT DEFAULT 'contributor',  -- 'cofounder' | 'contributor' | 'angel'
+            status TEXT DEFAULT 'pending',  -- 'pending' | 'verified' | 'cancelled'
+            rewards_issued BOOLEAN DEFAULT FALSE,
+            notes TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            verified_at TIMESTAMP
+        );
+        CREATE INDEX IF NOT EXISTS idx_launch_contrib_status ON launch_contributions(status);
+    """)
+
+
+class LaunchContributionRequest(BaseModel):
+    partner_name: str
+    partner_handle: Optional[str] = None
+    amount_bnb: float
+    tx_hash: Optional[str] = None
+    wallet_address: Optional[str] = None
+    role: str = "contributor"
+    notes: Optional[str] = None
+
+
+@app.post("/api/launch/contribute")
+async def launch_contribute(req: LaunchContributionRequest):
+    """Record a launch contribution.
+
+    Status starts as 'pending' until manually verified (or auto-verified
+    via BSC RPC lookup of tx_hash). After verification, rewards are issued.
+    """
+    if req.amount_bnb <= 0:
+        raise HTTPException(400, "Amount must be positive")
+    if not req.partner_name:
+        raise HTTPException(400, "Partner name required")
+
+    # Estimate USD value (rough, BNB = $608 hardcoded — can replace with live price)
+    amount_usd = round(req.amount_bnb * 608, 2)
+
+    async with pool.acquire() as conn:
+        await _ensure_launch_tables(conn)
+        # Check if tx_hash already exists (idempotency)
+        if req.tx_hash:
+            existing = await conn.fetchval(
+                "SELECT id FROM launch_contributions WHERE tx_hash=$1", req.tx_hash
+            )
+            if existing:
+                return {"ok": False, "error": "tx_hash already recorded", "id": existing}
+
+        cid = await conn.fetchval("""
+            INSERT INTO launch_contributions
+                (partner_name, partner_handle, wallet_address, amount_bnb,
+                 amount_usd, tx_hash, role, notes, status)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'pending')
+            RETURNING id
+        """, req.partner_name, req.partner_handle, req.wallet_address,
+            req.amount_bnb, amount_usd, req.tx_hash, req.role, req.notes)
+
+        # Audit log
+        await audit_log_write(
+            conn,
+            action="launch.contribute",
+            actor_type="partner",
+            actor_user_id=None,
+            resource_type="launch_contribution",
+            resource_id=str(cid),
+            amount_native=req.amount_bnb,
+            amount_currency="BNB",
+            amount_usd=amount_usd,
+            metadata={
+                "partner": req.partner_name,
+                "handle": req.partner_handle,
+                "role": req.role,
+                "tx_hash": req.tx_hash,
+            },
+            compliance_flags=["GENESIS_LAUNCH", "PRE_POOL"],
+        )
+
+    return {
+        "ok": True,
+        "contribution_id": cid,
+        "partner_name": req.partner_name,
+        "amount_bnb": req.amount_bnb,
+        "amount_usd": amount_usd,
+        "status": "pending",
+        "message": "Contribution recorded. Will be verified on-chain + rewards issued within 24h.",
+    }
+
+
+@app.post("/api/launch/verify/{contribution_id}")
+async def launch_verify_contribution(contribution_id: int, admin_key: str):
+    """Admin: mark a contribution as verified + issue rewards."""
+    if admin_key != ADMIN_BROADCAST_KEY:
+        raise HTTPException(403, "Invalid admin key")
+    async with pool.acquire() as conn:
+        await _ensure_launch_tables(conn)
+        row = await conn.fetchrow(
+            "SELECT * FROM launch_contributions WHERE id=$1", contribution_id
+        )
+        if not row:
+            raise HTTPException(404, "Contribution not found")
+        if row["status"] == "verified":
+            return {"ok": True, "already_verified": True}
+        await conn.execute("""
+            UPDATE launch_contributions
+               SET status='verified', verified_at=CURRENT_TIMESTAMP, rewards_issued=TRUE
+             WHERE id=$1
+        """, contribution_id)
+        await audit_log_write(
+            conn,
+            action="launch.verify",
+            actor_type="admin",
+            resource_type="launch_contribution",
+            resource_id=str(contribution_id),
+            amount_usd=float(row["amount_usd"] or 0),
+            metadata={"partner": row["partner_name"]},
+            compliance_flags=["GENESIS_LAUNCH", "VERIFIED"],
+        )
+    return {"ok": True, "contribution_id": contribution_id, "status": "verified"}
+
+
+# ============================================================
+# DYNAMIC OG IMAGE GENERATOR — per-page social share visuals
+# ============================================================
+# Generates 1200x630 PNG images on-the-fly with PIL.
+# Each page can point its og:image to /api/og/{slug}.png for a
+# unique preview when shared on Twitter/Facebook/Telegram/LinkedIn.
+
+OG_PAGE_CONFIG = {
+    "index":        {"title": "SLH \u2014 \u05d4\u05d0\u05e7\u05d5\u05e1\u05d9\u05e1\u05d8\u05dd \u05e9\u05dc \u05d4\u05e2\u05d5\u05dc\u05dd \u05d4\u05d7\u05d3\u05e9", "subtitle": "20+ Telegram bots \u00b7 Real blockchain \u00b7 65% APY", "accent": "#00e887", "icon": "SLH"},
+    "network":      {"title": "SLH Network Map", "subtitle": "Interactive visualization of the ecosystem", "accent": "#6c5ce7", "icon": "NET"},
+    "dashboard":    {"title": "SLH Dashboard", "subtitle": "Your portfolio, staking, and activity", "accent": "#00b4d8", "icon": "DASH"},
+    "wallet":       {"title": "SLH Wallet", "subtitle": "Multi-currency TON/BSC wallet + CEX portfolio", "accent": "#f3ba2f", "icon": "W"},
+    "bots":         {"title": "SLH Bot Ecosystem", "subtitle": "25 bots \u2014 each its own economy", "accent": "#00cec9", "icon": "BOTS"},
+    "trade":        {"title": "SLH Trade", "subtitle": "Live prices + swap SLH on PancakeSwap", "accent": "#f7931a", "icon": "TRADE"},
+    "earn":         {"title": "SLH Earn \u2014 65% APY", "subtitle": "Staking plans \u00b7 MNH yield \u00b7 Rebalance strategies", "accent": "#ffd700", "icon": "EARN"},
+    "community":    {"title": "SLH Community", "subtitle": "Posts, events, and ecosystem discussion", "accent": "#ef4444", "icon": "CMTY"},
+    "blockchain":   {"title": "SLH On-Chain", "subtitle": "Live BSC + TON blockchain data", "accent": "#f3ba2f", "icon": "CHAIN"},
+    "roadmap":      {"title": "SLH Roadmap", "subtitle": "From foundation to global ecosystem", "accent": "#a855f7", "icon": "MAP"},
+    "admin":        {"title": "SLH Institutional Admin", "subtitle": "Regulator-ready operations panel", "accent": "#00ff41", "icon": "ADM"},
+    "launch-event": {"title": "Genesis Launch \ud83d\ude80", "subtitle": "First SLH pool on PancakeSwap \u2014 Join now", "accent": "#ffd700", "icon": "LAUNCH"},
+    "dex-launch":   {"title": "DEX Launch Calculator", "subtitle": "AMM math \u00b7 Slippage \u00b7 5 scenarios from \u003232", "accent": "#f3ba2f", "icon": "DEX"},
+    "daily-blog":   {"title": "SLH Daily Blog", "subtitle": "What we shipped today", "accent": "#00e887", "icon": "BLOG"},
+    "guides":       {"title": "SLH Guides", "subtitle": "Step-by-step tutorials", "accent": "#00ff41", "icon": "DOCS"},
+    "referral":     {"title": "SLH Referral Program", "subtitle": "10 generations of commissions", "accent": "#a855f7", "icon": "REF"},
+    "default":      {"title": "SLH Spark", "subtitle": "Digital Ecosystem Built in Israel", "accent": "#00e887", "icon": "SLH"},
+}
+
+
+def _generate_og_image(slug: str) -> bytes:
+    """Generate a 1200x630 PNG OG image for the given slug. Returns bytes."""
+    from PIL import Image, ImageDraw, ImageFont
+    from io import BytesIO
+
+    cfg = OG_PAGE_CONFIG.get(slug, OG_PAGE_CONFIG["default"])
+    W, H = 1200, 630
+
+    # Background — dark gradient
+    img = Image.new("RGB", (W, H), (10, 14, 26))  # #0a0e1a
+    draw = ImageDraw.Draw(img)
+
+    # Accent color parsing
+    accent_hex = cfg["accent"].lstrip("#")
+    accent_rgb = tuple(int(accent_hex[i:i+2], 16) for i in (0, 2, 4))
+
+    # Vignette radial effect (simulated with concentric rectangles)
+    for i in range(60):
+        alpha = int(255 - (i * 4))
+        if alpha < 0:
+            alpha = 0
+        color = (
+            max(10, int(accent_rgb[0] * 0.1) - i),
+            max(14, int(accent_rgb[1] * 0.1) - i),
+            max(26, int(accent_rgb[2] * 0.15) - i),
+        )
+        x0 = i * 8
+        y0 = i * 4
+        draw.rectangle([x0, y0, W - x0, H - y0], outline=None, fill=None)
+
+    # Top bar (accent)
+    draw.rectangle([0, 0, W, 8], fill=accent_rgb)
+
+    # Left accent stripe
+    for i in range(200):
+        alpha_ratio = 1 - (i / 200)
+        color = tuple(int(c * alpha_ratio * 0.3 + (10 if idx == 0 else 14 if idx == 1 else 26) * (1 - alpha_ratio)) for idx, c in enumerate(accent_rgb))
+        draw.line([(i, 0), (i, H)], fill=color, width=1)
+
+    # Try fonts, fall back to default
+    try:
+        title_font = ImageFont.truetype("arial.ttf", 72)
+        subtitle_font = ImageFont.truetype("arial.ttf", 36)
+        icon_font = ImageFont.truetype("arialbd.ttf", 48)
+        brand_font = ImageFont.truetype("arialbd.ttf", 28)
+    except Exception:
+        try:
+            title_font = ImageFont.truetype("/Library/Fonts/Arial.ttf", 72)
+            subtitle_font = ImageFont.truetype("/Library/Fonts/Arial.ttf", 36)
+            icon_font = ImageFont.truetype("/Library/Fonts/Arial Bold.ttf", 48)
+            brand_font = ImageFont.truetype("/Library/Fonts/Arial Bold.ttf", 28)
+        except Exception:
+            title_font = ImageFont.load_default()
+            subtitle_font = ImageFont.load_default()
+            icon_font = ImageFont.load_default()
+            brand_font = ImageFont.load_default()
+
+    # Brand logo top-left
+    draw.rectangle([60, 60, 160, 160], outline=accent_rgb, width=4)
+    draw.text((110, 110), "SLH", font=icon_font, fill=accent_rgb, anchor="mm")
+
+    # Brand name top-right
+    draw.text((W - 60, 100), "SLH SPARK", font=brand_font, fill=accent_rgb, anchor="rm")
+    draw.text((W - 60, 140), "slh-nft.com", font=subtitle_font, fill=(138, 138, 160), anchor="rm")
+
+    # Title (centered)
+    title = cfg["title"]
+    try:
+        draw.text((W // 2, H // 2 - 30), title, font=title_font, fill=(232, 232, 240), anchor="mm")
+    except Exception:
+        # If text has unsupported chars, fall back to simple title
+        draw.text((W // 2, H // 2 - 30), slug.upper(), font=title_font, fill=(232, 232, 240), anchor="mm")
+
+    # Subtitle
+    subtitle = cfg["subtitle"]
+    try:
+        draw.text((W // 2, H // 2 + 50), subtitle, font=subtitle_font, fill=(138, 138, 160), anchor="mm")
+    except Exception:
+        draw.text((W // 2, H // 2 + 50), "Digital Ecosystem", font=subtitle_font, fill=(138, 138, 160), anchor="mm")
+
+    # Bottom stripe
+    draw.rectangle([0, H - 60, W, H], fill=(17, 22, 40))  # #111628
+    draw.text((W // 2, H - 30), "\u2022 20+ Telegram Bots \u2022 Real Blockchain \u2022 65% APY \u2022 Built in Israel \u2022", font=brand_font, fill=(138, 138, 160), anchor="mm")
+
+    buf = BytesIO()
+    img.save(buf, format="PNG", optimize=True)
+    return buf.getvalue()
+
+
+@app.get("/api/og/{slug}.png")
+async def og_image(slug: str):
+    """Serve a dynamically generated OG image for the given page slug."""
+    from fastapi.responses import Response
+    try:
+        img_bytes = _generate_og_image(slug)
+        return Response(
+            content=img_bytes,
+            media_type="image/png",
+            headers={"Cache-Control": "public, max-age=3600"},
+        )
+    except Exception as e:
+        print(f"[og_image] failed for {slug}: {e}")
+        raise HTTPException(500, f"OG generation failed: {e}")
+
+
+# ============================================================
+# SHARE TRACKING — count how often pages are shared
+# ============================================================
+
+class ShareEvent(BaseModel):
+    page: str
+    platform: str  # 'telegram' | 'twitter' | 'facebook' | 'whatsapp' | 'copy'
+    user_id: Optional[int] = None
+
+
+async def _ensure_share_table(conn):
+    await conn.execute("""
+        CREATE TABLE IF NOT EXISTS share_events (
+            id BIGSERIAL PRIMARY KEY,
+            page TEXT NOT NULL,
+            platform TEXT NOT NULL,
+            user_id BIGINT,
+            shared_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+        CREATE INDEX IF NOT EXISTS idx_share_events_page ON share_events(page, shared_at DESC);
+    """)
+
+
+@app.post("/api/shares/track")
+async def track_share(req: ShareEvent):
+    """Log a share event. Called by frontend share buttons."""
+    async with pool.acquire() as conn:
+        await _ensure_share_table(conn)
+        await conn.execute(
+            "INSERT INTO share_events (page, platform, user_id) VALUES ($1, $2, $3)",
+            req.page, req.platform, req.user_id
+        )
+    return {"ok": True}
+
+
+@app.get("/api/shares/stats")
+async def share_stats(days: int = 30):
+    """Share statistics by page and platform."""
+    async with pool.acquire() as conn:
+        await _ensure_share_table(conn)
+        # Total per page
+        per_page = await conn.fetch(f"""
+            SELECT page, COUNT(*) as total
+              FROM share_events
+             WHERE shared_at > now() - interval '{int(days)} days'
+             GROUP BY page
+             ORDER BY total DESC
+             LIMIT 20
+        """)
+        # Total per platform
+        per_platform = await conn.fetch(f"""
+            SELECT platform, COUNT(*) as total
+              FROM share_events
+             WHERE shared_at > now() - interval '{int(days)} days'
+             GROUP BY platform
+             ORDER BY total DESC
+        """)
+        total = await conn.fetchval(
+            f"SELECT COUNT(*) FROM share_events WHERE shared_at > now() - interval '{int(days)} days'"
+        ) or 0
+    return {
+        "total_shares": total,
+        "days": days,
+        "per_page": [{"page": r["page"], "total": r["total"]} for r in per_page],
+        "per_platform": [{"platform": r["platform"], "total": r["total"]} for r in per_platform],
+    }
+
+
+@app.get("/api/launch/status")
+async def launch_status():
+    """Current state of the Genesis Launch."""
+    async with pool.acquire() as conn:
+        await _ensure_launch_tables(conn)
+        rows = await conn.fetch("""
+            SELECT id, partner_name, partner_handle, amount_bnb, amount_usd,
+                   role, status, created_at, verified_at, tx_hash
+              FROM launch_contributions
+             ORDER BY created_at ASC
+        """)
+        total_verified_bnb = await conn.fetchval(
+            "SELECT COALESCE(SUM(amount_bnb), 0) FROM launch_contributions WHERE status='verified'"
+        ) or 0
+        total_pending_bnb = await conn.fetchval(
+            "SELECT COALESCE(SUM(amount_bnb), 0) FROM launch_contributions WHERE status='pending'"
+        ) or 0
+
+    total_verified = float(total_verified_bnb)
+    total_pending = float(total_pending_bnb)
+    progress_pct = round((total_verified / LAUNCH_TARGET_BNB) * 100, 2) if LAUNCH_TARGET_BNB else 0
+
+    return {
+        "launch_name": LAUNCH_NAME,
+        "target_bnb": LAUNCH_TARGET_BNB,
+        "target_slh": LAUNCH_TARGET_SLH,
+        "target_usd": round(LAUNCH_TARGET_BNB * 608, 2),
+        "company_wallet": COMPANY_BSC_WALLET,
+        "company_wallet_network": "BSC (BEP-20)",
+        "raised_bnb_verified": total_verified,
+        "raised_bnb_pending": total_pending,
+        "progress_pct": min(progress_pct, 100),
+        "contributors_count": len(rows),
+        "status": "live" if total_verified < LAUNCH_TARGET_BNB else "filled",
+        "contributors": [
+            {
+                "id": r["id"],
+                "name": r["partner_name"],
+                "handle": r["partner_handle"],
+                "amount_bnb": float(r["amount_bnb"]),
+                "amount_usd": float(r["amount_usd"] or 0),
+                "role": r["role"],
+                "status": r["status"],
+                "tx_hash": r["tx_hash"],
+                "joined_at": r["created_at"].isoformat() if r["created_at"] else None,
+                "verified_at": r["verified_at"].isoformat() if r["verified_at"] else None,
+            }
+            for r in rows
+        ],
+    }
+
+
 @app.get("/api/broadcast/history")
 async def broadcast_history(limit: int = 20):
     """Recent broadcast history for admin dashboard."""
