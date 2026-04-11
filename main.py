@@ -24,6 +24,8 @@ from routes.ai_chat import router as ai_chat_router
 # === CONFIG ===
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:slh_secure_2026@localhost:5432/slh_main")
 BOT_TOKEN = os.getenv("EXPERTNET_BOT_TOKEN", "")
+# Broadcast bot — @SLH_AIR_bot is the main user-facing bot
+BROADCAST_BOT_TOKEN = os.getenv("SLH_AIR_TOKEN") or os.getenv("CORE_BOT_TOKEN") or os.getenv("AIRDROP_BOT_TOKEN", "")
 JWT_SECRET = os.getenv("JWT_SECRET", "")
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRES_HOURS = int(os.getenv("JWT_EXPIRES_HOURS", "12"))
@@ -4653,6 +4655,215 @@ async def get_strategy(strategy_id: str):
         if s["id"] == strategy_id:
             return s
     raise HTTPException(404, "Strategy not found")
+
+
+# ============================================================
+# BROADCAST — Send Telegram messages to registered users
+# ============================================================
+# Uses @SLH_AIR_bot to DM every registered user. Ideal for
+# presale announcements, Genesis 49 updates, system alerts.
+# Admin-only. All broadcasts logged to institutional_audit.
+
+class BroadcastRequest(BaseModel):
+    message: str
+    target: str = "registered"  # 'registered' | 'genesis49' | 'all' | 'custom'
+    custom_ids: Optional[list] = None
+    admin_key: str  # must match ADMIN_BROADCAST_KEY
+    dry_run: bool = False
+
+
+async def _ensure_broadcast_table(conn):
+    await conn.execute("""
+        CREATE TABLE IF NOT EXISTS broadcast_log (
+            id BIGSERIAL PRIMARY KEY,
+            sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            target TEXT NOT NULL,
+            total_targets INT NOT NULL,
+            success_count INT NOT NULL DEFAULT 0,
+            fail_count INT NOT NULL DEFAULT 0,
+            message_preview TEXT,
+            admin_actor TEXT
+        );
+        CREATE TABLE IF NOT EXISTS broadcast_deliveries (
+            id BIGSERIAL PRIMARY KEY,
+            broadcast_id BIGINT NOT NULL REFERENCES broadcast_log(id) ON DELETE CASCADE,
+            user_id BIGINT NOT NULL,
+            status TEXT NOT NULL,  -- 'sent' | 'failed' | 'blocked' | 'not_found'
+            error TEXT,
+            delivered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+        CREATE INDEX IF NOT EXISTS idx_broadcast_deliveries_bid ON broadcast_deliveries(broadcast_id);
+    """)
+
+
+async def _tg_send_message(bot_token: str, chat_id: int, text: str, parse_mode: str = "HTML") -> dict:
+    """Send a Telegram message via bot API. Returns dict with ok/error."""
+    if not bot_token:
+        return {"ok": False, "error": "bot token not configured"}
+    url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+    payload = {
+        "chat_id": chat_id,
+        "text": text,
+        "parse_mode": parse_mode,
+        "disable_web_page_preview": False,
+    }
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.post(url, json=payload, timeout=aiohttp.ClientTimeout(total=10)) as resp:
+                data = await resp.json()
+                return data
+    except Exception as e:
+        return {"ok": False, "error": str(e)[:200]}
+
+
+ADMIN_BROADCAST_KEY = os.getenv("ADMIN_BROADCAST_KEY", "slh-broadcast-2026-change-me")
+
+
+@app.post("/api/broadcast/send")
+async def send_broadcast(req: BroadcastRequest):
+    """Send a broadcast message to registered users via @SLH_AIR_bot.
+
+    Targets:
+    - 'registered': all users with is_registered=True (premium + Genesis 49)
+    - 'genesis49':  only Genesis 49 NFT holders
+    - 'all':        every user in web_users (real IDs only)
+    - 'custom':     provide custom_ids list
+    """
+    if req.admin_key != ADMIN_BROADCAST_KEY:
+        raise HTTPException(403, "Invalid admin key")
+    if not req.message or len(req.message) < 5:
+        raise HTTPException(400, "Message too short")
+    if len(req.message) > 4000:
+        raise HTTPException(400, "Message exceeds Telegram 4096-char limit")
+
+    async with pool.acquire() as conn:
+        await _ensure_broadcast_table(conn)
+
+        # Resolve targets
+        if req.target == "registered":
+            rows = await conn.fetch(
+                "SELECT telegram_id FROM web_users WHERE telegram_id >= 1000000 AND is_registered = TRUE"
+            )
+        elif req.target == "genesis49":
+            rows = await conn.fetch(
+                "SELECT telegram_id FROM web_users WHERE telegram_id >= 1000000 AND beta_user = TRUE"
+            )
+        elif req.target == "all":
+            rows = await conn.fetch(
+                "SELECT telegram_id FROM web_users WHERE telegram_id >= 1000000"
+            )
+        elif req.target == "custom":
+            if not req.custom_ids:
+                raise HTTPException(400, "custom target requires custom_ids")
+            rows = [{"telegram_id": int(i)} for i in req.custom_ids if int(i) >= 1000000]
+        else:
+            raise HTTPException(400, "invalid target")
+
+        user_ids = [r["telegram_id"] for r in rows]
+
+        if req.dry_run:
+            return {
+                "ok": True,
+                "dry_run": True,
+                "target": req.target,
+                "total_recipients": len(user_ids),
+                "sample_ids": user_ids[:5],
+                "message_preview": req.message[:200],
+            }
+
+        # Create broadcast record
+        broadcast_id = await conn.fetchval("""
+            INSERT INTO broadcast_log (target, total_targets, message_preview, admin_actor)
+            VALUES ($1, $2, $3, $4)
+            RETURNING id
+        """, req.target, len(user_ids), req.message[:200], "api_admin")
+
+        # Audit
+        await audit_log_write(
+            conn,
+            action="broadcast.send",
+            actor_type="admin",
+            resource_type="broadcast",
+            resource_id=str(broadcast_id),
+            metadata={"target": req.target, "count": len(user_ids)},
+        )
+
+    # Send messages (outside the pool transaction for non-blocking)
+    success = 0
+    failed = 0
+    deliveries = []
+
+    if not BROADCAST_BOT_TOKEN:
+        async with pool.acquire() as conn:
+            await conn.execute(
+                "UPDATE broadcast_log SET success_count=0, fail_count=$1 WHERE id=$2",
+                len(user_ids), broadcast_id
+            )
+        return {
+            "ok": False,
+            "error": "BROADCAST_BOT_TOKEN not configured",
+            "hint": "Set SLH_AIR_TOKEN or CORE_BOT_TOKEN env var on Railway",
+            "broadcast_id": broadcast_id,
+            "total_recipients": len(user_ids),
+        }
+
+    for uid in user_ids:
+        result = await _tg_send_message(BROADCAST_BOT_TOKEN, uid, req.message, parse_mode="HTML")
+        if result.get("ok"):
+            success += 1
+            deliveries.append((broadcast_id, uid, "sent", None))
+        else:
+            failed += 1
+            err = str(result.get("error") or result.get("description") or "unknown")[:200]
+            status = "blocked" if "blocked" in err.lower() else "failed"
+            deliveries.append((broadcast_id, uid, status, err))
+
+    # Write deliveries + update log
+    async with pool.acquire() as conn:
+        for d in deliveries:
+            await conn.execute(
+                "INSERT INTO broadcast_deliveries (broadcast_id, user_id, status, error) VALUES ($1, $2, $3, $4)",
+                *d
+            )
+        await conn.execute(
+            "UPDATE broadcast_log SET success_count=$1, fail_count=$2 WHERE id=$3",
+            success, failed, broadcast_id
+        )
+
+    return {
+        "ok": True,
+        "broadcast_id": broadcast_id,
+        "total_recipients": len(user_ids),
+        "success": success,
+        "failed": failed,
+    }
+
+
+@app.get("/api/broadcast/history")
+async def broadcast_history(limit: int = 20):
+    """Recent broadcast history for admin dashboard."""
+    async with pool.acquire() as conn:
+        await _ensure_broadcast_table(conn)
+        rows = await conn.fetch("""
+            SELECT id, sent_at, target, total_targets, success_count, fail_count, message_preview
+              FROM broadcast_log
+             ORDER BY sent_at DESC
+             LIMIT $1
+        """, limit)
+    return {
+        "broadcasts": [
+            {
+                "id": r["id"],
+                "sent_at": r["sent_at"].isoformat() if r["sent_at"] else None,
+                "target": r["target"],
+                "total": r["total_targets"],
+                "success": r["success_count"],
+                "failed": r["fail_count"],
+                "preview": r["message_preview"],
+            }
+            for r in rows
+        ]
+    }
 
 
 @app.get("/api/strategy/backtest/{strategy_id}")
