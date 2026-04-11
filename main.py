@@ -786,11 +786,11 @@ async def registration_unlock(req: UnlockRequest):
                 """, req.user_id)
 
                 # Credit coupon bonus in ZVK (cheap reward token, NOT SLH which is scarce premium)
-                # 1 SLH = 444 ILS, so to give ~44 ILS worth = 10,000 ZVK (assuming ZVK ~0.0044 ILS)
-                # Post-distribution gift = 100,000 ZVK (~444 ILS) handled by cashback engine
+                # 1 SLH = 444 ILS, so to give ~44 ILS worth = 10 ZVK (1 ZVK ≈ 4.4 ILS)
+                # Post-distribution gift = 100 ZVK (~444 ILS) handled by cashback engine
                 # SLH stays scarce — encourages users to BUY SLH from existing holders
                 slh_bonus_legacy = float(coupon["slh_bonus"] or 0.1)
-                zvk_amount = 10000.0  # ~44 ILS distribution token
+                zvk_amount = 10.0  # ~44 ILS distribution token (10 ZVK)
                 await conn.execute("""
                     INSERT INTO token_balances (user_id, token, balance)
                     VALUES ($1, 'ZVK', $2)
@@ -812,9 +812,9 @@ async def registration_unlock(req: UnlockRequest):
                 "nft_name": f"{coupon['nft_reward']}{nft_number}",
                 "zvk_credited": zvk_amount,
                 "slh_credited": 0,  # SLH NOT given — must be earned via cashback or purchased
-                "post_distribution_gift_zvk": 100000,  # promised after first share
+                "post_distribution_gift_zvk": 100,  # promised after first share
                 "remaining_slots": int(coupon["max_uses"]) - nft_number,
-                "message": f"🎉 ברוכים הבאים Genesis Member #{nft_number}! קיבלת 10,000 ZVK + NFT. אחרי ההפצה הראשונה — עוד 100,000 ZVK מתנה!"
+                "message": f"🎉 ברוכים הבאים Genesis Member #{nft_number}! קיבלת 10 ZVK + NFT. אחרי ההפצה הראשונה — עוד 100 ZVK מתנה!"
             }
 
         # ─── Method 3: Payment proof (same as submit-proof but no JWT) ───
@@ -881,15 +881,15 @@ async def beta_status():
 #   100 shares = 30 SLH cashback
 
 # All amounts in ZVK (NOT SLH - SLH stays scarce, only purchased or earned via tasks)
-# 10,000 ZVK ≈ 44 ILS (matches Genesis distribution amount)
-# Math: 1 SLH equivalent value = 100,000 ZVK
+# 10 ZVK ≈ 44 ILS (matches Genesis distribution amount, 1 ZVK ≈ 4.4 ILS)
+# Math: 1 SLH equivalent value = 100 ZVK
 CASHBACK_TIERS = [
-    (1,   100000,  "post_distribution_gift"),  # 100k ZVK (~444 ILS) — first share gift
-    (5,    50000,  "tier_bronze"),              # 50k ZVK (~222 ILS)
-    (10,  150000,  "tier_silver"),              # 150k ZVK (~666 ILS)
-    (25,  500000,  "tier_gold"),                # 500k ZVK (~2,220 ILS)
-    (50, 1200000,  "tier_platinum"),            # 1.2M ZVK (~5,328 ILS)
-    (100,3000000,  "tier_diamond"),             # 3M ZVK (~13,320 ILS)
+    (1,    100,  "post_distribution_gift"),  # 100 ZVK (~444 ILS) — first share gift
+    (5,     50,  "tier_bronze"),              # 50 ZVK (~222 ILS)
+    (10,   150,  "tier_silver"),              # 150 ZVK (~666 ILS)
+    (25,   500,  "tier_gold"),                # 500 ZVK (~2,220 ILS)
+    (50,  1200,  "tier_platinum"),            # 1,200 ZVK (~5,328 ILS)
+    (100, 3000,  "tier_diamond"),             # 3,000 ZVK (~13,320 ILS)
 ]
 CASHBACK_TOKEN = "ZVK"  # NEVER SLH — SLH is the scarce premium token
 
