@@ -48,9 +48,51 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=CORS_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    # SECURITY FIX (H-3): explicit headers instead of wildcard
+    allow_headers=["Content-Type", "Authorization", "X-Admin-Key", "X-Requested-With"],
 )
+
+
+# Accepted admin keys — matches the 4 passwords on admin.html frontend.
+# Override in production by setting ADMIN_API_KEYS env var (comma-separated).
+_ADMIN_KEYS_DEFAULT = {
+    "slh2026admin",        # primary (Osif)
+    "slh_admin_2026",      # partner A
+    "slh-spark-admin",     # partner B
+    "slh-institutional",   # accountant / lawyer
+}
+ADMIN_API_KEYS = set(
+    (os.getenv("ADMIN_API_KEYS") or "").split(",")
+) - {""}
+if not ADMIN_API_KEYS:
+    ADMIN_API_KEYS = _ADMIN_KEYS_DEFAULT
+    print("[SECURITY] WARNING: Using default ADMIN_API_KEYS. Set ADMIN_API_KEYS env var in production.")
+
+
+def _require_admin(authorization: Optional[str] = None, admin_key_header: Optional[str] = None) -> int:
+    """Verify admin credentials. Accepts EITHER:
+    - X-Admin-Key: <one of ADMIN_API_KEYS> header
+    - Authorization: Bearer <jwt> where user_id == ADMIN_USER_ID
+
+    Returns the admin user_id on success, raises HTTPException 403 otherwise.
+    """
+    # Try admin key header first
+    if admin_key_header and admin_key_header in ADMIN_API_KEYS:
+        return ADMIN_USER_ID
+
+    # Try JWT
+    if authorization and authorization.startswith("Bearer "):
+        try:
+            token = authorization[7:]
+            payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+            uid = int(payload.get("user_id") or 0)
+            if uid == ADMIN_USER_ID:
+                return uid
+        except Exception:
+            pass
+
+    raise HTTPException(403, "Admin authentication required")
 
 # === AI CHAT ROUTER ===
 app.include_router(ai_chat_router)
@@ -61,6 +103,23 @@ pool: Optional[asyncpg.Pool] = None
 @app.on_event("startup")
 async def startup():
     global pool
+    # SECURITY CHECK (C-3): warn if any default credentials are still in use
+    _security_warnings = []
+    if DATABASE_URL == "postgresql://postgres:slh_secure_2026@localhost:5432/slh_main":
+        _security_warnings.append("DATABASE_URL using default — set on Railway")
+    if os.getenv("ADMIN_API_KEY", "slh_admin_2026") == "slh_admin_2026":
+        _security_warnings.append("ADMIN_API_KEY is default — set on Railway")
+    if os.getenv("ENCRYPTION_KEY", "slh_dev_key_CHANGE_ME_IN_PRODUCTION_2026") == "slh_dev_key_CHANGE_ME_IN_PRODUCTION_2026":
+        _security_warnings.append("ENCRYPTION_KEY is default — CRITICAL: set on Railway before storing real CEX keys!")
+    if os.getenv("ADMIN_BROADCAST_KEY", "slh-broadcast-2026-change-me") == "slh-broadcast-2026-change-me":
+        _security_warnings.append("ADMIN_BROADCAST_KEY is default — set on Railway")
+    if not os.getenv("JWT_SECRET"):
+        _security_warnings.append("JWT_SECRET not set — JWT auth will be unreliable")
+    for w in _security_warnings:
+        print(f"[SECURITY WARNING] {w}")
+    if _security_warnings:
+        print(f"[SECURITY WARNING] {len(_security_warnings)} default credentials detected. Set env vars on Railway before production.")
+
     pool = await asyncpg.create_pool(DATABASE_URL, min_size=2, max_size=10)
     async with pool.acquire() as conn:
         await conn.execute("""
@@ -3543,8 +3602,15 @@ async def wallet_send(req: WalletSendRequest, authorization: Optional[str] = Hea
 # === ADMIN DASHBOARD API ===
 
 @app.get("/api/admin/dashboard")
-async def admin_dashboard():
-    """Aggregated admin dashboard data — all stats in one call"""
+async def admin_dashboard(
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None),
+):
+    """Aggregated admin dashboard data — all stats in one call.
+
+    SECURITY FIX (H-1): Now requires admin authentication via JWT or X-Admin-Key header.
+    """
+    _require_admin(authorization, x_admin_key)
     async def safe(conn, query, *args):
         try:
             return await conn.fetchval(query, *args) or 0
@@ -3957,14 +4023,14 @@ async def marketplace_list_item(req: MarketplaceListRequest):
 
         # Admin listings are auto-approved
         initial_status = "approved" if req.seller_id == ADMIN_USER_ID else "pending"
-        approved_at = "CURRENT_TIMESTAMP" if initial_status == "approved" else "NULL"
-
-        row = await conn.fetchrow(f"""
+        # SECURITY FIX (C-1): Use parameterized CASE instead of f-string injection
+        row = await conn.fetchrow("""
             INSERT INTO marketplace_items
                 (seller_id, title, description, price, currency, image_url, category, stock, status, promotion, approved_at)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, {approved_at})
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
+                    CASE WHEN $11 = 'approved' THEN CURRENT_TIMESTAMP ELSE NULL END)
             RETURNING id, status, created_at
-        """, req.seller_id, title, description, req.price, currency, image_url, category, stock, initial_status, promotion)
+        """, req.seller_id, title, description, req.price, currency, image_url, category, stock, initial_status, promotion, initial_status)
 
     print(f"[Marketplace] New listing #{row['id']} by {req.seller_id}: {title} ({req.price} {currency}) status={row['status']}")
     return {
@@ -4277,7 +4343,13 @@ async def marketplace_stats():
 
 
 @app.get("/api/admin/activity")
-async def admin_activity(limit: int = Query(20, le=100)):
+async def admin_activity(
+    limit: int = Query(20, le=100),
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None),
+):
+    """SECURITY FIX (H-2): Now requires admin authentication."""
+    _require_admin(authorization, x_admin_key)
     """Recent activity across the ecosystem"""
     activities = []
     async with pool.acquire() as conn:
