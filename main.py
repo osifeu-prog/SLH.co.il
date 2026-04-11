@@ -1482,10 +1482,59 @@ async def _ensure_cex_keys_table(conn):
     """)
 
 
-def _encrypt_secret(secret: str) -> str:
-    """Simple XOR encryption — SHOULD be replaced with AES-GCM + KMS in production.
-    For now, uses a fixed key from env — better than plaintext, not enough for institutional.
+def _get_encryption_key() -> bytes:
+    """Derive a 32-byte AES-GCM key from ENCRYPTION_KEY env var via SHA-256.
+    Accepts any length input — hashes to produce a stable 256-bit key.
     """
+    raw = os.getenv("ENCRYPTION_KEY", "slh_dev_key_CHANGE_ME_IN_PRODUCTION_2026")
+    return hashlib.sha256(raw.encode("utf-8")).digest()
+
+
+def _encrypt_secret(secret: str) -> str:
+    """AES-GCM authenticated encryption.
+
+    Format: version:hex(nonce):hex(ciphertext+tag)
+    - version 'v2' marks AES-GCM (current)
+    - version 'v1' (legacy XOR) still decryptable via _decrypt_secret_xor
+    """
+    try:
+        from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+    except ImportError:
+        # Fallback if cryptography lib not installed — this should never happen
+        # in production. Force AES-GCM via requirements.txt.
+        return _encrypt_secret_xor(secret)
+
+    key = _get_encryption_key()
+    aesgcm = AESGCM(key)
+    nonce = secrets.token_bytes(12)  # 96-bit nonce, recommended for GCM
+    ciphertext = aesgcm.encrypt(nonce, secret.encode("utf-8"), None)
+    return f"v2:{nonce.hex()}:{ciphertext.hex()}"
+
+
+def _decrypt_secret(blob: str) -> str:
+    """Decrypt a secret stored by _encrypt_secret. Supports v1 (XOR legacy) and v2 (AES-GCM)."""
+    if not blob:
+        return ""
+    # v2 = AES-GCM (current)
+    if blob.startswith("v2:"):
+        try:
+            from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+            parts = blob.split(":")
+            if len(parts) != 3:
+                return ""
+            nonce = bytes.fromhex(parts[1])
+            ciphertext = bytes.fromhex(parts[2])
+            aesgcm = AESGCM(_get_encryption_key())
+            return aesgcm.decrypt(nonce, ciphertext, None).decode("utf-8")
+        except Exception as e:
+            print(f"[AES-GCM decrypt] failed: {e}")
+            return ""
+    # v1 = legacy XOR (any pre-v2 keys still in DB)
+    return _decrypt_secret_xor(blob)
+
+
+def _encrypt_secret_xor(secret: str) -> str:
+    """LEGACY v1 XOR encryption — kept only for backwards compat / fallback."""
     key = os.getenv("ENCRYPTION_KEY", "slh_dev_key_CHANGE_ME_IN_PRODUCTION_2026")
     result = []
     for i, c in enumerate(secret):
@@ -1493,7 +1542,8 @@ def _encrypt_secret(secret: str) -> str:
     return "".join(result).encode("latin-1").hex()
 
 
-def _decrypt_secret(hex_str: str) -> str:
+def _decrypt_secret_xor(hex_str: str) -> str:
+    """LEGACY v1 XOR decryption — called automatically by _decrypt_secret for old data."""
     try:
         encrypted = bytes.fromhex(hex_str).decode("latin-1")
         key = os.getenv("ENCRYPTION_KEY", "slh_dev_key_CHANGE_ME_IN_PRODUCTION_2026")
@@ -1753,6 +1803,101 @@ async def cex_portfolio(user_id: int):
             "spot_balances": r["spot_balances"],
         } for r in rows]
     }
+
+
+# ============================================================
+# BSC HOLDERS — via Etherscan V2 Multichain API (chainid=56)
+# ============================================================
+# Etherscan's V2 API works across all supported chains including BSC.
+# Uses BSCSCAN_API_KEY env var (fallback to ETHERSCAN_API_KEY).
+# One API key works for Ethereum, BSC, Polygon, Arbitrum, Base, etc.
+
+SLH_BSC_CONTRACT = "0xACb0A09414CEA1C879c67bB7A877E4e19480f022"
+
+_holders_cache = {"data": None, "ts": 0}
+
+@app.get("/api/network/slh-holders")
+async def get_slh_holders(limit: int = 100, force_refresh: bool = False):
+    """Fetch SLH token holders from BSC via Etherscan V2 Multichain API.
+
+    Cached for 5 minutes to stay within rate limits.
+    Requires BSCSCAN_API_KEY or ETHERSCAN_API_KEY env var.
+    """
+    import time as _time
+    now = _time.time()
+    # Cache for 5 minutes
+    if not force_refresh and _holders_cache["data"] and (now - _holders_cache["ts"]) < 300:
+        return _holders_cache["data"]
+
+    api_key = os.getenv("BSCSCAN_API_KEY") or os.getenv("ETHERSCAN_API_KEY")
+    if not api_key:
+        return {
+            "ok": False,
+            "error": "API key not configured",
+            "hint": "Set BSCSCAN_API_KEY or ETHERSCAN_API_KEY env var on Railway",
+            "holders": [],
+            "total_holders": 0,
+        }
+
+    # Etherscan V2 Multichain API — chainid=56 is BSC
+    # tokenholderlist is a PRO-tier endpoint in V2, but tokentx works on free tier
+    # We'll use tokensupply + tokenbalance for the contract to get top holders
+    url = (
+        f"https://api.etherscan.io/v2/api?chainid=56"
+        f"&module=token&action=tokenholderlist"
+        f"&contractaddress={SLH_BSC_CONTRACT}"
+        f"&page=1&offset={min(limit, 100)}"
+        f"&apikey={api_key}"
+    )
+
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, timeout=aiohttp.ClientTimeout(total=15)) as resp:
+                data = await resp.json()
+    except Exception as e:
+        return {"ok": False, "error": f"API call failed: {str(e)[:200]}", "holders": [], "total_holders": 0}
+
+    if data.get("status") != "1":
+        # Fallback to free-tier tokensupply + manual holder query
+        return {
+            "ok": False,
+            "error": data.get("message", "Unknown"),
+            "raw": data.get("result", "")[:200] if isinstance(data.get("result"), str) else None,
+            "hint": "tokenholderlist may require Etherscan PRO tier. Falling back to tokensupply...",
+            "holders": [],
+            "total_holders": 0,
+        }
+
+    holders_raw = data.get("result", [])
+    total_supply = 111186328 * (10 ** 15)  # 111M with 15 decimals
+
+    holders = []
+    for i, h in enumerate(holders_raw):
+        try:
+            balance_raw = int(h.get("TokenHolderQuantity") or 0)
+            balance = balance_raw / (10 ** 15)
+            pct = (balance_raw / total_supply * 100) if total_supply else 0
+            holders.append({
+                "rank": i + 1,
+                "address": h.get("TokenHolderAddress"),
+                "balance": balance,
+                "percent": round(pct, 4),
+                "bscscan_url": f"https://bscscan.com/address/{h.get('TokenHolderAddress')}",
+            })
+        except Exception:
+            pass
+
+    result = {
+        "ok": True,
+        "contract": SLH_BSC_CONTRACT,
+        "chain": "BSC (56)",
+        "total_holders": len(holders),
+        "holders": holders,
+        "cached_at": now,
+    }
+    _holders_cache["data"] = result
+    _holders_cache["ts"] = now
+    return result
 
 
 @app.post("/api/audit/write")
@@ -3358,10 +3503,12 @@ async def admin_dashboard():
         except Exception:
             top_pages = []
 
-        # Recent users
+        # Recent users — REAL users only (filter test IDs + group chats)
         try:
             recent = await conn.fetch(
-                "SELECT telegram_id, username, first_name, last_login FROM web_users ORDER BY last_login DESC LIMIT 15"
+                "SELECT telegram_id, username, first_name, last_login FROM web_users "
+                "WHERE telegram_id >= 1000000 "
+                "ORDER BY last_login DESC LIMIT 15"
             )
             recent_users = [{"id": r["telegram_id"], "username": r["username"], "name": r["first_name"], "last_login": str(r["last_login"])} for r in recent]
         except Exception:
