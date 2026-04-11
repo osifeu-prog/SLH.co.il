@@ -17,6 +17,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import asyncpg
+import aiohttp
 
 from routes.ai_chat import router as ai_chat_router
 
@@ -784,19 +785,23 @@ async def registration_unlock(req: UnlockRequest):
                     ON CONFLICT (user_id, bot_name) DO UPDATE SET payment_status = 'approved'
                 """, req.user_id)
 
-                # Credit coupon bonus (0.1 SLH ≈ 44 ILS for distribution; +1 SLH after sharing handled by cashback engine)
-                bonus = float(coupon["slh_bonus"] or 0.1)
+                # Credit coupon bonus in ZVK (cheap reward token, NOT SLH which is scarce premium)
+                # 1 SLH = 444 ILS, so to give ~44 ILS worth = 10,000 ZVK (assuming ZVK ~0.0044 ILS)
+                # Post-distribution gift = 100,000 ZVK (~444 ILS) handled by cashback engine
+                # SLH stays scarce — encourages users to BUY SLH from existing holders
+                slh_bonus_legacy = float(coupon["slh_bonus"] or 0.1)
+                zvk_amount = 10000.0  # ~44 ILS distribution token
                 await conn.execute("""
                     INSERT INTO token_balances (user_id, token, balance)
-                    VALUES ($1, 'SLH', $2)
+                    VALUES ($1, 'ZVK', $2)
                     ON CONFLICT (user_id, token) DO UPDATE SET balance = token_balances.balance + $2, updated_at = CURRENT_TIMESTAMP
-                """, req.user_id, bonus)
+                """, req.user_id, zvk_amount)
                 await conn.execute("""
                     INSERT INTO token_transfers (from_user_id, to_user_id, token, amount, memo, tx_type)
-                    VALUES ($1, $1, 'SLH', $2, $3, 'beta_coupon')
-                """, req.user_id, bonus, f'Beta coupon {code} — Genesis #{nft_number}')
+                    VALUES ($1, $1, 'ZVK', $2, $3, 'beta_coupon')
+                """, req.user_id, zvk_amount, f'Beta coupon {code} — Genesis #{nft_number} (ZVK distribution token)')
 
-            print(f"[Unlock] Coupon '{code}' redeemed by user {req.user_id} — Genesis #{nft_number}")
+            print(f"[Unlock] Coupon '{code}' redeemed by user {req.user_id} — Genesis #{nft_number} ({zvk_amount} ZVK)")
             return {
                 "ok": True,
                 "status": "approved",
@@ -805,9 +810,11 @@ async def registration_unlock(req: UnlockRequest):
                 "coupon_code": code,
                 "nft_number": nft_number,
                 "nft_name": f"{coupon['nft_reward']}{nft_number}",
-                "slh_credited": bonus,
+                "zvk_credited": zvk_amount,
+                "slh_credited": 0,  # SLH NOT given — must be earned via cashback or purchased
+                "post_distribution_gift_zvk": 100000,  # promised after first share
                 "remaining_slots": int(coupon["max_uses"]) - nft_number,
-                "message": f"🎉 Welcome, Genesis Member #{nft_number}! You got {bonus} SLH + NFT reward."
+                "message": f"🎉 ברוכים הבאים Genesis Member #{nft_number}! קיבלת 10,000 ZVK + NFT. אחרי ההפצה הראשונה — עוד 100,000 ZVK מתנה!"
             }
 
         # ─── Method 3: Payment proof (same as submit-proof but no JWT) ───
@@ -873,14 +880,18 @@ async def beta_status():
 #   50 shares = 12 SLH cashback
 #   100 shares = 30 SLH cashback
 
+# All amounts in ZVK (NOT SLH - SLH stays scarce, only purchased or earned via tasks)
+# 10,000 ZVK ≈ 44 ILS (matches Genesis distribution amount)
+# Math: 1 SLH equivalent value = 100,000 ZVK
 CASHBACK_TIERS = [
-    (1,   1.0,  "post_distribution_gift"),  # Genesis 49: first successful share
-    (5,   0.5,  "tier_bronze"),
-    (10,  1.5,  "tier_silver"),
-    (25,  5.0,  "tier_gold"),
-    (50,  12.0, "tier_platinum"),
-    (100, 30.0, "tier_diamond"),
+    (1,   100000,  "post_distribution_gift"),  # 100k ZVK (~444 ILS) — first share gift
+    (5,    50000,  "tier_bronze"),              # 50k ZVK (~222 ILS)
+    (10,  150000,  "tier_silver"),              # 150k ZVK (~666 ILS)
+    (25,  500000,  "tier_gold"),                # 500k ZVK (~2,220 ILS)
+    (50, 1200000,  "tier_platinum"),            # 1.2M ZVK (~5,328 ILS)
+    (100,3000000,  "tier_diamond"),             # 3M ZVK (~13,320 ILS)
 ]
+CASHBACK_TOKEN = "ZVK"  # NEVER SLH — SLH is the scarce premium token
 
 
 async def _ensure_cashback_table(conn):
@@ -911,7 +922,8 @@ async def _ensure_cashback_table(conn):
 
 @app.get("/api/cashback/{user_id}")
 async def get_cashback_status(user_id: int):
-    """Return distribution count + cashback tiers earned for a user."""
+    """Return distribution count + cashback tiers earned for a user.
+    All amounts are in ZVK (cashback token), NOT SLH."""
     async with pool.acquire() as conn:
         await _ensure_cashback_table(conn)
         verified_count = await conn.fetchval(
@@ -926,24 +938,23 @@ async def get_cashback_status(user_id: int):
     next_tier = None
     for threshold, amount, key in CASHBACK_TIERS:
         if key not in earned_keys and verified_count < threshold:
-            next_tier = {"threshold": threshold, "slh_amount": amount, "tier_key": key, "needed": threshold - verified_count}
+            next_tier = {"threshold": threshold, "zvk_amount": amount, "tier_key": key, "needed": threshold - verified_count}
             break
     return {
         "user_id": user_id,
         "verified_distributions": int(verified_count),
-        "tiers_earned": [{"tier_key": r["tier_key"], "threshold": r["tier_threshold"], "slh_amount": float(r["slh_amount"]), "credited_at": r["credited_at"].isoformat() if r["credited_at"] else None} for r in earned],
-        "total_slh_earned": total_earned,
+        "token": CASHBACK_TOKEN,
+        "tiers_earned": [{"tier_key": r["tier_key"], "threshold": r["tier_threshold"], "zvk_amount": float(r["slh_amount"]), "credited_at": r["credited_at"].isoformat() if r["credited_at"] else None} for r in earned],
+        "total_zvk_earned": total_earned,
         "next_tier": next_tier,
-        "all_tiers": [{"threshold": t, "slh_amount": a, "key": k} for t, a, k in CASHBACK_TIERS],
+        "all_tiers": [{"threshold": t, "zvk_amount": a, "key": k} for t, a, k in CASHBACK_TIERS],
     }
 
 
 @app.post("/api/cashback/process/{user_id}")
 async def process_cashback(user_id: int):
     """Recompute cashback tiers for a user based on their verified distributions.
-
-    This is idempotent — already-credited tiers won't be paid twice.
-    Should be called whenever a new referral becomes verified.
+    Credits in ZVK (NOT SLH). Idempotent — already-credited tiers won't be paid twice.
     """
     async with pool.acquire() as conn:
         await _ensure_cashback_table(conn)
@@ -961,20 +972,190 @@ async def process_cashback(user_id: int):
                     RETURNING id
                 """, user_id, key, threshold, amount)
                 if inserted:
-                    # Credit token_balances
+                    # Credit ZVK balance (NOT SLH — SLH stays scarce)
                     await conn.execute("""
                         INSERT INTO token_balances (user_id, token, balance)
-                        VALUES ($1, 'SLH', $2)
+                        VALUES ($1, $2, $3)
                         ON CONFLICT (user_id, token) DO UPDATE SET balance = token_balances.balance + EXCLUDED.balance, updated_at = CURRENT_TIMESTAMP
-                    """, user_id, amount)
-                    newly_credited.append({"tier_key": key, "threshold": threshold, "slh": amount})
+                    """, user_id, CASHBACK_TOKEN, amount)
+                    newly_credited.append({"tier_key": key, "threshold": threshold, "zvk": amount})
     return {
         "ok": True,
         "user_id": user_id,
         "verified_distributions": int(verified_count),
+        "token": CASHBACK_TOKEN,
         "newly_credited": newly_credited,
         "total_credited": len(newly_credited),
     }
+
+
+# ============================================================
+# EXTERNAL WALLETS — Bybit, Binance, custom TON addresses
+# ============================================================
+# Users can register multiple external wallet addresses (TON, BSC, ETH, BTC)
+# from exchanges (Bybit, Binance, Bitget, OKX) or self-custody.
+# We READ-ONLY query their balances via public APIs (toncenter, BscScan).
+# NEVER ask for private keys, API keys, or signatures.
+
+class ExternalWalletAdd(BaseModel):
+    user_id: int
+    label: str  # "Bybit Main", "Binance Spot", "My Cold Wallet"
+    network: str  # "TON" | "BSC" | "ETH" | "BTC"
+    address: str
+    provider: Optional[str] = None  # "bybit" | "binance" | "bitget" | "okx" | "self"
+
+
+async def _ensure_external_wallets_table(conn):
+    await conn.execute("""
+        CREATE TABLE IF NOT EXISTS external_wallets (
+            id BIGSERIAL PRIMARY KEY,
+            user_id BIGINT NOT NULL,
+            label TEXT NOT NULL,
+            network TEXT NOT NULL,
+            address TEXT NOT NULL,
+            provider TEXT,
+            added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            last_balance_native NUMERIC(28,8) DEFAULT 0,
+            last_balance_usdt NUMERIC(28,8) DEFAULT 0,
+            last_checked TIMESTAMP,
+            UNIQUE(user_id, network, address)
+        );
+        CREATE INDEX IF NOT EXISTS idx_external_wallets_user ON external_wallets(user_id);
+    """)
+
+
+@app.post("/api/external-wallets/add")
+async def add_external_wallet(req: ExternalWalletAdd):
+    """Add an external wallet address for the user (read-only tracking)."""
+    if not req.user_id or not req.address or len(req.address) < 10:
+        raise HTTPException(400, "user_id + valid address required")
+    network = req.network.upper()
+    if network not in ("TON", "BSC", "ETH", "BTC"):
+        raise HTTPException(400, "network must be TON, BSC, ETH, or BTC")
+    async with pool.acquire() as conn:
+        await _ensure_external_wallets_table(conn)
+        wid = await conn.fetchval("""
+            INSERT INTO external_wallets (user_id, label, network, address, provider)
+            VALUES ($1, $2, $3, $4, $5)
+            ON CONFLICT (user_id, network, address) DO UPDATE
+              SET label = EXCLUDED.label, provider = EXCLUDED.provider
+            RETURNING id
+        """, req.user_id, req.label[:50], network, req.address, req.provider)
+    return {"ok": True, "wallet_id": wid, "user_id": req.user_id, "network": network, "label": req.label}
+
+
+@app.get("/api/external-wallets/{user_id}")
+async def list_external_wallets(user_id: int):
+    """List all external wallets for a user with their last cached balance."""
+    async with pool.acquire() as conn:
+        await _ensure_external_wallets_table(conn)
+        rows = await conn.fetch("""
+            SELECT id, label, network, address, provider, last_balance_native, last_balance_usdt, last_checked, added_at
+              FROM external_wallets
+             WHERE user_id = $1
+             ORDER BY added_at DESC
+        """, user_id)
+    return {
+        "user_id": user_id,
+        "wallets": [{
+            "id": r["id"],
+            "label": r["label"],
+            "network": r["network"],
+            "address": r["address"],
+            "provider": r["provider"],
+            "last_balance_native": float(r["last_balance_native"] or 0),
+            "last_balance_usdt": float(r["last_balance_usdt"] or 0),
+            "last_checked": r["last_checked"].isoformat() if r["last_checked"] else None,
+            "added_at": r["added_at"].isoformat() if r["added_at"] else None,
+        } for r in rows]
+    }
+
+
+@app.delete("/api/external-wallets/{wallet_id}")
+async def delete_external_wallet(wallet_id: int, user_id: int):
+    """Remove an external wallet (must own it)."""
+    async with pool.acquire() as conn:
+        await _ensure_external_wallets_table(conn)
+        deleted = await conn.execute(
+            "DELETE FROM external_wallets WHERE id=$1 AND user_id=$2", wallet_id, user_id
+        )
+    return {"ok": True, "deleted": deleted}
+
+
+async def _fetch_ton_balance(address: str) -> dict:
+    """Fetch TON balance + jettons from toncenter (public, no API key needed)."""
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                f"https://toncenter.com/api/v2/getAddressBalance",
+                params={"address": address},
+                timeout=aiohttp.ClientTimeout(total=10)
+            ) as resp:
+                if resp.status != 200:
+                    return {"native": 0, "usdt": 0, "error": f"HTTP {resp.status}"}
+                data = await resp.json()
+                if not data.get("ok"):
+                    return {"native": 0, "usdt": 0, "error": data.get("description", "unknown")}
+                # toncenter returns nano-TON
+                native = float(data.get("result", 0)) / 1e9
+                return {"native": native, "usdt": 0, "ok": True}
+    except Exception as e:
+        return {"native": 0, "usdt": 0, "error": str(e)[:100]}
+
+
+@app.post("/api/external-wallets/refresh/{wallet_id}")
+async def refresh_external_wallet(wallet_id: int):
+    """Refresh balance for a single external wallet (calls public chain API)."""
+    async with pool.acquire() as conn:
+        await _ensure_external_wallets_table(conn)
+        row = await conn.fetchrow(
+            "SELECT id, user_id, network, address FROM external_wallets WHERE id=$1", wallet_id
+        )
+        if not row:
+            raise HTTPException(404, "Wallet not found")
+
+        balance_info = {"native": 0, "usdt": 0}
+        if row["network"] == "TON":
+            balance_info = await _fetch_ton_balance(row["address"])
+        elif row["network"] == "BSC":
+            # TODO: BscScan API call
+            balance_info = {"native": 0, "usdt": 0, "info": "BSC support coming soon"}
+        elif row["network"] == "ETH":
+            balance_info = {"native": 0, "usdt": 0, "info": "ETH support coming soon"}
+
+        await conn.execute("""
+            UPDATE external_wallets
+               SET last_balance_native = $1,
+                   last_balance_usdt = $2,
+                   last_checked = CURRENT_TIMESTAMP
+             WHERE id = $3
+        """, balance_info["native"], balance_info["usdt"], wallet_id)
+
+    return {
+        "ok": True,
+        "wallet_id": wallet_id,
+        "network": row["network"],
+        "address": row["address"],
+        "balance": balance_info,
+    }
+
+
+@app.post("/api/external-wallets/refresh-all/{user_id}")
+async def refresh_all_external_wallets(user_id: int):
+    """Refresh balances for all of a user's external wallets."""
+    async with pool.acquire() as conn:
+        await _ensure_external_wallets_table(conn)
+        rows = await conn.fetch(
+            "SELECT id FROM external_wallets WHERE user_id=$1", user_id
+        )
+    results = []
+    for r in rows:
+        try:
+            res = await refresh_external_wallet(r["id"])
+            results.append(res)
+        except Exception as e:
+            results.append({"wallet_id": r["id"], "error": str(e)[:100]})
+    return {"ok": True, "user_id": user_id, "refreshed": len(results), "results": results}
 
 
 @app.post("/api/cashback/record-distribution")
