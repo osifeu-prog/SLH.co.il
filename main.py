@@ -1816,25 +1816,112 @@ SLH_BSC_CONTRACT = "0xACb0A09414CEA1C879c67bB7A877E4e19480f022"
 
 _holders_cache = {"data": None, "ts": 0}
 
+
+async def _fetch_holders_bitquery(api_key: str, limit: int = 100) -> dict:
+    """Query BitQuery GraphQL for SLH holders on BSC. Free tier 10k/month.
+
+    Returns the standard holders response format on success, or {"ok": False}.
+    """
+    query = """
+    query ($contract: String!, $limit: Int!) {
+      ethereum(network: bsc) {
+        address(address: {is: $contract}) {
+          balances(currency: {is: $contract}, options: {desc: "value", limit: $limit}) {
+            value
+            address {
+              address
+            }
+          }
+        }
+      }
+    }
+    """
+    payload = {
+        "query": query,
+        "variables": {"contract": SLH_BSC_CONTRACT, "limit": min(limit, 100)},
+    }
+    headers = {
+        "Content-Type": "application/json",
+        "X-API-KEY": api_key,
+    }
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.post(
+                "https://graphql.bitquery.io",
+                json=payload,
+                headers=headers,
+                timeout=aiohttp.ClientTimeout(total=20),
+            ) as resp:
+                data = await resp.json()
+    except Exception as e:
+        return {"ok": False, "error": f"BitQuery request failed: {str(e)[:200]}"}
+
+    try:
+        balances = data["data"]["ethereum"]["address"][0]["balances"]
+    except Exception:
+        return {"ok": False, "error": "BitQuery response format unexpected", "raw": str(data)[:300]}
+
+    total_supply = 111186328
+    holders = []
+    for i, b in enumerate(balances):
+        balance = float(b.get("value") or 0)
+        addr = b.get("address", {}).get("address", "")
+        pct = (balance / total_supply * 100) if total_supply else 0
+        holders.append({
+            "rank": i + 1,
+            "address": addr,
+            "balance": balance,
+            "percent": round(pct, 4),
+            "bscscan_url": f"https://bscscan.com/address/{addr}",
+        })
+
+    return {
+        "ok": True,
+        "source": "bitquery",
+        "contract": SLH_BSC_CONTRACT,
+        "chain": "BSC (56)",
+        "total_holders": len(holders),
+        "holders": holders,
+        "cached_at": datetime.utcnow().isoformat(),
+    }
+
 @app.get("/api/network/slh-holders")
 async def get_slh_holders(limit: int = 100, force_refresh: bool = False):
-    """Fetch SLH token holders from BSC via Etherscan V2 Multichain API.
+    """Fetch SLH token holders from BSC.
 
-    Cached for 5 minutes to stay within rate limits.
-    Requires BSCSCAN_API_KEY or ETHERSCAN_API_KEY env var.
+    Tries multiple free providers in order:
+    1. BitQuery GraphQL (free 10k/month) — BITQUERY_API_KEY env var
+    2. Etherscan V2 Multichain (PRO only for BSC) — BSCSCAN_API_KEY
+    3. NodeReal (free 100k/day) — NODEREAL_API_KEY
+
+    Cached for 5 minutes.
     """
     import time as _time
     now = _time.time()
-    # Cache for 5 minutes
     if not force_refresh and _holders_cache["data"] and (now - _holders_cache["ts"]) < 300:
         return _holders_cache["data"]
 
+    # 1) Try BitQuery first (free tier, most generous)
+    bitquery_key = os.getenv("BITQUERY_API_KEY")
+    if bitquery_key:
+        result = await _fetch_holders_bitquery(bitquery_key, limit)
+        if result.get("ok"):
+            _holders_cache["data"] = result
+            _holders_cache["ts"] = now
+            return result
+
+    # 2) Try Etherscan V2 (requires PRO for BSC now)
     api_key = os.getenv("BSCSCAN_API_KEY") or os.getenv("ETHERSCAN_API_KEY")
     if not api_key:
         return {
             "ok": False,
-            "error": "API key not configured",
-            "hint": "Set BSCSCAN_API_KEY or ETHERSCAN_API_KEY env var on Railway",
+            "error": "No BSC holder API configured",
+            "hint": "Set BITQUERY_API_KEY (recommended, free) or ETHERSCAN_API_KEY (PRO) on Railway",
+            "alternatives": [
+                {"name": "BitQuery", "url": "https://bitquery.io", "free": True, "limit": "10k/month"},
+                {"name": "NodeReal", "url": "https://nodereal.io", "free": True, "limit": "100k/day"},
+                {"name": "Alchemy", "url": "https://alchemy.com", "free": True, "limit": "300M CU/month"},
+            ],
             "holders": [],
             "total_holders": 0,
         }
