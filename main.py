@@ -4800,9 +4800,12 @@ async def send_broadcast(req: BroadcastRequest):
     - 'genesis49':  only Genesis 49 NFT holders
     - 'all':        every user in web_users (real IDs only)
     - 'custom':     provide custom_ids list
+
+    Admin key: accepts ADMIN_BROADCAST_KEY OR any of the 4 ADMIN_API_KEYS
+    (slh2026admin, slh_admin_2026, slh-spark-admin, slh-institutional).
     """
-    if req.admin_key != ADMIN_BROADCAST_KEY:
-        raise HTTPException(403, "Invalid admin key")
+    if req.admin_key != ADMIN_BROADCAST_KEY and req.admin_key not in ADMIN_API_KEYS:
+        raise HTTPException(403, "Invalid admin key — use your admin panel password")
     if not req.message or len(req.message) < 5:
         raise HTTPException(400, "Message too short")
     if len(req.message) > 4000:
@@ -5022,8 +5025,9 @@ async def launch_contribute(req: LaunchContributionRequest):
 
 @app.post("/api/launch/verify/{contribution_id}")
 async def launch_verify_contribution(contribution_id: int, admin_key: str):
-    """Admin: mark a contribution as verified + issue rewards."""
-    if admin_key != ADMIN_BROADCAST_KEY:
+    """Admin: mark a contribution as verified + issue rewards.
+    Accepts ADMIN_BROADCAST_KEY or any admin panel password."""
+    if admin_key != ADMIN_BROADCAST_KEY and admin_key not in ADMIN_API_KEYS:
         raise HTTPException(403, "Invalid admin key")
     async with pool.acquire() as conn:
         await _ensure_launch_tables(conn)
