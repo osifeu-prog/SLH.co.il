@@ -1535,7 +1535,7 @@ async def cex_add_api_key(req: CexApiKeyAdd):
             metadata={"exchange": req.exchange, "label": req.label, "masked": masked},
             compliance_flags=["CEX_KEY_LINKED", "READ_ONLY_ASSUMED"],
         )
-    return {"ok": True, "id": kid, "user_id": req.user_id, "exchange": req.exchange, "masked": masked}
+    return {"ok": True, "id": kid, "key_id": kid, "user_id": req.user_id, "exchange": req.exchange, "masked": masked}
 
 
 @app.get("/api/cex/keys/{user_id}")
