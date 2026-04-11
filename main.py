@@ -257,7 +257,7 @@ async def startup():
                     max_uses INT NOT NULL DEFAULT 49,
                     used_count INT NOT NULL DEFAULT 0,
                     nft_reward TEXT DEFAULT 'SLH Genesis Member #',
-                    slh_bonus NUMERIC(18,8) DEFAULT 0.44,
+                    slh_bonus NUMERIC(18,8) DEFAULT 0.1,
                     expires_at TIMESTAMP,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     active BOOLEAN DEFAULT TRUE
@@ -279,7 +279,7 @@ async def startup():
             # Seed the default beta coupon if it doesn't exist
             await conn.execute("""
                 INSERT INTO beta_coupons (code, max_uses, used_count, nft_reward, slh_bonus)
-                VALUES ($1, $2, 0, 'SLH Genesis Member #', 0.44)
+                VALUES ($1, $2, 0, 'SLH Genesis Member #', 0.1)
                 ON CONFLICT (code) DO NOTHING
             """, BETA_COUPON_DEFAULT_CODE, BETA_COUPON_DEFAULT_LIMIT)
         except Exception as e:
@@ -784,8 +784,8 @@ async def registration_unlock(req: UnlockRequest):
                     ON CONFLICT (user_id, bot_name) DO UPDATE SET payment_status = 'approved'
                 """, req.user_id)
 
-                # Credit coupon bonus (0.44 SLH ≈ 195 ILS for beta, much more than 0.05 normal)
-                bonus = float(coupon["slh_bonus"] or 0.44)
+                # Credit coupon bonus (0.1 SLH ≈ 44 ILS for distribution; +1 SLH after sharing handled by cashback engine)
+                bonus = float(coupon["slh_bonus"] or 0.1)
                 await conn.execute("""
                     INSERT INTO token_balances (user_id, token, balance)
                     VALUES ($1, 'SLH', $2)
@@ -859,8 +859,144 @@ async def beta_status():
     return {"coupons": coupons, "total_remaining": total_remaining}
 
 
+# ============================================================
+# CASHBACK ENGINE — distribution rewards for Genesis users
+# ============================================================
+# Each user accumulates "distributions" (verified referrals).
+# When they hit a tier, they automatically receive a SLH bonus.
+#
+# Tiers (referrals → SLH bonus):
+#   First successful share = +1 SLH (auto-credited as "post-distribution gift")
+#   5  shares = 0.5 SLH cashback
+#   10 shares = 1.5 SLH cashback (cumulative includes prior tiers)
+#   25 shares = 5 SLH cashback
+#   50 shares = 12 SLH cashback
+#   100 shares = 30 SLH cashback
+
+CASHBACK_TIERS = [
+    (1,   1.0,  "post_distribution_gift"),  # Genesis 49: first successful share
+    (5,   0.5,  "tier_bronze"),
+    (10,  1.5,  "tier_silver"),
+    (25,  5.0,  "tier_gold"),
+    (50,  12.0, "tier_platinum"),
+    (100, 30.0, "tier_diamond"),
+]
+
+
+async def _ensure_cashback_table(conn):
+    """Idempotent — creates the distribution + cashback tables if missing."""
+    await conn.execute("""
+        CREATE TABLE IF NOT EXISTS user_distributions (
+            user_id BIGINT NOT NULL,
+            referred_user_id BIGINT NOT NULL,
+            referred_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            verified BOOLEAN DEFAULT FALSE,
+            verified_at TIMESTAMP,
+            PRIMARY KEY (user_id, referred_user_id)
+        );
+        CREATE INDEX IF NOT EXISTS idx_distributions_user ON user_distributions(user_id, verified);
+
+        CREATE TABLE IF NOT EXISTS user_cashback (
+            id BIGSERIAL PRIMARY KEY,
+            user_id BIGINT NOT NULL,
+            tier_key TEXT NOT NULL,
+            tier_threshold INT NOT NULL,
+            slh_amount NUMERIC(18,8) NOT NULL,
+            credited_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE(user_id, tier_key)
+        );
+        CREATE INDEX IF NOT EXISTS idx_cashback_user ON user_cashback(user_id);
+    """)
+
+
+@app.get("/api/cashback/{user_id}")
+async def get_cashback_status(user_id: int):
+    """Return distribution count + cashback tiers earned for a user."""
+    async with pool.acquire() as conn:
+        await _ensure_cashback_table(conn)
+        verified_count = await conn.fetchval(
+            "SELECT COUNT(*) FROM user_distributions WHERE user_id=$1 AND verified=TRUE", user_id
+        ) or 0
+        earned = await conn.fetch(
+            "SELECT tier_key, tier_threshold, slh_amount, credited_at FROM user_cashback WHERE user_id=$1 ORDER BY tier_threshold",
+            user_id
+        )
+    earned_keys = {r["tier_key"] for r in earned}
+    total_earned = sum(float(r["slh_amount"]) for r in earned)
+    next_tier = None
+    for threshold, amount, key in CASHBACK_TIERS:
+        if key not in earned_keys and verified_count < threshold:
+            next_tier = {"threshold": threshold, "slh_amount": amount, "tier_key": key, "needed": threshold - verified_count}
+            break
+    return {
+        "user_id": user_id,
+        "verified_distributions": int(verified_count),
+        "tiers_earned": [{"tier_key": r["tier_key"], "threshold": r["tier_threshold"], "slh_amount": float(r["slh_amount"]), "credited_at": r["credited_at"].isoformat() if r["credited_at"] else None} for r in earned],
+        "total_slh_earned": total_earned,
+        "next_tier": next_tier,
+        "all_tiers": [{"threshold": t, "slh_amount": a, "key": k} for t, a, k in CASHBACK_TIERS],
+    }
+
+
+@app.post("/api/cashback/process/{user_id}")
+async def process_cashback(user_id: int):
+    """Recompute cashback tiers for a user based on their verified distributions.
+
+    This is idempotent — already-credited tiers won't be paid twice.
+    Should be called whenever a new referral becomes verified.
+    """
+    async with pool.acquire() as conn:
+        await _ensure_cashback_table(conn)
+        verified_count = await conn.fetchval(
+            "SELECT COUNT(*) FROM user_distributions WHERE user_id=$1 AND verified=TRUE", user_id
+        ) or 0
+        newly_credited = []
+        for threshold, amount, key in CASHBACK_TIERS:
+            if verified_count >= threshold:
+                # Try to insert — UNIQUE constraint prevents double-pay
+                inserted = await conn.fetchval("""
+                    INSERT INTO user_cashback (user_id, tier_key, tier_threshold, slh_amount)
+                    VALUES ($1, $2, $3, $4)
+                    ON CONFLICT (user_id, tier_key) DO NOTHING
+                    RETURNING id
+                """, user_id, key, threshold, amount)
+                if inserted:
+                    # Credit token_balances
+                    await conn.execute("""
+                        INSERT INTO token_balances (user_id, token, balance)
+                        VALUES ($1, 'SLH', $2)
+                        ON CONFLICT (user_id, token) DO UPDATE SET balance = token_balances.balance + EXCLUDED.balance, updated_at = CURRENT_TIMESTAMP
+                    """, user_id, amount)
+                    newly_credited.append({"tier_key": key, "threshold": threshold, "slh": amount})
+    return {
+        "ok": True,
+        "user_id": user_id,
+        "verified_distributions": int(verified_count),
+        "newly_credited": newly_credited,
+        "total_credited": len(newly_credited),
+    }
+
+
+@app.post("/api/cashback/record-distribution")
+async def record_distribution(user_id: int, referred_user_id: int, verify: bool = False):
+    """Record that user_id referred referred_user_id. If verify=true, marks immediately as verified."""
+    async with pool.acquire() as conn:
+        await _ensure_cashback_table(conn)
+        await conn.execute("""
+            INSERT INTO user_distributions (user_id, referred_user_id, verified, verified_at)
+            VALUES ($1, $2, $3, CASE WHEN $3 THEN CURRENT_TIMESTAMP ELSE NULL END)
+            ON CONFLICT (user_id, referred_user_id) DO UPDATE
+              SET verified = EXCLUDED.verified,
+                  verified_at = COALESCE(user_distributions.verified_at, CASE WHEN EXCLUDED.verified THEN CURRENT_TIMESTAMP ELSE NULL END)
+        """, user_id, referred_user_id, verify)
+    if verify:
+        # Process tiers immediately
+        return await process_cashback(user_id)
+    return {"ok": True, "user_id": user_id, "referred_user_id": referred_user_id, "verified": verify}
+
+
 @app.post("/api/beta/create-coupon")
-async def beta_create_coupon(admin_key: str, code: str, max_uses: int = 49, slh_bonus: float = 0.44):
+async def beta_create_coupon(admin_key: str, code: str, max_uses: int = 49, slh_bonus: float = 0.1):
     """Admin: create a new beta coupon code."""
     admin_secret = os.getenv("ADMIN_API_KEY", "slh_admin_2026")
     if admin_key != admin_secret:
