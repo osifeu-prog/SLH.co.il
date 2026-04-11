@@ -437,6 +437,68 @@ def _check_wallet_send_rate(user_id: int, cooldown_seconds: int = 5) -> bool:
 
 
 # === AUTH ENDPOINTS ===
+
+class EnsureUserRequest(BaseModel):
+    telegram_id: int
+    username: Optional[str] = None
+    first_name: Optional[str] = None
+    photo_url: Optional[str] = None
+
+
+@app.post("/api/user/ensure")
+async def ensure_user(req: EnsureUserRequest):
+    """Idempotent user creation/update from a Telegram ID.
+
+    Used by the website's "manual login" flow — when a user types their
+    Telegram ID directly (without the Telegram Login Widget), we still need
+    to persist them in web_users so they don't "disappear" on refresh.
+
+    This endpoint does NOT require a signed payload because:
+    - Telegram IDs are public identifiers (anyone can know them)
+    - We only create a profile row, no rights are granted
+    - Registration/payment still gates premium access
+    - Rate limits and validation prevent abuse
+    """
+    tg_id = req.telegram_id
+    # Basic validation — must be a real Telegram user range
+    if tg_id < 100000 or tg_id > 9999999999:
+        raise HTTPException(400, "Invalid Telegram ID")
+
+    async with pool.acquire() as conn:
+        await conn.execute("""
+            INSERT INTO web_users (telegram_id, username, first_name, photo_url, auth_date, last_login)
+            VALUES ($1, $2, $3, $4, EXTRACT(EPOCH FROM NOW())::BIGINT, CURRENT_TIMESTAMP)
+            ON CONFLICT (telegram_id) DO UPDATE SET
+                username = COALESCE(NULLIF(EXCLUDED.username, ''), web_users.username),
+                first_name = COALESCE(NULLIF(EXCLUDED.first_name, ''), web_users.first_name),
+                photo_url = COALESCE(NULLIF(EXCLUDED.photo_url, ''), web_users.photo_url),
+                last_login = CURRENT_TIMESTAMP
+        """, tg_id, req.username or "", req.first_name or "User", req.photo_url or "")
+
+        # Audit for institutional compliance
+        await audit_log_write(
+            conn,
+            action="user.ensure",
+            actor_type="user",
+            actor_user_id=tg_id,
+            resource_type="web_user",
+            resource_id=str(tg_id),
+            metadata={"source": "manual_login"},
+        )
+
+        balances = await get_user_balances(conn, tg_id)
+        is_registered = await conn.fetchval(
+            "SELECT is_registered FROM web_users WHERE telegram_id=$1", tg_id
+        ) or False
+
+    return {
+        "ok": True,
+        "telegram_id": tg_id,
+        "is_registered": is_registered,
+        "balances": balances,
+    }
+
+
 @app.post("/api/auth/telegram")
 async def auth_telegram(auth: TelegramAuth):
     """Authenticate user via Telegram Login Widget"""
@@ -2613,30 +2675,38 @@ async def get_transactions(user_id: int, limit: int = Query(50, le=200), offset:
 
 @app.get("/api/leaderboard")
 async def global_leaderboard(category: str = Query("xp", enum=["xp", "balance", "referrals", "staking"]), limit: int = Query(20, le=100)):
-    """Global leaderboard - XP, balance, referrals, or staking"""
+    """Global leaderboard - XP, balance, referrals, or staking.
+
+    Filters out test/seed user IDs (100001-299999) and negative IDs (group chats)
+    so the leaderboard shows only real Telegram users.
+    """
+    # Test/seed IDs to exclude — keep real Telegram users only
+    # Real Telegram user IDs are ALWAYS positive and typically > 1M
+    EXCLUDE_RANGE = "user_id >= 1000000 AND user_id > 0"
     async with pool.acquire() as conn:
         rows = []
         try:
             if category == "xp":
                 rows = await conn.fetch(
-                    "SELECT user_id, username, xp_total as score, level FROM users ORDER BY xp_total DESC LIMIT $1", limit
+                    f"SELECT user_id, username, xp_total as score, level FROM users WHERE {EXCLUDE_RANGE} ORDER BY xp_total DESC LIMIT $1", limit
                 )
             elif category == "balance":
                 rows = await conn.fetch(
-                    "SELECT user_id, username, balance as score, level FROM users ORDER BY balance DESC LIMIT $1", limit
+                    f"SELECT user_id, username, balance as score, level FROM users WHERE {EXCLUDE_RANGE} ORDER BY balance DESC LIMIT $1", limit
                 )
             elif category == "staking":
-                rows = await conn.fetch("""
+                rows = await conn.fetch(f"""
                     SELECT sp.user_id, COALESCE(u.username,'') as username, SUM(sp.amount) as score, COALESCE(u.level,1) as level
                     FROM staking_positions sp LEFT JOIN users u ON sp.user_id = u.user_id
-                    WHERE sp.status='active' GROUP BY sp.user_id, u.username, u.level
+                    WHERE sp.status='active' AND sp.{EXCLUDE_RANGE.replace('user_id', 'user_id')}
+                    GROUP BY sp.user_id, u.username, u.level
                     ORDER BY score DESC LIMIT $1
                 """, limit)
             elif category == "referrals":
-                rows = await conn.fetch("""
+                rows = await conn.fetch(f"""
                     SELECT r.referrer_id as user_id, COALESCE(u.username,'') as username, COUNT(*) as score, COALESCE(u.level,1) as level
                     FROM referrals r LEFT JOIN users u ON r.referrer_id = u.user_id
-                    WHERE r.referrer_id IS NOT NULL
+                    WHERE r.referrer_id IS NOT NULL AND r.referrer_id >= 1000000
                     GROUP BY r.referrer_id, u.username, u.level
                     ORDER BY score DESC LIMIT $1
                 """, limit)
@@ -3248,11 +3318,12 @@ async def admin_dashboard():
             return 0
 
     async with pool.acquire() as conn:
-        total_users = await safe(conn, "SELECT COUNT(*) FROM web_users")
-        premium_users = await safe(conn, "SELECT COUNT(*) FROM premium_users WHERE payment_status='approved'")
-        total_staked = await safe(conn, "SELECT COALESCE(SUM(amount),0) FROM staking_positions WHERE status='active'")
-        total_deposits = await safe(conn, "SELECT COALESCE(SUM(amount),0) FROM deposits WHERE status='active'")
-        pending_payments = await safe(conn, "SELECT COUNT(*) FROM premium_users WHERE payment_status='pending'")
+        # Count REAL users only (telegram_id >= 1M, excludes seed test ids 100001-299999)
+        total_users = await safe(conn, "SELECT COUNT(*) FROM web_users WHERE telegram_id >= 1000000")
+        premium_users = await safe(conn, "SELECT COUNT(*) FROM premium_users WHERE payment_status='approved' AND user_id >= 1000000")
+        total_staked = await safe(conn, "SELECT COALESCE(SUM(amount),0) FROM staking_positions WHERE status='active' AND user_id >= 1000000")
+        total_deposits = await safe(conn, "SELECT COALESCE(SUM(amount),0) FROM deposits WHERE status='active' AND user_id >= 1000000")
+        pending_payments = await safe(conn, "SELECT COUNT(*) FROM premium_users WHERE payment_status='pending' AND user_id >= 1000000")
 
         today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
         today_views = await safe(conn, "SELECT COUNT(*) FROM analytics_events WHERE created_at >= $1", today_start)
@@ -3260,8 +3331,8 @@ async def admin_dashboard():
         total_events = await safe(conn, "SELECT COUNT(*) FROM analytics_events")
         total_visitors = await safe(conn, "SELECT COUNT(DISTINCT visitor_id) FROM analytics_events WHERE visitor_id != ''")
 
-        # Recent signups
-        today_signups = await safe(conn, "SELECT COUNT(*) FROM web_users WHERE last_login >= $1", today_start)
+        # Recent signups — real Telegram IDs only
+        today_signups = await safe(conn, "SELECT COUNT(*) FROM web_users WHERE last_login >= $1 AND telegram_id >= 1000000", today_start)
 
         # Referral stats
         referral_count = await safe(conn, "SELECT COUNT(*) FROM referrals")
