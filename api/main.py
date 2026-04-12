@@ -41,7 +41,7 @@ USD_ILS_RATE = 3.65
 app = FastAPI(
     title="SLH Ecosystem API",
     description="Backend API for SLH Digital Investment House",
-    version="1.0.0",
+    version="1.1.0",
 )
 
 app.add_middleware(
