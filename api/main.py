@@ -4500,6 +4500,14 @@ async def tokenomics_stats():
             "rate": "~4.4 ILS per ZVK (floating)",
             "conversion_to_slh": "100 ZVK = 1 SLH",
         },
+        "zuz": {
+            "description": "Guardian anti-fraud token — Mark of Cain (אות קין)",
+            "purpose": "Negative reputation marker for scammers, bots, and fraudsters",
+            "mechanism": "Assigned by Guardian bot reports. Higher ZUZ = more suspicious",
+            "auto_ban_threshold": ZUZ_AUTO_BAN_THRESHOLD,
+            "severity_levels": ZUZ_SEVERITY,
+            "cross_group": "Shared across all SLH ecosystem groups — one report affects all",
+        },
         "reserves": [
             {
                 "token": r["token"],
@@ -5340,6 +5348,354 @@ async def admin_manual_credit(
         )
 
     return {"ok": True, "user_id": user_id, "token": token, "amount": amount, "reason": reason}
+
+
+# ============================================================
+# GUARDIAN SYSTEM — ZUZ Token + Anti-Fraud Intelligence
+# ============================================================
+# ZUZ = "אות קין" (Mark of Cain) — negative reputation token
+# Assigned by Guardian bot to mark scammers, bots, fraudsters.
+# Higher ZUZ = more suspicious. Used for cross-group intelligence.
+
+async def _ensure_guardian_tables(conn):
+    """Create Guardian system tables."""
+    await conn.execute("""
+        CREATE TABLE IF NOT EXISTS guardian_reports (
+            id SERIAL PRIMARY KEY,
+            reported_user_id BIGINT NOT NULL,
+            reported_username TEXT,
+            reporter_id BIGINT,
+            reporter_username TEXT,
+            group_id BIGINT,
+            group_name TEXT,
+            reason TEXT NOT NULL,
+            evidence TEXT,
+            severity TEXT DEFAULT 'medium',
+            zuz_amount REAL DEFAULT 10,
+            status TEXT DEFAULT 'pending',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            reviewed_at TIMESTAMP,
+            reviewed_by BIGINT
+        )
+    """)
+    await conn.execute("""
+        CREATE TABLE IF NOT EXISTS guardian_blacklist (
+            id SERIAL PRIMARY KEY,
+            user_id BIGINT UNIQUE NOT NULL,
+            username TEXT,
+            zuz_score REAL DEFAULT 0,
+            total_reports INT DEFAULT 0,
+            first_reported_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            last_reported_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            groups_flagged TEXT[] DEFAULT '{}',
+            ban_active BOOLEAN DEFAULT FALSE,
+            ban_reason TEXT,
+            auto_banned BOOLEAN DEFAULT FALSE
+        )
+    """)
+    await conn.execute("""
+        CREATE TABLE IF NOT EXISTS guardian_group_intel (
+            id SERIAL PRIMARY KEY,
+            group_id BIGINT NOT NULL,
+            group_name TEXT,
+            total_scams_detected INT DEFAULT 0,
+            total_bans INT DEFAULT 0,
+            protection_level TEXT DEFAULT 'standard',
+            guardian_active BOOLEAN DEFAULT TRUE,
+            added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            last_scan TIMESTAMP
+        )
+    """)
+    await conn.execute("""
+        CREATE TABLE IF NOT EXISTS guardian_message_log (
+            id SERIAL PRIMARY KEY,
+            user_id BIGINT NOT NULL,
+            group_id BIGINT,
+            message_hash TEXT,
+            risk_score REAL DEFAULT 0,
+            risk_factors TEXT,
+            flagged BOOLEAN DEFAULT FALSE,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+    await conn.execute("CREATE INDEX IF NOT EXISTS idx_guardian_blacklist_user ON guardian_blacklist(user_id)")
+    await conn.execute("CREATE INDEX IF NOT EXISTS idx_guardian_reports_user ON guardian_reports(reported_user_id)")
+    await conn.execute("CREATE INDEX IF NOT EXISTS idx_guardian_msg_user ON guardian_message_log(user_id)")
+
+
+class GuardianReportRequest(BaseModel):
+    reported_user_id: int
+    reported_username: Optional[str] = None
+    reporter_id: Optional[int] = None
+    reporter_username: Optional[str] = None
+    group_id: Optional[int] = None
+    group_name: Optional[str] = None
+    reason: str
+    evidence: Optional[str] = None
+    severity: str = "medium"  # low, medium, high, critical
+
+
+# ZUZ severity multipliers
+ZUZ_SEVERITY = {"low": 5, "medium": 10, "high": 25, "critical": 50}
+ZUZ_AUTO_BAN_THRESHOLD = 100  # auto-ban at 100 ZUZ
+
+
+@app.post("/api/guardian/report")
+async def guardian_report(req: GuardianReportRequest):
+    """Report a user for suspicious/scam activity. Awards ZUZ marks."""
+    zuz_amount = ZUZ_SEVERITY.get(req.severity, 10)
+
+    async with pool.acquire() as conn:
+        await _ensure_guardian_tables(conn)
+
+        # Record the report
+        report_id = await conn.fetchval("""
+            INSERT INTO guardian_reports
+                (reported_user_id, reported_username, reporter_id, reporter_username,
+                 group_id, group_name, reason, evidence, severity, zuz_amount)
+            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING id
+        """, req.reported_user_id, req.reported_username, req.reporter_id,
+            req.reporter_username, req.group_id, req.group_name,
+            req.reason, req.evidence, req.severity, zuz_amount)
+
+        # Update or create blacklist entry
+        existing = await conn.fetchrow(
+            "SELECT id, zuz_score, total_reports FROM guardian_blacklist WHERE user_id=$1",
+            req.reported_user_id
+        )
+        if existing:
+            new_score = float(existing["zuz_score"]) + zuz_amount
+            new_reports = existing["total_reports"] + 1
+            auto_ban = new_score >= ZUZ_AUTO_BAN_THRESHOLD
+            groups = []
+            if req.group_name:
+                groups = [req.group_name]
+            await conn.execute("""
+                UPDATE guardian_blacklist
+                SET zuz_score = $1, total_reports = $2, last_reported_at = CURRENT_TIMESTAMP,
+                    groups_flagged = array_cat(groups_flagged, $3::TEXT[]),
+                    ban_active = CASE WHEN $4 THEN TRUE ELSE ban_active END,
+                    auto_banned = CASE WHEN $4 THEN TRUE ELSE auto_banned END,
+                    ban_reason = CASE WHEN $4 THEN 'Auto-ban: ZUZ threshold exceeded' ELSE ban_reason END
+                WHERE user_id = $5
+            """, new_score, new_reports, groups, auto_ban, req.reported_user_id)
+        else:
+            new_score = zuz_amount
+            auto_ban = new_score >= ZUZ_AUTO_BAN_THRESHOLD
+            await conn.execute("""
+                INSERT INTO guardian_blacklist
+                    (user_id, username, zuz_score, total_reports, groups_flagged,
+                     ban_active, auto_banned, ban_reason)
+                VALUES ($1,$2,$3,1,$4,$5,$6,$7)
+            """, req.reported_user_id, req.reported_username, zuz_amount,
+                [req.group_name] if req.group_name else [],
+                auto_ban, auto_ban,
+                'Auto-ban: ZUZ threshold exceeded' if auto_ban else None)
+
+        # Credit ZUZ to the reported user's token balance (negative reputation)
+        await conn.execute("""
+            INSERT INTO token_balances (user_id, token, balance)
+            VALUES ($1, 'ZUZ', $2)
+            ON CONFLICT (user_id, token) DO UPDATE
+              SET balance = token_balances.balance + $2, updated_at = CURRENT_TIMESTAMP
+        """, req.reported_user_id, zuz_amount)
+
+        # Audit log
+        await audit_log_write(
+            conn, action="guardian.report", actor_type="guardian",
+            actor_user_id=req.reporter_id or 0,
+            resource_type="scam_report", resource_id=str(report_id),
+            amount_native=zuz_amount, amount_currency="ZUZ",
+            metadata={"reason": req.reason, "severity": req.severity,
+                      "reported_user": req.reported_user_id,
+                      "auto_banned": auto_ban},
+            compliance_flags=["GUARDIAN", "ANTI_FRAUD"],
+        )
+
+    return {
+        "ok": True,
+        "report_id": report_id,
+        "zuz_awarded": zuz_amount,
+        "total_zuz": new_score,
+        "auto_banned": auto_ban,
+        "message": f"Report #{report_id} filed. {zuz_amount} ZUZ marked."
+                   + (" USER AUTO-BANNED!" if auto_ban else ""),
+    }
+
+
+@app.get("/api/guardian/check/{user_id}")
+async def guardian_check_user(user_id: int):
+    """Check if a user is flagged/banned by Guardian. Used by all bots."""
+    async with pool.acquire() as conn:
+        await _ensure_guardian_tables(conn)
+        entry = await conn.fetchrow(
+            "SELECT * FROM guardian_blacklist WHERE user_id=$1", user_id
+        )
+        if not entry:
+            return {"flagged": False, "zuz_score": 0, "ban_active": False, "safe": True}
+
+        reports = await conn.fetch(
+            "SELECT reason, severity, group_name, created_at FROM guardian_reports "
+            "WHERE reported_user_id=$1 ORDER BY created_at DESC LIMIT 10", user_id
+        )
+
+    return {
+        "flagged": True,
+        "zuz_score": float(entry["zuz_score"]),
+        "total_reports": entry["total_reports"],
+        "ban_active": entry["ban_active"],
+        "auto_banned": entry["auto_banned"],
+        "ban_reason": entry["ban_reason"],
+        "groups_flagged": entry["groups_flagged"],
+        "first_reported": entry["first_reported_at"].isoformat() if entry["first_reported_at"] else None,
+        "last_reported": entry["last_reported_at"].isoformat() if entry["last_reported_at"] else None,
+        "safe": False,
+        "recent_reports": [
+            {"reason": r["reason"], "severity": r["severity"],
+             "group": r["group_name"], "date": r["created_at"].isoformat()}
+            for r in reports
+        ],
+    }
+
+
+@app.get("/api/guardian/blacklist")
+async def guardian_blacklist(
+    limit: int = Query(50, le=200),
+    min_zuz: float = Query(0),
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None),
+):
+    """Get all flagged users. Admin only for full list."""
+    _require_admin(authorization, x_admin_key)
+    async with pool.acquire() as conn:
+        await _ensure_guardian_tables(conn)
+        rows = await conn.fetch(
+            "SELECT user_id, username, zuz_score, total_reports, ban_active, auto_banned, "
+            "groups_flagged, first_reported_at, last_reported_at "
+            "FROM guardian_blacklist WHERE zuz_score >= $1 "
+            "ORDER BY zuz_score DESC LIMIT $2", min_zuz, limit
+        )
+    return {
+        "ok": True,
+        "count": len(rows),
+        "blacklist": [
+            {
+                "user_id": r["user_id"], "username": r["username"],
+                "zuz_score": float(r["zuz_score"]), "reports": r["total_reports"],
+                "banned": r["ban_active"], "auto_banned": r["auto_banned"],
+                "groups": r["groups_flagged"],
+            }
+            for r in rows
+        ],
+    }
+
+
+@app.post("/api/guardian/scan-message")
+async def guardian_scan_message(
+    user_id: int, group_id: int = 0, message_text: str = "",
+):
+    """Scan a message for scam risk. Returns risk score + factors.
+    Used by Guardian bot in real-time for every group message."""
+    risk_score = 0
+    factors = []
+
+    text_lower = message_text.lower()
+
+    # Suspicious keywords (EN + HE)
+    scam_words = ["guaranteed profit", "invest now", "double your money", "free crypto",
+                  "send me", "click here", "limited time", "act now", "whatsapp me",
+                  "רווח מובטח", "השקעה בטוחה", "הכנסה פסיבית", "שלח לי",
+                  "earn daily", "100% safe", "no risk"]
+    for w in scam_words:
+        if w in text_lower:
+            risk_score += 20
+            factors.append(f"suspicious_word:{w}")
+
+    # URL detection
+    import re
+    urls = re.findall(r'https?://\S+', message_text)
+    if urls:
+        risk_score += 15
+        factors.append(f"contains_urls:{len(urls)}")
+        # Check for URL shorteners (extra suspicious)
+        shorteners = ["bit.ly", "tinyurl", "t.co", "goo.gl", "ow.ly", "is.gd"]
+        for url in urls:
+            for s in shorteners:
+                if s in url:
+                    risk_score += 25
+                    factors.append(f"url_shortener:{s}")
+
+    # Excessive emojis (common in scam messages)
+    emoji_count = len(re.findall(r'[\U0001F600-\U0001F9FF\U0001FA00-\U0001FAFF]', message_text))
+    if emoji_count > 5:
+        risk_score += 10
+        factors.append(f"excessive_emojis:{emoji_count}")
+
+    # ALL CAPS
+    upper_ratio = sum(1 for c in message_text if c.isupper()) / max(len(message_text), 1)
+    if upper_ratio > 0.5 and len(message_text) > 20:
+        risk_score += 10
+        factors.append("excessive_caps")
+
+    # Check if user is already flagged
+    async with pool.acquire() as conn:
+        await _ensure_guardian_tables(conn)
+        existing = await conn.fetchrow(
+            "SELECT zuz_score, ban_active FROM guardian_blacklist WHERE user_id=$1", user_id
+        )
+        if existing:
+            risk_score += min(float(existing["zuz_score"]), 30)
+            factors.append(f"prior_zuz:{existing['zuz_score']}")
+            if existing["ban_active"]:
+                risk_score += 50
+                factors.append("BANNED_USER")
+
+        # Log the scan
+        flagged = risk_score >= 50
+        await conn.execute("""
+            INSERT INTO guardian_message_log (user_id, group_id, message_hash, risk_score, risk_factors, flagged)
+            VALUES ($1, $2, $3, $4, $5, $6)
+        """, user_id, group_id,
+            hashlib.sha256(message_text.encode()).hexdigest()[:16],
+            risk_score, ",".join(factors), flagged)
+
+    return {
+        "risk_score": min(risk_score, 100),
+        "risk_level": "critical" if risk_score >= 75 else "high" if risk_score >= 50
+                      else "medium" if risk_score >= 25 else "low",
+        "factors": factors,
+        "flagged": flagged,
+        "action": "block" if risk_score >= 75 else "warn" if risk_score >= 50
+                  else "monitor" if risk_score >= 25 else "allow",
+        "user_prior_zuz": float(existing["zuz_score"]) if existing else 0,
+    }
+
+
+@app.get("/api/guardian/stats")
+async def guardian_stats():
+    """Guardian system statistics."""
+    async with pool.acquire() as conn:
+        await _ensure_guardian_tables(conn)
+        total_reports = await conn.fetchval("SELECT COUNT(*) FROM guardian_reports") or 0
+        total_flagged = await conn.fetchval("SELECT COUNT(*) FROM guardian_blacklist") or 0
+        total_banned = await conn.fetchval("SELECT COUNT(*) FROM guardian_blacklist WHERE ban_active=TRUE") or 0
+        total_auto_banned = await conn.fetchval("SELECT COUNT(*) FROM guardian_blacklist WHERE auto_banned=TRUE") or 0
+        total_scans = await conn.fetchval("SELECT COUNT(*) FROM guardian_message_log") or 0
+        total_flagged_msgs = await conn.fetchval("SELECT COUNT(*) FROM guardian_message_log WHERE flagged=TRUE") or 0
+        total_zuz = await conn.fetchval("SELECT COALESCE(SUM(zuz_score),0) FROM guardian_blacklist") or 0
+        groups_protected = await conn.fetchval("SELECT COUNT(*) FROM guardian_group_intel WHERE guardian_active=TRUE") or 0
+
+    return {
+        "total_reports": total_reports,
+        "total_flagged_users": total_flagged,
+        "total_banned": total_banned,
+        "total_auto_banned": total_auto_banned,
+        "total_messages_scanned": total_scans,
+        "total_messages_flagged": total_flagged_msgs,
+        "total_zuz_issued": float(total_zuz),
+        "groups_protected": groups_protected,
+        "zuz_auto_ban_threshold": ZUZ_AUTO_BAN_THRESHOLD,
+    }
 
 
 # ============================================================
