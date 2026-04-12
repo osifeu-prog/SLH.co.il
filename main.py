@@ -5227,10 +5227,13 @@ async def admin_credit_rewards(
             ) or 0
 
             # Check audit log for prior genesis reward
-            prior_reward = await conn.fetchval(
-                "SELECT id FROM institutional_audit WHERE action='launch.reward' AND actor_user_id=$1",
-                user_id
-            )
+            try:
+                prior_reward = await conn.fetchval(
+                    "SELECT id FROM institutional_audit WHERE action='launch.reward' AND actor_user_id=$1",
+                    user_id
+                )
+            except Exception:
+                prior_reward = None  # table/column may not exist yet
 
             if prior_reward:
                 already_had.append({
