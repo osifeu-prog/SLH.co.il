@@ -4531,9 +4531,17 @@ class InternalTransferRequest(BaseModel):
 
 
 @app.post("/api/tokenomics/internal-transfer")
-async def internal_transfer(req: InternalTransferRequest):
+async def internal_transfer(req: InternalTransferRequest, authorization: Optional[str] = Header(None)):
     """FREE internal transfer between users. Works for MNH/ZVK/SLH.
-    Uses the internal ledger — no blockchain fees. Instant."""
+    Uses the internal ledger — no blockchain fees. Instant.
+    SECURITY: Requires JWT auth — sender must be the from_user_id."""
+    # Verify caller is the sender (or admin)
+    try:
+        caller_id = get_current_user_id(authorization)
+        if caller_id != req.from_user_id and caller_id != ADMIN_USER_ID:
+            raise HTTPException(403, "You can only transfer from your own account")
+    except Exception:
+        raise HTTPException(401, "Authentication required for transfers")
     if req.from_user_id == req.to_user_id:
         raise HTTPException(400, "Cannot transfer to self")
     if req.amount <= 0:
@@ -4596,8 +4604,9 @@ class BurnRequest(BaseModel):
 
 
 @app.post("/api/tokenomics/burn")
-async def burn_tokens(req: BurnRequest):
-    """Record a token burn. For audit trail + supply accounting."""
+async def burn_tokens(req: BurnRequest, authorization: Optional[str] = Header(None), x_admin_key: Optional[str] = Header(None)):
+    """Record a token burn. Admin-only. For audit trail + supply accounting."""
+    _require_admin(authorization, x_admin_key)
     if req.amount <= 0:
         raise HTTPException(400, "Amount must be positive")
     async with pool.acquire() as conn:
@@ -4631,8 +4640,9 @@ class ReserveRequest(BaseModel):
 
 
 @app.post("/api/tokenomics/reserves/add")
-async def add_reserve(req: ReserveRequest):
-    """Record backing reserves. Published for transparency."""
+async def add_reserve(req: ReserveRequest, authorization: Optional[str] = Header(None), x_admin_key: Optional[str] = Header(None)):
+    """Record backing reserves. Admin-only. Published for transparency."""
+    _require_admin(authorization, x_admin_key)
     async with pool.acquire() as conn:
         await _ensure_tokenomics_tables(conn)
         rid = await conn.fetchval("""
@@ -6116,3 +6126,256 @@ async def list_all_member_cards(limit: int = Query(default=50, ge=1, le=500)):
         )
 
     return {"ok": True, "cards": cards, "total": len(cards)}
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# P2P ORDER BOOK
+# Table: p2p_orders
+#   (id, seller_id, token, amount, price_per_unit, currency, payment_method,
+#    status, created_at)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+P2P_VALID_TOKENS = {"SLH", "ZVK", "MNH"}
+P2P_VALID_CURRENCIES = {"ILS", "USD"}
+P2P_VALID_PAYMENT_METHODS = {"Bit", "PayBox", "Bank", "MNH", "BNB"}
+P2P_VALID_STATUSES = {"active", "filled", "cancelled"}
+
+
+async def _ensure_p2p_orders_table(conn):
+    """Create p2p_orders table if it does not exist."""
+    await conn.execute("""
+        CREATE TABLE IF NOT EXISTS p2p_orders (
+            id              SERIAL PRIMARY KEY,
+            seller_id       BIGINT NOT NULL,
+            token           VARCHAR(10) NOT NULL,
+            amount          NUMERIC(20,8) NOT NULL CHECK (amount > 0),
+            price_per_unit  NUMERIC(20,4) NOT NULL CHECK (price_per_unit > 0),
+            currency        VARCHAR(5)  NOT NULL DEFAULT 'ILS',
+            payment_method  VARCHAR(20) NOT NULL DEFAULT 'Bit',
+            status          VARCHAR(12) NOT NULL DEFAULT 'active',
+            created_at      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+
+
+class P2PCreateOrder(BaseModel):
+    seller_id: int
+    token: str          # SLH / ZVK / MNH
+    amount: float
+    price_per_unit: float
+    currency: str = "ILS"          # ILS / USD
+    payment_method: str = "Bit"    # Bit / PayBox / Bank / MNH / BNB
+
+
+class P2PFillOrder(BaseModel):
+    order_id: int
+    buyer_id: int
+
+
+# ── POST /api/p2p/create-order ──────────────────────────────────────────────
+@app.post("/api/p2p/create-order")
+async def p2p_create_order(body: P2PCreateOrder):
+    """Create a new P2P sell order."""
+    if body.token.upper() not in P2P_VALID_TOKENS:
+        raise HTTPException(400, f"Invalid token. Must be one of: {', '.join(P2P_VALID_TOKENS)}")
+    if body.currency.upper() not in P2P_VALID_CURRENCIES:
+        raise HTTPException(400, f"Invalid currency. Must be one of: {', '.join(P2P_VALID_CURRENCIES)}")
+    if body.payment_method not in P2P_VALID_PAYMENT_METHODS:
+        raise HTTPException(400, f"Invalid payment method. Must be one of: {', '.join(P2P_VALID_PAYMENT_METHODS)}")
+    if body.amount <= 0 or body.price_per_unit <= 0:
+        raise HTTPException(400, "Amount and price must be positive")
+
+    async with pool.acquire() as conn:
+        await _ensure_p2p_orders_table(conn)
+        row = await conn.fetchrow("""
+            INSERT INTO p2p_orders (seller_id, token, amount, price_per_unit, currency, payment_method, status)
+            VALUES ($1, $2, $3, $4, $5, $6, 'active')
+            RETURNING id, seller_id, token, amount, price_per_unit, currency, payment_method, status, created_at
+        """, body.seller_id, body.token.upper(), body.amount, body.price_per_unit,
+             body.currency.upper(), body.payment_method)
+
+        await audit_log_write(
+            conn,
+            action="p2p.create_order",
+            actor_type="user",
+            actor_user_id=body.seller_id,
+            resource_type="p2p_order",
+            resource_id=str(row["id"]),
+            metadata={
+                "token": body.token.upper(),
+                "amount": body.amount,
+                "price_per_unit": body.price_per_unit,
+                "currency": body.currency.upper(),
+                "payment_method": body.payment_method,
+            },
+        )
+
+    return {
+        "ok": True,
+        "order": {
+            "id": row["id"],
+            "seller_id": row["seller_id"],
+            "token": row["token"],
+            "amount": float(row["amount"]),
+            "price_per_unit": float(row["price_per_unit"]),
+            "currency": row["currency"],
+            "payment_method": row["payment_method"],
+            "status": row["status"],
+            "created_at": row["created_at"].isoformat(),
+        },
+    }
+
+
+# ── GET /api/p2p/orders ─────────────────────────────────────────────────────
+@app.get("/api/p2p/orders")
+async def p2p_list_orders(
+    token: Optional[str] = Query(None, description="Filter by token: SLH, ZVK, MNH"),
+    currency: Optional[str] = Query(None, description="Filter by currency: ILS, USD"),
+    payment_method: Optional[str] = Query(None, description="Filter by payment method"),
+    status: str = Query("active", description="Order status: active, filled, cancelled"),
+    limit: int = Query(50, ge=1, le=200),
+    offset: int = Query(0, ge=0),
+):
+    """List P2P orders with optional filters."""
+    if status not in P2P_VALID_STATUSES:
+        raise HTTPException(400, f"Invalid status. Must be one of: {', '.join(P2P_VALID_STATUSES)}")
+
+    conditions = ["status = $1"]
+    params: list = [status]
+    idx = 2
+
+    if token:
+        if token.upper() not in P2P_VALID_TOKENS:
+            raise HTTPException(400, f"Invalid token filter. Must be one of: {', '.join(P2P_VALID_TOKENS)}")
+        conditions.append(f"token = ${idx}")
+        params.append(token.upper())
+        idx += 1
+
+    if currency:
+        if currency.upper() not in P2P_VALID_CURRENCIES:
+            raise HTTPException(400, f"Invalid currency filter. Must be one of: {', '.join(P2P_VALID_CURRENCIES)}")
+        conditions.append(f"currency = ${idx}")
+        params.append(currency.upper())
+        idx += 1
+
+    if payment_method:
+        if payment_method not in P2P_VALID_PAYMENT_METHODS:
+            raise HTTPException(400, f"Invalid payment_method filter. Must be one of: {', '.join(P2P_VALID_PAYMENT_METHODS)}")
+        conditions.append(f"payment_method = ${idx}")
+        params.append(payment_method)
+        idx += 1
+
+    where_clause = " AND ".join(conditions)
+    params.extend([limit, offset])
+
+    async with pool.acquire() as conn:
+        await _ensure_p2p_orders_table(conn)
+        rows = await conn.fetch(f"""
+            SELECT id, seller_id, token, amount, price_per_unit, currency,
+                   payment_method, status, created_at
+            FROM p2p_orders
+            WHERE {where_clause}
+            ORDER BY created_at DESC
+            LIMIT ${idx} OFFSET ${idx + 1}
+        """, *params)
+
+        total = await conn.fetchval(f"""
+            SELECT COUNT(*) FROM p2p_orders WHERE {where_clause}
+        """, *params[:-2])
+
+    orders = []
+    for r in rows:
+        orders.append({
+            "id": r["id"],
+            "seller_id": r["seller_id"],
+            "token": r["token"],
+            "amount": float(r["amount"]),
+            "price_per_unit": float(r["price_per_unit"]),
+            "currency": r["currency"],
+            "payment_method": r["payment_method"],
+            "status": r["status"],
+            "created_at": r["created_at"].isoformat(),
+        })
+
+    return {"ok": True, "orders": orders, "total": total, "limit": limit, "offset": offset}
+
+
+# ── POST /api/p2p/fill-order ────────────────────────────────────────────────
+@app.post("/api/p2p/fill-order")
+async def p2p_fill_order(body: P2PFillOrder):
+    """Mark an active P2P order as filled by a buyer."""
+    async with pool.acquire() as conn:
+        await _ensure_p2p_orders_table(conn)
+
+        row = await conn.fetchrow(
+            "SELECT * FROM p2p_orders WHERE id = $1", body.order_id
+        )
+        if not row:
+            raise HTTPException(404, "Order not found")
+        if row["status"] != "active":
+            raise HTTPException(400, f"Order is already {row['status']}")
+        if row["seller_id"] == body.buyer_id:
+            raise HTTPException(400, "Seller cannot fill own order")
+
+        await conn.execute(
+            "UPDATE p2p_orders SET status = 'filled' WHERE id = $1",
+            body.order_id,
+        )
+
+        await audit_log_write(
+            conn,
+            action="p2p.fill_order",
+            actor_type="user",
+            actor_user_id=body.buyer_id,
+            resource_type="p2p_order",
+            resource_id=str(body.order_id),
+            metadata={
+                "seller_id": row["seller_id"],
+                "buyer_id": body.buyer_id,
+                "token": row["token"],
+                "amount": float(row["amount"]),
+                "price_per_unit": float(row["price_per_unit"]),
+                "currency": row["currency"],
+            },
+        )
+
+    return {"ok": True, "message": "Order filled successfully", "order_id": body.order_id}
+
+
+# ── DELETE /api/p2p/cancel-order/{id} ────────────────────────────────────────
+@app.delete("/api/p2p/cancel-order/{order_id}")
+async def p2p_cancel_order(order_id: int, seller_id: int = Query(..., description="Seller's telegram ID")):
+    """Cancel an active P2P order. Only the seller can cancel their own order."""
+    async with pool.acquire() as conn:
+        await _ensure_p2p_orders_table(conn)
+
+        row = await conn.fetchrow(
+            "SELECT * FROM p2p_orders WHERE id = $1", order_id
+        )
+        if not row:
+            raise HTTPException(404, "Order not found")
+        if row["seller_id"] != seller_id:
+            raise HTTPException(403, "Only the seller can cancel this order")
+        if row["status"] != "active":
+            raise HTTPException(400, f"Order is already {row['status']}")
+
+        await conn.execute(
+            "UPDATE p2p_orders SET status = 'cancelled' WHERE id = $1",
+            order_id,
+        )
+
+        await audit_log_write(
+            conn,
+            action="p2p.cancel_order",
+            actor_type="user",
+            actor_user_id=seller_id,
+            resource_type="p2p_order",
+            resource_id=str(order_id),
+            metadata={
+                "token": row["token"],
+                "amount": float(row["amount"]),
+                "price_per_unit": float(row["price_per_unit"]),
+            },
+        )
+
+    return {"ok": True, "message": "Order cancelled", "order_id": order_id}
