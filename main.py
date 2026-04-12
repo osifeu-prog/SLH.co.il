@@ -5442,3 +5442,219 @@ async def backtest_strategy(strategy_id: str, months: int = 12):
         "worst_month": min(monthly_returns, key=lambda x: x["return_pct"]),
         "monthly_returns": monthly_returns,
     }
+
+
+# ============================================================
+# REP SYSTEM — Personal Reputation Score per Member
+# ============================================================
+
+async def _ensure_rep_tables(conn):
+    """Create the member_rep table if it doesn't exist."""
+    await conn.execute("""
+        CREATE TABLE IF NOT EXISTS member_rep (
+            user_id BIGINT PRIMARY KEY,
+            rep_score NUMERIC(18,2) DEFAULT 0,
+            therapy_hours NUMERIC(10,2) DEFAULT 0,
+            referrals_count INT DEFAULT 0,
+            community_actions INT DEFAULT 0,
+            genesis_contributor BOOLEAN DEFAULT FALSE,
+            staking_bonus NUMERIC(18,2) DEFAULT 0,
+            tier TEXT DEFAULT 'basic',
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+    """)
+
+
+def _calculate_rep_tier(score: float) -> str:
+    """Return tier based on REP score thresholds."""
+    if score >= 1000:
+        return "elder"
+    elif score >= 500:
+        return "senior"
+    elif score >= 100:
+        return "active"
+    return "basic"
+
+
+class RepAddRequest(BaseModel):
+    user_id: int
+    action: str  # therapy_hour, referral, community, genesis, staking
+    amount: Optional[float] = None  # custom amount (used for staking bonus)
+
+
+@app.get("/api/rep/{user_id}")
+async def get_rep_score(user_id: int):
+    """Get REP score and tier for a user."""
+    async with pool.acquire() as conn:
+        await _ensure_rep_tables(conn)
+        row = await conn.fetchrow(
+            "SELECT * FROM member_rep WHERE user_id = $1", user_id
+        )
+        if not row:
+            # Return default score for unregistered user
+            result = {
+                "user_id": user_id,
+                "rep_score": 0,
+                "therapy_hours": 0,
+                "referrals_count": 0,
+                "community_actions": 0,
+                "genesis_contributor": False,
+                "staking_bonus": 0,
+                "tier": "basic",
+            }
+        else:
+            result = {
+                "user_id": row["user_id"],
+                "rep_score": float(row["rep_score"]),
+                "therapy_hours": float(row["therapy_hours"]),
+                "referrals_count": row["referrals_count"],
+                "community_actions": row["community_actions"],
+                "genesis_contributor": row["genesis_contributor"],
+                "staking_bonus": float(row["staking_bonus"]),
+                "tier": row["tier"],
+            }
+
+        await audit_log_write(
+            conn,
+            action="rep.query",
+            actor_type="system",
+            actor_user_id=user_id,
+            resource_type="rep",
+            resource_id=str(user_id),
+            metadata={"tier": result["tier"], "score": result["rep_score"]},
+        )
+
+    return result
+
+
+# REP point values per action type
+_REP_ACTION_POINTS = {
+    "therapy_hour": 10.0,
+    "referral": 25.0,
+    "community": 5.0,
+    "genesis": 100.0,
+    "staking": 0.0,  # uses custom amount
+}
+
+
+@app.post("/api/rep/add")
+async def add_rep_points(req: RepAddRequest):
+    """Add REP points for a specific action."""
+    if req.action not in _REP_ACTION_POINTS:
+        raise HTTPException(400, f"Invalid action. Must be one of: {', '.join(_REP_ACTION_POINTS.keys())}")
+
+    points = _REP_ACTION_POINTS[req.action]
+    if req.action == "staking":
+        points = float(req.amount) if req.amount and req.amount > 0 else 0.0
+
+    async with pool.acquire() as conn:
+        await _ensure_rep_tables(conn)
+
+        # Upsert: insert or update the user's rep record
+        before_row = await conn.fetchrow(
+            "SELECT rep_score, tier FROM member_rep WHERE user_id = $1", req.user_id
+        )
+        before_score = float(before_row["rep_score"]) if before_row else 0.0
+        before_tier = before_row["tier"] if before_row else "basic"
+
+        new_score = before_score + points
+        new_tier = _calculate_rep_tier(new_score)
+
+        # Upsert the member_rep row
+        await conn.execute("""
+            INSERT INTO member_rep (user_id, rep_score, tier)
+            VALUES ($1, $2, $3)
+            ON CONFLICT (user_id) DO UPDATE SET
+                rep_score = member_rep.rep_score + $2,
+                tier = $3,
+                updated_at = CURRENT_TIMESTAMP
+        """, req.user_id, points, new_tier)
+
+        # Increment the specific action column
+        if req.action == "therapy_hour":
+            await conn.execute(
+                "UPDATE member_rep SET therapy_hours = therapy_hours + 1 WHERE user_id = $1",
+                req.user_id)
+        elif req.action == "referral":
+            await conn.execute(
+                "UPDATE member_rep SET referrals_count = referrals_count + 1 WHERE user_id = $1",
+                req.user_id)
+        elif req.action == "community":
+            await conn.execute(
+                "UPDATE member_rep SET community_actions = community_actions + 1 WHERE user_id = $1",
+                req.user_id)
+        elif req.action == "genesis":
+            await conn.execute(
+                "UPDATE member_rep SET genesis_contributor = TRUE WHERE user_id = $1",
+                req.user_id)
+        elif req.action == "staking":
+            await conn.execute(
+                "UPDATE member_rep SET staking_bonus = staking_bonus + $2 WHERE user_id = $1",
+                req.user_id, points)
+
+        # Fix: re-read to get actual final score & tier after upsert
+        final_row = await conn.fetchrow(
+            "SELECT rep_score, tier FROM member_rep WHERE user_id = $1", req.user_id
+        )
+        final_score = float(final_row["rep_score"])
+        final_tier = final_row["tier"]
+
+        await audit_log_write(
+            conn,
+            action=f"rep.add.{req.action}",
+            actor_type="system",
+            actor_user_id=req.user_id,
+            resource_type="rep",
+            resource_id=str(req.user_id),
+            before_state={"rep_score": before_score, "tier": before_tier},
+            after_state={"rep_score": final_score, "tier": final_tier},
+            metadata={"action": req.action, "points_added": points},
+        )
+
+    return {
+        "user_id": req.user_id,
+        "action": req.action,
+        "points_added": points,
+        "new_score": final_score,
+        "new_tier": final_tier,
+        "tier_changed": before_tier != final_tier,
+    }
+
+
+@app.get("/api/rep/leaderboard")
+async def rep_leaderboard(limit: int = Query(default=20, ge=1, le=100)):
+    """Get top REP holders sorted by score descending."""
+    async with pool.acquire() as conn:
+        await _ensure_rep_tables(conn)
+        rows = await conn.fetch("""
+            SELECT user_id, rep_score, therapy_hours, referrals_count,
+                   community_actions, genesis_contributor, staking_bonus, tier
+            FROM member_rep
+            ORDER BY rep_score DESC
+            LIMIT $1
+        """, limit)
+
+        leaderboard = [
+            {
+                "rank": idx + 1,
+                "user_id": r["user_id"],
+                "rep_score": float(r["rep_score"]),
+                "therapy_hours": float(r["therapy_hours"]),
+                "referrals_count": r["referrals_count"],
+                "community_actions": r["community_actions"],
+                "genesis_contributor": r["genesis_contributor"],
+                "staking_bonus": float(r["staking_bonus"]),
+                "tier": r["tier"],
+            }
+            for idx, r in enumerate(rows)
+        ]
+
+        await audit_log_write(
+            conn,
+            action="rep.leaderboard",
+            actor_type="system",
+            resource_type="rep",
+            metadata={"limit": limit, "results_count": len(leaderboard)},
+        )
+
+    return {"leaderboard": leaderboard, "total": len(leaderboard)}
