@@ -5368,6 +5368,64 @@ async def launch_status():
     }
 
 
+@app.post("/api/broadcast/personal-cards")
+async def broadcast_personal_cards(admin_key: str):
+    """Send each registered user their personal SLH Member Card via Telegram.
+
+    Each user receives a personalized message with their own card link.
+    Admin-only. Logged to institutional_audit.
+    """
+    if admin_key != ADMIN_BROADCAST_KEY and admin_key not in ADMIN_API_KEYS:
+        raise HTTPException(403, "Invalid admin key")
+    if not BROADCAST_BOT_TOKEN:
+        return {"ok": False, "error": "BROADCAST_BOT_TOKEN not configured"}
+
+    async with pool.acquire() as conn:
+        rows = await conn.fetch(
+            "SELECT telegram_id, username, first_name FROM web_users WHERE telegram_id >= 1000000"
+        )
+
+    success = 0
+    failed = 0
+    for r in rows:
+        uid = r["telegram_id"]
+        name = r["first_name"] or r["username"] or "Member"
+        card_url = f"https://slh-nft.com/member.html?id={uid}"
+        image_url = f"https://slh-api-production.up.railway.app/api/member-card/image/{uid}"
+
+        msg = (
+            f"🎴 שלום {name}!\n\n"
+            f"הכרטיס האישי שלך ב-SLH Spark מוכן:\n\n"
+            f"🔗 הכרטיס שלך:\n{card_url}\n\n"
+            f"🖼 תמונה לשיתוף:\n{image_url}\n\n"
+            f"שתפ/י את הכרטיס עם חברים ומשפחה — כל חבר שמצטרף מקבל כרטיס ייחודי משלו! 🌸\n\n"
+            f"— Team SLH Spark"
+        )
+
+        result = await _tg_send_message(BROADCAST_BOT_TOKEN, uid, msg)
+        if result.get("ok"):
+            success += 1
+        else:
+            failed += 1
+
+    # Audit
+    async with pool.acquire() as conn:
+        await audit_log_write(
+            conn,
+            action="broadcast.personal_cards",
+            actor_type="admin",
+            resource_type="broadcast",
+            metadata={"total": len(rows), "success": success, "failed": failed},
+        )
+
+    return {
+        "ok": True,
+        "total": len(rows),
+        "success": success,
+        "failed": failed,
+    }
+
+
 @app.get("/api/broadcast/history")
 async def broadcast_history(limit: int = 20):
     """Recent broadcast history for admin dashboard."""
@@ -5978,7 +6036,7 @@ def _generate_member_card_image(card: dict) -> bytes:
     return buf.getvalue()
 
 
-@app.get("/api/member-card/{user_id}.png")
+@app.get("/api/member-card/image/{user_id}")
 async def get_member_card_image(user_id: int):
     """Serve a dynamically generated 800x1000 PNG member card."""
     from fastapi.responses import Response
