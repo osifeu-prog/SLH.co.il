@@ -5658,3 +5658,403 @@ async def rep_leaderboard(limit: int = Query(default=20, ge=1, le=100)):
         )
 
     return {"leaderboard": leaderboard, "total": len(leaderboard)}
+
+
+# ============================================================
+# MEMBER CARD SYSTEM
+# ============================================================
+
+TIER_EMOJIS = {"basic": "\U0001f331", "active": "\u26a1", "senior": "\U0001f3c6", "elder": "\U0001f451"}
+TIER_COLORS = {
+    "basic":  "#00e887",
+    "active": "#00b4d8",
+    "senior": "#a855f7",
+    "elder":  "#ffd700",
+}
+
+
+async def _build_member_card_data(conn, user_id: int) -> dict:
+    """Gather all data needed for a member card from multiple tables."""
+    # --- web_users ---
+    user = await conn.fetchrow(
+        "SELECT telegram_id, username, first_name, last_login, is_registered, beta_user FROM web_users WHERE telegram_id = $1",
+        user_id,
+    )
+    if not user:
+        return None
+
+    name = user["first_name"] or user["username"] or f"User-{user_id}"
+    username = user["username"] or ""
+    joined = user["last_login"].strftime("%Y-%m-%d") if user["last_login"] else "unknown"
+
+    # --- NFT number (position in web_users ordered by last_login ASC) ---
+    nft_pos = await conn.fetchval(
+        """
+        SELECT pos FROM (
+            SELECT telegram_id, ROW_NUMBER() OVER (ORDER BY last_login ASC) AS pos
+            FROM web_users
+        ) sub WHERE telegram_id = $1
+        """,
+        user_id,
+    )
+    nft_number = f"SLH-{nft_pos:04d}" if nft_pos else "SLH-0000"
+
+    # --- token_balances ---
+    slh_row = await conn.fetchrow(
+        "SELECT balance FROM token_balances WHERE user_id = $1 AND token = 'SLH'", user_id,
+    )
+    zvk_row = await conn.fetchrow(
+        "SELECT balance FROM token_balances WHERE user_id = $1 AND token = 'ZVK'", user_id,
+    )
+    slh_balance = round(float(slh_row["balance"]), 2) if slh_row else 0.0
+    zvk_balance = round(float(zvk_row["balance"]), 2) if zvk_row else 0.0
+
+    # --- member_rep ---
+    await _ensure_rep_tables(conn)
+    rep_row = await conn.fetchrow(
+        "SELECT rep_score, tier FROM member_rep WHERE user_id = $1", user_id,
+    )
+    rep_score = float(rep_row["rep_score"]) if rep_row else 0.0
+    tier = rep_row["tier"] if rep_row else "basic"
+
+    # --- launch_contributions (genesis check) ---
+    await _ensure_launch_tables(conn)
+    genesis_row = await conn.fetchrow(
+        "SELECT amount_bnb FROM launch_contributions WHERE partner_handle = $1 AND status = 'verified'",
+        username,
+    )
+    genesis_contributor = genesis_row is not None
+    genesis_amount_bnb = float(genesis_row["amount_bnb"]) if genesis_row else 0.0
+
+    # --- referrals (count users who have this user as referrer) ---
+    referral_count = await conn.fetchval(
+        "SELECT COUNT(*) FROM referrals WHERE referrer_id = $1", user_id,
+    ) or 0
+
+    # --- is_therapist: currently no dedicated column, default False ---
+    is_therapist = False
+
+    # --- ASCII art card ---
+    tier_emoji = TIER_EMOJIS.get(tier, "\U0001f331")
+    genesis_str = "Yes" if genesis_contributor else "No"
+    ascii_art = (
+        "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n"
+        "\u2551  \U0001f338 SLH SPARK \u00b7 MEMBER CARD     \u2551\n"
+        "\u2551\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2551\n"
+        "\u2551                                  \u2551\n"
+        f"\u2551  Name:  {name:<25}\u2551\n"
+        f"\u2551  ID:    #{user_id:<24}\u2551\n"
+        f"\u2551  Tier:  {tier_emoji} {tier:<22}\u2551\n"
+        f"\u2551  REP:   {rep_score:<25}\u2551\n"
+        f"\u2551  Joined: {joined:<24}\u2551\n"
+        f"\u2551  Genesis: {genesis_str:<23}\u2551\n"
+        f"\u2551  NFT #:  {nft_number:<24}\u2551\n"
+        "\u2551\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2551\n"
+        f"\u2551  SLH: {slh_balance} \u00b7 ZVK: {zvk_balance}        \u2551\n"
+        f"\u2551  \U0001f517 slh-nft.com/member?id={user_id}  \u2551\n"
+        "\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d"
+    )
+
+    return {
+        "user_id": user_id,
+        "name": name,
+        "username": username,
+        "telegram_id": user_id,
+        "nft_number": nft_number,
+        "tier": tier,
+        "rep_score": rep_score,
+        "joined": joined,
+        "genesis_contributor": genesis_contributor,
+        "genesis_amount_bnb": genesis_amount_bnb,
+        "slh_balance": slh_balance,
+        "zvk_balance": zvk_balance,
+        "referrals": referral_count,
+        "is_therapist": is_therapist,
+        "ascii_art": ascii_art,
+    }
+
+
+@app.get("/api/member-card/{user_id}")
+async def get_member_card(user_id: int):
+    """Return JSON member card data for a user."""
+    async with pool.acquire() as conn:
+        card = await _build_member_card_data(conn, user_id)
+        if card is None:
+            raise HTTPException(404, "User not found")
+
+        await audit_log_write(
+            conn,
+            action="member_card.view",
+            actor_type="system",
+            actor_user_id=user_id,
+            resource_type="member_card",
+            resource_id=str(user_id),
+            metadata={"nft_number": card["nft_number"], "tier": card["tier"]},
+        )
+
+    return {"ok": True, "card": card}
+
+
+def _generate_member_card_image(card: dict) -> bytes:
+    """Generate an 800x1000 PNG member card image. Returns raw PNG bytes."""
+    from PIL import Image, ImageDraw, ImageFont
+    from io import BytesIO
+
+    W, H = 800, 1000
+    BG = (10, 14, 26)  # #0a0e1a
+
+    tier = card.get("tier", "basic")
+    accent_hex = TIER_COLORS.get(tier, "#00e887").lstrip("#")
+    accent_rgb = tuple(int(accent_hex[i:i+2], 16) for i in (0, 2, 4))
+
+    # --- base image ---
+    img = Image.new("RGBA", (W, H), (*BG, 255))
+
+    # --- gradient layer (radial from center-top) ---
+    grad = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    grad_draw = ImageDraw.Draw(grad)
+    cx, cy = W // 2, 200
+    max_r = int((W**2 + H**2) ** 0.5 / 2)
+    for i in range(60, 0, -1):
+        ratio = i / 60
+        r = int(max_r * ratio)
+        alpha = int(50 * (1 - ratio))
+        grad_draw.ellipse([cx - r, cy - r, cx + r, cy + r], fill=(*accent_rgb, alpha))
+    img = Image.alpha_composite(img, grad)
+
+    # --- subtle grid pattern ---
+    grid = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    grid_draw = ImageDraw.Draw(grid)
+    grid_color = (*accent_rgb, 10)
+    for x in range(0, W, 40):
+        grid_draw.line([(x, 0), (x, H)], fill=grid_color, width=1)
+    for y in range(0, H, 40):
+        grid_draw.line([(0, y), (W, y)], fill=grid_color, width=1)
+    img = Image.alpha_composite(img, grid)
+
+    # --- main drawing layer ---
+    main = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(main)
+
+    # Top accent bar
+    draw.rectangle([0, 0, W, 6], fill=(*accent_rgb, 255))
+
+    # --- font loading ---
+    def _load_font(size, bold=False):
+        paths = [
+            "arialbd.ttf" if bold else "arial.ttf",
+            "/Library/Fonts/Arial Bold.ttf" if bold else "/Library/Fonts/Arial.ttf",
+            "C:/Windows/Fonts/arialbd.ttf" if bold else "C:/Windows/Fonts/arial.ttf",
+        ]
+        for p in paths:
+            try:
+                return ImageFont.truetype(p, size)
+            except Exception:
+                continue
+        return ImageFont.load_default()
+
+    brand_font = _load_font(42, bold=True)
+    subtitle_font = _load_font(24, bold=True)
+    nft_font = _load_font(60, bold=True)
+    label_font = _load_font(22)
+    value_font = _load_font(24, bold=True)
+    small_font = _load_font(18)
+    url_font = _load_font(16)
+
+    # --- "SLH SPARK" brand at top ---
+    y = 40
+    try:
+        draw.text((W // 2, y), "\U0001f338 SLH SPARK", font=brand_font, fill=(*accent_rgb, 255), anchor="mt")
+    except Exception:
+        draw.text((W // 2, y), "SLH SPARK", font=brand_font, fill=(*accent_rgb, 255), anchor="mt")
+    y += 55
+
+    # --- "MEMBER CARD" subtitle ---
+    draw.text((W // 2, y), "MEMBER CARD", font=subtitle_font, fill=(200, 200, 220, 255), anchor="mt")
+    y += 50
+
+    # Divider line
+    draw.line([(80, y), (W - 80, y)], fill=(*accent_rgb, 100), width=2)
+    y += 30
+
+    # --- NFT number large and centered ---
+    nft_number = card.get("nft_number", "SLH-0000")
+    draw.text((W // 2, y), nft_number, font=nft_font, fill=(*accent_rgb, 255), anchor="mt")
+    y += 85
+
+    # Tier badge
+    tier_emoji = TIER_EMOJIS.get(tier, "\U0001f331")
+    tier_text = f"{tier.upper()}"
+    # Tier box
+    box_w, box_h = 200, 40
+    box_x = (W - box_w) // 2
+    draw.rounded_rectangle(
+        [box_x, y, box_x + box_w, y + box_h],
+        radius=12,
+        fill=(*accent_rgb, 50),
+        outline=(*accent_rgb, 180),
+        width=2,
+    )
+    try:
+        draw.text((W // 2, y + box_h // 2), f"{tier_emoji} {tier_text}", font=subtitle_font, fill=(*accent_rgb, 255), anchor="mm")
+    except Exception:
+        draw.text((W // 2, y + box_h // 2), tier_text, font=subtitle_font, fill=(*accent_rgb, 255), anchor="mm")
+    y += box_h + 30
+
+    # Divider
+    draw.line([(80, y), (W - 80, y)], fill=(*accent_rgb, 60), width=1)
+    y += 25
+
+    # --- Stats section ---
+    left_x = 100
+    stat_spacing = 45
+
+    stats = [
+        ("Name", card.get("name", "Unknown")),
+        ("ID", f"#{card.get('user_id', 0)}"),
+        ("REP Score", str(card.get("rep_score", 0))),
+        ("Joined", card.get("joined", "unknown")),
+        ("Genesis", "Yes" if card.get("genesis_contributor") else "No"),
+        ("Referrals", str(card.get("referrals", 0))),
+    ]
+
+    for label_text, val_text in stats:
+        draw.text((left_x, y), label_text, font=label_font, fill=(140, 140, 160, 255))
+        draw.text((left_x + 180, y), val_text, font=value_font, fill=(230, 230, 245, 255))
+        y += stat_spacing
+
+    if card.get("genesis_contributor"):
+        genesis_bnb = card.get("genesis_amount_bnb", 0)
+        draw.text((left_x, y), "Genesis BNB", font=label_font, fill=(140, 140, 160, 255))
+        draw.text((left_x + 180, y), f"{genesis_bnb} BNB", font=value_font, fill=(*accent_rgb, 255))
+        y += stat_spacing
+
+    y += 10
+    # Divider
+    draw.line([(80, y), (W - 80, y)], fill=(*accent_rgb, 60), width=1)
+    y += 25
+
+    # --- Token balances ---
+    slh_text = f"SLH: {card.get('slh_balance', 0)}"
+    zvk_text = f"ZVK: {card.get('zvk_balance', 0)}"
+    draw.text((W // 2, y), f"{slh_text}  \u00b7  {zvk_text}", font=value_font, fill=(230, 230, 245, 255), anchor="mt")
+    y += 50
+
+    # --- QR code or URL ---
+    member_url = f"slh-nft.com/member?id={card.get('user_id', 0)}"
+    qr_generated = False
+    try:
+        import qrcode
+        qr = qrcode.QRCode(version=1, box_size=5, border=2)
+        qr.add_data(f"https://{member_url}")
+        qr.make(fit=True)
+        qr_img = qr.make_image(fill_color="white", back_color=(10, 14, 26)).convert("RGBA")
+        qr_w, qr_h = qr_img.size
+        qr_x = (W - qr_w) // 2
+        main.paste(qr_img, (qr_x, y), qr_img)
+        y += qr_h + 10
+        qr_generated = True
+    except Exception:
+        pass
+
+    if not qr_generated:
+        y += 20
+
+    # URL text below QR (or as fallback)
+    try:
+        draw.text((W // 2, y), f"\U0001f517 {member_url}", font=url_font, fill=(*accent_rgb, 180), anchor="mt")
+    except Exception:
+        draw.text((W // 2, y), member_url, font=url_font, fill=(*accent_rgb, 180), anchor="mt")
+
+    # Bottom accent bar
+    draw.rectangle([0, H - 6, W, H], fill=(*accent_rgb, 255))
+
+    # --- composite ---
+    img = Image.alpha_composite(img, main)
+    final = img.convert("RGB")
+
+    buf = BytesIO()
+    final.save(buf, format="PNG", optimize=True)
+    return buf.getvalue()
+
+
+@app.get("/api/member-card/{user_id}.png")
+async def get_member_card_image(user_id: int):
+    """Serve a dynamically generated 800x1000 PNG member card."""
+    from fastapi.responses import Response
+
+    async with pool.acquire() as conn:
+        card = await _build_member_card_data(conn, user_id)
+        if card is None:
+            raise HTTPException(404, "User not found")
+
+        await audit_log_write(
+            conn,
+            action="member_card.image",
+            actor_type="system",
+            actor_user_id=user_id,
+            resource_type="member_card",
+            resource_id=str(user_id),
+            metadata={"nft_number": card["nft_number"], "tier": card["tier"]},
+        )
+
+    try:
+        img_bytes = _generate_member_card_image(card)
+        return Response(
+            content=img_bytes,
+            media_type="image/png",
+            headers={"Cache-Control": "public, max-age=3600"},
+        )
+    except Exception as e:
+        print(f"[member_card_image] failed for {user_id}: {e}")
+        raise HTTPException(500, f"Member card image generation failed: {e}")
+
+
+@app.get("/api/member-cards/all")
+async def list_all_member_cards(limit: int = Query(default=50, ge=1, le=500)):
+    """List all member cards for the website gallery, ordered by rep_score DESC."""
+    async with pool.acquire() as conn:
+        await _ensure_rep_tables(conn)
+
+        rows = await conn.fetch("""
+            WITH nft_positions AS (
+                SELECT telegram_id, ROW_NUMBER() OVER (ORDER BY last_login ASC) AS pos
+                FROM web_users
+            )
+            SELECT
+                wu.telegram_id,
+                wu.first_name,
+                wu.username,
+                wu.last_login,
+                COALESCE(mr.rep_score, 0) AS rep_score,
+                COALESCE(mr.tier, 'basic') AS tier,
+                nft.pos AS nft_pos
+            FROM web_users wu
+            LEFT JOIN member_rep mr ON mr.user_id = wu.telegram_id
+            LEFT JOIN nft_positions nft ON nft.telegram_id = wu.telegram_id
+            WHERE wu.telegram_id >= 1000000
+            ORDER BY COALESCE(mr.rep_score, 0) DESC
+            LIMIT $1
+        """, limit)
+
+        cards = []
+        for r in rows:
+            nft_pos = r["nft_pos"] if r["nft_pos"] else 0
+            cards.append({
+                "user_id": r["telegram_id"],
+                "name": r["first_name"] or r["username"] or f"User-{r['telegram_id']}",
+                "nft_number": f"SLH-{nft_pos:04d}",
+                "tier": r["tier"],
+                "rep_score": float(r["rep_score"]),
+                "joined": r["last_login"].strftime("%Y-%m-%d") if r["last_login"] else "unknown",
+            })
+
+        await audit_log_write(
+            conn,
+            action="member_cards.list",
+            actor_type="system",
+            resource_type="member_card",
+            metadata={"limit": limit, "results_count": len(cards)},
+        )
+
+    return {"ok": True, "cards": cards, "total": len(cards)}
