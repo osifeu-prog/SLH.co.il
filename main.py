@@ -5080,96 +5080,155 @@ OG_PAGE_CONFIG = {
     "daily-blog":   {"title": "SLH Daily Blog", "subtitle": "What we shipped today", "accent": "#00e887", "icon": "BLOG"},
     "guides":       {"title": "SLH Guides", "subtitle": "Step-by-step tutorials", "accent": "#00ff41", "icon": "DOCS"},
     "referral":     {"title": "SLH Referral Program", "subtitle": "10 generations of commissions", "accent": "#a855f7", "icon": "REF"},
+    "healing":      {"title": "SLH Healing Vision", "subtitle": "The currency of healing, education, and aid", "accent": "#ff6b9d", "icon": "HEAL"},
     "default":      {"title": "SLH Spark", "subtitle": "Digital Ecosystem Built in Israel", "accent": "#00e887", "icon": "SLH"},
 }
 
 
 def _generate_og_image(slug: str) -> bytes:
     """Generate a 1200x630 PNG OG image for the given slug. Returns bytes."""
+    import hashlib
     from PIL import Image, ImageDraw, ImageFont
     from io import BytesIO
 
     cfg = OG_PAGE_CONFIG.get(slug, OG_PAGE_CONFIG["default"])
     W, H = 1200, 630
-
-    # Background — dark gradient
-    img = Image.new("RGB", (W, H), (10, 14, 26))  # #0a0e1a
-    draw = ImageDraw.Draw(img)
+    BG = (10, 14, 26)  # #0a0e1a
 
     # Accent color parsing
     accent_hex = cfg["accent"].lstrip("#")
     accent_rgb = tuple(int(accent_hex[i:i+2], 16) for i in (0, 2, 4))
 
-    # Vignette radial effect (simulated with concentric rectangles)
-    for i in range(60):
-        alpha = int(255 - (i * 4))
-        if alpha < 0:
-            alpha = 0
-        color = (
-            max(10, int(accent_rgb[0] * 0.1) - i),
-            max(14, int(accent_rgb[1] * 0.1) - i),
-            max(26, int(accent_rgb[2] * 0.15) - i),
+    # --- base image (RGBA for compositing, converted at end) ---
+    img = Image.new("RGBA", (W, H), (*BG, 255))
+
+    # --- radial gradient layer ---
+    grad = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    grad_draw = ImageDraw.Draw(grad)
+    cx, cy = W // 2, H // 2
+    max_r = int((W**2 + H**2) ** 0.5 / 2)
+    steps = 80
+    for i in range(steps, 0, -1):
+        ratio = i / steps
+        r = int(max_r * ratio)
+        alpha = int(40 * (1 - ratio))  # stronger towards center
+        color = (*accent_rgb, alpha)
+        grad_draw.ellipse([cx - r, cy - r, cx + r, cy + r], fill=color)
+    img = Image.alpha_composite(img, grad)
+
+    # --- subtle grid pattern (accent at ~5% opacity) ---
+    grid = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    grid_draw = ImageDraw.Draw(grid)
+    grid_color = (*accent_rgb, 13)  # ~5% of 255
+    for x in range(0, W, 40):
+        grid_draw.line([(x, 0), (x, H)], fill=grid_color, width=1)
+    for y in range(0, H, 40):
+        grid_draw.line([(0, y), (W, y)], fill=grid_color, width=1)
+    img = Image.alpha_composite(img, grid)
+
+    # --- decorative circles (deterministic per slug) ---
+    seed = int(hashlib.md5(slug.encode()).hexdigest(), 16)
+    circles = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    circles_draw = ImageDraw.Draw(circles)
+    circle_alpha = 25  # ~10% of 255
+    circle_params = [
+        (seed % W, (seed >> 8) % H, 120 + (seed >> 16) % 100),
+        ((seed >> 4) % W, (seed >> 12) % H, 80 + (seed >> 20) % 80),
+        ((seed >> 6) % W, (seed >> 14) % H, 60 + (seed >> 24) % 60),
+    ]
+    for cx_c, cy_c, radius in circle_params:
+        circles_draw.ellipse(
+            [cx_c - radius, cy_c - radius, cx_c + radius, cy_c + radius],
+            fill=(*accent_rgb, circle_alpha),
         )
-        x0 = i * 8
-        y0 = i * 4
-        draw.rectangle([x0, y0, W - x0, H - y0], outline=None, fill=None)
+    img = Image.alpha_composite(img, circles)
 
-    # Top bar (accent)
-    draw.rectangle([0, 0, W, 8], fill=accent_rgb)
+    # --- main drawing layer ---
+    main = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(main)
 
-    # Left accent stripe
-    for i in range(200):
-        alpha_ratio = 1 - (i / 200)
-        color = tuple(int(c * alpha_ratio * 0.3 + (10 if idx == 0 else 14 if idx == 1 else 26) * (1 - alpha_ratio)) for idx, c in enumerate(accent_rgb))
-        draw.line([(i, 0), (i, H)], fill=color, width=1)
+    # Top accent bar (8px)
+    draw.rectangle([0, 0, W, 8], fill=(*accent_rgb, 255))
 
-    # Try fonts, fall back to default
-    try:
-        title_font = ImageFont.truetype("arial.ttf", 72)
-        subtitle_font = ImageFont.truetype("arial.ttf", 36)
-        icon_font = ImageFont.truetype("arialbd.ttf", 48)
-        brand_font = ImageFont.truetype("arialbd.ttf", 28)
-    except Exception:
-        try:
-            title_font = ImageFont.truetype("/Library/Fonts/Arial.ttf", 72)
-            subtitle_font = ImageFont.truetype("/Library/Fonts/Arial.ttf", 36)
-            icon_font = ImageFont.truetype("/Library/Fonts/Arial Bold.ttf", 48)
-            brand_font = ImageFont.truetype("/Library/Fonts/Arial Bold.ttf", 28)
-        except Exception:
-            title_font = ImageFont.load_default()
-            subtitle_font = ImageFont.load_default()
-            icon_font = ImageFont.load_default()
-            brand_font = ImageFont.load_default()
+    # --- font loading ---
+    def _load_fonts(title_sz=64, sub_sz=32, brand_sz=28, icon_sz=48, tagline_sz=22):
+        paths = [
+            ("arial.ttf", "arialbd.ttf"),
+            ("/Library/Fonts/Arial.ttf", "/Library/Fonts/Arial Bold.ttf"),
+            ("C:/Windows/Fonts/arial.ttf", "C:/Windows/Fonts/arialbd.ttf"),
+        ]
+        for reg, bold in paths:
+            try:
+                tf = ImageFont.truetype(bold, title_sz)
+                sf = ImageFont.truetype(reg, sub_sz)
+                bf = ImageFont.truetype(bold, brand_sz)
+                icf = ImageFont.truetype(bold, icon_sz)
+                tgf = ImageFont.truetype(reg, tagline_sz)
+                return tf, sf, bf, icf, tgf
+            except Exception:
+                continue
+        d = ImageFont.load_default()
+        return d, d, d, d, d
 
-    # Brand logo top-left
-    draw.rectangle([60, 60, 160, 160], outline=accent_rgb, width=4)
-    draw.text((110, 110), "SLH", font=icon_font, fill=accent_rgb, anchor="mm")
+    title_font, subtitle_font, brand_font, icon_font, tagline_font = _load_fonts()
 
-    # Brand name top-right
-    draw.text((W - 60, 100), "SLH SPARK", font=brand_font, fill=accent_rgb, anchor="rm")
-    draw.text((W - 60, 140), "slh-nft.com", font=subtitle_font, fill=(138, 138, 160), anchor="rm")
+    # --- large icon box (left-center area) ---
+    icon_text = cfg.get("icon", "SLH")
+    icon_box_size = 120
+    icon_x, icon_y = 140, H // 2
+    # Filled rounded-look box with accent bg at 20% opacity
+    draw.rounded_rectangle(
+        [icon_x - icon_box_size // 2, icon_y - icon_box_size // 2,
+         icon_x + icon_box_size // 2, icon_y + icon_box_size // 2],
+        radius=20,
+        fill=(*accent_rgb, 50),
+        outline=(*accent_rgb, 180),
+        width=3,
+    )
+    draw.text((icon_x, icon_y), icon_text, font=icon_font, fill=(*accent_rgb, 255), anchor="mm")
 
-    # Title (centered)
+    # --- "SLH SPARK" brand top-right ---
+    draw.text((W - 50, 40), "SLH SPARK", font=brand_font, fill=(*accent_rgb, 255), anchor="rt")
+
+    # --- title (centered in right 2/3) ---
+    text_cx = (260 + W) // 2  # center of the text area (right of icon)
     title = cfg["title"]
+    title_y = H // 2 - 40
     try:
-        draw.text((W // 2, H // 2 - 30), title, font=title_font, fill=(232, 232, 240), anchor="mm")
+        draw.text((text_cx, title_y), title, font=title_font, fill=(240, 240, 248, 255), anchor="mm")
     except Exception:
-        # If text has unsupported chars, fall back to simple title
-        draw.text((W // 2, H // 2 - 30), slug.upper(), font=title_font, fill=(232, 232, 240), anchor="mm")
+        # Hebrew or special chars unsupported by font — fall back
+        fallback_title = slug.replace("-", " ").upper()
+        try:
+            draw.text((text_cx, title_y), fallback_title, font=title_font, fill=(240, 240, 248, 255), anchor="mm")
+        except Exception:
+            draw.text((text_cx, title_y), "SLH", font=title_font, fill=(240, 240, 248, 255), anchor="mm")
 
-    # Subtitle
+    # --- subtitle ---
     subtitle = cfg["subtitle"]
+    sub_y = title_y + 60
     try:
-        draw.text((W // 2, H // 2 + 50), subtitle, font=subtitle_font, fill=(138, 138, 160), anchor="mm")
+        draw.text((text_cx, sub_y), subtitle, font=subtitle_font, fill=(160, 160, 180, 255), anchor="mm")
     except Exception:
-        draw.text((W // 2, H // 2 + 50), "Digital Ecosystem", font=subtitle_font, fill=(138, 138, 160), anchor="mm")
+        draw.text((text_cx, sub_y), "Digital Ecosystem", font=subtitle_font, fill=(160, 160, 180, 255), anchor="mm")
 
-    # Bottom stripe
-    draw.rectangle([0, H - 60, W, H], fill=(17, 22, 40))  # #111628
-    draw.text((W // 2, H - 30), "\u2022 20+ Telegram Bots \u2022 Real Blockchain \u2022 65% APY \u2022 Built in Israel \u2022", font=brand_font, fill=(138, 138, 160), anchor="mm")
+    # --- "slh-nft.com" URL near bottom ---
+    draw.text((W // 2, H - 80), "slh-nft.com", font=subtitle_font, fill=(*accent_rgb, 180), anchor="mm")
 
+    # --- bottom bar with tagline ---
+    draw.rectangle([0, H - 48, W, H], fill=(17, 22, 40, 255))
+    tagline = "20+ Bots \u00b7 Real Blockchain \u00b7 65% APY \u00b7 Built in Israel"
+    try:
+        draw.text((W // 2, H - 24), tagline, font=tagline_font, fill=(160, 160, 180, 255), anchor="mm")
+    except Exception:
+        draw.text((W // 2, H - 24), "SLH Ecosystem", font=tagline_font, fill=(160, 160, 180, 255), anchor="mm")
+
+    img = Image.alpha_composite(img, main)
+
+    # --- convert to RGB PNG ---
+    final = img.convert("RGB")
     buf = BytesIO()
-    img.save(buf, format="PNG", optimize=True)
+    final.save(buf, format="PNG", optimize=True)
     return buf.getvalue()
 
 
