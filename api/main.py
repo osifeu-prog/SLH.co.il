@@ -5146,10 +5146,18 @@ async def admin_all_users(
     _require_admin(authorization, x_admin_key)
     async with pool.acquire() as conn:
         await _ensure_tables(conn)
-        users = await conn.fetch(
-            "SELECT telegram_id, username, first_name, display_name, last_login, is_registered "
-            "FROM web_users WHERE telegram_id >= 1000000 ORDER BY last_login DESC"
-        )
+        try:
+            users = await conn.fetch(
+                "SELECT telegram_id, username, first_name, display_name, last_login, is_registered "
+                "FROM web_users WHERE telegram_id >= 1000000 ORDER BY last_login DESC"
+            )
+        except Exception:
+            # display_name column may not exist yet
+            users = await conn.fetch(
+                "SELECT telegram_id, username, first_name, NULL as display_name, last_login, "
+                "COALESCE(is_registered, FALSE) as is_registered "
+                "FROM web_users WHERE telegram_id >= 1000000 ORDER BY last_login DESC"
+            )
         result = []
         for u in users:
             balances = await conn.fetch(
@@ -5186,10 +5194,15 @@ async def admin_credit_rewards(
             "SELECT id, partner_name, partner_handle FROM launch_contributions WHERE status='verified'"
         )
 
-        # Get all web_users
-        all_users = await conn.fetch(
-            "SELECT telegram_id, username, first_name, display_name FROM web_users WHERE telegram_id >= 1000000"
-        )
+        # Get all web_users (display_name may not exist yet)
+        try:
+            all_users = await conn.fetch(
+                "SELECT telegram_id, username, first_name, display_name FROM web_users WHERE telegram_id >= 1000000"
+            )
+        except Exception:
+            all_users = await conn.fetch(
+                "SELECT telegram_id, username, first_name, NULL as display_name FROM web_users WHERE telegram_id >= 1000000"
+            )
 
         credited = []
         already_had = []
