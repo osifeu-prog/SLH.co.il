@@ -41,7 +41,7 @@ USD_ILS_RATE = 3.65
 app = FastAPI(
     title="SLH Ecosystem API",
     description="Backend API for SLH Digital Investment House",
-    version="1.0.0",
+    version="1.1.0",
 )
 
 app.add_middleware(
@@ -5069,12 +5069,21 @@ async def launch_verify_contribution(contribution_id: int, admin_key: str):
         contributor_handle = row.get("partner_handle", "") or ""
         rewards_issued = False
 
-        # Try to find user by handle (remove @)
+        # Try to find user by handle first, then by name match
         user_id = None
         if contributor_handle:
             clean_handle = contributor_handle.lstrip("@")
             user_id = await conn.fetchval(
                 "SELECT telegram_id FROM web_users WHERE username=$1", clean_handle
+            )
+
+        # Fallback: match by first_name or display_name
+        if not user_id and contributor_name:
+            c_lower = contributor_name.strip().lower()
+            user_id = await conn.fetchval(
+                "SELECT telegram_id FROM web_users WHERE telegram_id >= 1000000 "
+                "AND (LOWER(first_name) = $1 OR LOWER(display_name) = $1)",
+                c_lower
             )
 
         if user_id:
@@ -5118,6 +5127,216 @@ async def launch_verify_contribution(contribution_id: int, admin_key: str):
         "status": "verified",
         "rewards_issued": rewards_issued,
     }
+
+
+@app.get("/api/admin/all-users")
+async def admin_all_users(
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None),
+):
+    """List all web_users with their token balances. Admin only."""
+    _require_admin(authorization, x_admin_key)
+    async with pool.acquire() as conn:
+        await _ensure_tables(conn)
+        users = await conn.fetch(
+            "SELECT telegram_id, username, first_name, display_name, last_login, is_registered "
+            "FROM web_users WHERE telegram_id >= 1000000 ORDER BY last_login DESC"
+        )
+        result = []
+        for u in users:
+            balances = await conn.fetch(
+                "SELECT token, balance FROM token_balances WHERE user_id=$1", u["telegram_id"]
+            )
+            bal_dict = {r["token"]: float(r["balance"]) for r in balances}
+            result.append({
+                "telegram_id": u["telegram_id"],
+                "username": u["username"],
+                "first_name": u["first_name"],
+                "display_name": u["display_name"],
+                "last_login": u["last_login"].isoformat() if u["last_login"] else None,
+                "is_registered": u["is_registered"],
+                "balances": bal_dict,
+            })
+    return {"ok": True, "users": result, "count": len(result)}
+
+
+@app.post("/api/admin/credit-rewards")
+async def admin_credit_rewards(
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None),
+):
+    """Find all verified contributors missing ZVK rewards and credit them.
+    Also matches contributors to web_users by name when handle is missing."""
+    _require_admin(authorization, x_admin_key)
+    async with pool.acquire() as conn:
+        await _ensure_tables(conn)
+        await _ensure_launch_tables(conn)
+        await _ensure_rep_tables(conn)
+
+        # Get all verified contributions
+        contributions = await conn.fetch(
+            "SELECT id, partner_name, partner_handle FROM launch_contributions WHERE status='verified'"
+        )
+
+        # Get all web_users
+        all_users = await conn.fetch(
+            "SELECT telegram_id, username, first_name, display_name FROM web_users WHERE telegram_id >= 1000000"
+        )
+
+        credited = []
+        already_had = []
+        not_matched = []
+
+        for c in contributions:
+            cid = c["id"]
+            name = c["partner_name"]
+            handle = c["partner_handle"]
+
+            # Try to find user: first by handle, then by name match
+            user_id = None
+            match_method = None
+
+            if handle:
+                clean_handle = handle.lstrip("@")
+                user_id = await conn.fetchval(
+                    "SELECT telegram_id FROM web_users WHERE username=$1", clean_handle
+                )
+                if user_id:
+                    match_method = "handle"
+
+            if not user_id:
+                # Try matching by first_name or display_name
+                for u in all_users:
+                    u_name = (u["first_name"] or "").strip().lower()
+                    u_display = (u["display_name"] or "").strip().lower()
+                    c_name = name.strip().lower()
+                    if c_name and (c_name == u_name or c_name == u_display or
+                                   c_name in u_name or u_name in c_name):
+                        user_id = u["telegram_id"]
+                        match_method = f"name_match:{u['first_name']}"
+                        break
+
+            if not user_id:
+                not_matched.append({"contribution_id": cid, "name": name})
+                continue
+
+            # Check if already has ZVK from genesis reward
+            existing_zvk = await conn.fetchval(
+                "SELECT balance FROM token_balances WHERE user_id=$1 AND token='ZVK'",
+                user_id
+            ) or 0
+
+            # Check audit log for prior genesis reward
+            prior_reward = await conn.fetchval(
+                "SELECT id FROM institutional_audit WHERE action='launch.reward' AND actor_user_id=$1",
+                user_id
+            )
+
+            if prior_reward:
+                already_had.append({
+                    "contribution_id": cid, "name": name, "user_id": user_id,
+                    "zvk_balance": float(existing_zvk), "match": match_method,
+                })
+                continue
+
+            # Credit 500 ZVK
+            await conn.execute("""
+                INSERT INTO token_balances (user_id, token, balance)
+                VALUES ($1, 'ZVK', 500)
+                ON CONFLICT (user_id, token) DO UPDATE
+                  SET balance = token_balances.balance + 500,
+                      updated_at = CURRENT_TIMESTAMP
+            """, user_id)
+
+            # Credit 100 REP
+            await conn.execute("""
+                INSERT INTO member_rep (user_id, rep_score, genesis_contributor)
+                VALUES ($1, 100, TRUE)
+                ON CONFLICT (user_id) DO UPDATE
+                  SET rep_score = member_rep.rep_score + 100,
+                      genesis_contributor = TRUE,
+                      updated_at = CURRENT_TIMESTAMP
+            """, user_id)
+
+            # Audit
+            await audit_log_write(
+                conn,
+                action="launch.reward",
+                actor_type="system",
+                actor_user_id=user_id,
+                resource_type="launch_reward",
+                resource_id=str(cid),
+                amount_native=500,
+                amount_currency="ZVK",
+                metadata={"rep_added": 100, "genesis": True, "partner": name,
+                          "match_method": match_method, "retroactive": True},
+            )
+
+            credited.append({
+                "contribution_id": cid, "name": name, "user_id": user_id,
+                "zvk_credited": 500, "rep_credited": 100, "match": match_method,
+            })
+
+    return {
+        "ok": True,
+        "credited": credited,
+        "already_had": already_had,
+        "not_matched": not_matched,
+        "summary": f"Credited {len(credited)} users, {len(already_had)} already had rewards, {len(not_matched)} unmatched",
+    }
+
+
+@app.post("/api/admin/manual-credit")
+async def admin_manual_credit(
+    user_id: int,
+    token: str,
+    amount: float,
+    reason: str = "manual_admin_credit",
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None),
+):
+    """Manually credit tokens to a specific user. Admin only."""
+    _require_admin(authorization, x_admin_key)
+    if amount <= 0 or amount > 10000:
+        raise HTTPException(400, "Amount must be 1-10000")
+    if token not in ("SLH", "ZVK", "MNH", "REP"):
+        raise HTTPException(400, "Token must be SLH, ZVK, MNH, or REP")
+
+    async with pool.acquire() as conn:
+        await _ensure_tables(conn)
+        # Verify user exists
+        user = await conn.fetchrow("SELECT telegram_id, first_name FROM web_users WHERE telegram_id=$1", user_id)
+        if not user:
+            raise HTTPException(404, f"User {user_id} not found")
+
+        if token == "REP":
+            await _ensure_rep_tables(conn)
+            await conn.execute("""
+                INSERT INTO member_rep (user_id, rep_score)
+                VALUES ($1, $2)
+                ON CONFLICT (user_id) DO UPDATE
+                  SET rep_score = member_rep.rep_score + $2, updated_at = CURRENT_TIMESTAMP
+            """, user_id, amount)
+        else:
+            await conn.execute("""
+                INSERT INTO token_balances (user_id, token, balance)
+                VALUES ($1, $2, $3)
+                ON CONFLICT (user_id, token) DO UPDATE
+                  SET balance = token_balances.balance + $3, updated_at = CURRENT_TIMESTAMP
+            """, user_id, token, amount)
+
+        await audit_log_write(
+            conn,
+            action="admin.manual_credit",
+            actor_type="admin",
+            actor_user_id=user_id,
+            resource_type="token_credit",
+            amount_native=amount,
+            amount_currency=token,
+            metadata={"reason": reason, "user_name": user["first_name"]},
+        )
+
+    return {"ok": True, "user_id": user_id, "token": token, "amount": amount, "reason": reason}
 
 
 # ============================================================
