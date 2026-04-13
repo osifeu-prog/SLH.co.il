@@ -1,4 +1,4 @@
-"""
+﻿"""
 SLH Ecosystem API - FastAPI Backend
 Deployed on Railway | Connected to PostgreSQL
 """
@@ -7410,66 +7410,63 @@ async def p2p_cancel_order_auth(
 
 @app.get("/api/risk/entities")
 async def api_risk_entities():
-    async with get_pg_conn() as conn:
-        rows = await conn.fetch("""
-            SELECT entity_id, canonical_name, score_zuz,
-                   approved_reports, verified_evidence,
-                   eligible_for_publication
-            FROM v_risk_entity_score
-            ORDER BY score_zuz DESC
-        """)
-
-    items = []
-    for r in rows:
-        items.append({
-            "entity_id": r["entity_id"],
-            "canonical_name": r["canonical_name"],
-            "score_zuz": float(r["score_zuz"] or 0),
-            "approved_reports": int(r["approved_reports"] or 0),
-            "verified_evidence": int(r["verified_evidence"] or 0),
-            "eligible_for_publication": bool(r["eligible_for_publication"])
-        })
-
-    return {
-        "ok": True,
-        "total_entities": len(items),
-        "public_ready": sum(1 for x in items if x["eligible_for_publication"]),
-        "items": items
-    }
+    try:
+        async with pool.acquire() as conn:
+            await _ensure_guardian_tables(conn)
+            rows = await conn.fetch(
+                "SELECT user_id as entity_id, username as canonical_name, zuz_score as score_zuz, "
+                "total_reports as approved_reports, total_reports as verified_evidence, "
+                "ban_active as eligible_for_publication FROM guardian_blacklist ORDER BY zuz_score DESC"
+            )
+        items = [
+            {
+                "entity_id": r["entity_id"],
+                "canonical_name": r["canonical_name"],
+                "score_zuz": float(r["score_zuz"] or 0),
+                "approved_reports": int(r["approved_reports"] or 0),
+                "verified_evidence": int(r["verified_evidence"] or 0),
+                "eligible_for_publication": bool(r["eligible_for_publication"]),
+            }
+            for r in rows
+        ]
+        return {
+            "ok": True,
+            "total_entities": len(items),
+            "public_ready": sum(1 for x in items if x["eligible_for_publication"]),
+            "items": items,
+        }
+    except Exception as e:
+        return {"ok": False, "error": str(e), "items": []}
 
 
 @app.get("/api/risk/external-watch")
 async def api_external_watch():
-    async with get_pg_conn() as conn:
-        rows = await conn.fetch("""
-            SELECT w.asset_key, w.asset_name, w.chain, w.contract_address,
-                   s.price_usd, s.observed_at
-            FROM external_asset_watch w
-            LEFT JOIN LATERAL (
-                SELECT price_usd, observed_at
-                FROM external_asset_snapshots
-                WHERE asset_key = w.asset_key
-                ORDER BY observed_at DESC
-                LIMIT 1
-            ) s ON TRUE
-        """)
+    """Watch list of external assets (SLH on BSC, etc)"""
+    try:
+        # Return SLH token info from BSC as watched asset
+        slh_price = None
+        try:
+            import urllib.request, json as _json
+            r = urllib.request.urlopen("https://slh-api-production.up.railway.app/api/wallet/price", timeout=5)
+            d = _json.loads(r.read())
+            slh_price = d.get("price_usd")
+        except Exception:
+            pass
 
-    items = []
-    for r in rows:
-        items.append({
-            "asset_key": r["asset_key"],
-            "asset_name": r["asset_name"],
-            "chain": r["chain"],
-            "contract_address": r["contract_address"],
-            "last_price_usd": float(r["price_usd"]) if r["price_usd"] else None,
-            "last_seen_at": r["observed_at"].isoformat() if r["observed_at"] else None
-        })
-
-    return {
-        "ok": True,
-        "total_assets": len(items),
-        "items": items
-    }
+        items = [
+            {
+                "asset_key": "SLH_BSC",
+                "asset_name": "SLH Spark",
+                "chain": "BSC",
+                "contract_address": "0xACb0A09414CEA1C879c67bB7A877E4e19480f022",
+                "last_price_usd": slh_price,
+                "pool": "0xacea26b6e132cd45f2b8a4754170d4d0d3b8bbee",
+                "status": "active"
+            }
+        ]
+        return {"ok": True, "total_assets": len(items), "items": items}
+    except Exception as e:
+        return {"ok": False, "error": str(e), "items": []}
 
 # ===== END RISK DASHBOARD API =====
 
