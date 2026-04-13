@@ -5144,20 +5144,16 @@ async def admin_all_users(
 ):
     """List all web_users with their token balances. Admin only."""
     _require_admin(authorization, x_admin_key)
-    async with pool.acquire() as conn:
+    try:
+      async with pool.acquire() as conn:
         await _ensure_tables(conn)
         try:
             users = await conn.fetch(
-                "SELECT telegram_id, username, first_name, display_name, last_login, is_registered "
+                "SELECT telegram_id, username, first_name, last_login "
                 "FROM web_users WHERE telegram_id >= 1000000 ORDER BY last_login DESC"
             )
-        except Exception:
-            # display_name column may not exist yet
-            users = await conn.fetch(
-                "SELECT telegram_id, username, first_name, NULL as display_name, last_login, "
-                "COALESCE(is_registered, FALSE) as is_registered "
-                "FROM web_users WHERE telegram_id >= 1000000 ORDER BY last_login DESC"
-            )
+        except Exception as e:
+            return {"ok": False, "error": f"DB query failed: {str(e)}"}
         result = []
         for u in users:
             balances = await conn.fetch(
@@ -5166,14 +5162,14 @@ async def admin_all_users(
             bal_dict = {r["token"]: float(r["balance"]) for r in balances}
             result.append({
                 "telegram_id": u["telegram_id"],
-                "username": u["username"],
-                "first_name": u["first_name"],
-                "display_name": u["display_name"],
-                "last_login": u["last_login"].isoformat() if u["last_login"] else None,
-                "is_registered": u["is_registered"],
+                "username": u.get("username", ""),
+                "first_name": u.get("first_name", ""),
+                "last_login": u["last_login"].isoformat() if u.get("last_login") else None,
                 "balances": bal_dict,
             })
-    return {"ok": True, "users": result, "count": len(result)}
+      return {"ok": True, "users": result, "count": len(result)}
+    except Exception as e:
+      return {"ok": False, "error": str(e)}
 
 
 @app.post("/api/admin/credit-rewards")
@@ -5184,7 +5180,8 @@ async def admin_credit_rewards(
     """Find all verified contributors missing ZVK rewards and credit them.
     Also matches contributors to web_users by name when handle is missing."""
     _require_admin(authorization, x_admin_key)
-    async with pool.acquire() as conn:
+    try:
+     async with pool.acquire() as conn:
         await _ensure_tables(conn)
         await _ensure_launch_tables(conn)
         await _ensure_rep_tables(conn)
@@ -5295,13 +5292,15 @@ async def admin_credit_rewards(
                 "zvk_credited": 500, "rep_credited": 100, "match": match_method,
             })
 
-    return {
+     return {
         "ok": True,
         "credited": credited,
         "already_had": already_had,
         "not_matched": not_matched,
         "summary": f"Credited {len(credited)} users, {len(already_had)} already had rewards, {len(not_matched)} unmatched",
-    }
+     }
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
 
 
 @app.post("/api/admin/manual-credit")
