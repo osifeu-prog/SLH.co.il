@@ -2421,10 +2421,18 @@ async def get_user(telegram_id: int):
 
 # === STAKING ===
 STAKING_PLANS = {
-    "monthly": {"name": "Monthly", "apy_monthly": 4.0, "apy_annual": 48, "min_ton": 1, "lock_days": 30},
-    "quarterly": {"name": "Quarterly", "apy_monthly": 4.5, "apy_annual": 55, "min_ton": 5, "lock_days": 90},
-    "semi_annual": {"name": "Semi-Annual", "apy_monthly": 5.0, "apy_annual": 60, "min_ton": 10, "lock_days": 180},
-    "annual": {"name": "Annual", "apy_monthly": 5.4, "apy_annual": 65, "min_ton": 25, "lock_days": 365},
+    # TON plans
+    "monthly": {"name": "Monthly", "apy_monthly": 4.0, "apy_annual": 48, "min_amount": 1, "min_ton": 1, "lock_days": 30, "currency": "TON"},
+    "quarterly": {"name": "Quarterly", "apy_monthly": 4.5, "apy_annual": 55, "min_amount": 5, "min_ton": 5, "lock_days": 90, "currency": "TON"},
+    "semi_annual": {"name": "Semi-Annual", "apy_monthly": 5.0, "apy_annual": 60, "min_amount": 10, "min_ton": 10, "lock_days": 180, "currency": "TON"},
+    "annual": {"name": "Annual", "apy_monthly": 5.4, "apy_annual": 65, "min_amount": 25, "min_ton": 25, "lock_days": 365, "currency": "TON"},
+    # SLH plans
+    "slh_monthly": {"name": "SLH Monthly", "apy_monthly": 3.0, "apy_annual": 36, "min_amount": 10, "min_ton": 0, "lock_days": 30, "currency": "SLH"},
+    "slh_quarterly": {"name": "SLH Quarterly", "apy_monthly": 3.5, "apy_annual": 42, "min_amount": 50, "min_ton": 0, "lock_days": 90, "currency": "SLH"},
+    "slh_annual": {"name": "SLH Annual", "apy_monthly": 4.0, "apy_annual": 48, "min_amount": 100, "min_ton": 0, "lock_days": 365, "currency": "SLH"},
+    # BNB plans
+    "bnb_monthly": {"name": "BNB Monthly", "apy_monthly": 2.5, "apy_annual": 30, "min_amount": 0.01, "min_ton": 0, "lock_days": 30, "currency": "BNB"},
+    "bnb_quarterly": {"name": "BNB Quarterly", "apy_monthly": 3.0, "apy_annual": 36, "min_amount": 0.05, "min_ton": 0, "lock_days": 90, "currency": "BNB"},
 }
 
 
@@ -2438,38 +2446,47 @@ class StakeRequest(BaseModel):
     user_id: int
     plan: str
     amount: float
+    currency: Optional[str] = None  # auto-detected from plan if not provided
 
 
 @app.post("/api/staking/stake")
 async def create_stake(req: StakeRequest):
     """Create a new staking position.
-    Requires sufficient TON balance. Creates as 'pending_approval' for admin review."""
+    Supports TON, SLH, and BNB staking. Creates as 'pending_approval' for admin review."""
     plan = STAKING_PLANS.get(req.plan)
     if not plan:
         raise HTTPException(400, f"Invalid plan. Choose from: {list(STAKING_PLANS.keys())}")
-    if req.amount < plan["min_ton"]:
-        raise HTTPException(400, f"Minimum deposit is {plan['min_ton']} TON")
+
+    currency = req.currency or plan.get("currency", "TON")
+    min_amount = plan.get("min_amount", plan.get("min_ton", 1))
+
+    if req.amount < min_amount:
+        raise HTTPException(400, f"Minimum deposit is {min_amount} {currency}")
 
     async with pool.acquire() as conn:
         user = await conn.fetchrow("SELECT * FROM web_users WHERE telegram_id=$1", req.user_id)
         if not user:
             raise HTTPException(404, "User not found. Login first.")
 
-        # Check TON balance — must have deposited first
-        ton_bal = await conn.fetchval(
-            "SELECT COALESCE(available, 0) FROM account_balances WHERE account_id=$1",
-            req.user_id
-        ) or 0
-        token_ton = await conn.fetchval(
-            "SELECT COALESCE(balance, 0) FROM token_balances WHERE user_id=$1 AND token='TON'",
-            req.user_id
-        ) or 0
-        total_ton = float(ton_bal) + float(token_ton)
+        # Check balance based on currency
+        if currency == "TON":
+            acct_bal = await conn.fetchval(
+                "SELECT COALESCE(available, 0) FROM account_balances WHERE account_id=$1", req.user_id
+            ) or 0
+            tok_bal = await conn.fetchval(
+                "SELECT COALESCE(balance, 0) FROM token_balances WHERE user_id=$1 AND token='TON'", req.user_id
+            ) or 0
+            total_bal = float(acct_bal) + float(tok_bal)
+        else:
+            total_bal = float(await conn.fetchval(
+                "SELECT COALESCE(balance, 0) FROM token_balances WHERE user_id=$1 AND token=$2",
+                req.user_id, currency
+            ) or 0)
 
-        if total_ton < req.amount:
+        if total_bal < req.amount:
             raise HTTPException(400,
-                f"Insufficient TON balance. You have {total_ton:.4f} TON but need {req.amount} TON. "
-                f"Please deposit TON first via wallet page.")
+                f"Insufficient {currency} balance. You have {total_bal:.4f} {currency} but need {req.amount} {currency}. "
+                f"Please deposit {currency} first via wallet page.")
 
         end_date = datetime.utcnow() + timedelta(days=plan["lock_days"])
 
@@ -2488,19 +2505,21 @@ async def create_stake(req: StakeRequest):
             resource_type="staking_position",
             resource_id=str(pos_id),
             amount_native=req.amount,
-            amount_currency="TON",
-            metadata={"plan": req.plan, "apy": plan["apy_monthly"], "lock_days": plan["lock_days"]},
+            amount_currency=currency,
+            metadata={"plan": req.plan, "apy": plan["apy_monthly"], "lock_days": plan["lock_days"], "currency": currency},
         )
 
     return {
         "id": pos_id,
         "plan": req.plan,
         "amount": req.amount,
+        "currency": currency,
         "apy_monthly": plan["apy_monthly"],
+        "apy_annual": plan["apy_annual"],
         "lock_days": plan["lock_days"],
         "end_date": end_date.isoformat(),
         "status": "pending_approval",
-        "message": "Staking request submitted. Admin will review and approve within 24 hours.",
+        "message": f"Staking {req.amount} {currency} submitted. Admin will review and approve within 24 hours.",
     }
 
 
