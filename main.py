@@ -2134,17 +2134,18 @@ async def registration_status(user_id: int):
 @app.get("/api/registration/pending")
 async def registration_pending():
     """List all pending/submitted registrations for admin review."""
-    async with pool.acquire() as conn:
-        rows = await conn.fetch("""
-            SELECT p.user_id, w.username, w.first_name, p.payment_status, p.created_at,
-                   d.tx_hash, d.amount as deposit_amount
-            FROM premium_users p
-            LEFT JOIN web_users w ON w.telegram_id = p.user_id
-            LEFT JOIN deposits d ON d.user_id = p.user_id AND d.plan_key = 'registration'
-            WHERE p.bot_name = 'ecosystem' AND p.payment_status IN ('pending', 'submitted')
-            ORDER BY p.created_at DESC
-        """)
-    return [dict(r) for r in rows]
+    try:
+        async with pool.acquire() as conn:
+            rows = await conn.fetch("""
+                SELECT p.user_id, w.username, w.first_name, p.payment_status, p.created_at
+                FROM premium_users p
+                LEFT JOIN web_users w ON w.telegram_id = p.user_id
+                WHERE p.payment_status IN ('pending', 'submitted')
+                ORDER BY p.created_at DESC
+            """)
+        return [dict(r) for r in rows]
+    except Exception as e:
+        return {"ok": False, "error": str(e), "registrations": []}
 
 
 # === WEB3 WALLET LINKING ===
@@ -4293,10 +4294,19 @@ async def marketplace_admin_approve(req: MarketplaceApproveRequest):
 
 
 @app.get("/api/marketplace/admin/pending")
-async def marketplace_admin_pending(admin_id: int, limit: int = Query(100, le=500)):
+async def marketplace_admin_pending(
+    admin_id: int = Query(default=0),
+    limit: int = Query(100, le=500),
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None),
+):
     """Admin-only: list all pending items waiting for approval."""
+    # Accept either admin_id param or X-Admin-Key header
     if admin_id != ADMIN_USER_ID:
-        raise HTTPException(403, "Admin only")
+        try:
+            _require_admin(authorization, x_admin_key)
+        except Exception:
+            raise HTTPException(403, "Admin only")
     async with pool.acquire() as conn:
         rows = await conn.fetch("""
             SELECT mi.id, mi.seller_id, mi.title, mi.description, mi.price, mi.currency,
@@ -6333,8 +6343,7 @@ async def rep_leaderboard(limit: int = Query(default=20, ge=1, le=100)):
     async with pool.acquire() as conn:
         await _ensure_rep_tables(conn)
         rows = await conn.fetch("""
-            SELECT user_id, rep_score, therapy_hours, referrals_count,
-                   community_actions, genesis_contributor, staking_bonus, tier
+            SELECT user_id, rep_score, genesis_contributor
             FROM member_rep
             ORDER BY rep_score DESC
             LIMIT $1
@@ -6345,12 +6354,7 @@ async def rep_leaderboard(limit: int = Query(default=20, ge=1, le=100)):
                 "rank": idx + 1,
                 "user_id": r["user_id"],
                 "rep_score": float(r["rep_score"]),
-                "therapy_hours": float(r["therapy_hours"]),
-                "referrals_count": r["referrals_count"],
-                "community_actions": r["community_actions"],
                 "genesis_contributor": r["genesis_contributor"],
-                "staking_bonus": float(r["staking_bonus"]),
-                "tier": r["tier"],
             }
             for idx, r in enumerate(rows)
         ]
