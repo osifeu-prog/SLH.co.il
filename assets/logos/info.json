@@ -1,0 +1,29 @@
+{
+    "name": "SLH Spark",
+    "symbol": "SLH",
+    "type": "BEP20",
+    "decimals": 15,
+    "description": "SLH Spark - Digital Investment Ecosystem. Community wellness coin with 5-token economy (SLH/MNH/ZVK/REP/ZUZ). Built in Israel, healing through blockchain.",
+    "website": "https://slh-nft.com",
+    "explorer": "https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022",
+    "status": "active",
+    "id": "0xACb0A09414CEA1C879c67bB7A877E4e19480f022",
+    "links": [
+        {
+            "name": "website",
+            "url": "https://slh-nft.com"
+        },
+        {
+            "name": "twitter",
+            "url": "https://x.com/slh_spark"
+        },
+        {
+            "name": "telegram",
+            "url": "https://t.me/SLH_AIR_bot"
+        },
+        {
+            "name": "github",
+            "url": "https://github.com/osifeu-prog"
+        }
+    ]
+}

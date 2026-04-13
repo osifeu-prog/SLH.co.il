@@ -2442,28 +2442,54 @@ class StakeRequest(BaseModel):
 
 @app.post("/api/staking/stake")
 async def create_stake(req: StakeRequest):
-    """Create a new staking position"""
+    """Create a new staking position.
+    Requires sufficient TON balance. Creates as 'pending_approval' for admin review."""
     plan = STAKING_PLANS.get(req.plan)
     if not plan:
         raise HTTPException(400, f"Invalid plan. Choose from: {list(STAKING_PLANS.keys())}")
     if req.amount < plan["min_ton"]:
         raise HTTPException(400, f"Minimum deposit is {plan['min_ton']} TON")
 
-    end_date = datetime.utcnow() + timedelta(days=plan["lock_days"])
-
     async with pool.acquire() as conn:
         user = await conn.fetchrow("SELECT * FROM web_users WHERE telegram_id=$1", req.user_id)
         if not user:
             raise HTTPException(404, "User not found. Login first.")
 
+        # Check TON balance — must have deposited first
+        ton_bal = await conn.fetchval(
+            "SELECT COALESCE(available, 0) FROM account_balances WHERE account_id=$1",
+            req.user_id
+        ) or 0
+        token_ton = await conn.fetchval(
+            "SELECT COALESCE(balance, 0) FROM token_balances WHERE user_id=$1 AND token='TON'",
+            req.user_id
+        ) or 0
+        total_ton = float(ton_bal) + float(token_ton)
+
+        if total_ton < req.amount:
+            raise HTTPException(400,
+                f"Insufficient TON balance. You have {total_ton:.4f} TON but need {req.amount} TON. "
+                f"Please deposit TON first via wallet page.")
+
+        end_date = datetime.utcnow() + timedelta(days=plan["lock_days"])
+
+        # Create position as pending_approval (admin must confirm)
         pos_id = await conn.fetchval("""
-            INSERT INTO staking_positions (user_id, plan, amount, apy_monthly, lock_days, end_date)
-            VALUES ($1, $2, $3, $4, $5, $6) RETURNING id
+            INSERT INTO staking_positions (user_id, plan, amount, apy_monthly, lock_days, end_date, status)
+            VALUES ($1, $2, $3, $4, $5, $6, 'pending_approval') RETURNING id
         """, req.user_id, req.plan, req.amount, plan["apy_monthly"], plan["lock_days"], end_date)
 
-        # Distribute referral commissions automatically
-        commissions = await distribute_referral_commissions(
-            conn, req.user_id, float(req.amount), f"staking_{req.plan}", "TON"
+        # Audit log
+        await audit_log_write(
+            conn,
+            action="staking.request",
+            actor_type="user",
+            actor_user_id=req.user_id,
+            resource_type="staking_position",
+            resource_id=str(pos_id),
+            amount_native=req.amount,
+            amount_currency="TON",
+            metadata={"plan": req.plan, "apy": plan["apy_monthly"], "lock_days": plan["lock_days"]},
         )
 
     return {
@@ -2473,9 +2499,71 @@ async def create_stake(req: StakeRequest):
         "apy_monthly": plan["apy_monthly"],
         "lock_days": plan["lock_days"],
         "end_date": end_date.isoformat(),
-        "status": "active",
-        "referral_commissions": commissions,
+        "status": "pending_approval",
+        "message": "Staking request submitted. Admin will review and approve within 24 hours.",
     }
+
+
+@app.post("/api/staking/approve/{position_id}")
+async def approve_stake(
+    position_id: int,
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None),
+):
+    """Admin: approve a pending staking position and lock funds."""
+    _require_admin(authorization, x_admin_key)
+    async with pool.acquire() as conn:
+        pos = await conn.fetchrow(
+            "SELECT * FROM staking_positions WHERE id=$1", position_id
+        )
+        if not pos:
+            raise HTTPException(404, "Position not found")
+        if pos["status"] != "pending_approval":
+            return {"ok": True, "already": pos["status"]}
+
+        # Deduct TON from user balance
+        user_id = pos["user_id"]
+        amount = float(pos["amount"])
+
+        # Try account_balances first, then token_balances
+        acct_bal = await conn.fetchval(
+            "SELECT COALESCE(available, 0) FROM account_balances WHERE account_id=$1", user_id
+        ) or 0
+        if float(acct_bal) >= amount:
+            await conn.execute(
+                "UPDATE account_balances SET available = available - $1, locked = locked + $1 WHERE account_id=$2",
+                amount, user_id
+            )
+        else:
+            tok_bal = await conn.fetchval(
+                "SELECT COALESCE(balance, 0) FROM token_balances WHERE user_id=$1 AND token='TON'", user_id
+            ) or 0
+            if float(tok_bal) >= amount:
+                await conn.execute(
+                    "UPDATE token_balances SET balance = balance - $1 WHERE user_id=$2 AND token='TON'",
+                    amount, user_id
+                )
+            else:
+                raise HTTPException(400, f"User has insufficient TON to lock ({acct_bal} + {tok_bal} < {amount})")
+
+        # Activate position
+        await conn.execute(
+            "UPDATE staking_positions SET status='active' WHERE id=$1", position_id
+        )
+
+        # Distribute referral commissions
+        commissions = await distribute_referral_commissions(
+            conn, user_id, amount, f"staking_{pos['plan']}", "TON"
+        )
+
+        await audit_log_write(
+            conn, action="staking.approve", actor_type="admin",
+            resource_type="staking_position", resource_id=str(position_id),
+            amount_native=amount, amount_currency="TON",
+            metadata={"plan": pos["plan"], "user_id": user_id, "commissions": len(commissions)},
+        )
+
+    return {"ok": True, "position_id": position_id, "status": "active", "amount_locked": amount}
 
 
 @app.get("/api/staking/positions/{user_id}")
