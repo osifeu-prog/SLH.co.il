@@ -5146,7 +5146,7 @@ async def admin_all_users(
     _require_admin(authorization, x_admin_key)
     try:
       async with pool.acquire() as conn:
-        await _ensure_tables(conn)
+        # tables created at startup
         try:
             users = await conn.fetch(
                 "SELECT telegram_id, username, first_name, last_login "
@@ -5182,7 +5182,7 @@ async def admin_credit_rewards(
     _require_admin(authorization, x_admin_key)
     try:
      async with pool.acquire() as conn:
-        await _ensure_tables(conn)
+        # tables created at startup
         await _ensure_launch_tables(conn)
         await _ensure_rep_tables(conn)
 
@@ -5320,7 +5320,7 @@ async def admin_manual_credit(
         raise HTTPException(400, "Token must be SLH, ZVK, MNH, or REP")
 
     async with pool.acquire() as conn:
-        await _ensure_tables(conn)
+        # tables created at startup
         # Verify user exists
         user = await conn.fetchrow("SELECT telegram_id, first_name FROM web_users WHERE telegram_id=$1", user_id)
         if not user:
