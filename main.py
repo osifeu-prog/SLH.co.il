@@ -3314,6 +3314,21 @@ async def community_add_comment(post_id: int, body: CommunityCommentCreate):
         return comment
 
 
+@app.delete("/api/community/posts/{post_id}")
+async def community_delete_post(
+    post_id: int,
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None),
+):
+    """Admin: delete a community post."""
+    _require_admin(authorization, x_admin_key)
+    async with pool.acquire() as conn:
+        await conn.execute("DELETE FROM community_comments WHERE post_id=$1", post_id)
+        await conn.execute("DELETE FROM community_likes WHERE post_id=$1", post_id)
+        deleted = await conn.execute("DELETE FROM community_posts WHERE id=$1", post_id)
+    return {"ok": True, "deleted_post_id": post_id}
+
+
 @app.get("/api/community/stats")
 async def community_stats():
     """Community statistics"""
