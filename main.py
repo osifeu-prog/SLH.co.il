@@ -6198,6 +6198,21 @@ class RepAddRequest(BaseModel):
     amount: Optional[float] = None  # custom amount (used for staking bonus)
 
 
+@app.get("/api/rep/leaderboard")
+async def rep_leaderboard(limit: int = Query(default=20, ge=1, le=100)):
+    """Get top REP holders sorted by score descending."""
+    async with pool.acquire() as conn:
+        await _ensure_rep_tables(conn)
+        rows = await conn.fetch(
+            "SELECT user_id, rep_score, genesis_contributor FROM member_rep ORDER BY rep_score DESC LIMIT $1", limit
+        )
+        leaderboard = [
+            {"rank": idx+1, "user_id": r["user_id"], "rep_score": float(r["rep_score"]), "genesis_contributor": r["genesis_contributor"]}
+            for idx, r in enumerate(rows)
+        ]
+    return {"leaderboard": leaderboard, "total": len(leaderboard)}
+
+
 @app.get("/api/rep/{user_id}")
 async def get_rep_score(user_id: int):
     """Get REP score and tier for a user."""
@@ -6337,37 +6352,7 @@ async def add_rep_points(req: RepAddRequest):
     }
 
 
-@app.get("/api/rep/leaderboard")
-async def rep_leaderboard(limit: int = Query(default=20, ge=1, le=100)):
-    """Get top REP holders sorted by score descending."""
-    async with pool.acquire() as conn:
-        await _ensure_rep_tables(conn)
-        rows = await conn.fetch("""
-            SELECT user_id, rep_score, genesis_contributor
-            FROM member_rep
-            ORDER BY rep_score DESC
-            LIMIT $1
-        """, limit)
-
-        leaderboard = [
-            {
-                "rank": idx + 1,
-                "user_id": r["user_id"],
-                "rep_score": float(r["rep_score"]),
-                "genesis_contributor": r["genesis_contributor"],
-            }
-            for idx, r in enumerate(rows)
-        ]
-
-        await audit_log_write(
-            conn,
-            action="rep.leaderboard",
-            actor_type="system",
-            resource_type="rep",
-            metadata={"limit": limit, "results_count": len(leaderboard)},
-        )
-
-    return {"leaderboard": leaderboard, "total": len(leaderboard)}
+# (rep_leaderboard moved above rep/{user_id} to avoid route conflict)
 
 
 # ============================================================
