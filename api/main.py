@@ -1,4 +1,4 @@
-"""
+﻿"""
 SLH Ecosystem API - FastAPI Backend
 Deployed on Railway | Connected to PostgreSQL
 """
@@ -24,7 +24,7 @@ from routes.ai_chat import router as ai_chat_router
 # === CONFIG ===
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:slh_secure_2026@localhost:5432/slh_main")
 BOT_TOKEN = os.getenv("EXPERTNET_BOT_TOKEN", "")
-# Broadcast bot — @SLH_AIR_bot is the main user-facing bot
+# Broadcast bot â€” @SLH_AIR_bot is the main user-facing bot
 BROADCAST_BOT_TOKEN = os.getenv("SLH_AIR_TOKEN") or os.getenv("CORE_BOT_TOKEN") or os.getenv("AIRDROP_BOT_TOKEN", "")
 JWT_SECRET = os.getenv("JWT_SECRET", "")
 JWT_ALGORITHM = "HS256"
@@ -54,7 +54,7 @@ app.add_middleware(
 )
 
 
-# Accepted admin keys — matches the 4 passwords on admin.html frontend.
+# Accepted admin keys â€” matches the 4 passwords on admin.html frontend.
 # Override in production by setting ADMIN_API_KEYS env var (comma-separated).
 _ADMIN_KEYS_DEFAULT = {
     "slh2026admin",        # primary (Osif)
@@ -106,15 +106,15 @@ async def startup():
     # SECURITY CHECK (C-3): warn if any default credentials are still in use
     _security_warnings = []
     if DATABASE_URL == "postgresql://postgres:slh_secure_2026@localhost:5432/slh_main":
-        _security_warnings.append("DATABASE_URL using default — set on Railway")
+        _security_warnings.append("DATABASE_URL using default â€” set on Railway")
     if os.getenv("ADMIN_API_KEY", "slh_admin_2026") == "slh_admin_2026":
-        _security_warnings.append("ADMIN_API_KEY is default — set on Railway")
+        _security_warnings.append("ADMIN_API_KEY is default â€” set on Railway")
     if os.getenv("ENCRYPTION_KEY", "slh_dev_key_CHANGE_ME_IN_PRODUCTION_2026") == "slh_dev_key_CHANGE_ME_IN_PRODUCTION_2026":
-        _security_warnings.append("ENCRYPTION_KEY is default — CRITICAL: set on Railway before storing real CEX keys!")
+        _security_warnings.append("ENCRYPTION_KEY is default â€” CRITICAL: set on Railway before storing real CEX keys!")
     if os.getenv("ADMIN_BROADCAST_KEY", "slh-broadcast-2026-change-me") == "slh-broadcast-2026-change-me":
-        _security_warnings.append("ADMIN_BROADCAST_KEY is default — set on Railway")
+        _security_warnings.append("ADMIN_BROADCAST_KEY is default â€” set on Railway")
     if not os.getenv("JWT_SECRET"):
-        _security_warnings.append("JWT_SECRET not set — JWT auth will be unreliable")
+        _security_warnings.append("JWT_SECRET not set â€” JWT auth will be unreliable")
     for w in _security_warnings:
         print(f"[SECURITY WARNING] {w}")
     if _security_warnings:
@@ -510,7 +510,7 @@ class EnsureUserRequest(BaseModel):
 async def ensure_user(req: EnsureUserRequest):
     """Idempotent user creation/update from a Telegram ID.
 
-    Used by the website's "manual login" flow — when a user types their
+    Used by the website's "manual login" flow â€” when a user types their
     Telegram ID directly (without the Telegram Login Widget), we still need
     to persist them in web_users so they don't "disappear" on refresh.
 
@@ -521,7 +521,7 @@ async def ensure_user(req: EnsureUserRequest):
     - Rate limits and validation prevent abuse
     """
     tg_id = req.telegram_id
-    # Basic validation — must be a real Telegram user range
+    # Basic validation â€” must be a real Telegram user range
     if tg_id < 100000 or tg_id > 9999999999:
         raise HTTPException(400, "Invalid Telegram ID")
 
@@ -625,7 +625,7 @@ class RegistrationApproveRequest(BaseModel):
 
 @app.post("/api/registration/initiate")
 async def registration_initiate(req: RegistrationInitRequest, authorization: Optional[str] = Header(None)):
-    """Start registration — create pending payment record."""
+    """Start registration â€” create pending payment record."""
     user_id = get_current_user_id(authorization)
 
     async with pool.acquire() as conn:
@@ -768,7 +768,7 @@ async def registration_approve(req: RegistrationApproveRequest):
     }
 
 
-# === SIMPLIFIED UNLOCK ENDPOINT (no JWT needed — works with ?uid= flow) ===
+# === SIMPLIFIED UNLOCK ENDPOINT (no JWT needed â€” works with ?uid= flow) ===
 class UnlockRequest(BaseModel):
     user_id: int
     method: str = "payment_proof"  # payment_proof | coupon | admin
@@ -782,12 +782,12 @@ class UnlockRequest(BaseModel):
 async def registration_unlock(req: UnlockRequest):
     """Unlock a user's full access via one of 3 methods:
 
-    1. payment_proof — user submits TX hash, goes to pending_review
-    2. coupon — user enters beta code, instantly unlocked if code valid + available
-    3. admin — admin key bypasses everything, instant unlock
+    1. payment_proof â€” user submits TX hash, goes to pending_review
+    2. coupon â€” user enters beta code, instantly unlocked if code valid + available
+    3. admin â€” admin key bypasses everything, instant unlock
 
     This is the NEW flow that doesn't require JWT, so it works with the
-    seamless bot → /start → dashboard?uid= onboarding.
+    seamless bot â†’ /start â†’ dashboard?uid= onboarding.
     """
     if not req.user_id:
         raise HTTPException(400, "user_id required")
@@ -815,7 +815,7 @@ async def registration_unlock(req: UnlockRequest):
                 "message": "User is already registered"
             }
 
-        # ─── Method 1: Admin override ───
+        # â”€â”€â”€ Method 1: Admin override â”€â”€â”€
         if req.method == "admin":
             admin_secret = os.getenv("ADMIN_API_KEY", "slh_admin_2026")
             if req.admin_key != admin_secret:
@@ -847,10 +847,10 @@ async def registration_unlock(req: UnlockRequest):
                 "method": "admin",
                 "user_id": req.user_id,
                 "slh_credited": REGISTRATION_SLH_AMOUNT,
-                "message": "Admin override — user is now fully registered"
+                "message": "Admin override â€” user is now fully registered"
             }
 
-        # ─── Method 2: Beta coupon ───
+        # â”€â”€â”€ Method 2: Beta coupon â”€â”€â”€
         if req.method == "coupon":
             code = (req.coupon_code or "").strip().upper()
             if not code:
@@ -876,7 +876,7 @@ async def registration_unlock(req: UnlockRequest):
                     "ok": True,
                     "status": "already_redeemed",
                     "nft_number": already,
-                    "message": f"You already redeemed coupon — you are Genesis Member #{already}"
+                    "message": f"You already redeemed coupon â€” you are Genesis Member #{already}"
                 }
 
             async with conn.transaction():
@@ -909,9 +909,9 @@ async def registration_unlock(req: UnlockRequest):
                 """, req.user_id)
 
                 # Credit coupon bonus in ZVK (cheap reward token, NOT SLH which is scarce premium)
-                # 1 SLH = 444 ILS, so to give ~44 ILS worth = 10 ZVK (1 ZVK ≈ 4.4 ILS)
+                # 1 SLH = 444 ILS, so to give ~44 ILS worth = 10 ZVK (1 ZVK â‰ˆ 4.4 ILS)
                 # Post-distribution gift = 100 ZVK (~444 ILS) handled by cashback engine
-                # SLH stays scarce — encourages users to BUY SLH from existing holders
+                # SLH stays scarce â€” encourages users to BUY SLH from existing holders
                 slh_bonus_legacy = float(coupon["slh_bonus"] or 0.1)
                 zvk_amount = 10.0  # ~44 ILS distribution token (10 ZVK)
                 await conn.execute("""
@@ -922,9 +922,9 @@ async def registration_unlock(req: UnlockRequest):
                 await conn.execute("""
                     INSERT INTO token_transfers (from_user_id, to_user_id, token, amount, memo, tx_type)
                     VALUES ($1, $1, 'ZVK', $2, $3, 'beta_coupon')
-                """, req.user_id, zvk_amount, f'Beta coupon {code} — Genesis #{nft_number} (ZVK distribution token)')
+                """, req.user_id, zvk_amount, f'Beta coupon {code} â€” Genesis #{nft_number} (ZVK distribution token)')
 
-            print(f"[Unlock] Coupon '{code}' redeemed by user {req.user_id} — Genesis #{nft_number} ({zvk_amount} ZVK)")
+            print(f"[Unlock] Coupon '{code}' redeemed by user {req.user_id} â€” Genesis #{nft_number} ({zvk_amount} ZVK)")
             return {
                 "ok": True,
                 "status": "approved",
@@ -934,13 +934,13 @@ async def registration_unlock(req: UnlockRequest):
                 "nft_number": nft_number,
                 "nft_name": f"{coupon['nft_reward']}{nft_number}",
                 "zvk_credited": zvk_amount,
-                "slh_credited": 0,  # SLH NOT given — must be earned via cashback or purchased
+                "slh_credited": 0,  # SLH NOT given â€” must be earned via cashback or purchased
                 "post_distribution_gift_zvk": 100,  # promised after first share
                 "remaining_slots": int(coupon["max_uses"]) - nft_number,
-                "message": f"🎉 ברוכים הבאים Genesis Member #{nft_number}! קיבלת 10 ZVK + NFT. אחרי ההפצה הראשונה — עוד 100 ZVK מתנה!"
+                "message": f"ðŸŽ‰ ×‘×¨×•×›×™× ×”×‘××™× Genesis Member #{nft_number}! ×§×™×‘×œ×ª 10 ZVK + NFT. ××—×¨×™ ×”×”×¤×¦×” ×”×¨××©×•× ×” â€” ×¢×•×“ 100 ZVK ×ž×ª× ×”!"
             }
 
-        # ─── Method 3: Payment proof (same as submit-proof but no JWT) ───
+        # â”€â”€â”€ Method 3: Payment proof (same as submit-proof but no JWT) â”€â”€â”€
         if req.method == "payment_proof":
             tx_hash = (req.tx_hash or "").strip()
             async with conn.transaction():
@@ -961,7 +961,7 @@ async def registration_unlock(req: UnlockRequest):
                 "method": "payment_proof",
                 "user_id": req.user_id,
                 "tx_hash": tx_hash,
-                "message": "Payment proof received — waiting for admin approval (up to 24 hours)"
+                "message": "Payment proof received â€” waiting for admin approval (up to 24 hours)"
             }
 
         raise HTTPException(400, f"Unknown method: {req.method}")
@@ -990,12 +990,12 @@ async def beta_status():
 
 
 # ============================================================
-# CASHBACK ENGINE — distribution rewards for Genesis users
+# CASHBACK ENGINE â€” distribution rewards for Genesis users
 # ============================================================
 # Each user accumulates "distributions" (verified referrals).
 # When they hit a tier, they automatically receive a SLH bonus.
 #
-# Tiers (referrals → SLH bonus):
+# Tiers (referrals â†’ SLH bonus):
 #   First successful share = +1 SLH (auto-credited as "post-distribution gift")
 #   5  shares = 0.5 SLH cashback
 #   10 shares = 1.5 SLH cashback (cumulative includes prior tiers)
@@ -1004,21 +1004,21 @@ async def beta_status():
 #   100 shares = 30 SLH cashback
 
 # All amounts in ZVK (NOT SLH - SLH stays scarce, only purchased or earned via tasks)
-# 10 ZVK ≈ 44 ILS (matches Genesis distribution amount, 1 ZVK ≈ 4.4 ILS)
+# 10 ZVK â‰ˆ 44 ILS (matches Genesis distribution amount, 1 ZVK â‰ˆ 4.4 ILS)
 # Math: 1 SLH equivalent value = 100 ZVK
 CASHBACK_TIERS = [
-    (1,    100,  "post_distribution_gift"),  # 100 ZVK (~444 ILS) — first share gift
+    (1,    100,  "post_distribution_gift"),  # 100 ZVK (~444 ILS) â€” first share gift
     (5,     50,  "tier_bronze"),              # 50 ZVK (~222 ILS)
     (10,   150,  "tier_silver"),              # 150 ZVK (~666 ILS)
     (25,   500,  "tier_gold"),                # 500 ZVK (~2,220 ILS)
     (50,  1200,  "tier_platinum"),            # 1,200 ZVK (~5,328 ILS)
     (100, 3000,  "tier_diamond"),             # 3,000 ZVK (~13,320 ILS)
 ]
-CASHBACK_TOKEN = "ZVK"  # NEVER SLH — SLH is the scarce premium token
+CASHBACK_TOKEN = "ZVK"  # NEVER SLH â€” SLH is the scarce premium token
 
 
 async def _ensure_cashback_table(conn):
-    """Idempotent — creates the distribution + cashback tables if missing."""
+    """Idempotent â€” creates the distribution + cashback tables if missing."""
     await conn.execute("""
         CREATE TABLE IF NOT EXISTS user_distributions (
             user_id BIGINT NOT NULL,
@@ -1077,7 +1077,7 @@ async def get_cashback_status(user_id: int):
 @app.post("/api/cashback/process/{user_id}")
 async def process_cashback(user_id: int):
     """Recompute cashback tiers for a user based on their verified distributions.
-    Credits in ZVK (NOT SLH). Idempotent — already-credited tiers won't be paid twice.
+    Credits in ZVK (NOT SLH). Idempotent â€” already-credited tiers won't be paid twice.
     """
     async with pool.acquire() as conn:
         await _ensure_cashback_table(conn)
@@ -1087,7 +1087,7 @@ async def process_cashback(user_id: int):
         newly_credited = []
         for threshold, amount, key in CASHBACK_TIERS:
             if verified_count >= threshold:
-                # Try to insert — UNIQUE constraint prevents double-pay
+                # Try to insert â€” UNIQUE constraint prevents double-pay
                 inserted = await conn.fetchval("""
                     INSERT INTO user_cashback (user_id, tier_key, tier_threshold, slh_amount)
                     VALUES ($1, $2, $3, $4)
@@ -1095,7 +1095,7 @@ async def process_cashback(user_id: int):
                     RETURNING id
                 """, user_id, key, threshold, amount)
                 if inserted:
-                    # Credit ZVK balance (NOT SLH — SLH stays scarce)
+                    # Credit ZVK balance (NOT SLH â€” SLH stays scarce)
                     await conn.execute("""
                         INSERT INTO token_balances (user_id, token, balance)
                         VALUES ($1, $2, $3)
@@ -1113,7 +1113,7 @@ async def process_cashback(user_id: int):
 
 
 # ============================================================
-# EXTERNAL WALLETS — Bybit, Binance, custom TON addresses
+# EXTERNAL WALLETS â€” Bybit, Binance, custom TON addresses
 # ============================================================
 # Users can register multiple external wallet addresses (TON, BSC, ETH, BTC)
 # from exchanges (Bybit, Binance, Bitget, OKX) or self-custody.
@@ -1282,14 +1282,14 @@ async def refresh_all_external_wallets(user_id: int):
 
 
 # ============================================================
-# IMMUTABLE AUDIT LOG — Institutional / Regulator-Grade
+# IMMUTABLE AUDIT LOG â€” Institutional / Regulator-Grade
 # ============================================================
 # Every sensitive action is written to an append-only log with a
 # SHA-256 hash chain. Each entry includes the hash of the previous
 # entry, making tampering detectable: any modification breaks the chain.
 #
 # This is the table regulators ask to see first. We never DELETE or
-# UPDATE rows — only INSERT.
+# UPDATE rows â€” only INSERT.
 
 async def _ensure_institutional_audit_table(conn):
     await conn.execute("""
@@ -1494,7 +1494,7 @@ async def audit_recent(limit: int = 100, action_filter: Optional[str] = None, us
 
 
 # ============================================================
-# CEX INTEGRATIONS — Bybit + Binance (READ-ONLY)
+# CEX INTEGRATIONS â€” Bybit + Binance (READ-ONLY)
 # ============================================================
 # Each user can link their own Bybit/Binance API keys (READ-ONLY scope).
 # Keys are encrypted at rest, never logged. We only call GET endpoints.
@@ -1545,7 +1545,7 @@ async def _ensure_cex_keys_table(conn):
 
 def _get_encryption_key() -> bytes:
     """Derive a 32-byte AES-GCM key from ENCRYPTION_KEY env var via SHA-256.
-    Accepts any length input — hashes to produce a stable 256-bit key.
+    Accepts any length input â€” hashes to produce a stable 256-bit key.
     """
     raw = os.getenv("ENCRYPTION_KEY", "slh_dev_key_CHANGE_ME_IN_PRODUCTION_2026")
     return hashlib.sha256(raw.encode("utf-8")).digest()
@@ -1561,7 +1561,7 @@ def _encrypt_secret(secret: str) -> str:
     try:
         from cryptography.hazmat.primitives.ciphers.aead import AESGCM
     except ImportError:
-        # Fallback if cryptography lib not installed — this should never happen
+        # Fallback if cryptography lib not installed â€” this should never happen
         # in production. Force AES-GCM via requirements.txt.
         return _encrypt_secret_xor(secret)
 
@@ -1595,7 +1595,7 @@ def _decrypt_secret(blob: str) -> str:
 
 
 def _encrypt_secret_xor(secret: str) -> str:
-    """LEGACY v1 XOR encryption — kept only for backwards compat / fallback."""
+    """LEGACY v1 XOR encryption â€” kept only for backwards compat / fallback."""
     key = os.getenv("ENCRYPTION_KEY", "slh_dev_key_CHANGE_ME_IN_PRODUCTION_2026")
     result = []
     for i, c in enumerate(secret):
@@ -1604,7 +1604,7 @@ def _encrypt_secret_xor(secret: str) -> str:
 
 
 def _decrypt_secret_xor(hex_str: str) -> str:
-    """LEGACY v1 XOR decryption — called automatically by _decrypt_secret for old data."""
+    """LEGACY v1 XOR decryption â€” called automatically by _decrypt_secret for old data."""
     try:
         encrypted = bytes.fromhex(hex_str).decode("latin-1")
         key = os.getenv("ENCRYPTION_KEY", "slh_dev_key_CHANGE_ME_IN_PRODUCTION_2026")
@@ -1867,7 +1867,7 @@ async def cex_portfolio(user_id: int):
 
 
 # ============================================================
-# BSC HOLDERS — via Etherscan V2 Multichain API (chainid=56)
+# BSC HOLDERS â€” via Etherscan V2 Multichain API (chainid=56)
 # ============================================================
 # Etherscan's V2 API works across all supported chains including BSC.
 # Uses BSCSCAN_API_KEY env var (fallback to ETHERSCAN_API_KEY).
@@ -1951,9 +1951,9 @@ async def get_slh_holders(limit: int = 100, force_refresh: bool = False):
     """Fetch SLH token holders from BSC.
 
     Tries multiple free providers in order:
-    1. BitQuery GraphQL (free 10k/month) — BITQUERY_API_KEY env var
-    2. Etherscan V2 Multichain (PRO only for BSC) — BSCSCAN_API_KEY
-    3. NodeReal (free 100k/day) — NODEREAL_API_KEY
+    1. BitQuery GraphQL (free 10k/month) â€” BITQUERY_API_KEY env var
+    2. Etherscan V2 Multichain (PRO only for BSC) â€” BSCSCAN_API_KEY
+    3. NodeReal (free 100k/day) â€” NODEREAL_API_KEY
 
     Cached for 5 minutes.
     """
@@ -1987,7 +1987,7 @@ async def get_slh_holders(limit: int = 100, force_refresh: bool = False):
             "total_holders": 0,
         }
 
-    # Etherscan V2 Multichain API — chainid=56 is BSC
+    # Etherscan V2 Multichain API â€” chainid=56 is BSC
     # tokenholderlist is a PRO-tier endpoint in V2, but tokentx works on free tier
     # We'll use tokensupply + tokenbalance for the contract to get top holders
     url = (
@@ -2162,7 +2162,7 @@ async def link_wallet(req: LinkWalletRequest):
     """Link a Web3 (BSC/ETH) wallet address to a web_users row.
 
     Validates the address format (0x + 40 hex chars) and stores it lowercase.
-    Signature verification is optional — if present, we verify personal_sign.
+    Signature verification is optional â€” if present, we verify personal_sign.
     """
     addr = (req.address or "").strip().lower()
     if not addr.startswith("0x") or len(addr) != 42:
@@ -2170,7 +2170,7 @@ async def link_wallet(req: LinkWalletRequest):
     try:
         int(addr[2:], 16)  # ensure hex
     except ValueError:
-        raise HTTPException(400, "Invalid Ethereum address — not hex")
+        raise HTTPException(400, "Invalid Ethereum address â€” not hex")
 
     if not req.user_id:
         raise HTTPException(400, "user_id required")
@@ -2179,7 +2179,7 @@ async def link_wallet(req: LinkWalletRequest):
         # Ensure user exists
         exists = await conn.fetchval("SELECT 1 FROM web_users WHERE telegram_id=$1", req.user_id)
         if not exists:
-            raise HTTPException(404, "User not found — please login first")
+            raise HTTPException(404, "User not found â€” please login first")
 
         # Check for collision: this wallet already linked to a different user
         other = await conn.fetchval(
@@ -2244,7 +2244,7 @@ async def update_user_profile(req: ProfileUpdateRequest):
     """Update user's custom profile fields (display_name, bio, language).
 
     These fields are SET BY THE USER and persist across Telegram re-authentication.
-    Only non-None fields are updated — pass partial objects to avoid wiping.
+    Only non-None fields are updated â€” pass partial objects to avoid wiping.
     Validation:
       - display_name: 2-32 chars, stripped
       - bio: up to 200 chars
@@ -2600,7 +2600,7 @@ _price_cache = {"data": None, "ts": 0}
 
 @app.get("/api/prices")
 async def get_prices():
-    """Proxy for CoinGecko prices — cached 60s, 10s timeout, 2 retries"""
+    """Proxy for CoinGecko prices â€” cached 60s, 10s timeout, 2 retries"""
     import aiohttp, time as _time
     now = _time.time()
     # Return cached data if fresh (< 60s)
@@ -2957,7 +2957,7 @@ async def get_activity(user_id: int, limit: int = Query(30, le=100)):
             )
             for r in rows:
                 activities.append({
-                    "type": "staking", "icon": "💎",
+                    "type": "staking", "icon": "ðŸ’Ž",
                     "title": f"Staked {float(r['amount'])} TON ({r['plan']})",
                     "status": r["status"], "timestamp": r["ts"].isoformat() if r["ts"] else None,
                 })
@@ -2972,7 +2972,7 @@ async def get_activity(user_id: int, limit: int = Query(30, le=100)):
             )
             for r in rows:
                 activities.append({
-                    "type": "deposit", "icon": "📥",
+                    "type": "deposit", "icon": "ðŸ“¥",
                     "title": f"Deposited {float(r['amount'])} {r['currency'] or 'TON'} ({r['plan_key']})",
                     "status": r["status"], "timestamp": r["ts"].isoformat() if r["ts"] else None,
                 })
@@ -2987,7 +2987,7 @@ async def get_activity(user_id: int, limit: int = Query(30, le=100)):
             )
             for r in rows:
                 activities.append({
-                    "type": "transfer_out", "icon": "📤",
+                    "type": "transfer_out", "icon": "ðŸ“¤",
                     "title": f"Sent {float(r['amount'])} {r['token']} to {r['to_user_id']}",
                     "status": "completed", "timestamp": r["ts"].isoformat() if r["ts"] else None,
                 })
@@ -3002,7 +3002,7 @@ async def get_activity(user_id: int, limit: int = Query(30, le=100)):
             )
             for r in rows:
                 activities.append({
-                    "type": "transfer_in", "icon": "📥",
+                    "type": "transfer_in", "icon": "ðŸ“¥",
                     "title": f"Received {float(r['amount'])} {r['token']} from {r['from_user_id']}",
                     "status": "completed", "timestamp": r["ts"].isoformat() if r["ts"] else None,
                 })
@@ -3017,7 +3017,7 @@ async def get_activity(user_id: int, limit: int = Query(30, le=100)):
             )
             for r in rows:
                 activities.append({
-                    "type": "referral_earning", "icon": "🤝",
+                    "type": "referral_earning", "icon": "ðŸ¤",
                     "title": f"Earned {float(r['commission_amount'])} {r['token']} from Gen {r['generation']} referral",
                     "status": "completed", "timestamp": r["ts"].isoformat() if r["ts"] else None,
                 })
@@ -3032,7 +3032,7 @@ async def get_activity(user_id: int, limit: int = Query(30, le=100)):
             )
             for r in rows:
                 activities.append({
-                    "type": "daily_claim", "icon": "🎁",
+                    "type": "daily_claim", "icon": "ðŸŽ",
                     "title": f"Daily claim: {float(r['amount'])} tokens (streak {r['streak']})",
                     "status": "completed", "timestamp": r["ts"].isoformat() if r["ts"] else None,
                 })
@@ -3081,7 +3081,7 @@ async def global_leaderboard(category: str = Query("xp", enum=["xp", "balance", 
     Filters out test/seed user IDs (100001-299999) and negative IDs (group chats)
     so the leaderboard shows only real Telegram users.
     """
-    # Test/seed IDs to exclude — keep real Telegram users only
+    # Test/seed IDs to exclude â€” keep real Telegram users only
     # Real Telegram user IDs are ALWAYS positive and typically > 1M
     EXCLUDE_RANGE = "user_id >= 1000000 AND user_id > 0"
     async with pool.acquire() as conn:
@@ -3260,7 +3260,7 @@ async def community_create_post(body: CommunityPostCreate):
     if image_data:
         if not image_data.startswith("data:image/"):
             image_data = None  # silently drop if not a proper data URL
-        elif len(image_data) > 3_500_000:  # 2MB base64 ≈ 2.7MB encoded, +safety
+        elif len(image_data) > 3_500_000:  # 2MB base64 â‰ˆ 2.7MB encoded, +safety
             raise HTTPException(413, "Image too large (max 2MB)")
 
     async with pool.acquire() as conn:
@@ -3714,7 +3714,7 @@ async def admin_dashboard(
     authorization: Optional[str] = Header(None),
     x_admin_key: Optional[str] = Header(None),
 ):
-    """Aggregated admin dashboard data — all stats in one call.
+    """Aggregated admin dashboard data â€” all stats in one call.
 
     SECURITY FIX (H-1): Now requires admin authentication via JWT or X-Admin-Key header.
     """
@@ -3739,7 +3739,7 @@ async def admin_dashboard(
         total_events = await safe(conn, "SELECT COUNT(*) FROM analytics_events")
         total_visitors = await safe(conn, "SELECT COUNT(DISTINCT visitor_id) FROM analytics_events WHERE visitor_id != ''")
 
-        # Recent signups — real Telegram IDs only
+        # Recent signups â€” real Telegram IDs only
         today_signups = await safe(conn, "SELECT COUNT(*) FROM web_users WHERE last_login >= $1 AND telegram_id >= 1000000", today_start)
 
         # Referral stats
@@ -3766,7 +3766,7 @@ async def admin_dashboard(
         except Exception:
             top_pages = []
 
-        # Recent users — REAL users only (filter test IDs + group chats)
+        # Recent users â€” REAL users only (filter test IDs + group chats)
         try:
             recent = await conn.fetch(
                 "SELECT telegram_id, username, first_name, last_login FROM web_users "
@@ -3819,7 +3819,7 @@ async def auth_bot_sync(req: BotSyncRequest):
     Creates / updates the user in web_users so they can log into the
     website / mini-app using the same Telegram ID WITHOUT going through
     @userinfobot or the Telegram Login Widget. This is the core of the
-    seamless registration UX: open bot → press /start → you're in.
+    seamless registration UX: open bot â†’ press /start â†’ you're in.
 
     The bot passes a shared secret so random clients can't create users.
     Returns a short-lived JWT so the bot can generate a "login link" that
@@ -3865,14 +3865,14 @@ async def auth_bot_sync(req: BotSyncRequest):
     except Exception as e:
         print(f"[bot-sync] jwt creation failed (JWT_SECRET missing?): {e}")
 
-    # Always return a login URL — even without JWT, the dashboard accepts ?uid=
+    # Always return a login URL â€” even without JWT, the dashboard accepts ?uid=
     login_url = (
         f"https://slh-nft.com/dashboard.html?uid={req.telegram_id}&jwt={token}"
         if token else
         f"https://slh-nft.com/dashboard.html?uid={req.telegram_id}"
     )
 
-    print(f"[bot-sync] Synced user {req.telegram_id} (@{req.username}) — registered={is_registered}")
+    print(f"[bot-sync] Synced user {req.telegram_id} (@{req.username}) â€” registered={is_registered}")
     return {
         "ok": True,
         "telegram_id": req.telegram_id,
@@ -4127,7 +4127,7 @@ async def marketplace_list_item(req: MarketplaceListRequest):
     async with pool.acquire() as conn:
         exists = await conn.fetchval("SELECT 1 FROM web_users WHERE telegram_id=$1", req.seller_id)
         if not exists:
-            raise HTTPException(404, "Seller not found — please login first")
+            raise HTTPException(404, "Seller not found â€” please login first")
 
         # Admin listings are auto-approved
         initial_status = "approved" if req.seller_id == ADMIN_USER_ID else "pending"
@@ -4146,7 +4146,7 @@ async def marketplace_list_item(req: MarketplaceListRequest):
         "item_id": row["id"],
         "status": row["status"],
         "created_at": row["created_at"].isoformat() if row["created_at"] else None,
-        "message": "פריט הועלה לאישור" if initial_status == "pending" else "פריט פורסם בהצלחה"
+        "message": "×¤×¨×™×˜ ×”×•×¢×œ×” ×œ××™×©×•×¨" if initial_status == "pending" else "×¤×¨×™×˜ ×¤×•×¨×¡× ×‘×”×¦×œ×—×”"
     }
 
 
@@ -4260,7 +4260,7 @@ async def marketplace_buy(req: MarketplaceBuyRequest):
         async with conn.transaction():
             buyer = await conn.fetchval("SELECT 1 FROM web_users WHERE telegram_id=$1", req.buyer_id)
             if not buyer:
-                raise HTTPException(404, "Buyer not found — please login first")
+                raise HTTPException(404, "Buyer not found â€” please login first")
 
             item = await conn.fetchrow("""
                 SELECT id, seller_id, title, price, currency, stock, status
@@ -4305,7 +4305,7 @@ async def marketplace_buy(req: MarketplaceBuyRequest):
         "currency": item["currency"],
         "status": "pending",
         "created_at": order["created_at"].isoformat() if order["created_at"] else None,
-        "message": "הזמנה נוצרה — ממתין לתשלום",
+        "message": "×”×–×ž× ×” × ×•×¦×¨×” â€” ×ž×ž×ª×™×Ÿ ×œ×ª×©×œ×•×",
     }
 
 
@@ -4480,7 +4480,7 @@ async def admin_activity(
                 name = r["username"] or r["first_name"] or str(r["telegram_id"])
                 activities.append({
                     "type": "login",
-                    "icon": "👤",
+                    "icon": "ðŸ‘¤",
                     "text": f"User @{name} logged in",
                     "time": r["last_login"].isoformat() if r["last_login"] else ""
                 })
@@ -4497,7 +4497,7 @@ async def admin_activity(
                 status = "approved" if r["payment_status"] == "approved" else "pending"
                 activities.append({
                     "type": "payment",
-                    "icon": "💰",
+                    "icon": "ðŸ’°",
                     "text": f"Premium payment ({status}): {r['amount']} from user #{r['user_id']}",
                     "time": r["created_at"].isoformat() if r["created_at"] else ""
                 })
@@ -4510,15 +4510,15 @@ async def admin_activity(
 
 
 # ============================================================
-# TOKENOMICS — SLH/MNH/ZVK dual-track economy
+# TOKENOMICS â€” SLH/MNH/ZVK dual-track economy
 # ============================================================
 # SLH = Premium/Governance (high value, scarce, deflationary)
 # MNH = ILS-pegged stablecoin (free internal transfers)
 # ZVK = Activity rewards (low value, high volume)
 #
-# Revenue → 50% → Buyback SLH from DEX → Burn → deflationary pressure
-# Staking SLH → earns ZVK+MNH yield → locks supply
-# Internal MNH transfers → FREE (internal ledger, no blockchain)
+# Revenue â†’ 50% â†’ Buyback SLH from DEX â†’ Burn â†’ deflationary pressure
+# Staking SLH â†’ earns ZVK+MNH yield â†’ locks supply
+# Internal MNH transfers â†’ FREE (internal ledger, no blockchain)
 
 async def _ensure_tokenomics_tables(conn):
     await conn.execute("""
@@ -4618,12 +4618,12 @@ async def tokenomics_stats():
             "conversion_to_slh": "100 ZVK = 1 SLH",
         },
         "zuz": {
-            "description": "Guardian anti-fraud token — Mark of Cain (אות קין)",
+            "description": "Guardian anti-fraud token â€” Mark of Cain (××•×ª ×§×™×Ÿ)",
             "purpose": "Negative reputation marker for scammers, bots, and fraudsters",
             "mechanism": "Assigned by Guardian bot reports. Higher ZUZ = more suspicious",
             "auto_ban_threshold": ZUZ_AUTO_BAN_THRESHOLD,
             "severity_levels": ZUZ_SEVERITY,
-            "cross_group": "Shared across all SLH ecosystem groups — one report affects all",
+            "cross_group": "Shared across all SLH ecosystem groups â€” one report affects all",
         },
         "reserves": [
             {
@@ -4658,8 +4658,8 @@ class InternalTransferRequest(BaseModel):
 @app.post("/api/tokenomics/internal-transfer")
 async def internal_transfer(req: InternalTransferRequest, authorization: Optional[str] = Header(None)):
     """FREE internal transfer between users. Works for MNH/ZVK/SLH.
-    Uses the internal ledger — no blockchain fees. Instant.
-    SECURITY: Requires JWT auth — sender must be the from_user_id."""
+    Uses the internal ledger â€” no blockchain fees. Instant.
+    SECURITY: Requires JWT auth â€” sender must be the from_user_id."""
     # Verify caller is the sender (or admin)
     try:
         caller_id = get_current_user_id(authorization)
@@ -4686,7 +4686,7 @@ async def internal_transfer(req: InternalTransferRequest, authorization: Optiona
         if float(balance) < req.amount:
             raise HTTPException(400, f"Insufficient {req.token} balance: {balance}")
 
-        # Transaction — debit sender, credit recipient
+        # Transaction â€” debit sender, credit recipient
         async with conn.transaction():
             await conn.execute("""
                 UPDATE token_balances SET balance = balance - $1, updated_at = CURRENT_TIMESTAMP
@@ -4789,7 +4789,7 @@ async def add_reserve(req: ReserveRequest, authorization: Optional[str] = Header
 
 
 # ============================================================
-# STRATEGY ENGINE — Backtested investment strategies
+# STRATEGY ENGINE â€” Backtested investment strategies
 # ============================================================
 # 3 strategies with historical backtest data.
 # Each strategy has expected annual yield + max drawdown.
@@ -4865,7 +4865,7 @@ async def get_strategy(strategy_id: str):
 
 
 # ============================================================
-# BROADCAST — Send Telegram messages to registered users
+# BROADCAST â€” Send Telegram messages to registered users
 # ============================================================
 # Uses @SLH_AIR_bot to DM every registered user. Ideal for
 # presale announcements, Genesis 49 updates, system alerts.
@@ -4940,7 +4940,7 @@ async def send_broadcast(req: BroadcastRequest):
     (slh2026admin, slh_admin_2026, slh-spark-admin, slh-institutional).
     """
     if req.admin_key != ADMIN_BROADCAST_KEY and req.admin_key not in ADMIN_API_KEYS:
-        raise HTTPException(403, "Invalid admin key — use your admin panel password")
+        raise HTTPException(403, "Invalid admin key â€” use your admin panel password")
     if not req.message or len(req.message) < 5:
         raise HTTPException(400, "Message too short")
     if len(req.message) > 4000:
@@ -5050,7 +5050,7 @@ async def send_broadcast(req: BroadcastRequest):
 
 
 # ============================================================
-# GENESIS LAUNCH — Ultra Micro Pool ($33) with Tzvika as co-founder
+# GENESIS LAUNCH â€” Ultra Micro Pool ($33) with Tzvika as co-founder
 # ============================================================
 # Tracks contributions to the initial PancakeSwap SLH/BNB pool.
 # Model: Partner sends BNB to company wallet, pool is created with
@@ -5059,7 +5059,7 @@ async def send_broadcast(req: BroadcastRequest):
 COMPANY_BSC_WALLET = "0xd061de73B06d5E91bfA46b35EfB7B08b16903da4"  # Osif's Web3 wallet
 LAUNCH_TARGET_BNB = 0.05  # Ultra Micro: 0.05 BNB + 50 SLH
 LAUNCH_TARGET_SLH = 50
-LAUNCH_NAME = "Genesis Launch — Ultra Micro Pool"
+LAUNCH_NAME = "Genesis Launch â€” Ultra Micro Pool"
 
 
 async def _ensure_launch_tables(conn):
@@ -5105,7 +5105,7 @@ async def launch_contribute(req: LaunchContributionRequest):
     if not req.partner_name:
         raise HTTPException(400, "Partner name required")
 
-    # Estimate USD value (rough, BNB = $608 hardcoded — can replace with live price)
+    # Estimate USD value (rough, BNB = $608 hardcoded â€” can replace with live price)
     amount_usd = round(req.amount_bnb * 608, 2)
 
     async with pool.acquire() as conn:
@@ -5189,7 +5189,7 @@ async def launch_verify_contribution(contribution_id: int, admin_key: str):
             compliance_flags=["GENESIS_LAUNCH", "VERIFIED"],
         )
 
-        # ── Auto-reward: credit ZVK + REP to contributor ──
+        # â”€â”€ Auto-reward: credit ZVK + REP to contributor â”€â”€
         contributor_name = row["partner_name"]
         contributor_handle = row.get("partner_handle", "") or ""
         rewards_issued = False
@@ -5474,9 +5474,9 @@ async def admin_manual_credit(
 
 
 # ============================================================
-# GUARDIAN SYSTEM — ZUZ Token + Anti-Fraud Intelligence
+# GUARDIAN SYSTEM â€” ZUZ Token + Anti-Fraud Intelligence
 # ============================================================
-# ZUZ = "אות קין" (Mark of Cain) — negative reputation token
+# ZUZ = "××•×ª ×§×™×Ÿ" (Mark of Cain) â€” negative reputation token
 # Assigned by Guardian bot to mark scammers, bots, fraudsters.
 # Higher ZUZ = more suspicious. Used for cross-group intelligence.
 
@@ -5727,7 +5727,7 @@ async def guardian_scan_message(
     # Suspicious keywords (EN + HE)
     scam_words = ["guaranteed profit", "invest now", "double your money", "free crypto",
                   "send me", "click here", "limited time", "act now", "whatsapp me",
-                  "רווח מובטח", "השקעה בטוחה", "הכנסה פסיבית", "שלח לי",
+                  "×¨×•×•×— ×ž×•×‘×˜×—", "×”×©×§×¢×” ×‘×˜×•×—×”", "×”×›× ×¡×” ×¤×¡×™×‘×™×ª", "×©×œ×— ×œ×™",
                   "earn daily", "100% safe", "no risk"]
     for w in scam_words:
         if w in text_lower:
@@ -5822,7 +5822,7 @@ async def guardian_stats():
 
 
 # ============================================================
-# DYNAMIC OG IMAGE GENERATOR — per-page social share visuals
+# DYNAMIC OG IMAGE GENERATOR â€” per-page social share visuals
 # ============================================================
 # Generates 1200x630 PNG images on-the-fly with PIL.
 # Each page can point its og:image to /api/og/{slug}.png for a
@@ -5976,7 +5976,7 @@ def _generate_og_image(slug: str) -> bytes:
     try:
         draw.text((text_cx, title_y), title, font=title_font, fill=(240, 240, 248, 255), anchor="mm")
     except Exception:
-        # Hebrew or special chars unsupported by font — fall back
+        # Hebrew or special chars unsupported by font â€” fall back
         fallback_title = slug.replace("-", " ").upper()
         try:
             draw.text((text_cx, title_y), fallback_title, font=title_font, fill=(240, 240, 248, 255), anchor="mm")
@@ -6028,7 +6028,7 @@ async def og_image(slug: str):
 
 
 # ============================================================
-# SHARE TRACKING — count how often pages are shared
+# SHARE TRACKING â€” count how often pages are shared
 # ============================================================
 
 class ShareEvent(BaseModel):
@@ -6173,12 +6173,12 @@ async def broadcast_personal_cards(admin_key: str):
         image_url = f"https://slh-api-production.up.railway.app/api/member-card/image/{uid}"
 
         msg = (
-            f"🎴 שלום {name}!\n\n"
-            f"הכרטיס האישי שלך ב-SLH Spark מוכן:\n\n"
-            f"🔗 הכרטיס שלך:\n{card_url}\n\n"
-            f"🖼 תמונה לשיתוף:\n{image_url}\n\n"
-            f"שתפ/י את הכרטיס עם חברים ומשפחה — כל חבר שמצטרף מקבל כרטיס ייחודי משלו! 🌸\n\n"
-            f"— Team SLH Spark"
+            f"ðŸŽ´ ×©×œ×•× {name}!\n\n"
+            f"×”×›×¨×˜×™×¡ ×”××™×©×™ ×©×œ×š ×‘-SLH Spark ×ž×•×›×Ÿ:\n\n"
+            f"ðŸ”— ×”×›×¨×˜×™×¡ ×©×œ×š:\n{card_url}\n\n"
+            f"ðŸ–¼ ×ª×ž×•× ×” ×œ×©×™×ª×•×£:\n{image_url}\n\n"
+            f"×©×ª×¤/×™ ××ª ×”×›×¨×˜×™×¡ ×¢× ×—×‘×¨×™× ×•×ž×©×¤×—×” â€” ×›×œ ×—×‘×¨ ×©×ž×¦×˜×¨×£ ×ž×§×‘×œ ×›×¨×˜×™×¡ ×™×™×—×•×“×™ ×ž×©×œ×•! ðŸŒ¸\n\n"
+            f"â€” Team SLH Spark"
         )
 
         result = await _tg_send_message(BROADCAST_BOT_TOKEN, uid, msg)
@@ -6236,7 +6236,7 @@ async def broadcast_history(limit: int = 20):
 async def backtest_strategy(strategy_id: str, months: int = 12):
     """Return simulated monthly returns for a strategy backtest.
 
-    This is SIMULATED data based on the strategy's risk profile — for visualization.
+    This is SIMULATED data based on the strategy's risk profile â€” for visualization.
     Live trading requires full implementation + exchange API access.
     """
     strategy = None
@@ -6282,7 +6282,7 @@ async def backtest_strategy(strategy_id: str, months: int = 12):
 
 
 # ============================================================
-# REP SYSTEM — Personal Reputation Score per Member
+# REP SYSTEM â€” Personal Reputation Score per Member
 # ============================================================
 
 async def _ensure_rep_tables(conn):
@@ -6876,12 +6876,12 @@ async def list_all_member_cards(limit: int = Query(default=50, ge=1, le=500)):
     return {"ok": True, "cards": cards, "total": len(cards)}
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # P2P ORDER BOOK
 # Table: p2p_orders
 #   (id, seller_id, token, amount, price_per_unit, currency, payment_method,
 #    status, created_at)
-# ═══════════════════════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 P2P_VALID_TOKENS = {"SLH", "ZVK", "MNH"}
 P2P_VALID_CURRENCIES = {"ILS", "USD"}
@@ -6920,7 +6920,7 @@ class P2PFillOrder(BaseModel):
     buyer_id: int
 
 
-# ── POST /api/p2p/create-order ──────────────────────────────────────────────
+# â”€â”€ POST /api/p2p/create-order â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 @app.post("/api/p2p/create-order")
 async def p2p_create_order(body: P2PCreateOrder):
     """Create a new P2P sell order."""
@@ -6974,7 +6974,7 @@ async def p2p_create_order(body: P2PCreateOrder):
     }
 
 
-# ── GET /api/p2p/orders ─────────────────────────────────────────────────────
+# â”€â”€ GET /api/p2p/orders â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 @app.get("/api/p2p/orders")
 async def p2p_list_orders(
     token: Optional[str] = Query(None, description="Filter by token: SLH, ZVK, MNH"),
@@ -7048,7 +7048,7 @@ async def p2p_list_orders(
     return {"ok": True, "orders": orders, "total": total, "limit": limit, "offset": offset}
 
 
-# ── POST /api/p2p/fill-order ────────────────────────────────────────────────
+# â”€â”€ POST /api/p2p/fill-order â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 @app.post("/api/p2p/fill-order")
 async def p2p_fill_order(body: P2PFillOrder):
     """Mark an active P2P order as filled by a buyer."""
@@ -7090,7 +7090,7 @@ async def p2p_fill_order(body: P2PFillOrder):
     return {"ok": True, "message": "Order filled successfully", "order_id": body.order_id}
 
 
-# ── DELETE /api/p2p/cancel-order/{id} ────────────────────────────────────────
+# â”€â”€ DELETE /api/p2p/cancel-order/{id} â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 @app.delete("/api/p2p/cancel-order/{order_id}")
 async def p2p_cancel_order(order_id: int, seller_id: int = Query(..., description="Seller's telegram ID")):
     """Cancel an active P2P order. Only the seller can cancel their own order."""
@@ -7130,7 +7130,7 @@ async def p2p_cancel_order(order_id: int, seller_id: int = Query(..., descriptio
 
 
 # ============================================================
-# P2P ORDER BOOK — JWT-Authenticated Endpoints (v2)
+# P2P ORDER BOOK â€” JWT-Authenticated Endpoints (v2)
 # ============================================================
 # These endpoints use JWT bearer tokens to identify the caller.
 # The seller/buyer is derived from the JWT, not from the request body.
@@ -7147,7 +7147,7 @@ class P2PFillOrderAuth(BaseModel):
     order_id: int
 
 
-# ── POST /api/p2p/v2/create-order (JWT auth — seller = caller) ──────────────
+# â”€â”€ POST /api/p2p/v2/create-order (JWT auth â€” seller = caller) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 @app.post("/api/p2p/v2/create-order")
 async def p2p_create_order_auth(
     body: P2PCreateOrderAuth,
@@ -7214,7 +7214,7 @@ async def p2p_create_order_auth(
     }
 
 
-# ── GET /api/p2p/v2/orders (public — same as v1, no auth needed) ────────────
+# â”€â”€ GET /api/p2p/v2/orders (public â€” same as v1, no auth needed) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 @app.get("/api/p2p/v2/orders")
 async def p2p_list_orders_v2(
     token: Optional[str] = Query(None, description="Filter by token: SLH, ZVK, MNH"),
@@ -7288,7 +7288,7 @@ async def p2p_list_orders_v2(
     return {"ok": True, "orders": orders, "total": total, "limit": limit, "offset": offset}
 
 
-# ── POST /api/p2p/v2/fill-order (JWT auth — buyer = caller) ─────────────────
+# â”€â”€ POST /api/p2p/v2/fill-order (JWT auth â€” buyer = caller) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 @app.post("/api/p2p/v2/fill-order")
 async def p2p_fill_order_auth(
     body: P2PFillOrderAuth,
@@ -7361,7 +7361,7 @@ async def p2p_fill_order_auth(
     return {"ok": True, "message": "Order filled successfully", "order_id": body.order_id}
 
 
-# ── DELETE /api/p2p/v2/cancel-order/{id} (JWT auth — seller = caller) ────────
+# â”€â”€ DELETE /api/p2p/v2/cancel-order/{id} (JWT auth â€” seller = caller) â”€â”€â”€â”€â”€â”€â”€â”€
 @app.delete("/api/p2p/v2/cancel-order/{order_id}")
 async def p2p_cancel_order_auth(
     order_id: int,
@@ -7402,3 +7402,74 @@ async def p2p_cancel_order_auth(
         )
 
     return {"ok": True, "message": "Order cancelled", "order_id": order_id}
+
+
+
+
+# ===== RISK DASHBOARD API =====
+
+@app.get("/api/risk/entities")
+async def api_risk_entities():
+    async with get_pg_conn() as conn:
+        rows = await conn.fetch("""
+            SELECT entity_id, canonical_name, score_zuz,
+                   approved_reports, verified_evidence,
+                   eligible_for_publication
+            FROM v_risk_entity_score
+            ORDER BY score_zuz DESC
+        """)
+
+    items = []
+    for r in rows:
+        items.append({
+            "entity_id": r["entity_id"],
+            "canonical_name": r["canonical_name"],
+            "score_zuz": float(r["score_zuz"] or 0),
+            "approved_reports": int(r["approved_reports"] or 0),
+            "verified_evidence": int(r["verified_evidence"] or 0),
+            "eligible_for_publication": bool(r["eligible_for_publication"])
+        })
+
+    return {
+        "ok": True,
+        "total_entities": len(items),
+        "public_ready": sum(1 for x in items if x["eligible_for_publication"]),
+        "items": items
+    }
+
+
+@app.get("/api/risk/external-watch")
+async def api_external_watch():
+    async with get_pg_conn() as conn:
+        rows = await conn.fetch("""
+            SELECT w.asset_key, w.asset_name, w.chain, w.contract_address,
+                   s.price_usd, s.observed_at
+            FROM external_asset_watch w
+            LEFT JOIN LATERAL (
+                SELECT price_usd, observed_at
+                FROM external_asset_snapshots
+                WHERE asset_key = w.asset_key
+                ORDER BY observed_at DESC
+                LIMIT 1
+            ) s ON TRUE
+        """)
+
+    items = []
+    for r in rows:
+        items.append({
+            "asset_key": r["asset_key"],
+            "asset_name": r["asset_name"],
+            "chain": r["chain"],
+            "contract_address": r["contract_address"],
+            "last_price_usd": float(r["price_usd"]) if r["price_usd"] else None,
+            "last_seen_at": r["observed_at"].isoformat() if r["observed_at"] else None
+        })
+
+    return {
+        "ok": True,
+        "total_assets": len(items),
+        "items": items
+    }
+
+# ===== END RISK DASHBOARD API =====
+
