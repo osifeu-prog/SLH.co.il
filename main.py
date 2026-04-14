@@ -7686,38 +7686,43 @@ async def my_bank_transfers(user_id: int):
 async def admin_list_bank_transfers(request: Request, status: Optional[str] = None):
     """Admin: list all bank transfer requests."""
     _require_admin(request)
-    async with pool.acquire() as conn:
-        if status and status in ('pending', 'approved', 'rejected'):
-            rows = await conn.fetch("""
-                SELECT bt.*, wu.username, wu.first_name
-                FROM bank_transfer_requests bt
-                LEFT JOIN web_users wu ON bt.user_id = wu.telegram_id
-                WHERE bt.status=$1 ORDER BY bt.created_at DESC
-            """, status)
-        else:
-            rows = await conn.fetch("""
-                SELECT bt.*, wu.username, wu.first_name
-                FROM bank_transfer_requests bt
-                LEFT JOIN web_users wu ON bt.user_id = wu.telegram_id
-                ORDER BY bt.created_at DESC
-            """)
     from decimal import Decimal as Dec
-    result = []
-    for r in rows:
-        d = {}
-        for k, v in dict(r).items():
-            if hasattr(v, 'isoformat'):
-                d[k] = v.isoformat()
-            elif isinstance(v, Dec):
-                d[k] = float(v)
-            elif isinstance(v, (int, float, str, bool, type(None))):
-                d[k] = v
+    try:
+        async with pool.acquire() as conn:
+            if status and status in ('pending', 'approved', 'rejected'):
+                rows = await conn.fetch("""
+                    SELECT bt.*, wu.username, wu.first_name
+                    FROM bank_transfer_requests bt
+                    LEFT JOIN web_users wu ON bt.user_id = wu.telegram_id
+                    WHERE bt.status=$1 ORDER BY bt.created_at DESC
+                """, status)
             else:
-                d[k] = str(v)
-        if d.get("id_number"):
-            d["id_number_masked"] = "*****" + str(d["id_number"])[-4:]
-        result.append(d)
-    return {"ok": True, "count": len(result), "transfers": result}
+                rows = await conn.fetch("""
+                    SELECT bt.*, wu.username, wu.first_name
+                    FROM bank_transfer_requests bt
+                    LEFT JOIN web_users wu ON bt.user_id = wu.telegram_id
+                    ORDER BY bt.created_at DESC
+                """)
+        result = []
+        for r in rows:
+            d = {}
+            for k, v in dict(r).items():
+                if hasattr(v, 'isoformat'):
+                    d[k] = v.isoformat()
+                elif isinstance(v, Dec):
+                    d[k] = float(v)
+                elif isinstance(v, (int, float, str, bool, type(None))):
+                    d[k] = v
+                else:
+                    d[k] = str(v)
+            if d.get("id_number"):
+                d["id_number_masked"] = "*****" + str(d["id_number"])[-4:]
+            result.append(d)
+        return {"ok": True, "count": len(result), "transfers": result}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(500, f"Bank transfers error: {str(e)}")
 
 @app.post("/api/admin/bank-transfer/review")
 async def admin_review_bank_transfer(req: BankTransferReview, request: Request):
