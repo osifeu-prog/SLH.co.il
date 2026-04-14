@@ -143,6 +143,7 @@ services:
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
       MODE: polling
       ENV: prod
+      DISABLE_TELEGRAM: "1"  # 2026-04-10: Railway owns the polling; local serves FastAPI only
 
   # 6. FUN Bot (Promo/Premium)
   fun-bot:
@@ -175,51 +176,86 @@ services:
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
 
-  # ---- TEMPLATE BOTS (minimal bots using shared template) ----
-
-  campaign-bot:
-    build: {context: ., dockerfile: dockerfiles/Dockerfile.template}
-    container_name: slh-campaign
+  # 8. ExpertNet / SLH_AIR Bot (Zvika Kaufman - Ambassador #1)
+  expertnet-bot:
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.expertnet
+    container_name: slh-expertnet
     restart: always
-    depends_on: {postgres: {condition: service_healthy}}
+    depends_on:
+      postgres:
+        condition: service_healthy
     environment:
-      BOT_TOKEN: ${CAMPAIGN_TOKEN}
-      BOT_KEY: campaign
-      BOT_DISPLAY_NAME: "SLH Campaign"
-      BOT_DESCRIPTION: "\u05e7\u05de\u05e4\u05d9\u05d9\u05e0\u05d9\u05dd \u05e9\u05d9\u05d5\u05d5\u05e7\u05d9\u05d9\u05dd \u05d5\u05d4\u05e4\u05e6\u05ea \u05e7\u05d4\u05d9\u05dc\u05d4"
-      PRICE_ILS: "59"
-      PRICE_TON: "3.0"
+      BOT_TOKEN: ${EXPERTNET_BOT_TOKEN}
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
 
+  # 9. SLH HUB / Airdrop Bot (Central economic engine)
+  airdrop-bot:
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.airdrop
+    container_name: slh-airdrop
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      TELEGRAM_TOKEN: ${AIRDROP_BOT_TOKEN}
+      ADMIN_ID: ${ADMIN_USER_ID:-224223270}
+      DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
+      REDIS_URL: redis://redis:6379/2
+      LETSEXCHANGE_REF: ${LETSEXCHANGE_REF:-SLH_SWAP}
+      TON_API_KEY: ${TON_API_KEY}
+      BSC_RPC_URL: ${BSC_RPC_URL:-https://bsc-dataseed.binance.org/}
+      RAILWAY_DATABASE_URL: ${RAILWAY_DATABASE_URL}
+      RAILWAY_REDIS_URL: ${RAILWAY_REDIS_URL}
+
+  # ---- TEMPLATE BOTS (minimal bots using shared template) ----
+
+  campaign-bot:
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.campaign
+    container_name: slh-campaign
+    restart: always
+    environment:
+      BOT_TOKEN: ${CAMPAIGN_TOKEN}
+      MODE: polling
+      GOOGLE_CREDENTIALS_JSON: ${GOOGLE_CREDENTIALS_JSON:-}
+      GOOGLE_SHEETS_SPREADSHEET_ID: ${GOOGLE_SHEETS_SPREADSHEET_ID:-}
+      LOG_GROUP_ID: ${CAMPAIGN_LOG_GROUP_ID:-}
+      ALL_MEMBERS_GROUP_ID: ${CAMPAIGN_ALL_MEMBERS_GROUP_ID:-}
+      ACTIVISTS_GROUP_ID: ${CAMPAIGN_ACTIVISTS_GROUP_ID:-}
+      EXPERTS_GROUP_ID: ${CAMPAIGN_EXPERTS_GROUP_ID:-}
+      SUPPORT_GROUP_ID: ${CAMPAIGN_SUPPORT_GROUP_ID:-}
+      ADMIN_IDS: ${ADMIN_USER_ID:-224223270}
+      ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+
   game-bot:
-    build: {context: ., dockerfile: dockerfiles/Dockerfile.template}
+    build: {context: ., dockerfile: dockerfiles/Dockerfile.match}
     container_name: slh-game
     restart: always
     depends_on: {postgres: {condition: service_healthy}}
     environment:
       BOT_TOKEN: ${GAME_BOT_TOKEN}
-      BOT_KEY: game
-      BOT_DISPLAY_NAME: "SLH Games"
-      BOT_DESCRIPTION: "\u05de\u05e9\u05d7\u05e7\u05d9\u05dd \u05d5\u05ea\u05d7\u05e8\u05d5\u05d9\u05d5\u05ea \u05e2\u05dd \u05e4\u05e8\u05e1\u05d9\u05dd"
-      PRICE_ILS: "29"
-      PRICE_TON: "1.5"
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
 
   ton-mnh-bot:
-    build: {context: ., dockerfile: dockerfiles/Dockerfile.template}
+    build:
+      context: ./tonmnh-bot
+      dockerfile: ../dockerfiles/Dockerfile.tonmnh
     container_name: slh-ton-mnh
     restart: always
-    depends_on: {postgres: {condition: service_healthy}}
     environment:
       BOT_TOKEN: ${TON_MNH_TOKEN}
-      BOT_KEY: ton_mnh
-      BOT_DISPLAY_NAME: "TON MNH"
-      BOT_DESCRIPTION: "TON \u05e0\u05d9\u05d4\u05d5\u05dc \u05d5\u05de\u05e2\u05e7\u05d1"
-      PRICE_ILS: "69"
-      PRICE_TON: "3.5"
-      DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
+      SLH_BOT_TOKEN: ${TON_MNH_TOKEN}
+      RPC_URL: https://toncenter.com/api/v2
+      TON_NETWORK: mainnet
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
 
   slh-ton-bot:
@@ -253,33 +289,28 @@ services:
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
 
   osif-shop-bot:
-    build: {context: ., dockerfile: dockerfiles/Dockerfile.template}
+    build: {context: ., dockerfile: dockerfiles/Dockerfile.osifshop}
     container_name: slh-osif-shop
     restart: always
     depends_on: {postgres: {condition: service_healthy}}
+    ports:
+      - "8080:8080"
     environment:
       BOT_TOKEN: ${OSIF_SHOP_TOKEN}
-      BOT_KEY: osif_shop
-      BOT_DISPLAY_NAME: "Osif Shop"
-      BOT_DESCRIPTION: "\u05d7\u05e0\u05d5\u05ea \u05d0\u05d5\u05e0\u05dc\u05d9\u05d9\u05df + \u05de\u05d5\u05e6\u05e8\u05d9\u05dd \u05d3\u05d9\u05d2\u05d9\u05d8\u05dc\u05d9\u05d9\u05dd"
       PRICE_ILS: "49"
       PRICE_TON: "2.5"
+      WEBAPP_URL: ${OSIFSHOP_WEBAPP_URL:-https://came-coffee-digit-useful.trycloudflare.com}
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
 
   nifti-bot:
-    build: {context: ., dockerfile: dockerfiles/Dockerfile.template}
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.wellness
     container_name: slh-nifti
     restart: always
-    depends_on: {postgres: {condition: service_healthy}}
     environment:
       BOT_TOKEN: ${NIFTI_PUBLISHER_TOKEN}
-      BOT_KEY: nifti
-      BOT_DISPLAY_NAME: "NIFTI Publisher"
-      BOT_DESCRIPTION: "\u05e4\u05e8\u05e1\u05d5\u05dd NFT + \u05d2\u05dc\u05e8\u05d9\u05d4 \u05d3\u05d9\u05d2\u05d9\u05d8\u05dc\u05d9\u05ea"
-      PRICE_ILS: "89"
-      PRICE_TON: "4.5"
-      DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
 
   chance-bot:
@@ -298,32 +329,47 @@ services:
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
 
   nfty-bot:
-    build: {context: ., dockerfile: dockerfiles/Dockerfile.template}
     container_name: slh-nfty
-    restart: always
-    depends_on: {postgres: {condition: service_healthy}}
+    build:
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile.nfty
+    restart: unless-stopped
+    env_file:
+      - .env
     environment:
       BOT_TOKEN: ${NFTY_MADNESS_TOKEN}
-      BOT_KEY: nfty
-      BOT_DISPLAY_NAME: "NFTY Madness"
-      BOT_DESCRIPTION: "NFT Marketplace + \u05de\u05e1\u05d7\u05e8"
-      PRICE_ILS: "69"
-      PRICE_TON: "3.5"
-      DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
-      ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+      DATABASE_URL: postgresql://postgres:slh_secure_2026@postgres:5432/slh_main
+      REDIS_URL: redis://redis:6379/0
+      COINGECKO_BASE_URL: https://api.coingecko.com/api/v3
+      SLH_BSC_CONTRACT: 0xACb0A09414CEA1C879c67bB7A877E4e19480f022
+      PYTHONPATH: /app:/app/shared
+    volumes:
+      - ./nfty-bot:/app
+      - ./shared:/app/shared
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    command: ["python", "/app/main.py"]
 
-  selha-bot:
+  # ---- MISSING BOTS (newly added) ----
+
+  # selha-bot: REMOVED — dummy placeholder bot, shared token with userinfo
+  # userinfo-bot: REMOVED — dummy placeholder bot, not a real service
+
+  ts-set-bot:
     build: {context: ., dockerfile: dockerfiles/Dockerfile.template}
-    container_name: slh-selha
+    container_name: slh-ts-set
     restart: always
     depends_on: {postgres: {condition: service_healthy}}
     environment:
-      BOT_TOKEN: ${SLH_SELHA_TOKEN}
-      BOT_KEY: selha
-      BOT_DISPLAY_NAME: "SLH Selha"
-      BOT_DESCRIPTION: "\u05e9\u05d9\u05e8\u05d5\u05ea\u05d9 SLH \u05de\u05ea\u05e7\u05d3\u05de\u05d9\u05dd"
-      PRICE_ILS: "41"
-      PRICE_TON: "2.0"
+      BOT_TOKEN: ${TS_SET_TOKEN}
+      BOT_KEY: ts_set
+      BOT_DISPLAY_NAME: "TS Set"
+      BOT_DESCRIPTION: "Configuration & Automation"
+      PRICE_ILS: "29"
+      PRICE_TON: "1.5"
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
 
@@ -335,30 +381,61 @@ services:
     environment:
       BOT_TOKEN: ${CRAZY_PANEL_TOKEN}
       BOT_KEY: crazy_panel
-      BOT_DISPLAY_NAME: "Crazy Panel"
-      BOT_DESCRIPTION: "\u05e4\u05d0\u05e0\u05dc \u05e0\u05d9\u05d4\u05d5\u05dc \u05de\u05ea\u05e7\u05d3\u05dd"
-      PRICE_ILS: "99"
-      PRICE_TON: "5.0"
+      BOT_DISPLAY_NAME: "CrazyPanel"
+      BOT_DESCRIPTION: "Advanced Admin Panel"
+      PRICE_ILS: "49"
+      PRICE_TON: "2.5"
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
 
-  ts-set-bot:
+  # MY_NFT_SHOP Bot
+  nft-shop-bot:
     build: {context: ., dockerfile: dockerfiles/Dockerfile.template}
-    container_name: slh-ts-set
+    container_name: slh-nft-shop
     restart: always
     depends_on: {postgres: {condition: service_healthy}}
     environment:
-      BOT_TOKEN: ${TS_SET_TOKEN}
-      BOT_KEY: ts_set
-      BOT_DISPLAY_NAME: "TS Set"
-      BOT_DESCRIPTION: "\u05d4\u05d2\u05d3\u05e8\u05d5\u05ea + \u05e7\u05d5\u05e0\u05e4\u05d9\u05d2\u05d5\u05e8\u05e6\u05d9\u05d4"
-      PRICE_ILS: "29"
-      PRICE_TON: "1.5"
+      BOT_TOKEN: ${MY_NFT_SHOP_TOKEN}
+      BOT_KEY: nft_shop
+      BOT_DISPLAY_NAME: "NFT Shop"
+      BOT_DESCRIPTION: "NFT E-Commerce & Smart Contracts"
+      PRICE_ILS: "49"
+      PRICE_TON: "2.5"
+      DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
+      ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+
+  # BeynoniBank Bot - Banking & Finance
+  beynonibank-bot:
+    build: {context: ., dockerfile: dockerfiles/Dockerfile.template}
+    container_name: slh-beynonibank
+    restart: always
+    depends_on: {postgres: {condition: service_healthy}}
+    environment:
+      BOT_TOKEN: ${BEYNONIBANK_TOKEN}
+      BOT_KEY: beynonibank
+      BOT_DISPLAY_NAME: "BeynoniBank"
+      BOT_DESCRIPTION: "Banking & Financial Services"
+      PRICE_ILS: "39"
+      PRICE_TON: "2"
+      DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
+      ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+
+  # Test Bot - Development & Testing
+  test-bot:
+    build: {context: ., dockerfile: dockerfiles/Dockerfile.template}
+    container_name: slh-test-bot
+    restart: always
+    depends_on: {postgres: {condition: service_healthy}}
+    environment:
+      BOT_TOKEN: ${TEST_BOT_TOKEN}
+      BOT_KEY: test_bot
+      BOT_DISPLAY_NAME: "TestBot"
+      BOT_DESCRIPTION: "Development & Testing"
+      PRICE_ILS: "0"
+      PRICE_TON: "0"
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
 
 volumes:
   pgdata:
-    driver: local
   core-logs:
-    driver: local

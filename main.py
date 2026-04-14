@@ -206,6 +206,60 @@ async def startup():
             CREATE INDEX IF NOT EXISTS idx_wallet_idempotency_user_created
             ON wallet_idempotency(user_id, created_at DESC);
 
+            CREATE TABLE IF NOT EXISTS bank_transfer_requests (
+                id BIGSERIAL PRIMARY KEY,
+                user_id BIGINT NOT NULL,
+                customer_name TEXT NOT NULL,
+                transaction_date DATE NOT NULL,
+                id_number VARCHAR(9) NOT NULL,
+                bank_details TEXT NOT NULL,
+                amount_ils NUMERIC(12,2) NOT NULL,
+                transaction_desc TEXT NOT NULL,
+                phone VARCHAR(15) NOT NULL,
+                transfer_reference TEXT NOT NULL,
+                status TEXT DEFAULT 'pending',
+                reviewed_by BIGINT,
+                reviewed_at TIMESTAMP,
+                rejection_reason TEXT,
+                invoice_id BIGINT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            CREATE INDEX IF NOT EXISTS idx_bank_transfers_status ON bank_transfer_requests(status);
+            CREATE INDEX IF NOT EXISTS idx_bank_transfers_user ON bank_transfer_requests(user_id);
+
+            CREATE TABLE IF NOT EXISTS admin_users (
+                id BIGSERIAL PRIMARY KEY,
+                telegram_id BIGINT UNIQUE,
+                username VARCHAR(50) NOT NULL UNIQUE,
+                password_hash TEXT NOT NULL,
+                display_name TEXT NOT NULL,
+                role TEXT NOT NULL DEFAULT 'viewer',
+                email TEXT,
+                phone TEXT,
+                is_active BOOLEAN DEFAULT TRUE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                last_login TIMESTAMP,
+                created_by BIGINT
+            );
+            CREATE INDEX IF NOT EXISTS idx_admin_users_role ON admin_users(role);
+
+            CREATE TABLE IF NOT EXISTS user_payment_methods (
+                id BIGSERIAL PRIMARY KEY,
+                user_id BIGINT NOT NULL,
+                method_type TEXT NOT NULL,
+                label TEXT,
+                bank_name TEXT,
+                bank_branch TEXT,
+                bank_account TEXT,
+                bank_owner_name TEXT,
+                bit_phone VARCHAR(15),
+                paybox_phone VARCHAR(15),
+                is_default BOOLEAN DEFAULT FALSE,
+                is_verified BOOLEAN DEFAULT FALSE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            CREATE INDEX IF NOT EXISTS idx_user_payment_methods_user ON user_payment_methods(user_id);
+
             CREATE TABLE IF NOT EXISTS deposits (
                 id BIGSERIAL PRIMARY KEY,
                 user_id BIGINT NOT NULL,
@@ -7519,4 +7573,161 @@ async def api_external_watch():
         return {"ok": False, "error": str(e), "items": []}
 
 # ===== END RISK DASHBOARD API =====
+
+# =====================================================================
+# ===== BANK TRANSFER & PAYMENT SYSTEM =====
+# =====================================================================
+
+def validate_israeli_tz(id_number: str) -> bool:
+    """Validate Israeli Teudat Zehut check digit."""
+    if not id_number or not id_number.isdigit():
+        return False
+    padded = id_number.zfill(9)
+    if len(padded) != 9:
+        return False
+    total = 0
+    for i, digit in enumerate(padded):
+        d = int(digit)
+        if i % 2 == 1:
+            d *= 2
+        if d > 9:
+            d -= 9
+        total += d
+    return total % 10 == 0
+
+class BankTransferSubmit(BaseModel):
+    user_id: int
+    customer_name: str
+    transaction_date: str  # YYYY-MM-DD
+    id_number: str
+    bank_details: str
+    amount_ils: float
+    transaction_desc: str
+    phone: str
+    transfer_reference: str
+
+class BankTransferReview(BaseModel):
+    transfer_id: int
+    action: str  # approve or reject
+    reason: Optional[str] = None
+
+@app.post("/api/bank-transfer/submit")
+async def submit_bank_transfer(req: BankTransferSubmit):
+    """Submit a bank transfer request with 8 required fields."""
+    import re
+    from datetime import datetime, timedelta
+
+    # Validate Israeli TZ
+    if not validate_israeli_tz(req.id_number):
+        raise HTTPException(400, "תעודת זהות לא תקינה — בדוק את הספרות")
+    # Validate phone
+    if not re.match(r'^0[2-9]\d{7,8}$', req.phone):
+        raise HTTPException(400, "מספר טלפון לא תקין — דוגמה: 0584203384")
+    # Validate amount
+    if req.amount_ils <= 0 or req.amount_ils > 1000000:
+        raise HTTPException(400, "סכום חייב להיות בין 1 ל-1,000,000 ₪")
+    # Validate date
+    try:
+        tx_date = datetime.strptime(req.transaction_date, "%Y-%m-%d").date()
+    except ValueError:
+        raise HTTPException(400, "תאריך לא תקין — פורמט: YYYY-MM-DD")
+    # Validate non-empty fields
+    if not req.customer_name.strip():
+        raise HTTPException(400, "שם הלקוח חובה")
+    if not req.bank_details.strip():
+        raise HTTPException(400, "פרטי חשבון בנק חובה")
+    if not req.transaction_desc.strip():
+        raise HTTPException(400, "מהות העסקה חובה")
+    if not req.transfer_reference.strip():
+        raise HTTPException(400, "אסמכתא של העברה בנקאית חובה")
+
+    async with app.state.pool.acquire() as conn:
+        row = await conn.fetchrow("""
+            INSERT INTO bank_transfer_requests
+            (user_id, customer_name, transaction_date, id_number, bank_details,
+             amount_ils, transaction_desc, phone, transfer_reference)
+            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+            RETURNING id, created_at
+        """, req.user_id, req.customer_name.strip(), tx_date,
+            req.id_number, req.bank_details.strip(),
+            req.amount_ils, req.transaction_desc.strip(),
+            req.phone, req.transfer_reference.strip())
+        await audit_log_write(conn, "bank_transfer_submit",
+            actor_type="user", actor_user_id=req.user_id,
+            resource_type="bank_transfer", resource_id=str(row["id"]),
+            amount_native=req.amount_ils, amount_currency="ILS")
+    return {"ok": True, "transfer_id": row["id"],
+            "message": "הבקשה התקבלה בהצלחה. תאושר על ידי צביקה תוך 24 שעות."}
+
+@app.get("/api/bank-transfer/my-requests/{user_id}")
+async def my_bank_transfers(user_id: int):
+    """List user's bank transfer requests."""
+    async with app.state.pool.acquire() as conn:
+        rows = await conn.fetch("""
+            SELECT id, customer_name, transaction_date, amount_ils,
+                   transaction_desc, transfer_reference, status,
+                   reviewed_at, rejection_reason, created_at
+            FROM bank_transfer_requests WHERE user_id=$1
+            ORDER BY created_at DESC
+        """, user_id)
+    return {"ok": True, "requests": [dict(r) for r in rows]}
+
+@app.get("/api/admin/bank-transfers")
+async def admin_list_bank_transfers(request: Request, status: Optional[str] = None):
+    """Admin: list all bank transfer requests."""
+    _require_admin(request)
+    async with app.state.pool.acquire() as conn:
+        if status and status in ('pending', 'approved', 'rejected'):
+            rows = await conn.fetch("""
+                SELECT bt.*, wu.username, wu.first_name
+                FROM bank_transfer_requests bt
+                LEFT JOIN web_users wu ON bt.user_id = wu.telegram_id
+                WHERE bt.status=$1 ORDER BY bt.created_at DESC
+            """, status)
+        else:
+            rows = await conn.fetch("""
+                SELECT bt.*, wu.username, wu.first_name
+                FROM bank_transfer_requests bt
+                LEFT JOIN web_users wu ON bt.user_id = wu.telegram_id
+                ORDER BY bt.created_at DESC
+            """)
+    result = []
+    for r in rows:
+        d = dict(r)
+        # Mask ID number for non-owner (show last 4)
+        if d.get("id_number"):
+            d["id_number_masked"] = "*****" + d["id_number"][-4:]
+        result.append(d)
+    return {"ok": True, "count": len(result), "transfers": result}
+
+@app.post("/api/admin/bank-transfer/review")
+async def admin_review_bank_transfer(req: BankTransferReview, request: Request):
+    """Admin: approve or reject a bank transfer."""
+    admin_id = _require_admin(request)
+    if req.action not in ("approve", "reject"):
+        raise HTTPException(400, "action must be 'approve' or 'reject'")
+
+    async with app.state.pool.acquire() as conn:
+        existing = await conn.fetchrow(
+            "SELECT * FROM bank_transfer_requests WHERE id=$1", req.transfer_id)
+        if not existing:
+            raise HTTPException(404, "Bank transfer request not found")
+        if existing["status"] != "pending":
+            raise HTTPException(400, f"Already {existing['status']}")
+
+        new_status = "approved" if req.action == "approve" else "rejected"
+        await conn.execute("""
+            UPDATE bank_transfer_requests
+            SET status=$1, reviewed_by=$2, reviewed_at=CURRENT_TIMESTAMP,
+                rejection_reason=$3
+            WHERE id=$4
+        """, new_status, admin_id, req.reason, req.transfer_id)
+        await audit_log_write(conn, f"bank_transfer_{req.action}",
+            actor_type="admin", actor_user_id=admin_id,
+            resource_type="bank_transfer", resource_id=str(req.transfer_id),
+            amount_native=float(existing["amount_ils"]), amount_currency="ILS",
+            after_state={"status": new_status, "reason": req.reason})
+    return {"ok": True, "transfer_id": req.transfer_id, "status": new_status}
+
+# ===== END BANK TRANSFER SYSTEM =====
 
