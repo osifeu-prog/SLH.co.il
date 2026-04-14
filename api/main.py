@@ -7701,19 +7701,21 @@ async def admin_list_bank_transfers(request: Request, status: Optional[str] = No
                 LEFT JOIN web_users wu ON bt.user_id = wu.telegram_id
                 ORDER BY bt.created_at DESC
             """)
+    from decimal import Decimal as Dec
     result = []
     for r in rows:
         d = {}
         for k, v in dict(r).items():
             if hasattr(v, 'isoformat'):
                 d[k] = v.isoformat()
+            elif isinstance(v, Dec):
+                d[k] = float(v)
             elif isinstance(v, (int, float, str, bool, type(None))):
                 d[k] = v
             else:
                 d[k] = str(v)
-        # Mask ID number (show last 4)
         if d.get("id_number"):
-            d["id_number_masked"] = "*****" + d["id_number"][-4:]
+            d["id_number_masked"] = "*****" + str(d["id_number"])[-4:]
         result.append(d)
     return {"ok": True, "count": len(result), "transfers": result}
 
