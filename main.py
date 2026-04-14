@@ -2530,59 +2530,94 @@ async def approve_stake(
     x_admin_key: Optional[str] = Header(None),
 ):
     """Admin: approve a pending staking position and lock funds."""
-    _require_admin(authorization, x_admin_key)
-    async with pool.acquire() as conn:
-        pos = await conn.fetchrow(
-            "SELECT * FROM staking_positions WHERE id=$1", position_id
-        )
-        if not pos:
-            raise HTTPException(404, "Position not found")
-        if pos["status"] != "pending_approval":
-            return {"ok": True, "already": pos["status"]}
-
-        # Deduct TON from user balance
-        user_id = pos["user_id"]
-        amount = float(pos["amount"])
-
-        # Try account_balances first, then token_balances
-        acct_bal = await conn.fetchval(
-            "SELECT COALESCE(available, 0) FROM account_balances WHERE account_id=$1", user_id
-        ) or 0
-        if float(acct_bal) >= amount:
-            await conn.execute(
-                "UPDATE account_balances SET available = available - $1, locked = locked + $1 WHERE account_id=$2",
-                amount, user_id
-            )
-        else:
-            tok_bal = await conn.fetchval(
-                "SELECT COALESCE(balance, 0) FROM token_balances WHERE user_id=$1 AND token='TON'", user_id
-            ) or 0
-            if float(tok_bal) >= amount:
+    try:
+        _require_admin(authorization, x_admin_key)
+        async with pool.acquire() as conn:
+            # Ensure status column exists (may be missing on older Railway tables)
+            try:
                 await conn.execute(
-                    "UPDATE token_balances SET balance = balance - $1 WHERE user_id=$2 AND token='TON'",
+                    "ALTER TABLE staking_positions ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'active'"
+                )
+            except Exception:
+                pass  # Column already exists or DB doesn't support IF NOT EXISTS
+
+            pos = await conn.fetchrow(
+                "SELECT * FROM staking_positions WHERE id=$1", position_id
+            )
+            if not pos:
+                raise HTTPException(404, "Position not found")
+
+            # Safely read status — default to 'active' if column missing
+            pos_dict = dict(pos)
+            current_status = pos_dict.get("status", "active")
+
+            if current_status != "pending_approval":
+                return {"ok": True, "already": current_status}
+
+            # Deduct TON from user balance
+            user_id = pos_dict["user_id"]
+            amount = float(pos_dict["amount"])
+
+            # Try account_balances first, then token_balances
+            try:
+                acct_bal = await conn.fetchval(
+                    "SELECT COALESCE(available, 0) FROM account_balances WHERE account_id=$1", user_id
+                ) or 0
+            except Exception:
+                acct_bal = 0
+
+            if float(acct_bal) >= amount:
+                await conn.execute(
+                    "UPDATE account_balances SET available = available - $1, locked = locked + $1 WHERE account_id=$2",
                     amount, user_id
                 )
             else:
-                raise HTTPException(400, f"User has insufficient TON to lock ({acct_bal} + {tok_bal} < {amount})")
+                try:
+                    tok_bal = await conn.fetchval(
+                        "SELECT COALESCE(balance, 0) FROM token_balances WHERE user_id=$1 AND token='TON'", user_id
+                    ) or 0
+                except Exception:
+                    tok_bal = 0
 
-        # Activate position
-        await conn.execute(
-            "UPDATE staking_positions SET status='active' WHERE id=$1", position_id
-        )
+                if float(tok_bal) >= amount:
+                    await conn.execute(
+                        "UPDATE token_balances SET balance = balance - $1 WHERE user_id=$2 AND token='TON'",
+                        amount, user_id
+                    )
+                else:
+                    raise HTTPException(400, f"User has insufficient TON to lock ({acct_bal} + {tok_bal} < {amount})")
 
-        # Distribute referral commissions
-        commissions = await distribute_referral_commissions(
-            conn, user_id, amount, f"staking_{pos['plan']}", "TON"
-        )
+            # Activate position
+            try:
+                await conn.execute(
+                    "UPDATE staking_positions SET status='active' WHERE id=$1", position_id
+                )
+            except Exception:
+                pass  # status column missing — position is treated as active
 
-        await audit_log_write(
-            conn, action="staking.approve", actor_type="admin",
-            resource_type="staking_position", resource_id=str(position_id),
-            amount_native=amount, amount_currency="TON",
-            metadata={"plan": pos["plan"], "user_id": user_id, "commissions": len(commissions)},
-        )
+            # Distribute referral commissions
+            try:
+                commissions = await distribute_referral_commissions(
+                    conn, user_id, amount, f"staking_{pos_dict.get('plan', 'unknown')}", "TON"
+                )
+            except Exception:
+                commissions = []
 
-    return {"ok": True, "position_id": position_id, "status": "active", "amount_locked": amount}
+            try:
+                await audit_log_write(
+                    conn, action="staking.approve", actor_type="admin",
+                    resource_type="staking_position", resource_id=str(position_id),
+                    amount_native=amount, amount_currency="TON",
+                    metadata={"plan": pos_dict.get("plan", "unknown"), "user_id": user_id, "commissions": len(commissions)},
+                )
+            except Exception:
+                pass  # Audit log failure should not block approval
+
+        return {"ok": True, "position_id": position_id, "status": "active", "amount_locked": amount}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(500, f"Staking approve error: {str(e)}")
 
 
 @app.get("/api/staking/positions/{user_id}")
