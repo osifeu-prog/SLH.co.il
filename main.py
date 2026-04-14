@@ -7640,7 +7640,7 @@ async def submit_bank_transfer(req: BankTransferSubmit):
         raise HTTPException(400, "אסמכתא של העברה בנקאית חובה")
 
     try:
-        async with app.state.pool.acquire() as conn:
+        async with pool.acquire() as conn:
             row = await conn.fetchrow("""
                 INSERT INTO bank_transfer_requests
                 (user_id, customer_name, transaction_date, id_number, bank_details,
@@ -7666,7 +7666,7 @@ async def submit_bank_transfer(req: BankTransferSubmit):
 @app.get("/api/bank-transfer/my-requests/{user_id}")
 async def my_bank_transfers(user_id: int):
     """List user's bank transfer requests."""
-    async with app.state.pool.acquire() as conn:
+    async with pool.acquire() as conn:
         rows = await conn.fetch("""
             SELECT id, customer_name, transaction_date, amount_ils,
                    transaction_desc, transfer_reference, status,
@@ -7680,7 +7680,7 @@ async def my_bank_transfers(user_id: int):
 async def admin_list_bank_transfers(request: Request, status: Optional[str] = None):
     """Admin: list all bank transfer requests."""
     _require_admin(request)
-    async with app.state.pool.acquire() as conn:
+    async with pool.acquire() as conn:
         if status and status in ('pending', 'approved', 'rejected'):
             rows = await conn.fetch("""
                 SELECT bt.*, wu.username, wu.first_name
@@ -7711,7 +7711,7 @@ async def admin_review_bank_transfer(req: BankTransferReview, request: Request):
     if req.action not in ("approve", "reject"):
         raise HTTPException(400, "action must be 'approve' or 'reject'")
 
-    async with app.state.pool.acquire() as conn:
+    async with pool.acquire() as conn:
         existing = await conn.fetchrow(
             "SELECT * FROM bank_transfer_requests WHERE id=$1", req.transfer_id)
         if not existing:
