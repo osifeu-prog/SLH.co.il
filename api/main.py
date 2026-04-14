@@ -7639,23 +7639,29 @@ async def submit_bank_transfer(req: BankTransferSubmit):
     if not req.transfer_reference.strip():
         raise HTTPException(400, "אסמכתא של העברה בנקאית חובה")
 
-    async with app.state.pool.acquire() as conn:
-        row = await conn.fetchrow("""
-            INSERT INTO bank_transfer_requests
-            (user_id, customer_name, transaction_date, id_number, bank_details,
-             amount_ils, transaction_desc, phone, transfer_reference)
-            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
-            RETURNING id, created_at
-        """, req.user_id, req.customer_name.strip(), tx_date,
-            req.id_number, req.bank_details.strip(),
-            req.amount_ils, req.transaction_desc.strip(),
-            req.phone, req.transfer_reference.strip())
-        await audit_log_write(conn, "bank_transfer_submit",
-            actor_type="user", actor_user_id=req.user_id,
-            resource_type="bank_transfer", resource_id=str(row["id"]),
-            amount_native=req.amount_ils, amount_currency="ILS")
-    return {"ok": True, "transfer_id": row["id"],
-            "message": "הבקשה התקבלה בהצלחה. תאושר על ידי צביקה תוך 24 שעות."}
+    try:
+        async with app.state.pool.acquire() as conn:
+            row = await conn.fetchrow("""
+                INSERT INTO bank_transfer_requests
+                (user_id, customer_name, transaction_date, id_number, bank_details,
+                 amount_ils, transaction_desc, phone, transfer_reference)
+                VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+                RETURNING id, created_at
+            """, req.user_id, req.customer_name.strip(), tx_date,
+                req.id_number, req.bank_details.strip(),
+                float(req.amount_ils), req.transaction_desc.strip(),
+                req.phone, req.transfer_reference.strip())
+            try:
+                await audit_log_write(conn, "bank_transfer_submit",
+                    actor_type="user", actor_user_id=req.user_id,
+                    resource_type="bank_transfer", resource_id=str(row["id"]),
+                    amount_native=req.amount_ils, amount_currency="ILS")
+            except Exception:
+                pass  # Audit log failure should not block the request
+        return {"ok": True, "transfer_id": row["id"],
+                "message": "הבקשה התקבלה בהצלחה. תאושר על ידי צביקה תוך 24 שעות."}
+    except Exception as e:
+        raise HTTPException(500, f"DB error: {str(e)}")
 
 @app.get("/api/bank-transfer/my-requests/{user_id}")
 async def my_bank_transfers(user_id: int):
