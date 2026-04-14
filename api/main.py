@@ -7683,9 +7683,13 @@ async def my_bank_transfers(user_id: int):
     return {"ok": True, "requests": requests_out}
 
 @app.get("/api/admin/bank-transfers")
-async def admin_list_bank_transfers(request: Request, status: Optional[str] = None):
+async def admin_list_bank_transfers(
+    status: Optional[str] = None,
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None),
+):
     """Admin: list all bank transfer requests."""
-    _require_admin(request)
+    _require_admin(authorization, x_admin_key)
     from decimal import Decimal as Dec
     try:
         async with pool.acquire() as conn:
@@ -7725,9 +7729,13 @@ async def admin_list_bank_transfers(request: Request, status: Optional[str] = No
         raise HTTPException(500, f"Bank transfers error: {str(e)}")
 
 @app.post("/api/admin/bank-transfer/review")
-async def admin_review_bank_transfer(req: BankTransferReview, request: Request):
+async def admin_review_bank_transfer(
+    req: BankTransferReview,
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None),
+):
     """Admin: approve or reject a bank transfer."""
-    admin_id = _require_admin(request)
+    admin_id = _require_admin(authorization, x_admin_key)
     if req.action not in ("approve", "reject"):
         raise HTTPException(400, "action must be 'approve' or 'reject'")
 
