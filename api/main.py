@@ -7615,8 +7615,6 @@ class BankTransferReview(BaseModel):
 async def submit_bank_transfer(req: BankTransferSubmit):
     """Submit a bank transfer request with 8 required fields."""
     import re
-    from datetime import datetime, timedelta
-
     # Validate Israeli TZ
     if not validate_israeli_tz(req.id_number):
         raise HTTPException(400, "תעודת זהות לא תקינה — בדוק את הספרות")
