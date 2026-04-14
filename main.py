@@ -7674,7 +7674,13 @@ async def my_bank_transfers(user_id: int):
             FROM bank_transfer_requests WHERE user_id=$1
             ORDER BY created_at DESC
         """, user_id)
-    return {"ok": True, "requests": [dict(r) for r in rows]}
+    requests_out = []
+    for r in rows:
+        d = {}
+        for k, v in dict(r).items():
+            d[k] = v.isoformat() if hasattr(v, 'isoformat') else v if isinstance(v, (int, float, str, bool, type(None))) else str(v)
+        requests_out.append(d)
+    return {"ok": True, "requests": requests_out}
 
 @app.get("/api/admin/bank-transfers")
 async def admin_list_bank_transfers(request: Request, status: Optional[str] = None):
@@ -7697,8 +7703,15 @@ async def admin_list_bank_transfers(request: Request, status: Optional[str] = No
             """)
     result = []
     for r in rows:
-        d = dict(r)
-        # Mask ID number for non-owner (show last 4)
+        d = {}
+        for k, v in dict(r).items():
+            if hasattr(v, 'isoformat'):
+                d[k] = v.isoformat()
+            elif isinstance(v, (int, float, str, bool, type(None))):
+                d[k] = v
+            else:
+                d[k] = str(v)
+        # Mask ID number (show last 4)
         if d.get("id_number"):
             d["id_number_masked"] = "*****" + d["id_number"][-4:]
         result.append(d)
