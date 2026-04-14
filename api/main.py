@@ -92,7 +92,49 @@ def _require_admin(authorization: Optional[str] = None, admin_key_header: Option
         except Exception:
             pass
 
+    # Try admin JWT (new multi-admin system)
+    if authorization and authorization.startswith("Bearer "):
+        try:
+            token = authorization[7:]
+            payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+            if payload.get("type") == "admin":
+                return int(payload.get("admin_id", 0))
+        except Exception:
+            pass
+
     raise HTTPException(403, "Admin authentication required")
+
+# ── Admin password hashing (SHA-256 + salt, no extra dependency) ──
+def hash_admin_password(password: str) -> str:
+    salt = secrets.token_hex(16)
+    h = hashlib.sha256((salt + password).encode()).hexdigest()
+    return f"{salt}:{h}"
+
+def verify_admin_password(password: str, stored: str) -> bool:
+    if ":" not in stored:
+        return False
+    salt, h = stored.split(":", 1)
+    return hashlib.sha256((salt + password).encode()).hexdigest() == h
+
+ADMIN_ROLE_HIERARCHY = {"owner": 4, "ceo": 3, "manager": 2, "viewer": 1}
+
+def _require_admin_role(authorization, x_admin_key, min_role="viewer"):
+    """Check admin auth and verify minimum role. Returns (admin_id, role)."""
+    admin_id = _require_admin(authorization, x_admin_key)
+    # Old-style admin keys always get owner role
+    if x_admin_key and x_admin_key in ADMIN_API_KEYS:
+        return (admin_id, "owner")
+    # For JWT-based admin, check role
+    if authorization and authorization.startswith("Bearer "):
+        try:
+            payload = jwt.decode(authorization[7:], JWT_SECRET, algorithms=[JWT_ALGORITHM])
+            role = payload.get("role", "viewer")
+            if ADMIN_ROLE_HIERARCHY.get(role, 0) < ADMIN_ROLE_HIERARCHY.get(min_role, 0):
+                raise HTTPException(403, f"Requires {min_role} role or higher")
+            return (admin_id, role)
+        except jwt.PyJWTError:
+            pass
+    return (admin_id, "owner")  # fallback for old-style auth
 
 # === AI CHAT ROUTER ===
 app.include_router(ai_chat_router)
@@ -7762,4 +7804,149 @@ async def admin_review_bank_transfer(
     return {"ok": True, "transfer_id": req.transfer_id, "status": new_status}
 
 # ===== END BANK TRANSFER SYSTEM =====
+
+# =====================================================================
+# ===== MULTI-ADMIN SYSTEM =====
+# =====================================================================
+
+class AdminLoginRequest(BaseModel):
+    username: str
+    password: str
+
+class AdminCreateRequest(BaseModel):
+    username: str
+    password: str
+    display_name: str
+    role: str = "viewer"  # owner, ceo, manager, viewer
+    telegram_id: Optional[int] = None
+    email: Optional[str] = None
+    phone: Optional[str] = None
+
+@app.post("/api/admin/auth/login")
+async def admin_login(req: AdminLoginRequest):
+    """Admin login — returns JWT with role."""
+    async with pool.acquire() as conn:
+        # Seed default admins on first call if table empty
+        count = await conn.fetchval("SELECT COUNT(*) FROM admin_users")
+        if count == 0:
+            # Seed Osif as owner
+            await conn.execute("""
+                INSERT INTO admin_users (telegram_id, username, password_hash, display_name, role, created_by)
+                VALUES ($1, $2, $3, $4, $5, $6)
+                ON CONFLICT (username) DO NOTHING
+            """, 224223270, "osif", hash_admin_password("slh2026admin"), "Osif Ungar", "owner", 224223270)
+            # Seed Tzvika as CEO
+            await conn.execute("""
+                INSERT INTO admin_users (telegram_id, username, password_hash, display_name, role, created_by)
+                VALUES ($1, $2, $3, $4, $5, $6)
+                ON CONFLICT (username) DO NOTHING
+            """, 7757102350, "tzvika", hash_admin_password("slh_ceo_2026"), "Tzvika Kaufman", "ceo", 224223270)
+
+        admin = await conn.fetchrow(
+            "SELECT * FROM admin_users WHERE username=$1 AND is_active=TRUE", req.username)
+        if not admin:
+            raise HTTPException(401, "שם משתמש לא נמצא")
+        if not verify_admin_password(req.password, admin["password_hash"]):
+            raise HTTPException(401, "סיסמה שגויה")
+        # Update last login
+        await conn.execute(
+            "UPDATE admin_users SET last_login=CURRENT_TIMESTAMP WHERE id=$1", admin["id"])
+    # Generate admin JWT (2h expiry)
+    payload = {
+        "admin_id": admin["id"],
+        "username": admin["username"],
+        "role": admin["role"],
+        "display_name": admin["display_name"],
+        "type": "admin",
+        "exp": datetime.utcnow() + timedelta(hours=2)
+    }
+    token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+    return {
+        "ok": True,
+        "token": token,
+        "admin": {
+            "id": admin["id"],
+            "username": admin["username"],
+            "display_name": admin["display_name"],
+            "role": admin["role"],
+            "telegram_id": admin["telegram_id"]
+        }
+    }
+
+@app.get("/api/admin/me")
+async def admin_me(authorization: Optional[str] = Header(None), x_admin_key: Optional[str] = Header(None)):
+    """Get current admin profile from JWT."""
+    if authorization and authorization.startswith("Bearer "):
+        try:
+            payload = jwt.decode(authorization[7:], JWT_SECRET, algorithms=[JWT_ALGORITHM])
+            if payload.get("type") == "admin":
+                return {"ok": True, "admin": {
+                    "id": payload.get("admin_id"),
+                    "username": payload.get("username"),
+                    "display_name": payload.get("display_name"),
+                    "role": payload.get("role")
+                }}
+        except Exception:
+            pass
+    # Fallback for old X-Admin-Key auth
+    if x_admin_key and x_admin_key in ADMIN_API_KEYS:
+        return {"ok": True, "admin": {
+            "id": ADMIN_USER_ID, "username": "osif",
+            "display_name": "Osif Ungar", "role": "owner"
+        }}
+    raise HTTPException(403, "Not authenticated")
+
+@app.get("/api/admin/admins")
+async def list_admins(authorization: Optional[str] = Header(None), x_admin_key: Optional[str] = Header(None)):
+    """List all admin users. Requires owner or ceo role."""
+    _require_admin_role(authorization, x_admin_key, "ceo")
+    async with pool.acquire() as conn:
+        rows = await conn.fetch(
+            "SELECT id, telegram_id, username, display_name, role, email, phone, is_active, created_at, last_login FROM admin_users ORDER BY id")
+    return {"ok": True, "admins": [dict(r) for r in rows]}
+
+@app.post("/api/admin/admins/create")
+async def create_admin(
+    req: AdminCreateRequest,
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None),
+):
+    """Create a new admin user. Requires owner role."""
+    _require_admin_role(authorization, x_admin_key, "owner")
+    if req.role not in ADMIN_ROLE_HIERARCHY:
+        raise HTTPException(400, f"Invalid role. Use: {list(ADMIN_ROLE_HIERARCHY.keys())}")
+    if len(req.password) < 8:
+        raise HTTPException(400, "Password must be at least 8 characters")
+    try:
+        async with pool.acquire() as conn:
+            admin_id = await conn.fetchval("""
+                INSERT INTO admin_users (username, password_hash, display_name, role, telegram_id, email, phone, created_by)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                RETURNING id
+            """, req.username, hash_admin_password(req.password), req.display_name,
+                req.role, req.telegram_id, req.email, req.phone, ADMIN_USER_ID)
+        return {"ok": True, "admin_id": admin_id}
+    except Exception as e:
+        if "unique" in str(e).lower():
+            raise HTTPException(409, "Username already exists")
+        raise HTTPException(500, str(e))
+
+@app.post("/api/admin/admins/{admin_id}/reset-password")
+async def reset_admin_password(
+    admin_id: int,
+    new_password: str = "",
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None),
+):
+    """Reset an admin's password. Requires owner role."""
+    _require_admin_role(authorization, x_admin_key, "owner")
+    if len(new_password) < 8:
+        new_password = secrets.token_urlsafe(16)
+    async with pool.acquire() as conn:
+        await conn.execute(
+            "UPDATE admin_users SET password_hash=$1 WHERE id=$2",
+            hash_admin_password(new_password), admin_id)
+    return {"ok": True, "admin_id": admin_id, "new_password": new_password}
+
+# ===== END MULTI-ADMIN SYSTEM =====
 

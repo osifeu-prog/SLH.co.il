@@ -1,4 +1,4 @@
-# ============================================================
+﻿# ============================================================
 # SLH ECOSYSTEM - Unified Docker Compose
 # All Telegram bots + shared infrastructure
 # ============================================================
@@ -177,21 +177,21 @@ services:
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
 
   # 8. ExpertNet / SLH_AIR Bot (Zvika Kaufman - Ambassador #1)
-  expertnet-bot:
-    build:
-      context: .
-      dockerfile: dockerfiles/Dockerfile.expertnet
-    container_name: slh-expertnet
-    restart: always
-    depends_on:
-      postgres:
-        condition: service_healthy
-    environment:
-      BOT_TOKEN: ${EXPERTNET_BOT_TOKEN}
-      DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
-      ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
-
-  # 9. SLH HUB / Airdrop Bot (Central economic engine)
+# LEGACY_DISABLED 2026-04-14   expertnet-bot:
+# LEGACY_DISABLED 2026-04-14     build:
+# LEGACY_DISABLED 2026-04-14       context: .
+# LEGACY_DISABLED 2026-04-14       dockerfile: dockerfiles/Dockerfile.expertnet
+# LEGACY_DISABLED 2026-04-14     container_name: slh-expertnet
+# LEGACY_DISABLED 2026-04-14     restart: always
+# LEGACY_DISABLED 2026-04-14     depends_on:
+# LEGACY_DISABLED 2026-04-14       postgres:
+# LEGACY_DISABLED 2026-04-14         condition: service_healthy
+# LEGACY_DISABLED 2026-04-14     environment:
+# LEGACY_DISABLED 2026-04-14       BOT_TOKEN: ${EXPERTNET_BOT_TOKEN}
+# LEGACY_DISABLED 2026-04-14       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
+# LEGACY_DISABLED 2026-04-14       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+# LEGACY_DISABLED 2026-04-14 
+# LEGACY_DISABLED 2026-04-14   # 9. SLH HUB / Airdrop Bot (Central economic engine)
   airdrop-bot:
     build:
       context: .
@@ -355,8 +355,8 @@ services:
 
   # ---- MISSING BOTS (newly added) ----
 
-  # selha-bot: REMOVED — dummy placeholder bot, shared token with userinfo
-  # userinfo-bot: REMOVED — dummy placeholder bot, not a real service
+  # selha-bot: REMOVED â€” dummy placeholder bot, shared token with userinfo
+  # userinfo-bot: REMOVED â€” dummy placeholder bot, not a real service
 
   ts-set-bot:
     build: {context: ., dockerfile: dockerfiles/Dockerfile.template}
