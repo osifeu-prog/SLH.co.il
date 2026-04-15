@@ -8308,3 +8308,151 @@ async def campaign_attribute_purchase(
 
 # ===== END CAMPAIGN SYSTEM =====
 
+
+# ===== MASS GIFT (Bulk credit ZVK to all users) =====
+
+class MassGiftReq(BaseModel):
+    token: str = "ZVK"  # ZVK / SLH / MNH / REP
+    amount: float = 10.0
+    reason: str = "campaign_gift"
+    note: Optional[str] = None
+    only_active_days: Optional[int] = None  # if set, only users seen in last N days
+    dry_run: bool = True  # default safe — return preview without crediting
+
+
+@app.post("/api/admin/mass-gift")
+async def admin_mass_gift(
+    req: MassGiftReq,
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None)
+):
+    """Bulk-credit ALL registered users with N tokens.
+    Default dry_run=True returns preview only.
+    Set dry_run=false to actually credit.
+    """
+    _require_admin(authorization, x_admin_key)
+
+    token = req.token.upper()
+    if token not in ("ZVK", "SLH", "MNH", "REP"):
+        raise HTTPException(400, "token must be ZVK/SLH/MNH/REP")
+
+    if req.amount <= 0 or req.amount > 10000:
+        raise HTTPException(400, "amount must be between 0 and 10000")
+
+    async with pool.acquire() as conn:
+        # Get all eligible users
+        try:
+            if req.only_active_days:
+                rows = await conn.fetch("""
+                    SELECT telegram_id, username, first_name
+                    FROM web_users
+                    WHERE telegram_id >= 1000000
+                      AND (last_seen IS NULL OR last_seen >= NOW() - ($1 || ' days')::interval)
+                """, str(int(req.only_active_days)))
+            else:
+                rows = await conn.fetch("""
+                    SELECT telegram_id, username, first_name
+                    FROM web_users
+                    WHERE telegram_id >= 1000000
+                """)
+        except Exception as e:
+            # Fallback if last_seen doesn't exist
+            rows = await conn.fetch(
+                "SELECT telegram_id, username, first_name FROM web_users WHERE telegram_id >= 1000000"
+            )
+
+        users = [dict(r) for r in rows]
+        total_users = len(users)
+        total_amount = req.amount * total_users
+
+        if req.dry_run:
+            return {
+                "dry_run": True,
+                "preview": {
+                    "users_count": total_users,
+                    "token": token,
+                    "amount_per_user": req.amount,
+                    "total_distribution": total_amount,
+                    "users_sample": users[:10],
+                    "reason": req.reason
+                },
+                "next_step": "Call again with dry_run=false to actually credit"
+            }
+
+        # ACTUAL CREDIT — wrapped in transaction
+        credited = []
+        failed = []
+        async with conn.transaction():
+            for u in users:
+                uid = u["telegram_id"]
+                try:
+                    # Update or insert balance
+                    await conn.execute("""
+                        INSERT INTO token_balances (user_id, token, balance, updated_at)
+                        VALUES ($1, $2, $3, NOW())
+                        ON CONFLICT (user_id, token)
+                        DO UPDATE SET balance = token_balances.balance + $3, updated_at = NOW()
+                    """, uid, token, req.amount)
+
+                    # Log the transfer
+                    await conn.execute("""
+                        INSERT INTO token_transfers (from_user, to_user, token, amount, reason, created_at)
+                        VALUES (0, $1, $2, $3, $4, NOW())
+                    """, uid, token, req.amount, f"{req.reason}: {req.note or 'mass gift'}")
+
+                    credited.append(uid)
+                except Exception as e:
+                    failed.append({"user_id": uid, "error": str(e)[:100]})
+
+        return {
+            "dry_run": False,
+            "credited_count": len(credited),
+            "failed_count": len(failed),
+            "total_amount_distributed": req.amount * len(credited),
+            "token": token,
+            "credited_user_ids": credited[:50],  # first 50 only
+            "failures": failed[:20],
+            "reason": req.reason
+        }
+
+
+@app.get("/api/admin/mass-gift/history")
+async def admin_mass_gift_history(
+    limit: int = 20,
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None)
+):
+    """Get history of recent mass gifts (from token_transfers where from_user=0)."""
+    _require_admin(authorization, x_admin_key)
+    async with pool.acquire() as conn:
+        try:
+            rows = await conn.fetch("""
+                SELECT
+                    DATE_TRUNC('hour', created_at) as hour_bucket,
+                    token,
+                    SUM(amount) as total_amount,
+                    COUNT(DISTINCT to_user) as users_credited,
+                    MAX(reason) as reason_sample
+                FROM token_transfers
+                WHERE from_user = 0
+                GROUP BY DATE_TRUNC('hour', created_at), token
+                ORDER BY hour_bucket DESC
+                LIMIT $1
+            """, limit)
+            return {
+                "history": [
+                    {
+                        "when": r["hour_bucket"].isoformat() if r["hour_bucket"] else None,
+                        "token": r["token"],
+                        "total_amount": float(r["total_amount"] or 0),
+                        "users_credited": int(r["users_credited"] or 0),
+                        "reason": r["reason_sample"]
+                    } for r in rows
+                ]
+            }
+        except Exception as e:
+            return {"history": [], "error": str(e)[:100]}
+
+
+# ===== END MASS GIFT =====
+
