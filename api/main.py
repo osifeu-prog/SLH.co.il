@@ -10,7 +10,7 @@ import json
 from datetime import datetime, timedelta
 import jwt
 import secrets
-from typing import Optional
+from typing import Optional, List
 
 from fastapi import FastAPI, HTTPException, Depends, Query, Request, Header
 from fastapi.middleware.cors import CORSMiddleware
