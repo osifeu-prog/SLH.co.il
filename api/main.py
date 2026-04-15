@@ -8539,16 +8539,27 @@ class ExpertCreateReq(BaseModel):
 
 @app.post("/api/experts/register")
 async def experts_register(req: ExpertCreateReq):
-    """Anyone can register as expert (verified = false initially)."""
+    """Anyone can register as expert (verified = false initially). Awards 100 ZVK signup bonus."""
     async with pool.acquire() as conn:
         await _ensure_experts_tables(conn)
+        await _ensure_expert_rewards_tables(conn)
         row = await conn.fetchrow("""
             INSERT INTO experts (user_id, display_name, tg_username, phone, email, bio, domains, languages, avatar_url)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
             RETURNING id, display_name, verified
         """, req.user_id, req.display_name, req.tg_username, req.phone, req.email,
             req.bio, req.domains, req.languages, req.avatar_url)
-        return {"ok": True, "expert_id": row["id"], "verified": row["verified"], "message": "נרשמת בהצלחה. הפרופיל יועלה אחרי אימות אדמין."}
+        # Auto-award signup reward
+        reward_info = None
+        if req.user_id:
+            reward_info = await _credit_expert_reward(conn, row["id"], "expert_signup")
+        return {
+            "ok": True,
+            "expert_id": row["id"],
+            "verified": row["verified"],
+            "reward": reward_info,
+            "message": "נרשמת בהצלחה! קיבלת 100 ZVK בונוס. הפרופיל יועלה אחרי אימות אדמין."
+        }
 
 
 class ExpertReviewReq(BaseModel):
@@ -8602,6 +8613,268 @@ async def experts_consult(req: ConsultationReq):
         # Increment consultation count
         await conn.execute("UPDATE experts SET consultations_count = consultations_count + 1 WHERE id = $1", req.expert_id)
         return {"ok": True, "consultation_id": row["id"], "message": "הבקשה נשלחה למומחה. תיצור איתך קשר תוך 48 שעות."}
+
+
+# ===== EXPERT REWARDS + COMMUNITY DOMAINS =====
+
+async def _ensure_expert_rewards_tables(conn):
+    await conn.execute("""
+        CREATE TABLE IF NOT EXISTS expert_rewards (
+            id SERIAL PRIMARY KEY,
+            expert_id INTEGER REFERENCES experts(id),
+            event_type TEXT NOT NULL,
+            zvk_amount INTEGER DEFAULT 0,
+            rep_amount INTEGER DEFAULT 0,
+            note TEXT,
+            created_at TIMESTAMP DEFAULT NOW()
+        )
+    """)
+    await conn.execute("""
+        CREATE TABLE IF NOT EXISTS expert_domains (
+            id SERIAL PRIMARY KEY,
+            slug TEXT UNIQUE NOT NULL,
+            name_he TEXT NOT NULL,
+            name_en TEXT,
+            emoji TEXT,
+            category TEXT,
+            approved BOOLEAN DEFAULT FALSE,
+            votes_for INTEGER DEFAULT 0,
+            votes_against INTEGER DEFAULT 0,
+            proposed_by BIGINT,
+            created_at TIMESTAMP DEFAULT NOW()
+        )
+    """)
+    await conn.execute("""
+        CREATE TABLE IF NOT EXISTS domain_votes (
+            id SERIAL PRIMARY KEY,
+            domain_id INTEGER REFERENCES expert_domains(id) ON DELETE CASCADE,
+            voter_user_id BIGINT,
+            vote TEXT CHECK (vote IN ('for','against')),
+            action TEXT CHECK (action IN ('add','remove','merge')),
+            merge_target_id INTEGER,
+            comment TEXT,
+            created_at TIMESTAMP DEFAULT NOW(),
+            UNIQUE(domain_id, voter_user_id, action)
+        )
+    """)
+
+
+# REWARD RULES
+REWARD_RULES = {
+    "expert_signup": {"zvk": 100, "rep": 10, "note": "הצטרפות כמומחה"},
+    "verified": {"zvk": 500, "rep": 50, "note": "אימות פרופיל"},
+    "consultation_requested": {"zvk": 50, "rep": 5, "note": "בקשת ייעוץ התקבלה"},
+    "consultation_completed": {"zvk": 200, "rep": 20, "note": "ייעוץ הושלם"},
+    "five_star_review": {"zvk": 25, "rep": 10, "note": "דירוג 5 כוכבים"},
+    "first_consultation": {"zvk": 150, "rep": 15, "note": "בונוס ייעוץ ראשון"},
+    "vote_cast": {"zvk": 5, "rep": 1, "note": "השתתפות בהצבעה"}
+}
+
+
+async def _credit_expert_reward(conn, expert_id: int, event_type: str, note_extra: Optional[str] = None):
+    """Auto-credit expert rewards. Silent fail on error."""
+    rule = REWARD_RULES.get(event_type)
+    if not rule:
+        return None
+    try:
+        # Get expert's user_id
+        expert = await conn.fetchrow("SELECT user_id FROM experts WHERE id=$1", expert_id)
+        if not expert or not expert["user_id"]:
+            return None
+
+        # Log reward
+        await conn.execute("""
+            INSERT INTO expert_rewards (expert_id, event_type, zvk_amount, rep_amount, note)
+            VALUES ($1, $2, $3, $4, $5)
+        """, expert_id, event_type, rule["zvk"], rule["rep"],
+            f"{rule['note']}{(' · ' + note_extra) if note_extra else ''}")
+
+        # Credit ZVK to user
+        if rule["zvk"] > 0:
+            await conn.execute("""
+                INSERT INTO token_balances (user_id, token, balance, updated_at)
+                VALUES ($1, 'ZVK', $2, NOW())
+                ON CONFLICT (user_id, token)
+                DO UPDATE SET balance = token_balances.balance + $2, updated_at = NOW()
+            """, expert["user_id"], rule["zvk"])
+        return {"event": event_type, "zvk_credited": rule["zvk"], "rep_credited": rule["rep"]}
+    except Exception as e:
+        print(f"[expert_reward] silent fail: {e}")
+        return None
+
+
+# Default domains list (pre-approved)
+DEFAULT_DOMAINS = [
+    {"slug":"crypto", "name_he":"קריפטו", "name_en":"Crypto", "emoji":"₿", "category":"finance"},
+    {"slug":"security", "name_he":"אבטחת מידע", "name_en":"Security", "emoji":"🛡️", "category":"tech"},
+    {"slug":"finance", "name_he":"פיננסים", "name_en":"Finance", "emoji":"💰", "category":"finance"},
+    {"slug":"trading", "name_he":"מסחר", "name_en":"Trading", "emoji":"📈", "category":"finance"},
+    {"slug":"tech", "name_he":"פיתוח", "name_en":"Development", "emoji":"💻", "category":"tech"},
+    {"slug":"marketing", "name_he":"שיווק דיגיטלי", "name_en":"Marketing", "emoji":"📣", "category":"business"},
+    {"slug":"legal", "name_he":"משפט", "name_en":"Legal", "emoji":"⚖️", "category":"business"},
+    {"slug":"halacha", "name_he":"הלכה", "name_en":"Halacha", "emoji":"🕊️", "category":"religious"},
+    {"slug":"accounting", "name_he":"ראיית חשבון", "name_en":"Accounting", "emoji":"🧾", "category":"finance"},
+    {"slug":"tax", "name_he":"מיסים", "name_en":"Taxation", "emoji":"💸", "category":"finance"},
+    {"slug":"ai", "name_he":"AI / בינה מלאכותית", "name_en":"AI", "emoji":"🤖", "category":"tech"},
+    {"slug":"design", "name_he":"עיצוב", "name_en":"Design", "emoji":"🎨", "category":"creative"},
+    {"slug":"writing", "name_he":"כתיבה", "name_en":"Writing", "emoji":"✍️", "category":"creative"},
+    {"slug":"translation", "name_he":"תרגום", "name_en":"Translation", "emoji":"🌐", "category":"creative"},
+    {"slug":"video", "name_he":"וידאו / עריכה", "name_en":"Video", "emoji":"🎬", "category":"creative"},
+    {"slug":"photography", "name_he":"צילום", "name_en":"Photography", "emoji":"📸", "category":"creative"},
+    {"slug":"sales", "name_he":"מכירות", "name_en":"Sales", "emoji":"🤝", "category":"business"},
+    {"slug":"hr", "name_he":"משאבי אנוש", "name_en":"HR", "emoji":"👥", "category":"business"},
+    {"slug":"real_estate", "name_he":"נדל\"ן", "name_en":"Real Estate", "emoji":"🏠", "category":"business"},
+    {"slug":"medical", "name_he":"רפואה / בריאות", "name_en":"Medical", "emoji":"⚕️", "category":"health"},
+    {"slug":"therapy", "name_he":"טיפול נפשי", "name_en":"Therapy", "emoji":"💚", "category":"health"},
+    {"slug":"nutrition", "name_he":"תזונה", "name_en":"Nutrition", "emoji":"🥗", "category":"health"},
+    {"slug":"coaching", "name_he":"קואצ'ינג", "name_en":"Coaching", "emoji":"🎯", "category":"education"},
+    {"slug":"education", "name_he":"חינוך / הוראה", "name_en":"Education", "emoji":"🎓", "category":"education"},
+    {"slug":"academia", "name_he":"אקדמיה", "name_en":"Academia", "emoji":"📚", "category":"education"},
+    {"slug":"music", "name_he":"מוזיקה", "name_en":"Music", "emoji":"🎵", "category":"creative"},
+    {"slug":"fitness", "name_he":"כושר", "name_en":"Fitness", "emoji":"💪", "category":"health"},
+    {"slug":"language", "name_he":"שפות", "name_en":"Languages", "emoji":"🗣️", "category":"education"},
+    {"slug":"startup", "name_he":"סטארט-אפים", "name_en":"Startups", "emoji":"🚀", "category":"business"},
+    {"slug":"blockchain", "name_he":"בלוקצ'יין", "name_en":"Blockchain", "emoji":"⛓️", "category":"tech"},
+]
+
+
+@app.get("/api/experts/domains")
+async def experts_domains_list():
+    """Public list of all approved domains + pending proposals."""
+    async with pool.acquire() as conn:
+        await _ensure_expert_rewards_tables(conn)
+        # Seed defaults if empty
+        count = await conn.fetchval("SELECT COUNT(*) FROM expert_domains")
+        if count == 0:
+            for d in DEFAULT_DOMAINS:
+                try:
+                    await conn.execute("""
+                        INSERT INTO expert_domains (slug, name_he, name_en, emoji, category, approved)
+                        VALUES ($1, $2, $3, $4, $5, TRUE)
+                        ON CONFLICT (slug) DO NOTHING
+                    """, d["slug"], d["name_he"], d["name_en"], d["emoji"], d["category"])
+                except Exception:
+                    pass
+
+        approved = await conn.fetch(
+            "SELECT slug, name_he, name_en, emoji, category FROM expert_domains WHERE approved = TRUE ORDER BY category, name_he"
+        )
+        pending = await conn.fetch(
+            "SELECT id, slug, name_he, name_en, emoji, category, votes_for, votes_against FROM expert_domains WHERE approved = FALSE ORDER BY votes_for DESC"
+        )
+        return {
+            "approved": [dict(r) for r in approved],
+            "pending": [dict(r) for r in pending]
+        }
+
+
+class DomainProposeReq(BaseModel):
+    action: str  # 'add', 'remove', 'merge'
+    slug: Optional[str] = None  # for new domain
+    name_he: Optional[str] = None
+    name_en: Optional[str] = None
+    emoji: Optional[str] = None
+    category: Optional[str] = None
+    existing_domain_id: Optional[int] = None  # for remove/merge
+    merge_target_id: Optional[int] = None  # for merge
+    proposer_user_id: Optional[int] = None
+
+
+@app.post("/api/experts/domains/propose")
+async def experts_domains_propose(req: DomainProposeReq):
+    """Propose a new domain or action on existing."""
+    async with pool.acquire() as conn:
+        await _ensure_expert_rewards_tables(conn)
+        if req.action == "add":
+            if not req.slug or not req.name_he:
+                raise HTTPException(400, "slug + name_he required for add")
+            row = await conn.fetchrow("""
+                INSERT INTO expert_domains (slug, name_he, name_en, emoji, category, approved, proposed_by)
+                VALUES ($1, $2, $3, $4, $5, FALSE, $6)
+                ON CONFLICT (slug) DO NOTHING
+                RETURNING id
+            """, req.slug, req.name_he, req.name_en, req.emoji or "🎯", req.category or "other", req.proposer_user_id)
+            if not row:
+                raise HTTPException(409, "Domain slug already exists")
+            return {"ok": True, "domain_id": row["id"], "status": "pending_votes", "needs_votes": 10}
+        # remove/merge actions logged as votes
+        return {"ok": True, "action": req.action, "note": "Action requires 10+ votes to pass"}
+
+
+class DomainVoteReq(BaseModel):
+    domain_id: int
+    voter_user_id: int
+    vote: str  # 'for' or 'against'
+    action: str = "add"  # 'add', 'remove', 'merge'
+    merge_target_id: Optional[int] = None
+    comment: Optional[str] = None
+
+
+@app.post("/api/experts/domains/vote")
+async def experts_domains_vote(req: DomainVoteReq):
+    """Cast vote on domain proposal."""
+    if req.vote not in ("for", "against"):
+        raise HTTPException(400, "vote must be for/against")
+    if req.action not in ("add", "remove", "merge"):
+        raise HTTPException(400, "invalid action")
+    async with pool.acquire() as conn:
+        await _ensure_expert_rewards_tables(conn)
+        # Try to insert vote (UNIQUE constraint prevents double-voting)
+        try:
+            await conn.execute("""
+                INSERT INTO domain_votes (domain_id, voter_user_id, vote, action, merge_target_id, comment)
+                VALUES ($1, $2, $3, $4, $5, $6)
+            """, req.domain_id, req.voter_user_id, req.vote, req.action, req.merge_target_id, req.comment)
+        except Exception as e:
+            if "unique" in str(e).lower():
+                raise HTTPException(409, "Already voted on this proposal")
+            raise
+        # Update counter
+        col = "votes_for" if req.vote == "for" else "votes_against"
+        await conn.execute(f"UPDATE expert_domains SET {col} = {col} + 1 WHERE id=$1", req.domain_id)
+        # Check if auto-approve (for adds: 10+ for-votes, 2x against threshold)
+        row = await conn.fetchrow("SELECT votes_for, votes_against, approved FROM expert_domains WHERE id=$1", req.domain_id)
+        approved_now = False
+        if row and not row["approved"] and req.action == "add":
+            if row["votes_for"] >= 10 and row["votes_for"] >= 2 * row["votes_against"]:
+                await conn.execute("UPDATE expert_domains SET approved=TRUE WHERE id=$1", req.domain_id)
+                approved_now = True
+        # Credit voter (if they are expert)
+        try:
+            expert_row = await conn.fetchrow("SELECT id FROM experts WHERE user_id=$1 LIMIT 1", req.voter_user_id)
+            if expert_row:
+                await _credit_expert_reward(conn, expert_row["id"], "vote_cast")
+        except Exception:
+            pass
+        return {"ok": True, "votes_for": row["votes_for"], "votes_against": row["votes_against"], "approved": approved_now}
+
+
+@app.get("/api/experts/{expert_id}/rewards")
+async def experts_rewards(expert_id: int):
+    """Public view of expert's rewards history."""
+    async with pool.acquire() as conn:
+        await _ensure_expert_rewards_tables(conn)
+        rows = await conn.fetch("""
+            SELECT event_type, zvk_amount, rep_amount, note, created_at
+            FROM expert_rewards WHERE expert_id=$1
+            ORDER BY created_at DESC LIMIT 50
+        """, expert_id)
+        total = await conn.fetchrow("""
+            SELECT COALESCE(SUM(zvk_amount), 0) as total_zvk,
+                   COALESCE(SUM(rep_amount), 0) as total_rep,
+                   COUNT(*) as events
+            FROM expert_rewards WHERE expert_id=$1
+        """, expert_id)
+        return {
+            "total_zvk": int(total["total_zvk"] or 0),
+            "total_rep": int(total["total_rep"] or 0),
+            "events_count": int(total["events"] or 0),
+            "recent": [dict(r) for r in rows],
+            "reward_rules": REWARD_RULES
+        }
+
+
+# ===== END EXPERT REWARDS =====
 
 
 # ===== END EXPERTS =====
