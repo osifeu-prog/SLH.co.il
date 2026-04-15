@@ -9052,3 +9052,596 @@ async def guardian_audit(limit: int = 100, authorization: Optional[str] = Header
 
 # ===== END GUARDIAN =====
 
+
+# ============================================================
+# BROKER ACCOUNTS + DEPOSITS + EXPENSES + ESP PREORDERS
+# Critical financial infrastructure — April 15, 2026
+# ============================================================
+
+async def _ensure_financial_tables(conn):
+    # Broker accounts — Tzvika, Elazar + future brokers with LIMITED admin access
+    await conn.execute("""
+        CREATE TABLE IF NOT EXISTS broker_accounts (
+            id SERIAL PRIMARY KEY,
+            user_id BIGINT UNIQUE,
+            display_name TEXT NOT NULL,
+            tg_username TEXT,
+            phone TEXT,
+            email TEXT,
+            role TEXT DEFAULT 'broker',
+            permissions TEXT[] DEFAULT ARRAY['view_own_referrals','view_own_deposits','view_own_commissions'],
+            commission_pct NUMERIC(5,2) DEFAULT 10.0,
+            status TEXT DEFAULT 'active',
+            owner_visible_to BIGINT[] DEFAULT ARRAY[]::BIGINT[],
+            total_referrals INTEGER DEFAULT 0,
+            total_commissions_ils NUMERIC(14,2) DEFAULT 0,
+            total_commissions_zvk NUMERIC(14,4) DEFAULT 0,
+            created_at TIMESTAMP DEFAULT NOW(),
+            notes TEXT
+        )
+    """)
+
+    # ESP preorders — auto-gift 2 SLH from Tzvika's wallet
+    await conn.execute("""
+        CREATE TABLE IF NOT EXISTS esp_preorders (
+            id SERIAL PRIMARY KEY,
+            user_id BIGINT,
+            buyer_name TEXT NOT NULL,
+            phone TEXT NOT NULL,
+            email TEXT,
+            payment_method TEXT,
+            amount_paid_ils NUMERIC(12,2) NOT NULL,
+            payment_status TEXT DEFAULT 'pending',
+            payment_reference TEXT,
+            broker_id INTEGER REFERENCES broker_accounts(id),
+            slh_gift_granted NUMERIC(10,4) DEFAULT 0,
+            slh_gift_tx_id TEXT,
+            slh_gifted_at TIMESTAMP,
+            shipping_status TEXT DEFAULT 'waiting',
+            created_at TIMESTAMP DEFAULT NOW()
+        )
+    """)
+
+    # Deposits — with compound interest tracking
+    await conn.execute("""
+        CREATE TABLE IF NOT EXISTS deposits (
+            id SERIAL PRIMARY KEY,
+            user_id BIGINT NOT NULL,
+            broker_id INTEGER REFERENCES broker_accounts(id),
+            amount_usd NUMERIC(14,4) NOT NULL,
+            amount_ils NUMERIC(14,2),
+            slh_received NUMERIC(14,6) DEFAULT 0,
+            monthly_rate_pct NUMERIC(5,3) NOT NULL,
+            term_months NUMERIC(4,2) NOT NULL,
+            compounding TEXT DEFAULT 'monthly',
+            status TEXT DEFAULT 'active',
+            deposited_at TIMESTAMP DEFAULT NOW(),
+            maturity_at TIMESTAMP,
+            withdrawn_at TIMESTAMP,
+            total_interest_accrued NUMERIC(14,4) DEFAULT 0,
+            last_interest_calc TIMESTAMP DEFAULT NOW(),
+            notes TEXT,
+            reminder_sent_at TIMESTAMP,
+            is_test BOOLEAN DEFAULT FALSE
+        )
+    """)
+
+    # Company + personal expenses
+    await conn.execute("""
+        CREATE TABLE IF NOT EXISTS expenses (
+            id SERIAL PRIMARY KEY,
+            added_by_user_id BIGINT NOT NULL,
+            category TEXT NOT NULL,
+            subcategory TEXT,
+            description TEXT NOT NULL,
+            amount_ils NUMERIC(12,2) NOT NULL,
+            amount_currency TEXT DEFAULT 'ILS',
+            amount_original NUMERIC(12,2),
+            vendor TEXT,
+            invoice_number TEXT,
+            payment_date DATE NOT NULL,
+            payment_method TEXT,
+            tax_deductible BOOLEAN DEFAULT TRUE,
+            vat_amount NUMERIC(10,2) DEFAULT 0,
+            is_recurring BOOLEAN DEFAULT FALSE,
+            attachment_url TEXT,
+            notes TEXT,
+            scope TEXT DEFAULT 'company',
+            created_at TIMESTAMP DEFAULT NOW()
+        )
+    """)
+
+    # Credit card transactions — for ₪888 kosher wallet + future
+    await conn.execute("""
+        CREATE TABLE IF NOT EXISTS credit_card_payments (
+            id SERIAL PRIMARY KEY,
+            user_id BIGINT,
+            buyer_name TEXT NOT NULL,
+            phone TEXT NOT NULL,
+            email TEXT,
+            id_number TEXT,
+            amount_ils NUMERIC(12,2) NOT NULL,
+            installments INTEGER DEFAULT 1,
+            product_type TEXT NOT NULL,
+            product_reference TEXT,
+            card_last4 TEXT,
+            card_brand TEXT,
+            card_holder_name TEXT,
+            cvv_verified BOOLEAN DEFAULT FALSE,
+            status TEXT DEFAULT 'pending',
+            provider TEXT,
+            provider_tx_id TEXT,
+            failure_reason TEXT,
+            broker_id INTEGER REFERENCES broker_accounts(id),
+            processed_at TIMESTAMP,
+            created_at TIMESTAMP DEFAULT NOW()
+        )
+    """)
+
+    await conn.execute("CREATE INDEX IF NOT EXISTS idx_deposits_user ON deposits(user_id, status)")
+    await conn.execute("CREATE INDEX IF NOT EXISTS idx_esp_broker ON esp_preorders(broker_id)")
+    await conn.execute("CREATE INDEX IF NOT EXISTS idx_expenses_date ON expenses(payment_date DESC)")
+
+
+# ============================================================
+# BROKER ACCOUNTS
+# ============================================================
+
+class BrokerCreateReq(BaseModel):
+    user_id: Optional[int] = None
+    display_name: str
+    tg_username: Optional[str] = None
+    phone: Optional[str] = None
+    email: Optional[str] = None
+    role: str = "broker"
+    commission_pct: float = 10.0
+    permissions: Optional[List[str]] = None
+    visible_to: Optional[List[int]] = None
+    notes: Optional[str] = None
+
+
+@app.post("/api/brokers/create")
+async def brokers_create(
+    req: BrokerCreateReq,
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None)
+):
+    _require_admin(authorization, x_admin_key)
+    async with pool.acquire() as conn:
+        await _ensure_financial_tables(conn)
+        perms = req.permissions or ['view_own_referrals', 'view_own_deposits', 'view_own_commissions']
+        visible = req.visible_to or [ADMIN_USER_ID]
+        row = await conn.fetchrow("""
+            INSERT INTO broker_accounts
+            (user_id, display_name, tg_username, phone, email, role, permissions, commission_pct, owner_visible_to, notes)
+            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+            ON CONFLICT (user_id) DO UPDATE SET
+                display_name = EXCLUDED.display_name,
+                phone = EXCLUDED.phone,
+                email = EXCLUDED.email,
+                permissions = EXCLUDED.permissions
+            RETURNING id, display_name, permissions, commission_pct, status
+        """, req.user_id, req.display_name, req.tg_username, req.phone, req.email,
+            req.role, perms, req.commission_pct, visible, req.notes)
+        return {"ok": True, "broker": dict(row)}
+
+
+@app.get("/api/brokers/list")
+async def brokers_list(
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None)
+):
+    _require_admin(authorization, x_admin_key)
+    async with pool.acquire() as conn:
+        await _ensure_financial_tables(conn)
+        rows = await conn.fetch("""
+            SELECT id, user_id, display_name, tg_username, role, commission_pct,
+                   total_referrals, total_commissions_ils, total_commissions_zvk, status, created_at
+            FROM broker_accounts ORDER BY created_at DESC
+        """)
+        return {"brokers": [dict(r) for r in rows]}
+
+
+@app.get("/api/brokers/{broker_id}/dashboard")
+async def brokers_dashboard(broker_id: int, user_id: Optional[int] = None):
+    """Broker's own dashboard — limited data only they can see."""
+    async with pool.acquire() as conn:
+        await _ensure_financial_tables(conn)
+        broker = await conn.fetchrow("SELECT * FROM broker_accounts WHERE id=$1", broker_id)
+        if not broker:
+            raise HTTPException(404, "Broker not found")
+
+        # Visibility check — only self, admin, or approved viewers
+        if user_id and user_id != broker["user_id"] and user_id not in (broker["owner_visible_to"] or []):
+            if user_id != ADMIN_USER_ID:
+                raise HTTPException(403, "Not authorized")
+
+        # Get referrals
+        esp_orders = await conn.fetch(
+            "SELECT id, buyer_name, amount_paid_ils, payment_status, slh_gift_granted, created_at FROM esp_preorders WHERE broker_id=$1 ORDER BY created_at DESC",
+            broker_id
+        )
+        deposits = await conn.fetch(
+            "SELECT id, user_id, amount_usd, monthly_rate_pct, term_months, status, deposited_at, total_interest_accrued FROM deposits WHERE broker_id=$1 ORDER BY deposited_at DESC",
+            broker_id
+        )
+
+        return {
+            "broker": dict(broker),
+            "esp_preorders": [dict(r) for r in esp_orders],
+            "deposits": [dict(r) for r in deposits],
+            "summary": {
+                "total_esp_orders": len(esp_orders),
+                "total_deposits": len(deposits),
+                "total_referrals": broker["total_referrals"],
+                "commissions_ils": float(broker["total_commissions_ils"] or 0),
+                "commissions_zvk": float(broker["total_commissions_zvk"] or 0),
+            }
+        }
+
+
+# ============================================================
+# DEPOSITS with COMPOUND INTEREST
+# ============================================================
+
+class DepositReq(BaseModel):
+    user_id: int
+    broker_id: Optional[int] = None
+    amount_usd: float
+    monthly_rate_pct: float = 4.0
+    term_months: float = 2.0
+    compounding: str = "monthly"
+    slh_received: float = 0
+    is_test: bool = False
+    notes: Optional[str] = None
+
+
+def _calculate_compound_interest(principal: float, monthly_rate: float, months_elapsed: float, compounding: str = "monthly") -> dict:
+    """Compound interest calculator. monthly_rate in percent (e.g. 4.0 = 4%)."""
+    r = monthly_rate / 100.0
+    if compounding == "monthly":
+        n = 12
+        elapsed_years = months_elapsed / 12.0
+        # Annual rate equivalent: (1+monthly)^12 - 1
+        # But we compound monthly at r per month:
+        final = principal * ((1 + r) ** months_elapsed)
+    elif compounding == "daily":
+        days_elapsed = months_elapsed * 30.0
+        daily_rate = r / 30.0
+        final = principal * ((1 + daily_rate) ** days_elapsed)
+    else:  # simple
+        final = principal * (1 + r * months_elapsed)
+    interest = final - principal
+    return {
+        "principal": round(principal, 4),
+        "monthly_rate_pct": monthly_rate,
+        "months_elapsed": round(months_elapsed, 4),
+        "compounding": compounding,
+        "interest_accrued": round(interest, 4),
+        "current_value": round(final, 4)
+    }
+
+
+@app.post("/api/deposits/create")
+async def deposits_create(
+    req: DepositReq,
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None)
+):
+    _require_admin(authorization, x_admin_key)
+    async with pool.acquire() as conn:
+        await _ensure_financial_tables(conn)
+        from datetime import timedelta
+        maturity = datetime.now() + timedelta(days=int(req.term_months * 30))
+        row = await conn.fetchrow("""
+            INSERT INTO deposits
+            (user_id, broker_id, amount_usd, monthly_rate_pct, term_months,
+             compounding, slh_received, is_test, notes, maturity_at)
+            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+            RETURNING id, deposited_at, maturity_at
+        """, req.user_id, req.broker_id, req.amount_usd, req.monthly_rate_pct,
+            req.term_months, req.compounding, req.slh_received, req.is_test,
+            req.notes, maturity)
+        return {"ok": True, "deposit": dict(row)}
+
+
+@app.get("/api/deposits/{deposit_id}/status")
+async def deposits_status(deposit_id: int):
+    """Live deposit status with compound interest."""
+    async with pool.acquire() as conn:
+        await _ensure_financial_tables(conn)
+        d = await conn.fetchrow("SELECT * FROM deposits WHERE id=$1", deposit_id)
+        if not d:
+            raise HTTPException(404, "Deposit not found")
+        from datetime import datetime as dt
+        deposited = d["deposited_at"]
+        now = dt.now()
+        if hasattr(deposited, 'tzinfo') and deposited.tzinfo:
+            deposited = deposited.replace(tzinfo=None)
+        days_elapsed = max(0, (now - deposited).total_seconds() / 86400)
+        months_elapsed = days_elapsed / 30.0
+        calc = _calculate_compound_interest(
+            float(d["amount_usd"]),
+            float(d["monthly_rate_pct"]),
+            months_elapsed,
+            d["compounding"]
+        )
+        # Store latest calc
+        await conn.execute(
+            "UPDATE deposits SET total_interest_accrued=$1, last_interest_calc=NOW() WHERE id=$2",
+            calc["interest_accrued"], deposit_id
+        )
+        return {
+            "deposit_id": deposit_id,
+            "user_id": d["user_id"],
+            "status": d["status"],
+            "is_test": d["is_test"],
+            "deposited_at": deposited.isoformat(),
+            "maturity_at": d["maturity_at"].isoformat() if d["maturity_at"] else None,
+            "days_elapsed": round(days_elapsed, 2),
+            "term_months": float(d["term_months"]),
+            **calc,
+            "slh_received": float(d["slh_received"] or 0),
+            "notes": d["notes"]
+        }
+
+
+@app.get("/api/deposits/user/{user_id}")
+async def deposits_user_list(user_id: int):
+    """All deposits for a specific user (with live compound interest)."""
+    async with pool.acquire() as conn:
+        await _ensure_financial_tables(conn)
+        rows = await conn.fetch(
+            "SELECT id, amount_usd, monthly_rate_pct, term_months, status, deposited_at, is_test FROM deposits WHERE user_id=$1 ORDER BY deposited_at DESC",
+            user_id
+        )
+        result = []
+        from datetime import datetime as dt
+        for d in rows:
+            deposited = d["deposited_at"]
+            if hasattr(deposited, 'tzinfo') and deposited.tzinfo:
+                deposited = deposited.replace(tzinfo=None)
+            months_elapsed = max(0, (dt.now() - deposited).total_seconds() / 86400 / 30.0)
+            calc = _calculate_compound_interest(float(d["amount_usd"]), float(d["monthly_rate_pct"]), months_elapsed)
+            result.append({**dict(d), **calc, "deposited_at": deposited.isoformat()})
+        return {"user_id": user_id, "deposits": result}
+
+
+# ============================================================
+# ESP PREORDERS with AUTO 2 SLH GIFT
+# ============================================================
+
+class ESPPreorderReq(BaseModel):
+    buyer_name: str
+    phone: str
+    email: Optional[str] = None
+    user_id: Optional[int] = None
+    payment_method: str = "bank"
+    amount_paid_ils: float = 888.0
+    payment_reference: Optional[str] = None
+    broker_id: Optional[int] = None
+
+
+@app.post("/api/esp/preorder")
+async def esp_preorder(req: ESPPreorderReq):
+    async with pool.acquire() as conn:
+        await _ensure_financial_tables(conn)
+        row = await conn.fetchrow("""
+            INSERT INTO esp_preorders
+            (user_id, buyer_name, phone, email, payment_method, amount_paid_ils, payment_reference, broker_id)
+            VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+            RETURNING id, created_at
+        """, req.user_id, req.buyer_name, req.phone, req.email,
+            req.payment_method, req.amount_paid_ils, req.payment_reference, req.broker_id)
+        return {
+            "ok": True,
+            "preorder_id": row["id"],
+            "message": "ההזמנה התקבלה! 2 SLH יועברו מצביקה לאחר אישור התשלום.",
+            "next_step": "payment confirmation + 2 SLH gift + shipping schedule"
+        }
+
+
+@app.post("/api/esp/preorder/{preorder_id}/approve")
+async def esp_preorder_approve(
+    preorder_id: int,
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None)
+):
+    """Admin approves → auto-credits 2 SLH to buyer."""
+    _require_admin(authorization, x_admin_key)
+    async with pool.acquire() as conn:
+        await _ensure_financial_tables(conn)
+        p = await conn.fetchrow("SELECT * FROM esp_preorders WHERE id=$1", preorder_id)
+        if not p:
+            raise HTTPException(404, "Preorder not found")
+        if p["slh_gift_granted"] and float(p["slh_gift_granted"]) >= 2:
+            return {"ok": False, "error": "already gifted"}
+        # Mark approved + credit 2 SLH
+        await conn.execute(
+            "UPDATE esp_preorders SET payment_status='approved', slh_gift_granted=2.0, slh_gifted_at=NOW() WHERE id=$1",
+            preorder_id
+        )
+        # Credit SLH to buyer in token_balances
+        if p["user_id"]:
+            await conn.execute("""
+                INSERT INTO token_balances (user_id, token, balance, updated_at)
+                VALUES ($1, 'SLH', 2.0, NOW())
+                ON CONFLICT (user_id, token)
+                DO UPDATE SET balance = token_balances.balance + 2.0, updated_at = NOW()
+            """, p["user_id"])
+            await conn.execute("""
+                INSERT INTO token_transfers (from_user_id, to_user_id, token, amount, memo, tx_type, created_at)
+                VALUES (7757102350, $1, 'SLH', 2.0, 'ESP preorder gift from Tzvika', 'esp_gift', NOW())
+            """, p["user_id"])  # Tzvika's user_id = 7757102350 per memory
+        return {"ok": True, "preorder_id": preorder_id, "slh_gifted": 2.0, "from": "Tzvika"}
+
+
+# ============================================================
+# EXPENSES
+# ============================================================
+
+class ExpenseReq(BaseModel):
+    category: str
+    description: str
+    amount_ils: float
+    payment_date: str
+    added_by_user_id: int
+    subcategory: Optional[str] = None
+    vendor: Optional[str] = None
+    invoice_number: Optional[str] = None
+    payment_method: Optional[str] = None
+    amount_currency: str = "ILS"
+    amount_original: Optional[float] = None
+    vat_amount: float = 0
+    tax_deductible: bool = True
+    is_recurring: bool = False
+    scope: str = "company"
+    notes: Optional[str] = None
+
+
+@app.post("/api/expenses/add")
+async def expenses_add(
+    req: ExpenseReq,
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None)
+):
+    _require_admin(authorization, x_admin_key)
+    async with pool.acquire() as conn:
+        await _ensure_financial_tables(conn)
+        from datetime import datetime as dt
+        payment_date = dt.fromisoformat(req.payment_date).date()
+        row = await conn.fetchrow("""
+            INSERT INTO expenses
+            (added_by_user_id, category, subcategory, description, amount_ils, amount_currency,
+             amount_original, vendor, invoice_number, payment_date, payment_method,
+             tax_deductible, vat_amount, is_recurring, scope, notes)
+            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)
+            RETURNING id, created_at
+        """, req.added_by_user_id, req.category, req.subcategory, req.description,
+            req.amount_ils, req.amount_currency, req.amount_original, req.vendor,
+            req.invoice_number, payment_date, req.payment_method, req.tax_deductible,
+            req.vat_amount, req.is_recurring, req.scope, req.notes)
+        return {"ok": True, "expense_id": row["id"]}
+
+
+@app.get("/api/expenses/list")
+async def expenses_list(
+    scope: Optional[str] = None,
+    category: Optional[str] = None,
+    from_date: Optional[str] = None,
+    to_date: Optional[str] = None,
+    limit: int = 100,
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None)
+):
+    _require_admin(authorization, x_admin_key)
+    async with pool.acquire() as conn:
+        await _ensure_financial_tables(conn)
+        q = "SELECT * FROM expenses WHERE 1=1"
+        params = []
+        if scope:
+            params.append(scope)
+            q += f" AND scope=${len(params)}"
+        if category:
+            params.append(category)
+            q += f" AND category=${len(params)}"
+        if from_date:
+            params.append(from_date)
+            q += f" AND payment_date>=${len(params)}"
+        if to_date:
+            params.append(to_date)
+            q += f" AND payment_date<=${len(params)}"
+        params.append(limit)
+        q += f" ORDER BY payment_date DESC LIMIT ${len(params)}"
+        rows = await conn.fetch(q, *params)
+        summary = await conn.fetchrow("""
+            SELECT
+                SUM(amount_ils) FILTER (WHERE scope='company') as company_total,
+                SUM(amount_ils) FILTER (WHERE scope='personal') as personal_total,
+                SUM(amount_ils) FILTER (WHERE tax_deductible=TRUE) as deductible_total,
+                SUM(vat_amount) as vat_total,
+                COUNT(*) as total_count
+            FROM expenses
+        """)
+        return {
+            "expenses": [dict(r) for r in rows],
+            "summary": dict(summary) if summary else {}
+        }
+
+
+# ============================================================
+# CREDIT CARD PAYMENTS (₪888 kosher wallet + future)
+# ============================================================
+
+class CreditCardReq(BaseModel):
+    buyer_name: str
+    phone: str
+    email: Optional[str] = None
+    id_number: Optional[str] = None
+    user_id: Optional[int] = None
+    amount_ils: float
+    installments: int = 1
+    product_type: str  # kosher_wallet / starter_pack / custom
+    product_reference: Optional[str] = None
+    card_last4: str
+    card_brand: Optional[str] = None
+    card_holder_name: Optional[str] = None
+    cvv_verified: bool = False
+    broker_id: Optional[int] = None
+
+
+@app.post("/api/payment/credit-card/submit")
+async def card_payment_submit(req: CreditCardReq):
+    """Submit a credit card payment request. Actual charging happens via provider integration (future)."""
+    if req.amount_ils < 1 or req.amount_ils > 50000:
+        raise HTTPException(400, "Amount must be between ₪1 and ₪50,000")
+    if not req.card_last4 or len(req.card_last4) != 4 or not req.card_last4.isdigit():
+        raise HTTPException(400, "Invalid card last 4 digits")
+    async with pool.acquire() as conn:
+        await _ensure_financial_tables(conn)
+        row = await conn.fetchrow("""
+            INSERT INTO credit_card_payments
+            (user_id, buyer_name, phone, email, id_number, amount_ils, installments,
+             product_type, product_reference, card_last4, card_brand, card_holder_name,
+             cvv_verified, broker_id, status)
+            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,'pending')
+            RETURNING id, created_at
+        """, req.user_id, req.buyer_name, req.phone, req.email, req.id_number,
+            req.amount_ils, req.installments, req.product_type, req.product_reference,
+            req.card_last4, req.card_brand, req.card_holder_name, req.cvv_verified,
+            req.broker_id)
+        return {
+            "ok": True,
+            "payment_id": row["id"],
+            "status": "pending",
+            "message": "התשלום נקלט. יעובד תוך 24 שעות. תקבל אישור/דחייה במייל/SMS.",
+            "next_step": "Manual review by admin + provider integration when available"
+        }
+
+
+@app.get("/api/admin/payments/list")
+async def admin_payments_list(
+    status: Optional[str] = None,
+    product_type: Optional[str] = None,
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None)
+):
+    _require_admin(authorization, x_admin_key)
+    async with pool.acquire() as conn:
+        await _ensure_financial_tables(conn)
+        q = "SELECT * FROM credit_card_payments WHERE 1=1"
+        params = []
+        if status:
+            params.append(status)
+            q += f" AND status=${len(params)}"
+        if product_type:
+            params.append(product_type)
+            q += f" AND product_type=${len(params)}"
+        q += " ORDER BY created_at DESC LIMIT 200"
+        rows = await conn.fetch(q, *params)
+        return {"payments": [dict(r) for r in rows]}
+
+
+# ===== END FINANCIAL SYSTEM =====
+
+
