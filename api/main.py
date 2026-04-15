@@ -8394,10 +8394,10 @@ async def admin_mass_gift(
                         DO UPDATE SET balance = token_balances.balance + $3, updated_at = NOW()
                     """, uid, token, req.amount)
 
-                    # Log the transfer
+                    # Log the transfer (correct schema: from_user_id, to_user_id, memo, tx_type)
                     await conn.execute("""
-                        INSERT INTO token_transfers (from_user, to_user, token, amount, reason, created_at)
-                        VALUES (0, $1, $2, $3, $4, NOW())
+                        INSERT INTO token_transfers (from_user_id, to_user_id, token, amount, memo, tx_type, created_at)
+                        VALUES (0, $1, $2, $3, $4, 'mass_gift', NOW())
                     """, uid, token, req.amount, f"{req.reason}: {req.note or 'mass gift'}")
 
                     credited.append(uid)
@@ -8422,7 +8422,7 @@ async def admin_mass_gift_history(
     authorization: Optional[str] = Header(None),
     x_admin_key: Optional[str] = Header(None)
 ):
-    """Get history of recent mass gifts (from token_transfers where from_user=0)."""
+    """Get history of recent mass gifts (from token_transfers where from_user_id=0)."""
     _require_admin(authorization, x_admin_key)
     async with pool.acquire() as conn:
         try:
@@ -8431,10 +8431,10 @@ async def admin_mass_gift_history(
                     DATE_TRUNC('hour', created_at) as hour_bucket,
                     token,
                     SUM(amount) as total_amount,
-                    COUNT(DISTINCT to_user) as users_credited,
-                    MAX(reason) as reason_sample
+                    COUNT(DISTINCT to_user_id) as users_credited,
+                    MAX(memo) as reason_sample
                 FROM token_transfers
-                WHERE from_user = 0
+                WHERE from_user_id = 0 AND tx_type = 'mass_gift'
                 GROUP BY DATE_TRUNC('hour', created_at), token
                 ORDER BY hour_bucket DESC
                 LIMIT $1
@@ -8847,6 +8847,32 @@ async def experts_domains_vote(req: DomainVoteReq):
         except Exception:
             pass
         return {"ok": True, "votes_for": row["votes_for"], "votes_against": row["votes_against"], "approved": approved_now}
+
+
+@app.get("/api/experts/{expert_id}/reviews")
+async def experts_reviews(expert_id: int, limit: int = 50):
+    """Public list of reviews for an expert (for transparency)."""
+    async with pool.acquire() as conn:
+        await _ensure_experts_tables(conn)
+        rows = await conn.fetch("""
+            SELECT id, reviewer_name, rating, comment, created_at
+            FROM expert_reviews WHERE expert_id=$1
+            ORDER BY created_at DESC LIMIT $2
+        """, expert_id, limit)
+        agg = await conn.fetchrow("""
+            SELECT AVG(rating) as avg_rating, COUNT(*) as count,
+                   COUNT(*) FILTER (WHERE rating=5) as five_stars,
+                   COUNT(*) FILTER (WHERE rating=1) as one_stars
+            FROM expert_reviews WHERE expert_id=$1
+        """, expert_id)
+        return {
+            "expert_id": expert_id,
+            "avg_rating": float(agg["avg_rating"] or 0),
+            "reviews_count": int(agg["count"] or 0),
+            "five_stars": int(agg["five_stars"] or 0),
+            "one_stars": int(agg["one_stars"] or 0),
+            "reviews": [dict(r) for r in rows]
+        }
 
 
 @app.get("/api/experts/{expert_id}/rewards")
