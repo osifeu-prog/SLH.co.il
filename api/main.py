@@ -7950,3 +7950,361 @@ async def reset_admin_password(
 
 # ===== END MULTI-ADMIN SYSTEM =====
 
+
+# ===== CAMPAIGN / MULTI-PATH FUNNEL SYSTEM (Shekel April 26) =====
+
+async def _ensure_campaign_tables(conn):
+    """Create campaign tables if missing. Safe to call repeatedly."""
+    await conn.execute("""
+        CREATE TABLE IF NOT EXISTS campaign_clicks (
+            id SERIAL PRIMARY KEY,
+            campaign_id TEXT NOT NULL,
+            path_type TEXT,
+            lang TEXT,
+            user_id BIGINT,
+            ref_code TEXT,
+            source TEXT,
+            ua TEXT,
+            created_at TIMESTAMP DEFAULT NOW()
+        )
+    """)
+    await conn.execute("""
+        CREATE TABLE IF NOT EXISTS campaign_registrations (
+            id SERIAL PRIMARY KEY,
+            campaign_id TEXT NOT NULL,
+            path_type TEXT NOT NULL,
+            user_id BIGINT,
+            tg_username TEXT,
+            full_name TEXT,
+            phone TEXT,
+            email TEXT,
+            ref_code TEXT,
+            affiliate_code TEXT UNIQUE,
+            lang TEXT DEFAULT 'he',
+            status TEXT DEFAULT 'pending',
+            amount_paid NUMERIC(12,2) DEFAULT 0,
+            notes TEXT,
+            created_at TIMESTAMP DEFAULT NOW(),
+            updated_at TIMESTAMP DEFAULT NOW()
+        )
+    """)
+    await conn.execute("""
+        CREATE TABLE IF NOT EXISTS campaign_affiliate_earnings (
+            id SERIAL PRIMARY KEY,
+            affiliate_user_id BIGINT,
+            affiliate_code TEXT,
+            referred_user_id BIGINT,
+            campaign_id TEXT,
+            event_type TEXT,
+            zvk_earned INTEGER DEFAULT 0,
+            slh_earned NUMERIC(12,6) DEFAULT 0,
+            status TEXT DEFAULT 'pending',
+            created_at TIMESTAMP DEFAULT NOW()
+        )
+    """)
+    await conn.execute("CREATE INDEX IF NOT EXISTS idx_campaign_clicks_cid ON campaign_clicks(campaign_id, created_at DESC)")
+    await conn.execute("CREATE INDEX IF NOT EXISTS idx_campaign_regs_cid ON campaign_registrations(campaign_id, created_at DESC)")
+    await conn.execute("CREATE INDEX IF NOT EXISTS idx_campaign_regs_affcode ON campaign_registrations(affiliate_code)")
+    await conn.execute("CREATE INDEX IF NOT EXISTS idx_campaign_affearn_user ON campaign_affiliate_earnings(affiliate_user_id, created_at DESC)")
+
+
+def _make_affiliate_code(prefix: str = "SLH") -> str:
+    """Create a short unique affiliate code like SLH-7K3X9."""
+    alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"  # no I/O/0/1 confusion
+    return f"{prefix}-{''.join(secrets.choice(alphabet) for _ in range(5))}"
+
+
+class CampaignClickReq(BaseModel):
+    campaign_id: str
+    path_type: Optional[str] = None  # buyer/partner/genesis/community
+    lang: Optional[str] = "he"
+    ref_code: Optional[str] = None
+    source: Optional[str] = None  # fb/yt/tg/direct
+    user_id: Optional[int] = None
+
+
+@app.post("/api/campaign/click")
+async def campaign_click(req: CampaignClickReq, user_agent: Optional[str] = Header(None)):
+    """Anonymous click tracking — no auth required."""
+    try:
+        async with pool.acquire() as conn:
+            await _ensure_campaign_tables(conn)
+            await conn.execute("""
+                INSERT INTO campaign_clicks (campaign_id, path_type, lang, user_id, ref_code, source, ua)
+                VALUES ($1, $2, $3, $4, $5, $6, $7)
+            """, req.campaign_id, req.path_type, req.lang, req.user_id,
+                req.ref_code, req.source, (user_agent or "")[:200])
+        return {"ok": True}
+    except Exception as e:
+        return {"ok": False, "error": str(e)[:100]}
+
+
+class CampaignRegisterReq(BaseModel):
+    campaign_id: str
+    path_type: str  # buyer/partner/genesis/community
+    user_id: Optional[int] = None
+    tg_username: Optional[str] = None
+    full_name: Optional[str] = None
+    phone: Optional[str] = None
+    email: Optional[str] = None
+    ref_code: Optional[str] = None
+    lang: Optional[str] = "he"
+
+
+@app.post("/api/campaign/register")
+async def campaign_register(req: CampaignRegisterReq):
+    """Register a user to a campaign path. Generates unique affiliate code."""
+    if req.path_type not in ("buyer", "partner", "genesis", "community"):
+        raise HTTPException(400, "path_type must be buyer/partner/genesis/community")
+
+    # Generate unique affiliate code
+    async with pool.acquire() as conn:
+        await _ensure_campaign_tables(conn)
+
+        # Retry loop to ensure uniqueness
+        for _ in range(5):
+            affiliate_code = _make_affiliate_code("SLH")
+            exists = await conn.fetchval(
+                "SELECT 1 FROM campaign_registrations WHERE affiliate_code=$1",
+                affiliate_code)
+            if not exists:
+                break
+        else:
+            affiliate_code = _make_affiliate_code("SLH") + str(secrets.randbelow(99))
+
+        row = await conn.fetchrow("""
+            INSERT INTO campaign_registrations
+            (campaign_id, path_type, user_id, tg_username, full_name, phone, email, ref_code, affiliate_code, lang, status)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'pending')
+            RETURNING id, affiliate_code, created_at
+        """, req.campaign_id, req.path_type, req.user_id, req.tg_username,
+            req.full_name, req.phone, req.email, req.ref_code, affiliate_code, req.lang)
+
+        # If this was a referral, log pending earning for the referrer
+        if req.ref_code:
+            try:
+                referrer = await conn.fetchrow(
+                    "SELECT user_id FROM campaign_registrations WHERE affiliate_code=$1",
+                    req.ref_code)
+                if referrer and referrer["user_id"]:
+                    # 50 ZVK just for signup (even before payment)
+                    await conn.execute("""
+                        INSERT INTO campaign_affiliate_earnings
+                        (affiliate_user_id, affiliate_code, referred_user_id, campaign_id, event_type, zvk_earned, status)
+                        VALUES ($1, $2, $3, $4, 'signup', 50, 'pending')
+                    """, referrer["user_id"], req.ref_code, req.user_id, req.campaign_id)
+            except Exception:
+                pass  # don't block registration if referral logging fails
+
+    return {
+        "ok": True,
+        "registration_id": row["id"],
+        "affiliate_code": row["affiliate_code"],
+        "referral_link": f"https://slh-nft.com/promo-shekel.html?ref={row['affiliate_code']}",
+        "telegram_link": f"https://t.me/SLH_community_bot?start=promo_shekel_april26_{row['affiliate_code']}",
+        "path_type": req.path_type
+    }
+
+
+@app.get("/api/campaign/affiliate/{code}")
+async def campaign_affiliate_validate(code: str):
+    """Public validation of affiliate code — returns only if it exists."""
+    async with pool.acquire() as conn:
+        await _ensure_campaign_tables(conn)
+        row = await conn.fetchrow("""
+            SELECT affiliate_code, path_type, created_at,
+                   (SELECT COUNT(*) FROM campaign_registrations r2 WHERE r2.ref_code = r1.affiliate_code) as refs_count
+            FROM campaign_registrations r1
+            WHERE affiliate_code = $1
+        """, code)
+        if not row:
+            return {"valid": False}
+        return {
+            "valid": True,
+            "path_type": row["path_type"],
+            "refs_count": row["refs_count"]
+        }
+
+
+@app.get("/api/campaign/affiliate-stats/{code}")
+async def campaign_affiliate_stats(code: str):
+    """Stats for a specific affiliate — for partner dashboard."""
+    async with pool.acquire() as conn:
+        await _ensure_campaign_tables(conn)
+        owner = await conn.fetchrow(
+            "SELECT user_id, path_type, created_at FROM campaign_registrations WHERE affiliate_code=$1",
+            code)
+        if not owner:
+            raise HTTPException(404, "Affiliate code not found")
+
+        refs = await conn.fetch("""
+            SELECT id, full_name, path_type, status, created_at, amount_paid
+            FROM campaign_registrations
+            WHERE ref_code = $1
+            ORDER BY created_at DESC
+            LIMIT 100
+        """, code)
+
+        earnings = await conn.fetchrow("""
+            SELECT
+                COALESCE(SUM(zvk_earned), 0) as total_zvk,
+                COALESCE(SUM(slh_earned), 0) as total_slh,
+                COUNT(*) as events
+            FROM campaign_affiliate_earnings
+            WHERE affiliate_code = $1
+        """, code)
+
+        return {
+            "affiliate_code": code,
+            "path_type": owner["path_type"],
+            "joined_at": owner["created_at"].isoformat() if owner["created_at"] else None,
+            "referrals_count": len(refs),
+            "total_zvk_earned": int(earnings["total_zvk"] or 0),
+            "total_slh_earned": float(earnings["total_slh"] or 0),
+            "referrals": [
+                {
+                    "name": r["full_name"] or "Anonymous",
+                    "path": r["path_type"],
+                    "status": r["status"],
+                    "joined": r["created_at"].isoformat() if r["created_at"] else None,
+                    "paid": float(r["amount_paid"] or 0)
+                } for r in refs
+            ]
+        }
+
+
+@app.get("/api/campaign/stats/{campaign_id}")
+async def campaign_stats(
+    campaign_id: str,
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None)
+):
+    """Admin-only: full campaign stats."""
+    _require_admin(authorization, x_admin_key)
+    async with pool.acquire() as conn:
+        await _ensure_campaign_tables(conn)
+
+        clicks = await conn.fetchrow("""
+            SELECT
+                COUNT(*) as total_clicks,
+                COUNT(DISTINCT ref_code) as unique_refs
+            FROM campaign_clicks WHERE campaign_id = $1
+        """, campaign_id)
+
+        clicks_by_path = await conn.fetch("""
+            SELECT path_type, COUNT(*) as n
+            FROM campaign_clicks WHERE campaign_id = $1
+            GROUP BY path_type
+        """, campaign_id)
+
+        clicks_by_lang = await conn.fetch("""
+            SELECT lang, COUNT(*) as n
+            FROM campaign_clicks WHERE campaign_id = $1
+            GROUP BY lang
+        """, campaign_id)
+
+        regs = await conn.fetchrow("""
+            SELECT
+                COUNT(*) as total_regs,
+                COUNT(*) FILTER (WHERE status='paid') as paid_regs,
+                COALESCE(SUM(amount_paid), 0) as total_revenue
+            FROM campaign_registrations WHERE campaign_id = $1
+        """, campaign_id)
+
+        regs_by_path = await conn.fetch("""
+            SELECT path_type, COUNT(*) as n,
+                   COUNT(*) FILTER (WHERE status='paid') as paid,
+                   COALESCE(SUM(amount_paid), 0) as revenue
+            FROM campaign_registrations WHERE campaign_id = $1
+            GROUP BY path_type
+        """, campaign_id)
+
+        top_affiliates = await conn.fetch("""
+            SELECT r.affiliate_code, r.full_name, r.user_id,
+                   (SELECT COUNT(*) FROM campaign_registrations r2 WHERE r2.ref_code = r.affiliate_code) as refs,
+                   COALESCE((SELECT SUM(zvk_earned) FROM campaign_affiliate_earnings WHERE affiliate_code = r.affiliate_code), 0) as zvk
+            FROM campaign_registrations r
+            WHERE campaign_id = $1 AND path_type IN ('partner', 'buyer')
+            ORDER BY refs DESC, zvk DESC
+            LIMIT 20
+        """, campaign_id)
+
+        return {
+            "campaign_id": campaign_id,
+            "clicks": {
+                "total": int(clicks["total_clicks"] or 0),
+                "unique_refs": int(clicks["unique_refs"] or 0),
+                "by_path": {r["path_type"] or "none": int(r["n"]) for r in clicks_by_path},
+                "by_lang": {r["lang"] or "he": int(r["n"]) for r in clicks_by_lang}
+            },
+            "registrations": {
+                "total": int(regs["total_regs"] or 0),
+                "paid": int(regs["paid_regs"] or 0),
+                "revenue": float(regs["total_revenue"] or 0),
+                "by_path": {
+                    r["path_type"]: {
+                        "count": int(r["n"]),
+                        "paid": int(r["paid"]),
+                        "revenue": float(r["revenue"] or 0)
+                    } for r in regs_by_path
+                }
+            },
+            "conversion_rate": (
+                float(regs["total_regs"] or 0) / max(1, int(clicks["total_clicks"] or 1))
+            ) if clicks["total_clicks"] else 0,
+            "top_affiliates": [
+                {
+                    "code": a["affiliate_code"],
+                    "name": a["full_name"] or "Anonymous",
+                    "user_id": a["user_id"],
+                    "referrals": int(a["refs"] or 0),
+                    "zvk_earned": int(a["zvk"] or 0)
+                } for a in top_affiliates
+            ]
+        }
+
+
+@app.post("/api/campaign/attribute-purchase")
+async def campaign_attribute_purchase(
+    user_id: int,
+    amount: float,
+    campaign_id: str = "shekel_april26",
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None)
+):
+    """Admin-only: mark a registration as paid + credit referrer."""
+    _require_admin(authorization, x_admin_key)
+    async with pool.acquire() as conn:
+        await _ensure_campaign_tables(conn)
+
+        reg = await conn.fetchrow("""
+            UPDATE campaign_registrations
+            SET status = 'paid', amount_paid = $1, updated_at = NOW()
+            WHERE user_id = $2 AND campaign_id = $3
+            RETURNING id, ref_code, affiliate_code
+        """, amount, user_id, campaign_id)
+
+        if not reg:
+            raise HTTPException(404, "Registration not found")
+
+        # Credit referrer: 20% ZVK + 10% SLH equivalent
+        if reg["ref_code"]:
+            referrer = await conn.fetchrow(
+                "SELECT user_id FROM campaign_registrations WHERE affiliate_code=$1",
+                reg["ref_code"])
+            if referrer and referrer["user_id"]:
+                # ZVK ≈ 4.4 ILS → 20% of 99 = 19.8 ILS = 4.5 ZVK × 100 precision = 450 internal
+                zvk_reward = int((amount * 0.20 / 4.4) * 100) // 100  # rounded
+                # SLH ≈ 444 ILS → 10% of 99 = 9.9 ILS = 0.0223 SLH
+                slh_reward = round((amount * 0.10 / 444.0), 6)
+                await conn.execute("""
+                    INSERT INTO campaign_affiliate_earnings
+                    (affiliate_user_id, affiliate_code, referred_user_id, campaign_id, event_type, zvk_earned, slh_earned, status)
+                    VALUES ($1, $2, $3, $4, 'purchase', $5, $6, 'confirmed')
+                """, referrer["user_id"], reg["ref_code"], user_id, campaign_id, zvk_reward, slh_reward)
+
+        return {"ok": True, "registration_id": reg["id"]}
+
+
+# ===== END CAMPAIGN SYSTEM =====
+
