@@ -8735,6 +8735,22 @@ DEFAULT_DOMAINS = [
     {"slug":"language", "name_he":"שפות", "name_en":"Languages", "emoji":"🗣️", "category":"education"},
     {"slug":"startup", "name_he":"סטארט-אפים", "name_en":"Startups", "emoji":"🚀", "category":"business"},
     {"slug":"blockchain", "name_he":"בלוקצ'יין", "name_en":"Blockchain", "emoji":"⛓️", "category":"tech"},
+    # Creative & lifestyle
+    {"slug":"art", "name_he":"אומנות", "name_en":"Art", "emoji":"🎨", "category":"creative"},
+    {"slug":"musician", "name_he":"מוסיקאי", "name_en":"Musician", "emoji":"🎸", "category":"creative"},
+    {"slug":"conductor", "name_he":"מנצח תזמורת", "name_en":"Orchestra Conductor", "emoji":"🎼", "category":"creative"},
+    {"slug":"motorcycle", "name_he":"אופנוע", "name_en":"Motorcycle", "emoji":"🏍️", "category":"sports"},
+    {"slug":"kitesurf", "name_he":"גלישת קייט", "name_en":"Kite Surfing", "emoji":"🪁", "category":"sports"},
+    {"slug":"surf", "name_he":"גלישת גלים", "name_en":"Surfing", "emoji":"🏄", "category":"sports"},
+    {"slug":"ski", "name_he":"סקי", "name_en":"Skiing", "emoji":"⛷️", "category":"sports"},
+    {"slug":"climb", "name_he":"טיפוס", "name_en":"Climbing", "emoji":"🧗", "category":"sports"},
+    {"slug":"yoga", "name_he":"יוגה", "name_en":"Yoga", "emoji":"🧘", "category":"health"},
+    {"slug":"meditation", "name_he":"מדיטציה", "name_en":"Meditation", "emoji":"🕉️", "category":"health"},
+    {"slug":"chef", "name_he":"שף", "name_en":"Chef", "emoji":"👨‍🍳", "category":"creative"},
+    {"slug":"travel", "name_he":"תיירות", "name_en":"Travel", "emoji":"✈️", "category":"lifestyle"},
+    {"slug":"parenting", "name_he":"הורות", "name_en":"Parenting", "emoji":"👨‍👩‍👧", "category":"lifestyle"},
+    {"slug":"gaming", "name_he":"גיימינג", "name_en":"Gaming", "emoji":"🎮", "category":"entertainment"},
+    {"slug":"podcast", "name_he":"פודקאסטים", "name_en":"Podcasting", "emoji":"🎙️", "category":"creative"}
 ]
 
 
