@@ -8456,3 +8456,284 @@ async def admin_mass_gift_history(
 
 # ===== END MASS GIFT =====
 
+
+# ===== EXPERTS DIRECTORY (community-based expert selection) =====
+
+async def _ensure_experts_tables(conn):
+    await conn.execute("""
+        CREATE TABLE IF NOT EXISTS experts (
+            id SERIAL PRIMARY KEY,
+            user_id BIGINT,
+            display_name TEXT NOT NULL,
+            tg_username TEXT,
+            phone TEXT,
+            email TEXT,
+            bio TEXT,
+            domains TEXT[],
+            languages TEXT[],
+            avatar_url TEXT,
+            verified BOOLEAN DEFAULT FALSE,
+            featured BOOLEAN DEFAULT FALSE,
+            avg_rating NUMERIC(3,2) DEFAULT 0,
+            reviews_count INTEGER DEFAULT 0,
+            consultations_count INTEGER DEFAULT 0,
+            created_at TIMESTAMP DEFAULT NOW()
+        )
+    """)
+    await conn.execute("""
+        CREATE TABLE IF NOT EXISTS expert_reviews (
+            id SERIAL PRIMARY KEY,
+            expert_id INTEGER REFERENCES experts(id) ON DELETE CASCADE,
+            reviewer_user_id BIGINT,
+            reviewer_name TEXT,
+            rating INTEGER CHECK (rating BETWEEN 1 AND 5),
+            comment TEXT,
+            created_at TIMESTAMP DEFAULT NOW()
+        )
+    """)
+    await conn.execute("""
+        CREATE TABLE IF NOT EXISTS expert_consultations (
+            id SERIAL PRIMARY KEY,
+            expert_id INTEGER REFERENCES experts(id),
+            requester_user_id BIGINT,
+            requester_name TEXT,
+            requester_phone TEXT,
+            topic TEXT,
+            preferred_language TEXT DEFAULT 'he',
+            status TEXT DEFAULT 'pending',
+            created_at TIMESTAMP DEFAULT NOW()
+        )
+    """)
+
+
+@app.get("/api/experts/list")
+async def experts_list(domain: Optional[str] = None, language: Optional[str] = None, limit: int = 50):
+    """Public: list experts, filterable by domain/language."""
+    async with pool.acquire() as conn:
+        await _ensure_experts_tables(conn)
+        q = "SELECT id, display_name, tg_username, bio, domains, languages, avatar_url, verified, featured, avg_rating, reviews_count, consultations_count FROM experts WHERE 1=1"
+        params = []
+        if domain:
+            params.append(domain)
+            q += f" AND ${len(params)} = ANY(domains)"
+        if language:
+            params.append(language)
+            q += f" AND ${len(params)} = ANY(languages)"
+        params.append(limit)
+        q += f" ORDER BY featured DESC, avg_rating DESC, reviews_count DESC LIMIT ${len(params)}"
+        rows = await conn.fetch(q, *params)
+        return {"experts": [dict(r) for r in rows]}
+
+
+class ExpertCreateReq(BaseModel):
+    display_name: str
+    tg_username: Optional[str] = None
+    phone: Optional[str] = None
+    email: Optional[str] = None
+    bio: Optional[str] = None
+    domains: List[str] = []
+    languages: List[str] = ["he"]
+    user_id: Optional[int] = None
+    avatar_url: Optional[str] = None
+
+
+@app.post("/api/experts/register")
+async def experts_register(req: ExpertCreateReq):
+    """Anyone can register as expert (verified = false initially)."""
+    async with pool.acquire() as conn:
+        await _ensure_experts_tables(conn)
+        row = await conn.fetchrow("""
+            INSERT INTO experts (user_id, display_name, tg_username, phone, email, bio, domains, languages, avatar_url)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            RETURNING id, display_name, verified
+        """, req.user_id, req.display_name, req.tg_username, req.phone, req.email,
+            req.bio, req.domains, req.languages, req.avatar_url)
+        return {"ok": True, "expert_id": row["id"], "verified": row["verified"], "message": "נרשמת בהצלחה. הפרופיל יועלה אחרי אימות אדמין."}
+
+
+class ExpertReviewReq(BaseModel):
+    expert_id: int
+    rating: int
+    comment: Optional[str] = None
+    reviewer_user_id: Optional[int] = None
+    reviewer_name: Optional[str] = None
+
+
+@app.post("/api/experts/review")
+async def experts_review(req: ExpertReviewReq):
+    if req.rating < 1 or req.rating > 5:
+        raise HTTPException(400, "rating must be 1-5")
+    async with pool.acquire() as conn:
+        await _ensure_experts_tables(conn)
+        await conn.execute("""
+            INSERT INTO expert_reviews (expert_id, reviewer_user_id, reviewer_name, rating, comment)
+            VALUES ($1, $2, $3, $4, $5)
+        """, req.expert_id, req.reviewer_user_id, req.reviewer_name, req.rating, req.comment)
+        # Update aggregate
+        agg = await conn.fetchrow(
+            "SELECT AVG(rating) as avg, COUNT(*) as cnt FROM expert_reviews WHERE expert_id=$1",
+            req.expert_id)
+        await conn.execute(
+            "UPDATE experts SET avg_rating=$1, reviews_count=$2 WHERE id=$3",
+            float(agg["avg"]), int(agg["cnt"]), req.expert_id)
+        return {"ok": True, "new_rating": float(agg["avg"]), "reviews": int(agg["cnt"])}
+
+
+class ConsultationReq(BaseModel):
+    expert_id: int
+    requester_name: str
+    requester_phone: Optional[str] = None
+    requester_user_id: Optional[int] = None
+    topic: str
+    preferred_language: str = "he"
+
+
+@app.post("/api/experts/consult")
+async def experts_consult(req: ConsultationReq):
+    """Request a consultation with an expert."""
+    async with pool.acquire() as conn:
+        await _ensure_experts_tables(conn)
+        row = await conn.fetchrow("""
+            INSERT INTO expert_consultations (expert_id, requester_user_id, requester_name, requester_phone, topic, preferred_language)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING id, created_at
+        """, req.expert_id, req.requester_user_id, req.requester_name,
+            req.requester_phone, req.topic, req.preferred_language)
+        # Increment consultation count
+        await conn.execute("UPDATE experts SET consultations_count = consultations_count + 1 WHERE id = $1", req.expert_id)
+        return {"ok": True, "consultation_id": row["id"], "message": "הבקשה נשלחה למומחה. תיצור איתך קשר תוך 48 שעות."}
+
+
+# ===== END EXPERTS =====
+
+
+# ===== BUG REPORTS (via AI Assistant or direct) =====
+
+async def _ensure_bug_reports_table(conn):
+    await conn.execute("""
+        CREATE TABLE IF NOT EXISTS bug_reports (
+            id SERIAL PRIMARY KEY,
+            reporter_user_id BIGINT,
+            reporter_name TEXT,
+            reporter_email TEXT,
+            page_url TEXT,
+            ai_session_id TEXT,
+            severity TEXT DEFAULT 'medium',
+            category TEXT,
+            title TEXT NOT NULL,
+            description TEXT NOT NULL,
+            steps_to_reproduce TEXT,
+            screenshot_url TEXT,
+            user_agent TEXT,
+            status TEXT DEFAULT 'new',
+            assigned_to TEXT,
+            resolution TEXT,
+            created_at TIMESTAMP DEFAULT NOW(),
+            updated_at TIMESTAMP DEFAULT NOW()
+        )
+    """)
+
+
+class BugReportReq(BaseModel):
+    title: str
+    description: str
+    page_url: Optional[str] = None
+    severity: Optional[str] = "medium"  # low/medium/high/critical
+    category: Optional[str] = None
+    steps_to_reproduce: Optional[str] = None
+    reporter_name: Optional[str] = None
+    reporter_email: Optional[str] = None
+    reporter_user_id: Optional[int] = None
+    ai_session_id: Optional[str] = None
+    screenshot_url: Optional[str] = None
+
+
+@app.post("/api/bugs/report")
+async def bugs_report(req: BugReportReq, user_agent: Optional[str] = Header(None)):
+    """Anyone can report a bug — anonymous or with details."""
+    if not req.title or not req.description:
+        raise HTTPException(400, "title and description required")
+    severity = req.severity if req.severity in ("low", "medium", "high", "critical") else "medium"
+    async with pool.acquire() as conn:
+        await _ensure_bug_reports_table(conn)
+        row = await conn.fetchrow("""
+            INSERT INTO bug_reports (reporter_user_id, reporter_name, reporter_email, page_url, ai_session_id,
+                severity, category, title, description, steps_to_reproduce, screenshot_url, user_agent)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+            RETURNING id, created_at
+        """, req.reporter_user_id, req.reporter_name, req.reporter_email, req.page_url,
+            req.ai_session_id, severity, req.category, req.title, req.description,
+            req.steps_to_reproduce, req.screenshot_url, (user_agent or "")[:200])
+        return {
+            "ok": True,
+            "bug_id": row["id"],
+            "message": "תודה! הדיווח נקלט. נטפל בו בהקדם.",
+            "tracking": f"bug-{row['id']}"
+        }
+
+
+@app.get("/api/admin/bugs/list")
+async def bugs_list_admin(
+    status: Optional[str] = None,
+    severity: Optional[str] = None,
+    limit: int = 100,
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None)
+):
+    _require_admin(authorization, x_admin_key)
+    async with pool.acquire() as conn:
+        await _ensure_bug_reports_table(conn)
+        q = "SELECT * FROM bug_reports WHERE 1=1"
+        params = []
+        if status:
+            params.append(status)
+            q += f" AND status = ${len(params)}"
+        if severity:
+            params.append(severity)
+            q += f" AND severity = ${len(params)}"
+        params.append(limit)
+        q += f" ORDER BY created_at DESC LIMIT ${len(params)}"
+        rows = await conn.fetch(q, *params)
+        # Stats
+        stats = await conn.fetchrow("""
+            SELECT COUNT(*) as total,
+                   COUNT(*) FILTER (WHERE status='new') as new,
+                   COUNT(*) FILTER (WHERE status='in_progress') as in_progress,
+                   COUNT(*) FILTER (WHERE status='resolved') as resolved,
+                   COUNT(*) FILTER (WHERE severity='critical') as critical
+            FROM bug_reports
+        """)
+        return {
+            "bugs": [dict(r) for r in rows],
+            "stats": dict(stats) if stats else {}
+        }
+
+
+# ===== END BUG REPORTS =====
+
+
+# ===== GUARDIAN DIAGNOSTIC API (placeholder for now) =====
+
+@app.get("/api/admin/guardian/stats")
+async def guardian_stats(authorization: Optional[str] = Header(None), x_admin_key: Optional[str] = Header(None)):
+    _require_admin(authorization, x_admin_key)
+    return {
+        "clients": 0, "online": 0, "pending": 0, "runs_today": 0, "failed": 0,
+        "note": "Guardian client registration coming with @Grdian_bot integration"
+    }
+
+
+@app.get("/api/admin/guardian/history")
+async def guardian_history(limit: int = 50, authorization: Optional[str] = Header(None), x_admin_key: Optional[str] = Header(None)):
+    _require_admin(authorization, x_admin_key)
+    return {"history": [], "note": "Will populate after Guardian bot deployment"}
+
+
+@app.get("/api/admin/guardian/audit")
+async def guardian_audit(limit: int = 100, authorization: Optional[str] = Header(None), x_admin_key: Optional[str] = Header(None)):
+    _require_admin(authorization, x_admin_key)
+    return {"audit": [], "note": "Will populate after Guardian bot deployment"}
+
+
+# ===== END GUARDIAN =====
+
