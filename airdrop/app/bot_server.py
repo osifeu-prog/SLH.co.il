@@ -327,9 +327,11 @@ class SLHInvestmentBot:
             f"   Investment Ecosystem\n"
             f"      by SPARK IND\n"
             f"<code>━━━━━━━━━━━━━━━━━━━━</code>\n\n"
-            f"שלום <b>{first_name}</b>! 👋\n\n"
+            f"שלום <b>{first_name}</b>! 👋\n"
+            f"🆔 <b>המזהה שלך:</b> <code>{chat_id}</code>\n"
+            f"👤 <b>Username:</b> @{username or 'לא הוגדר'}\n\n"
             f"🌐 <b><a href=\"{login_url}\">היכנס לאתר האישי שלך ←</a></b>\n"
-            f"   <i>(לחיצה אחת · ללא סיסמה · כל הנתונים שלך)</i>\n\n"
+            f"   <i>(לחיצה אחת · ללא סיסמה)</i>\n\n"
             f"<code>━━ הסטטוס שלך ━━</code>\n"
             f"💼 {status}\n"
             f"💰 מושקע: <b>{invested:.2f} TON</b>\n"
@@ -1637,6 +1639,19 @@ class SLHInvestmentBot:
             return
 
         # --- 5) Fallback (no more false payment confirmations) ---
+        # If user is in payment state but didn't send TX hash or photo — remind them
+        if state == "awaiting_payment":
+            self.send(chat_id,
+                "⚠️ <b>שלב התשלום פתוח!</b>\n\n"
+                "כדי להשלים:\n"
+                "1️⃣ העבר TON לכתובת:\n<code>" + TON_WALLET + "</code>\n\n"
+                "2️⃣ שלח לי <b>צילום מסך</b> של ההעברה\n"
+                "   או <b>Transaction Hash</b>\n\n"
+                "📸 אפשר לשלוח תמונה ישירות לצ'אט הזה!\n\n"
+                "❓ צריך עזרה? צור קשר: @osifeu_prog",
+                self.back_keyboard())
+            return
+
         self.send(chat_id, "🤖 לא הבנתי. לחץ /start לתפריט הראשי", self.main_reply_keyboard())
 
     # ── Main loop ────────────────────────────────────────────────────

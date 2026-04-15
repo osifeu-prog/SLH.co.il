@@ -2,7 +2,7 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-RUN pip install --no-cache-dir aiogram==3.26.0 asyncpg python-dotenv
+RUN pip install --no-cache-dir aiogram==3.26.0 asyncpg python-dotenv Pillow
 
 COPY shared/ /app/shared/
 COPY admin-bot/ /app/

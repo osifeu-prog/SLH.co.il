@@ -136,11 +136,15 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
       BOT_TOKEN: ${FACTORY_BOT_TOKEN}
       TELEGRAM_TOKEN: ${FACTORY_BOT_TOKEN}
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_factory
+      REDIS_URL: redis://redis:6379/3
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-slh_admin_2026}
       MODE: polling
       ENV: prod
       DISABLE_TELEGRAM: "1"  # 2026-04-10: Railway owns the polling; local serves FastAPI only

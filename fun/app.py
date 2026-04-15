@@ -10,7 +10,7 @@ from aiogram.types import (
     InlineKeyboardMarkup,
     InlineKeyboardButton,
     CallbackQuery,
-    InputFile,
+    FSInputFile,
 )
 from aiogram.filters import CommandStart
 from aiogram.enums import ChatType
@@ -83,21 +83,20 @@ async def on_start(message: Message):
     user_id = message.from_user.id
     user_states.setdefault(user_id, {"shared_ok": False, "payment_proof_msg_id": None, "approved": False})
 
-    # שליחת טקסט פתיחה
-    await message.answer(
-        "ברוך/ה הבא/ה! לחץ על הכפתור כדי להתחיל.",
-        reply_markup=main_keyboard()
+    # שליחת טקסט פתיחה - ברוכים הבאים בלי תשלום מיידי
+    welcome_kb = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text="מה הבוט הזה יכול לעשות?", callback_data="learn_1")],
+            [InlineKeyboardButton(text="פרימיום (אופציונלי)", callback_data="learn_2")],
+        ]
     )
-
-    # שליחת תמונת פתיחה מהפרויקט
-    try:
-        await bot.send_photo(
-            chat_id=user_id,
-            photo=InputFile("assets/opening.jpg"),  # שים את הקובץ בתיקיית assets
-            caption="תמונת פתיחה מהפרויקט"
-        )
-    except Exception as e:
-        logger.error(f"שליחת תמונת פתיחה נכשלה: {e}")
+    await message.answer(
+        "SLH Community Bot - ברוכים הבאים!\n\n"
+        "הצטרפו לקהילה, צברו תגמולים, פתחו תוכן פרימיום.\n\n"
+        "/help - כל הפקודות\n"
+        "/premium - שדרוג (אופציונלי)",
+        reply_markup=welcome_kb,
+    )
 
     # התראה לאדמין
     if ADMIN_CHAT_ID:
@@ -169,7 +168,7 @@ async def on_payment_proof(message: Message):
     try:
         await bot.send_photo(
             chat_id=user_id,
-            photo=InputFile(ASSETS_PROMO_IMAGE_PATH),
+            photo=FSInputFile(ASSETS_PROMO_IMAGE_PATH),
             caption="הנה התמונה מהפרויקט בגיט."
         )
     except Exception as e:

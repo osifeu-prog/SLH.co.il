@@ -171,3 +171,53 @@ async def log_event(event_type: str, bot_name: str, user_id: int = 0, payload: s
             "INSERT INTO system_events (event_type, bot_name, user_id, payload) VALUES ($1,$2,$3,$4)",
             event_type, bot_name, user_id, payload,
         )
+
+
+async def create_access_request(user_id: int, username: str, bot_name: str, reason: str = "", receipt_file_id: str = "") -> int:
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        row = await conn.fetchrow(
+            """INSERT INTO access_requests (user_id, username, bot_name, reason, receipt_file_id)
+               VALUES ($1, $2, $3, $4, $5) RETURNING id""",
+            user_id, username, bot_name, reason, receipt_file_id,
+        )
+    return row["id"]
+
+
+async def approve_access(request_id: int, admin_note: str = "") -> dict:
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        row = await conn.fetchrow(
+            """UPDATE access_requests SET status='approved', admin_note=$2
+               WHERE id=$1 RETURNING user_id, bot_name, username""",
+            request_id, admin_note,
+        )
+        if row:
+            await conn.execute(
+                """INSERT INTO premium_users (user_id, username, bot_name, payment_status)
+                   VALUES ($1, $2, $3, 'approved')
+                   ON CONFLICT (user_id, bot_name) DO UPDATE SET payment_status='approved'""",
+                row["user_id"], row["username"], row["bot_name"],
+            )
+    return dict(row) if row else {}
+
+
+async def reject_access(request_id: int, admin_note: str = "") -> dict:
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        row = await conn.fetchrow(
+            """UPDATE access_requests SET status='rejected', admin_note=$2
+               WHERE id=$1 RETURNING user_id, bot_name, username""",
+            request_id, admin_note,
+        )
+    return dict(row) if row else {}
+
+
+async def get_pending_access_requests() -> list:
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        rows = await conn.fetch(
+            """SELECT id, user_id, username, bot_name, reason, receipt_file_id, created_at
+               FROM access_requests WHERE status='pending' ORDER BY created_at""",
+        )
+    return [dict(r) for r in rows]

@@ -11,7 +11,8 @@ RUN pip install --no-cache-dir \
     alembic \
     python-dotenv \
     pydantic \
-    httpx
+    httpx \
+    "redis[hiredis]>=5.0.0,<6.0.0"
 
 COPY . .
 
