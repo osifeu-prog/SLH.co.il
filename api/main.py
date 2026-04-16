@@ -8979,12 +8979,76 @@ async def bugs_report(req: BugReportReq, user_agent: Optional[str] = Header(None
         """, req.reporter_user_id, req.reporter_name, req.reporter_email, req.page_url,
             req.ai_session_id, severity, req.category, req.title, req.description,
             req.steps_to_reproduce, req.screenshot_url, (user_agent or "")[:200])
-        return {
-            "ok": True,
-            "bug_id": row["id"],
-            "message": "תודה! הדיווח נקלט. נטפל בו בהקדם.",
-            "tracking": f"bug-{row['id']}"
-        }
+    # Telegram alert to admin (non-blocking best-effort)
+    try:
+        sev_emoji = {"critical": "🚨", "high": "⚠️", "medium": "🐛", "low": "💡"}.get(severity, "🐛")
+        cat = req.category or "כללי"
+        reporter = req.reporter_name or (f"ID {req.reporter_user_id}" if req.reporter_user_id else "אנונימי")
+        page = req.page_url or "—"
+        alert_text = (
+            f"{sev_emoji} <b>באג חדש #{row['id']}</b>\n"
+            f"<b>חומרה:</b> {severity} | <b>קטגוריה:</b> {cat}\n"
+            f"<b>מדווח:</b> {reporter}\n"
+            f"<b>כותרת:</b> {req.title[:150]}\n\n"
+            f"{req.description[:400]}\n\n"
+            f"📄 {page}\n"
+            f"🔗 https://slh-nft.com/admin-bugs.html"
+        )
+        if BROADCAST_BOT_TOKEN:
+            await _tg_send_message(BROADCAST_BOT_TOKEN, ADMIN_USER_ID, alert_text)
+    except Exception:
+        pass  # never block user report on notification failure
+    return {
+        "ok": True,
+        "bug_id": row["id"],
+        "message": "תודה! הדיווח נקלט. נטפל בו בהקדם.",
+        "tracking": f"bug-{row['id']}"
+    }
+
+
+class BugStatusUpdate(BaseModel):
+    status: str  # new / in_progress / resolved / rejected
+    resolution: Optional[str] = ""
+
+
+@app.patch("/api/admin/bugs/{bug_id}/status")
+async def bugs_update_status(
+    bug_id: int,
+    req: BugStatusUpdate,
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None)
+):
+    _require_admin(authorization, x_admin_key)
+    if req.status not in ("new", "in_progress", "resolved", "rejected"):
+        raise HTTPException(400, "invalid status")
+    async with pool.acquire() as conn:
+        await _ensure_bug_reports_table(conn)
+        bug = await conn.fetchrow("SELECT * FROM bug_reports WHERE id = $1", bug_id)
+        if not bug:
+            raise HTTPException(404, "bug not found")
+        await conn.execute("""
+            UPDATE bug_reports SET status = $1, resolution = $2, updated_at = NOW() WHERE id = $3
+        """, req.status, req.resolution or "", bug_id)
+    # Notify reporter on telegram if they provided a user_id
+    try:
+        if req.status == "resolved" and bug["reporter_user_id"] and BROADCAST_BOT_TOKEN:
+            msg = (
+                f"✅ <b>הבאג שדיווחת נפתר!</b>\n"
+                f"<b>#{bug_id}:</b> {bug['title']}\n\n"
+                f"{(req.resolution or 'הבעיה תוקנה. תודה על הדיווח!')[:800]}\n\n"
+                f"💙 תודה שעזרת לנו לשפר את SLH"
+            )
+            await _tg_send_message(BROADCAST_BOT_TOKEN, bug["reporter_user_id"], msg)
+        elif req.status == "in_progress" and bug["reporter_user_id"] and BROADCAST_BOT_TOKEN:
+            msg = (
+                f"🔧 <b>הדיווח שלך התקבל ומטופל</b>\n"
+                f"<b>#{bug_id}:</b> {bug['title']}\n\n"
+                f"נעדכן אותך ברגע שהבעיה תיפתר."
+            )
+            await _tg_send_message(BROADCAST_BOT_TOKEN, bug["reporter_user_id"], msg)
+    except Exception:
+        pass
+    return {"ok": True, "bug_id": bug_id, "status": req.status}
 
 
 @app.get("/api/admin/bugs/list")
