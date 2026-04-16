@@ -8979,23 +8979,35 @@ async def bugs_report(req: BugReportReq, user_agent: Optional[str] = Header(None
         """, req.reporter_user_id, req.reporter_name, req.reporter_email, req.page_url,
             req.ai_session_id, severity, req.category, req.title, req.description,
             req.steps_to_reproduce, req.screenshot_url, (user_agent or "")[:200])
-    # Telegram alert to admin (non-blocking best-effort)
+    # Telegram alert to admin — rate-limited + kill-switch
+    # SILENT_MODE=1 on Railway → no alerts at all
+    # Otherwise: max 1 alert per 5 min for non-critical; critical always sent
     try:
-        sev_emoji = {"critical": "🚨", "high": "⚠️", "medium": "🐛", "low": "💡"}.get(severity, "🐛")
-        cat = req.category or "כללי"
-        reporter = req.reporter_name or (f"ID {req.reporter_user_id}" if req.reporter_user_id else "אנונימי")
-        page = req.page_url or "—"
-        alert_text = (
-            f"{sev_emoji} <b>באג חדש #{row['id']}</b>\n"
-            f"<b>חומרה:</b> {severity} | <b>קטגוריה:</b> {cat}\n"
-            f"<b>מדווח:</b> {reporter}\n"
-            f"<b>כותרת:</b> {req.title[:150]}\n\n"
-            f"{req.description[:400]}\n\n"
-            f"📄 {page}\n"
-            f"🔗 https://slh-nft.com/admin-bugs.html"
-        )
-        if BROADCAST_BOT_TOKEN:
+        import time as _t
+        _silent = os.getenv("SILENT_MODE", "").strip() == "1"
+        _is_auto = req.title.startswith("[AUTO]")  # auto-captured — never alert, just log
+        _now = _t.time()
+        _last_key = "_last_bug_alert_ts"
+        _last = getattr(app.state, _last_key, 0) if hasattr(app, "state") else 0
+        _min_gap = 300  # 5 minutes
+        should_alert = not _silent and not _is_auto and (severity == "critical" or (_now - _last) >= _min_gap)
+        if should_alert and BROADCAST_BOT_TOKEN:
+            sev_emoji = {"critical": "🚨", "high": "⚠️", "medium": "🐛", "low": "💡"}.get(severity, "🐛")
+            cat = req.category or "כללי"
+            reporter = req.reporter_name or (f"ID {req.reporter_user_id}" if req.reporter_user_id else "אנונימי")
+            page = req.page_url or "—"
+            alert_text = (
+                f"{sev_emoji} <b>באג חדש #{row['id']}</b>\n"
+                f"<b>חומרה:</b> {severity} | <b>קטגוריה:</b> {cat}\n"
+                f"<b>מדווח:</b> {reporter}\n"
+                f"<b>כותרת:</b> {req.title[:150]}\n\n"
+                f"{req.description[:400]}\n\n"
+                f"📄 {page}\n"
+                f"🔗 https://slh-nft.com/admin-bugs.html"
+            )
             await _tg_send_message(BROADCAST_BOT_TOKEN, ADMIN_USER_ID, alert_text)
+            if hasattr(app, "state"):
+                setattr(app.state, _last_key, _now)
     except Exception:
         pass  # never block user report on notification failure
     return {
@@ -9029,9 +9041,11 @@ async def bugs_update_status(
         await conn.execute("""
             UPDATE bug_reports SET status = $1, resolution = $2, updated_at = NOW() WHERE id = $3
         """, req.status, req.resolution or "", bug_id)
-    # Notify reporter on telegram if they provided a user_id
+    # Notify reporter on telegram if they provided a user_id (skip in silent mode)
     try:
-        if req.status == "resolved" and bug["reporter_user_id"] and BROADCAST_BOT_TOKEN:
+        if os.getenv("SILENT_MODE", "").strip() == "1":
+            pass  # no outbound telegram while in silent mode
+        elif req.status == "resolved" and bug["reporter_user_id"] and BROADCAST_BOT_TOKEN:
             msg = (
                 f"✅ <b>הבאג שדיווחת נפתר!</b>\n"
                 f"<b>#{bug_id}:</b> {bug['title']}\n\n"
