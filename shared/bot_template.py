@@ -1,9 +1,9 @@
-"""
+﻿"""
 SLH Minimal Bot Template - used for bots without dedicated code.
 Provides: /start, /premium, payment proof handling, admin approve/reject.
 
 Usage:
-    BOT_KEY=campaign BOT_DESCRIPTION="קמפיינים שיווקיים" python bot_template.py
+    BOT_KEY=campaign BOT_DESCRIPTION="×§×ž×¤×™×™× ×™× ×©×™×•×•×§×™×™×" python bot_template.py
 """
 import os
 import sys
@@ -12,6 +12,7 @@ import logging
 
 from aiogram import Bot, Dispatcher, F, types
 from aiogram.filters import Command
+from register_api import register_device, verify_device
 
 sys.path.insert(0, "/app/shared")
 from slh_payments.payment_gate import PaymentGate
@@ -118,11 +119,11 @@ async def deals_cmd(m: types.Message):
 async def mylink_cmd(m: types.Message):
     link = referral_engine.get_link(m.from_user.id, BOT_KEY)
     await m.answer(
-        "\U0001f517 *הקישור האישי שלך:*\n\n"
+        "\U0001f517 *×”×§×™×©×•×¨ ×”××™×©×™ ×©×œ×š:*\n\n"
         f"`{link}`\n\n"
-        "\U0001f4cb העתק ושתף עם חברים!\n"
-        "\U0001f4b0 על כל חבר שמשדרג — מקבל *15% עמלה בנקודות SLH*\n\n"
-        "\U0001f4ca לסטטיסטיקה: /referral",
+        "\U0001f4cb ×”×¢×ª×§ ×•×©×ª×£ ×¢× ×—×‘×¨×™×!\n"
+        "\U0001f4b0 ×¢×œ ×›×œ ×—×‘×¨ ×©×ž×©×“×¨×’ â€” ×ž×§×‘×œ *15% ×¢×ž×œ×” ×‘× ×§×•×“×•×ª SLH*\n\n"
+        "\U0001f4ca ×œ×¡×˜×˜×™×¡×˜×™×§×”: /referral",
         parse_mode="Markdown",
     )
 
@@ -138,19 +139,19 @@ async def referral_cmd(m: types.Message):
 async def promo_cmd(m: types.Message):
     args = m.text.split(maxsplit=1)
     if len(args) < 2:
-        await m.answer("\U0001f3f7\ufe0f שלח /promo CODE\nלדוגמה: /promo LAUNCH30")
+        await m.answer("\U0001f3f7\ufe0f ×©×œ×— /promo CODE\n×œ×“×•×’×ž×”: /promo LAUNCH30")
         return
     deal = promo_engine.get_deal_by_code(args[1])
     if not deal:
-        await m.answer("\u274c קוד לא תקין או שפג תוקפו.\n/deals לרשימה מלאה")
+        await m.answer("\u274c ×§×•×“ ×œ× ×ª×§×™×Ÿ ××• ×©×¤×’ ×ª×•×§×¤×•.\n/deals ×œ×¨×©×™×ž×” ×ž×œ××”")
         return
     if deal.min_referrals > 0:
         count = await referral_engine.get_referral_count(m.from_user.id, BOT_KEY)
         if count < deal.min_referrals:
             await m.answer(
-                f"\U0001f512 מבצע זה דורש {deal.min_referrals} הפניות.\n"
-                f"יש לך: {count}\n\n"
-                "/mylink — שתף ותתקדם!"
+                f"\U0001f512 ×ž×‘×¦×¢ ×–×” ×“×•×¨×© {deal.min_referrals} ×”×¤× ×™×•×ª.\n"
+                f"×™×© ×œ×š: {count}\n\n"
+                "/mylink â€” ×©×ª×£ ×•×ª×ª×§×“×!"
             )
             return
     from slh_payments.config import BOT_PRICING
@@ -159,14 +160,14 @@ async def promo_cmd(m: types.Message):
         new_ils, new_ton = promo_engine.calculate_price(deal, bp.price_ils, bp.price_ton)
         await m.answer(
             f"\u2705 *{deal.title_he}*\n\n"
-            f"מחיר רגיל: {bp.price_ils}\u20aa\n"
-            f"מחיר מבצע: *{new_ils}\u20aa*\n\n"
-            f"\u23f0 נותר: {deal.remaining_time}\n\n"
-            "שלח /premium להמשך תשלום \U0001f680",
+            f"×ž×—×™×¨ ×¨×’×™×œ: {bp.price_ils}\u20aa\n"
+            f"×ž×—×™×¨ ×ž×‘×¦×¢: *{new_ils}\u20aa*\n\n"
+            f"\u23f0 × ×•×ª×¨: {deal.remaining_time}\n\n"
+            "×©×œ×— /premium ×œ×”×ž×©×š ×ª×©×œ×•× \U0001f680",
             parse_mode="Markdown",
         )
     else:
-        await m.answer(f"\u2705 קוד {deal.code} הופעל! שלח /premium להמשך.")
+        await m.answer(f"\u2705 ×§×•×“ {deal.code} ×”×•×¤×¢×œ! ×©×œ×— /premium ×œ×”×ž×©×š.")
 
 
 @dp.message(Command("help"))
@@ -201,3 +202,40 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
+@dp.message(Command("register"))
+async def cmd_register(message):
+    args = message.text.split()
+    if len(args) < 3:
+        await message.answer("Usage: /register SERIAL PHONE")
+        return
+
+    serial = args[1]
+    phone = args[2]
+
+    res = register_device(serial, phone)
+
+    if "code" in res:
+        await message.answer(f"Code: {res['code']}")
+    else:
+        await message.answer("Register failed")
+
+@dp.message(Command("verify"))
+async def cmd_verify(message):
+    args = message.text.split()
+    if len(args) < 3:
+        await message.answer("Usage: /verify SERIAL CODE")
+        return
+
+    serial = args[1]
+    code = args[2]
+
+    res = verify_device(serial, code)
+
+    if res.get("status") == "verified":
+        await message.answer(f"Device OK\nToken: {res['token']}")
+Token: {res['token']}")
+    else:
+        await message.answer("Verify failed")
+
+
