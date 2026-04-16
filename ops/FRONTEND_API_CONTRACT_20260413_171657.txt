@@ -1,0 +1,307 @@
+﻿=== FRONTEND API CONTRACT AUDIT ===
+D:\SLH_ECOSYSTEM\website\js\ai-assistant.js:6: * Calls POST /api/ai/chat on the SLH backend — NO API keys in frontend.
+D:\SLH_ECOSYSTEM\website\js\ai-assistant.js:14: const AI_ENDPOINT = (typeof API_BASE !== 'undefined' ? API_BASE : 'https://slh-api-production.up.railway.app') + '/api/ai/chat';
+D:\SLH_ECOSYSTEM\website\js\analytics.js:4: const API = 'https://slh-api-production.up.railway.app/api/analytics';
+D:\SLH_ECOSYSTEM\website\js\shared.js:9: const COINGECKO_API = 'https://api.coingecko.com/api/v3';
+D:\SLH_ECOSYSTEM\website\js\web3-wallet.js:44: apiPost('/api/user/' + user.id + '/wallets', {
+D:\SLH_ECOSYSTEM\website\js\web3.js:10: const TON_API = 'https://toncenter.com/api/v2';
+D:\SLH_ECOSYSTEM\website\js\web3.js:178: apiPost('/api/user/link-wallet', { user_id: u.id, address: web3Address })
+D:\SLH_ECOSYSTEM\website\js\web3.js:204: try { await apiPost('/api/user/unlink-wallet', { user_id: u.id, address: prev || '' }); } catch (_) {}
+D:\SLH_ECOSYSTEM\website\about.html:12: <meta property="og:image" content="https://slh-api-production.up.railway.app/api/og/index.png">
+D:\SLH_ECOSYSTEM\website\about.html:107: const r = await fetch('https://slh-api-production.up.railway.app/api/launch/status');
+D:\SLH_ECOSYSTEM\website\about.html:175: <a href="https://slh-api-production.up.railway.app/api/audit/verify-chain" target="_blank" rel="noopener">בדוק Chain →</a>
+D:\SLH_ECOSYSTEM\website\admin.html:521: <li>Immutable audit log with /api/audit/verify-chain endpoint</li>
+D:\SLH_ECOSYSTEM\website\admin.html:853: <tr><td>Railway API</td><td><a href="https://slh-api-production.up.railway.app/api/health" target="_blank">slh-api-production.up.railway.app</a></td><td>Backend</td><td id="ext-railway">--</td><td><a href="https://slh-api-production.up.railway.app/docs" target="_blank">Swagger</a></td></tr>
+D:\SLH_ECOSYSTEM\website\admin.html:1014: safeJson(SLH_API + '/api/admin/dashboard', true), // admin auth
+D:\SLH_ECOSYSTEM\website\admin.html:1015: safeJson(SLH_API + '/api/stats'),
+D:\SLH_ECOSYSTEM\website\admin.html:1016: safeJson(SLH_API + '/api/health'),
+D:\SLH_ECOSYSTEM\website\admin.html:1017: safeJson(SLH_API + '/api/community/stats'),
+D:\SLH_ECOSYSTEM\website\admin.html:1018: safeJson(SLH_API + '/api/analytics/stats'),
+D:\SLH_ECOSYSTEM\website\admin.html:1019: safeJson(SLH_API + '/api/referral/leaderboard?limit=10')
+D:\SLH_ECOSYSTEM\website\admin.html:1032: const res = await fetch(SLH_API + '/api/health');
+D:\SLH_ECOSYSTEM\website\admin.html:1071: const d = apiData.dashboard; // /api/admin/dashboard response
+D:\SLH_ECOSYSTEM\website\admin.html:1072: const s = apiData.stats;     // /api/stats response
+D:\SLH_ECOSYSTEM\website\admin.html:1073: const an = apiData.analytics; // /api/analytics/stats response
+D:\SLH_ECOSYSTEM\website\admin.html:1074: const cm = apiData.community; // /api/community/stats response
+D:\SLH_ECOSYSTEM\website\admin.html:1190: const res = await fetch(SLH_API + '/api/admin/activity?limit=15', {
+D:\SLH_ECOSYSTEM\website\admin.html:1210: const res = await fetch(SLH_API + '/api/community/posts?limit=5');
+D:\SLH_ECOSYSTEM\website\admin.html:1339: const chainRes = await fetch(SLH_API + '/api/audit/verify-chain');
+D:\SLH_ECOSYSTEM\website\admin.html:1362: const betaRes = await fetch(SLH_API + '/api/beta/status');
+D:\SLH_ECOSYSTEM\website\admin.html:1380: const res = await fetch(SLH_API + '/api/audit/verify-chain?limit=10000');
+D:\SLH_ECOSYSTEM\website\admin.html:1398: let url = SLH_API + '/api/audit/recent?limit=100';
+D:\SLH_ECOSYSTEM\website\admin.html:1445: const res = await fetch(SLH_API + '/api/cex/add-key', {
+D:\SLH_ECOSYSTEM\website\admin.html:1473: const res = await fetch(SLH_API + '/api/cex/keys/' + user_id);
+D:\SLH_ECOSYSTEM\website\admin.html:1504: const res = await fetch(SLH_API + '/api/cex/sync/' + key_id, { method: 'POST' });
+D:\SLH_ECOSYSTEM\website\admin.html:1520: const res = await fetch(SLH_API + '/api/cex/keys/' + key_id + '?user_id=' + user_id, { method: 'DELETE' });
+D:\SLH_ECOSYSTEM\website\admin.html:1538: const res = await fetch(SLH_API + '/api/cex/portfolio/' + user_id);
+D:\SLH_ECOSYSTEM\website\admin.html:1615: const r = await fetch(SLH_API + '/api/health');
+D:\SLH_ECOSYSTEM\website\admin.html:1637: const r = await fetch(SLH_API + '/api/admin/credit-rewards', {
+D:\SLH_ECOSYSTEM\website\admin.html:1674: const r = await fetch(SLH_API + '/api/admin/all-users', {
+D:\SLH_ECOSYSTEM\website\admin.html:1714: const r = await fetch(SLH_API + `/api/admin/manual-credit?user_id=${userId}&token=${token}&amount=${amount}&reason=${encodeURIComponent(reason)}`, {
+D:\SLH_ECOSYSTEM\website\admin.html:1736: const r = await fetch(SLH_API + '/api/guardian/stats');
+D:\SLH_ECOSYSTEM\website\admin.html:1753: const r = await fetch(SLH_API + '/api/guardian/blacklist?limit=50', {headers:{'X-Admin-Key':getAdminKey()}});
+D:\SLH_ECOSYSTEM\website\admin.html:1771: const r = await fetch(SLH_API + '/api/guardian/report', {
+D:\SLH_ECOSYSTEM\website\admin.html:1789: const r = await fetch(SLH_API + '/api/guardian/check/' + userId);
+D:\SLH_ECOSYSTEM\website\admin.html:1800: const r = await fetch(SLH_API + '/api/health');
+D:\SLH_ECOSYSTEM\website\admin.html:1836: const r = await fetch(SLH_API + '/api/health');
+D:\SLH_ECOSYSTEM\website\analytics.html:200: const API = 'https://slh-api-production.up.railway.app/api/analytics';
+D:\SLH_ECOSYSTEM\website\blockchain.html:16: <meta property="og:image" content="https://slh-api-production.up.railway.app/api/og/blockchain.png">
+D:\SLH_ECOSYSTEM\website\blockchain.html:21: <meta name="twitter:image" content="https://slh-api-production.up.railway.app/api/og/blockchain.png">
+D:\SLH_ECOSYSTEM\website\blockchain.html:490: const TON_API = 'https://toncenter.com/api/v2';
+D:\SLH_ECOSYSTEM\website\blockchain.html:834: const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=the-open-network&vs_currencies=usd');
+D:\SLH_ECOSYSTEM\website\blockchain.html:1207: navigator.sendBeacon(API + '/api/analytics/event', payload);
+D:\SLH_ECOSYSTEM\website\blockchain.html:1209: fetch(API + '/api/analytics/event', {
+D:\SLH_ECOSYSTEM\website\bots.html:14: <meta property="og:image" content="https://slh-api-production.up.railway.app/api/og/bots.png">
+D:\SLH_ECOSYSTEM\website\bots.html:22: <meta name="twitter:image" content="https://slh-api-production.up.railway.app/api/og/bots.png">
+D:\SLH_ECOSYSTEM\website\broadcast-composer.html:388: const r = await fetch(API + '/api/broadcast/send', {
+D:\SLH_ECOSYSTEM\website\broadcast-composer.html:419: const r = await fetch(API + '/api/broadcast/history');
+D:\SLH_ECOSYSTEM\website\challenge.html:13: <meta property="og:image" content="https://slh-api-production.up.railway.app/api/og/healing.png">
+D:\SLH_ECOSYSTEM\website\challenge.html:16: <meta name="twitter:image" content="https://slh-api-production.up.railway.app/api/og/healing.png">
+D:\SLH_ECOSYSTEM\website\community.html:16: <meta property="og:image" content="https://slh-api-production.up.railway.app/api/og/community.png">
+D:\SLH_ECOSYSTEM\website\community.html:23: <meta name="twitter:image" content="https://slh-api-production.up.railway.app/api/og/community.png">
+D:\SLH_ECOSYSTEM\website\community.html:1656: const data = await apiGet(`/api/community/posts?category=${currentFilter}&limit=50`);
+D:\SLH_ECOSYSTEM\website\community.html:1672: const data = await apiGet('/api/community/stats') || { total_posts: posts.length || 7, posts_today: 3, active_today: 47, total_users: 176 };
+D:\SLH_ECOSYSTEM\website\community.html:1856: const r = await fetch(API + '/api/beta/status');
+D:\SLH_ECOSYSTEM\website\community.html:1882: const res = await fetch(API + '/api/registration/unlock', {
+D:\SLH_ECOSYSTEM\website\community.html:1974: const result = await apiPost(`/api/community/posts/${postId}/vote`, {
+D:\SLH_ECOSYSTEM\website\community.html:2033: const result = await apiPost('/api/community/posts', postData);
+D:\SLH_ECOSYSTEM\website\community.html:2067: const result = await apiPost(`/api/community/posts/${postId}/like`, {
+D:\SLH_ECOSYSTEM\website\community.html:2111: const result = await apiPost(`/api/community/posts/${postId}/comments`, {
+D:\SLH_ECOSYSTEM\website\community.html:2355: const data = await apiGet('/api/marketplace/stats');
+D:\SLH_ECOSYSTEM\website\community.html:2369: const data = await apiGet(`/api/marketplace/items${qs}`);
+D:\SLH_ECOSYSTEM\website\community.html:2425: const item = await apiGet(`/api/marketplace/items/${itemId}`);
+D:\SLH_ECOSYSTEM\website\community.html:2479: const result = await apiPost('/api/marketplace/buy', {
+D:\SLH_ECOSYSTEM\website\community.html:2526: const result = await apiPost('/api/marketplace/list', payload);
+D:\SLH_ECOSYSTEM\website\daily-blog.html:18: <meta property="og:image" content="https://slh-api-production.up.railway.app/api/og/daily-blog.png">
+D:\SLH_ECOSYSTEM\website\daily-blog.html:28: <meta name="twitter:image" content="https://slh-api-production.up.railway.app/api/og/daily-blog.png">
+D:\SLH_ECOSYSTEM\website\daily-blog.html:465: <li><strong>🔒 Immutable Audit Log:</strong> טבלת <code>institutional_audit</code> עם SHA-256 hash chain, endpoint <code>/api/audit/verify-chain</code> שמאפשר לרגולטור לאמת שלא נערך שום שינוי היסטורי. כל פעולה (user.ensure, cex.key.link, cex.snapshot) כתובה כאן.</li>
+D:\SLH_ECOSYSTEM\website\daily-blog.html:466: <li><strong>🏦 CEX Integrations:</strong> <code>/api/cex/add-key</code>, <code>/api/cex/keys/{user_id}</code>, <code>/api/cex/sync/{key_id}</code>, <code>/api/cex/portfolio/{user_id}</code>. חתימות HMAC-SHA256 ל-Bybit V5 + Binance V3. מפתחות מוצפנים ב-DB (XOR+env key — שדרוג ל-AES-GCM בעבודה).</li>
+D:\SLH_ECOSYSTEM\website\daily-blog.html:468: <li><strong>🐛 CRITICAL FIX — "משתמשים נעלמים":</strong> כאשר משתמש התחבר עם Telegram ID ידני, המערכת שמרה ב-localStorage אבל <em>לא</em> שלחה ל-DB. כעת <code>/api/user/ensure</code> יוצר את המשתמש ב-<code>web_users</code> מיידית.</li>
+D:\SLH_ECOSYSTEM\website\daily-blog.html:573: <li><strong>API:</strong> <code>POST /api/user/link-wallet</code>, <code>GET /api/user/wallet/{id}</code>, ו-<code>POST /api/user/unlink-wallet</code> — מאמת פורמט כתובת, מונע שיוך של אותו ארנק לשני חשבונות, שומר אותיות קטנות.</li>
+D:\SLH_ECOSYSTEM\website\dashboard.html:14: <meta property="og:image" content="https://slh-api-production.up.railway.app/api/og/dashboard.png">
+D:\SLH_ECOSYSTEM\website\dashboard.html:22: <meta name="twitter:image" content="https://slh-api-production.up.railway.app/api/og/dashboard.png">
+D:\SLH_ECOSYSTEM\website\dashboard.html:1805: fetch(API + '/api/auth/telegram', {
+D:\SLH_ECOSYSTEM\website\dashboard.html:1863: fetch(API + '/api/user/ensure', {
+D:\SLH_ECOSYSTEM\website\dashboard.html:1926: fetch(`${API}/api/user/${currentUser.id}`).then(r => r.ok ? r.json() : null).then(data => {
+D:\SLH_ECOSYSTEM\website\dashboard.html:2056: const r = await fetch(API + '/api/user/' + currentUser.id);
+D:\SLH_ECOSYSTEM\website\dashboard.html:2102: const d = await fetch(API + '/api/referral/stats/' + currentUser.id).then(r => r.json());
+D:\SLH_ECOSYSTEM\website\dashboard.html:2118: const tree = await fetch(API + '/api/referral/tree/' + currentUser.id).then(r => r.json());
+D:\SLH_ECOSYSTEM\website\dashboard.html:2141: const d = await fetch(API + '/api/staking/positions/' + currentUser.id).then(r => r.json());
+D:\SLH_ECOSYSTEM\website\dashboard.html:2150: const d = await fetch(API + '/api/activity/' + currentUser.id + '?limit=5').then(r => r.json());
+D:\SLH_ECOSYSTEM\website\dashboard.html:2163: const d = await fetch(API + '/api/activity/' + currentUser.id + '?limit=30').then(r => r.json());
+D:\SLH_ECOSYSTEM\website\dashboard.html:2182: const d = await fetch(API + '/api/leaderboard?category=' + cat + '&limit=20').then(r => r.json());
+D:\SLH_ECOSYSTEM\website\dashboard.html:2198: const d = await fetch(API + '/api/transactions/' + currentUser.id + '?limit=20').then(r => r.json());
+D:\SLH_ECOSYSTEM\website\dashboard.html:2255: const r = await fetch(API + '/api/staking/stake', {
+D:\SLH_ECOSYSTEM\website\dashboard.html:2280: const r = await fetch(API + '/api/transfer', {
+D:\SLH_ECOSYSTEM\website\dashboard.html:2293: const d = await fetch(API + '/api/prices').then(r => r.json());
+D:\SLH_ECOSYSTEM\website\dashboard.html:2326: const d = await fetch(API + '/api/health').then(r => r.json());
+D:\SLH_ECOSYSTEM\website\dashboard.html:2476: const r = await fetch(API + '/api/beta/status');
+D:\SLH_ECOSYSTEM\website\dashboard.html:2489: // 2) Check if user is already registered via /api/user/full/
+D:\SLH_ECOSYSTEM\website\dashboard.html:2493: const r = await fetch(`${API}/api/user/full/${uid}`);
+D:\SLH_ECOSYSTEM\website\dashboard.html:2520: const res = await fetch(API + '/api/registration/unlock', {
+D:\SLH_ECOSYSTEM\website\dashboard.html:2569: const res = await fetch(API + '/api/registration/unlock', {
+D:\SLH_ECOSYSTEM\website\dashboard.html:2645: const res = await fetch(API + '/api/registration/status/' + currentUser.id);
+D:\SLH_ECOSYSTEM\website\dashboard.html:2872: var url = 'https://api.coingecko.com/api/v3/simple/price?ids=' + ids.join(',') + '&vs_currencies=usd&include_24hr_change=true';
+D:\SLH_ECOSYSTEM\website\dex-launch.html:13: <meta property="og:image" content="https://slh-api-production.up.railway.app/api/og/dex-launch.png">
+D:\SLH_ECOSYSTEM\website\dex-launch.html:20: <meta name="twitter:image" content="https://slh-api-production.up.railway.app/api/og/dex-launch.png">
+D:\SLH_ECOSYSTEM\website\earn.html:15: <meta property="og:image" content="https://slh-api-production.up.railway.app/api/og/earn.png">
+D:\SLH_ECOSYSTEM\website\earn.html:23: <meta name="twitter:image" content="https://slh-api-production.up.railway.app/api/og/earn.png">
+D:\SLH_ECOSYSTEM\website\earn.html:1657: const data = await apiGet('/api/staking/plans');
+D:\SLH_ECOSYSTEM\website\earn.html:1683: const data = await apiGet(`/api/staking/positions/${user.id}`);
+D:\SLH_ECOSYSTEM\website\earn.html:1687: /* ── Fetch Stats from /api/stats ── */
+D:\SLH_ECOSYSTEM\website\earn.html:1690: const data = await apiGet('/api/stats');
+D:\SLH_ECOSYSTEM\website\earn.html:1697: const priceResp = await fetch('https://slh-api-production.up.railway.app/api/ton-price');
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:14: <meta property="og:image" content="https://slh-api-production.up.railway.app/api/og/guides.png">
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:23: <meta name="twitter:image" content="https://slh-api-production.up.railway.app/api/og/guides.png">
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:318: <li><span class="badge badge-get">GET</span> <code>/api/health</code> — basic health check</li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:319: <li><span class="badge badge-get">GET</span> <code>/api/stats</code> — public stats (users, staked, deposits)</li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:320: <li><span class="badge badge-get">GET</span> <code>/api/admin/dashboard</code> — aggregated admin stats</li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:321: <li><span class="badge badge-get">GET</span> <code>/api/admin/activity?limit=15</code> — recent activity feed</li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:326: <li><span class="badge badge-post">POST</span> <code>/api/auth/telegram</code> — Telegram Login Widget auth</li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:327: <li><span class="badge badge-post">POST</span> <code>/api/user/ensure</code> — idempotent user creation (manual login)</li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:328: <li><span class="badge badge-post">POST</span> <code>/api/auth/bot-sync</code> — bot syncs user to DB (with secret)</li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:329: <li><span class="badge badge-get">GET</span> <code>/api/user/{telegram_id}</code> — user profile + balances</li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:330: <li><span class="badge badge-get">GET</span> <code>/api/user/full/{telegram_id}</code> — everything in one call</li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:335: <li><span class="badge badge-get">GET</span> <code>/api/audit/verify-chain</code> — SHA-256 hash chain integrity</li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:336: <li><span class="badge badge-get">GET</span> <code>/api/audit/recent?limit=100&action_filter=...&user_id=...</code></li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:337: <li><span class="badge badge-post">POST</span> <code>/api/cex/add-key</code> — link CEX API key (encrypted AES-GCM)</li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:338: <li><span class="badge badge-get">GET</span> <code>/api/cex/keys/{user_id}</code> — list user's CEX keys</li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:339: <li><span class="badge badge-post">POST</span> <code>/api/cex/sync/{key_id}</code> — fetch balances from exchange</li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:340: <li><span class="badge badge-get">GET</span> <code>/api/cex/portfolio/{user_id}</code> — consolidated portfolio</li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:341: <li><span class="badge badge-del">DEL</span> <code>/api/cex/keys/{key_id}?user_id=...</code></li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:346: <li><span class="badge badge-get">GET</span> <code>/api/tokenomics/stats</code> — supply, burned, staked, reserves</li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:347: <li><span class="badge badge-post">POST</span> <code>/api/tokenomics/internal-transfer</code> — FREE MNH/ZVK/SLH</li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:348: <li><span class="badge badge-post">POST</span> <code>/api/tokenomics/burn</code> — record burn (admin)</li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:349: <li><span class="badge badge-post">POST</span> <code>/api/tokenomics/reserves/add</code> — add backing reserves</li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:354: <li><span class="badge badge-get">GET</span> <code>/api/strategy/list</code> — 3 backtested strategies</li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:355: <li><span class="badge badge-get">GET</span> <code>/api/strategy/{id}</code> — strategy details</li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:356: <li><span class="badge badge-get">GET</span> <code>/api/strategy/backtest/{id}?months=12</code> — simulated returns</li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:361: <li><span class="badge badge-post">POST</span> <code>/api/launch/contribute</code> — record contribution</li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:362: <li><span class="badge badge-post">POST</span> <code>/api/launch/verify/{id}?admin_key=...</code> — verify + issue rewards</li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:363: <li><span class="badge badge-get">GET</span> <code>/api/launch/status</code> — live progress + contributors</li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:368: <li><span class="badge badge-post">POST</span> <code>/api/broadcast/send</code> — send Telegram DM to all users</li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:369: <li><span class="badge badge-get">GET</span> <code>/api/broadcast/history</code> — recent broadcasts</li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:370: <li><span class="badge badge-post">POST</span> <code>/api/shares/track</code> — log share event</li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:371: <li><span class="badge badge-get">GET</span> <code>/api/shares/stats?days=30</code> — share analytics</li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:376: <li><span class="badge badge-get">GET</span> <code>/api/og/{slug}.png</code> — dynamic 1200×630 PNG for social shares</li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:382: <li><span class="badge badge-get">GET</span> <code>/api/network/slh-holders?limit=100</code> — BSC holders (BitQuery/Etherscan)</li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:383: <li><span class="badge badge-get">GET</span> <code>/api/external-wallets/{user_id}</code></li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:384: <li><span class="badge badge-post">POST</span> <code>/api/external-wallets/add</code></li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:389: <li><span class="badge badge-get">GET</span> <code>/api/beta/status</code> — coupon remaining</li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:390: <li><span class="badge badge-get">GET</span> <code>/api/cashback/{user_id}</code> — tier status</li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:391: <li><span class="badge badge-post">POST</span> <code>/api/cashback/process/{user_id}</code></li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:439: <tr><td>AUDIT_HASH_CHAIN</td><td><span class="badge badge-live">LIVE</span></td><td>SHA-256 immutable chain, verify via /api/audit/verify-chain</td></tr>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:454: <li><strong>Admin verifies</strong>: <code>POST /api/launch/verify/{id}?admin_key=...</code></li>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:467: 4. Manual ID → POST /api/user/ensure (creates in web_users)
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:475: 4. POST /api/cex/add-key with encrypted secrets
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:476: 5. Auto-sync: POST /api/cex/sync/{key_id}
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:477: 6. View: GET /api/cex/portfolio/{user_id}</code></pre>
+D:\SLH_ECOSYSTEM\website\ecosystem-guide.html:506: → Check <code>/api/user/ensure</code> is live. Users shouldn't disappear anymore (fixed in commit 99b00c0).
+D:\SLH_ECOSYSTEM\website\for-therapists.html:14: <meta property="og:image" content="https://slh-api-production.up.railway.app/api/og/healing.png">
+D:\SLH_ECOSYSTEM\website\for-therapists.html:24: <meta name="twitter:image" content="https://slh-api-production.up.railway.app/api/og/healing.png">
+D:\SLH_ECOSYSTEM\website\for-therapists.html:341: await fetch('https://slh-api-production.up.railway.app/api/community/posts', {
+D:\SLH_ECOSYSTEM\website\getting-started.html:15: <meta property="og:image" content="https://slh-api-production.up.railway.app/api/og/default.png">
+D:\SLH_ECOSYSTEM\website\getting-started.html:25: <meta name="twitter:image" content="https://slh-api-production.up.railway.app/api/og/default.png">
+D:\SLH_ECOSYSTEM\website\guides.html:13: <meta property="og:image" content="https://slh-api-production.up.railway.app/api/og/guides.png">
+D:\SLH_ECOSYSTEM\website\guides.html:20: <meta name="twitter:image" content="https://slh-api-production.up.railway.app/api/og/guides.png">
+D:\SLH_ECOSYSTEM\website\healing-vision.html:14: <meta property="og:image" content="https://slh-api-production.up.railway.app/api/og/healing.png">
+D:\SLH_ECOSYSTEM\website\healing-vision.html:24: <meta name="twitter:image" content="https://slh-api-production.up.railway.app/api/og/healing.png">
+D:\SLH_ECOSYSTEM\website\healing-vision.html:563: const r = await fetch('https://slh-api-production.up.railway.app/api/launch/status');
+D:\SLH_ECOSYSTEM\website\index.html:18: <meta property="og:image" content="https://slh-api-production.up.railway.app/api/og/index.png">
+D:\SLH_ECOSYSTEM\website\index.html:33: <meta name="twitter:image" content="https://slh-api-production.up.railway.app/api/og/index.png">
+D:\SLH_ECOSYSTEM\website\invite.html:16: <meta property="og:image" content="https://slh-api-production.up.railway.app/api/og/referral.png">
+D:\SLH_ECOSYSTEM\website\invite.html:25: <meta name="twitter:image" content="https://slh-api-production.up.railway.app/api/og/referral.png">
+D:\SLH_ECOSYSTEM\website\invite.html:567: const r = await fetch('https://slh-api-production.up.railway.app/api/beta/status');
+D:\SLH_ECOSYSTEM\website\jubilee.html:15: <meta property="og:image" content="https://slh-nft.com/api/og/healing.png">
+D:\SLH_ECOSYSTEM\website\jubilee.html:25: <meta name="twitter:image" content="https://slh-nft.com/api/og/healing.png">
+D:\SLH_ECOSYSTEM\website\launch-event.html:15: <meta property="og:image" content="https://slh-api-production.up.railway.app/api/og/launch-event.png">
+D:\SLH_ECOSYSTEM\website\launch-event.html:24: <meta name="twitter:image" content="https://slh-api-production.up.railway.app/api/og/launch-event.png">
+D:\SLH_ECOSYSTEM\website\launch-event.html:692: const r = await fetch(API + '/api/launch/status', { cache: 'no-store' });
+D:\SLH_ECOSYSTEM\website\launch-event.html:779: const res = await fetch(API + '/api/launch/contribute', {
+D:\SLH_ECOSYSTEM\website\launch-event.html:862: const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=binancecoin&vs_currencies=usd');
+D:\SLH_ECOSYSTEM\website\liquidity.html:14: <meta property="og:image" content="https://slh-api-production.up.railway.app/api/og/liquidity.png">
+D:\SLH_ECOSYSTEM\website\liquidity.html:22: <meta name="twitter:image" content="https://slh-api-production.up.railway.app/api/og/liquidity.png">
+D:\SLH_ECOSYSTEM\website\liquidity.html:344: const r = await fetch('https://slh-api-production.up.railway.app/api/launch/status');
+D:\SLH_ECOSYSTEM\website\member.html:14: <meta property="og:image" id="og-image" content="https://slh-api-production.up.railway.app/api/og/default.png">
+D:\SLH_ECOSYSTEM\website\member.html:22: <meta name="twitter:image" id="tw-image" content="https://slh-api-production.up.railway.app/api/og/default.png">
+D:\SLH_ECOSYSTEM\website\member.html:886: const img = MEMBER_API + '/api/member-card/image/' + memberId;
+D:\SLH_ECOSYSTEM\website\member.html:966: const res = await fetch(MEMBER_API + '/api/member-card/' + encodeURIComponent(memberId));
+D:\SLH_ECOSYSTEM\website\morning-handoff.html:330: <p>רץ כל שעה (בדקה 7). בודק <code>/api/health</code> ו-<code>/api/audit/verify-chain</code>. אם משהו נופל, לוג נכתב ל-<code>ops/overnight-health-log.md</code>.</p>
+D:\SLH_ECOSYSTEM\website\morning-handoff.html:334: <p>רץ 3 פעמים בשעה (בדקה 13, 33, 53). בודק <code>/api/launch/status</code> לזהות אם תורם שלח BNB. לוג ל-<code>ops/launch-watcher.md</code>.</p>
+D:\SLH_ECOSYSTEM\website\morning-handoff.html:364: <li><strong>H-1/H-2 FIXED:</strong> /api/admin/* now require X-Admin-Key header</li>
+D:\SLH_ECOSYSTEM\website\network.html:16: <meta property="og:image" content="https://slh-api-production.up.railway.app/api/og/network.png">
+D:\SLH_ECOSYSTEM\website\network.html:23: <meta name="twitter:image" content="https://slh-api-production.up.railway.app/api/og/network.png">
+D:\SLH_ECOSYSTEM\website\network.html:464: const r = await fetch(SLH_API + '/api/admin/dashboard');
+D:\SLH_ECOSYSTEM\website\network.html:484: const r = await fetch(SLH_API + '/api/network/slh-holders?limit=100');
+D:\SLH_ECOSYSTEM\website\onboarding.html:866: const res = await fetch(API + '/api/beta/status');
+D:\SLH_ECOSYSTEM\website\ops-dashboard.html:279: const r = await fetch(API+'/api/health');
+D:\SLH_ECOSYSTEM\website\ops-dashboard.html:301: const r = await fetch(API+'/api/admin/dashboard',{headers:{'X-Admin-Key':key}});
+D:\SLH_ECOSYSTEM\website\ops-dashboard.html:309: const r = await fetch(API+'/api/launch/status');
+D:\SLH_ECOSYSTEM\website\ops-dashboard.html:318: const r = await fetch(API+'/api/audit/verify-chain?limit=1000');
+D:\SLH_ECOSYSTEM\website\ops-dashboard.html:326: const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=binancecoin&vs_currencies=usd');
+D:\SLH_ECOSYSTEM\website\ops-report-20260411.html:424: <span class="tech-tag">NEW: /api/user/ensure</span>
+D:\SLH_ECOSYSTEM\website\ops-report-20260411.html:428: <a href="https://slh-api-production.up.railway.app/api/user/ensure" class="verify">
+D:\SLH_ECOSYSTEM\website\ops-report-20260411.html:429: <code>POST /api/user/ensure → idempotent user creation</code>
+D:\SLH_ECOSYSTEM\website\ops-report-20260411.html:470: רגולטור יכול לקרוא ל-<code>GET /api/audit/verify-chain</code> ולאמת שהשרשרת שלמה.
+D:\SLH_ECOSYSTEM\website\ops-report-20260411.html:477: <a href="https://slh-api-production.up.railway.app/api/audit/verify-chain" class="verify">
+D:\SLH_ECOSYSTEM\website\ops-report-20260411.html:478: <code>GET /api/audit/verify-chain — live endpoint</code>
+D:\SLH_ECOSYSTEM\website\ops-report-20260411.html:528: שילוב עם <code>/api/v3/account</code> עם query string signature
+D:\SLH_ECOSYSTEM\website\ops-report-20260411.html:548: <span class="tech-tag gold">/api/cex/portfolio</span>
+D:\SLH_ECOSYSTEM\website\ops-report-20260411.html:556: <code>GET /api/cex/portfolio/{user_id}</code> מחזיר את כל ה-snapshots הטריים ביותר
+D:\SLH_ECOSYSTEM\website\ops-report-20260411.html:674: Same filter applied to <code>/api/leaderboard</code> (xp, balance, staking, referrals).
+D:\SLH_ECOSYSTEM\website\ops-report-20260411.html:739: <a href="https://slh-api-production.up.railway.app/api/audit/verify-chain" target="_blank" class="verify">
+D:\SLH_ECOSYSTEM\website\ops-report-20260411.html:740: <code>GET /api/audit/verify-chain</code>
+D:\SLH_ECOSYSTEM\website\ops-report-20260411.html:746: <a href="https://slh-api-production.up.railway.app/api/beta/status" target="_blank" class="verify">
+D:\SLH_ECOSYSTEM\website\ops-report-20260411.html:747: <code>GET /api/beta/status</code>
+D:\SLH_ECOSYSTEM\website\ops-report-20260411.html:753: <a href="https://slh-api-production.up.railway.app/api/admin/dashboard" target="_blank" class="verify">
+D:\SLH_ECOSYSTEM\website\ops-report-20260411.html:754: <code>GET /api/admin/dashboard</code>
+D:\SLH_ECOSYSTEM\website\ops-report-20260411.html:760: <a href="https://slh-api-production.up.railway.app/api/cex/portfolio/224223270" target="_blank" class="verify">
+D:\SLH_ECOSYSTEM\website\ops-report-20260411.html:761: <code>GET /api/cex/portfolio/224223270</code>
+D:\SLH_ECOSYSTEM\website\ops-report-20260411.html:767: <a href="https://slh-api-production.up.railway.app/api/user/full/224223270" target="_blank" class="verify">
+D:\SLH_ECOSYSTEM\website\ops-report-20260411.html:768: <code>GET /api/user/full/224223270</code>
+D:\SLH_ECOSYSTEM\website\ops-report-20260411.html:853: 4 endpoints חדשים: <code>/api/tokenomics/stats</code> (supply, burned, staked, reserves),
+D:\SLH_ECOSYSTEM\website\ops-report-20260411.html:854: <code>/api/tokenomics/internal-transfer</code> (FREE MNH transfers), <code>/api/tokenomics/burn</code>
+D:\SLH_ECOSYSTEM\website\ops-report-20260411.html:855: (record burns for supply accounting), <code>/api/tokenomics/reserves/add</code> (proof of reserves).
+D:\SLH_ECOSYSTEM\website\ops-report-20260411.html:863: <a href="https://slh-api-production.up.railway.app/api/tokenomics/stats" class="verify" target="_blank">
+D:\SLH_ECOSYSTEM\website\ops-report-20260411.html:864: <code>GET /api/tokenomics/stats</code>
+D:\SLH_ECOSYSTEM\website\ops-report-20260411.html:875: Endpoint: <code>/api/strategy/list</code> ו-<code>/api/strategy/backtest/{id}?months=12</code>.
+D:\SLH_ECOSYSTEM\website\ops-report-20260411.html:881: <a href="https://slh-api-production.up.railway.app/api/strategy/list" class="verify" target="_blank">
+D:\SLH_ECOSYSTEM\website\ops-report-20260411.html:882: <code>GET /api/strategy/list</code>
+D:\SLH_ECOSYSTEM\website\ops-report-20260411.html:889: <code>/api/network/slh-holders</code> מוכן לקבלת נתוני מחזיקי SLH. הבעיה: Etherscan V2 free
+D:\SLH_ECOSYSTEM\website\overnight-report.html:14: <meta property="og:image" content="https://slh-api-production.up.railway.app/api/og/default.png">
+D:\SLH_ECOSYSTEM\website\overnight-report.html:420: const r = await fetch(API + '/api/launch/status', { cache: 'no-store' });
+D:\SLH_ECOSYSTEM\website\overnight-report.html:443: const r = await fetch(API + '/api/health', { cache: 'no-store' });
+D:\SLH_ECOSYSTEM\website\overnight-report.html:463: const r = await fetch(API + '/api/admin/dashboard', { cache: 'no-store' });
+D:\SLH_ECOSYSTEM\website\overnight-report.html:473: const r = await fetch(API + '/api/audit/verify-chain', { cache: 'no-store' });
+D:\SLH_ECOSYSTEM\website\overnight-report.html:484: const r = await fetch(API + '/api/beta/status', { cache: 'no-store' });
+D:\SLH_ECOSYSTEM\website\p2p.html:14: <meta property="og:image" content="https://slh-api-production.up.railway.app/api/og/default.png">
+D:\SLH_ECOSYSTEM\website\p2p.html:22: <meta name="twitter:image" content="https://slh-api-production.up.railway.app/api/og/default.png">
+D:\SLH_ECOSYSTEM\website\partner-dashboard.html:14: <meta property="og:image" content="https://slh-api-production.up.railway.app/api/og/launch-event.png">
+D:\SLH_ECOSYSTEM\website\partner-dashboard.html:24: <meta name="twitter:image" content="https://slh-api-production.up.railway.app/api/og/launch-event.png">
+D:\SLH_ECOSYSTEM\website\partner-dashboard.html:354: const r = await fetch(API + '/api/launch/status', { cache: 'no-store' });
+D:\SLH_ECOSYSTEM\website\privacy.html:14: <meta property="og:image" content="https://slh-api-production.up.railway.app/api/og/default.png">
+D:\SLH_ECOSYSTEM\website\privacy.html:23: <meta name="twitter:image" content="https://slh-api-production.up.railway.app/api/og/default.png">
+D:\SLH_ECOSYSTEM\website\referral-card.html:14: <meta property="og:image" content="https://slh-api-production.up.railway.app/api/og/referral.png">
+D:\SLH_ECOSYSTEM\website\referral-card.html:22: <meta name="twitter:image" content="https://slh-api-production.up.railway.app/api/og/referral.png">
+D:\SLH_ECOSYSTEM\website\referral.html:14: <meta property="og:image" content="https://slh-api-production.up.railway.app/api/og/referral.png">
+D:\SLH_ECOSYSTEM\website\referral.html:22: <meta name="twitter:image" content="https://slh-api-production.up.railway.app/api/og/referral.png">
+D:\SLH_ECOSYSTEM\website\referral.html:559: fetch('https://slh-api-production.up.railway.app/api/referral/stats/' + _initId)
+D:\SLH_ECOSYSTEM\website\roadmap.html:18: <meta property="og:image" content="https://slh-api-production.up.railway.app/api/og/roadmap.png">
+D:\SLH_ECOSYSTEM\website\roadmap.html:28: <meta name="twitter:image" content="https://slh-api-production.up.railway.app/api/og/roadmap.png">
+D:\SLH_ECOSYSTEM\website\roadmap.html:498: desc: { he: 'regulator-ready — endpoint /api/audit/verify-chain, כל פעולה חתומה ב-hash chain, append-only', en: 'Regulator-ready — /api/audit/verify-chain, every action hash-chained, append-only', ru: 'Готов для регулятора — каждое действие в hash-цепочке', ar: 'جاهز للمنظم — كل إجراء مسجل في سلسلة hash', fr: 'Prêt pour le régulateur — chaque action dans une chaîne de hash' }
+D:\SLH_ECOSYSTEM\website\staking.html:17: <meta property="og:image" content="https://slh-api-production.up.railway.app/api/og/default.png">
+D:\SLH_ECOSYSTEM\website\staking.html:26: <meta name="twitter:image" content="https://slh-api-production.up.railway.app/api/og/default.png">
+D:\SLH_ECOSYSTEM\website\staking.html:867: const r = await fetch(API + '/api/staking/plans');
+D:\SLH_ECOSYSTEM\website\staking.html:913: fetch(API + '/api/referral/tree/' + uid),
+D:\SLH_ECOSYSTEM\website\staking.html:914: fetch(API + '/api/referral/stats/' + uid)
+D:\SLH_ECOSYSTEM\website\sw.js:37: if (event.request.url.includes('/api/')) return;
+D:\SLH_ECOSYSTEM\website\system-health.html:296: { name: 'API Root', url: API + '/api/health', desc: 'FastAPI service responding' },
+D:\SLH_ECOSYSTEM\website\system-health.html:297: { name: 'Admin Dashboard', url: API + '/api/admin/dashboard', desc: 'Aggregated stats endpoint', auth: true },
+D:\SLH_ECOSYSTEM\website\system-health.html:298: { name: 'User Stats', url: API + '/api/stats', desc: 'Public stats endpoint' },
+D:\SLH_ECOSYSTEM\website\system-health.html:299: { name: 'Prices', url: API + '/api/prices', desc: 'Market prices feed' },
+D:\SLH_ECOSYSTEM\website\system-health.html:300: { name: 'Staking Plans', url: API + '/api/staking/plans', desc: 'Available staking plans' },
+D:\SLH_ECOSYSTEM\website\system-health.html:303: { name: 'Audit Chain Verify', url: API + '/api/audit/verify-chain', desc: 'SHA-256 hash chain integrity', check: d => d.ok },
+D:\SLH_ECOSYSTEM\website\system-health.html:304: { name: 'Audit Recent', url: API + '/api/audit/recent?limit=1', desc: 'Audit entries feed' },
+D:\SLH_ECOSYSTEM\website\system-health.html:305: { name: 'Beta Coupons (Genesis 49)', url: API + '/api/beta/status', desc: 'Genesis 49 coupon remaining', check: d => d.total_remaining !== undefined },
+D:\SLH_ECOSYSTEM\website\system-health.html:306: { name: 'CEX Portfolio (sample)', url: API + '/api/cex/portfolio/224223270', desc: 'Portfolio consolidation endpoint' },
+D:\SLH_ECOSYSTEM\website\system-health.html:309: { name: 'User Profile (full)', url: API + '/api/user/full/224223270', desc: 'User/wallets/balances/deposits', check: d => d.profile && d.profile.telegram_id },
+D:\SLH_ECOSYSTEM\website\system-health.html:310: { name: 'Cashback Tiers', url: API + '/api/cashback/224223270', desc: 'Distribution tier tracking' },
+D:\SLH_ECOSYSTEM\website\system-health.html:311: { name: 'Referral Leaderboard', url: API + '/api/referral/leaderboard?limit=5', desc: 'Top referrers' },
+D:\SLH_ECOSYSTEM\website\system-health.html:312: { name: 'Global Leaderboard', url: API + '/api/leaderboard?category=xp&limit=5', desc: 'Real users only filter' },
+D:\SLH_ECOSYSTEM\website\system-health.html:313: { name: 'Community Stats', url: API + '/api/community/stats', desc: 'Community engagement' },
+D:\SLH_ECOSYSTEM\website\system-health.html:314: { name: 'Analytics Stats', url: API + '/api/analytics/stats', desc: 'Website traffic stats' },
+D:\SLH_ECOSYSTEM\website\system-health.html:317: { name: 'External Wallets (TON)', url: API + '/api/external-wallets/224223270', desc: 'TON wallet tracking' },
+D:\SLH_ECOSYSTEM\website\system-health.html:318: { name: 'CEX Keys List', url: API + '/api/cex/keys/224223270', desc: 'User CEX keys (encrypted)' },
+D:\SLH_ECOSYSTEM\website\system-health.html:319: { name: 'BSC Holders (Moralis/Etherscan)', url: API + '/api/network/slh-holders?limit=5', desc: 'On-chain holder data', optional: true },
+D:\SLH_ECOSYSTEM\website\terms.html:14: <meta property="og:image" content="https://slh-api-production.up.railway.app/api/og/default.png">
+D:\SLH_ECOSYSTEM\website\terms.html:23: <meta name="twitter:image" content="https://slh-api-production.up.railway.app/api/og/default.png">
+D:\SLH_ECOSYSTEM\website\test-bots.html:381: const r = await fetch(`https://slh-api-production.up.railway.app/api/health`);
+D:\SLH_ECOSYSTEM\website\test-bots.html:408: const apiHealth = await fetch('https://slh-api-production.up.railway.app/api/health');
+D:\SLH_ECOSYSTEM\website\test-bots.html:447: await fetch('https://slh-api-production.up.railway.app/api/community/posts', {
+D:\SLH_ECOSYSTEM\website\trade.html:14: <meta property="og:image" content="https://slh-api-production.up.railway.app/api/og/trade.png">
+D:\SLH_ECOSYSTEM\website\trade.html:22: <meta name="twitter:image" content="https://slh-api-production.up.railway.app/api/og/trade.png">
+D:\SLH_ECOSYSTEM\website\wallet-guide.html:14: <meta property="og:image" content="https://slh-api-production.up.railway.app/api/og/wallet.png">
+D:\SLH_ECOSYSTEM\website\wallet-guide.html:22: <meta name="twitter:image" content="https://slh-api-production.up.railway.app/api/og/wallet.png">
+D:\SLH_ECOSYSTEM\website\wallet.html:14: <meta property="og:image" content="https://slh-api-production.up.railway.app/api/og/wallet.png">
+D:\SLH_ECOSYSTEM\website\wallet.html:22: <meta name="twitter:image" content="https://slh-api-production.up.railway.app/api/og/wallet.png">
+D:\SLH_ECOSYSTEM\website\wallet.html:955: const WALLET_API = 'https://slh-api-production.up.railway.app/api/wallet';
+D:\SLH_ECOSYSTEM\website\wallet.html:1014: // Uses /api/user/{id} because it includes TON_available/locked + SLH + ZVK
+D:\SLH_ECOSYSTEM\website\wallet.html:1015: // in a single response. /api/wallet/{id}/balances only has SLH+ZVK.
+D:\SLH_ECOSYSTEM\website\wallet.html:1022: const res = await fetch(`${WALLET_API.replace('/api/wallet','')}/api/user/${user.id}`, {
+D:\SLH_ECOSYSTEM\website\wallet.html:1130: const result = await apiPost('/api/wallet/send', {
+D:\SLH_ECOSYSTEM\website\wallet.html:1205: const res = await fetch(`${WALLET_API.replace('/api/wallet','')}/api/external-wallets/${user.id}`);
+D:\SLH_ECOSYSTEM\website\wallet.html:1283: const res = await fetch(`${WALLET_API.replace('/api/wallet','')}/api/external-wallets/add`, {
+D:\SLH_ECOSYSTEM\website\wallet.html:1293: await fetch(`${WALLET_API.replace('/api/wallet','')}/api/external-wallets/refresh/${data.wallet_id}`, {method: 'POST'});
+D:\SLH_ECOSYSTEM\website\wallet.html:1305: await fetch(`${WALLET_API.replace('/api/wallet','')}/api/external-wallets/${walletId}?user_id=${user.id}`, {method: 'DELETE'});
+D:\SLH_ECOSYSTEM\website\wallet.html:1314: await fetch(`${WALLET_API.replace('/api/wallet','')}/api/external-wallets/refresh/${walletId}`, {method: 'POST'});
+D:\SLH_ECOSYSTEM\website\wallet.html:1322: const CEX_API = WALLET_API.replace('/api/wallet','');
+D:\SLH_ECOSYSTEM\website\wallet.html:1334: const keysRes = await fetch(`${CEX_API}/api/cex/keys/${user.id}`);
+D:\SLH_ECOSYSTEM\website\wallet.html:1370: const portRes = await fetch(`${CEX_API}/api/cex/portfolio/${user.id}`);
+D:\SLH_ECOSYSTEM\website\wallet.html:1443: const res = await fetch(`${CEX_API}/api/cex/add-key`, {
+D:\SLH_ECOSYSTEM\website\wallet.html:1461: await fetch(`${CEX_API}/api/cex/sync/${data.key_id}`, {method: 'POST'});
+D:\SLH_ECOSYSTEM\website\wallet.html:1472: const res = await fetch(`${CEX_API}/api/cex/sync/${keyId}`, {method: 'POST'});
+D:\SLH_ECOSYSTEM\website\wallet.html:1488: const keysRes = await fetch(`${CEX_API}/api/cex/keys/${user.id}`);
+D:\SLH_ECOSYSTEM\website\wallet.html:1491: try { await fetch(`${CEX_API}/api/cex/sync/${k.id}`, {method: 'POST'}); } catch(e) {}
+D:\SLH_ECOSYSTEM\website\wallet.html:1502: await fetch(`${CEX_API}/api/cex/keys/${keyId}?user_id=${user.id}`, {method: 'DELETE'});
+D:\SLH_ECOSYSTEM\website\whitepaper.html:13: <meta property="og:image" content="https://slh-api-production.up.railway.app/api/og/default.png">
+D:\SLH_ECOSYSTEM\website\whitepaper.html:22: <meta name="twitter:image" content="https://slh-api-production.up.railway.app/api/og/default.png">

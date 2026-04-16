@@ -1,0 +1,214 @@
+﻿=== BOT OWNERSHIP MAP ===
+
+==================================================
+CONTAINER: slh-userinfo
+==================================================
+"BOT_TOKEN=8225059465:AAHftpz1wfET6gAiJ2zxSAKWB45aUy9NaT0",
+"API_URL=https://slh-api-production.up.railway.app",
+"ADMIN_USER_ID=224223270",
+
+==================================================
+CONTAINER: slh-guardian-bot
+==================================================
+"MODE=polling",
+"BOT_TOKEN=8521882513:AAHj84jfk88SQdp7MKxaO3w-mxUdycvcAcw",
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_guardian",
+"REDIS_URL=redis://redis:6379/1",
+
+==================================================
+CONTAINER: slh-game
+==================================================
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_main",
+"ADMIN_USER_ID=224223270",
+"BOT_TOKEN=8298897331:AAG5818dPoJ_T20DIBG8R4eRdfARCyBKJGo",
+
+==================================================
+CONTAINER: slh-nfty
+==================================================
+"BOT_TOKEN=7998856873:AAH7Z6uuoKZG0ziwxN1RNHS8mPovwsXmrOk",
+"WALLET_BOT_TOKEN=8729004785:AAFUDrVAGkknJ_SlyYpGgUyGpT-_7tG3gu0",
+"BOTSHOP_BOT_TOKEN=8288632241:AAHcQrolyjDseV5SxiyAzJwqNoavDaFtz_I",
+"GUARDIAN_BOT_TOKEN=8521882513:AAEqDDRBqBSMIMNB6zrGqMpbUT9yI7kIr6I",
+"GAME_BOT_TOKEN=8298897331:AAG5818dPoJ_T20DIBG8R4eRdfARCyBKJGo",
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_main",
+"RAILWAY_REDIS_URL=redis://default:HmOAFgZBjEiPMYCMPUeeAipeLZgudHSU@junction.proxy.rlwy.net:12921",
+"AIRDROP_BOT_TOKEN=8530795944:AAFMy5NKMHqSKFV0uUiSODrogG1qOjM-vzo",
+"ADMIN_USER_ID=224223270",
+"REDIS_URL=redis://redis:6379/0",
+"FACTORY_BOT_TOKEN=8216202784:AAH9E24PZQy3NYc3CGZXIt1m_blDg6GJ3j8",
+"TEST_BOT_TOKEN=8522542493:AAHdq7qnOuFCESBuffj7l_Ry4k7uQz5Zl84",
+"ADMIN_BOT_TOKEN=7644371589:AAGDrgXqW4KOJhe81NhbVLwIk4_8QgtANpQ",
+"RAILWAY_DATABASE_URL=postgresql://postgres:svNeqdqVRohdWMyPTiaqLHmZXlzIneuD@junction.proxy.rlwy.net:17913/railway",
+"FUN_BOT_TOKEN=8554485332:AAGfRfT7VWHMsVoTAVpvu_9HhSaocTcUbbQ",
+"CORE_BOT_TOKEN=8351227223:AAEAgbattFhxrwawyp9YM3TQrmVqfnKfcds",
+"EXPERTNET_BOT_TOKEN=8225059465:AAHftpz1wfET6gAiJ2zxSAKWB45aUy9NaT0",
+"RAILWAY_API_URL=https://slh-api-production.up.railway.app",
+
+==================================================
+CONTAINER: slh-factory
+==================================================
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_factory",
+"ADMIN_USER_ID=224223270",
+"MODE=polling",
+"BOT_TOKEN=8216202784:AAH9E24PZQy3NYc3CGZXIt1m_blDg6GJ3j8",
+
+==================================================
+CONTAINER: slh-core-bot
+==================================================
+"BOT_TOKEN=8351227223:AAEAgbattFhxrwawyp9YM3TQrmVqfnKfcds",
+"REDIS_URL=redis://redis:6379/0",
+"BOT_USERNAME=SLH_Academia_bot",
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_main",
+"MODE=polling",
+"ADMIN_USER_ID=224223270",
+
+==================================================
+CONTAINER: slh-campaign
+==================================================
+"ADMIN_USER_ID=224223270",
+"MODE=polling",
+"BOT_TOKEN=8075933581:AAFZoFK_RFnTw8aTu4zrpBx-a6qMXFkNQ_Y",
+
+==================================================
+CONTAINER: slh-expertnet
+==================================================
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_main",
+"ADMIN_USER_ID=224223270",
+"BOT_TOKEN=8225059465:AAHftpz1wfET6gAiJ2zxSAKWB45aUy9NaT0",
+
+==================================================
+CONTAINER: slh-ton
+==================================================
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_main",
+"ADMIN_USER_ID=224223270",
+"BOT_TOKEN=8172123240:AAGrXCTd7am2NGCQS4let_ri64hNIcFOKD0",
+
+==================================================
+CONTAINER: slh-nifti
+==================================================
+"BOT_TOKEN=8478252455:AAEfO9AQP5DhxXIFzsR2jWk-dhH9X3yUIyY",
+"ADMIN_USER_ID=224223270",
+
+==================================================
+CONTAINER: slh-crazy-panel
+==================================================
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_main",
+"ADMIN_USER_ID=224223270",
+"BOT_TOKEN=8238076648:AAE38Ujch6TPdOsVmWhNDYDGdhJGBXMpfLE",
+
+==================================================
+CONTAINER: slh-fun
+==================================================
+"MODE=polling",
+"BOT_TOKEN=8554485332:AAGfRfT7VWHMsVoTAVpvu_9HhSaocTcUbbQ",
+
+==================================================
+CONTAINER: slh-wallet
+==================================================
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_wallet",
+"ADMIN_USER_ID=224223270",
+"BOT_TOKEN=8729004785:AAFUDrVAGkknJ_SlyYpGgUyGpT-_7tG3gu0",
+"TELEGRAM_BOT_TOKEN=8729004785:AAFUDrVAGkknJ_SlyYpGgUyGpT-_7tG3gu0",
+
+==================================================
+CONTAINER: slh-beynonibank
+==================================================
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_main",
+"ADMIN_USER_ID=224223270",
+"BOT_TOKEN=8384883433:AAEu0WPjaApipLg1oQFSO-b5b4ea03nJkQ0",
+
+==================================================
+CONTAINER: slh-selha
+==================================================
+"ADMIN_USER_ID=224223270",
+"BOT_TOKEN=8225059465:AAHftpz1wfET6gAiJ2zxSAKWB45aUy9NaT0",
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_main",
+
+==================================================
+CONTAINER: slh-ts-set
+==================================================
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_main",
+"ADMIN_USER_ID=224223270",
+"BOT_TOKEN=8692123720:AAG7ORd2iXdv_3IB7j4QXOEtVPODrkoAekk",
+
+==================================================
+CONTAINER: slh-airdrop
+==================================================
+"RAILWAY_DATABASE_URL=postgresql://postgres:svNeqdqVRohdWMyPTiaqLHmZXlzIneuD@junction.proxy.rlwy.net:17913/railway",
+"REDIS_URL=redis://redis:6379/2",
+"RAILWAY_REDIS_URL=redis://default:HmOAFgZBjEiPMYCMPUeeAipeLZgudHSU@junction.proxy.rlwy.net:12921",
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_main",
+
+==================================================
+CONTAINER: slh-nft-shop
+==================================================
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_main",
+"ADMIN_USER_ID=224223270",
+"BOT_TOKEN=8394483424:AAFFWITFMrhqX-XUr8VUz19pui9JW09iIDo",
+
+==================================================
+CONTAINER: slh-ledger
+==================================================
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_main",
+"ADMIN_USER_ID=224223270",
+"BOT_TOKEN=8494620699:AAEqfbjimoD7slaes9YcALKluZY1nEOu87k",
+
+==================================================
+CONTAINER: slh-chance
+==================================================
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_main",
+"ADMIN_USER_ID=224223270",
+"BOT_TOKEN=8415305046:AAHHBzuCm_OV0TrJ9DctSh4zMiJshkUpNVk",
+
+==================================================
+CONTAINER: slh-ton-mnh
+==================================================
+"BOT_TOKEN=8508943909:AAGmA8KrOSckcayWVVD_h_DksV4qUv5RWt4",
+"SLH_BOT_TOKEN=8508943909:AAGmA8KrOSckcayWVVD_h_DksV4qUv5RWt4",
+"ADMIN_USER_ID=224223270",
+
+==================================================
+CONTAINER: slh-botshop
+==================================================
+"MODE=polling",
+"BOT_TOKEN=8288632241:AAHcQrolyjDseV5SxiyAzJwqNoavDaFtz_I",
+"TELEGRAM_BOT_TOKEN=8288632241:AAHcQrolyjDseV5SxiyAzJwqNoavDaFtz_I",
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_botshop",
+"ADMIN_USER_ID=224223270",
+
+==================================================
+CONTAINER: slh-osif-shop
+==================================================
+"BOT_TOKEN=8106987443:AAF7lTa1QfUBzc47XZuJXXRRKJmQcoHPxBU",
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_main",
+"ADMIN_USER_ID=224223270",
+
+==================================================
+CONTAINER: slh-test-bot
+==================================================
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_main",
+"ADMIN_USER_ID=224223270",
+"BOT_TOKEN=8522542493:AAHdq7qnOuFCESBuffj7l_Ry4k7uQz5Zl84",
+
+==================================================
+CONTAINER: slh-admin
+==================================================
+"ADMIN_USER_ID=224223270",
+"BOT_TOKEN=7644371589:AAGDrgXqW4KOJhe81NhbVLwIk4_8QgtANpQ",
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_main",
+
+==================================================
+CONTAINER: slh_redis
+==================================================
+
+==================================================
+CONTAINER: redis-nifty
+==================================================
+
+==================================================
+CONTAINER: slh-postgres
+==================================================
+
+==================================================
+CONTAINER: slh-redis
+==================================================

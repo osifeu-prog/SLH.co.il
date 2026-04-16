@@ -1,0 +1,187 @@
+﻿=== DISCOVERY AUDIT ===
+Time: 2026-04-13 17:15:15
+
+==========================================================================================
+ROOTS
+==========================================================================================
+D:\SLH_ECOSYSTEM
+D:\SLH_PROJECT_V2
+D:\SLH
+D:\SLH_BOTS
+D:\ExpertNet_Core
+D:\GATE_BOTSHOP
+D:\TerminalCommandCenter
+
+==========================================================================================
+GIT REPOS
+==========================================================================================
+D:\SLH_ECOSYSTEM
+D:\SLH_ECOSYSTEM\api
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy
+D:\SLH_ECOSYSTEM\botshop
+D:\SLH_ECOSYSTEM\website
+D:\SLH_PROJECT_V2
+
+==========================================================================================
+DOCKER FILES / COMPOSE FILES
+==========================================================================================
+D:\SLH_ECOSYSTEM\docker-compose.yml
+D:\SLH_ECOSYSTEM\Dockerfile
+D:\SLH_ECOSYSTEM\airdrop\Dockerfile
+D:\SLH_ECOSYSTEM\airdrop\Dockerfile.backend
+D:\SLH_ECOSYSTEM\airdrop\Dockerfile.bot
+D:\SLH_ECOSYSTEM\airdrop\infra\docker-compose.yml
+D:\SLH_ECOSYSTEM\airdrop\infra\Dockerfile
+D:\SLH_ECOSYSTEM\api\Dockerfile
+D:\SLH_ECOSYSTEM\backups\20260405_160808\docker-compose.yml
+D:\SLH_ECOSYSTEM\backups\20260405_160808\Dockerfile.nfty
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\Dockerfile
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\docker-compose.redis.yml
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\docker-compose.redis.yml.bak_queue_20260305_212532
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\docker-compose.redis.yml
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\docker-compose.redis.yml.bak_queue_20260305_212532
+
+==========================================================================================
+ENV FILES
+==========================================================================================
+
+==========================================================================================
+BOT ENTRYPOINT CANDIDATES
+==========================================================================================
+D:\SLH_ECOSYSTEM\admin-bot\shared\slh_payments\payment_gate.py:4: Usage with aiogram:
+D:\SLH_ECOSYSTEM\admin-bot\shared\slh_payments\payment_gate.py:8: Usage with python-telegram-bot:
+D:\SLH_ECOSYSTEM\admin-bot\shared\slh_payments\payment_gate.py:25: self.bot = bot          # aiogram Bot
+D:\SLH_ECOSYSTEM\admin-bot\shared\slh_payments\payment_gate.py:26: self.dp = dp            # aiogram Dispatcher
+D:\SLH_ECOSYSTEM\admin-bot\shared\slh_payments\payment_gate.py:27: self.bot_app = bot_app  # python-telegram-bot Application
+D:\SLH_ECOSYSTEM\admin-bot\shared\slh_payments\payment_gate.py:29: # ---- aiogram handlers ----
+D:\SLH_ECOSYSTEM\admin-bot\shared\slh_payments\payment_gate.py:32: """Register payment handlers with aiogram Dispatcher."""
+D:\SLH_ECOSYSTEM\admin-bot\shared\slh_payments\payment_gate.py:35: from aiogram import F
+D:\SLH_ECOSYSTEM\admin-bot\shared\slh_payments\payment_gate.py:36: from aiogram.filters import Command
+D:\SLH_ECOSYSTEM\admin-bot\shared\slh_payments\payment_gate.py:37: from aiogram.types import Message, CallbackQuery
+D:\SLH_ECOSYSTEM\admin-bot\shared\slh_payments\payment_gate.py:102: from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+D:\SLH_ECOSYSTEM\admin-bot\shared\bot_template.py:13: from aiogram import Bot, Dispatcher, F, types
+D:\SLH_ECOSYSTEM\admin-bot\shared\bot_template.py:14: from aiogram.filters import Command
+D:\SLH_ECOSYSTEM\admin-bot\shared\bot_template.py:34: bot = Bot(BOT_TOKEN)
+D:\SLH_ECOSYSTEM\admin-bot\shared\bot_template.py:35: dp = Dispatcher()
+D:\SLH_ECOSYSTEM\admin-bot\main.py:11: from aiogram import Bot, Dispatcher, F, types
+D:\SLH_ECOSYSTEM\admin-bot\main.py:12: from aiogram.filters import Command
+D:\SLH_ECOSYSTEM\admin-bot\main.py:13: from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+D:\SLH_ECOSYSTEM\admin-bot\main.py:27: bot = Bot(BOT_TOKEN)
+D:\SLH_ECOSYSTEM\admin-bot\main.py:28: dp = Dispatcher()
+D:\SLH_ECOSYSTEM\admin-bot\main.py:402: from aiogram.types import BufferedInputFile
+D:\SLH_ECOSYSTEM\airdrop\app\api_server.py:2: from fastapi import FastAPI, HTTPException
+D:\SLH_ECOSYSTEM\airdrop\app\api_server.py:3: from fastapi.responses import JSONResponse, HTMLResponse
+D:\SLH_ECOSYSTEM\airdrop\app\api_server.py:6: app = FastAPI(title="SLH Airdrop API")
+D:\SLH_ECOSYSTEM\airdrop\app\api_server.py:181: import uvicorn
+D:\SLH_ECOSYSTEM\airdrop\app\api_server.py:184: uvicorn.run(app, host="0.0.0.0", port=port)
+D:\SLH_ECOSYSTEM\airdrop\app\bot_server.py:1842: bot = SLHInvestmentBot()
+D:\SLH_ECOSYSTEM\airdrop\app\complete_api.py:1: from fastapi import FastAPI, HTTPException, Depends
+D:\SLH_ECOSYSTEM\airdrop\app\complete_api.py:9: app = FastAPI(title="SLH Airdrop API", version="2.0")
+D:\SLH_ECOSYSTEM\airdrop\bot\clean_bot.py:159: app = Application.builder().token(TOKEN).build()
+D:\SLH_ECOSYSTEM\airdrop\bot\main_bot.py:201: application = Application.builder().token(TOKEN).build()
+D:\SLH_ECOSYSTEM\airdrop\bot\production_bot.py:292: application = Application.builder().token(TOKEN).build()
+D:\SLH_ECOSYSTEM\airdrop\bot\professional_bot.py:508: app = Application.builder().token(TOKEN).build()
+D:\SLH_ECOSYSTEM\airdrop\bot\ton_bot.py:238: app = Application.builder().token(TOKEN).build()
+D:\SLH_ECOSYSTEM\airdrop\bot\updated_bot.py:508: app = Application.builder().token(TOKEN).build()
+D:\SLH_ECOSYSTEM\airdrop\bot\updated_bot_v2.py:201: application = Application.builder().token(TOKEN).build()
+D:\SLH_ECOSYSTEM\airdrop\old_backups\backup_20260131_224225\main_run.py:1: from fastapi import FastAPI
+D:\SLH_ECOSYSTEM\airdrop\old_backups\backup_20260131_224225\main_run.py:4: app = FastAPI(title='Airdrop Platform', version='stable')
+D:\SLH_ECOSYSTEM\airdrop\old_backups\backup_20260131_224225\public.py:1: from fastapi import APIRouter
+D:\SLH_ECOSYSTEM\airdrop\old_backups\backup_20260131_231240\main_run.py:1: from fastapi import FastAPI
+D:\SLH_ECOSYSTEM\airdrop\old_backups\backup_20260131_231240\main_run.py:4: app = FastAPI(title='Airdrop Platform', version='stable')
+D:\SLH_ECOSYSTEM\airdrop\old_backups\backup_20260131_231240\public.py:1: from fastapi import APIRouter
+D:\SLH_ECOSYSTEM\airdrop\old_backups\backup_20260131_231757\main_run.py:1: from fastapi import FastAPI
+D:\SLH_ECOSYSTEM\airdrop\old_backups\backup_20260131_231757\main_run.py:4: app = FastAPI(title='Airdrop Platform', version='stable')
+D:\SLH_ECOSYSTEM\airdrop\old_backups\backup_20260131_231757\public.py:1: from fastapi import APIRouter, HTTPException
+D:\SLH_ECOSYSTEM\airdrop\old_backups\backup_20260131_231917\main_run.py:1: from fastapi import FastAPI
+D:\SLH_ECOSYSTEM\airdrop\old_backups\backup_20260131_231917\main_run.py:4: app = FastAPI(title='Airdrop Platform', version='stable')
+D:\SLH_ECOSYSTEM\airdrop\old_backups\backup_20260131_231917\public.py:1: from fastapi import APIRouter, HTTPException
+D:\SLH_ECOSYSTEM\airdrop\old_backups\backup_20260131_232108\main_run.py:1: from fastapi import FastAPI
+D:\SLH_ECOSYSTEM\airdrop\old_backups\backup_20260131_232108\main_run.py:4: app = FastAPI(title='Airdrop Platform', version='stable')
+D:\SLH_ECOSYSTEM\airdrop\old_backups\backup_20260131_232108\public.py:1: from fastapi import APIRouter, HTTPException
+D:\SLH_ECOSYSTEM\airdrop\old_backups\backup_20260131_232753\main_run.py:1: from fastapi import FastAPI
+D:\SLH_ECOSYSTEM\airdrop\old_backups\backup_20260131_232753\main_run.py:4: app = FastAPI(title='Airdrop Platform', version='stable')
+D:\SLH_ECOSYSTEM\airdrop\old_backups\backup_20260131_232753\public.py:1: from fastapi import APIRouter, HTTPException
+D:\SLH_ECOSYSTEM\airdrop\amazing_bot.py:715: bot = SLHAirdropBot()
+D:\SLH_ECOSYSTEM\airdrop\FINAL_BOT.py:282: bot = AirdropBot()
+D:\SLH_ECOSYSTEM\airdrop\new_ton_bot.py:44: app = Application.builder().token(TOKEN).build()
+D:\SLH_ECOSYSTEM\airdrop\perfect_bot.py:298: bot = AirdropBot()
+D:\SLH_ECOSYSTEM\airdrop\simple_bot.py:327: bot = SimpleBot()
+D:\SLH_ECOSYSTEM\airdrop\test_system.py:33: async def check_bot():
+D:\SLH_ECOSYSTEM\airdrop\test_system.py:41: result = asyncio.run(check_bot())
+D:\SLH_ECOSYSTEM\api\routes\ai_chat.py:10: from fastapi import APIRouter, HTTPException
+D:\SLH_ECOSYSTEM\api\main.py:2: SLH Ecosystem API - FastAPI Backend
+D:\SLH_ECOSYSTEM\api\main.py:15: from fastapi import FastAPI, HTTPException, Depends, Query, Request, Header
+D:\SLH_ECOSYSTEM\api\main.py:16: from fastapi.middleware.cors import CORSMiddleware
+D:\SLH_ECOSYSTEM\api\main.py:17: from fastapi.responses import JSONResponse
+D:\SLH_ECOSYSTEM\api\main.py:41: app = FastAPI(
+D:\SLH_ECOSYSTEM\api\main.py:3430: # Static route MUST come before /{user_id} to avoid FastAPI matching "price" as user_id
+D:\SLH_ECOSYSTEM\api\main.py:6017: from fastapi.responses import Response
+D:\SLH_ECOSYSTEM\api\main.py:6800: from fastapi.responses import Response
+D:\SLH_ECOSYSTEM\api\patch_wallet_security.py:15: "from fastapi import FastAPI, HTTPException, Depends, Query, Request",
+D:\SLH_ECOSYSTEM\api\patch_wallet_security.py:16: "from fastapi import FastAPI, HTTPException, Depends, Query, Request, Header",
+D:\SLH_ECOSYSTEM\api\patch_wallet_security.py:17: "fastapi Header import"
+D:\SLH_ECOSYSTEM\api\run_tamagotchi_advanced.py:3: from aiogram import Bot, Dispatcher
+D:\SLH_ECOSYSTEM\api\run_tamagotchi_advanced.py:11: bot = Bot(token=TOKEN)
+D:\SLH_ECOSYSTEM\api\run_tamagotchi_advanced.py:12: dp = Dispatcher()
+D:\SLH_ECOSYSTEM\api\secure_wallet.py:1: from fastapi import APIRouter, Depends, HTTPException, Header, Request
+D:\SLH_ECOSYSTEM\backups\20260405_160808\main.py:16: from aiogram import Bot, Dispatcher, F, Router
+D:\SLH_ECOSYSTEM\backups\20260405_160808\main.py:17: from aiogram.client.default import DefaultBotProperties
+D:\SLH_ECOSYSTEM\backups\20260405_160808\main.py:18: from aiogram.enums import ParseMode
+D:\SLH_ECOSYSTEM\backups\20260405_160808\main.py:19: from aiogram.filters import Command, CommandObject
+D:\SLH_ECOSYSTEM\backups\20260405_160808\main.py:20: from aiogram.fsm.context import FSMContext
+D:\SLH_ECOSYSTEM\backups\20260405_160808\main.py:21: from aiogram.fsm.state import State, StatesGroup
+D:\SLH_ECOSYSTEM\backups\20260405_160808\main.py:22: from aiogram.fsm.storage.redis import RedisStorage
+D:\SLH_ECOSYSTEM\backups\20260405_160808\main.py:23: from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, Message, ReplyKeyboardMarkup
+D:\SLH_ECOSYSTEM\backups\20260405_160808\main.py:707: bot = Bot(BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+D:\SLH_ECOSYSTEM\backups\20260405_160808\main.py:711: dp = Dispatcher(storage=storage)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\app\bot\investor_wallet_bot.py:32: _TG_APP = Application.builder().token(token).build()
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\app\bot\investor_wallet_bot.py:195: def initialize_bot() -> None:
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\app\routers\investments.py:7: from fastapi import APIRouter, Depends, HTTPException
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\app\main.py:9: from fastapi import FastAPI, Request
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\app\main.py:32: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\app\main.py:72: b = Bot(token=env_str("BOT_TOKEN"))
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\app\main.py:108: from fastapi.responses import HTMLResponse, JSONResponse, Response, RedirectResponse
+
+==========================================================================================
+DATABASE URL / REDIS URL REFERENCES
+==========================================================================================
+D:\SLH_ECOSYSTEM\admin-bot\shared\slh_payments\db.py:3: import asyncpg
+D:\SLH_ECOSYSTEM\admin-bot\shared\slh_payments\db.py:6: _pool: Optional[asyncpg.Pool] = None
+D:\SLH_ECOSYSTEM\admin-bot\shared\slh_payments\db.py:9: async def get_pool() -> asyncpg.Pool:
+D:\SLH_ECOSYSTEM\admin-bot\shared\slh_payments\db.py:12: _pool = await asyncpg.create_pool(
+D:\SLH_ECOSYSTEM\admin-bot\shared\slh_payments\db.py:13: os.getenv("DATABASE_URL", "postgresql://postgres:slh_secure_2026@postgres:5432/slh_main"),
+D:\SLH_ECOSYSTEM\admin-bot\shared\slh_payments\ledger.py:7: import asyncpg
+D:\SLH_ECOSYSTEM\admin-bot\shared\slh_payments\ledger.py:15: _pool = await asyncpg.create_pool(
+D:\SLH_ECOSYSTEM\admin-bot\shared\slh_payments\ledger.py:16: os.getenv("DATABASE_URL", "postgresql://postgres:slh_secure_2026@postgres:5432/slh_main"),
+D:\SLH_ECOSYSTEM\airdrop\alembic\env.py:13: db_url = os.getenv("DATABASE_URL", "sqlite:///./test.db")
+D:\SLH_ECOSYSTEM\airdrop\alembic\env.py:14: if db_url.startswith("postgres://"):
+D:\SLH_ECOSYSTEM\airdrop\alembic\env.py:15: db_url = db_url.replace("postgres://", "postgresql://", 1)
+D:\SLH_ECOSYSTEM\airdrop\app\bot_server.py:48: DATABASE_URL = os.getenv("DATABASE_URL", "")
+D:\SLH_ECOSYSTEM\airdrop\app\database.py:8: if os.getenv("DATABASE_URL"):
+D:\SLH_ECOSYSTEM\airdrop\app\database.py:9: DATABASE_URL = os.getenv("DATABASE_URL")
+D:\SLH_ECOSYSTEM\airdrop\app\database.py:10: if DATABASE_URL.startswith("postgres://"):
+D:\SLH_ECOSYSTEM\airdrop\app\database.py:11: DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+D:\SLH_ECOSYSTEM\airdrop\app\database.py:13: DATABASE_URL = "sqlite:///./data/airdrop.db"
+D:\SLH_ECOSYSTEM\airdrop\app\database.py:15: engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {})
+D:\SLH_ECOSYSTEM\airdrop\app\redis_client.py:5: REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
+D:\SLH_ECOSYSTEM\airdrop\app\redis_client.py:9: self.redis = redis.from_url(REDIS_URL, decode_responses=True)
+D:\SLH_ECOSYSTEM\airdrop\migrations\env.py:24: url = os.getenv("DATABASE_URL")
+D:\SLH_ECOSYSTEM\airdrop\migrations\env.py:26: raise RuntimeError("DATABASE_URL is not set (required for Alembic migrations).")
+D:\SLH_ECOSYSTEM\airdrop\tools\db_check.py:7: e = create_engine(os.getenv("DATABASE_URL"))
+D:\SLH_ECOSYSTEM\airdrop\tools\run_sql.py:2: import psycopg2
+D:\SLH_ECOSYSTEM\airdrop\tools\run_sql.py:7: url = os.environ["DATABASE_URL"]
+D:\SLH_ECOSYSTEM\airdrop\tools\run_sql.py:11: conn = psycopg2.connect(url)
+D:\SLH_ECOSYSTEM\airdrop\test_system.py:58: db_url = os.getenv("DATABASE_URL")
+D:\SLH_ECOSYSTEM\airdrop\test_system.py:60: print("⚠️ DATABASE_URL not set, skipping database test")
+D:\SLH_ECOSYSTEM\airdrop\test_system.py:63: engine = create_engine(db_url)
+D:\SLH_ECOSYSTEM\api\main.py:19: import asyncpg
+D:\SLH_ECOSYSTEM\api\main.py:25: DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:slh_secure_2026@localhost:5432/slh_main")
+D:\SLH_ECOSYSTEM\api\main.py:101: pool: Optional[asyncpg.Pool] = None
+D:\SLH_ECOSYSTEM\api\main.py:108: if DATABASE_URL == "postgresql://postgres:slh_secure_2026@localhost:5432/slh_main":
+D:\SLH_ECOSYSTEM\api\main.py:109: _security_warnings.append("DATABASE_URL using default — set on Railway")
+D:\SLH_ECOSYSTEM\api\main.py:123: pool = await asyncpg.create_pool(DATABASE_URL, min_size=2, max_size=10)

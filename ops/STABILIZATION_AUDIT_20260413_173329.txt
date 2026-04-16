@@ -1,0 +1,268 @@
+﻿=== STABILIZATION AUDIT ===
+Time: 2026-04-13 17:33:30
+
+==========================================================================================
+1) Docker containers
+==========================================================================================
+NAMES              STATUS                PORTS
+slh-userinfo       Up 5 hours            
+slh-guardian-bot   Up 2 days             0.0.0.0:8001->8080/tcp, [::]:8001->8080/tcp
+slh-game           Up 2 days             
+slh-nfty           Up 2 days             
+slh-factory        Up 2 days             
+slh-core-bot       Up 2 days             
+slh-campaign       Up 2 days             
+slh-expertnet      Up 46 hours           
+slh-ton            Up 2 days             
+slh-nifti          Up 2 days             
+slh-crazy-panel    Up 46 hours           
+slh-fun            Up 2 days             0.0.0.0:8002->8080/tcp, [::]:8002->8080/tcp
+slh-wallet         Up 2 days             
+slh-beynonibank    Up 2 days             
+slh-selha          Up 5 hours            
+slh-ts-set         Up 2 days             
+slh-airdrop        Up 2 days             
+slh-nft-shop       Up 2 days             
+slh-ledger         Up 2 days             
+slh-chance         Up 2 days             
+slh-ton-mnh        Up 2 days             
+slh-botshop        Up 2 days             
+slh-osif-shop      Up 2 days             0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp
+slh-test-bot       Up 2 days             
+slh-admin          Up 2 days             
+slh_redis          Up 3 days             0.0.0.0:6380->6379/tcp, [::]:6380->6379/tcp
+redis-nifty        Up 3 days             6379/tcp
+slh-postgres       Up 3 days (healthy)   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+slh-redis          Up 3 days (healthy)   0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp
+
+==========================================================================================
+2) Duplicate Telegram conflicts in logs
+==========================================================================================
+---- slh-userinfo ----
+
+==========================================================================================
+3) Token ownership map
+==========================================================================================
+---- slh-userinfo ----
+"BOT_TOKEN=8225059465:AAHftpz1wfET6gAiJ2zxSAKWB45aUy9NaT0",
+---- slh-guardian-bot ----
+"MODE=polling",
+"BOT_TOKEN=8521882513:AAHj84jfk88SQdp7MKxaO3w-mxUdycvcAcw",
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_guardian",
+"REDIS_URL=redis://redis:6379/1",
+---- slh-game ----
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_main",
+"BOT_TOKEN=8298897331:AAG5818dPoJ_T20DIBG8R4eRdfARCyBKJGo",
+---- slh-nfty ----
+"BOT_TOKEN=7998856873:AAH7Z6uuoKZG0ziwxN1RNHS8mPovwsXmrOk",
+"WALLET_BOT_TOKEN=8729004785:AAFUDrVAGkknJ_SlyYpGgUyGpT-_7tG3gu0",
+"BOTSHOP_BOT_TOKEN=8288632241:AAHcQrolyjDseV5SxiyAzJwqNoavDaFtz_I",
+"GUARDIAN_BOT_TOKEN=8521882513:AAEqDDRBqBSMIMNB6zrGqMpbUT9yI7kIr6I",
+"GAME_BOT_TOKEN=8298897331:AAG5818dPoJ_T20DIBG8R4eRdfARCyBKJGo",
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_main",
+"RAILWAY_REDIS_URL=redis://default:HmOAFgZBjEiPMYCMPUeeAipeLZgudHSU@junction.proxy.rlwy.net:12921",
+"AIRDROP_BOT_TOKEN=8530795944:AAFMy5NKMHqSKFV0uUiSODrogG1qOjM-vzo",
+"REDIS_URL=redis://redis:6379/0",
+"FACTORY_BOT_TOKEN=8216202784:AAH9E24PZQy3NYc3CGZXIt1m_blDg6GJ3j8",
+"TEST_BOT_TOKEN=8522542493:AAHdq7qnOuFCESBuffj7l_Ry4k7uQz5Zl84",
+"ADMIN_BOT_TOKEN=7644371589:AAGDrgXqW4KOJhe81NhbVLwIk4_8QgtANpQ",
+"RAILWAY_DATABASE_URL=postgresql://postgres:svNeqdqVRohdWMyPTiaqLHmZXlzIneuD@junction.proxy.rlwy.net:17913/railway",
+"FUN_BOT_TOKEN=8554485332:AAGfRfT7VWHMsVoTAVpvu_9HhSaocTcUbbQ",
+"CORE_BOT_TOKEN=8351227223:AAEAgbattFhxrwawyp9YM3TQrmVqfnKfcds",
+"EXPERTNET_BOT_TOKEN=8225059465:AAHftpz1wfET6gAiJ2zxSAKWB45aUy9NaT0",
+---- slh-factory ----
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_factory",
+"MODE=polling",
+"BOT_TOKEN=8216202784:AAH9E24PZQy3NYc3CGZXIt1m_blDg6GJ3j8",
+---- slh-core-bot ----
+"BOT_TOKEN=8351227223:AAEAgbattFhxrwawyp9YM3TQrmVqfnKfcds",
+"REDIS_URL=redis://redis:6379/0",
+"BOT_USERNAME=SLH_Academia_bot",
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_main",
+"MODE=polling",
+---- slh-campaign ----
+"MODE=polling",
+"BOT_TOKEN=8075933581:AAFZoFK_RFnTw8aTu4zrpBx-a6qMXFkNQ_Y",
+---- slh-expertnet ----
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_main",
+"BOT_TOKEN=8225059465:AAHftpz1wfET6gAiJ2zxSAKWB45aUy9NaT0",
+---- slh-ton ----
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_main",
+"BOT_TOKEN=8172123240:AAGrXCTd7am2NGCQS4let_ri64hNIcFOKD0",
+---- slh-nifti ----
+"BOT_TOKEN=8478252455:AAEfO9AQP5DhxXIFzsR2jWk-dhH9X3yUIyY",
+---- slh-crazy-panel ----
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_main",
+"BOT_TOKEN=8238076648:AAE38Ujch6TPdOsVmWhNDYDGdhJGBXMpfLE",
+---- slh-fun ----
+"MODE=polling",
+"BOT_TOKEN=8554485332:AAGfRfT7VWHMsVoTAVpvu_9HhSaocTcUbbQ",
+---- slh-wallet ----
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_wallet",
+"BOT_TOKEN=8729004785:AAFUDrVAGkknJ_SlyYpGgUyGpT-_7tG3gu0",
+"TELEGRAM_BOT_TOKEN=8729004785:AAFUDrVAGkknJ_SlyYpGgUyGpT-_7tG3gu0",
+---- slh-beynonibank ----
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_main",
+"BOT_TOKEN=8384883433:AAEu0WPjaApipLg1oQFSO-b5b4ea03nJkQ0",
+---- slh-selha ----
+"BOT_TOKEN=8225059465:AAHftpz1wfET6gAiJ2zxSAKWB45aUy9NaT0",
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_main",
+---- slh-ts-set ----
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_main",
+"BOT_TOKEN=8692123720:AAG7ORd2iXdv_3IB7j4QXOEtVPODrkoAekk",
+---- slh-airdrop ----
+"RAILWAY_DATABASE_URL=postgresql://postgres:svNeqdqVRohdWMyPTiaqLHmZXlzIneuD@junction.proxy.rlwy.net:17913/railway",
+"REDIS_URL=redis://redis:6379/2",
+"RAILWAY_REDIS_URL=redis://default:HmOAFgZBjEiPMYCMPUeeAipeLZgudHSU@junction.proxy.rlwy.net:12921",
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_main",
+---- slh-nft-shop ----
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_main",
+"BOT_TOKEN=8394483424:AAFFWITFMrhqX-XUr8VUz19pui9JW09iIDo",
+---- slh-ledger ----
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_main",
+"BOT_TOKEN=8494620699:AAEqfbjimoD7slaes9YcALKluZY1nEOu87k",
+---- slh-chance ----
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_main",
+"BOT_TOKEN=8415305046:AAHHBzuCm_OV0TrJ9DctSh4zMiJshkUpNVk",
+---- slh-ton-mnh ----
+"BOT_TOKEN=8508943909:AAGmA8KrOSckcayWVVD_h_DksV4qUv5RWt4",
+"SLH_BOT_TOKEN=8508943909:AAGmA8KrOSckcayWVVD_h_DksV4qUv5RWt4",
+---- slh-botshop ----
+"MODE=polling",
+"BOT_TOKEN=8288632241:AAHcQrolyjDseV5SxiyAzJwqNoavDaFtz_I",
+"TELEGRAM_BOT_TOKEN=8288632241:AAHcQrolyjDseV5SxiyAzJwqNoavDaFtz_I",
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_botshop",
+---- slh-osif-shop ----
+"BOT_TOKEN=8106987443:AAF7lTa1QfUBzc47XZuJXXRRKJmQcoHPxBU",
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_main",
+---- slh-test-bot ----
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_main",
+"BOT_TOKEN=8522542493:AAHdq7qnOuFCESBuffj7l_Ry4k7uQz5Zl84",
+---- slh-admin ----
+"BOT_TOKEN=7644371589:AAGDrgXqW4KOJhe81NhbVLwIk4_8QgtANpQ",
+"DATABASE_URL=postgresql://postgres:slh_secure_2026@postgres:5432/slh_main",
+---- slh_redis ----
+---- redis-nifty ----
+---- slh-postgres ----
+---- slh-redis ----
+
+==========================================================================================
+4) Databases
+==========================================================================================
+                                                  List of databases
+     Name     |  Owner   | Encoding |  Collate   |   Ctype    | ICU Locale | Locale Provider |   Access privileges   
+--------------+----------+----------+------------+------------+------------+-----------------+-----------------------
+ postgres     | postgres | UTF8     | en_US.utf8 | en_US.utf8 |            | libc            | 
+ slh          | postgres | UTF8     | en_US.utf8 | en_US.utf8 |            | libc            | 
+ slh_botshop  | postgres | UTF8     | en_US.utf8 | en_US.utf8 |            | libc            | =Tc/postgres         +
+              |          |          |            |            |            |                 | postgres=CTc/postgres
+ slh_factory  | postgres | UTF8     | en_US.utf8 | en_US.utf8 |            | libc            | =Tc/postgres         +
+              |          |          |            |            |            |                 | postgres=CTc/postgres
+ slh_guardian | postgres | UTF8     | en_US.utf8 | en_US.utf8 |            | libc            | =Tc/postgres         +
+              |          |          |            |            |            |                 | postgres=CTc/postgres
+ slh_main     | postgres | UTF8     | en_US.utf8 | en_US.utf8 |            | libc            | =Tc/postgres         +
+              |          |          |            |            |            |                 | postgres=CTc/postgres
+ slh_wallet   | postgres | UTF8     | en_US.utf8 | en_US.utf8 |            | libc            | =Tc/postgres         +
+              |          |          |            |            |            |                 | postgres=CTc/postgres
+ template0    | postgres | UTF8     | en_US.utf8 | en_US.utf8 |            | libc            | =c/postgres          +
+              |          |          |            |            |            |                 | postgres=CTc/postgres
+ template1    | postgres | UTF8     | en_US.utf8 | en_US.utf8 |            | libc            | =c/postgres          +
+              |          |          |            |            |            |                 | postgres=CTc/postgres
+(9 rows)
+
+
+==========================================================================================
+5) slh_main tables
+==========================================================================================
+                  List of relations
+ Schema |           Name           | Type  |  Owner   
+--------+--------------------------+-------+----------
+ public | access_requests          | table | postgres
+ public | account_balances         | table | postgres
+ public | achievements             | table | postgres
+ public | airdrop_events           | table | postgres
+ public | airdrop_users            | table | postgres
+ public | audit_log                | table | postgres
+ public | bank_accounts            | table | postgres
+ public | blacklist                | table | postgres
+ public | breathing_sessions       | table | postgres
+ public | claims                   | table | postgres
+ public | daily_claims             | table | postgres
+ public | daily_quests             | table | postgres
+ public | deposits                 | table | postgres
+ public | fee_schedule             | table | postgres
+ public | invites                  | table | postgres
+ public | journal_entries          | table | postgres
+ public | kyc_records              | table | postgres
+ public | nfty_activation_requests | table | postgres
+ public | nfty_items               | table | postgres
+ public | nfty_listings            | table | postgres
+ public | nfty_users               | table | postgres
+ public | pet_action_log           | table | postgres
+ public | premium_users            | table | postgres
+ public | product_groups           | table | postgres
+ public | products                 | table | postgres
+ public | purchase_orders          | table | postgres
+ public | referral_stats           | table | postgres
+ public | referrals                | table | postgres
+ public | sell_orders              | table | postgres
+ public | shop_products            | table | postgres
+ public | shops                    | table | postgres
+ public | statements               | table | postgres
+ public | stock_movements          | table | postgres
+ public | system_events            | table | postgres
+ public | system_settings          | table | postgres
+ public | task_verifications       | table | postgres
+ public | tasks                    | table | postgres
+ public | token_balances           | table | postgres
+ public | token_transfers          | table | postgres
+ public | user_balances            | table | postgres
+ public | user_tasks               | table | postgres
+ public | users                    | table | postgres
+ public | virtual_pets             | table | postgres
+ public | withdrawals              | table | postgres
+(44 rows)
+
+
+==========================================================================================
+6) Core counts
+==========================================================================================
+ users_count 
+-------------
+           8
+(1 row)
+
+ token_balances_count 
+----------------------
+                   11
+(1 row)
+
+ referrals_count 
+-----------------
+               0
+(1 row)
+
+
+==========================================================================================
+7) Check missing web_users
+==========================================================================================
+ web_users_exists 
+------------------
+ 
+(1 row)
+
+
+==========================================================================================
+8) Likely user tables
+==========================================================================================
+        table_name         
+---------------------------
+ airdrop_users
+ nfty_users
+ premium_users
+ user_balances
+ user_tasks
+ users
+ v_user_withdrawal_history
+(7 rows)
+

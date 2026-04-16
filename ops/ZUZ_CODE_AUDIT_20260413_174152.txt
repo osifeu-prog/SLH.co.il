@@ -1,0 +1,170 @@
+﻿=== ZUZ CODE AUDIT ===
+
+==================================================
+ROOT: D:\SLH_ECOSYSTEM
+==================================================
+D:\SLH_ECOSYSTEM\admin-bot\shared\slh_payments\config.py:62: "guardian": BotPricing(
+D:\SLH_ECOSYSTEM\admin-bot\shared\slh_payments\config.py:63: bot_name="SLH Guardian",
+D:\SLH_ECOSYSTEM\admin-bot\shared\group_config.json:7: "guardian": {"name": "SLH Guardian Ops", "invite_link": "https://t.me/+_l9XZ77Bbb5kZTM0", "price_ils": 59, "price_ton": 3.0},
+D:\SLH_ECOSYSTEM\admin-bot\main.py:32: "guardian": {"name": "SLH Guardian", "username": "Grdian_bot", "container": "slh-guardian-bot"},
+D:\SLH_ECOSYSTEM\airdrop\app\bot_server.py:935: "  💰 Guardian + Wallet = <b>99₪</b>\n\n"
+D:\SLH_ECOSYSTEM\airdrop\app\bot_server.py:1252: f"• 🛡️ Guardian: <code>https://t.me/Grdian_bot?start=ref_{chat_id}</code>\n"
+D:\SLH_ECOSYSTEM\airdrop\app\bot_server.py:1300: "🛡️ <b>חבילת אבטחה</b>\n  💰 Guardian + Wallet = <b>99₪</b>\n\n"
+D:\SLH_ECOSYSTEM\api\main.py:3176: ("NoaInvest", "\u05e9\u05de\u05e2\u05ea\u05dd \u05e2\u05dc \u05d4\u05d1\u05d5\u05d8 \u05d4\u05d7\u05d3\u05e9? Guardian Bot \u05de\u05d2\u05df \u05e2\u05dc \u05d4\u05e7\u05d1\u05d5\u05e6\u05d5\u05ea \u05e9\u05dc\u05db\u05dd! \U0001f6e1\ufe0f", "slh", 18),
+D:\SLH_ECOSYSTEM\api\main.py:4513: # TOKENOMICS — SLH/MNH/ZVK dual-track economy
+D:\SLH_ECOSYSTEM\api\main.py:4523: async def _ensure_tokenomics_tables(conn):
+D:\SLH_ECOSYSTEM\api\main.py:4563: @app.get("/api/tokenomics/stats")
+D:\SLH_ECOSYSTEM\api\main.py:4564: async def tokenomics_stats():
+D:\SLH_ECOSYSTEM\api\main.py:4565: """Full tokenomics overview: supply, burned, staked, reserves."""
+D:\SLH_ECOSYSTEM\api\main.py:4567: await _ensure_tokenomics_tables(conn)
+D:\SLH_ECOSYSTEM\api\main.py:4620: "zuz": {
+D:\SLH_ECOSYSTEM\api\main.py:4621: "description": "Guardian anti-fraud token — Mark of Cain (אות קין)",
+D:\SLH_ECOSYSTEM\api\main.py:4623: "mechanism": "Assigned by Guardian bot reports. Higher ZUZ = more suspicious",
+D:\SLH_ECOSYSTEM\api\main.py:4624: "auto_ban_threshold": ZUZ_AUTO_BAN_THRESHOLD,
+D:\SLH_ECOSYSTEM\api\main.py:4625: "severity_levels": ZUZ_SEVERITY,
+D:\SLH_ECOSYSTEM\api\main.py:4658: @app.post("/api/tokenomics/internal-transfer")
+D:\SLH_ECOSYSTEM\api\main.py:4678: await _ensure_tokenomics_tables(conn)
+D:\SLH_ECOSYSTEM\api\main.py:4731: @app.post("/api/tokenomics/burn")
+D:\SLH_ECOSYSTEM\api\main.py:4738: await _ensure_tokenomics_tables(conn)
+D:\SLH_ECOSYSTEM\api\main.py:4767: @app.post("/api/tokenomics/reserves/add")
+D:\SLH_ECOSYSTEM\api\main.py:4772: await _ensure_tokenomics_tables(conn)
+D:\SLH_ECOSYSTEM\api\main.py:5477: # GUARDIAN SYSTEM — ZUZ Token + Anti-Fraud Intelligence
+D:\SLH_ECOSYSTEM\api\main.py:5479: # ZUZ = "אות קין" (Mark of Cain) — negative reputation token
+D:\SLH_ECOSYSTEM\api\main.py:5480: # Assigned by Guardian bot to mark scammers, bots, fraudsters.
+D:\SLH_ECOSYSTEM\api\main.py:5481: # Higher ZUZ = more suspicious. Used for cross-group intelligence.
+D:\SLH_ECOSYSTEM\api\main.py:5483: async def _ensure_guardian_tables(conn):
+D:\SLH_ECOSYSTEM\api\main.py:5484: """Create Guardian system tables."""
+D:\SLH_ECOSYSTEM\api\main.py:5486: CREATE TABLE IF NOT EXISTS guardian_reports (
+D:\SLH_ECOSYSTEM\api\main.py:5497: zuz_amount REAL DEFAULT 10,
+D:\SLH_ECOSYSTEM\api\main.py:5505: CREATE TABLE IF NOT EXISTS guardian_blacklist (
+D:\SLH_ECOSYSTEM\api\main.py:5509: zuz_score REAL DEFAULT 0,
+D:\SLH_ECOSYSTEM\api\main.py:5520: CREATE TABLE IF NOT EXISTS guardian_group_intel (
+D:\SLH_ECOSYSTEM\api\main.py:5527: guardian_active BOOLEAN DEFAULT TRUE,
+D:\SLH_ECOSYSTEM\api\main.py:5533: CREATE TABLE IF NOT EXISTS guardian_message_log (
+D:\SLH_ECOSYSTEM\api\main.py:5544: await conn.execute("CREATE INDEX IF NOT EXISTS idx_guardian_blacklist_user ON guardian_blacklist(user_id)")
+D:\SLH_ECOSYSTEM\api\main.py:5545: await conn.execute("CREATE INDEX IF NOT EXISTS idx_guardian_reports_user ON guardian_reports(reported_user_id)")
+D:\SLH_ECOSYSTEM\api\main.py:5546: await conn.execute("CREATE INDEX IF NOT EXISTS idx_guardian_msg_user ON guardian_message_log(user_id)")
+D:\SLH_ECOSYSTEM\api\main.py:5549: class GuardianReportRequest(BaseModel):
+D:\SLH_ECOSYSTEM\api\main.py:5561: # ZUZ severity multipliers
+D:\SLH_ECOSYSTEM\api\main.py:5562: ZUZ_SEVERITY = {"low": 5, "medium": 10, "high": 25, "critical": 50}
+D:\SLH_ECOSYSTEM\api\main.py:5563: ZUZ_AUTO_BAN_THRESHOLD = 100  # auto-ban at 100 ZUZ
+D:\SLH_ECOSYSTEM\api\main.py:5566: @app.post("/api/guardian/report")
+D:\SLH_ECOSYSTEM\api\main.py:5567: async def guardian_report(req: GuardianReportRequest):
+D:\SLH_ECOSYSTEM\api\main.py:5568: """Report a user for suspicious/scam activity. Awards ZUZ marks."""
+D:\SLH_ECOSYSTEM\api\main.py:5569: zuz_amount = ZUZ_SEVERITY.get(req.severity, 10)
+D:\SLH_ECOSYSTEM\api\main.py:5572: await _ensure_guardian_tables(conn)
+D:\SLH_ECOSYSTEM\api\main.py:5576: INSERT INTO guardian_reports
+D:\SLH_ECOSYSTEM\api\main.py:5578: group_id, group_name, reason, evidence, severity, zuz_amount)
+D:\SLH_ECOSYSTEM\api\main.py:5582: req.reason, req.evidence, req.severity, zuz_amount)
+D:\SLH_ECOSYSTEM\api\main.py:5586: "SELECT id, zuz_score, total_reports FROM guardian_blacklist WHERE user_id=$1",
+D:\SLH_ECOSYSTEM\api\main.py:5590: new_score = float(existing["zuz_score"]) + zuz_amount
+D:\SLH_ECOSYSTEM\api\main.py:5592: auto_ban = new_score >= ZUZ_AUTO_BAN_THRESHOLD
+D:\SLH_ECOSYSTEM\api\main.py:5597: UPDATE guardian_blacklist
+D:\SLH_ECOSYSTEM\api\main.py:5598: SET zuz_score = $1, total_reports = $2, last_reported_at = CURRENT_TIMESTAMP,
+D:\SLH_ECOSYSTEM\api\main.py:5602: ban_reason = CASE WHEN $4 THEN 'Auto-ban: ZUZ threshold exceeded' ELSE ban_reason END
+D:\SLH_ECOSYSTEM\api\main.py:5606: new_score = zuz_amount
+D:\SLH_ECOSYSTEM\api\main.py:5607: auto_ban = new_score >= ZUZ_AUTO_BAN_THRESHOLD
+D:\SLH_ECOSYSTEM\api\main.py:5609: INSERT INTO guardian_blacklist
+D:\SLH_ECOSYSTEM\api\main.py:5610: (user_id, username, zuz_score, total_reports, groups_flagged,
+D:\SLH_ECOSYSTEM\api\main.py:5613: """, req.reported_user_id, req.reported_username, zuz_amount,
+D:\SLH_ECOSYSTEM\api\main.py:5616: 'Auto-ban: ZUZ threshold exceeded' if auto_ban else None)
+D:\SLH_ECOSYSTEM\api\main.py:5618: # Credit ZUZ to the reported user's token balance (negative reputation)
+D:\SLH_ECOSYSTEM\api\main.py:5621: VALUES ($1, 'ZUZ', $2)
+D:\SLH_ECOSYSTEM\api\main.py:5624: """, req.reported_user_id, zuz_amount)
+D:\SLH_ECOSYSTEM\api\main.py:5628: conn, action="guardian.report", actor_type="guardian",
+D:\SLH_ECOSYSTEM\api\main.py:5631: amount_native=zuz_amount, amount_currency="ZUZ",
+D:\SLH_ECOSYSTEM\api\main.py:5635: compliance_flags=["GUARDIAN", "ANTI_FRAUD"],
+D:\SLH_ECOSYSTEM\api\main.py:5641: "zuz_awarded": zuz_amount,
+D:\SLH_ECOSYSTEM\api\main.py:5642: "total_zuz": new_score,
+D:\SLH_ECOSYSTEM\api\main.py:5644: "message": f"Report #{report_id} filed. {zuz_amount} ZUZ marked."
+D:\SLH_ECOSYSTEM\api\main.py:5649: @app.get("/api/guardian/check/{user_id}")
+D:\SLH_ECOSYSTEM\api\main.py:5650: async def guardian_check_user(user_id: int):
+D:\SLH_ECOSYSTEM\api\main.py:5651: """Check if a user is flagged/banned by Guardian. Used by all bots."""
+D:\SLH_ECOSYSTEM\api\main.py:5653: await _ensure_guardian_tables(conn)
+D:\SLH_ECOSYSTEM\api\main.py:5655: "SELECT * FROM guardian_blacklist WHERE user_id=$1", user_id
+D:\SLH_ECOSYSTEM\api\main.py:5658: return {"flagged": False, "zuz_score": 0, "ban_active": False, "safe": True}
+D:\SLH_ECOSYSTEM\api\main.py:5661: "SELECT reason, severity, group_name, created_at FROM guardian_reports "
+D:\SLH_ECOSYSTEM\api\main.py:5667: "zuz_score": float(entry["zuz_score"]),
+D:\SLH_ECOSYSTEM\api\main.py:5684: @app.get("/api/guardian/blacklist")
+D:\SLH_ECOSYSTEM\api\main.py:5685: async def guardian_blacklist(
+D:\SLH_ECOSYSTEM\api\main.py:5687: min_zuz: float = Query(0),
+D:\SLH_ECOSYSTEM\api\main.py:5694: await _ensure_guardian_tables(conn)
+D:\SLH_ECOSYSTEM\api\main.py:5696: "SELECT user_id, username, zuz_score, total_reports, ban_active, auto_banned, "
+D:\SLH_ECOSYSTEM\api\main.py:5698: "FROM guardian_blacklist WHERE zuz_score >= $1 "
+D:\SLH_ECOSYSTEM\api\main.py:5699: "ORDER BY zuz_score DESC LIMIT $2", min_zuz, limit
+D:\SLH_ECOSYSTEM\api\main.py:5707: "zuz_score": float(r["zuz_score"]), "reports": r["total_reports"],
+D:\SLH_ECOSYSTEM\api\main.py:5716: @app.post("/api/guardian/scan-message")
+D:\SLH_ECOSYSTEM\api\main.py:5717: async def guardian_scan_message(
+D:\SLH_ECOSYSTEM\api\main.py:5721: Used by Guardian bot in real-time for every group message."""
+D:\SLH_ECOSYSTEM\api\main.py:5765: await _ensure_guardian_tables(conn)
+D:\SLH_ECOSYSTEM\api\main.py:5767: "SELECT zuz_score, ban_active FROM guardian_blacklist WHERE user_id=$1", user_id
+D:\SLH_ECOSYSTEM\api\main.py:5770: risk_score += min(float(existing["zuz_score"]), 30)
+D:\SLH_ECOSYSTEM\api\main.py:5771: factors.append(f"prior_zuz:{existing['zuz_score']}")
+D:\SLH_ECOSYSTEM\api\main.py:5779: INSERT INTO guardian_message_log (user_id, group_id, message_hash, risk_score, risk_factors, flagged)
+D:\SLH_ECOSYSTEM\api\main.py:5793: "user_prior_zuz": float(existing["zuz_score"]) if existing else 0,
+D:\SLH_ECOSYSTEM\api\main.py:5797: @app.get("/api/guardian/stats")
+D:\SLH_ECOSYSTEM\api\main.py:5798: async def guardian_stats():
+D:\SLH_ECOSYSTEM\api\main.py:5799: """Guardian system statistics."""
+D:\SLH_ECOSYSTEM\api\main.py:5801: await _ensure_guardian_tables(conn)
+D:\SLH_ECOSYSTEM\api\main.py:5802: total_reports = await conn.fetchval("SELECT COUNT(*) FROM guardian_reports") or 0
+D:\SLH_ECOSYSTEM\api\main.py:5803: total_flagged = await conn.fetchval("SELECT COUNT(*) FROM guardian_blacklist") or 0
+D:\SLH_ECOSYSTEM\api\main.py:5804: total_banned = await conn.fetchval("SELECT COUNT(*) FROM guardian_blacklist WHERE ban_active=TRUE") or 0
+D:\SLH_ECOSYSTEM\api\main.py:5805: total_auto_banned = await conn.fetchval("SELECT COUNT(*) FROM guardian_blacklist WHERE auto_banned=TRUE") or 0
+D:\SLH_ECOSYSTEM\api\main.py:5806: total_scans = await conn.fetchval("SELECT COUNT(*) FROM guardian_message_log") or 0
+D:\SLH_ECOSYSTEM\api\main.py:5807: total_flagged_msgs = await conn.fetchval("SELECT COUNT(*) FROM guardian_message_log WHERE flagged=TRUE") or 0
+D:\SLH_ECOSYSTEM\api\main.py:5808: total_zuz = await conn.fetchval("SELECT COALESCE(SUM(zuz_score),0) FROM guardian_blacklist") or 0
+D:\SLH_ECOSYSTEM\api\main.py:5809: groups_protected = await conn.fetchval("SELECT COUNT(*) FROM guardian_group_intel WHERE guardian_active=TRUE") or 0
+D:\SLH_ECOSYSTEM\api\main.py:5818: "total_zuz_issued": float(total_zuz),
+D:\SLH_ECOSYSTEM\api\main.py:5820: "zuz_auto_ban_threshold": ZUZ_AUTO_BAN_THRESHOLD,
+D:\SLH_ECOSYSTEM\api\main.py:5855: "whitepaper":   {"title": "SLH Whitepaper", "subtitle": "Architecture \u00b7 Tokenomics \u00b7 Vision", "accent": "#6c5ce7", "icon": "WP"},
+D:\SLH_ECOSYSTEM\assets\logos\info.json:6: "description": "SLH Spark - Digital Investment Ecosystem. Community wellness coin with 5-token economy (SLH/MNH/ZVK/REP/ZUZ). Built in Israel, healing through blockchain.",
+D:\SLH_ECOSYSTEM\assets\ascii_branding.txt:59: ── SLH GUARDIAN ─────────────
+D:\SLH_ECOSYSTEM\backups\20260405_160808\.env:14: # Guardian Bot
+D:\SLH_ECOSYSTEM\backups\20260405_160808\.env:15: GUARDIAN_BOT_TOKEN=8521882513:AAFpDj4Z4TyT7T1Gw54NZArhku7WkA17wKI
+D:\SLH_ECOSYSTEM\backups\20260405_160808\docker-compose.yml:68: # 2. Guardian Bot (Security + Monitoring)
+D:\SLH_ECOSYSTEM\backups\20260405_160808\docker-compose.yml:69: guardian-bot:
+D:\SLH_ECOSYSTEM\backups\20260405_160808\docker-compose.yml:71: context: ../telegram-guardian-DOCKER-COMPOSE-ENTERPRISE
+D:\SLH_ECOSYSTEM\backups\20260405_160808\docker-compose.yml:72: dockerfile: ../SLH_ECOSYSTEM/dockerfiles/Dockerfile.guardian
+D:\SLH_ECOSYSTEM\backups\20260405_160808\docker-compose.yml:73: container_name: slh-guardian-bot
+D:\SLH_ECOSYSTEM\backups\20260405_160808\docker-compose.yml:81: BOT_TOKEN: ${GUARDIAN_BOT_TOKEN}
+D:\SLH_ECOSYSTEM\backups\20260405_160808\docker-compose.yml:82: TELEGRAM_TOKEN: ${GUARDIAN_BOT_TOKEN}
+D:\SLH_ECOSYSTEM\backups\20260405_160808\docker-compose.yml:83: DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_guardian
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\package-lock.json:1877: "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\package-lock.json:1993: "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\package-lock.json:2076: "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\package-lock.json:2168: "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\package-lock.json:2256: "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\package-lock.json:2385: "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\package-lock.json:2536: "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\package-lock.json:2828: "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\package-lock.json:2915: "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\package-lock.json:3289: "integrity": "sha512-fB7M1CMOCIUudTRuj7kzxIBTVw2KXnsgbQ6+4cbqSxo8NmRRhA0Ul4ZUzZj3rFd3VznTL4Brmocv1oiN0bWZ8w==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\package-lock.json:4127: "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\package-lock.json:5422: "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\package-lock.json:5808: "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\package-lock.json:6213: "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\package-lock.json:7083: "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\package-lock.json:7208: "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\package-lock.json:7295: "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\package-lock.json:7331: "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\package-lock.json:8203: "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\package-lock.json:9984: "integrity": "sha512-uBHU3L3czsIyYXKX88fdrGovxdSCoTGDRZ6SYXtSRxLZUzHg5P/66Ht6uoUlHu9EZod+inXhKo3qQgwXUT/y1w==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\package-lock.json:10181: "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193759\package-lock.json:770: "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193759\package-lock.json:864: "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193759\package-lock.json:1139: "integrity": "sha512-fB7M1CMOCIUudTRuj7kzxIBTVw2KXnsgbQ6+4cbqSxo8NmRRhA0Ul4ZUzZj3rFd3VznTL4Brmocv1oiN0bWZ8w==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193759\package-lock.json:1631: "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193759\package-lock.json:2755: "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193759\package-lock.json:2890: "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193759\package-lock.json:2984: "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193759\package-lock.json:3023: "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193759\package-lock.json:3576: "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193759\package-lock.json:4575: "integrity": "sha512-uBHU3L3czsIyYXKX88fdrGovxdSCoTGDRZ6SYXtSRxLZUzHg5P/66Ht6uoUlHu9EZod+inXhKo3qQgwXUT/y1w==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_194500\package-lock.json:2092: "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_194500\package-lock.json:3878: "integrity": "sha512-uBHU3L3czsIyYXKX88fdrGovxdSCoTGDRZ6SYXtSRxLZUzHg5P/66Ht6uoUlHu9EZod+inXhKo3qQgwXUT/y1w==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_194619\package-lock.json:2092: "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_194619\package-lock.json:3878: "integrity": "sha512-uBHU3L3czsIyYXKX88fdrGovxdSCoTGDRZ6SYXtSRxLZUzHg5P/66Ht6uoUlHu9EZod+inXhKo3qQgwXUT/y1w==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_195601\package-lock.json:2092: "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_195601\package-lock.json:3878: "integrity": "sha512-uBHU3L3czsIyYXKX88fdrGovxdSCoTGDRZ6SYXtSRxLZUzHg5P/66Ht6uoUlHu9EZod+inXhKo3qQgwXUT/y1w==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_195756\package-lock.json:2092: "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_195756\package-lock.json:3878: "integrity": "sha512-uBHU3L3czsIyYXKX88fdrGovxdSCoTGDRZ6SYXtSRxLZUzHg5P/66Ht6uoUlHu9EZod+inXhKo3qQgwXUT/y1w==",
