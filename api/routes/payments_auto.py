@@ -47,6 +47,24 @@ _pool = None
 def set_pool(pool):
     global _pool
     _pool = pool
+    # Create payment tables eagerly so GET endpoints don't 500 on fresh DBs.
+    if pool is not None:
+        import asyncio as _asyncio
+        async def _bootstrap():
+            try:
+                async with pool.acquire() as conn:
+                    await _ensure_payment_tables(conn)
+            except Exception as e:
+                import logging as _logging
+                _logging.getLogger("payments_auto").warning(f"payment tables bootstrap failed: {e}")
+        try:
+            loop = _asyncio.get_event_loop()
+            if loop.is_running():
+                _asyncio.ensure_future(_bootstrap())
+            else:
+                loop.run_until_complete(_bootstrap())
+        except RuntimeError:
+            pass
 
 
 async def _ensure_payment_tables(conn):
@@ -305,7 +323,9 @@ async def bsc_auto_verify(req: BscVerifyReq, request: Request):
     if to_addr != BSC_GENESIS_ADDRESS:
         raise HTTPException(400, f"TX was sent to {to_addr}, not to Genesis {BSC_GENESIS_ADDRESS}")
 
-    if value_bnb < expected_min:
+    BSC_ABS_TOLERANCE = 0.00002
+    min_acceptable = max(0.0, expected_min - BSC_ABS_TOLERANCE)
+    if value_bnb < min_acceptable:
         raise HTTPException(400, f"amount too low: got {value_bnb:.6f} BNB, expected >= {expected_min} BNB")
 
     if _pool is None:
@@ -421,6 +441,7 @@ async def payment_status(user_id: int, bot_name: str = "ecosystem"):
     if _pool is None:
         raise HTTPException(500, "db pool not initialized")
     async with _pool.acquire() as conn:
+        await _ensure_payment_tables(conn)
         prem = await conn.fetchrow(
             """
             SELECT payment_status, created_at FROM premium_users
@@ -488,6 +509,7 @@ async def payment_geography(x_admin_key: Optional[str] = Header(None)):
         raise HTTPException(403, "admin key required")
 
     async with _pool.acquire() as conn:
+        await _ensure_payment_tables(conn)
         by_country = await conn.fetch(
             """
             SELECT COALESCE(country_code, 'UNKNOWN') AS country,
@@ -533,6 +555,7 @@ async def user_receipts(user_id: int, limit: int = 50):
     if _pool is None:
         raise HTTPException(500, "db pool not initialized")
     async with _pool.acquire() as conn:
+        await _ensure_payment_tables(conn)
         rows = await conn.fetch(
             """
             SELECT id, receipt_number, source_type, source_id, amount, currency,

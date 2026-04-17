@@ -33,6 +33,8 @@ ACTIVATION_FEE_TON = Decimal("1.5")
 COINGECKO_BASE = os.getenv("COINGECKO_BASE_URL", "https://api.coingecko.com/api/v3")
 BSC_TOKEN_CONTRACT = os.getenv("SLH_BSC_CONTRACT", "0xACb0A09414CEA1C879c67bB7A877E4e19480f022")
 BOT_TOKEN = os.getenv("BOT_TOKEN") or os.getenv("NFTY_MADNESS_TOKEN")
+BROADCAST_CHANNEL = os.getenv("NFTY_BROADCAST_CHANNEL", "@slhniffty")
+BOT_USERNAME = os.getenv("NFTY_BOT_USERNAME", "NFTY_madness_bot")
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:slh_secure_2026@postgres:5432/slh_main")
 REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
@@ -846,10 +848,51 @@ async def cb_admin_approve(callback, bot: Bot):
             SET status='active', approved_by=$1, approved_at=NOW()
             WHERE id=$2
         """, callback.from_user.id, int(listing_id))
+        listing_row = await conn.fetchrow("""
+            SELECT l.id, l.price, l.currency_symbol,
+                   i.title, i.category, i.description, i.media_url
+            FROM nfty_listings l
+            JOIN nfty_items i ON i.id = l.item_id
+            WHERE l.id = $1
+        """, int(listing_id))
 
     await callback.answer("הפריט אושר")
     await callback.message.edit_reply_markup(reply_markup=None)
     await bot.send_message(int(owner_id), f"🎉 הפריט #{listing_id} שלך אושר למרקטפלייס.", reply_markup=main_menu())
+
+    if listing_row:
+        await broadcast_new_listing(bot, listing_row)
+
+
+async def broadcast_new_listing(bot: Bot, row) -> None:
+    try:
+        title = row["title"]
+        category = row["category"] or ""
+        price = row["price"]
+        currency = row["currency_symbol"] or "SLH"
+        description = (row["description"] or "")[:280]
+        media_url = row["media_url"]
+        deep_link = f"https://t.me/{BOT_USERNAME}?start=buy_{row['id']}"
+
+        caption = (
+            f"🎨 <b>פריט חדש במרקטפלייס SLH NFT</b>\n\n"
+            f"<b>{title}</b>\n"
+            f"{category}\n\n"
+            f"{description}\n\n"
+            f"💰 <b>{price} {currency}</b>\n"
+            f"🛒 <a href=\"{deep_link}\">קנה עכשיו בבוט</a>"
+        )
+
+        if media_url and media_url.startswith(("http://", "https://")):
+            try:
+                await bot.send_photo(BROADCAST_CHANNEL, photo=media_url, caption=caption, parse_mode=ParseMode.HTML)
+                return
+            except Exception:
+                log.warning("Photo broadcast failed, falling back to text", exc_info=True)
+
+        await bot.send_message(BROADCAST_CHANNEL, caption, parse_mode=ParseMode.HTML, disable_web_page_preview=False)
+    except Exception:
+        log.exception("broadcast_new_listing failed for listing #%s", row.get("id"))
 
 @router.callback_query(F.data.startswith("admin:reject:"))
 async def cb_admin_reject(callback, bot: Bot):
