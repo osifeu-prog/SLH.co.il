@@ -117,15 +117,25 @@
 
 ---
 
-## 🎯 הצעות להמשך (בחר A/B/C/D/E/F)
+## ✅ נסגרו לקראת סיום יום
 
-**A.** admin-bugs.html · wire AI analyze button (~45 דק')
-**B.** Deploy @G4meb0t_bot_bot (דורש TOKEN מ-BotFather)
-**C.** Stripe webhook · תשלומי כרטיס בינלאומיים (~60 דק')
-**D.** Mission-control · הוספת Dating + Sudoku widgets (~30 דק')
-**E.** Community.html · "Top Sudoku solvers" trending section (~30 דק')
+- ✅ admin-bugs.html · AI analyze wire (commit `ec31393`)
+- ✅ Mission Control widgets (Sudoku + Dating + AIC · commit `6cf468c`)
+- ✅ pay.html QR mismatch fix (commit `fd0957d`)
+- ✅ BETA banner + 🐛 FAB על כל 9 הדפים העצמאיים
+- ✅ Micro-test tier · מינימום 0.01 TON / 0.0005 BNB
+- ✅ Broadcast post #17 בפיד הקהילה
+- ✅ Secondary phone + t.me/slhniffty channel בזיכרון
+
+## 🎯 הצעות להמשך (בחר)
+
+**A.** Deploy @G4meb0t_bot_bot (דורש TOKEN מ‑BotFather · ~15 דק' setup)
+**B.** Stripe webhook · תשלומי כרטיס בינלאומיים (~60 דק' · דורש Stripe account)
+**C.** Community.html · "Top Sudoku solvers" trending (~30 דק')
+**D.** Add `@nfty_madness_bot` integration ל‑`t.me/slhniffty` (אוטו-פוסט · ~60 דק')
+**E.** Blog SEO + 10 seed posts · Track 4 no-FB traffic (~3 שעות)
 **F.** אחר — תגיד
 
 ---
 
-**🤖 Claude Code · 35+ commits היום. 6 tracks לחצי הדרך+.**
+**🤖 Claude Code · 50+ commits היום. 6 tracks · ממוצע 67%.**
