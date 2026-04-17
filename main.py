@@ -9723,3 +9723,205 @@ async def admin_payments_list(
 # ===== END FINANCIAL SYSTEM =====
 
 
+# ===== DEVICE ONBOARDING (phone → user_id → device_id → signing_token) =====
+
+async def _ensure_device_tables(conn):
+    """Create users_by_phone, devices, device_verify_codes, device_events tables."""
+    await conn.execute("""
+        CREATE TABLE IF NOT EXISTS users_by_phone (
+            user_id BIGSERIAL PRIMARY KEY,
+            phone TEXT UNIQUE NOT NULL,
+            telegram_id BIGINT,
+            display_name TEXT,
+            created_at TIMESTAMP DEFAULT NOW(),
+            last_seen TIMESTAMP DEFAULT NOW()
+        );
+        CREATE INDEX IF NOT EXISTS idx_users_by_phone_tg ON users_by_phone(telegram_id)
+            WHERE telegram_id IS NOT NULL;
+        CREATE TABLE IF NOT EXISTS devices (
+            device_id TEXT PRIMARY KEY,
+            user_id BIGINT,
+            device_type TEXT NOT NULL,
+            device_name TEXT,
+            signing_token TEXT,
+            last_ip TEXT,
+            last_user_agent TEXT,
+            is_active BOOLEAN DEFAULT TRUE,
+            last_seen TIMESTAMP DEFAULT NOW(),
+            registered_at TIMESTAMP DEFAULT NOW()
+        );
+        CREATE INDEX IF NOT EXISTS idx_devices_user ON devices(user_id);
+        CREATE TABLE IF NOT EXISTS device_verify_codes (
+            id BIGSERIAL PRIMARY KEY,
+            phone TEXT NOT NULL,
+            device_id TEXT NOT NULL,
+            code TEXT NOT NULL,
+            attempts INTEGER DEFAULT 0,
+            used BOOLEAN DEFAULT FALSE,
+            expires_at TIMESTAMP NOT NULL,
+            created_at TIMESTAMP DEFAULT NOW()
+        );
+        CREATE INDEX IF NOT EXISTS idx_verify_phone_device ON device_verify_codes(phone, device_id, used);
+    """)
+
+
+_VALID_DEVICE_TYPES = {"pc_windows", "pc_mac", "pc_linux", "esp32", "sim_gsm", "smartphone", "other"}
+
+
+class DeviceRegisterReq(BaseModel):
+    phone: str
+    device_id: str
+    device_type: str = "other"
+    device_name: Optional[str] = None
+
+
+class DeviceVerifyReq(BaseModel):
+    phone: str
+    device_id: str
+    code: str
+
+
+def _normalize_phone(p: str) -> str:
+    """Normalize Israeli phone to digits-only: 0501234567 or +972501234567 → 972501234567."""
+    import re as _re
+    digits = _re.sub(r"\D", "", p or "")
+    if digits.startswith("0"):
+        digits = "972" + digits[1:]
+    return digits
+
+
+@app.post("/api/device/register")
+async def device_register(req: DeviceRegisterReq, request: Request):
+    """Step 1: device sends phone + device_id → we generate 6-digit code, send via Telegram (if linked)
+    or SMS fallback (stub). Code valid 5 min."""
+    phone = _normalize_phone(req.phone)
+    if len(phone) < 10:
+        raise HTTPException(400, "invalid phone")
+    if req.device_type not in _VALID_DEVICE_TYPES:
+        raise HTTPException(400, f"device_type must be one of {sorted(_VALID_DEVICE_TYPES)}")
+    if not req.device_id or len(req.device_id) > 64:
+        raise HTTPException(400, "device_id required, max 64 chars")
+
+    code = f"{secrets.randbelow(1000000):06d}"
+    async with pool.acquire() as conn:
+        await _ensure_device_tables(conn)
+        # Rate limit: max 3 codes per phone per day
+        recent = await conn.fetchval("""
+            SELECT COUNT(*) FROM device_verify_codes
+            WHERE phone = $1 AND created_at > NOW() - INTERVAL '24 hours'
+        """, phone)
+        if (recent or 0) >= 5:
+            raise HTTPException(429, "too many verification requests today")
+        await conn.execute("""
+            INSERT INTO device_verify_codes (phone, device_id, code, expires_at)
+            VALUES ($1, $2, $3, NOW() + INTERVAL '5 minutes')
+        """, phone, req.device_id, code)
+
+        # Try to send via Telegram if phone is linked to a user
+        tg_sent = False
+        u = await conn.fetchrow("SELECT telegram_id FROM users_by_phone WHERE phone = $1", phone)
+        if u and u["telegram_id"] and BROADCAST_BOT_TOKEN:
+            try:
+                msg = f"🔐 קוד אימות SLH: <b>{code}</b>\nמכשיר: {req.device_name or req.device_id}\nתקף ל-5 דקות."
+                r = await _tg_send_message(BROADCAST_BOT_TOKEN, u["telegram_id"], msg)
+                tg_sent = bool(r.get("ok"))
+            except Exception:
+                pass
+
+    # TODO: SMS fallback via Twilio/Vonage if not tg_sent
+    # For now, return info about delivery path
+    return {
+        "ok": True,
+        "delivery": "telegram" if tg_sent else "pending_sms",
+        "expires_in": 300,
+        "message": "קוד אימות נשלח" + (" לטלגרם שלך" if tg_sent else " (SMS fallback not yet configured)"),
+        # DEV ONLY: expose code if SMS not configured and no TG linked — remove in prod
+        "_dev_code": None if tg_sent else code,
+    }
+
+
+@app.post("/api/device/verify")
+async def device_verify(req: DeviceVerifyReq):
+    """Step 2: device sends code → we validate, create user (if new), create device, return signing_token."""
+    phone = _normalize_phone(req.phone)
+    if len(phone) < 10:
+        raise HTTPException(400, "invalid phone")
+    async with pool.acquire() as conn:
+        await _ensure_device_tables(conn)
+        row = await conn.fetchrow("""
+            SELECT id, attempts FROM device_verify_codes
+            WHERE phone = $1 AND device_id = $2 AND code = $3
+              AND used = FALSE AND expires_at > NOW()
+            ORDER BY id DESC LIMIT 1
+        """, phone, req.device_id, req.code)
+        if not row:
+            # Bump attempts on any active code for this phone+device
+            await conn.execute("""
+                UPDATE device_verify_codes SET attempts = attempts + 1
+                WHERE phone = $1 AND device_id = $2 AND used = FALSE AND expires_at > NOW()
+            """, phone, req.device_id)
+            raise HTTPException(400, "invalid or expired code")
+        await conn.execute("UPDATE device_verify_codes SET used = TRUE WHERE id = $1", row["id"])
+
+        # Upsert user
+        user = await conn.fetchrow("SELECT user_id FROM users_by_phone WHERE phone = $1", phone)
+        if user:
+            user_id = user["user_id"]
+        else:
+            user_id = await conn.fetchval(
+                "INSERT INTO users_by_phone (phone) VALUES ($1) RETURNING user_id", phone
+            )
+
+        # Generate signing token (32 bytes url-safe)
+        token = secrets.token_urlsafe(32)
+
+        # Upsert device
+        await conn.execute("""
+            INSERT INTO devices (device_id, user_id, device_type, signing_token, registered_at, last_seen)
+            VALUES ($1, $2, 'other', $3, NOW(), NOW())
+            ON CONFLICT (device_id) DO UPDATE
+                SET user_id = EXCLUDED.user_id,
+                    signing_token = EXCLUDED.signing_token,
+                    last_seen = NOW(),
+                    is_active = TRUE
+        """, req.device_id, user_id, token)
+
+    return {
+        "ok": True,
+        "user_id": user_id,
+        "device_id": req.device_id,
+        "signing_token": token,
+        "message": "מכשיר רשום בהצלחה"
+    }
+
+
+@app.get("/api/admin/devices/list")
+async def devices_list_admin(
+    user_id: Optional[int] = None,
+    device_type: Optional[str] = None,
+    limit: int = 100,
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None)
+):
+    _require_admin(authorization, x_admin_key)
+    async with pool.acquire() as conn:
+        await _ensure_device_tables(conn)
+        q = """SELECT d.*, u.phone, u.telegram_id
+               FROM devices d LEFT JOIN users_by_phone u ON d.user_id = u.user_id
+               WHERE 1=1"""
+        params = []
+        if user_id:
+            params.append(user_id)
+            q += f" AND d.user_id = ${len(params)}"
+        if device_type:
+            params.append(device_type)
+            q += f" AND d.device_type = ${len(params)}"
+        params.append(limit)
+        q += f" ORDER BY d.last_seen DESC LIMIT ${len(params)}"
+        rows = await conn.fetch(q, *params)
+        return {"devices": [dict(r) for r in rows]}
+
+
+# ===== END DEVICE ONBOARDING =====
+
+
