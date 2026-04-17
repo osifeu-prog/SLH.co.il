@@ -270,17 +270,23 @@ async def bsc_auto_verify(req: BscVerifyReq, request: Request):
     except Exception as e:
         raise HTTPException(504, f"bscscan fetch failed: {e}")
 
-    tx = tx_data.get("result")
-    receipt_raw = rc_data.get("result")
-    if not tx:
+    tx = tx_data.get("result") if isinstance(tx_data, dict) else None
+    receipt_raw = rc_data.get("result") if isinstance(rc_data, dict) else None
+
+    if isinstance(tx_data, dict) and tx_data.get("status") == "0":
+        raise HTTPException(502, f"bscscan rate-limited: {tx_data.get('result') or tx_data.get('message')}")
+    if not tx or not isinstance(tx, dict):
         raise HTTPException(404, "TX not found on BSC yet. Wait ~15s and retry.")
-    if not receipt_raw:
-        raise HTTPException(400, "TX not yet confirmed")
+    if not receipt_raw or not isinstance(receipt_raw, dict):
+        raise HTTPException(400, "TX not yet confirmed (no receipt)")
     if receipt_raw.get("status") != "0x1":
         raise HTTPException(400, "TX failed on-chain")
 
     to_addr = (tx.get("to") or "").lower()
-    value_bnb = int(tx.get("value", "0x0"), 16) / 1e18
+    try:
+        value_bnb = int(tx.get("value", "0x0"), 16) / 1e18
+    except (ValueError, TypeError):
+        raise HTTPException(502, "bscscan returned malformed value")
 
     if to_addr != BSC_GENESIS_ADDRESS:
         raise HTTPException(400, f"TX was sent to {to_addr}, not to Genesis {BSC_GENESIS_ADDRESS}")
