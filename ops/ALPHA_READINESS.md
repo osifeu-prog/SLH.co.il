@@ -165,6 +165,43 @@ User → GitHub Issue / Bug Report
 
 ---
 
+## 🎨 Track 7 · Creator Economy (נוסף 2026-04-17 ערב)
+
+### הרעיון
+כל תמונה = NFT עם **סיפור** + **מחיר** + קישור לקורס (אופציונלי). יוצר שתמונה שלו נמכרה — צובר XP לפי ROI.
+
+### המימוש
+| # | מה | זמן | תלות |
+|---|-----|:---:|------|
+| 7.1 | `/sell.html` — העלאת תמונות ציבורית (רב-תמונתי, תיאור, מחיר, קישור לקורס) | 90 דק' | POST /api/marketplace/list קיים |
+| 7.2 | `/gallery.html` — גלריה ציבורית של כל ה-NFTs המאושרים | 60 דק' | GET /api/marketplace/items קיים |
+| 7.3 | `/me/shop.html` — חנות אישית לכל משתמש (קטלוג + stats) | 90 דק' | `/api/marketplace/my-listings/{uid}` קיים |
+| 7.4 | XP = ROI metric | 60 דק' | טבלה חדשה `user_roi_snapshot` |
+| 7.5 | SLH Index widget | 30 דק' | view API + widget בדף ראשי |
+| 7.6 | Image sales tracking + `nfty_sales` table | 45 דק' | extend nfty-bot |
+
+**סה"כ:** ~6 שעות עבודה לכל ה-Creator Economy.
+
+### XP Formula
+```python
+user_xp = total_current_value / total_fiat_invested  # ratio, not percentage
+# xp > 1.0 = profit, xp < 1.0 = loss, xp = None = no activity yet
+```
+
+### SLH Index Formula
+```python
+slh_index = median(user_xp for user in active_users if user_xp is not None)
+# Displayed: "SLH Index: 1.47 ↑ 2.3% today"
+# Updated every hour via background job
+```
+
+### משווה ל-S&P 500
+- S&P 500 = מדד ממוצע מניות — משקף בריאות כלכלית
+- SLH Index = מדד ממוצע ROI משתמשים — משקף בריאות הקהילה
+- >1.0 = הקהילה מרוויחה · <1.0 = בועה/בעיה · 2.0 = ממוצע הכפיל השקעה
+
+---
+
 ## 📝 לקריאה הבאה
 
 בקש ממני:
