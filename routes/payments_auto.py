@@ -39,6 +39,17 @@ PREMIUM_MIN_BNB = float(os.getenv("PREMIUM_MIN_BNB", "0.0005"))  # ~$0.30 at BNB
 PREMIUM_MIN_TON = float(os.getenv("PREMIUM_MIN_TON", "0.01"))    # ~$0.014 at TON=$1.41
 PREMIUM_MIN_ILS = float(os.getenv("PREMIUM_MIN_ILS", "1"))       # for testing — 1 ILS = symbolic
 
+# Testnet mode — set PAYMENT_MODE=testnet in Railway to switch to TON Testnet + BSC Chapel.
+# Default is "mainnet" — real money. Testnet = fake money, safe for QA/tutorials.
+PAYMENT_MODE = os.getenv("PAYMENT_MODE", "mainnet").lower().strip()
+IS_TESTNET = PAYMENT_MODE == "testnet"
+
+if IS_TESTNET:
+    # BSC Testnet (Chapel) — public RPCs, free tBNB from https://testnet.binance.org/faucet-smart
+    BSC_GENESIS_ADDRESS = os.getenv("BSC_TESTNET_ADDRESS", BSC_GENESIS_ADDRESS).lower()
+    # TON Testnet — https://testnet.toncenter.com
+    # (TON_PAY_ADDRESS on testnet is a separate wallet — user sets via env)
+
 
 # Pool is injected by main.py via set_pool()
 _pool = None
@@ -270,13 +281,21 @@ async def bsc_auto_verify(req: BscVerifyReq, request: Request):
         raise HTTPException(400, "invalid BSC tx_hash (expected 0x + 64 hex)")
 
     expected_min = req.expected_min_bnb or PREMIUM_MIN_BNB
-    # BSC public RPC (free, no key needed). Binance dataseed is the canonical source.
-    # Fallback chain: binance -> ninicoin -> defibit. Etherscan V2 free tier doesn't cover BSC.
-    bsc_rpcs = [
-        "https://bsc-dataseed.binance.org",
-        "https://bsc-dataseed1.ninicoin.io",
-        "https://bsc-dataseed2.defibit.io",
-    ]
+    # BSC public RPC (free, no key needed).
+    if IS_TESTNET:
+        # BSC Testnet (Chapel) — free tBNB at https://testnet.binance.org/faucet-smart
+        bsc_rpcs = [
+            "https://data-seed-prebsc-1-s1.binance.org:8545",
+            "https://data-seed-prebsc-2-s1.binance.org:8545",
+            "https://bsc-testnet.public.blastapi.io",
+        ]
+    else:
+        # Mainnet — Binance dataseed + fallbacks
+        bsc_rpcs = [
+            "https://bsc-dataseed.binance.org",
+            "https://bsc-dataseed1.ninicoin.io",
+            "https://bsc-dataseed2.defibit.io",
+        ]
 
     async def _rpc_call(session, url, method, params):
         payload = {"jsonrpc": "2.0", "method": method, "params": params, "id": 1}
@@ -478,6 +497,8 @@ async def payment_status(user_id: int, bot_name: str = "ecosystem"):
 @router.get("/config")
 async def payment_config():
     return {
+        "payment_mode": PAYMENT_MODE,
+        "is_testnet": IS_TESTNET,
         "ton_address": TON_PAY_ADDRESS or None,
         "bsc_genesis_address": BSC_GENESIS_ADDRESS,
         "premium_min_bnb": PREMIUM_MIN_BNB,

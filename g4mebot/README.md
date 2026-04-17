@@ -13,20 +13,35 @@
 | `/profile` | תצוגת פרופיל (עריכה באתר) |
 | `/help` | רשימת פקודות |
 
-## Run locally
+## ⭐ Deploy → Railway (recommended — בחירת ברירת המחדל)
+
+פעולה חד-פעמית (3 דק'):
+
+1. https://railway.app/dashboard → פרויקט `slh-api`
+2. `+ New` → `GitHub Repo` → `osifeu-prog/slh-api`
+3. ב-Service החדש → `Settings` → `Root Directory`: `g4mebot`
+4. `Variables` — הדבק:
+   ```
+   G4MEBOT_TOKEN=8298897331:AAFCJcgqddM96tvgDcoElwdAPtrCZwy9KqE
+   SLH_API=https://slh-api-production.up.railway.app
+   SLH_SITE=https://slh-nft.com
+   G4MEBOT_USERNAME=G4meb0t_bot_bot
+   ```
+5. `Deploy` — Railway בונה מ-`Dockerfile`, מריץ `python bot.py`, ומפעיל מחדש אוטומטית בכשל (עד 10 נסיונות).
+
+אחרי זה הבוט חי 24/7 בלי תלות ב-PC שלך.
+
+## Alternatives (אם תרצה לשנות)
+
+### Local Python
 ```powershell
 cd D:\SLH_ECOSYSTEM\g4mebot
 pip install -r requirements.txt
-$env:G4MEBOT_TOKEN = "<token-from-BotFather>"
+$env:G4MEBOT_TOKEN = "<token>"
 python bot.py
 ```
 
-## Run via Docker
-```powershell
-cd D:\SLH_ECOSYSTEM
-docker compose up -d g4mebot
-```
-(הוסף ל‑`docker-compose.yml`:)
+### Docker Compose
 ```yaml
 g4mebot:
   build: ./g4mebot
@@ -35,11 +50,15 @@ g4mebot:
   environment:
     G4MEBOT_TOKEN: ${G4MEBOT_TOKEN}
     SLH_API: https://slh-api-production.up.railway.app
+    SLH_SITE: https://slh-nft.com
+    G4MEBOT_USERNAME: G4meb0t_bot_bot
 ```
 
 ## Env vars
-- `G4MEBOT_TOKEN` (required) — token from `@BotFather → /newbot` or existing
+- `G4MEBOT_TOKEN` (חובה) — מ-BotFather
 - `SLH_API` (default: `https://slh-api-production.up.railway.app`)
+- `SLH_SITE` (default: `https://slh-nft.com`)
+- `G4MEBOT_USERNAME` (default: `G4meb0t_bot_bot`) — לבניית deep-links
 
 ## Security
 - User ID `6466974138` (osif's nephew, 13yo) is **blocked** at `/start`
