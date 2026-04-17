@@ -35,9 +35,9 @@ BSC_GENESIS_ADDRESS = os.getenv(
 ).lower()
 BSCSCAN_API_KEY = os.getenv("BSCSCAN_API_KEY", "").strip()
 TONCENTER_API_KEY = os.getenv("TONCENTER_API_KEY", "").strip()
-PREMIUM_MIN_BNB = float(os.getenv("PREMIUM_MIN_BNB", "0.05"))
-PREMIUM_MIN_TON = float(os.getenv("PREMIUM_MIN_TON", "1.5"))
-PREMIUM_MIN_ILS = float(os.getenv("PREMIUM_MIN_ILS", "41"))
+PREMIUM_MIN_BNB = float(os.getenv("PREMIUM_MIN_BNB", "0.01"))  # lowered for testing
+PREMIUM_MIN_TON = float(os.getenv("PREMIUM_MIN_TON", "0.5"))   # lowered for testing
+PREMIUM_MIN_ILS = float(os.getenv("PREMIUM_MIN_ILS", "10"))    # lowered for testing
 
 
 # Pool is injected by main.py via set_pool()
@@ -338,7 +338,7 @@ class ExternalPaymentRecord(BaseModel):
     metadata: Optional[dict] = None
 
 
-SUPPORTED_PROVIDERS = {"stripe", "paybox", "bit", "paypal", "growclub", "icount", "isracard", "cardcom", "meshulam", "manual_bank"}
+SUPPORTED_PROVIDERS = {"stripe", "paypal", "growclub", "icount", "isracard", "cardcom", "meshulam", "manual_bank", "ton_direct", "bsc_direct"}
 
 
 @router.post("/external/record")

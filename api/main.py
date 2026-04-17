@@ -9479,23 +9479,58 @@ async def deposits_status(deposit_id: int):
 
 @app.get("/api/deposits/user/{user_id}")
 async def deposits_user_list(user_id: int):
-    """All deposits for a specific user (with live compound interest)."""
+    """All deposits for a specific user (with live compound interest).
+
+    Two deposit schemas co-exist (legacy tx_hash-based + financial investment-
+    tracker). This endpoint now returns from whichever is available; missing
+    columns are handled gracefully instead of 500-ing the whole request.
+    """
+    from datetime import datetime as dt
     async with pool.acquire() as conn:
         await _ensure_financial_tables(conn)
-        rows = await conn.fetch(
-            "SELECT id, amount_usd, monthly_rate_pct, term_months, status, deposited_at, is_test FROM deposits WHERE user_id=$1 ORDER BY deposited_at DESC",
-            user_id
+        # Check which columns actually exist
+        cols_row = await conn.fetch(
+            "SELECT column_name FROM information_schema.columns WHERE table_name='deposits'"
         )
-        result = []
-        from datetime import datetime as dt
-        for d in rows:
-            deposited = d["deposited_at"]
-            if hasattr(deposited, 'tzinfo') and deposited.tzinfo:
-                deposited = deposited.replace(tzinfo=None)
-            months_elapsed = max(0, (dt.now() - deposited).total_seconds() / 86400 / 30.0)
-            calc = _calculate_compound_interest(float(d["amount_usd"]), float(d["monthly_rate_pct"]), months_elapsed)
-            result.append({**dict(d), **calc, "deposited_at": deposited.isoformat()})
-        return {"user_id": user_id, "deposits": result}
+        cols = {r["column_name"] for r in cols_row}
+        has_financial = {"amount_usd", "monthly_rate_pct", "term_months", "deposited_at"}.issubset(cols)
+
+        if has_financial:
+            rows = await conn.fetch(
+                """SELECT id, amount_usd, monthly_rate_pct, term_months, status,
+                          deposited_at, COALESCE(is_test, FALSE) AS is_test
+                   FROM deposits WHERE user_id=$1 ORDER BY deposited_at DESC""",
+                user_id
+            )
+            result = []
+            for d in rows:
+                deposited = d["deposited_at"]
+                if hasattr(deposited, 'tzinfo') and deposited.tzinfo:
+                    deposited = deposited.replace(tzinfo=None)
+                months_elapsed = max(0, (dt.now() - deposited).total_seconds() / 86400 / 30.0)
+                calc = _calculate_compound_interest(float(d["amount_usd"]), float(d["monthly_rate_pct"]), months_elapsed)
+                result.append({**dict(d), **calc, "deposited_at": deposited.isoformat()})
+            return {"user_id": user_id, "deposits": result}
+        else:
+            # Legacy schema — map to compatible shape with zero interest
+            rows = await conn.fetch(
+                "SELECT id, amount, currency, tx_hash, status, created_at FROM deposits WHERE user_id=$1 ORDER BY id DESC",
+                user_id
+            )
+            return {"user_id": user_id, "deposits": [
+                {
+                    "id": r["id"],
+                    "amount_usd": float(r["amount"]) if r["amount"] else 0,
+                    "currency": r["currency"],
+                    "tx_hash": r["tx_hash"],
+                    "status": r["status"],
+                    "deposited_at": r["created_at"].isoformat() if r["created_at"] else None,
+                    "monthly_rate_pct": 0, "term_months": 0, "is_test": False,
+                    "current_value": float(r["amount"]) if r["amount"] else 0,
+                    "total_interest": 0, "months_elapsed": 0,
+                }
+                for r in rows
+            ]}
 
 
 # ============================================================
