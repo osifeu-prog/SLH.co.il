@@ -1,6 +1,9 @@
 # 📡 SLH Command Center · Telegram Group Setup
 > **הקבוצה החדשה שלך = מוח השליטה.** מאיזה בוטים לצרף, מה ההרשאות, ואיך להעביר עבודה לסוכנים חדשים.
 
+**🔗 Invite link:** [`https://t.me/+nKgRnWEkHSIxYWM0`](https://t.me/+nKgRnWEkHSIxYWM0)
+*(שמור את הקישור הזה. שלח רק לסוכנים שבדקת שהם אמינים.)*
+
 ---
 
 ## 🤖 איזה בוטים לצרף לקבוצה
