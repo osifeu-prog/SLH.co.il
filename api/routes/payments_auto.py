@@ -252,25 +252,37 @@ async def bsc_auto_verify(req: BscVerifyReq, request: Request):
         raise HTTPException(400, "invalid BSC tx_hash (expected 0x + 64 hex)")
 
     expected_min = req.expected_min_bnb or PREMIUM_MIN_BNB
-    # Etherscan V2 unified API (chainid=56 for BSC) — BSCScan V1 deprecated 2026
-    base = "https://api.etherscan.io/v2/api"
-    key_suffix = f"&apikey={BSCSCAN_API_KEY}" if BSCSCAN_API_KEY else ""
-    chain_q = "&chainid=56"
+    # BSC public RPC (free, no key needed). Binance dataseed is the canonical source.
+    # Fallback chain: binance -> ninicoin -> defibit. Etherscan V2 free tier doesn't cover BSC.
+    bsc_rpcs = [
+        "https://bsc-dataseed.binance.org",
+        "https://bsc-dataseed1.ninicoin.io",
+        "https://bsc-dataseed2.defibit.io",
+    ]
 
+    async def _rpc_call(session, url, method, params):
+        payload = {"jsonrpc": "2.0", "method": method, "params": params, "id": 1}
+        async with session.post(url, json=payload, timeout=aiohttp.ClientTimeout(total=10)) as r:
+            return await r.json()
+
+    tx_data = rc_data = None
+    last_err = None
     try:
         async with aiohttp.ClientSession() as session:
-            async with session.get(
-                f"{base}?module=proxy&action=eth_getTransactionByHash&txhash={tx_hash}{chain_q}{key_suffix}",
-                timeout=aiohttp.ClientTimeout(total=15),
-            ) as resp:
-                tx_data = await resp.json()
-            async with session.get(
-                f"{base}?module=proxy&action=eth_getTransactionReceipt&txhash={tx_hash}{chain_q}{key_suffix}",
-                timeout=aiohttp.ClientTimeout(total=15),
-            ) as resp:
-                rc_data = await resp.json()
+            for rpc in bsc_rpcs:
+                try:
+                    tx_resp = await _rpc_call(session, rpc, "eth_getTransactionByHash", [tx_hash])
+                    rc_resp = await _rpc_call(session, rpc, "eth_getTransactionReceipt", [tx_hash])
+                    tx_data = {"result": tx_resp.get("result")}
+                    rc_data = {"result": rc_resp.get("result")}
+                    break
+                except Exception as e:
+                    last_err = f"{rpc}: {e}"
+                    continue
     except Exception as e:
-        raise HTTPException(504, f"etherscan v2 fetch failed: {e}")
+        raise HTTPException(504, f"all BSC RPCs failed: {e}")
+    if tx_data is None:
+        raise HTTPException(504, f"all BSC RPCs failed. last: {last_err}")
 
     tx = tx_data.get("result") if isinstance(tx_data, dict) else None
     receipt_raw = rc_data.get("result") if isinstance(rc_data, dict) else None
