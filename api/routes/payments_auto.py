@@ -35,9 +35,9 @@ BSC_GENESIS_ADDRESS = os.getenv(
 ).lower()
 BSCSCAN_API_KEY = os.getenv("BSCSCAN_API_KEY", "").strip()
 TONCENTER_API_KEY = os.getenv("TONCENTER_API_KEY", "").strip()
-PREMIUM_MIN_BNB = float(os.getenv("PREMIUM_MIN_BNB", "0.01"))  # lowered for testing
-PREMIUM_MIN_TON = float(os.getenv("PREMIUM_MIN_TON", "0.5"))   # lowered for testing
-PREMIUM_MIN_ILS = float(os.getenv("PREMIUM_MIN_ILS", "10"))    # lowered for testing
+PREMIUM_MIN_BNB = float(os.getenv("PREMIUM_MIN_BNB", "0.0005"))  # ~$0.30 at BNB=$633
+PREMIUM_MIN_TON = float(os.getenv("PREMIUM_MIN_TON", "0.01"))    # ~$0.014 at TON=$1.41
+PREMIUM_MIN_ILS = float(os.getenv("PREMIUM_MIN_ILS", "1"))       # for testing — 1 ILS = symbolic
 
 
 # Pool is injected by main.py via set_pool()
@@ -465,6 +465,16 @@ async def payment_config():
         "bscscan_configured": bool(BSCSCAN_API_KEY),
         "toncenter_configured": bool(TON_PAY_ADDRESS),
         "supported_providers": sorted(SUPPORTED_PROVIDERS),
+        # Estimated gas + micro-transaction info (for UI to show "total cost")
+        "gas_estimate": {
+            "ton_network_fee": 0.005,  # typical TON transfer fee
+            "bsc_network_fee_bnb": 0.0003,  # ~21000 gas × 5 gwei
+            "bsc_usd_equivalent": 0.20,  # rough
+        },
+        "test_tx_note": (
+            "לבדיקת flow ראשונה מומלץ: 0.01 TON (כולל עמלה ~0.005 TON) "
+            "או 0.001 BNB (~$0.63). אחרי שהtest עובד, פרמייד רגיל מ-0.5 TON / 0.05 BNB."
+        ),
     }
 
 
