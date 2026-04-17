@@ -8494,6 +8494,19 @@ async def _ensure_experts_tables(conn):
             created_at TIMESTAMP DEFAULT NOW()
         )
     """)
+    # Proof-of-expertise fields (added 2026-04-17)
+    await conn.execute("""
+        ALTER TABLE experts ADD COLUMN IF NOT EXISTS linkedin_url TEXT;
+        ALTER TABLE experts ADD COLUMN IF NOT EXISTS website_url TEXT;
+        ALTER TABLE experts ADD COLUMN IF NOT EXISTS youtube_url TEXT;
+        ALTER TABLE experts ADD COLUMN IF NOT EXISTS portfolio_url TEXT;
+        ALTER TABLE experts ADD COLUMN IF NOT EXISTS years_experience INTEGER;
+        ALTER TABLE experts ADD COLUMN IF NOT EXISTS credentials TEXT;
+        ALTER TABLE experts ADD COLUMN IF NOT EXISTS verification_status TEXT DEFAULT 'pending';
+        ALTER TABLE experts ADD COLUMN IF NOT EXISTS verification_note TEXT;
+        ALTER TABLE experts ADD COLUMN IF NOT EXISTS verified_at TIMESTAMP;
+        ALTER TABLE experts ADD COLUMN IF NOT EXISTS verified_by TEXT;
+    """)
     await conn.execute("""
         CREATE TABLE IF NOT EXISTS expert_reviews (
             id SERIAL PRIMARY KEY,
@@ -8549,20 +8562,49 @@ class ExpertCreateReq(BaseModel):
     languages: List[str] = ["he"]
     user_id: Optional[int] = None
     avatar_url: Optional[str] = None
+    # Proof-of-expertise (new 2026-04-17) — at least one is required for submission
+    linkedin_url: Optional[str] = None
+    website_url: Optional[str] = None
+    youtube_url: Optional[str] = None
+    portfolio_url: Optional[str] = None
+    years_experience: Optional[int] = None
+    credentials: Optional[str] = None
 
 
 @app.post("/api/experts/register")
 async def experts_register(req: ExpertCreateReq):
-    """Anyone can register as expert (verified = false initially). Awards 100 ZVK signup bonus."""
+    """Register as expert — requires at least one proof link. Enters pending_verification.
+    Verified only after admin approval via /api/admin/experts/approve.
+    Auto-credits 100 ZVK signup bonus."""
+
+    # Require at least one proof link or credentials
+    proof_provided = any([
+        (req.linkedin_url or "").strip(),
+        (req.website_url or "").strip(),
+        (req.youtube_url or "").strip(),
+        (req.portfolio_url or "").strip(),
+        (req.credentials or "").strip(),
+    ])
+    if not proof_provided:
+        raise HTTPException(
+            400,
+            "נדרשת לפחות הוכחה אחת: LinkedIn, אתר, YouTube, פורטפוליו, או פירוט תעודות."
+        )
+
     async with pool.acquire() as conn:
         await _ensure_experts_tables(conn)
         await _ensure_expert_rewards_tables(conn)
         row = await conn.fetchrow("""
-            INSERT INTO experts (user_id, display_name, tg_username, phone, email, bio, domains, languages, avatar_url)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-            RETURNING id, display_name, verified
+            INSERT INTO experts
+            (user_id, display_name, tg_username, phone, email, bio, domains, languages, avatar_url,
+             linkedin_url, website_url, youtube_url, portfolio_url, years_experience, credentials,
+             verification_status)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, 'pending')
+            RETURNING id, display_name, verified, verification_status
         """, req.user_id, req.display_name, req.tg_username, req.phone, req.email,
-            req.bio, req.domains, req.languages, req.avatar_url)
+            req.bio, req.domains, req.languages, req.avatar_url,
+            req.linkedin_url, req.website_url, req.youtube_url, req.portfolio_url,
+            req.years_experience, req.credentials)
         # Auto-award signup reward
         reward_info = None
         if req.user_id:
@@ -8571,9 +8613,99 @@ async def experts_register(req: ExpertCreateReq):
             "ok": True,
             "expert_id": row["id"],
             "verified": row["verified"],
+            "verification_status": row["verification_status"],
             "reward": reward_info,
-            "message": "נרשמת בהצלחה! קיבלת 100 ZVK בונוס. הפרופיל יועלה אחרי אימות אדמין."
+            "message": "נרשמת בהצלחה! קיבלת 100 ZVK בונוס. הפרופיל בהמתנה לאימות אדמין (24-48 שעות)."
         }
+
+
+# ═══════ Admin approval flow (new 2026-04-17) ═══════
+
+@app.get("/api/admin/experts/pending")
+async def admin_experts_pending(
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None),
+):
+    """Admin: list experts awaiting verification."""
+    _require_admin(authorization, x_admin_key)
+    async with pool.acquire() as conn:
+        await _ensure_experts_tables(conn)
+        rows = await conn.fetch("""
+            SELECT id, user_id, display_name, tg_username, phone, email, bio,
+                   domains, languages, linkedin_url, website_url, youtube_url,
+                   portfolio_url, years_experience, credentials,
+                   verification_status, verification_note, created_at
+            FROM experts
+            WHERE verification_status IN ('pending', 'needs_info')
+            ORDER BY created_at DESC
+        """)
+        return {"pending": [dict(r) for r in rows], "count": len(rows)}
+
+
+class ExpertApprovalReq(BaseModel):
+    expert_id: int
+    decision: str  # approved | rejected | needs_info
+    note: Optional[str] = None
+    featured: bool = False
+    reviewed_by: Optional[str] = None
+
+
+@app.post("/api/admin/experts/approve")
+async def admin_experts_approve(
+    req: ExpertApprovalReq,
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None),
+):
+    """Admin: approve / reject / request-more-info on a pending expert."""
+    _require_admin(authorization, x_admin_key)
+    if req.decision not in ("approved", "rejected", "needs_info"):
+        raise HTTPException(400, "decision must be approved | rejected | needs_info")
+
+    async with pool.acquire() as conn:
+        await _ensure_experts_tables(conn)
+        expert = await conn.fetchrow("SELECT id, user_id, display_name, verified FROM experts WHERE id=$1", req.expert_id)
+        if not expert:
+            raise HTTPException(404, "expert not found")
+
+        if req.decision == "approved":
+            await conn.execute("""
+                UPDATE experts SET
+                  verified = TRUE,
+                  featured = $2,
+                  verification_status = 'approved',
+                  verification_note = $3,
+                  verified_at = NOW(),
+                  verified_by = $4
+                WHERE id = $1
+            """, req.expert_id, req.featured, req.note, req.reviewed_by or "admin")
+            # Grant verification bonus (ZVK)
+            await _credit_expert_reward(conn, req.expert_id, "expert_verified")
+        elif req.decision == "rejected":
+            await conn.execute("""
+                UPDATE experts SET
+                  verification_status = 'rejected',
+                  verification_note = $2,
+                  verified_by = $3
+                WHERE id = $1
+            """, req.expert_id, req.note, req.reviewed_by or "admin")
+        else:  # needs_info
+            await conn.execute("""
+                UPDATE experts SET
+                  verification_status = 'needs_info',
+                  verification_note = $2
+                WHERE id = $1
+            """, req.expert_id, req.note)
+
+    return {
+        "ok": True,
+        "expert_id": req.expert_id,
+        "decision": req.decision,
+        "message": {
+            "approved": "✅ מומחה אושר + חשיפה בגלריה + בונוס ZVK הוענק",
+            "rejected": "❌ בקשה נדחתה",
+            "needs_info": "⚠️ נדרש מידע נוסף",
+        }[req.decision],
+    }
 
 
 class ExpertReviewReq(BaseModel):
