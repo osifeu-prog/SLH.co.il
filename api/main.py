@@ -20,6 +20,7 @@ import asyncpg
 import aiohttp
 
 from routes.ai_chat import router as ai_chat_router
+from routes.payments_auto import router as payments_auto_router, set_pool as _payments_set_pool
 
 # === CONFIG ===
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:slh_secure_2026@localhost:5432/slh_main")
@@ -138,6 +139,7 @@ def _require_admin_role(authorization, x_admin_key, min_role="viewer"):
 
 # === AI CHAT ROUTER ===
 app.include_router(ai_chat_router)
+app.include_router(payments_auto_router)
 
 # === DATABASE ===
 pool: Optional[asyncpg.Pool] = None
@@ -163,6 +165,7 @@ async def startup():
         print(f"[SECURITY WARNING] {len(_security_warnings)} default credentials detected. Set env vars on Railway before production.")
 
     pool = await asyncpg.create_pool(DATABASE_URL, min_size=2, max_size=10)
+    _payments_set_pool(pool)
     async with pool.acquire() as conn:
         await conn.execute("""
             CREATE TABLE IF NOT EXISTS web_users (

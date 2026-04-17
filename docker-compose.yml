@@ -1,6 +1,7 @@
 ﻿# ============================================================
 # SLH ECOSYSTEM - Unified Docker Compose
 # All Telegram bots + shared infrastructure
+# SECURE MODE: use only external --env-file, do not rely on local .env
 # ============================================================
 
 services:
@@ -40,7 +41,6 @@ services:
 
   # ---- BOT SERVICES ----
 
-  # 1. SLH Academia Bot (Main Bot - Store, Tasks, Economy)
   core-bot:
     build:
       context: ../SLH_PROJECT_V2
@@ -65,7 +65,6 @@ services:
     volumes:
       - core-logs:/app/logs
 
-  # 2. Guardian Bot (Security + Monitoring)
   guardian-bot:
     build:
       context: ../telegram-guardian-DOCKER-COMPOSE-ENTERPRISE
@@ -88,7 +87,6 @@ services:
     ports:
       - "8001:8080"
 
-  # 3. GATE BotShop (Product Store Bot)
   botshop:
     build:
       context: ./botshop
@@ -108,7 +106,6 @@ services:
       MODE: polling
       ENV: prod
 
-  # 4. Wallet Bot (TON/BNB Wallet Management)
   wallet-bot:
     build:
       context: ./wallet
@@ -126,7 +123,6 @@ services:
       TON_API_KEY: ${TON_API_KEY}
       ENV: prod
 
-  # 5. BOT Factory (Investment + Staking)
   factory-bot:
     build:
       context: ./factory
@@ -147,9 +143,8 @@ services:
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-slh_admin_2026}
       MODE: polling
       ENV: prod
-      DISABLE_TELEGRAM: "1"  # 2026-04-10: Railway owns the polling; local serves FastAPI only
+      DISABLE_TELEGRAM: "1"
 
-  # 6. FUN Bot (Promo/Premium)
   fun-bot:
     build:
       context: ./fun
@@ -165,7 +160,6 @@ services:
     ports:
       - "8002:8080"
 
-  # 7. Super Admin Bot (Mission Control)
   admin-bot:
     build:
       context: .
@@ -180,22 +174,6 @@ services:
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
 
-  # 8. ExpertNet / SLH_AIR Bot (Zvika Kaufman - Ambassador #1)
-# LEGACY_DISABLED 2026-04-14   expertnet-bot:
-# LEGACY_DISABLED 2026-04-14     build:
-# LEGACY_DISABLED 2026-04-14       context: .
-# LEGACY_DISABLED 2026-04-14       dockerfile: dockerfiles/Dockerfile.expertnet
-# LEGACY_DISABLED 2026-04-14     container_name: slh-expertnet
-# LEGACY_DISABLED 2026-04-14     restart: always
-# LEGACY_DISABLED 2026-04-14     depends_on:
-# LEGACY_DISABLED 2026-04-14       postgres:
-# LEGACY_DISABLED 2026-04-14         condition: service_healthy
-# LEGACY_DISABLED 2026-04-14     environment:
-# LEGACY_DISABLED 2026-04-14       BOT_TOKEN: ${EXPERTNET_BOT_TOKEN}
-# LEGACY_DISABLED 2026-04-14       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
-# LEGACY_DISABLED 2026-04-14       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
-# LEGACY_DISABLED 2026-04-14 
-# LEGACY_DISABLED 2026-04-14   # 9. SLH HUB / Airdrop Bot (Central economic engine)
   airdrop-bot:
     build:
       context: .
@@ -218,8 +196,6 @@ services:
       RAILWAY_DATABASE_URL: ${RAILWAY_DATABASE_URL}
       RAILWAY_REDIS_URL: ${RAILWAY_REDIS_URL}
 
-  # ---- TEMPLATE BOTS (minimal bots using shared template) ----
-
   campaign-bot:
     build:
       context: .
@@ -240,10 +216,14 @@ services:
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
 
   game-bot:
-    build: {context: ., dockerfile: dockerfiles/Dockerfile.match}
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.match
     container_name: slh-game
     restart: always
-    depends_on: {postgres: {condition: service_healthy}}
+    depends_on:
+      postgres:
+        condition: service_healthy
     environment:
       BOT_TOKEN: ${GAME_BOT_TOKEN}
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
@@ -263,40 +243,55 @@ services:
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
 
   slh-ton-bot:
-    build: {context: ., dockerfile: dockerfiles/Dockerfile.template}
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.template
     container_name: slh-ton
     restart: always
-    depends_on: {postgres: {condition: service_healthy}}
+    depends_on:
+      postgres:
+        condition: service_healthy
     environment:
       BOT_TOKEN: ${SLH_TON_TOKEN}
       BOT_KEY: slh_ton
       BOT_DISPLAY_NAME: "SLH TON"
-      BOT_DESCRIPTION: "\u05d0\u05e8\u05e0\u05e7 TON \u05d5\u05d4\u05e2\u05d1\u05e8\u05d5\u05ea"
+      BOT_DESCRIPTION: "ארנק TON והעברות"
       PRICE_ILS: "79"
       PRICE_TON: "4.0"
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
 
   ledger-bot:
-    build: {context: ., dockerfile: dockerfiles/Dockerfile.template}
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.template
     container_name: slh-ledger
     restart: always
-    depends_on: {postgres: {condition: service_healthy}}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
     environment:
       BOT_TOKEN: ${SLH_LEDGER_TOKEN}
       BOT_KEY: ledger
       BOT_DISPLAY_NAME: "SLH Ledger"
-      BOT_DESCRIPTION: "\u05e0\u05d9\u05d4\u05d5\u05dc \u05e4\u05d9\u05e0\u05e0\u05e1\u05d9 \u05d5\u05de\u05e2\u05e7\u05d1 \u05d4\u05d5\u05e6\u05d0\u05d5\u05ea"
+      BOT_DESCRIPTION: "ניהול פיננסי ומעקב הוצאות"
       PRICE_ILS: "49"
       PRICE_TON: "2.5"
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
 
   osif-shop-bot:
-    build: {context: ., dockerfile: dockerfiles/Dockerfile.osifshop}
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.osifshop
     container_name: slh-osif-shop
     restart: always
-    depends_on: {postgres: {condition: service_healthy}}
+    depends_on:
+      postgres:
+        condition: service_healthy
     ports:
       - "8080:8080"
     environment:
@@ -318,15 +313,19 @@ services:
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
 
   chance-bot:
-    build: {context: ., dockerfile: dockerfiles/Dockerfile.template}
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.template
     container_name: slh-chance
     restart: always
-    depends_on: {postgres: {condition: service_healthy}}
+    depends_on:
+      postgres:
+        condition: service_healthy
     environment:
       BOT_TOKEN: ${CHANCE_PAIS_TOKEN}
       BOT_KEY: chance
       BOT_DISPLAY_NAME: "Chance Pais"
-      BOT_DESCRIPTION: "\u05d4\u05d2\u05e8\u05dc\u05d5\u05ea + \u05de\u05e9\u05d7\u05e7\u05d9 \u05de\u05d6\u05dc"
+      BOT_DESCRIPTION: "הגרלות + משחקי מזל"
       PRICE_ILS: "19"
       PRICE_TON: "1.0"
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
@@ -338,8 +337,6 @@ services:
       context: .
       dockerfile: ./dockerfiles/Dockerfile.nfty
     restart: unless-stopped
-    env_file:
-      - .env
     environment:
       BOT_TOKEN: ${NFTY_MADNESS_TOKEN}
       DATABASE_URL: postgresql://postgres:slh_secure_2026@postgres:5432/slh_main
@@ -357,16 +354,15 @@ services:
         condition: service_started
     command: ["python", "/app/main.py"]
 
-  # ---- MISSING BOTS (newly added) ----
-
-  # selha-bot: REMOVED â€” dummy placeholder bot, shared token with userinfo
-  # userinfo-bot: REMOVED â€” dummy placeholder bot, not a real service
-
   ts-set-bot:
-    build: {context: ., dockerfile: dockerfiles/Dockerfile.template}
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.template
     container_name: slh-ts-set
     restart: always
-    depends_on: {postgres: {condition: service_healthy}}
+    depends_on:
+      postgres:
+        condition: service_healthy
     environment:
       BOT_TOKEN: ${TS_SET_TOKEN}
       BOT_KEY: ts_set
@@ -378,10 +374,14 @@ services:
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
 
   crazy-panel-bot:
-    build: {context: ., dockerfile: dockerfiles/Dockerfile.template}
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.template
     container_name: slh-crazy-panel
     restart: always
-    depends_on: {postgres: {condition: service_healthy}}
+    depends_on:
+      postgres:
+        condition: service_healthy
     environment:
       BOT_TOKEN: ${CRAZY_PANEL_TOKEN}
       BOT_KEY: crazy_panel
@@ -392,12 +392,15 @@ services:
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
 
-  # MY_NFT_SHOP Bot
   nft-shop-bot:
-    build: {context: ., dockerfile: dockerfiles/Dockerfile.template}
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.template
     container_name: slh-nft-shop
     restart: always
-    depends_on: {postgres: {condition: service_healthy}}
+    depends_on:
+      postgres:
+        condition: service_healthy
     environment:
       BOT_TOKEN: ${MY_NFT_SHOP_TOKEN}
       BOT_KEY: nft_shop
@@ -408,12 +411,15 @@ services:
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
 
-  # BeynoniBank Bot - Banking & Finance
   beynonibank-bot:
-    build: {context: ., dockerfile: dockerfiles/Dockerfile.template}
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.template
     container_name: slh-beynonibank
     restart: always
-    depends_on: {postgres: {condition: service_healthy}}
+    depends_on:
+      postgres:
+        condition: service_healthy
     environment:
       BOT_TOKEN: ${BEYNONIBANK_TOKEN}
       BOT_KEY: beynonibank
@@ -424,12 +430,15 @@ services:
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
 
-  # Test Bot - Development & Testing
   test-bot:
-    build: {context: ., dockerfile: dockerfiles/Dockerfile.template}
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.template
     container_name: slh-test-bot
     restart: always
-    depends_on: {postgres: {condition: service_healthy}}
+    depends_on:
+      postgres:
+        condition: service_healthy
     environment:
       BOT_TOKEN: ${TEST_BOT_TOKEN}
       BOT_KEY: test_bot
