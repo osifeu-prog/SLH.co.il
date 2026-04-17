@@ -94,11 +94,21 @@
 - [x] Git remote fix + push — **DONE 17.4**
 - [x] Auto-approve settings.json — **DONE 17.4**
 - [x] Agent sync protocol docs — **DONE 17.4**
-- [ ] Admin key rotation — **Osif**
-- [ ] Bot command collision fix — **AI + Osif**
-- [ ] ESP32 flow — **AI advisor**
-- [ ] 31 token rotation — **Osif**
+- [x] Device onboarding API live (3 endpoints) — **DONE 17.4 night, verified 17.4 morning**
+- [x] Bot-to-bot filter middleware (shared/bot_filters.py) — **DONE 17.4 night**
+- [x] AI Assistant coverage 16% → ~100% — **DONE 17.4 night**
+- [x] join.html + CONTRIBUTOR_GUIDE + FB post — **DONE 17.4 night**
+- [x] SILENT_MODE kill switch + alert rate-limit — **DEPLOYED 17.4 night** (var still needs to be set in Railway)
+- [x] TOKEN_AUDIT.md secured via .gitignore — **DONE 17.4 morning closure**
+- [x] Morning verification (API + device/register) — **DONE 17.4 morning closure**
+- [ ] Admin key rotation in Railway — **Osif** (blocked on Railway UI access)
+- [ ] SILENT_MODE=1 in Railway — **Osif** (blocked on Railway UI access)
+- [ ] Twilio SMS key — **Osif** (external signup)
+- [ ] Bot command collision fix — **AI + Osif** (PR pending)
+- [ ] ESP32 flow (Telegram side) — **AI advisor**
+- [ ] 31 token rotation — **Osif** (BotFather only)
 - [ ] Campaign bot naming consistency — **Osif + AI**
+- [ ] docker-compose.yml + shared/bot_template.py regression review — **Osif** (see REGRESSIONS_FLAG_20260417.md)
 
 ## 📡 Links for sharing
 - Live status: `D:\SLH_ECOSYSTEM\ops\SESSION_STATUS.md`

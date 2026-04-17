@@ -1,74 +1,83 @@
 # SLH ECOSYSTEM — LIVE SESSION STATUS
 > **Single Source of Truth.** Every agent updates this before ending a session.
 
-**Last update:** 2026-04-17 01:45 by Claude Opus 4.6
+**Last update:** 2026-04-17 morning closure by Claude Code (verified against production)
 **Owner:** Osif Ungar (TG 224223270)
 
 ---
 
-## ✅ Resolved since last session
-- **Bug debug system live** — `/bug-report.html` + `/admin-bugs.html` + Telegram alerts to admin on every new bug + PATCH `/api/admin/bugs/{id}/status` + auto-capture JS errors via `shared.js`
-- **Git remote repaired** — root repo now `github.com/osifeu-prog/slh-api.git` (was placeholder)
-- **Both repos pushed:**
-  - root: `39f490f` (ops docs + gitignore) + `74cdcb7` (bug system API)
-  - website: `cd54d24` (admin-bugs + FAB + auto-capture)
-- **.gitignore expanded** — backups/secrets excluded (131 → 56 untracked)
-- **.claude/settings.json** — 29 read-only tools auto-approved
-- **ledger-bot** — responding to /start, /deals, /promo, /premium (token fixed by user)
-- **Admin key rotation prepared** — new key generated + saved locally (not yet deployed to Railway)
+## ✅ Verified in production this morning
+- **API health** — `GET /api/health` → `{"status":"ok","db":"connected","version":"1.0.0"}` ✅
+- **Device register endpoint** — `POST /api/device/register` returned `{"ok":true, "delivery":"pending_sms", "_dev_code":"..."}` ✅
+  (SMS fallback noted as not configured — expected until Twilio key is added)
+- **Git state** — 12 commits from night session all pushed to `origin/master` on `github.com/osifeu-prog/slh-api`
+- **Last commit:** `29e8e9e` `docs(ops): morning report — 11 commits, device API live, AI 100%`
 
-## 🔴 Active blockers
+## ✅ Resolved since last session (unchanged from night report)
+- Bug debug system live — `/bug-report.html` + `/admin-bugs.html` + Telegram alerts + PATCH `/api/admin/bugs/{id}/status`
+- Git remote repaired — root = `github.com/osifeu-prog/slh-api.git`
+- `.gitignore` expanded — backups/secrets excluded (131 → 56 untracked)
+- `.claude/settings.json` — 29 read-only tools auto-approved
+- ledger-bot responding to `/start`, `/deals`, `/promo`, `/premium`
+- Admin key generated (not yet deployed to Railway)
+- `shared/bot_filters.py` — bot-to-bot filter middleware ready
+- Device onboarding: `users_by_phone` + `devices` + 3 endpoints deployed
+- AI Assistant coverage 16% → ~100% (16 pages batched)
+- `join.html` + FB post + `CONTRIBUTOR_GUIDE.md` published
 
-### 1. Bot command collision (CRITICAL — UX bug)
-Multiple bots answering the same `/start@Campaign_SLH_bot` message. `SLH_AIR` responds "פקודה לא מוכרת" to commands explicitly addressed to `Campaign_SLH_bot`. **Each bot must check `@botname` suffix and ignore commands not addressed to it.**
+## ✅ Closed this morning
+- **Secured TOKEN_AUDIT.md** — added to `.gitignore` (contains real bot token values), also `api/community_backend_scan.txt`
+- **Morning verification** — API + device register both live
+- **Regressions flagged** — `docker-compose.yml` + `shared/bot_template.py` documented in `ops/REGRESSIONS_FLAG_20260417.md` (NOT committed — needs Osif decision)
 
-**Where:** all bot handlers using aiogram 3.x `Command()` filter — add `prefix="/"` + explicit bot-username check.
+## 🔴 Still blocked on Osif (no agent can do these)
+| # | Task | Where |
+|---|------|-------|
+| 1 | Rotate `ADMIN_API_KEYS` in Railway Variables | Railway → slh-api → Variables |
+| 2 | Set `SILENT_MODE=1` in Railway (kill switch) | Railway → slh-api → Variables |
+| 3 | Supply real admin key into `~/.claude/slh-secrets.json` | local file |
+| 4 | Supply Twilio SMS API key (for real SMS delivery) | `.env` + Railway |
+| 5 | Rotate 31 exposed bot tokens (`@BotFather /revoke`) | Telegram BotFather |
+| 6 | Set BotFather commands for each bot (`/setcommands`) | Telegram BotFather |
+| 7 | Decide fate of `docker-compose.yml` + `shared/bot_template.py` | see `REGRESSIONS_FLAG_20260417.md` |
 
-### 2. Campaign bot command naming inconsistency
-- `/new_survey` vs `/newsurvey` (help shows one, works with another)
-- `/contacts` vs `/addcontact` vs `/add_contact`
+## 🟡 Code-level open work (ready when Osif approves)
+- Bot command collision fix (`@botname` check in handlers) — spec in `TEAM_TASKS.md`, PR pending approval
+- ESP32 `/register` + `/verify` Telegram wiring — API exists, bot handler TBD
+- Campaign-bot command naming consistency (`/new_survey` vs `/newsurvey`)
+- Re-deploy the 6 stopped bots with `bot_filters.py` installed
+- Twilio SMS integration (30 min, unblocked once API key is supplied)
+- Theme switcher on 25 remaining pages (60 min)
+- `/api/payment/ton/auto-verify` endpoint (90 min)
 
-**Action:** standardize on `/snake_case` across all bots (matches Telegram convention).
+## 📦 Uncommitted files (56, unchanged from TRIAGE_REPORT)
+Still present — do not batch-commit without per-file review. See `ops/TRIAGE_REPORT.md` for categorization. Key reminders:
+- `TOKEN_AUDIT.md` → now gitignored ✅
+- `docker-compose.yml` (M) → flagged, do NOT commit
+- `shared/bot_template.py` (M) → flagged, do NOT commit
+- Bot directories (campaign-bot/, match-bot/, etc.) → still need per-dir secret scan before commit
 
-### 3. ESP32 register/verify flow
-`/register ESP001 0501234567` and `/verify ESP001 242641` — no bot response seen in Telegram transcripts. Either:
-- Handler not registered in bot
-- Bot not receiving from BotFather (wrong token)
-- Duplicated message ("/verify ESP001 242641/verify ESP001 242641") suggests keyboard/typing issue
-
-**Next:** check which bot should handle ESP registration (device-registry service runs on :8090).
-
-### 4. Admin key still on default
-Railway env `ADMIN_API_KEYS` = `slh2026admin` (known from public chat history). **New key ready:** `slh_admin_hgaBj2T9k8T8Hmm5pC_794J-4UaDG6ce` saved at `~/.claude/slh-secrets.json`. Needs:
-1. Add to Railway Variables → `ADMIN_API_KEYS=slh_admin_hgaBj2T9k8T8Hmm5pC_794J-4UaDG6ce,slh2026admin` (dual, rotate grace period)
-2. Update localStorage in browser: open `/admin.html` → logout → login with new key
-3. Remove old `slh2026admin` from Railway after 24h
-
-### 5. Still 56 uncommitted files in root repo
-See `ops/TRIAGE_REPORT.md` for full categorization.
-
-## 🟡 Known issues (not blocking)
-- `docker-compose.yml` modified (uncommitted) — check intent before commit
-- `shared/bot_template.py` modified (uncommitted) — probably related to ledger-bot fix
-- `backups/_restore/` submodules showing as modified (safe to ignore)
-
-## 🎯 Next priorities (in order)
-1. **Fix bot command collision** — single bot responds to `/cmd@this_bot` only
-2. **Rotate admin key** (3 steps above)
-3. **Commit bot code batches** (expertnet-bot/, match-bot/, nfty-bot/, campaign-bot/, wellness-bot/, tonmnh-bot/, osif-shop/, userinfo-bot/)
-4. **Commit API routes/** and `shared/` payment modules
-5. **ESP32 flow** — wire up device-registry to whichever bot handles registration
-
-## 📡 Live System Health
+## 📡 Live System Health (morning verification)
 | Component | Status | Evidence |
 |-----------|--------|----------|
-| API | ✅ OK | `/api/health` → `{"status":"ok","db":"connected","version":"1.0.0"}` |
-| Website | ✅ OK | slh-nft.com loading, FAB button mounted |
-| ledger-bot | ✅ OK | /start + /premium flow working |
-| Campaign bot | 🟡 Live but buggy | Conflicts with SLH_AIR on same messages |
-| ESP32 flow | 🔴 Unknown | No response seen to /register /verify |
+| API | ✅ OK | `GET /api/health` → 200 |
+| Device register | ✅ OK | `POST /api/device/register` → `ok:true` |
+| Website | 🟡 Not re-verified this session | last seen OK in night report |
+| ledger-bot | 🟡 Not re-verified this session | last seen OK in night report |
+| Campaign bot | 🔴 Buggy (collision with SLH_AIR) | from night report |
+| ESP32 flow | 🔴 Unknown in Telegram | API side works, bot side unwired |
+
+## 🎯 First actions when Osif wakes up (priority order)
+1. Read `ops/MORNING_REPORT_20260417.md` (full night deliverables)
+2. Read `ops/REGRESSIONS_FLAG_20260417.md` (decide on 2 flagged files)
+3. Do the 2 Railway variable changes (ADMIN_API_KEYS + SILENT_MODE)
+4. Pick one of A/B/C/D from MORNING_REPORT for next work block:
+   - [A] Twilio SMS integration
+   - [B] Theme switcher on 25 pages
+   - [C] Bot re-deploy with filter
+   - [D] TON auto-verify payment endpoint
 
 ## 🔑 Active sessions / agents
-- **Claude Opus 4.6** (this) — web + API + infra + docs
-- **SLH Core Assistant** (other session, Telegram) — code-generation helper, diagnostics
-- **Giga Store (Osif)** — ESP32 + Docker operator
+- **Claude Opus 4.6 (night session)** — completed 22:00→04:30, reported, signed off
+- **Claude Code (morning closure)** — this session, verified state, closed resolvable items
+- **Giga Store (Osif)** — asleep, expected to wake and triage

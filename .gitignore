@@ -35,6 +35,8 @@ ops/LEGACY_DISABLE_*/
 # Secrets-bearing reports (contain real tokens)
 ops/BOT_TOKEN_MAP_*.txt
 ops/DUPLICATE_BOT_TOKENS_*.txt
+TOKEN_AUDIT.md
+api/community_backend_scan.txt
 
 # Local diagnostics outputs
 *.tmp
