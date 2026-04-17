@@ -39,12 +39,14 @@ VALID_EARN_REASONS = {
     "streak_daily", "learning_path_milestone",
     "expert_verify_submit", "expert_approved",
     "referral_joined", "purchase_bonus", "staking_dividend",
-    "system_seed", "admin_grant"
+    "system_seed", "admin_grant",
+    "sudoku_solve", "sudoku_daily_bonus"
 }
 VALID_SPEND_REASONS = {
     "ai_chat", "ai_summary", "ai_analysis", "ai_translation",
     "ai_recommendation", "ai_dm_reply", "ai_matching",
-    "expert_consult_prebrief"
+    "expert_consult_prebrief",
+    "sudoku_hint"
 }
 EARN_CAP_PER_HOUR = 10  # anti-spam
 

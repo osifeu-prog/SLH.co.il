@@ -24,6 +24,7 @@ from routes.payments_auto import router as payments_auto_router, set_pool as _pa
 from routes.community_plus import router as community_plus_router, set_pool as _community_plus_set_pool
 from routes.aic_tokens import router as aic_router, admin_router as aic_admin_router, set_pool as _aic_set_pool
 from routes.pancakeswap_tracker import router as ps_router, set_pool as _ps_set_pool
+from routes.sudoku import router as sudoku_router, set_pool as _sudoku_set_pool
 
 # === CONFIG ===
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:slh_secure_2026@localhost:5432/slh_main")
@@ -147,6 +148,7 @@ app.include_router(community_plus_router)
 app.include_router(aic_router)
 app.include_router(aic_admin_router)
 app.include_router(ps_router)
+app.include_router(sudoku_router)
 
 # === DATABASE ===
 pool: Optional[asyncpg.Pool] = None
@@ -177,6 +179,7 @@ async def startup():
     _aic_set_pool(pool)
     _ps_set_pool(pool)
     _ai_chat_set_aic_pool(pool)
+    _sudoku_set_pool(pool)
     async with pool.acquire() as conn:
         await conn.execute("""
             CREATE TABLE IF NOT EXISTS web_users (
