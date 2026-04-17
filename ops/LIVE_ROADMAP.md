@@ -1,121 +1,131 @@
 # 🎯 SLH · LIVE ROADMAP
-> **מסמך חי אחד — הכל מתעדכן פה.**
-> Last updated: 2026-04-17 13:45 by Claude Code · 18 commits היום.
+> **מסמך חי אחד.** עודכן: 2026-04-17 16:20 · 35+ commits היום.
 
 ---
 
-## 🧭 6 יעדים ראשיים
+## 🧭 סטטוס 6 tracks
 
-| # | יעד | סטטוס |
-|---|-----|-------|
-| 1 | 💰 **הכנסה חיה** · תשלומים אוטומטיים גלובליים | 🟢 **85%** (עלה מ-70%) |
-| 2 | 🎓 **רשת מומחים מאומתים** | 🟡 35% (עלה מ-30%) |
-| 3 | 💝 **בוט הכרויות @G4meb0t_bot_bot** | 🔴 5% |
-| 4 | 🚪 **תנועה בלי פייסבוק** | 🟡 20% (עלה מ-10%) |
-| 5 | 🏘 **רשת חברתית איכותית** | 🟡 **55%** (עלה מ-40%) |
-| 6 | 🧠 **AIC · AI economy** (NEW!) | 🟢 40% |
+| # | יעד | אתמול | עכשיו | שינוי |
+|---|-----|:-----:|:-----:|:-----:|
+| 1 | 💰 Payments | 70% | **95%** | +25 |
+| 2 | 🎓 Verified Experts | 30% | **65%** | +35 |
+| 3 | 💝 Dating (@G4meb0t_bot_bot) | 5% | **65%** | +60 |
+| 4 | 🚪 No-Facebook Traffic | 10% | 20% | +10 |
+| 5 | 🏘 Social Network | 40% | **75%** | +35 |
+| 6 | 🧠 AIC · AI Economy | 0% | **80%** | NEW |
 
----
-
-## ✅ מה יצא היום (17 אפריל · 18 commits)
-
-### 💰 Track 1 · Payments (→ 85%)
-- [x] `/api/payment/ton/auto-verify` — toncenter, אומת חי
-- [x] `/api/payment/bsc/auto-verify` — Etherscan V2 (המיגרציה בוצעה)
-- [x] `/api/payment/external/record` — 10 ספקים
-- [x] `/api/payment/receipt` — קבלה דיגיטלית `SLH-YYYYMMDD-NNNNNN`
-- [x] `/api/payment/status/{user_id}` · `/receipts/{user_id}` · `/config` · `/geography/summary`
-- [x] buy.html · UI "כבר שילמת? אמת עכשיו"
-- [x] Railway env vars: `TON_PAY_ADDRESS` + `BSCSCAN_API_KEY` הוגדרו ופעילים
-- [x] שוחזרו regressed files: docker-compose.yml (25 שירותים) + shared/bot_template.py (241 שורות)
-
-### 🎓 Track 2 · Experts (→ 35%)
-- [x] נשמר: עדיין לא בוצע שדרוג טופס הוכחה, נותר לשבוע הבא
-
-### 🏘 Track 5 · Social Network (→ 55%)
-- [x] community.html · תיקון פיד (is_registered stale cache) + DM button + 6 emoji reactions picker
-- [x] community_plus API:
-  - `/api/community/posts/{id}/react` · 6 emoji types + toggle/change
-  - `/api/community/posts/{id}/reactions` · counts + my_reaction
-  - `/api/community/comments/{id}/reply` · threaded 1-level
-  - `/api/community/posts/{id}/threaded` · full tree
-  - `/api/presence/heartbeat` · user online tracking
-  - `/api/presence/{username}` · online check
-  - `/api/presence/bulk` · batch
-  - `/api/presence/online/count` · total online
-- [x] learning-path.html · 21 days + streak + ZVK milestones + nephew-safe mode
-- [x] join-guide.html · 5 שפות + 3-step onboarding + Telegram deep-link
-- [x] פוסט #16 ברודקאסט ב‑community feed
-
-### 🧠 Track 6 · AIC (NEW · →40%)
-- [x] `ops/AIC_TOKEN_DESIGN.md` · spec מלא (mechanics/peg/rollout)
-- [x] `api/routes/aic_tokens.py` · 8 endpoints (balance/tx/earn/spend/stats/mint/reserve)
-- [x] DB auto-migrate: `aic_balances`, `aic_transactions`, `aic_reserve`
-- [x] admin-tokens.html · unified 6-token dashboard + Master Prompt embedded
-
-### 🤖 Agent Tooling
-- [x] `ops/MASTER_EXECUTOR_AGENT_PROMPT.md` · 339 שורות · definitive prompt לכל AI
-- [x] `ops/TELEGRAM_GROUP_SETUP.md` · dating vs workers split + handoff protocol
-- [x] `ops/PROGRESS_REPORT_20260417_MORNING.md`
-- [x] mission-control.html · admin-tokens.html · agent-brief.html · כולם חיים
-
-### 🔐 Security
-- [x] ניתוק קבוצת הכרויות מכל דפים ציבוריים (אחרי חשיפה לא-רצויה לאחיין)
-- [x] nephew ID 6466974138 שמור כ-tester only (ללא תוכן בוגרים)
-- [x] TOKEN_AUDIT.md ב-.gitignore (הכיל טוקני בוט אמיתיים)
-- [x] `api/community_backend_scan.txt` gitignored
+**ממוצע כללי: 67% (היה 26%). הקפיצה הגדולה ביותר ביום אחד.**
 
 ---
 
-## 🔴 מה נשאר עליך (סדר עדיפות)
+## ✅ מה נשלח היום לפרודקשן
 
-### ⚡ היום (5 דקות סה"כ)
-1. `SILENT_MODE=1` ב‑Railway (kill-switch להתראות בוט)
-2. ניסוי של buy.html עם TX אמיתי קטן (1.5 TON או 0.05 BNB)
-3. Login ב‑admin-tokens.html → mint 100 AIC לעצמך + 20 לאחיין (ID 6466974138)
+### 💰 Track 1 · Payments (95%)
+- ✅ TON auto-verify · toncenter · live
+- ✅ BSC auto-verify · **Binance public RPC** (חינמי, ללא מפתח)
+- ✅ External providers · 10 מסלולים (Stripe/PayPal/iCount/Cardcom/Meshulam/Isracard/GrowClub/manual_bank/ton_direct/bsc_direct)
+- ✅ Digital receipts · SLH-YYYYMMDD-NNNNNN
+- ✅ PancakeSwap TX tracker (Binance dataseed RPCs)
+- ✅ pay.html · 4-step funnel עם QR + Tonkeeper/MetaMask deep-links
+- ✅ buy.html · updated עם TON+BSC direct
+- 🟡 Stripe webhook (pending user signup)
+
+### 🎓 Track 2 · Verified Experts (65%)
+- ✅ Proof-of-expertise fields (LinkedIn/website/YouTube/credentials/years)
+- ✅ Registration blocks unless ≥1 proof
+- ✅ `/api/admin/experts/pending` + `/api/admin/experts/approve`
+- ✅ admin-experts.html · login gate, stats, 4-action approval
+- ✅ ZVK bonus on approval
+
+### 💝 Track 3 · Dating (65%)
+- ✅ `/api/dating/*` · 8 endpoints (profile/candidates/action/matches/stats)
+- ✅ Age 18+ enforced · minors (nephew ID 6466974138) blocked
+- ✅ Interest-overlap matching algorithm
+- ✅ Mutual-match detection · TG deep-link after match
+- ✅ dating.html · age gate, 3 tabs, 28 interests, Hebrew-first
+- ✅ g4mebot/ · @G4meb0t_bot_bot skeleton (aiogram 3.x, 200 lines)
+- ✅ g4mebot Dockerfile + README
+- 🟡 Bot deploy (needs BotFather token + docker-compose entry)
+
+### 🏘 Track 5 · Social Network (75%)
+- ✅ 6-emoji reactions (👍❤️😂😮😢😡) + toggle/change
+- ✅ Threaded replies (1 level deep)
+- ✅ Presence heartbeat + online dots
+- ✅ DM button on posts (TG deep-link OR inline reply)
+- ✅ learning-path.html · 21-day + streak + ZVK
+- ✅ join-guide.html · 5 languages + 3-step onboarding
+- ✅ Sudoku engagement (9×9, 3 difficulties, daily puzzle, leaderboard)
+
+### 🧠 Track 6 · AIC (80%)
+- ✅ 6th token shipped (AI Credits, 1 AIC ≈ $0.001)
+- ✅ admin-tokens.html unified dashboard
+- ✅ `/api/ai/chat-metered` with AIC burn + welcome gift (5 AIC)
+- ✅ Hint costs in Sudoku (1 AIC/hint)
+- ✅ Mint/reserve admin flows
+- 🟡 AIC circulation = 0 (needs first mint)
+
+### 🛠 Agent Tooling
+- ✅ 5 agent prompts public at `/prompts/*.md`
+- ✅ agent-brief.html interactive
+- ✅ SCAN by secondary agent (partial but informative)
+- ✅ MASTER_EXECUTOR_AGENT_PROMPT · 339 lines
+- ✅ LEDGER_GUARDIAN_ESP prompt · 280 lines
+- ✅ ESP_QUICKSTART · PowerShell exact
+- ✅ SYSTEM_SCAN · read-only auditor
+- ✅ TASK_SUDOKU · 5h task brief
+- ✅ ALL_AGENT_PROMPTS · master index
+
+### 🐛 Track F (new) · AI Bug Analysis
+- ✅ `POST /api/admin/bugs/{id}/ai-analyze` · 3 agent modes (claude_code/advisor/human_only)
+- ✅ DB columns: ai_analysis, ai_analyzed_at, ai_agent
+- 🟡 admin-bugs.html frontend integration (pending)
+
+---
+
+## 🔴 מה נשאר עליך (Osif-only)
+
+### ⚡ היום (5 דק' לכל אחד)
+1. `SILENT_MODE=1` ב-Railway
+2. Login ב‑admin-tokens.html + mint ראשון של AIC
+3. בדיקת תשלום TON חי (0.5 TON → `/pay.html`)
 
 ### 📅 השבוע
-4. החלטה על 2 regressed files (כבר שוחזרו — אשר או revert)
-5. בניית `@G4meb0t_bot_bot` (אני יכול, ~4 שעות עבודה)
-6. שדרוג experts.html עם טופס הוכחה
+4. יצירת `@G4meb0t_bot_bot` ב‑BotFather → הפק TOKEN → שים ב‑.env
+5. Stripe signup (אם תרצה תשלומי כרטיס בינלאומיים)
 
 ### 🏗 החודש
-7. Twilio API key (עבור SMS אמיתי)
-8. Stripe account (לתשלומי כרטיס גלובליים)
-9. ניהול 31 bot tokens (סיבוב אבטחה)
-10. Anthropic API key אם תרצה slh-claude-bot
+6. סיבוב 31 bot tokens (אבטחה)
+7. Twilio API key (SMS אמיתי)
 
 ---
 
-## 📊 מצב המערכת עכשיו
+## 📊 מצב המערכת (live)
 
-| Component | Status | Evidence |
-|-----------|--------|----------|
-| API | ✅ 1.0.0 · **178 endpoints** | `/api/health` → 200 |
-| DB | ✅ connected | auto-migrated 3 new tables |
-| Website | ✅ GH Pages deployed | 70 HTML pages |
-| Payments TON | ✅ live · verified end-to-end | toncenter responds |
-| Payments BSC | ✅ live · Etherscan V2 | bscscan_configured: true |
-| 10 External providers | ✅ code live | /api/payment/config |
-| AIC Token | ✅ **NEW · live** | /api/aic/stats responds |
-| Community reactions | 🟡 backend live, UI partial | picker added, handlers pending |
-| Online presence | ✅ backend live | learning-path sends heartbeats |
-| Admin Token Center | ✅ live | /admin-tokens.html |
-| Master Exec Prompt | ✅ ready to copy | embedded in admin-tokens |
-| 25 Bots | 🟡 ledger OK, 6 collision | unchanged from yesterday |
-
----
-
-## 🎯 הצעות להמשך (תגיד מה)
-
-**A.** השלמת reactions UI + presence handlers ב‑community.html (~1h, מסיים Track 5 ל-65%)
-**B.** בניית dating bot `@G4meb0t_bot_bot` מ-0 (~4h, מקפיץ Track 3 מ-5% ל-60%)
-**C.** שדרוג experts.html + admin approval flow (~2h, מקפיץ Track 2 ל-60%)
-**D.** PancakeSwap TX tracker אוטומטי (~1.5h, סוגר Track 1 ל-100%)
-**E.** "AI Gateway" — wrap /api/ai/chat עם AIC check+burn (~2h, מקפיץ Track 6 ל-70%)
-
-**רצף מומלץ:** A → D → E → C → B (engagement → revenue closure → AI economy → experts → dating)
+| Component | Status |
+|-----------|--------|
+| API | ✅ 1.0.0 · **225+ endpoints** |
+| Frontend | ✅ 15+ pages (כולל pay, sudoku, dating) |
+| TON verify | ✅ live |
+| BSC verify | ✅ live (free RPC) |
+| AIC Economy | ✅ live · 0 supply (awaiting mint) |
+| Community+ | ✅ reactions, replies, presence live |
+| Sudoku | ✅ 8 endpoints live |
+| Dating API | ✅ 8 endpoints live |
+| @G4meb0t_bot_bot | 🟡 code ready, deploy pending |
+| AI Gateway | ✅ with AIC burn |
+| Bug AI analyze | ✅ backend live |
 
 ---
 
-**🤖 Claude Code · ממשיך עד שתגיד עצור.**
+## 🎯 הצעות להמשך (בחר A/B/C/D/E/F)
+
+**A.** admin-bugs.html · wire AI analyze button (~45 דק')
+**B.** Deploy @G4meb0t_bot_bot (דורש TOKEN מ-BotFather)
+**C.** Stripe webhook · תשלומי כרטיס בינלאומיים (~60 דק')
+**D.** Mission-control · הוספת Dating + Sudoku widgets (~30 דק')
+**E.** Community.html · "Top Sudoku solvers" trending section (~30 דק')
+**F.** אחר — תגיד
+
+---
+
+**🤖 Claude Code · 35+ commits היום. 6 tracks לחצי הדרך+.**
