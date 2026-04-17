@@ -19,7 +19,7 @@ from pydantic import BaseModel
 import asyncpg
 import aiohttp
 
-from routes.ai_chat import router as ai_chat_router
+from routes.ai_chat import router as ai_chat_router, set_aic_pool as _ai_chat_set_aic_pool
 from routes.payments_auto import router as payments_auto_router, set_pool as _payments_set_pool
 from routes.community_plus import router as community_plus_router, set_pool as _community_plus_set_pool
 from routes.aic_tokens import router as aic_router, admin_router as aic_admin_router, set_pool as _aic_set_pool
@@ -176,6 +176,7 @@ async def startup():
     _community_plus_set_pool(pool)
     _aic_set_pool(pool)
     _ps_set_pool(pool)
+    _ai_chat_set_aic_pool(pool)
     async with pool.acquire() as conn:
         await conn.execute("""
             CREATE TABLE IF NOT EXISTS web_users (
