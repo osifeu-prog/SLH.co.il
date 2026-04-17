@@ -28,6 +28,7 @@ from routes.sudoku import router as sudoku_router, set_pool as _sudoku_set_pool
 from routes.dating import router as dating_router, set_pool as _dating_set_pool
 from routes.broadcast import router as broadcast_router, set_pool as _broadcast_set_pool
 from routes.love_tokens import router as love_router, set_pool as _love_set_pool
+from routes.treasury import router as treasury_router, set_pool as _treasury_set_pool
 
 # === CONFIG ===
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:slh_secure_2026@localhost:5432/slh_main")
@@ -155,6 +156,7 @@ app.include_router(sudoku_router)
 app.include_router(dating_router)
 app.include_router(broadcast_router)
 app.include_router(love_router)
+app.include_router(treasury_router)
 
 # === DATABASE ===
 pool: Optional[asyncpg.Pool] = None
@@ -189,6 +191,7 @@ async def startup():
     _dating_set_pool(pool)
     _broadcast_set_pool(pool)
     _love_set_pool(pool)
+    _treasury_set_pool(pool)
     async with pool.acquire() as conn:
         await conn.execute("""
             CREATE TABLE IF NOT EXISTS web_users (
