@@ -3368,6 +3368,52 @@ class CommunityCommentCreate(BaseModel):
     text: str
 
 
+@app.get("/api/community/rss")
+async def community_rss():
+    """RSS 2.0 feed of recent community posts — for IFTTT/Zapier/Buffer auto-share.
+
+    Usage:
+      1. Register at ifttt.com (free, 2 applets)
+      2. New Applet: Trigger 'New item in RSS feed' with this URL
+      3. Action: Post to Twitter/LinkedIn/Facebook/Telegram channel
+      4. Repeat for each social network
+    """
+    from fastapi.responses import Response
+    async with pool.acquire() as conn:
+        rows = await conn.fetch(
+            "SELECT id, username, text, category, created_at FROM community_posts ORDER BY created_at DESC LIMIT 30"
+        )
+    from xml.sax.saxutils import escape as xml_esc
+    items = []
+    for r in rows:
+        title = (r["text"] or "")[:80].replace("\n", " ")
+        link = f"https://slh-nft.com/community.html#post-{r['id']}"
+        pub_date = r["created_at"].strftime("%a, %d %b %Y %H:%M:%S +0000")
+        desc = xml_esc((r["text"] or "")[:2000])
+        author = xml_esc(r["username"] or "SLH_System")
+        category = xml_esc(r["category"] or "general")
+        items.append(
+            f"<item><title>{xml_esc(title)}</title><link>{link}</link>"
+            f"<guid isPermaLink=\"true\">{link}</guid>"
+            f"<pubDate>{pub_date}</pubDate>"
+            f"<category>{category}</category>"
+            f"<author>noreply@slh-nft.com ({author})</author>"
+            f"<description>{desc}</description></item>"
+        )
+    rss = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<rss version="2.0">\n<channel>\n'
+        '<title>SLH Spark — קהילה</title>\n'
+        '<link>https://slh-nft.com/community.html</link>\n'
+        '<description>Official feed of SLH Spark community updates, product launches, and ecosystem news.</description>\n'
+        '<language>he</language>\n'
+        f'<lastBuildDate>{datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S +0000")}</lastBuildDate>\n'
+        + "\n".join(items) +
+        "\n</channel>\n</rss>"
+    )
+    return Response(content=rss, media_type="application/rss+xml; charset=utf-8")
+
+
 @app.get("/api/community/posts")
 async def community_get_posts(category: str = Query("all"), limit: int = Query(50, le=100), offset: int = Query(0)):
     """Get community posts with comments"""
