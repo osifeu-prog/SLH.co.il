@@ -126,6 +126,11 @@
 - ✅ Micro-test tier · מינימום 0.01 TON / 0.0005 BNB
 - ✅ Broadcast post #17 בפיד הקהילה
 - ✅ Secondary phone + t.me/slhniffty channel בזיכרון
+- ✅ Community sidebar: Top Sudoku weekly + AIC widget (commit `2ce55ce`)
+- ✅ **/api/community/rss** — RSS 2.0 feed (commit `8268f50`)
+- ✅ **SOCIAL_AUTOMATION.md** · IFTTT/Zapier/Buffer guide
+- ✅ **settings.html** · 5 themes + 5 languages + 6 toggles + import/export (commit `784a5b1`)
+- ✅ **N8N_SETUP.md** · self-hosted open-source IFTTT alternative (commit `bdfbc01`)
 
 ## 🎯 הצעות להמשך (בחר)
 
