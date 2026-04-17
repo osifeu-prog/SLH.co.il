@@ -22,6 +22,7 @@ import aiohttp
 from routes.ai_chat import router as ai_chat_router
 from routes.payments_auto import router as payments_auto_router, set_pool as _payments_set_pool
 from routes.community_plus import router as community_plus_router, set_pool as _community_plus_set_pool
+from routes.aic_tokens import router as aic_router, admin_router as aic_admin_router, set_pool as _aic_set_pool
 
 # === CONFIG ===
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:slh_secure_2026@localhost:5432/slh_main")
@@ -142,6 +143,8 @@ def _require_admin_role(authorization, x_admin_key, min_role="viewer"):
 app.include_router(ai_chat_router)
 app.include_router(payments_auto_router)
 app.include_router(community_plus_router)
+app.include_router(aic_router)
+app.include_router(aic_admin_router)
 
 # === DATABASE ===
 pool: Optional[asyncpg.Pool] = None
@@ -169,6 +172,7 @@ async def startup():
     pool = await asyncpg.create_pool(DATABASE_URL, min_size=2, max_size=10)
     _payments_set_pool(pool)
     _community_plus_set_pool(pool)
+    _aic_set_pool(pool)
     async with pool.acquire() as conn:
         await conn.execute("""
             CREATE TABLE IF NOT EXISTS web_users (
