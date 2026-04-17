@@ -252,23 +252,25 @@ async def bsc_auto_verify(req: BscVerifyReq, request: Request):
         raise HTTPException(400, "invalid BSC tx_hash (expected 0x + 64 hex)")
 
     expected_min = req.expected_min_bnb or PREMIUM_MIN_BNB
-    base = "https://api.bscscan.com/api"
+    # Etherscan V2 unified API (chainid=56 for BSC) — BSCScan V1 deprecated 2026
+    base = "https://api.etherscan.io/v2/api"
     key_suffix = f"&apikey={BSCSCAN_API_KEY}" if BSCSCAN_API_KEY else ""
+    chain_q = "&chainid=56"
 
     try:
         async with aiohttp.ClientSession() as session:
             async with session.get(
-                f"{base}?module=proxy&action=eth_getTransactionByHash&txhash={tx_hash}{key_suffix}",
+                f"{base}?module=proxy&action=eth_getTransactionByHash&txhash={tx_hash}{chain_q}{key_suffix}",
                 timeout=aiohttp.ClientTimeout(total=15),
             ) as resp:
                 tx_data = await resp.json()
             async with session.get(
-                f"{base}?module=proxy&action=eth_getTransactionReceipt&txhash={tx_hash}{key_suffix}",
+                f"{base}?module=proxy&action=eth_getTransactionReceipt&txhash={tx_hash}{chain_q}{key_suffix}",
                 timeout=aiohttp.ClientTimeout(total=15),
             ) as resp:
                 rc_data = await resp.json()
     except Exception as e:
-        raise HTTPException(504, f"bscscan fetch failed: {e}")
+        raise HTTPException(504, f"etherscan v2 fetch failed: {e}")
 
     tx = tx_data.get("result") if isinstance(tx_data, dict) else None
     receipt_raw = rc_data.get("result") if isinstance(rc_data, dict) else None
