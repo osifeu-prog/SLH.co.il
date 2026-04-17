@@ -9099,6 +9099,12 @@ async def _ensure_bug_reports_table(conn):
             updated_at TIMESTAMP DEFAULT NOW()
         )
     """)
+    # STEP F: AI analysis storage (2026-04-17)
+    await conn.execute("""
+        ALTER TABLE bug_reports ADD COLUMN IF NOT EXISTS ai_analysis TEXT;
+        ALTER TABLE bug_reports ADD COLUMN IF NOT EXISTS ai_analyzed_at TIMESTAMP;
+        ALTER TABLE bug_reports ADD COLUMN IF NOT EXISTS ai_agent TEXT;
+    """)
 
 
 class BugReportReq(BaseModel):
@@ -9252,6 +9258,116 @@ async def bugs_list_admin(
             "bugs": [dict(r) for r in rows],
             "stats": dict(stats) if stats else {}
         }
+
+
+# ===== STEP F: AI bug analysis =====
+
+class BugAIAnalyzeReq(BaseModel):
+    agent: str = "claude_code"  # claude_code | advisor | human_only
+    context_hint: Optional[str] = None  # optional additional context
+
+
+@app.post("/api/admin/bugs/{bug_id}/ai-analyze")
+async def bugs_ai_analyze(
+    bug_id: int,
+    req: BugAIAnalyzeReq,
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None),
+):
+    """Request AI analysis of a bug. Stores the suggestion in bug_reports.ai_analysis.
+
+    Three agents supported:
+    - 'claude_code' — for executor agents with git/docker access (returns structured TODO)
+    - 'advisor'     — for chat-only AIs (returns diagnostic steps)
+    - 'human_only'  — no AI; just marks the bug as 'human_only' triage
+
+    The actual AI call uses the internal /api/ai/chat endpoint chain (groq/gemini/openai).
+    """
+    _require_admin(authorization, x_admin_key)
+    async with pool.acquire() as conn:
+        await _ensure_bug_reports_table(conn)
+        bug = await conn.fetchrow("SELECT * FROM bug_reports WHERE id=$1", bug_id)
+        if not bug:
+            raise HTTPException(404, "bug not found")
+
+        if req.agent == "human_only":
+            await conn.execute(
+                "UPDATE bug_reports SET ai_agent='human_only', ai_analyzed_at=NOW() WHERE id=$1",
+                bug_id,
+            )
+            return {"ok": True, "agent": "human_only", "analysis": "marked for human-only triage"}
+
+        # Build prompt
+        system_for_agent = {
+            "claude_code": (
+                "You are SLH Claude Code Executor. Given a bug report, return:\n"
+                "1. Root cause hypothesis (1-2 sentences)\n"
+                "2. Files likely to need changes (list)\n"
+                "3. Suggested fix (diff-style or pseudo-code)\n"
+                "4. How to verify the fix (curl/UI steps)\n"
+                "5. Priority (low|medium|high|critical)\n"
+                "Respond in Hebrew. Be terse. Max 300 words."
+            ),
+            "advisor": (
+                "You are a senior QA advisor. Given a bug report, diagnose it:\n"
+                "1. What is the user seeing?\n"
+                "2. What is likely broken?\n"
+                "3. What would you ask the user to confirm?\n"
+                "4. What test would isolate the issue?\n"
+                "Respond in Hebrew. Max 200 words."
+            ),
+        }.get(req.agent, "You are a senior software engineer.")
+
+        bug_context = (
+            f"BUG #{bug['id']}\n"
+            f"Title: {bug['title']}\n"
+            f"Severity: {bug['severity']}\n"
+            f"Category: {bug.get('category') or '—'}\n"
+            f"Page: {bug.get('page_url') or '—'}\n"
+            f"Description:\n{bug['description']}\n"
+            f"Steps to reproduce:\n{bug.get('steps_to_reproduce') or '—'}\n"
+        )
+        if req.context_hint:
+            bug_context += f"\nAdditional context: {req.context_hint}"
+
+        # Call our internal AI chat (uses whatever providers are configured)
+        try:
+            async with aiohttp.ClientSession() as session:
+                payload = {
+                    "message": system_for_agent + "\n\n---\n\n" + bug_context,
+                    "user_id": "bug_ai_admin",
+                    "lang": "he",
+                }
+                async with session.post(
+                    f"http://localhost:{os.getenv('PORT', '8000')}/api/ai/chat",
+                    json=payload,
+                    timeout=aiohttp.ClientTimeout(total=30),
+                ) as resp:
+                    ai_data = await resp.json()
+                    analysis = ai_data.get("reply") or ai_data.get("detail") or "AI returned empty response"
+                    model_used = ai_data.get("model", "unknown")
+        except Exception as e:
+            analysis = f"AI call failed: {e}. Try again in a moment, or use agent='human_only'."
+            model_used = "error"
+
+        await conn.execute(
+            """
+            UPDATE bug_reports SET
+              ai_analysis = $1,
+              ai_analyzed_at = NOW(),
+              ai_agent = $2
+            WHERE id = $3
+            """,
+            analysis, f"{req.agent}::{model_used}", bug_id,
+        )
+
+    return {
+        "ok": True,
+        "bug_id": bug_id,
+        "agent": req.agent,
+        "model": model_used,
+        "analysis": analysis,
+    }
 
 
 # ===== END BUG REPORTS =====
