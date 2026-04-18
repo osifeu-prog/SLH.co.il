@@ -2841,7 +2841,7 @@ async def health():
     try:
         async with pool.acquire() as conn:
             await conn.fetchval("SELECT 1")
-        return {"status": "ok", "db": "connected", "version": "1.0.0"}
+        return {"status": "ok", "db": "connected", "version": "1.1.0"}
     except Exception as e:
         return JSONResponse({"status": "error", "db": str(e)}, status_code=503)
 
