@@ -327,6 +327,120 @@ async def personal_shop(user_id: int):
     }
 
 
+class PurchaseCompleteReq(BaseModel):
+    item_id: int
+    buyer_id: int
+    amount_paid: float
+    currency: str
+    receipt_number: Optional[str] = None
+    tx_hash: Optional[str] = None
+
+
+@router.post("/purchase/complete")
+async def purchase_complete(req: PurchaseCompleteReq):
+    """Called by pay.html after a marketplace purchase is verified.
+    Records the sale, credits seller's marketplace_earnings, decrements stock,
+    creates marketplace_order, triggers XP snapshot refresh."""
+    if _pool is None:
+        raise HTTPException(500, "db pool not initialized")
+    async with _pool.acquire() as conn:
+        await _ensure_tables(conn)
+
+        # Fetch item + seller
+        item = await conn.fetchrow(
+            "SELECT id, seller_id, title, price, currency, stock, status FROM marketplace_items WHERE id = $1",
+            req.item_id,
+        )
+        if not item:
+            raise HTTPException(404, "item not found")
+        if item["status"] != "approved":
+            raise HTTPException(400, f"item not available (status={item['status']})")
+        if int(item["stock"] or 0) <= 0:
+            raise HTTPException(400, "out of stock")
+
+        seller_id = int(item["seller_id"])
+        if seller_id == req.buyer_id:
+            raise HTTPException(400, "cannot buy your own listing")
+
+        # USD conversion (same rates as in _compute_xp)
+        cur = (req.currency or item["currency"]).upper()
+        usd = 0.0
+        amt = float(req.amount_paid or 0)
+        if cur == "USD":   usd = amt
+        elif cur == "ILS": usd = amt / 3.65
+        elif cur == "BNB": usd = amt * 641.0
+        elif cur == "TON": usd = amt * 1.40
+        elif cur == "SLH": usd = amt * SLH_PRICE_USD
+        elif cur == "AIC": usd = amt * AIC_PRICE_USD
+
+        # Idempotency: if same receipt_number exists, return existing
+        if req.receipt_number:
+            existing = await conn.fetchval(
+                "SELECT id FROM creator_sales WHERE item_id = $1 AND buyer_id = $2 AND amount = $3",
+                req.item_id, req.buyer_id, amt,
+            )
+            if existing:
+                return {"ok": True, "sale_id": existing, "already_processed": True}
+
+        # Record the sale
+        sale_id = await conn.fetchval(
+            """
+            INSERT INTO creator_sales (item_id, seller_id, buyer_id, amount, currency, amount_usd)
+            VALUES ($1, $2, $3, $4, $5, $6) RETURNING id
+            """,
+            req.item_id, seller_id, req.buyer_id, amt, cur, usd,
+        )
+
+        # Decrement stock
+        await conn.execute("UPDATE marketplace_items SET stock = stock - 1 WHERE id = $1", req.item_id)
+
+        # Create marketplace_order entry (if table exists)
+        try:
+            await conn.execute(
+                """
+                INSERT INTO marketplace_orders (buyer_id, seller_id, item_id, quantity, total_price, currency, status, completed_at)
+                VALUES ($1, $2, $3, 1, $4, $5, 'completed', CURRENT_TIMESTAMP)
+                """,
+                req.buyer_id, seller_id, req.item_id, amt, cur,
+            )
+        except Exception:
+            pass
+
+        # Recompute seller XP (invalidate cache)
+        seller_xp = await _compute_xp(conn, seller_id)
+        await conn.execute(
+            """
+            INSERT INTO user_roi_snapshot
+                (user_id, total_fiat_invested, slh_held, aic_held, rep_held,
+                 marketplace_earnings_usd, current_value_usd, xp_ratio, snapshot_at)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())
+            ON CONFLICT (user_id) DO UPDATE SET
+                total_fiat_invested = EXCLUDED.total_fiat_invested,
+                slh_held = EXCLUDED.slh_held,
+                aic_held = EXCLUDED.aic_held,
+                rep_held = EXCLUDED.rep_held,
+                marketplace_earnings_usd = EXCLUDED.marketplace_earnings_usd,
+                current_value_usd = EXCLUDED.current_value_usd,
+                xp_ratio = EXCLUDED.xp_ratio,
+                snapshot_at = NOW()
+            """,
+            seller_id, seller_xp["total_fiat_invested"], seller_xp["slh_held"], seller_xp["aic_held"],
+            seller_xp["rep_held"], seller_xp["marketplace_earnings_usd"], seller_xp["current_value_usd"],
+            seller_xp["xp_ratio"],
+        )
+
+    return {
+        "ok": True,
+        "sale_id": sale_id,
+        "item_title": item["title"],
+        "seller_id": seller_id,
+        "amount_usd": usd,
+        "seller_new_xp": seller_xp["xp_ratio"],
+        "seller_new_xp_display": seller_xp["xp_display"],
+        "message": f"רכישה הושלמה · המוכר #{seller_id} קיבל ${usd:.2f}, XP עודכן.",
+    }
+
+
 class SnapshotRefreshReq(BaseModel):
     user_id: int
 
