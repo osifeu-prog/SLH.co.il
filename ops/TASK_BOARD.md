@@ -71,6 +71,7 @@
 - [ ] **Course upload for Yaara** — not registered yet
 
 ### Website
+- [ ] **SLH Docs Layout** — MS-Learn/Stripe-Docs style 3-col layout (left tree / content / right TOC) with auto-scroll-spy, breadcrumbs, feedback widget, dynamic manifest. Spec: `ops/SLH_DOCS_LAYOUT_SPEC.md`. Rollout to 10 content pages. Effort: 18h total, 4h foundation. (Requested 2026-04-18)
 - [ ] **blockchain.html real data** — BSCScan + TONScan APIs
 - [ ] **Mobile responsive audit** — dashboard, wallet, community break on mobile
 - [ ] **Web3 on-chain balances** — MetaMask/Trust Wallet show real SLH balance

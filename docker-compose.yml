@@ -449,6 +449,21 @@ services:
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
 
+  # Telegram-native executor bot — @SLH_Claude_bot
+  # Bridges Osif's phone to the SLH workspace via Anthropic Claude.
+  claude-bot:
+    build:
+      context: ./slh-claude-bot
+      dockerfile: Dockerfile
+    container_name: slh-claude-bot
+    restart: unless-stopped
+    env_file:
+      - ./slh-claude-bot/.env
+    volumes:
+      # Mount the entire ecosystem read/write so the bot can do git + file ops
+      - ./:/workspace
+    working_dir: /workspace
+
 volumes:
   pgdata:
   core-logs:
