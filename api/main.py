@@ -21,6 +21,7 @@ import aiohttp
 
 from routes.ai_chat import router as ai_chat_router, set_aic_pool as _ai_chat_set_aic_pool
 from routes.payments_auto import router as payments_auto_router, set_pool as _payments_set_pool
+from routes.payments_monitor import router as payments_monitor_router, set_pool as _payments_monitor_set_pool, start_monitor as _payments_monitor_start
 from routes.community_plus import router as community_plus_router, set_pool as _community_plus_set_pool
 from routes.aic_tokens import router as aic_router, admin_router as aic_admin_router, set_pool as _aic_set_pool
 from routes.pancakeswap_tracker import router as ps_router, set_pool as _ps_set_pool
@@ -150,6 +151,7 @@ def _require_admin_role(authorization, x_admin_key, min_role="viewer"):
 # === AI CHAT ROUTER ===
 app.include_router(ai_chat_router)
 app.include_router(payments_auto_router)
+app.include_router(payments_monitor_router)
 app.include_router(community_plus_router)
 app.include_router(aic_router)
 app.include_router(aic_admin_router)
@@ -186,6 +188,7 @@ async def startup():
 
     pool = await asyncpg.create_pool(DATABASE_URL, min_size=2, max_size=10)
     _payments_set_pool(pool)
+    _payments_monitor_set_pool(pool)
     _community_plus_set_pool(pool)
     _aic_set_pool(pool)
     _ps_set_pool(pool)
@@ -196,6 +199,8 @@ async def startup():
     _love_set_pool(pool)
     _treasury_set_pool(pool)
     _wellness_set_pool(pool)
+    _payments_monitor_set_pool(pool)
+    _payments_monitor_start()
     await _init_wellness()
 
     # Initialize wellness scheduler (APScheduler)
@@ -3379,6 +3384,11 @@ async def _extended_startup():
         await _init_community_tables()
     except Exception as e:
         print(f"[community] init warning: {e}")
+    try:
+        _payments_monitor_start()
+        print("[payments-monitor] started · polling BSC Genesis wallet")
+    except Exception as e:
+        print(f"[payments-monitor] start warning: {e}")
 app.router.on_startup.clear()
 app.add_event_handler("startup", _extended_startup)
 
