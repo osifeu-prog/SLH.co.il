@@ -117,11 +117,17 @@ git add main.py api/main.py
 4. Ask user what's priority today
 5. Check if Railway env vars are set (JWT_SECRET, ADMIN_API_KEYS)
 
-## Pending Critical Items
-- [ ] Railway env vars: JWT_SECRET (empty), ADMIN_API_KEYS (default)
-- [ ] 4 contributors need to log in to website to receive ZVK
-- [ ] Rotate .env bot tokens (31 exposed in chat history)
-- [ ] Webhook migration (polling → webhooks)
-- [ ] wallet.html: show on-chain balances (BSC + TON)
-- [ ] i18n on 27 more pages
-- [ ] Theme switcher on 25 more pages
+## Pending Critical Items (verified 2026-04-18)
+- [ ] **BLOCKED (Osif):** Railway env vars: JWT_SECRET (empty), ADMIN_API_KEYS (default) — requires Railway dashboard access
+- [ ] 4 contributors need to log in to website to receive ZVK — external action
+- [ ] Rotate .env bot tokens (31 exposed in chat history) — 1/31 done today (GAME_BOT_TOKEN rotated 2026-04-17)
+- [ ] Webhook migration (polling → webhooks) — all 22 bots still polling, 0 webhook refs in docker-compose
+- [ ] wallet.html: show on-chain balances (BSC + TON) — 0 blockchain calls in wallet.html, endpoints ready
+- [ ] i18n on 27 more pages — 37% coverage, 63% remaining
+- [ ] Theme switcher on 25 more pages — 42% coverage, 58% remaining
+
+## Full task status
+See [TASKS_STATUS_2026-04-18.md](TASKS_STATUS_2026-04-18.md) — consolidated status of all 73 tasks across 5 files, with honest verification against live state.
+
+## Onboarding (AI agents + humans)
+See [PROJECT_GUIDE.md](PROJECT_GUIDE.md) — complete onboarding including: repo connect, API access, bot deploy, page patterns, common tasks, AI agent prompt template.

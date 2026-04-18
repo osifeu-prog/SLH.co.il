@@ -1,0 +1,37 @@
+﻿[
+    {
+        "Commands":  [
+                         "DIR",
+                         "CLS",
+                         "CD",
+                         "MKDIR"
+                     ],
+        "Title":  "Keyboard Basics",
+        "Description":  "Type these core system commands",
+        "ID":  1,
+        "Points":  10
+    },
+    {
+        "Commands":  [
+                         "PING",
+                         "IPCONFIG",
+                         "HOSTNAME",
+                         "NSLOOKUP"
+                     ],
+        "Title":  "Networking 101",
+        "Description":  "Commands to check your connection",
+        "ID":  2,
+        "Points":  25
+    },
+    {
+        "Commands":  [
+                         "TASKLIST",
+                         "GET-SERVICE",
+                         "STOP-PROCESS"
+                     ],
+        "Title":  "Process Control",
+        "Description":  "Managing running apps",
+        "ID":  3,
+        "Points":  50
+    }
+]

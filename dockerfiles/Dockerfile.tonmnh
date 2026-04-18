@@ -1,0 +1,20 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+RUN pip install --no-cache-dir \
+    python-telegram-bot==21.4 \
+    aiohttp \
+    python-dotenv \
+    requests
+
+# Copy source
+COPY src/ /app/
+COPY data/ /app/data/
+
+# Create ALL needed directories
+RUN mkdir -p /app/logs /app/data /logs
+
+ENV PYTHONPATH="/app"
+
+CMD ["sh", "-c", "rm -f /app/bot.lock && python main.py"]

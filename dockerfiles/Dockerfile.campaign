@@ -1,0 +1,13 @@
+FROM python:3.10-slim
+
+WORKDIR /app
+
+COPY campaign-bot/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY campaign-bot/ .
+
+ENV PYTHONUNBUFFERED=1
+ENV MODE=polling
+
+CMD ["python", "main.py"]

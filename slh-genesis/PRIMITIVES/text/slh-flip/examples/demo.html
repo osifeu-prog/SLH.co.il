@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="slh-version" content="v1.0-flip">
+    <title>SLH Flip — Live Interactive Demo</title>
+    <link rel="stylesheet" href="demo.css">
+    <script src="../slh-flip.js" defer></script>
+    <script src="demo.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <!-- HERO SECTION -->
+        <section class="hero">
+            <h1 data-flip="SLH GENESIS">SLH GENESIS</h1>
+            <p data-scramble="Official Text Animation Primitives">Official Text Animation Primitives</p>
+            <p class="tagline">Zero dependencies • 60 FPS • Production ready</p>
+        </section>
+
+        <!-- DOCUMENTATION LINK -->
+        <section class="nav-hint">
+            <p>📖 Full documentation in <code>README.md</code> | Examples in <code>USAGE.md</code></p>
+        </section>
+
+        <!-- EXAMPLES SECTION -->
+        <section class="examples">
+            <h2>Interactive Examples</h2>
+
+            <!-- Example 1: Flip on Load -->
+            <article class="example">
+                <h3>1. Flip on Load</h3>
+                <p class="description">Text flips on page load, swapping to new content mid-flip</p>
+                <div class="demo-area">
+                    <p data-flip="Flipped!" class="demo-text">Original</p>
+                </div>
+                <pre class="code"><code>&lt;p data-flip="Flipped!"&gt;Original&lt;/p&gt;</code></pre>
+            </article>
+
+            <!-- Example 2: Flip on Hover -->
+            <article class="example">
+                <h3>2. Flip on Hover</h3>
+                <p class="description">Text flips when you hover, reverts when you leave</p>
+                <div class="demo-area">
+                    <button data-flip-on-hover="Hover Me!">Hover Me!</button>
+                </div>
+                <pre class="code"><code>&lt;button data-flip-on-hover="Hover Me!"&gt;Hover Me!&lt;/button&gt;</code></pre>
+            </article>
+
+            <!-- Example 3: Scramble on Load -->
+            <article class="example">
+                <h3>3. Scramble on Load</h3>
+                <p class="description">Characters randomize then resolve into final text</p>
+                <div class="demo-area">
+                    <p data-scramble="Scrambled Text" class="demo-text">Scrambled Text</p>
+                </div>
+                <pre class="code"><code>&lt;p data-scramble="Scrambled Text"&gt;Scrambled Text&lt;/p&gt;</code></pre>
+            </article>
+
+            <!-- Example 4: Custom Duration (Fast) -->
+            <article class="example">
+                <h3>4. Fast Flip (300ms)</h3>
+                <p class="description">Custom duration for quicker animations</p>
+                <div class="demo-area">
+                    <p data-flip="Fast!" data-flip-duration="300" class="demo-text">Quick</p>
+                </div>
+                <pre class="code"><code>&lt;p data-flip="Fast!" data-flip-duration="300"&gt;Quick&lt;/p&gt;</code></pre>
+            </article>
+
+            <!-- Example 5: Custom Duration (Slow) -->
+            <article class="example">
+                <h3>5. Slow Flip (1500ms)</h3>
+                <p class="description">Longer duration for dramatic effect</p>
+                <div class="demo-area">
+                    <p data-flip="Slow..." data-flip-duration="1500" class="demo-text">Waiting</p>
+                </div>
+                <pre class="code"><code>&lt;p data-flip="Slow..." data-flip-duration="1500"&gt;Waiting&lt;/p&gt;</code></pre>
+            </article>
+
+            <!-- Example 6: Scramble with Custom Duration -->
+            <article class="example">
+                <h3>6. Fast Scramble (600ms)</h3>
+                <p class="description">Quick scramble effect for loading states</p>
+                <div class="demo-area">
+                    <p data-scramble="Ready!" data-scramble-duration="600" class="demo-text">Loading...</p>
+                </div>
+                <pre class="code"><code>&lt;p data-scramble="Ready!" data-scramble-duration="600"&gt;Loading...&lt;/p&gt;</code></pre>
+            </article>
+
+            <!-- Example 7: Multiple Animations -->
+            <article class="example">
+                <h3>7. Nested Animations</h3>
+                <p class="description">Multiple animations in one section</p>
+                <div class="demo-area">
+                    <div class="nested">
+                        <h4 data-flip="SLH SPARK">SLH SPARK</h4>
+                        <p data-scramble="Building the Future">Building the Future</p>
+                    </div>
+                </div>
+                <pre class="code"><code>&lt;h4 data-flip="SLH SPARK"&gt;SLH SPARK&lt;/h4&gt;
+&lt;p data-scramble="Building..."&gt;Building...&lt;/p&gt;</code></pre>
+            </article>
+
+            <!-- Example 8: Interactive Button Group -->
+            <article class="example">
+                <h3>8. Interactive Button Group</h3>
+                <p class="description">Multiple buttons with flip on hover</p>
+                <div class="demo-area button-group">
+                    <button data-flip-on-hover="BUY">BUY</button>
+                    <button data-flip-on-hover="LEARN">LEARN</button>
+                    <button data-flip-on-hover="SHARE">SHARE</button>
+                </div>
+                <pre class="code"><code>&lt;button data-flip-on-hover="BUY"&gt;BUY&lt;/button&gt;
+&lt;button data-flip-on-hover="LEARN"&gt;LEARN&lt;/button&gt;
+&lt;button data-flip-on-hover="SHARE"&gt;SHARE&lt;/button&gt;</code></pre>
+            </article>
+
+            <!-- Example 9: Status Display -->
+            <article class="example">
+                <h3>9. Dynamic Status Update</h3>
+                <p class="description">Click button to update status with animation</p>
+                <div class="demo-area">
+                    <p id="status-display" data-scramble="Ready" class="demo-text">Ready</p>
+                    <button id="status-button" class="action-btn">Update Status</button>
+                </div>
+                <pre class="code"><code>// JavaScript
+SLHFlip.scramble(element, 'New Status', { duration: 800 });</code></pre>
+            </article>
+
+            <!-- Example 10: Heading Animation -->
+            <article class="example">
+                <h3>10. Heading with Self-Flip</h3>
+                <p class="description">Same text flips in as visual "loaded" cue</p>
+                <div class="demo-area">
+                    <h2 data-flip="Welcome">Welcome</h2>
+                </div>
+                <pre class="code"><code>&lt;h2 data-flip="Welcome"&gt;Welcome&lt;/h2&gt;</code></pre>
+            </article>
+        </section>
+
+        <!-- API EXAMPLES SECTION -->
+        <section class="api-examples">
+            <h2>JavaScript API Examples</h2>
+
+            <!-- API Example 1: Manual Flip -->
+            <article class="api-example">
+                <h3>Manual Flip Animation</h3>
+                <p class="description">Trigger animation programmatically</p>
+                <div class="demo-area">
+                    <p id="manual-flip" class="demo-text">Click below</p>
+                    <button class="action-btn" onclick="flipManually()">Flip Now</button>
+                </div>
+                <pre class="code"><code>function flipManually() {
+    const el = document.getElementById('manual-flip');
+    SLHFlip.flip(el, 'Flipped!', 800);
+}</code></pre>
+            </article>
+
+            <!-- API Example 2: Manual Scramble -->
+            <article class="api-example">
+                <h3>Manual Scramble Animation</h3>
+                <p class="description">Scramble text with custom options</p>
+                <div class="demo-area">
+                    <p id="manual-scramble" class="demo-text">Click below</p>
+                    <button class="action-btn" onclick="scrambleManually()">Scramble Now</button>
+                </div>
+                <pre class="code"><code>function scrambleManually() {
+    const el = document.getElementById('manual-scramble');
+    SLHFlip.scramble(el, 'Scrambled!', { duration: 1200 });
+}</code></pre>
+            </article>
+
+            <!-- API Example 3: Version Check -->
+            <article class="api-example">
+                <h3>Version Detection</h3>
+                <p class="description">Check which version is loaded</p>
+                <div class="demo-area">
+                    <p id="version-display" class="demo-text">--</p>
+                    <button class="action-btn" onclick="showVersion()">Show Version</button>
+                </div>
+                <pre class="code"><code>function showVersion() {
+    const version = window.SLHFlip.version;
+    console.log('SLH Flip version:', version);
+}</code></pre>
+            </article>
+
+            <!-- API Example 4: Apply All -->
+            <article class="api-example">
+                <h3>Apply All (Dynamic Content)</h3>
+                <p class="description">Initialize animations on dynamically loaded HTML</p>
+                <div class="demo-area">
+                    <div id="dynamic-content"></div>
+                    <button class="action-btn" onclick="loadDynamicContent()">Load Content</button>
+                </div>
+                <pre class="code"><code>function loadDynamicContent() {
+    const container = document.getElementById('dynamic-content');
+    container.innerHTML = '&lt;h2 data-flip="Loaded!"&gt;Loaded!&lt;/h2&gt;';
+    SLHFlip.applyAll(container);
+}</code></pre>
+            </article>
+        </section>
+
+        <!-- INFO SECTION -->
+        <section class="info">
+            <h2>About SLH Flip</h2>
+
+            <div class="info-grid">
+                <div class="info-card">
+                    <h4>Zero Dependencies</h4>
+                    <p>Pure vanilla JavaScript. No external libraries required.</p>
+                </div>
+
+                <div class="info-card">
+                    <h4>Tiny Bundle</h4>
+                    <p>4.2 KB unminified, 1.8 KB gzipped. Ultra-lightweight.</p>
+                </div>
+
+                <div class="info-card">
+                    <h4>60 FPS Performance</h4>
+                    <p>GPU-accelerated CSS transforms for smooth animations.</p>
+                </div>
+
+                <div class="info-card">
+                    <h4>Accessible</h4>
+                    <p>Respects prefers-reduced-motion. Keyboard compatible.</p>
+                </div>
+
+                <div class="info-card">
+                    <h4>Production Ready</h4>
+                    <p>Used in SLH ecosystem across 43+ pages.</p>
+                </div>
+
+                <div class="info-card">
+                    <h4>MIT License</h4>
+                    <p>Free to use, modify, and distribute.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- DOCUMENTATION SECTION -->
+        <section class="documentation">
+            <h2>Documentation</h2>
+
+            <div class="doc-links">
+                <div class="doc-link">
+                    <h4>📖 README.md</h4>
+                    <p>Complete API reference, examples, accessibility guide, browser support, troubleshooting</p>
+                </div>
+
+                <div class="doc-link">
+                    <h4>📋 USAGE.md</h4>
+                    <p>Step-by-step integration guide for websites and applications</p>
+                </div>
+
+                <div class="doc-link">
+                    <h4>📝 CHANGELOG.md</h4>
+                    <p>Version history, features, performance benchmarks, roadmap</p>
+                </div>
+
+                <div class="doc-link">
+                    <h4>🛣️ ROADMAP.md</h4>
+                    <p>Planned features for v1.1, v2.0, v3.0</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer>
+            <p>SLH Flip v1.0-flip • Production Ready • MIT License</p>
+            <p>Part of <a href="#">SLH Genesis Primitives</a> | Built by SLH Spark System</p>
+            <p><a href="https://github.com/osifeu-prog/slh-genesis">github.com/osifeu-prog/slh-genesis</a></p>
+        </footer>
+    </div>
+</body>
+</html>

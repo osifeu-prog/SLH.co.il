@@ -52,10 +52,18 @@ SLH_TON_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
 SLH_PRICE_ILS = 444
 USD_ILS_RATE = 3.65
 
+_ENV = (os.getenv("ENV") or os.getenv("ENVIRONMENT") or "development").lower()
+_IS_PROD = _ENV in ("prod", "production")
+# Allow admins to re-enable /docs in prod with DOCS_ENABLED=1 for debugging
+_DOCS_ENABLED = os.getenv("DOCS_ENABLED", "1" if not _IS_PROD else "0") == "1"
+
 app = FastAPI(
     title="SLH Ecosystem API",
     description="Backend API for SLH Digital Investment House",
     version="1.1.0",
+    docs_url="/docs" if _DOCS_ENABLED else None,
+    redoc_url="/redoc" if _DOCS_ENABLED else None,
+    openapi_url="/openapi.json" if _DOCS_ENABLED else None,
 )
 
 app.add_middleware(
@@ -66,6 +74,46 @@ app.add_middleware(
     # SECURITY FIX (H-3): explicit headers instead of wildcard
     allow_headers=["Content-Type", "Authorization", "X-Admin-Key", "X-Requested-With"],
 )
+
+
+# ── Rate limiting middleware (simple in-memory sliding window, per-IP per-path-group) ──
+from collections import defaultdict, deque
+
+_RL_MAX_PER_MIN = int(os.getenv("RATE_LIMIT_PER_MIN", "180"))
+_RL_WINDOW_SEC = 60.0
+_RL_BUCKETS: dict[str, deque] = defaultdict(deque)
+# Paths that bypass the limiter (health/static/docs)
+_RL_BYPASS_PREFIXES = ("/api/health", "/docs", "/redoc", "/openapi.json", "/favicon")
+
+
+@app.middleware("http")
+async def rate_limit_middleware(request: Request, call_next):
+    path = request.url.path
+    if any(path.startswith(p) for p in _RL_BYPASS_PREFIXES):
+        return await call_next(request)
+
+    fwd = request.headers.get("x-forwarded-for") or request.headers.get("x-real-ip") or ""
+    client_host = request.client.host if request.client else "unknown"
+    ip = (fwd.split(",")[0].strip() if fwd else client_host) or "unknown"
+
+    # Group by /api/<section>; unknown → path itself
+    parts = path.split("/", 3)
+    section = parts[2] if len(parts) > 2 and parts[1] == "api" else "root"
+    key = f"{ip}|{section}"
+
+    now = time.time()
+    bucket = _RL_BUCKETS[key]
+    while bucket and bucket[0] < now - _RL_WINDOW_SEC:
+        bucket.popleft()
+    if len(bucket) >= _RL_MAX_PER_MIN:
+        retry_after = max(1, int(_RL_WINDOW_SEC - (now - bucket[0])))
+        return JSONResponse(
+            status_code=429,
+            headers={"Retry-After": str(retry_after)},
+            content={"detail": "Too many requests", "retry_after": retry_after, "limit_per_minute": _RL_MAX_PER_MIN},
+        )
+    bucket.append(now)
+    return await call_next(request)
 
 
 # Accepted admin keys â€” matches the 4 passwords on admin.html frontend.

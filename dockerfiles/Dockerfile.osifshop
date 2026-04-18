@@ -1,0 +1,8 @@
+FROM python:3.11-slim
+WORKDIR /app
+RUN pip install --no-cache-dir aiogram==3.26.0 asyncpg python-dotenv aiohttp
+COPY shared/ /app/shared/
+COPY osif-shop/ /app/
+ENV PYTHONPATH="/app:/app/shared"
+EXPOSE 8080
+CMD ["sh", "-c", "python /app/webapp_server.py & python /app/main.py"]

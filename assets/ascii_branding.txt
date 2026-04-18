@@ -1,0 +1,130 @@
+═══════════════════════════════════════════
+  SLH SPARK ECOSYSTEM - ASCII BRANDING KIT
+═══════════════════════════════════════════
+
+=== 1. SPARK IND - Main Logo ===
+
+  ____  ____   _    ____  _  __
+ / ___||  _ \ / \  |  _ \| |/ /
+ \___ \| |_) / _ \ | |_) | ' /
+  ___) |  __/ ___ \|  _ <| . \
+ |____/|_| /_/   \_\_| \_\_|\_\
+       I N D U S T R I E S
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━
+    From Bits to Infinity
+
+
+=== 2. SLH - Compact ===
+
+  _____ _     _   _
+ / ____| |   | | | |
+| (___ | |   | |_| |
+ \___ \| |   |  _  |
+ ____) | |___| | | |
+|_____/|_____|_| |_|
+
+
+=== 3. ZVIKUSH - Investment House ===
+
+ ______   _____ _  ___   _ ____  _   _
+|__  / | / /_ _| |/ / | | / ___|| | | |
+  / /| |/ / | || ' /| | | \___ \| |_| |
+ / /_|   <  | || . \| |_| |___) |  _  |
+/____|_|\_\___|_|\_\ \___/|____/|_| |_|
+  ━━━ Investment House ━━━
+
+
+=== 4. SLH OMNI - Full System ===
+
+ ┌─────────────────────────────────┐
+ │  ★  S L H   O M N I            │
+ │     ━━━━━━━━━━━━━━━             │
+ │  20 Bots • 1 Ecosystem         │
+ │  From Bits to Infinity          │
+ │                                  │
+ │  Powered by SPARK IND           │
+ └─────────────────────────────────┘
+
+
+=== 5. Bot Headers (for each bot) ===
+
+── ZVIKUSH ──────────────────
+💎 Investment House
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+── SLH ACADEMIA ─────────────
+📚 Education • Airdrop • XP
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+── SLH GUARDIAN ─────────────
+🛡️ Security • Monitoring
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+── GATE BOTSHOP ─────────────
+📊 Trading • AI • P2P
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+── SLH WALLET ──────────────
+💰 TON • BNB • SLH
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+── SLH CAMPAIGN ─────────────
+📣 SaaS for Leaders
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+── SLH MATCH ────────────────
+👥 Friends • Community
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+── SLH WELLNESS ─────────────
+🧘 Health • Mind • Body
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+=== 6. Sharing Text Templates ===
+
+📱 Share Template (Hebrew):
+──────────────────────────────
+💎 ZVIKUSH - בית השקעות דיגיטלי
+
+✅ ארנק מלא (TON/BNB/SLH)
+✅ תוכניות השקעה 8%-24%
+✅ העברות מיידיות
+✅ משחקי בונוס
+🎁 +100 ZVK מתנה!
+
+💰 22.221₪ בלבד!
+👉 https://t.me/SLH_AIR_bot
+──────────────────────────────
+
+📱 Share Template (English):
+──────────────────────────────
+💎 ZVIKUSH Investment House
+
+✅ Full digital wallet
+✅ Investment plans 8%-24% APY
+✅ Instant transfers
+✅ Bonus games
+🎁 +100 ZVK free!
+
+💰 Only 22.221 ILS!
+👉 https://t.me/SLH_AIR_bot
+──────────────────────────────
+
+
+=== 7. Footer/Signature ===
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+💡 SPARK IND | SLH Ecosystem
+"From Bits to Infinity"
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+=== 8. Colors (for future UI) ===
+
+Primary:   #FFD700 (Gold)
+Secondary: #0A0A2E (Dark Navy)
+Accent:    #00FF88 (Green)
+Text:      #FFFFFF (White)
+Error:     #FF4444 (Red)
+Success:   #00CC66 (Green)

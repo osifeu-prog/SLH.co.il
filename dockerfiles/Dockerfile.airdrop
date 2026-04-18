@@ -1,0 +1,9 @@
+FROM python:3.11-slim
+WORKDIR /app
+COPY airdrop/requirements_simple.txt requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+COPY airdrop/ .
+COPY shared/ /app/shared/
+ENV PYTHONPATH="/app:/app/shared"
+ENV PYTHONIOENCODING=utf-8
+CMD ["python", "-c", "from app.bot_server import main; main()"]

@@ -1,0 +1,41 @@
+# ============================================================
+# תיקון סופי: העברת הפונקציה logs_command למקום הנכון
+# ============================================================
+cd D:\TerminalCommandCenter
+
+# גיבוי
+$backup = "src\TelegramBot_Core.py.bak_fix_$(Get-Date -Format 'yyyyMMdd_HHmmss')"
+Copy-Item src\TelegramBot_Core.py $backup -Force
+Write-Host "✅ גיבוי נשמר: $backup" -ForegroundColor Green
+
+$content = Get-Content src\TelegramBot_Core.py -Raw
+
+# חילוץ הפונקציה logs_command מהסוף (אחרי main)
+$pattern = '(?s)(async def logs_command\(.*?\):.*?)(?=\n\nif __name__ == "__main__":|\Z)'
+if ($content -match $pattern) {
+    $logsFunc = $matches[1]
+    # מחיקה מהמיקום הישן
+    $content = $content -replace $pattern, ''
+    # הוספה לפני def main
+    $content = $content -replace '(?=def main\(\):)', "`n$logsFunc`n`n"
+    Write-Host "✅ הפונקציה הועברה למקום הנכון" -ForegroundColor Green
+} else {
+    Write-Host "⚠️ לא נמצאה הפונקציה logs_command" -ForegroundColor Yellow
+}
+
+# הסרת handler כפול
+$content = $content -replace '(app\.add_handler\(CommandHandler\("logs", logs_command\)\s*\n)\s*app\.add_handler\(CommandHandler\("logs", logs_command\)', '$1'
+Write-Host "✅ הוסר handler כפול" -ForegroundColor Green
+
+# שמירה
+[System.IO.File]::WriteAllText("src\TelegramBot_Core.py", $content, [System.Text.UTF8Encoding]::new($false))
+Write-Host "✅ הקובץ נשמר בהצלחה" -ForegroundColor Green
+
+# עצירת תהליכים ישנים
+Get-Process python -ErrorAction SilentlyContinue | Stop-Process -Force
+
+Write-Host ""
+Write-Host "=====================================================" -ForegroundColor Cyan
+Write-Host "התיקון הושלם. הפעל את הבוט:" -ForegroundColor White
+Write-Host "py src\TelegramBot_Core.py" -ForegroundColor Yellow
+Write-Host "=====================================================" -ForegroundColor Cyan

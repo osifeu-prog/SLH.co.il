@@ -1,0 +1,162 @@
+{
+  "metadata": {
+    "project": "SLH Genesis",
+    "purpose": "Track primitive versions across all SLH ecosystem pages",
+    "lastUpdated": "2026-04-18T00:00:00Z",
+    "maintainer": "SLH Spark System",
+    "format": "v1.0"
+  },
+  "primitives": {
+    "slh-flip": {
+      "name": "SLH Flip + Scramble",
+      "category": "Text Animation",
+      "currentVersion": "v1.0-flip",
+      "releaseDate": "2026-04-18",
+      "status": "production",
+      "size": {
+        "unminified": "4.2 KB",
+        "gzipped": "1.8 KB"
+      },
+      "documentation": {
+        "readme": "/PRIMITIVES/text/slh-flip/README.md",
+        "usage": "/PRIMITIVES/text/slh-flip/USAGE.md",
+        "changelog": "/PRIMITIVES/text/slh-flip/CHANGELOG.md",
+        "roadmap": "/PRIMITIVES/text/slh-flip/ROADMAP.md",
+        "demo": "/PRIMITIVES/text/slh-flip/examples/demo.html"
+      },
+      "cdn": "https://slh-nft.com/js/slh-flip.js",
+      "versions": {
+        "v1.0-flip": {
+          "releaseDate": "2026-04-18",
+          "status": "current",
+          "features": [
+            "Flip animation (3D Y-axis rotation)",
+            "Scramble effect (character randomization)",
+            "Data-attribute API",
+            "JavaScript public API",
+            "GPU acceleration",
+            "Accessibility support",
+            "Zero dependencies"
+          ],
+          "breakingChanges": false
+        }
+      },
+      "upcomingVersions": {
+        "v1.1": {
+          "plannedDate": "2026-08-18",
+          "features": [
+            "Custom easing functions",
+            "Callback hooks",
+            "Animation queue support",
+            "Configurable character sets",
+            "Minified builds",
+            "Performance metrics"
+          ],
+          "breakingChanges": false
+        },
+        "v2.0": {
+          "plannedDate": "2026-12-18",
+          "features": [
+            "Multi-axis 3D transforms",
+            "New animation effects",
+            "Framework integrations (React, Vue, Svelte)",
+            "Real-time collaboration",
+            "Motion tracking",
+            "Haptic feedback"
+          ],
+          "breakingChanges": true,
+          "migrationGuide": "Available at release"
+        }
+      }
+    }
+  },
+  "pageTracking": {
+    "tracked": 0,
+    "comment": "To track pages using primitives, add: <!-- slh-version: v1.0-flip --> to each page",
+    "pages": []
+  },
+  "statistics": {
+    "totalPrimitives": 1,
+    "productionPrimitives": 1,
+    "betaPrimitives": 0,
+    "plannedPrimitives": 12,
+    "totalPages": 0,
+    "adoptionRate": "0%"
+  },
+  "guidelines": {
+    "integration": [
+      "Add <meta name='slh-version' content='v1.0-flip'> to page <head>",
+      "Load script with defer attribute: <script src='...' defer></script>",
+      "Use data-attributes for HTML integration",
+      "Test on mobile and desktop",
+      "Verify prefers-reduced-motion support",
+      "Check performance (target 60 FPS)"
+    ],
+    "upgrade": [
+      "Check CHANGELOG.md for breaking changes",
+      "Review ROADMAP.md for migration guide",
+      "Update meta tag with new version",
+      "Update script URL if needed",
+      "Test all animations",
+      "Run accessibility audit",
+      "Commit with clear message"
+    ]
+  },
+  "versioningPolicy": {
+    "scheme": "Semantic Versioning with variant",
+    "format": "vMAJOR.MINOR-VARIANT",
+    "backwardsCompatibility": {
+      "minorVersions": "Always compatible (v1.0 → v1.1)",
+      "majorVersions": "May break (v1.x → v2.0, migration guide provided)",
+      "dataAttributes": "Never removed, always additive",
+      "publicAPI": "May change in major versions"
+    }
+  },
+  "supportChannels": {
+    "issues": "github.com/osifeu-prog/slh-genesis/issues",
+    "discussions": "github.com/osifeu-prog/slh-genesis/discussions",
+    "email": "support@slh-nft.com",
+    "documentation": "See PRIMITIVES_INDEX.md"
+  },
+  "futureRoadmap": {
+    "q2_2026": {
+      "target": "v1.0 stable, v1.1 planning",
+      "activities": [
+        "Community feedback collection",
+        "v1.1 feature finalization",
+        "Documentation expansion"
+      ]
+    },
+    "q3_2026": {
+      "target": "v1.1 release, new primitives",
+      "activities": [
+        "Custom easing and callbacks",
+        "Animation queue support",
+        "slh-particles primitive start",
+        "slh-glitch primitive start"
+      ]
+    },
+    "q4_2026": {
+      "target": "v2.0 development, multi-effect support",
+      "activities": [
+        "Multi-axis 3D transforms",
+        "Framework integrations",
+        "New animation effects",
+        "v2.0 beta testing"
+      ]
+    },
+    "q1_2027": {
+      "target": "v2.0 stable, v3.0 planning",
+      "activities": [
+        "Framework release (React, Vue, Svelte)",
+        "Real-time collaboration",
+        "AI-powered features planning"
+      ]
+    }
+  },
+  "notes": {
+    "tracking": "Each page should include meta tag and be logged here for version management",
+    "updates": "Check this file regularly for new primitive releases and upgrade notices",
+    "contribution": "See PRIMITIVES_INDEX.md for contribution guidelines"
+  }
+}

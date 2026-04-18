@@ -1,0 +1,7 @@
+FROM python:3.11-slim
+WORKDIR /app
+RUN pip install --no-cache-dir aiogram==3.26.0 asyncpg python-dotenv aiohttp web3
+COPY shared/ /app/shared/
+COPY expertnet-bot/ /app/
+ENV PYTHONPATH="/app:/app/shared"
+CMD ["python", "main.py"]

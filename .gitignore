@@ -46,3 +46,25 @@ diagnostics_*.txt
 # OS
 Thumbs.db
 .DS_Store
+
+# IDE / local session state
+.claude/launch.json
+.claude/*.local.json
+_session_state/
+
+# Separate repos nested here (website is its own Git repo)
+website/
+
+# Corrupted/quarantined files
+*.corrupted
+
+# Legacy scan exports (Giga/OneDrive autosaves etc.)
+System Volume Information/
+
+# Railway/runtime cache
+nfty-bot/main.py.corrupted
+
+# ESP32 build artifacts (firmware dir contains 148M of PlatformIO output)
+device-registry/esp32-cyd-work/firmware/
+device-registry/*/firmware/
+**/.pio/

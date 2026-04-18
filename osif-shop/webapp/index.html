@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>OsifShop Scanner</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--tg-theme-bg-color, #1a1a2e);
+            color: var(--tg-theme-text-color, #fff);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .header {
+            padding: 16px;
+            text-align: center;
+            width: 100%;
+        }
+        .header h1 {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        .header p {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+        #reader {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        #reader video {
+            border-radius: 12px;
+        }
+        .result {
+            display: none;
+            text-align: center;
+            padding: 24px;
+            width: 100%;
+        }
+        .result.show { display: block; }
+        .result .barcode-num {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--tg-theme-button-color, #4CAF50);
+            margin: 16px 0;
+            font-family: monospace;
+            direction: ltr;
+        }
+        .result .product-name {
+            font-size: 18px;
+            margin-bottom: 16px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 14px 32px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 8px;
+        }
+        .btn-send {
+            background: var(--tg-theme-button-color, #4CAF50);
+            color: var(--tg-theme-button-text-color, #fff);
+        }
+        .btn-rescan {
+            background: var(--tg-theme-secondary-bg-color, #333);
+            color: var(--tg-theme-text-color, #fff);
+        }
+        .manual-input {
+            padding: 16px;
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+        }
+        .manual-input input {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid var(--tg-theme-hint-color, #666);
+            background: var(--tg-theme-secondary-bg-color, #222);
+            color: var(--tg-theme-text-color, #fff);
+            font-size: 18px;
+            text-align: center;
+            font-family: monospace;
+            direction: ltr;
+        }
+        .manual-input button {
+            margin-top: 8px;
+            width: 100%;
+        }
+        .status {
+            padding: 8px 16px;
+            font-size: 14px;
+            opacity: 0.7;
+            text-align: center;
+        }
+        #html5-qrcode-button-camera-permission,
+        #html5-qrcode-button-camera-start,
+        #html5-qrcode-button-camera-stop {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            background: var(--tg-theme-button-color, #4CAF50);
+            color: white;
+            font-size: 14px;
+            margin: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>OsifShop Scanner</h1>
+        <p>כוון את המצלמה על הברקוד</p>
+    </div>
+
+    <div id="reader"></div>
+
+    <div id="result" class="result">
+        <p>נסרק בהצלחה!</p>
+        <div class="barcode-num" id="barcode-display"></div>
+        <div class="product-name" id="product-name"></div>
+        <button class="btn btn-send" onclick="sendBarcode()">שלח לבוט</button>
+        <button class="btn btn-rescan" onclick="rescan()">סרוק שוב</button>
+    </div>
+
+    <div class="manual-input">
+        <p style="margin-bottom: 8px; font-size: 14px;">או הקלד ידנית:</p>
+        <input type="number" id="manual-barcode" placeholder="הקלד מספר ברקוד" inputmode="numeric" pattern="[0-9]*">
+        <button class="btn btn-send manual-input" onclick="sendManual()">שלח</button>
+    </div>
+
+    <div class="status" id="status"></div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+
+        let scannedCode = '';
+        let scanner = null;
+
+        function initScanner() {
+            scanner = new Html5Qrcode("reader");
+            const config = {
+                fps: 10,
+                qrbox: { width: 280, height: 120 },
+                formatsToSupport: [
+                    Html5QrcodeSupportedFormats.EAN_13,
+                    Html5QrcodeSupportedFormats.EAN_8,
+                    Html5QrcodeSupportedFormats.UPC_A,
+                    Html5QrcodeSupportedFormats.UPC_E,
+                    Html5QrcodeSupportedFormats.CODE_128,
+                    Html5QrcodeSupportedFormats.CODE_39,
+                ],
+                experimentalFeatures: {
+                    useBarCodeDetectorIfSupported: true
+                },
+            };
+
+            scanner.start(
+                { facingMode: "environment" },
+                config,
+                onScanSuccess,
+                () => {} // ignore scan failure
+            ).catch(err => {
+                document.getElementById('status').textContent = 'Camera: ' + err;
+            });
+        }
+
+        function onScanSuccess(decodedText, decodedResult) {
+            scannedCode = decodedText;
+            // Vibrate if available
+            if (navigator.vibrate) navigator.vibrate(100);
+            // Play beep
+            try {
+                const ctx = new AudioContext();
+                const osc = ctx.createOscillator();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(1200, ctx.currentTime);
+                osc.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.1);
+            } catch(e) {}
+
+            // Stop scanner
+            if (scanner) {
+                scanner.stop().catch(() => {});
+            }
+
+            // Show result
+            document.getElementById('reader').style.display = 'none';
+            document.getElementById('barcode-display').textContent = scannedCode;
+            document.getElementById('result').classList.add('show');
+        }
+
+        function sendBarcode() {
+            if (scannedCode) {
+                tg.sendData(scannedCode);
+            }
+        }
+
+        function sendManual() {
+            const val = document.getElementById('manual-barcode').value.trim();
+            if (val && val.length >= 8) {
+                tg.sendData(val);
+            }
+        }
+
+        function rescan() {
+            scannedCode = '';
+            document.getElementById('result').classList.remove('show');
+            document.getElementById('reader').style.display = 'block';
+            initScanner();
+        }
+
+        // Start
+        initScanner();
+    </script>
+</body>
+</html>
