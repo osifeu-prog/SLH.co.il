@@ -199,8 +199,6 @@ async def startup():
     _love_set_pool(pool)
     _treasury_set_pool(pool)
     _wellness_set_pool(pool)
-    _payments_monitor_set_pool(pool)
-    _payments_monitor_start()
     await _init_wellness()
 
     # Initialize wellness scheduler (APScheduler)
