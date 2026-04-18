@@ -29,6 +29,8 @@ from routes.dating import router as dating_router, set_pool as _dating_set_pool
 from routes.broadcast import router as broadcast_router, set_pool as _broadcast_set_pool
 from routes.love_tokens import router as love_router, set_pool as _love_set_pool
 from routes.treasury import router as treasury_router, set_pool as _treasury_set_pool
+from routes.wellness import router as wellness_router, set_pool as _wellness_set_pool, init_wellness_tables as _init_wellness
+from wellness_scheduler import init_wellness_scheduler, get_wellness_scheduler
 
 # === CONFIG ===
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:slh_secure_2026@localhost:5432/slh_main")
@@ -157,6 +159,7 @@ app.include_router(dating_router)
 app.include_router(broadcast_router)
 app.include_router(love_router)
 app.include_router(treasury_router)
+app.include_router(wellness_router)
 
 # === DATABASE ===
 pool: Optional[asyncpg.Pool] = None
@@ -192,6 +195,16 @@ async def startup():
     _broadcast_set_pool(pool)
     _love_set_pool(pool)
     _treasury_set_pool(pool)
+    _wellness_set_pool(pool)
+    await _init_wellness()
+
+    # Initialize wellness scheduler (APScheduler)
+    try:
+        await init_wellness_scheduler(DATABASE_URL)
+        print("[Wellness] Scheduler initialized successfully")
+    except Exception as e:
+        print(f"[WARNING] Wellness scheduler initialization failed: {str(e)}")
+
     async with pool.acquire() as conn:
         await conn.execute("""
             CREATE TABLE IF NOT EXISTS web_users (
@@ -544,6 +557,14 @@ async def startup():
 
 @app.on_event("shutdown")
 async def shutdown():
+    # Stop wellness scheduler
+    try:
+        scheduler = get_wellness_scheduler()
+        await scheduler.stop()
+        print("[Wellness] Scheduler stopped")
+    except Exception as e:
+        print(f"[WARNING] Wellness scheduler shutdown: {str(e)}")
+
     if pool:
         await pool.close()
 

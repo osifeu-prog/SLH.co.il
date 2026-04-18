@@ -233,8 +233,7 @@ async def cmd_verify(message):
     res = verify_device(serial, code)
 
     if res.get("status") == "verified":
-        await message.answer(f"Device OK
-Token: {res['token']}")
+        await message.answer(f"Device OK\nToken: {res['token']}")
     else:
         await message.answer("Verify failed")
 
