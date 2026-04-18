@@ -30,7 +30,9 @@ from routes.dating import router as dating_router, set_pool as _dating_set_pool
 from routes.broadcast import router as broadcast_router, set_pool as _broadcast_set_pool
 from routes.love_tokens import router as love_router, set_pool as _love_set_pool
 from routes.treasury import router as treasury_router, set_pool as _treasury_set_pool
+from routes.creator_economy import router as creator_router, set_pool as _creator_set_pool
 from routes.wellness import router as wellness_router, set_pool as _wellness_set_pool, init_wellness_tables as _init_wellness
+from routes.arkham_bridge import router as threat_router, set_pool as _threat_set_pool, init_threat_tables as _init_threat
 from wellness_scheduler import init_wellness_scheduler, get_wellness_scheduler
 
 # === CONFIG ===
@@ -161,7 +163,9 @@ app.include_router(dating_router)
 app.include_router(broadcast_router)
 app.include_router(love_router)
 app.include_router(treasury_router)
+app.include_router(creator_router)
 app.include_router(wellness_router)
+app.include_router(threat_router)
 
 # === DATABASE ===
 pool: Optional[asyncpg.Pool] = None
@@ -198,8 +202,11 @@ async def startup():
     _broadcast_set_pool(pool)
     _love_set_pool(pool)
     _treasury_set_pool(pool)
+    _creator_set_pool(pool)
     _wellness_set_pool(pool)
+    _threat_set_pool(pool)
     await _init_wellness()
+    await _init_threat()
 
     # Initialize wellness scheduler (APScheduler)
     try:
