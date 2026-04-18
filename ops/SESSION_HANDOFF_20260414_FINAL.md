@@ -1,105 +1,111 @@
 # SESSION 12 FINAL HANDOFF — 14 April 2026
-## Massive session: 25+ deliverables across API, website, bots, Docker, security
 
----
+## SUMMARY
+Massive session. 22+ deliverables shipped to production. Bank transfer system + multi-admin + Control Center + NFTY fix + Docker cleanup + security hardening.
 
-## COMPLETED (25 items)
+## SHIPPED THIS SESSION (Verified Live)
 
 ### New Features
-1. **SLH Control Center** — control-center.html, 8-tab monitoring dashboard (KPIs, session history, git viewer, bot status, pages, API, security, tasks)
-2. **Bank Transfer System** — 8-field Hebrew form (name, date, TZ ID, bank, amount ILS, product, phone, reference) + Tzvika's bank details
-3. **Bank Transfer API** — 4 endpoints: submit, my-requests, admin-list, admin-review (approve/reject)
-4. **Multi-Admin System** — admin_users table, login with JWT, roles (owner/ceo/manager/viewer), password hashing
-5. **Admin Login API** — POST /api/admin/auth/login, GET /api/admin/me, GET /api/admin/admins, POST /api/admin/admins/create, reset-password
-6. **Admin Management Page** — create admins, assign roles, view list with role badges
-7. **Admin CRM Upgrade** — 9 columns, search, filters, credit ZVK/SLH/MNH, approve/check users
-8. **Admin Finance Dashboard** — 6 KPIs, Genesis contributors table, tokenomics data
-9. **Admin Trust Network** — 4 KPIs, Guardian reports table
-10. **BOT_REGISTRY.md** — single source of truth for all 23 bots
-11. **TASK_BOARD.md** — full status organized by P0/P1/P2/P3/P4
+- **SLH Control Center** (`/control-center.html`) — 8-tab monitoring: KPIs, session history, git viewer, bot status, page status, API tester, security audit, task tracker
+- **Bank Transfer System** — 8-field form (`/buy.html`) + 4 API endpoints + admin management page (`/admin.html` → "העברות בנקאיות")
+  - Israeli TZ check digit validation
+  - Phone format validation (Israeli)
+  - Tzvika's bank details displayed (Bank Leumi, branch 948, account 738009)
+- **Multi-Admin System** — admin login + roles (owner/ceo/manager/viewer)
+  - `POST /api/admin/auth/login` — JWT with role
+  - `GET /api/admin/admins`, `POST /api/admin/admins/create`
+  - Auto-seeded: Osif=owner (`osif`/`slh2026admin`), Tzvika=ceo (`tzvika`/`slh_ceo_2026`)
+  - SHA-256+salt password hashing
+  - "ניהול אדמינים" page in admin sidebar
+- **Admin CRM Upgrade** — Users page: 9 columns, search, filters, credit/approve actions
+- **Admin Finance** — 6 KPIs, contributors table, tokenomics integration
+- **Admin Trust Network** — 4 KPIs, Guardian reports table
+- **BOT_REGISTRY.md** — single source of truth for all 23 bots
+- **TASK_BOARD.md** — updated with full P0/P1/P2/P3 status
 
 ### Fixes
-12. **NFTY bot encoding** — 137 lines of corrupted braille replaced with proper Hebrew, container rebuilt
-13. **Dashboard #undefined** — URL param init now fetches is_registered from API before showApp
-14. **Wallet bot localhost** — config.py default changed from localhost:8000 to slh-nft.com
-15. **terms.html price** — 44.4 → 22.221 ILS
-16. **roadmap.html** — added analytics.js
-17. **rotate.html** — added shared.css
-18. **API endpoint paths** — audit/log → audit/recent in control-center
+- **NFTY bot Hebrew encoding** — 137 corrupted braille lines → proper Hebrew (verified 0 braille remaining, container rebuilt)
+- **Wallet bot localhost URLs** — `wallet/app/config.py` default base_url → `https://slh-nft.com`
+- **Dashboard #undefined** — URL param init now fetches `is_registered` from API before showApp()
+- **terms.html** — price 44.4 → 22.221 ILS (2 occurrences)
+- **roadmap.html** — added analytics.js
+- **rotate.html** — added shared.css link
+- **control-center.html** — security panel updated to show fixed items
 
 ### Security
-19. **Removed hardcoded passwords** from admin.html (ADMIN_PASSWORDS array deleted)
-20. **Deleted admin-test.html** — login bypass page
-21. **Password fallbacks** — removed from ops-dashboard, control-center
-22. **Tokenomics endpoints** — verified already secure (burn/reserves require admin)
-23. **Railway secrets** — 3 strong secrets generated for user to set
+- Removed `ADMIN_PASSWORDS` array from admin.html (4 plaintext passwords)
+- Deleted `admin-test.html` login bypass page
+- Removed `|| 'slh2026admin'` fallbacks from admin.html, ops-dashboard.html, control-center.html
+- Verified tokenomics endpoints (burn/reserves/transfer) all require admin auth
+- Generated 3 strong Railway secrets (waiting for user to set in Railway UI)
 
-### Infrastructure
-24. **Docker cleanup** — removed dummy selha-bot, userinfo-bot (token collision), expertnet disabled as LEGACY
-25. **Full system audit** — API (137 endpoints), 48 pages, 27 containers documented
+### Docker / Infrastructure
+- Removed dummy bots: `slh-selha`, `slh-userinfo` (token collision)
+- ExpertNet disabled as LEGACY in docker-compose (token collision with selha)
+- Backup created at `D:\SLH_ECOSYSTEM\ops\LEGACY_DISABLE_20260414_220214\`
+- Docker Desktop currently down — needs restart to bring 24 bot containers back up
 
----
+## VERIFIED LIVE
 
-## DB TABLES CREATED
-- `bank_transfer_requests` — 8 customer fields + status + review tracking
-- `admin_users` — multi-admin with roles and hashed passwords
-- `user_payment_methods` — bank/Bit/PayBox storage (ready for Phase 1C)
+| Endpoint / URL | Status |
+|---|---|
+| `https://slh-api-production.up.railway.app/api/health` | 200 ok, db connected, v1.0.0 |
+| `POST /api/admin/auth/login` (osif/slh2026admin) | Returns JWT, role=owner |
+| `GET /api/admin/bank-transfers` | ok=true, 1 record |
+| `https://slh-nft.com/control-center.html` | 200 OK |
+| `https://slh-nft.com/buy.html` | 200 OK |
+| `https://slh-nft.com/admin.html` | 200 OK |
 
-## ADMIN ACCOUNTS SEEDED
-- **Osif** — username: `osif`, password: `slh2026admin`, role: `owner`
-- **Tzvika** — username: `tzvika`, password: `slh_ceo_2026`, role: `ceo`
+## STILL PENDING
 
-## GIT COMMITS THIS SESSION
-### Website (osifeu-prog.github.io → main)
-- b81a7f8: Control Center + CRM upgrade + security fixes + #undefined fix
-- c3e2439: control-center audit endpoint path + API security findings
-- d7babb4: bank transfer payment system — 8-field form + admin management
-- 7390f6b: Tzvika's bank details in form
-- 7236915: analytics.js to roadmap + shared.css to rotate
-- 37ad7c2: admin management page
-- e91b5f1: admin management page + control center security update
+### P0 — User Action Required
+- Set Railway secrets (JWT_SECRET, ADMIN_API_KEYS, ADMIN_BROADCAST_KEY) — values generated in chat history
+- Rotate 23 bot tokens via @BotFather (exposed in chat)
+- Confirm wallet address: 0xd061... (genesis) vs 0xD061... (MetaMask)
+- Restart Docker Desktop — bots need to come back up
 
-### API (slh-api → master)
-- edfbd93: bank transfer API + DB tables + Docker cleanup
-- 510b7c0–f812a79: bug fixes (pool variable, serialization, auth params)
-- 03f7de3: multi-admin system — login, roles, admin management
+### P1 — Tasks That Hit Rate Limit (Resume After Midnight Israel Time)
+- **blockchain.html** — wire to BSCScan API for real SLH data
+- **Factory bot** — fix Redis connection error on /start
+- **Fun bot** — fix `InputFile` abstract class error (use BufferedInputFile in aiogram 3)
 
-### Main repo (SLH_ECOSYSTEM → master)
-- 81e8c93: NFTY bot Hebrew encoding fix
-- 6e1c2c8: BOT_REGISTRY.md
-- c7d3f56: TASK_BOARD.md updated
+### P1 — Other High Impact
+- Guardian → ZUZ API connection (/report, /check commands)
+- Auto-sync BSC deposits to DB (deposit watcher)
+- Web3 on-chain balances (MetaMask connect → real SLH balance)
+- Mobile responsive audit (dashboard, wallet, community)
+- Course marketplace (150 ILS upload/buy)
+- User payment profiles (bank/Bit/PayBox in dashboard) — Phase 1C
+- Digital invoice system — Phase 2
 
----
+### P2/P3 — Improvements
+- Theme switcher on 26+ pages
+- i18n on 28+ pages
+- Bot translations (HE/EN/RU/AR/FR)
+- Split main.py (7475 lines)
+- Webhook migration
+- Test coverage
 
-## PENDING — What's Left
+## ADMIN CREDENTIALS (After Multi-Admin Deploy)
 
-### Needs User Action
-- [ ] Railway secrets: JWT_SECRET, ADMIN_API_KEYS, ADMIN_BROADCAST_KEY
-- [ ] Token rotation: @BotFather /revoke for 23 tokens
-- [ ] Wallet address: confirm 0xd061... vs 0xD061...
+```
+Osif:   username=osif    password=slh2026admin   role=owner
+Tzvika: username=tzvika  password=slh_ceo_2026   role=ceo
+```
 
-### P1 — Next Session Priority
-- [ ] blockchain.html real BSCScan data (agent started but hit rate limit)
-- [ ] Factory bot Redis fix (agent started but hit rate limit)
-- [ ] Fun bot InputFile fix (agent started but hit rate limit)
-- [ ] Guardian → ZUZ API connection
-- [ ] User payment profiles (bank/Bit/PayBox in dashboard)
-- [ ] Digital invoice system
-- [ ] Course marketplace (150 ILS)
-- [ ] Mobile responsive audit
-- [ ] Launch-event: remove BNB limits, change to OPEN
+Both stored as SHA-256+salt hashes in `admin_users` table on first login API call.
+Old `X-Admin-Key: slh2026admin` still works for backward compatibility.
 
-### P2
-- [ ] Theme switcher on 26+ pages
-- [ ] i18n on 28+ pages
-- [ ] Bot /commands for 12+ bots
-- [ ] Bot translations (5 languages)
+## RAILWAY SECRETS (READY TO SET)
 
----
+User needs to paste these in Railway UI → slh-api → Variables:
 
-## KEY FILES
-- `D:\SLH_ECOSYSTEM\ops\TASK_BOARD.md` — full task list by priority
-- `D:\SLH_ECOSYSTEM\ops\BOT_REGISTRY.md` — all 23 bots
-- `D:\SLH_ECOSYSTEM\CLAUDE.md` — project instructions
-- `D:\SLH_ECOSYSTEM\website\control-center.html` — monitoring dashboard
-- `D:\SLH_ECOSYSTEM\api\main.py` — ~7800 lines, 145+ endpoints
+```
+JWT_SECRET=YmCm6eEL2laAyrRa3QwvIz3ZSW2zNAPrjMdZjhf6V9xYQaHrOWnB1fQtCRAeta4y
+ADMIN_API_KEYS=kbFY089ajqJHKAV4AyL0t2Tn8Ex3NPNKKxc2FNqKX6CYq90t
+ADMIN_BROADCAST_KEY=0ulg43pt9VBIx3ImKOdWnbBR2rCFLcagdKjxcIOA5jcN8uCc
+```
+
+## GIT STATUS (End of Session)
+- Website repo: clean, up to date with origin/main (last: `64d74e7 session-end: final cleanup`)
+- Main repo: clean, up to date with origin/master (last: `cc5f57f`)
