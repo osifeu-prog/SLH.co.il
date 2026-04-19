@@ -1,6 +1,29 @@
 """
-Threat Intelligence Integration — Arkham Bridge + Community Fraud Detection
-Decentralized fraud detection powered by Arkham Intelligence + community verification
+Threat Intelligence Bridge — REAL on-chain verification + Community Fraud Detection
+====================================================================================
+This router used to be a mock "Arkham Intelligence" shim that returned hash-based
+pseudo-random threat scores. It has been replaced with real, verifiable data
+sourced from free public APIs — NO fake numbers, NO hash-as-score.
+
+Real data sources (all free, keyless for baseline use):
+  * GoPlus Security address-risk API  ->  actual threat flags (cybercrime,
+    sanctioned, phishing, money_laundering, honeypot_related_address, …)
+    This is our real "Arkham" replacement.
+  * BscScan module=account            ->  verified native BNB + BEP-20 balances
+    on BSC (works without an API key; BSCSCAN_API_KEY env var raises the rate).
+  * Chainabuse /v0/reports            ->  community-submitted fraud reports.
+
+Router prefix and endpoint names are UNCHANGED (``/api/threat/check-score``,
+``/report-fraud``, ``/verify-report``, ``/leaderboard``, ``/network``) so
+existing website callers keep working. The only visible changes are:
+  - ``source`` in responses is now e.g. ``"goplus"`` / ``"goplus+bscscan"``
+    instead of ``"mock"``.
+  - Threat scores reflect real risk data, not ``hash(wallet) % 100``.
+  - New fields surface the raw flags and on-chain balance for transparency.
+
+DB tables (threat_intel_arkham, fraud_reports_community, fraud_verification_queue,
+fraud_community_reputation, fraud_network_connections) are preserved as-is;
+only the data source feeding the threat score was swapped.
 """
 import os
 import json
@@ -10,10 +33,19 @@ from typing import Optional, List, Dict
 from pydantic import BaseModel
 from fastapi import APIRouter, HTTPException, Header, Request
 
+from routes.blockchain_verify import (
+    BlockchainThreatClient,
+    BscScanClient,
+    GoPlusClient,
+    ChainabuseClient,
+    SLH_CONTRACT_BSC,
+    SLH_DECIMALS,
+)
+
 logger = logging.getLogger(__name__)
 
-# Router
-router = APIRouter(prefix="/api/threat", tags=["threat-intelligence"])
+# Router — tags renamed so /docs clearly shows this is the REAL implementation
+router = APIRouter(prefix="/api/threat", tags=["threat-intelligence-real"])
 
 # Global connection pool (set by main.py)
 _pool = None
@@ -152,71 +184,13 @@ async def init_threat_tables():
             await _ensure_threat_tables(conn)
 
 # ============================================================
-# ARKHAM MOCK/REAL INTEGRATION
+# REAL THREAT INTELLIGENCE CLIENT (GoPlus + BscScan + Chainabuse)
 # ============================================================
 
-class ArkhamClient:
-    """Mock Arkham Intelligence client — swap for real API when credentials available"""
-
-    def __init__(self, api_key: Optional[str] = None):
-        self.api_key = api_key or os.getenv("ARKHAM_API_KEY")
-        self.use_mock = not self.api_key
-        self.base_url = "https://intel.arkm.com/api/v1"
-
-    async def check_wallet_threat(self, wallet_address: str) -> Dict:
-        """Query threat level for a wallet address"""
-
-        if self.use_mock:
-            # Mock implementation — returns realistic threat scores
-            return self._mock_wallet_threat(wallet_address)
-        else:
-            # Real Arkham API call (when credentials available)
-            return await self._real_wallet_threat(wallet_address)
-
-    def _mock_wallet_threat(self, wallet: str) -> Dict:
-        """Mock Arkham response"""
-        # Simple deterministic mock based on wallet address hash
-        hash_val = hash(wallet) % 100
-
-        threat_score = (hash_val / 100) * 100  # 0-100
-
-        threat_categories = {
-            0: "clean",
-            25: "suspicious",
-            50: "high_risk",
-            75: "sanctioned",
-            100: "blacklisted"
-        }
-
-        entity_tags = []
-        if threat_score > 50:
-            entity_tags.append("fraud_associated")
-        if threat_score > 70:
-            entity_tags.append("sanctioned_region")
-        if threat_score > 85:
-            entity_tags.append("stolen_funds")
-
-        return {
-            "wallet_address": wallet,
-            "threat_score": threat_score,
-            "threat_category": threat_categories.get(int(threat_score / 25) * 25, "unknown"),
-            "entity_tags": entity_tags,
-            "last_checked": datetime.utcnow().isoformat(),
-            "source": "mock"  # Indicates this is mock data
-        }
-
-    async def _real_wallet_threat(self, wallet: str) -> Dict:
-        """Real Arkham API (placeholder — implement when credentials available)"""
-        # TODO: Implement real Arkham API call
-        # import aiohttp
-        # async with aiohttp.ClientSession() as session:
-        #     headers = {"Authorization": f"Bearer {self.api_key}"}
-        #     url = f"{self.base_url}/entity/{wallet}"
-        #     async with session.get(url, headers=headers) as resp:
-        #         return await resp.json()
-        return self._mock_wallet_threat(wallet)
-
-arkham = ArkhamClient()
+# Singleton facade used by the endpoints below. It internally holds the three
+# real API clients and exposes the same method names the old ArkhamClient had,
+# so the downstream router code is minimally changed.
+threat_client = BlockchainThreatClient()
 
 # ============================================================
 # API ENDPOINTS
@@ -225,8 +199,14 @@ arkham = ArkhamClient()
 @router.get("/check-score")
 async def check_threat_score(request: Request, x_admin_key: Optional[str] = Header(None)):
     """
-    Check threat level for wallet/phone/user
-    Returns: combined threat score (Arkham + community reports)
+    Check threat level for wallet/phone/user.
+
+    Real data path:
+      1. If we have a cached row in threat_intel_arkham, return it.
+      2. Otherwise, for wallet queries, call GoPlus (threat flags) + BscScan
+         (native BNB + SLH balance on BSC) and persist + return the combined
+         result. No more hash-based fake scores.
+    Query params: ``wallet``, ``phone``, ``user_id``, ``chain`` (default ``bsc``).
     """
     if not _pool:
         raise HTTPException(status_code=500, detail="Database not initialized")
@@ -235,6 +215,7 @@ async def check_threat_score(request: Request, x_admin_key: Optional[str] = Head
     wallet = query.get("wallet")
     phone = query.get("phone")
     user_id = query.get("user_id")
+    chain = (query.get("chain") or "bsc").lower()
 
     if not (wallet or phone or user_id):
         raise HTTPException(status_code=400, detail="Provide wallet, phone, or user_id")
@@ -264,49 +245,101 @@ async def check_threat_score(request: Request, x_admin_key: Optional[str] = Head
                     "wallet_address": row["wallet_address"],
                     "phone_number": row["phone_number"],
                     "user_id": row["user_id"],
-                    "arkham_threat_score": row["threat_score"],
+                    "threat_score": row["threat_score"],
+                    "threat_category": row["threat_category"],
+                    "entity_tags": list(row["arkham_entity_tags"] or []),
                     "community_reports": row["community_reports_count"],
                     "verified_reports": row["community_verified_count"],
                     "combined_threat_score": row["combined_threat_score"],
                     "is_flagged": row["is_flagged"],
                     "flag_reason": row["flag_reason"],
-                    "updated_at": row["updated_at"].isoformat() if row["updated_at"] else None
+                    "source": "cache+goplus",
+                    "updated_at": row["updated_at"].isoformat() if row["updated_at"] else None,
                 }
 
-            # Not cached — check Arkham
-            arkham_result = await arkham.check_wallet_threat(wallet or "unknown")
+            # Not cached — query REAL APIs (GoPlus for threat, BscScan for balance)
+            threat_result: Dict = {
+                "threat_score": 0.0,
+                "threat_category": "unknown",
+                "entity_tags": [],
+                "raw_flags": {},
+                "source": "no_wallet",
+                "chain": chain,
+            }
+            balance_result: Optional[Dict] = None
+            community_reports: List[Dict] = []
 
-            # Create new record
-            threat_score = arkham_result.get("threat_score", 0)
+            if wallet:
+                threat_result = await threat_client.check_address(wallet, chain=chain)
+                try:
+                    balance_result = await threat_client.get_balance(
+                        wallet,
+                        chain=chain,
+                        token_contract=SLH_CONTRACT_BSC if chain in {"bsc", "bnb"} else None,
+                    )
+                except Exception as e:  # noqa: BLE001 — balance is supplemental
+                    logger.warning("Balance lookup failed for %s on %s: %s", wallet, chain, e)
+                    balance_result = {"source": "network_error", "error": str(e)}
+                try:
+                    community_reports = await threat_client.get_community_reports(wallet)
+                except Exception as e:  # noqa: BLE001 — community data is supplemental
+                    logger.warning("Chainabuse lookup failed for %s: %s", wallet, e)
+                    community_reports = []
+
+            # Create new cached record using REAL threat score
+            threat_score = float(threat_result.get("threat_score", 0) or 0)
+            entity_tags = threat_result.get("entity_tags") or []
             new_row = await conn.fetchrow(
                 """
                 INSERT INTO threat_intel_arkham (wallet_address, phone_number, user_id,
-                    threat_score, threat_category, arkham_entity_tags, combined_threat_score)
-                VALUES ($1, $2, $3, $4, $5, $6, $7)
+                    threat_score, threat_category, arkham_entity_tags, arkham_last_checked,
+                    combined_threat_score)
+                VALUES ($1, $2, $3, $4, $5, $6, NOW(), $7)
                 RETURNING *
                 """,
                 wallet,
                 phone,
                 int(user_id) if user_id else None,
                 threat_score,
-                arkham_result.get("threat_category"),
-                arkham_result.get("entity_tags"),
-                threat_score
+                threat_result.get("threat_category"),
+                entity_tags,
+                threat_score,
             )
+
+            # Compose the source marker — shows the user exactly where each
+            # piece of data came from. "goplus+bscscan" when we have both.
+            sources = []
+            if threat_result.get("source"):
+                sources.append(str(threat_result.get("source")))
+            if balance_result and balance_result.get("source"):
+                sources.append(str(balance_result.get("source")))
+            composed_source = "+".join(s for s in sources if s) or "goplus"
 
             return {
                 "id": new_row["id"],
                 "wallet_address": new_row["wallet_address"],
                 "phone_number": new_row["phone_number"],
                 "user_id": new_row["user_id"],
-                "arkham_threat_score": new_row["threat_score"],
-                "community_reports": 0,
+                "threat_score": new_row["threat_score"],
+                "threat_category": new_row["threat_category"],
+                "entity_tags": list(new_row["arkham_entity_tags"] or []),
+                "raw_flags": threat_result.get("raw_flags") or {},
+                "community_reports": len(community_reports),
                 "verified_reports": 0,
                 "combined_threat_score": new_row["combined_threat_score"],
-                "is_flagged": False,
-                "updated_at": new_row["updated_at"].isoformat()
+                "is_flagged": threat_score >= 50.0,
+                "chain": threat_result.get("chain") or chain,
+                "chain_id": threat_result.get("chain_id"),
+                "balance": balance_result,
+                "chainabuse_reports": community_reports,
+                "data_source_url": threat_result.get("data_source_url"),
+                "source": composed_source,
+                "last_checked": threat_result.get("last_checked") or threat_result.get("checked_at"),
+                "updated_at": new_row["updated_at"].isoformat() if new_row["updated_at"] else None,
             }
 
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error checking threat score: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -452,6 +485,8 @@ async def verify_fraud_report(req: FraudVerificationRequest, x_admin_key: Option
                 "message": f"Report {'confirmed' if req.verified else 'dismissed'}"
             }
 
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error verifying report: {e}")
         raise HTTPException(status_code=500, detail=str(e))

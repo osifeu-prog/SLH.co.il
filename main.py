@@ -34,6 +34,7 @@ from routes.creator_economy import router as creator_router, set_pool as _creato
 from routes.wellness import router as wellness_router, set_pool as _wellness_set_pool, init_wellness_tables as _init_wellness
 from routes.arkham_bridge import router as threat_router, set_pool as _threat_set_pool, init_threat_tables as _init_threat
 from routes.whatsapp import router as whatsapp_router, set_pool as _whatsapp_set_pool, init_whatsapp_tables as _init_whatsapp
+from routes.system_audit import router as system_audit_router, set_pool as _system_audit_set_pool
 from wellness_scheduler import init_wellness_scheduler, get_wellness_scheduler
 
 # === CONFIG ===
@@ -216,6 +217,7 @@ app.include_router(creator_router)
 app.include_router(wellness_router)
 app.include_router(threat_router)
 app.include_router(whatsapp_router)
+app.include_router(system_audit_router)
 
 # === DATABASE ===
 pool: Optional[asyncpg.Pool] = None
@@ -256,6 +258,7 @@ async def startup():
     _wellness_set_pool(pool)
     _threat_set_pool(pool)
     _whatsapp_set_pool(pool)
+    _system_audit_set_pool(pool)
     await _init_wellness()
     await _init_threat()
     await _init_whatsapp()
@@ -2493,6 +2496,7 @@ async def update_user_profile(req: ProfileUpdateRequest):
         raise HTTPException(400, "No fields to update")
 
     params.append(req.user_id)
+    # SECURITY: whitelisted — 'updates' entries built only from hardcoded column literals (display_name, display_name_set_at, bio, language_pref); all user values are parameterized via $idx
     sql = f"UPDATE web_users SET {', '.join(updates)} WHERE telegram_id = ${idx} RETURNING display_name, bio, language_pref, first_name, username"
 
     async with pool.acquire() as conn:
@@ -3326,6 +3330,7 @@ async def global_leaderboard(category: str = Query("xp", enum=["xp", "balance", 
     """
     # Test/seed IDs to exclude â€” keep real Telegram users only
     # Real Telegram user IDs are ALWAYS positive and typically > 1M
+    # SECURITY: whitelisted — EXCLUDE_RANGE is a hardcoded constant, not user input; category param is constrained by FastAPI enum
     EXCLUDE_RANGE = "user_id >= 1000000 AND user_id > 0"
     async with pool.acquire() as conn:
         rows = []
@@ -9141,6 +9146,7 @@ async def experts_domains_vote(req: DomainVoteReq):
                 raise HTTPException(409, "Already voted on this proposal")
             raise
         # Update counter
+        # SECURITY: whitelisted — 'col' is chosen between two hardcoded literals ('votes_for' / 'votes_against') via req.vote which is validated at line 9127
         col = "votes_for" if req.vote == "for" else "votes_against"
         await conn.execute(f"UPDATE expert_domains SET {col} = {col} + 1 WHERE id=$1", req.domain_id)
         # Check if auto-approve (for adds: 10+ for-votes, 2x against threshold)
