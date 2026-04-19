@@ -32,6 +32,13 @@ def set_pool(pool):
     global _pool
     _pool = pool
 
+async def init_whatsapp_tables():
+    """Initialize WhatsApp tables on startup."""
+    if not _pool:
+        return
+    async with _pool.acquire() as conn:
+        await _ensure_whatsapp_tables(conn)
+
 # ============================================================
 # DATABASE INITIALIZATION
 # ============================================================

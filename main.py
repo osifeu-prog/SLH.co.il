@@ -33,6 +33,7 @@ from routes.treasury import router as treasury_router, set_pool as _treasury_set
 from routes.creator_economy import router as creator_router, set_pool as _creator_set_pool
 from routes.wellness import router as wellness_router, set_pool as _wellness_set_pool, init_wellness_tables as _init_wellness
 from routes.arkham_bridge import router as threat_router, set_pool as _threat_set_pool, init_threat_tables as _init_threat
+from routes.whatsapp import router as whatsapp_router, set_pool as _whatsapp_set_pool, init_whatsapp_tables as _init_whatsapp
 from wellness_scheduler import init_wellness_scheduler, get_wellness_scheduler
 
 # === CONFIG ===
@@ -214,6 +215,7 @@ app.include_router(treasury_router)
 app.include_router(creator_router)
 app.include_router(wellness_router)
 app.include_router(threat_router)
+app.include_router(whatsapp_router)
 
 # === DATABASE ===
 pool: Optional[asyncpg.Pool] = None
@@ -253,8 +255,10 @@ async def startup():
     _creator_set_pool(pool)
     _wellness_set_pool(pool)
     _threat_set_pool(pool)
+    _whatsapp_set_pool(pool)
     await _init_wellness()
     await _init_threat()
+    await _init_whatsapp()
 
     # Initialize wellness scheduler (APScheduler)
     try:
