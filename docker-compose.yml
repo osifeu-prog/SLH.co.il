@@ -466,6 +466,25 @@ services:
     # bot.py was COPY'd into /app by the Dockerfile; run it from there, but keep /workspace as cwd
     command: ["python", "/app/bot.py"]
 
+  # @WEWORK_teamviwer_bot re-purposed as SLH Academy — real /buy flow + payments
+  academia-bot:
+    build:
+      context: ./academia-bot
+      dockerfile: Dockerfile
+    container_name: slh-academia-bot
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      WEWORK_TEAMVIWER_TOKEN: ${WEWORK_TEAMVIWER_TOKEN}
+      DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
+      SLH_API_BASE: https://slh-api-production.up.railway.app
+      SUPPORT_HANDLE: "@SLHSupport"
+      ACADEMIA_BOT_NAME: academia
+
 volumes:
   pgdata:
   core-logs:
