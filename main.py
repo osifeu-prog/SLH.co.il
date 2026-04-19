@@ -16,6 +16,7 @@ from fastapi import FastAPI, HTTPException, Depends, Query, Request, Header
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
+import asyncio
 import asyncpg
 import aiohttp
 
@@ -242,33 +243,49 @@ async def startup():
     if _security_warnings:
         print(f"[SECURITY WARNING] {len(_security_warnings)} default credentials detected. Set env vars on Railway before production.")
 
-    pool = await asyncpg.create_pool(DATABASE_URL, min_size=2, max_size=10)
-    _payments_set_pool(pool)
-    _payments_monitor_set_pool(pool)
-    _community_plus_set_pool(pool)
-    _aic_set_pool(pool)
-    _ps_set_pool(pool)
-    _ai_chat_set_aic_pool(pool)
-    _sudoku_set_pool(pool)
-    _dating_set_pool(pool)
-    _broadcast_set_pool(pool)
-    _love_set_pool(pool)
-    _treasury_set_pool(pool)
-    _creator_set_pool(pool)
-    _wellness_set_pool(pool)
-    _threat_set_pool(pool)
-    _whatsapp_set_pool(pool)
-    _system_audit_set_pool(pool)
-    await _init_wellness()
-    await _init_threat()
-    await _init_whatsapp()
-
-    # Initialize wellness scheduler (APScheduler)
+    # STARTUP HARDENING: 10s timeout on pool creation — Railway healthcheck fails
+    # after 5min, so we must let uvicorn bind even if DB is slow.
     try:
-        await init_wellness_scheduler(DATABASE_URL)
+        pool = await asyncio.wait_for(
+            asyncpg.create_pool(DATABASE_URL, min_size=2, max_size=10),
+            timeout=10.0,
+        )
+        print("[Startup] DB pool created")
+    except Exception as e:
+        print(f"[Startup][ERROR] DB pool creation failed: {e!r} — continuing without pool; endpoints that need DB will 503")
+        pool = None
+
+    if pool is not None:
+        for setter in (_payments_set_pool, _payments_monitor_set_pool, _community_plus_set_pool,
+                       _aic_set_pool, _ps_set_pool, _ai_chat_set_aic_pool, _sudoku_set_pool,
+                       _dating_set_pool, _broadcast_set_pool, _love_set_pool, _treasury_set_pool,
+                       _creator_set_pool, _wellness_set_pool, _threat_set_pool, _whatsapp_set_pool,
+                       _system_audit_set_pool):
+            try:
+                setter(pool)
+            except Exception as e:
+                print(f"[Startup][WARN] set_pool on {setter.__name__} failed: {e!r}")
+
+        # Each init isolated — one failure doesn't block the others or healthcheck
+        for init_name, init_coro in (("wellness", _init_wellness), ("threat", _init_threat), ("whatsapp", _init_whatsapp)):
+            try:
+                await asyncio.wait_for(init_coro(), timeout=15.0)
+                print(f"[Startup] {init_name} tables ready")
+            except Exception as e:
+                print(f"[Startup][WARN] init_{init_name} failed: {e!r}")
+
+    # Initialize wellness scheduler (APScheduler) — non-blocking
+    try:
+        await asyncio.wait_for(init_wellness_scheduler(DATABASE_URL), timeout=10.0)
         print("[Wellness] Scheduler initialized successfully")
     except Exception as e:
-        print(f"[WARNING] Wellness scheduler initialization failed: {str(e)}")
+        print(f"[WARNING] Wellness scheduler initialization failed: {e!r}")
+
+    # STARTUP HARDENING: if pool creation failed, skip table creation — let uvicorn
+    # start serving so /api/health returns 200 and Railway healthcheck passes.
+    if pool is None:
+        print("[Startup] pool unavailable, skipping CREATE TABLE block; endpoints will degrade gracefully")
+        return
 
     async with pool.acquire() as conn:
         await conn.execute("""
