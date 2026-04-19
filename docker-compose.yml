@@ -463,6 +463,8 @@ services:
       # Mount the entire ecosystem read/write so the bot can do git + file ops
       - ./:/workspace
     working_dir: /workspace
+    # bot.py was COPY'd into /app by the Dockerfile; run it from there, but keep /workspace as cwd
+    command: ["python", "/app/bot.py"]
 
 volumes:
   pgdata:
