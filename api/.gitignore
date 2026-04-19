@@ -1,0 +1,70 @@
+# Secrets
+.env
+.env.*
+!.env.example
+!.env.template
+
+# Python
+*.pyc
+__pycache__/
+venv/
+.venv/
+venv_shared/
+
+# Node
+node_modules/
+
+# Backups — auto-generated, never commit
+*.bak
+*.bak-*
+*.backup
+*.backup.*
+*.backup-*
+*.before-*
+_backups/
+backups/_restore/
+backups/*_backup/
+backups/slh_main_*.sql
+backups/20*_*/
+
+# Ops backups + legacy snapshots
+ops/BACKUP_SNAPSHOT_*/
+ops/LEGACY_CLEAN_BACKUP_*/
+ops/LEGACY_DISABLE_*/
+
+# Secrets-bearing reports (contain real tokens)
+ops/BOT_TOKEN_MAP_*.txt
+ops/DUPLICATE_BOT_TOKENS_*.txt
+TOKEN_AUDIT.md
+api/community_backend_scan.txt
+
+# Local diagnostics outputs
+*.tmp
+*_dump.txt
+diagnostics_*.txt
+
+# OS
+Thumbs.db
+.DS_Store
+
+# IDE / local session state
+.claude/launch.json
+.claude/*.local.json
+_session_state/
+
+# Separate repos nested here (website is its own Git repo)
+website/
+
+# Corrupted/quarantined files
+*.corrupted
+
+# Legacy scan exports (Giga/OneDrive autosaves etc.)
+System Volume Information/
+
+# Railway/runtime cache
+nfty-bot/main.py.corrupted
+
+# ESP32 build artifacts (firmware dir contains 148M of PlatformIO output)
+device-registry/esp32-cyd-work/firmware/
+device-registry/*/firmware/
+**/.pio/

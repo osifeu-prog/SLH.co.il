@@ -5,12 +5,16 @@
 # Distributes tokens to all users
 # ============================================================
 
+import os
 import asyncpg
 import asyncio
 from datetime import datetime
 import json
 
-DATABASE_URL = "postgresql://postgres:slh_secure_2026@localhost:5432/slh_main"
+# Connect via DATABASE_URL env var. Railway proxy URL lives in .env / Railway Variables — never hardcode.
+DATABASE_URL = os.getenv("DATABASE_URL") or os.getenv("RAILWAY_DATABASE_URL")
+if not DATABASE_URL:
+    raise SystemExit("DATABASE_URL missing. Set it in .env or Railway Variables.")
 
 # Airdrop amounts per user (per Osif's spec)
 AIRDROP = {
@@ -22,10 +26,10 @@ AIRDROP = {
 }
 
 async def get_all_users(pool):
-    """Get all registered users"""
+    """Get all registered users from web_users"""
     async with pool.acquire() as conn:
-        users = await conn.fetch("SELECT user_id FROM users")
-        return [u['user_id'] for u in users]
+        users = await conn.fetch("SELECT telegram_id FROM web_users")
+        return [u['telegram_id'] for u in users]
 
 async def give_airdrop(pool, user_id, token, amount):
     """Give token to user (insert or update)"""
@@ -34,18 +38,8 @@ async def give_airdrop(pool, user_id, token, amount):
             INSERT INTO token_balances (user_id, token, balance, updated_at)
             VALUES ($1, $2, $3, NOW())
             ON CONFLICT (user_id, token) DO UPDATE
-            SET balance = balance + $3, updated_at = NOW()
+            SET balance = token_balances.balance + EXCLUDED.balance, updated_at = NOW()
         """, user_id, token, amount)
-
-        # Log in audit log
-        await conn.execute("""
-            INSERT INTO audit_log (user_id, event_type, payload_json)
-            VALUES ($1, 'AIRDROP', $2)
-        """, user_id, json.dumps({
-            "token": token,
-            "amount": amount,
-            "broadcast": "19:45_daily"
-        }))
 
 async def broadcast_airdrop():
     """Main broadcast function"""
@@ -56,7 +50,7 @@ async def broadcast_airdrop():
         timestamp = datetime.now().isoformat()
 
         print(f"\n{'='*60}")
-        print(f"🚀 BROADCAST AIRDROP — {timestamp}")
+        print(f"BROADCAST AIRDROP - {timestamp}")
         print(f"{'='*60}")
         print(f"Distributing to {len(users)} users...\n")
 
@@ -66,23 +60,19 @@ async def broadcast_airdrop():
                 await give_airdrop(pool, user_id, token, amount)
                 count += 1
 
-        print(f"\n✅ Completed!")
-        print(f"   • Users: {len(users)}")
-        print(f"   • Tokens: {list(AIRDROP.keys())}")
-        print(f"   • Transactions: {count}")
-        print(f"\n📋 Distribution per user:")
+        print(f"\n[OK] Completed!")
+        print(f"   - Users: {len(users)}")
+        print(f"   - Tokens: {list(AIRDROP.keys())}")
+        print(f"   - Transactions: {count}")
+        print(f"\nDistribution per user:")
         for token, amount in AIRDROP.items():
-            print(f"   • {token}: {amount}")
+            print(f"   - {token}: {amount}")
 
-        # Log summary
+        # Log summary to broadcast_log
         await pool.execute("""
-            INSERT INTO audit_log (event_type, payload_json)
-            VALUES ('BROADCAST_SUMMARY', $1)
-        """, json.dumps({
-            "users_count": len(users),
-            "tokens": AIRDROP,
-            "timestamp": timestamp
-        }))
+            INSERT INTO broadcast_log (sent_at, target, total_targets, success_count, fail_count, message_preview, admin_actor)
+            VALUES (NOW(), 'ALL_USERS', $1, $1, 0, 'AIRDROP: SLH+ZVK+MNH+REP+ZUZ', 'scheduled_task')
+        """, len(users))
 
     finally:
         await pool.close()
