@@ -36,6 +36,7 @@ from routes.wellness import router as wellness_router, set_pool as _wellness_set
 from routes.arkham_bridge import router as threat_router, set_pool as _threat_set_pool, init_threat_tables as _init_threat
 from routes.whatsapp import router as whatsapp_router, set_pool as _whatsapp_set_pool, init_whatsapp_tables as _init_whatsapp
 from routes.system_audit import router as system_audit_router, set_pool as _system_audit_set_pool
+from routes.agent_hub import router as agent_hub_router, set_pool as _agent_hub_set_pool, init_agent_hub_tables as _init_agent_hub
 from wellness_scheduler import init_wellness_scheduler, get_wellness_scheduler
 
 # === CONFIG ===
@@ -219,6 +220,7 @@ app.include_router(wellness_router)
 app.include_router(threat_router)
 app.include_router(whatsapp_router)
 app.include_router(system_audit_router)
+app.include_router(agent_hub_router)
 
 # === DATABASE ===
 pool: Optional[asyncpg.Pool] = None
@@ -260,14 +262,14 @@ async def startup():
                        _aic_set_pool, _ps_set_pool, _ai_chat_set_aic_pool, _sudoku_set_pool,
                        _dating_set_pool, _broadcast_set_pool, _love_set_pool, _treasury_set_pool,
                        _creator_set_pool, _wellness_set_pool, _threat_set_pool, _whatsapp_set_pool,
-                       _system_audit_set_pool):
+                       _system_audit_set_pool, _agent_hub_set_pool):
             try:
                 setter(pool)
             except Exception as e:
                 print(f"[Startup][WARN] set_pool on {setter.__name__} failed: {e!r}")
 
         # Each init isolated — one failure doesn't block the others or healthcheck
-        for init_name, init_coro in (("wellness", _init_wellness), ("threat", _init_threat), ("whatsapp", _init_whatsapp)):
+        for init_name, init_coro in (("wellness", _init_wellness), ("threat", _init_threat), ("whatsapp", _init_whatsapp), ("agent_hub", _init_agent_hub)):
             try:
                 await asyncio.wait_for(init_coro(), timeout=15.0)
                 print(f"[Startup] {init_name} tables ready")

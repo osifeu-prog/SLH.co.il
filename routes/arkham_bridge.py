@@ -87,8 +87,8 @@ class FraudVerificationRequest(BaseModel):
 # ============================================================
 
 async def _ensure_threat_tables(conn):
-    """Create all required threat intelligence tables."""
-
+    """Create threat intel tables. PostgreSQL-compatible (indexes created separately)."""
+    # NOTE: no FK to users(id) — canonical user table is web_users(telegram_id)
     await conn.execute("""
         CREATE TABLE IF NOT EXISTS threat_intel_arkham (
             id BIGSERIAL PRIMARY KEY,
@@ -105,57 +105,57 @@ async def _ensure_threat_tables(conn):
             is_flagged BOOLEAN DEFAULT FALSE,
             flag_reason VARCHAR(255),
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            INDEX idx_wallet ON threat_intel_arkham(wallet_address),
-            INDEX idx_phone ON threat_intel_arkham(phone_number),
-            INDEX idx_threat_score ON threat_intel_arkham(combined_threat_score DESC),
-            INDEX idx_flagged ON threat_intel_arkham(is_flagged)
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
+        CREATE INDEX IF NOT EXISTS idx_threat_wallet ON threat_intel_arkham(wallet_address);
+        CREATE INDEX IF NOT EXISTS idx_threat_phone ON threat_intel_arkham(phone_number);
+        CREATE INDEX IF NOT EXISTS idx_threat_score ON threat_intel_arkham(combined_threat_score DESC);
+        CREATE INDEX IF NOT EXISTS idx_threat_flagged ON threat_intel_arkham(is_flagged);
 
         CREATE TABLE IF NOT EXISTS fraud_reports_community (
             id BIGSERIAL PRIMARY KEY,
-            reporter_user_id BIGINT REFERENCES users(id),
+            reporter_user_id BIGINT,
             target_phone VARCHAR(20),
             target_wallet VARCHAR(255),
-            target_user_id BIGINT REFERENCES users(id),
+            target_user_id BIGINT,
             fraud_type VARCHAR(50) NOT NULL,
             severity INT CHECK (severity >= 1 AND severity <= 10),
             evidence_description TEXT,
             evidence_url TEXT,
-            status VARCHAR(50) DEFAULT 'submitted',  -- submitted, verified, confirmed, dismissed
+            status VARCHAR(50) DEFAULT 'submitted',
             verification_count INT DEFAULT 0,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            INDEX idx_reporter ON fraud_reports_community(reporter_user_id),
-            INDEX idx_status ON fraud_reports_community(status),
-            INDEX idx_created ON fraud_reports_community(created_at DESC)
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
+        CREATE INDEX IF NOT EXISTS idx_fraud_reporter ON fraud_reports_community(reporter_user_id);
+        CREATE INDEX IF NOT EXISTS idx_fraud_status ON fraud_reports_community(status);
+        CREATE INDEX IF NOT EXISTS idx_fraud_created ON fraud_reports_community(created_at DESC);
 
         CREATE TABLE IF NOT EXISTS fraud_verification_queue (
             id BIGSERIAL PRIMARY KEY,
             report_id BIGINT REFERENCES fraud_reports_community(id),
-            verifier_user_id BIGINT REFERENCES users(id),
+            verifier_user_id BIGINT,
             verified BOOLEAN,
             verification_notes TEXT,
             verified_at TIMESTAMP,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            INDEX idx_report ON fraud_verification_queue(report_id),
-            INDEX idx_verifier ON fraud_verification_queue(verifier_user_id)
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
+        CREATE INDEX IF NOT EXISTS idx_verif_report ON fraud_verification_queue(report_id);
+        CREATE INDEX IF NOT EXISTS idx_verif_verifier ON fraud_verification_queue(verifier_user_id);
 
         CREATE TABLE IF NOT EXISTS fraud_community_reputation (
             id BIGSERIAL PRIMARY KEY,
-            user_id BIGINT REFERENCES users(id) NOT NULL,
+            user_id BIGINT NOT NULL,
             accurate_reports INT DEFAULT 0,
             total_reports INT DEFAULT 0,
             accuracy_score FLOAT DEFAULT 0.0,
-            reputation_level VARCHAR(50) DEFAULT 'novice',  -- novice, contributor, investigator, expert
+            reputation_level VARCHAR(50) DEFAULT 'novice',
             rep_tokens_earned FLOAT DEFAULT 0.0,
             badges TEXT[],
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            UNIQUE(user_id),
-            INDEX idx_accuracy ON fraud_community_reputation(accuracy_score DESC)
+            UNIQUE(user_id)
         );
+        CREATE INDEX IF NOT EXISTS idx_rep_accuracy ON fraud_community_reputation(accuracy_score DESC);
 
         CREATE TABLE IF NOT EXISTS fraud_network_connections (
             id BIGSERIAL PRIMARY KEY,
@@ -165,16 +165,16 @@ async def _ensure_threat_tables(conn):
             target_phone VARCHAR(20),
             target_wallet VARCHAR(255),
             target_user_id BIGINT,
-            connection_type VARCHAR(50),  -- 'accomplice', 'victim', 'associated', 'suspicious'
+            connection_type VARCHAR(50),
             confidence FLOAT DEFAULT 0.5,
             evidence_count INT DEFAULT 0,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            INDEX idx_source_phone ON fraud_network_connections(source_phone),
-            INDEX idx_target_phone ON fraud_network_connections(target_phone),
-            INDEX idx_source_user ON fraud_network_connections(source_user_id),
-            INDEX idx_target_user ON fraud_network_connections(target_user_id)
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
+        CREATE INDEX IF NOT EXISTS idx_fnet_src_phone ON fraud_network_connections(source_phone);
+        CREATE INDEX IF NOT EXISTS idx_fnet_tgt_phone ON fraud_network_connections(target_phone);
+        CREATE INDEX IF NOT EXISTS idx_fnet_src_user ON fraud_network_connections(source_user_id);
+        CREATE INDEX IF NOT EXISTS idx_fnet_tgt_user ON fraud_network_connections(target_user_id);
     """)
 
 async def init_threat_tables():
