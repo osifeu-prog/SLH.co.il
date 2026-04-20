@@ -794,10 +794,32 @@ async def _create_payment(
     return None, ""
 
 
-async def _check_status(user_id: int) -> bool:
-    """Ask Railway if the user now has premium for this bot."""
+async def _check_status(user_id: int, course_id: int | None = None) -> bool:
+    """Return True iff user has either:
+      (a) an active `academy_licenses` row for this course (authoritative for academy), OR
+      (b) bot-level premium for this BOT_NAME (legacy fallback).
+
+    The previous version only checked (b), which caused ACAD-* timeouts for
+    successful course purchases — academy writes to academy_licenses, not premium_users.
+    """
     try:
         async with aiohttp.ClientSession() as s:
+            # Primary: course-specific license status (new endpoint)
+            if course_id is not None:
+                try:
+                    async with s.get(
+                        f"{API_BASE}/api/academy/license/status",
+                        params={"user_id": user_id, "course_id": course_id},
+                        timeout=aiohttp.ClientTimeout(total=10),
+                    ) as r:
+                        if r.status == 200:
+                            data = await r.json()
+                            if bool(data.get("active")):
+                                return True
+                except Exception:
+                    log.exception("license/status fetch failed, falling back to payment/status")
+
+            # Fallback: legacy bot-level premium (kept for non-academy flows)
             async with s.get(
                 f"{API_BASE}/api/payment/status/{user_id}",
                 params={"bot_name": BOT_NAME},
@@ -820,7 +842,7 @@ async def _wait_and_grant(
     try:
         while datetime.utcnow().timestamp() < deadline:
             await asyncio.sleep(POLL_INTERVAL_SEC)
-            if not await _check_status(user_id):
+            if not await _check_status(user_id, course.get("id") if isinstance(course, dict) else None):
                 continue
 
             # Confirmed — grant license (idempotent per user+course).

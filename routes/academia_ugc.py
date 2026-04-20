@@ -752,6 +752,46 @@ async def get_course(slug: str):
 
 
 # ============================================================
+# ENDPOINTS — LICENSE STATUS (polled by academia-bot)
+# ============================================================
+
+@router.get("/license/status")
+async def license_status(user_id: int, course_id: int):
+    """Lightweight polling endpoint for the academia-bot's _wait_and_grant loop.
+
+    Returns `{active: bool, license_id: int|None, payment_id: str|None, granted_at: iso|None}`
+    for the (user_id, course_id) pair.
+
+    This replaces the bot's previous reliance on /api/payment/status/{uid}.has_premium,
+    which reflects bot-level subscriptions — not course purchases — and was the
+    root cause of ACAD-* payment timeouts even after successful payment.
+    """
+    await _require_pool()
+    try:
+        async with _pool.acquire() as conn:
+            row = await conn.fetchrow(
+                """
+                SELECT id, payment_id, status, created_at
+                FROM academy_licenses
+                WHERE user_id = $1 AND course_id = $2 AND status = 'active'
+                ORDER BY id DESC LIMIT 1
+                """,
+                user_id, course_id,
+            )
+        if not row:
+            return {"active": False, "license_id": None, "payment_id": None, "granted_at": None}
+        return {
+            "active": True,
+            "license_id": int(row["id"]),
+            "payment_id": row["payment_id"],
+            "granted_at": _iso(row["created_at"]),
+        }
+    except Exception as e:  # noqa: BLE001
+        logger.error(f"[academia-ugc] license_status failed: {e!r}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================================
 # ENDPOINTS — REVIEWS
 # ============================================================
 
