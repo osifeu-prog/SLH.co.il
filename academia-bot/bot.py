@@ -21,11 +21,16 @@ from aiogram import Bot, Dispatcher, F
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.filters import Command
+from urllib.parse import quote_plus
+
 from aiogram.types import (
     CallbackQuery,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
+    LabeledPrice,
     Message,
+    PreCheckoutQuery,
+    WebAppInfo,
 )
 from dotenv import load_dotenv
 
@@ -51,7 +56,7 @@ if not DATABASE_URL:
 API_BASE = os.getenv(
     "SLH_API_BASE", "https://slh-api-production.up.railway.app"
 ).rstrip("/")
-SUPPORT_HANDLE = os.getenv("SUPPORT_HANDLE", "@SLHSupport")
+SUPPORT_HANDLE = os.getenv("SUPPORT_HANDLE", "@osifeu_prog")
 BOT_NAME = os.getenv("ACADEMIA_BOT_NAME", "academia")
 
 POLL_INTERVAL_SEC = 10
@@ -167,26 +172,33 @@ def course_list_kb(courses) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
-def payment_methods_kb(course_id: int) -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text="TON", callback_data=f"pay:{course_id}:ton"
-                ),
-                InlineKeyboardButton(
-                    text="BNB / BSC", callback_data=f"pay:{course_id}:bsc"
-                ),
-            ],
-            [
-                InlineKeyboardButton(
-                    text="₪ Bit (ידני)",
-                    callback_data=f"pay:{course_id}:ils",
-                )
-            ],
-            [InlineKeyboardButton(text="חזרה", callback_data="menu:buy")],
-        ]
-    )
+def payment_methods_kb(course_id: int, allow_phone_pay: bool = False) -> InlineKeyboardMarkup:
+    """Build payment menu. Bit/PayBox shown only when the course's instructor
+    has registered a payout phone (allow_phone_pay=True). Osif's own courses
+    have no phone configured so those buttons are hidden."""
+    rows = [
+        [
+            InlineKeyboardButton(text="💎 TON", callback_data=f"pay:{course_id}:ton"),
+            InlineKeyboardButton(text="🟡 BNB / BSC", callback_data=f"pay:{course_id}:bsc"),
+        ],
+        [
+            InlineKeyboardButton(text="🦊 MetaMask (BSC)", callback_data=f"pay:{course_id}:metamask"),
+            InlineKeyboardButton(text="🥞 PancakeSwap → SLH", callback_data=f"pay:{course_id}:pancakeswap"),
+        ],
+        [
+            InlineKeyboardButton(text="🏦 העברה בנקאית", callback_data=f"pay:{course_id}:bank"),
+            InlineKeyboardButton(text="⭐ Telegram Stars", callback_data=f"pay:{course_id}:stars"),
+        ],
+    ]
+    if allow_phone_pay:
+        rows.append([
+            InlineKeyboardButton(text="📱 Bit / PayBox (למדריך)", callback_data=f"pay:{course_id}:phone"),
+        ])
+    rows.append([
+        InlineKeyboardButton(text="💼 חלופה: זמן עבודה / זהב / אחר", callback_data=f"pay:{course_id}:alt"),
+    ])
+    rows.append([InlineKeyboardButton(text="חזרה", callback_data="menu:buy")])
+    return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
 # ----------------------------------------------------------------------------
@@ -230,12 +242,36 @@ async def cmd_help(msg: Message) -> None:
 
 @dp.message(Command("buy"))
 async def cmd_buy(msg: Message) -> None:
-    await _show_courses(msg.chat.id)
+    log.info("cmd_buy from user_id=%s chat_id=%s", msg.from_user.id, msg.chat.id)
+    try:
+        await _show_courses(msg.chat.id)
+    except Exception:
+        log.exception("cmd_buy failed")
+        try:
+            await msg.answer(
+                "שגיאה בטעינת הקורסים. נסה שוב או פנה לתמיכה "
+                f"{SUPPORT_HANDLE}.",
+                reply_markup=main_menu_kb(),
+            )
+        except Exception:
+            log.exception("cmd_buy fallback notify failed")
 
 
 @dp.message(Command("my_licenses"))
 async def cmd_my_licenses(msg: Message) -> None:
-    await _show_licenses(msg.chat.id, msg.from_user.id)
+    log.info("cmd_my_licenses from user_id=%s", msg.from_user.id)
+    try:
+        await _show_licenses(msg.chat.id, msg.from_user.id)
+    except Exception:
+        log.exception("cmd_my_licenses failed")
+        try:
+            await msg.answer(
+                "שגיאה בטעינת הרישיונות. נסה שוב או פנה לתמיכה "
+                f"{SUPPORT_HANDLE}.",
+                reply_markup=main_menu_kb(),
+            )
+        except Exception:
+            log.exception("cmd_my_licenses fallback notify failed")
 
 
 # ----------------------------------------------------------------------------
@@ -295,21 +331,55 @@ async def cb_course(cq: CallbackQuery) -> None:
         assert _pool is not None
         async with _pool.acquire() as conn:
             c = await conn.fetchrow(
-                "SELECT id, title_he, description_he, price_ils, price_slh "
+                "SELECT id, title_he, description_he, price_ils, price_slh, materials_url "
                 "FROM academy_courses WHERE id=$1 AND active=TRUE",
                 course_id,
             )
+            allow_phone_pay = False
+            instructor_name: str | None = None
+            try:
+                row = await conn.fetchrow(
+                    "SELECT i.display_name, i.payout_phone "
+                    "FROM academy_courses c "
+                    "JOIN academy_instructors i ON i.id = c.instructor_id "
+                    "WHERE c.id = $1",
+                    course_id,
+                )
+                if row:
+                    instructor_name = row["display_name"]
+                    allow_phone_pay = bool(row["payout_phone"])
+            except Exception:
+                pass
         if not c:
             await cq.answer("הקורס לא נמצא", show_alert=True)
             return
+
+        included_lines = ["📚 <b>מה כלול בקורס:</b>"]
+        if c["materials_url"]:
+            included_lines.append("• גישה מלאה לחומרי הקורס (וידאו + טקסט)")
+            included_lines.append("• רישיון לכל החיים — צפה מתי שתרצה")
+        else:
+            included_lines.append("• תוכן בהכנה — פנה לתמיכה לפרטים")
+        included_lines.append("• תעודת השלמה (Premium לבוט)")
+        included_lines.append("• השתתפות בקהילת לומדי SLH")
+        included = "\n".join(included_lines)
+
+        instructor_line = (
+            f"\n👨\u200d🏫 מדריך: {instructor_name}\n" if instructor_name else ""
+        )
+
         text = (
-            f"<b>{c['title_he']}</b>\n\n"
-            f"{c['description_he'] or ''}\n\n"
-            f"מחיר: {c['price_ils'] or 0}₪ · {c['price_slh'] or 0} SLH\n\n"
-            "בחר אמצעי תשלום:"
+            f"<b>{c['title_he']}</b>\n"
+            f"{instructor_line}\n"
+            f"{c['description_he'] or 'תיאור מלא בקרוב — פנה לתמיכה למידע.'}\n\n"
+            f"{included}\n\n"
+            f"💰 <b>מחיר:</b> {c['price_ils'] or 0}₪ · {c['price_slh'] or 0} SLH\n\n"
+            f"בחר אמצעי תשלום מתוך הרשת המלאה שלנו:"
         )
         await cq.message.edit_text(
-            text, reply_markup=payment_methods_kb(course_id)
+            text,
+            reply_markup=payment_methods_kb(course_id, allow_phone_pay=allow_phone_pay),
+            disable_web_page_preview=True,
         )
         await cq.answer()
     except Exception:
@@ -319,6 +389,13 @@ async def cb_course(cq: CallbackQuery) -> None:
 
 @dp.callback_query(F.data.startswith("pay:"))
 async def cb_pay(cq: CallbackQuery) -> None:
+    # Acknowledge IMMEDIATELY so Telegram dismisses the loading spinner.
+    # Without this, the user sees a hung click and may type new commands,
+    # causing the actual payment response to surface out-of-order later.
+    try:
+        await cq.answer("טוען אמצעי תשלום…")
+    except Exception:
+        log.exception("cb_pay early ack failed")
     try:
         _, course_id_s, method = cq.data.split(":")
         course_id = int(course_id_s)
@@ -327,12 +404,17 @@ async def cb_pay(cq: CallbackQuery) -> None:
         assert _pool is not None
         async with _pool.acquire() as conn:
             c = await conn.fetchrow(
-                "SELECT id, title_he, price_ils, price_slh, materials_url "
+                "SELECT id, title_he, description_he, price_ils, price_slh, materials_url "
                 "FROM academy_courses WHERE id=$1 AND active=TRUE",
                 course_id,
             )
         if not c:
             await cq.answer("הקורס לא נמצא", show_alert=True)
+            return
+
+        # Telegram Stars (XTR) — native invoice, no manual flow.
+        if method == "stars":
+            await _send_stars_invoice(cq.message.chat.id, c)
             return
 
         # Create a pending payment record by calling Railway API.
@@ -345,36 +427,84 @@ async def cb_pay(cq: CallbackQuery) -> None:
                 f"{SUPPORT_HANDLE}.",
                 reply_markup=main_menu_kb(),
             )
-            await cq.answer()
             return
 
-        await cq.message.edit_text(
-            instructions
-            + "\n\nאני מאמת אוטומטית עד 10 דקות. המתן להודעה…",
-            reply_markup=InlineKeyboardMarkup(
-                inline_keyboard=[
-                    [
-                        InlineKeyboardButton(
-                            text="חזרה לתפריט", callback_data="menu:home"
-                        )
-                    ]
-                ]
-            ),
-        )
-        await cq.answer()
+        # Build per-method action keyboard (WebApp / explorer link / etc).
+        action_rows: list[list[InlineKeyboardButton]] = []
+        if method == "bank":
+            # WebApp: opens buy.html#bank inside the Telegram Mini App
+            action_rows.append([
+                InlineKeyboardButton(
+                    text="🌐 פתח טופס בנק (Mini App)",
+                    web_app=WebAppInfo(url="https://slh-nft.com/buy.html#bank"),
+                )
+            ])
+        elif method == "pancakeswap":
+            slh_contract = "0xACb0A09414CEA1C879c67bB7A877E4e19480f022"
+            action_rows.append([
+                InlineKeyboardButton(
+                    text="🥞 פתח PancakeSwap",
+                    url=f"https://pancakeswap.finance/swap?outputCurrency={slh_contract}&chain=bsc",
+                )
+            ])
+        action_rows.append([
+            InlineKeyboardButton(text="חזרה לתפריט", callback_data="menu:home")
+        ])
 
-        # Background poll loop.
-        asyncio.create_task(
-            _wait_and_grant(
-                chat_id=cq.message.chat.id,
-                user_id=user_id,
-                course=c,
-                payment_id=payment_id,
-            )
+        await cq.message.edit_text(
+            instructions + "\n\nאני מאמת אוטומטית עד 10 דקות. המתן להודעה…",
+            reply_markup=InlineKeyboardMarkup(inline_keyboard=action_rows),
+            disable_web_page_preview=True,
         )
+
+        # QR code as separate photo for crypto methods (TON/BSC/MetaMask).
+        cfg = await _api_config()
+        if method == "ton":
+            addr = cfg.get("ton_address") or ""
+            amount = float(c["price_slh"] or cfg.get("premium_min_ton") or 0.01)
+            if addr:
+                uri = _wallet_uri("ton", addr, amount)
+                await _send_payment_qr(
+                    cq.message.chat.id,
+                    caption=f"📷 סרוק עם Tonkeeper / @wallet — {amount} TON ל-{addr[:8]}…",
+                    uri=uri,
+                )
+        elif method in ("bsc", "metamask"):
+            addr = cfg.get("bsc_genesis_address") or ""
+            amount = float(cfg.get("premium_min_bnb") or 0.0005)
+            if addr:
+                uri = _wallet_uri(method, addr, amount)
+                await _send_payment_qr(
+                    cq.message.chat.id,
+                    caption=f"📷 סרוק עם MetaMask / Trust — {amount} BNB ל-{addr[:8]}…",
+                    uri=uri,
+                )
+        elif method == "pancakeswap":
+            await _send_payment_qr(
+                cq.message.chat.id,
+                caption="📷 סרוק לפתיחת PancakeSwap בארנק שלך",
+                uri="https://pancakeswap.finance/swap?outputCurrency=0xACb0A09414CEA1C879c67bB7A877E4e19480f022&chain=bsc",
+            )
+
+        # Background poll loop (skip for alt/phone — manual-only flows).
+        if method not in ("alt", "phone"):
+            asyncio.create_task(
+                _wait_and_grant(
+                    chat_id=cq.message.chat.id,
+                    user_id=user_id,
+                    course=c,
+                    payment_id=payment_id,
+                )
+            )
     except Exception:
         log.exception("cb_pay failed")
-        await cq.answer("שגיאה", show_alert=True)
+        try:
+            await cq.message.answer(
+                "שגיאה בטיפול בתשלום. נסה שוב או פנה ל-" + SUPPORT_HANDLE,
+                reply_markup=main_menu_kb(),
+            )
+        except Exception:
+            log.exception("cb_pay fallback notify failed")
 
 
 # ----------------------------------------------------------------------------
@@ -390,6 +520,7 @@ async def _show_courses(chat_id: int, edit_msg: Message | None = None) -> None:
                 "SELECT id, title_he, price_ils FROM academy_courses "
                 "WHERE active=TRUE ORDER BY id"
             )
+        log.info("_show_courses fetched %d active course(s) for chat=%s", len(rows), chat_id)
         if not rows:
             text = "אין קורסים זמינים כרגע."
             if edit_msg:
@@ -407,12 +538,15 @@ async def _show_courses(chat_id: int, edit_msg: Message | None = None) -> None:
         else:
             await bot.send_message(chat_id, text, reply_markup=kb)
     except Exception:
-        log.exception("_show_courses failed")
-        await bot.send_message(
-            chat_id,
-            "שגיאה בטעינת הקורסים. נסה שוב מאוחר יותר.",
-            reply_markup=main_menu_kb(),
-        )
+        log.exception("_show_courses failed (chat=%s)", chat_id)
+        try:
+            await bot.send_message(
+                chat_id,
+                "שגיאה בטעינת הקורסים. נסה שוב מאוחר יותר.",
+                reply_markup=main_menu_kb(),
+            )
+        except Exception:
+            log.exception("_show_courses fallback notify failed (chat=%s)", chat_id)
 
 
 async def _show_licenses(
@@ -480,6 +614,39 @@ async def _show_licenses(
         )
 
 
+def _qr_image_url(data: str, size: int = 300) -> str:
+    """Public QR code generator (no install). Returns image URL ready for send_photo."""
+    return f"https://api.qrserver.com/v1/create-qr-code/?size={size}x{size}&data={quote_plus(data)}"
+
+
+def _wallet_uri(method: str, address: str, amount: float) -> str:
+    """Build a wallet-deep-link URI that mobile wallets can scan/open.
+
+    TON: ton://transfer/{addr}?amount={nano}
+    BSC: ethereum:{addr}@56?value={wei}  (EIP-681 — Trust/MetaMask understand)
+    """
+    if method == "ton":
+        nano = int(amount * 1_000_000_000)
+        return f"ton://transfer/{address}?amount={nano}"
+    if method in ("bsc", "metamask"):
+        wei = int(amount * 1_000_000_000_000_000_000)
+        return f"ethereum:{address}@56?value={wei}"
+    return address  # PancakeSwap etc — just encode the address
+
+
+async def _send_payment_qr(chat_id: int, caption: str, uri: str) -> None:
+    """Send a QR photo to the user. Failures are logged, not raised — the
+    text instructions already give the address, so QR is a nice-to-have."""
+    try:
+        await bot.send_photo(
+            chat_id,
+            photo=_qr_image_url(uri),
+            caption=caption,
+        )
+    except Exception:
+        log.exception("_send_payment_qr failed for chat=%s", chat_id)
+
+
 async def _api_config() -> dict:
     """Fetch the Railway payment config (TON addr + BSC addr + min amounts)."""
     try:
@@ -535,9 +702,34 @@ async def _create_payment(
         )
         return ref, instr
 
-    if method == "ils":
-        # Record an external (Bit) pending payment. Osif approves via admin
-        # panel which flips premium_users.payment_status to 'approved'.
+    if method == "metamask":
+        addr = cfg.get("bsc_genesis_address") or "—"
+        min_bnb = cfg.get("premium_min_bnb") or 0.0005
+        instr = (
+            f"<b>תשלום ב-MetaMask (BSC)</b>\n\n"
+            f"1. פתח MetaMask ובחר רשת BNB Smart Chain.\n"
+            f"2. שלח לפחות <code>{min_bnb}</code> BNB לכתובת:\n"
+            f"<code>{addr}</code>\n\n"
+            f"מזהה תשלום: <code>{ref}</code>\n\n"
+            f"💡 אין לך MetaMask? התקן מ-metamask.io או השתמש ב-Trust Wallet."
+        )
+        return ref, instr
+
+    if method == "pancakeswap":
+        slh_contract = "0xACb0A09414CEA1C879c67bB7A877E4e19480f022"
+        instr = (
+            f"<b>רכישה דרך PancakeSwap (SLH)</b>\n\n"
+            f"1. פתח: https://pancakeswap.finance/swap?outputCurrency={slh_contract}&chain=bsc\n"
+            f"2. החלף BNB → SLH לפי המחיר ({course['price_slh'] or 0} SLH).\n"
+            f"3. שלח את ה-SLH לכתובת Genesis:\n"
+            f"<code>{cfg.get('bsc_genesis_address') or '—'}</code>\n\n"
+            f"מזהה: <code>{ref}</code>\n\n"
+            f"💎 כל רכישת SLH מעניקה גם ZVK בונוס + REP points."
+        )
+        return ref, instr
+
+    if method == "bank":
+        # Bank transfer to Tzvika (CEO) — same flow as buy.html
         try:
             async with aiohttp.ClientSession() as s:
                 payload = {
@@ -558,21 +750,44 @@ async def _create_payment(
                 ) as r:
                     if r.status >= 400:
                         body = await r.text()
-                        log.warning(
-                            "external/record %s: %s", r.status, body[:200]
-                        )
+                        log.warning("external/record %s: %s", r.status, body[:200])
                         return None, ""
         except Exception:
-            log.exception("_create_payment ils failed")
+            log.exception("_create_payment bank failed")
             return None, ""
 
         instr = (
-            "<b>תשלום ב-Bit (ידני)</b>\n\n"
-            f"שלח <code>{course['price_ils']}</code>₪ ב-Bit ל-"
-            f"{SUPPORT_HANDLE}.\n"
-            f"ציין את מזהה התשלום בהערה:\n"
-            f"<code>{ref}</code>\n\n"
-            "לאחר אישור ידני תקבל את הגישה לחומרים."
+            f"<b>העברה בנקאית</b>\n\n"
+            f"לקבלת פרטי חשבון בנק (לצביקה קאופמן, מנכ\"ל) פנה ל-{SUPPORT_HANDLE}.\n"
+            f"סכום: <code>{course['price_ils']}</code>₪\n"
+            f"מזהה תשלום: <code>{ref}</code>\n\n"
+            f"או מלא את הטופס המלא (8 שדות) באתר:\n"
+            f"https://slh-nft.com/buy.html#bank\n\n"
+            f"לאחר אישור ידני תקבל את הגישה לחומרים."
+        )
+        return ref, instr
+
+    if method == "phone":
+        # Bit/PayBox routing to instructor's payout_phone (Phase 2 — requires
+        # academy_instructors.payout_phone column and per-course lookup).
+        instr = (
+            f"<b>📱 Bit / PayBox למדריך</b>\n\n"
+            f"שיטת תשלום זו זמינה רק כאשר המדריך הגדיר טלפון.\n"
+            f"פנה למדריך ישירות או ל-{SUPPORT_HANDLE} למידע נוסף.\n\n"
+            f"מזהה: <code>{ref}</code>"
+        )
+        return ref, instr
+
+    if method == "alt":
+        instr = (
+            f"<b>💼 חלופות תשלום</b>\n\n"
+            f"אנו מקבלים גם:\n"
+            f"• ⏱ זמן עבודה / הספק (תרומה לפרויקט)\n"
+            f"• 🥇 זהב פיזי (לפי שווי שוק)\n"
+            f"• 🪙 OTC קריפטו (USDT, USDC, BTC, ETH)\n"
+            f"• 🔄 Swap מבוטים אחרים שלנו (ZVK, MNH)\n\n"
+            f"פנה ל-{SUPPORT_HANDLE} עם המזהה <code>{ref}</code> "
+            f"לבחירת המסלול המתאים לך."
         )
         return ref, instr
 
@@ -655,6 +870,108 @@ async def _wait_and_grant(
             )
         except Exception:
             log.exception("failed to notify user of _wait_and_grant error")
+
+
+# ----------------------------------------------------------------------------
+# Telegram Stars (XTR) — native invoice flow
+# ----------------------------------------------------------------------------
+
+# Conversion: 1 XTR ≈ $0.013 ≈ ₪0.05 (rough)
+ILS_PER_STAR = 0.05
+
+
+def _course_to_stars(price_ils: float | None) -> int:
+    """Convert ILS price to Telegram Stars amount. Minimum 1 star."""
+    p = float(price_ils or 0)
+    return max(1, int(round(p / ILS_PER_STAR)))
+
+
+async def _send_stars_invoice(chat_id: int, course) -> None:
+    """Send a native Telegram Stars invoice. The user pays inside Telegram —
+    no bank, no crypto. We grant the license on successful_payment."""
+    stars = _course_to_stars(course["price_ils"])
+    title = course["title_he"][:32]  # Telegram limit
+    description = (course["description_he"] or "רישיון לכל החיים לקורס SLH")[:255]
+    payload = f"academy_stars:{course['id']}"
+    try:
+        await bot.send_invoice(
+            chat_id=chat_id,
+            title=title,
+            description=description,
+            payload=payload,
+            provider_token="",  # XTR requires NO provider token
+            currency="XTR",
+            prices=[LabeledPrice(label=title, amount=stars)],
+        )
+    except Exception:
+        log.exception("_send_stars_invoice failed (chat=%s, stars=%s)", chat_id, stars)
+        try:
+            await bot.send_message(
+                chat_id,
+                "❌ לא הצלחנו לפתוח חשבונית Stars. ודא שאפליקציית Telegram מעודכנת, "
+                f"או פנה ל-{SUPPORT_HANDLE}.",
+            )
+        except Exception:
+            pass
+
+
+@dp.pre_checkout_query()
+async def on_pre_checkout(q: PreCheckoutQuery) -> None:
+    """Telegram requires explicit ack for every pre_checkout. We always
+    approve — the actual ledger entry happens on successful_payment."""
+    try:
+        await bot.answer_pre_checkout_query(q.id, ok=True)
+    except Exception:
+        log.exception("on_pre_checkout failed for id=%s", q.id)
+
+
+@dp.message(F.successful_payment)
+async def on_successful_payment(msg: Message) -> None:
+    """Stars payment confirmed by Telegram — grant the license immediately."""
+    try:
+        sp = msg.successful_payment
+        if not sp or not sp.invoice_payload.startswith("academy_stars:"):
+            return
+        course_id = int(sp.invoice_payload.split(":", 1)[1])
+        user_id = msg.from_user.id
+
+        assert _pool is not None
+        async with _pool.acquire() as conn:
+            c = await conn.fetchrow(
+                "SELECT id, title_he, materials_url FROM academy_courses "
+                "WHERE id=$1 AND active=TRUE",
+                course_id,
+            )
+            if not c:
+                await msg.answer(
+                    f"⚠️ התשלום התקבל אבל הקורס לא נמצא. פנה ל-{SUPPORT_HANDLE} "
+                    f"עם מזהה: {sp.telegram_payment_charge_id}"
+                )
+                return
+
+            existing = await conn.fetchval(
+                "SELECT id FROM academy_licenses "
+                "WHERE user_id=$1 AND course_id=$2 AND status='active'",
+                user_id, course_id,
+            )
+            if not existing:
+                await conn.execute(
+                    """
+                    INSERT INTO academy_licenses
+                        (user_id, course_id, payment_id, status)
+                    VALUES ($1, $2, $3, 'active')
+                    """,
+                    user_id, course_id, f"stars:{sp.telegram_payment_charge_id}",
+                )
+        link = c["materials_url"] or "—"
+        await msg.answer(
+            f"✅ <b>התשלום ב-Stars אושר ⭐</b>\n\n"
+            f"הרישיון ל'{c['title_he']}' פעיל.\n"
+            f'גישה לחומרים: <a href="{link}">{link}</a>',
+            disable_web_page_preview=False,
+        )
+    except Exception:
+        log.exception("on_successful_payment failed")
 
 
 # ----------------------------------------------------------------------------
@@ -792,7 +1109,7 @@ async def _start_register_wizard(chat_id: int, user_id: int) -> None:
         await bot.send_message(
             chat_id,
             "🎓 <b>הצטרפות כמדריך</b>\n\n"
-            "שלב 1/3 — מה השם שיוצג לתלמידים? (עד 200 תווים)",
+            "שלב 1/4 — מה השם שיוצג לתלמידים? (עד 200 תווים)",
             reply_markup=_cancel_kb(),
         )
     except Exception:
@@ -931,7 +1248,7 @@ async def _wizard_register_step(msg: Message, state: dict) -> None:
         state["data"]["display_name"] = text
         state["step"] = "bio"
         await msg.answer(
-            "שלב 2/3 — כתוב ביוגרפיה קצרה (עד 4000 תווים) שתופיע בעמוד הקורסים שלך:",
+            "שלב 2/4 — כתוב ביוגרפיה קצרה (עד 4000 תווים) שתופיע בעמוד הקורסים שלך:",
             reply_markup=_cancel_kb(),
         )
         return
@@ -943,7 +1260,7 @@ async def _wizard_register_step(msg: Message, state: dict) -> None:
         state["data"]["bio_he"] = text
         state["step"] = "wallet"
         await msg.answer(
-            "שלב 3/3 — כתובת ארנק לתשלומים (TON או BSC). "
+            "שלב 3/4 — כתובת ארנק לתשלומים (TON או BSC). "
             "אפשר לדלג עם המילה <code>דלג</code>:",
             reply_markup=_cancel_kb(),
         )
@@ -955,6 +1272,22 @@ async def _wizard_register_step(msg: Message, state: dict) -> None:
             await msg.answer("הכתובת ארוכה מדי. נסה שוב.")
             return
         state["data"]["payout_wallet"] = wallet
+        state["step"] = "phone"
+        await msg.answer(
+            "שלב 4/4 — מספר טלפון ל-Bit / PayBox (תלמידים יוכלו לשלם אליך ישירות). "
+            "אפשר לדלג עם <code>דלג</code>:",
+            reply_markup=_cancel_kb(),
+        )
+        return
+
+    if state["step"] == "phone":
+        phone = None if text in ("דלג", "skip", "-") else text
+        if phone:
+            cleaned = phone.replace("+", "").replace("-", "").replace(" ", "").replace("(", "").replace(")", "")
+            if not cleaned.isdigit() or len(phone) > 50:
+                await msg.answer("טלפון לא תקין. ספרות בלבד (אפשר עם +, רווחים, מקפים), עד 50 תווים.")
+                return
+        state["data"]["payout_phone"] = phone
         # Submit
         result = await _api_post(
             "/api/academia/instructor/register",
@@ -962,7 +1295,8 @@ async def _wizard_register_step(msg: Message, state: dict) -> None:
                 "user_id": user_id,
                 "display_name": state["data"].get("display_name"),
                 "bio_he": state["data"].get("bio_he"),
-                "payout_wallet": wallet,
+                "payout_wallet": state["data"].get("payout_wallet"),
+                "payout_phone": phone,
             },
         )
         _wizards.pop(user_id, None)
@@ -972,9 +1306,14 @@ async def _wizard_register_step(msg: Message, state: dict) -> None:
                 reply_markup=_back_home_kb(),
             )
             return
+        phone_note = (
+            "\n\n📱 הטלפון נשמר — תלמידים יראו אופציית Bit/PayBox עבור הקורסים שלך."
+            if phone else ""
+        )
         await msg.answer(
             "✅ <b>הבקשה התקבלה!</b>\n\n"
-            f"{result.get('message', 'ממתין לאישור מנהל')}\n\n"
+            f"{result.get('message', 'ממתין לאישור מנהל')}"
+            f"{phone_note}\n\n"
             "תקבל הודעה ברגע שתאושר ותוכל להעלות קורסים.",
             reply_markup=_back_home_kb(),
         )
