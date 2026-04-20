@@ -2952,8 +2952,8 @@ async def transfer_tokens(req: TransferRequest):
     """Transfer internal tokens between users"""
     if req.amount <= 0:
         raise HTTPException(400, "Amount must be positive")
-    if req.token not in ("SLH", "ZVK"):
-        raise HTTPException(400, "Token must be SLH or ZVK")
+    if req.token not in ("SLH", "ZVK", "MNH", "REP", "ZUZ"):
+        raise HTTPException(400, "Token must be SLH, ZVK, MNH, REP, or ZUZ")
 
     async with pool.acquire() as conn:
         async with conn.transaction():
