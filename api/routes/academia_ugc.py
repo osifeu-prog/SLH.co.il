@@ -67,7 +67,7 @@ APPROVAL_STATUSES = {"pending", "approved", "rejected"}
 
 def _admin_keys() -> set[str]:
     """Read admin keys from env. Mirrors the pattern in agent_hub.py."""
-    raw = os.getenv("ADMIN_API_KEYS") or os.getenv("ADMIN_API_KEY") or "slh2026admin"
+    raw = os.getenv("ADMIN_API_KEYS") or os.getenv("ADMIN_API_KEY") or ""
     return {k.strip() for k in raw.split(",") if k.strip()}
 
 
@@ -183,6 +183,12 @@ class EarningsTriggerIn(BaseModel):
     license_id: int
     # Optional override — useful when the license itself doesn't carry the price
     gross_ils: Optional[float] = None
+
+
+class EarningsPayoutIn(BaseModel):
+    earnings_id: int
+    payout_tx: str  # bank reference, crypto TX hash, or internal wallet_send id
+    note: Optional[str] = None
 
 
 # ============================================================
@@ -990,4 +996,78 @@ async def trigger_split(
         raise
     except Exception as e:  # noqa: BLE001
         logger.error(f"[academia-ugc] trigger_split failed: {e!r}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/earnings/mark-paid")
+async def mark_earnings_paid(
+    payload: EarningsPayoutIn,
+    x_admin_key: Optional[str] = Header(None),
+):
+    """Admin: mark an earnings row as paid_out with payout_tx reference.
+    Emits `academy.payout_made` event.
+
+    Idempotent: calling twice with the same earnings_id + payout_tx is a no-op."""
+    _require_admin(x_admin_key)
+    await _require_pool()
+    try:
+        async with _pool.acquire() as conn:
+            row = await conn.fetchrow(
+                "SELECT id, instructor_id, license_id, instructor_cut_ils, paid_out, payout_tx "
+                "FROM academy_earnings WHERE id = $1",
+                payload.earnings_id,
+            )
+            if not row:
+                raise HTTPException(status_code=404, detail="earnings row not found")
+            if row["paid_out"]:
+                # Idempotent — same tx is a no-op; different tx is a 409
+                if (row["payout_tx"] or "") == payload.payout_tx:
+                    return {
+                        "already_paid": True,
+                        "earnings_id": payload.earnings_id,
+                        "payout_tx": row["payout_tx"],
+                    }
+                raise HTTPException(
+                    status_code=409,
+                    detail=f"already paid out with different tx ({row['payout_tx']})",
+                )
+            await conn.execute(
+                """UPDATE academy_earnings
+                     SET paid_out = TRUE,
+                         payout_tx = $1,
+                         payout_note = COALESCE($2, payout_note)
+                   WHERE id = $3""",
+                payload.payout_tx,
+                payload.note,
+                payload.earnings_id,
+            )
+            # Ensure payout_note column exists (additive, idempotent)
+            await conn.execute(
+                "ALTER TABLE academy_earnings ADD COLUMN IF NOT EXISTS payout_note TEXT"
+            )
+
+        # Emit event (best-effort)
+        try:
+            from shared.events import emit as _emit
+            await _emit(_pool, "academy.payout_made", {
+                "earnings_id": payload.earnings_id,
+                "instructor_id": row["instructor_id"],
+                "license_id": row["license_id"],
+                "amount_ils": float(row["instructor_cut_ils"] or 0),
+                "payout_tx": payload.payout_tx,
+            }, source="api.academy.earnings.mark-paid")
+        except Exception as _e:
+            logger.warning(f"[academia-ugc] emit academy.payout_made failed: {_e!r}")
+
+        return {
+            "ok": True,
+            "earnings_id": payload.earnings_id,
+            "instructor_id": row["instructor_id"],
+            "amount_ils": float(row["instructor_cut_ils"] or 0),
+            "payout_tx": payload.payout_tx,
+        }
+    except HTTPException:
+        raise
+    except Exception as e:  # noqa: BLE001
+        logger.error(f"[academia-ugc] mark_earnings_paid failed: {e!r}")
         raise HTTPException(status_code=500, detail=str(e))

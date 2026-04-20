@@ -2694,7 +2694,7 @@ class StakeRequest(BaseModel):
 
 
 @app.post("/api/staking/stake")
-async def create_stake(req: StakeRequest):
+async def create_stake(req: StakeRequest, x_admin_override_zuz: Optional[str] = Header(None)):
     """Create a new staking position.
     Supports TON, SLH, and BNB staking. Creates as 'pending_approval' for admin review."""
     plan = STAKING_PLANS.get(req.plan)
@@ -2706,6 +2706,15 @@ async def create_stake(req: StakeRequest):
 
     if req.amount < min_amount:
         raise HTTPException(400, f"Minimum deposit is {min_amount} {currency}")
+
+    # ZUZ Guardian gate — stakes concentrate capital; a banned user should not lock more.
+    try:
+        from shared.guardian_gate import require_clean_zuz as _zuz_gate
+        await _zuz_gate(pool, req.user_id, admin_override_header=x_admin_override_zuz)
+    except HTTPException:
+        raise
+    except Exception as _gate_err:
+        print(f"[create_stake][WARN] zuz gate failed open: {_gate_err!r}")
 
     async with pool.acquire() as conn:
         user = await conn.fetchrow("SELECT * FROM web_users WHERE telegram_id=$1", req.user_id)
@@ -2752,6 +2761,21 @@ async def create_stake(req: StakeRequest):
             amount_currency=currency,
             metadata={"plan": req.plan, "apy": plan["apy_monthly"], "lock_days": plan["lock_days"], "currency": currency},
         )
+
+    try:
+        from shared.events import emit as _emit
+        await _emit(pool, "stake.opened", {
+            "stake_id": pos_id,
+            "user_id": req.user_id,
+            "plan": req.plan,
+            "amount": float(req.amount),
+            "currency": currency,
+            "apy_monthly": plan["apy_monthly"],
+            "lock_days": plan["lock_days"],
+            "status": "pending_approval",
+        }, source="api.staking.stake")
+    except Exception as _e:
+        print(f"[create_stake][WARN] event emit failed: {_e!r}")
 
     return {
         "id": pos_id,
@@ -3839,12 +3863,22 @@ async def get_wallet_balances(user_id: int):
 
 
 @app.post("/api/wallet/deposit")
-async def record_deposit(req: DepositRequest):
+async def record_deposit(req: DepositRequest, x_admin_override_zuz: Optional[str] = Header(None)):
     """Record a deposit and credit token_balances"""
     if req.amount <= 0:
         raise HTTPException(400, "Amount must be positive")
     if not req.tx_hash.strip():
         raise HTTPException(400, "tx_hash is required")
+
+    # ZUZ Guardian gate — deposit credits an on-chain tx to an internal balance.
+    # Block if recipient account is banned (even if the on-chain tx is real).
+    try:
+        from shared.guardian_gate import require_clean_zuz as _zuz_gate
+        await _zuz_gate(pool, req.user_id, admin_override_header=x_admin_override_zuz)
+    except HTTPException:
+        raise
+    except Exception as _gate_err:
+        print(f"[wallet_deposit][WARN] zuz gate failed open: {_gate_err!r}")
 
     async with pool.acquire() as conn:
         # Check for duplicate tx_hash
@@ -3934,7 +3968,11 @@ class WalletSendRequest(BaseModel):
 
 
 @app.post("/api/wallet/send")
-async def wallet_send(req: WalletSendRequest, authorization: Optional[str] = Header(None)):
+async def wallet_send(
+    req: WalletSendRequest,
+    authorization: Optional[str] = Header(None),
+    x_admin_override_zuz: Optional[str] = Header(None),
+):
     user_id = get_current_user_id(authorization)
 
     if req.amount <= 0:
@@ -3945,6 +3983,15 @@ async def wallet_send(req: WalletSendRequest, authorization: Optional[str] = Hea
 
     if not _check_wallet_send_rate(user_id, cooldown_seconds=5):
         raise HTTPException(429, "Too many requests, wait a few seconds")
+
+    # ZUZ Guardian gate — block senders with ZUZ >= 100 or active ban
+    try:
+        from shared.guardian_gate import require_clean_zuz as _zuz_gate
+        await _zuz_gate(pool, user_id, admin_override_header=x_admin_override_zuz)
+    except HTTPException:
+        raise
+    except Exception as _gate_err:
+        print(f"[wallet_send][WARN] zuz gate failed open: {_gate_err!r}")
 
     token = (req.currency or "SLH").upper().strip()
     if token != "SLH":
@@ -10370,6 +10417,16 @@ async def device_verify(req: DeviceVerifyReq):
                     is_active = TRUE
         """, req.device_id, user_id, token)
 
+    try:
+        from shared.events import emit as _emit
+        await _emit(pool, "device.registered", {
+            "device_id": req.device_id,
+            "user_id": user_id,
+            "phone_suffix": phone[-4:] if phone else None,
+        }, source="api.device.verify")
+    except Exception as e:
+        print(f"[device_verify][WARN] event emit failed: {e!r}")
+
     return {
         "ok": True,
         "user_id": user_id,
@@ -10377,6 +10434,232 @@ async def device_verify(req: DeviceVerifyReq):
         "signing_token": token,
         "message": "מכשיר רשום בהצלחה"
     }
+
+
+class EspHeartbeatReq(BaseModel):
+    device_id: str
+    fw: Optional[str] = None
+    ssid: Optional[str] = None
+    rssi: Optional[int] = None
+    ip: Optional[str] = None
+    uptime_seconds: Optional[int] = None
+    free_heap: Optional[int] = None
+    last_button: Optional[str] = None
+    metrics: Optional[dict] = None
+
+
+@app.get("/api/device/claim/{device_id}")
+async def device_claim(device_id: str, request: Request):
+    """Device-side companion to web pairing. Once the web page calls /api/device/verify
+    for this device_id, the token is in devices table. This endpoint lets the device
+    fetch its signing_token by polling — single-use, device clears local pending-pair
+    state after success.
+
+    Response shapes:
+      { "paired": false }                                       — not paired yet
+      { "paired": true, "user_id": int, "signing_token": str }  — paired, consume it
+    """
+    if not device_id or len(device_id) > 64:
+        raise HTTPException(400, "device_id required")
+    async with pool.acquire() as conn:
+        await _ensure_device_tables(conn)
+        # Only serve claim if device was paired in the last 15 minutes AND has
+        # never been heart-beated yet (i.e., the device has not started using its token).
+        row = await conn.fetchrow("""
+            SELECT user_id, signing_token, registered_at, last_seen
+            FROM devices
+            WHERE device_id = $1
+              AND is_active = TRUE
+              AND signing_token IS NOT NULL
+              AND registered_at >= NOW() - INTERVAL '15 minutes'
+        """, device_id)
+        if not row:
+            return {"paired": False}
+        # Heuristic: if last_seen > registered_at + 1 min, the device has already claimed → deny
+        reg = row["registered_at"]
+        seen = row["last_seen"]
+        if reg and seen and (seen - reg).total_seconds() > 60:
+            return {"paired": False, "note": "already claimed"}
+        return {
+            "paired": True,
+            "user_id": row["user_id"],
+            "signing_token": row["signing_token"],
+        }
+
+
+async def _ensure_heartbeat_table(conn):
+    """Additive: device_heartbeats audit log + last_seen extensions on devices."""
+    await conn.execute("""
+        CREATE TABLE IF NOT EXISTS device_heartbeats (
+            id BIGSERIAL PRIMARY KEY,
+            device_id TEXT NOT NULL,
+            user_id BIGINT,
+            fw TEXT,
+            ssid TEXT,
+            rssi INT,
+            ip TEXT,
+            uptime_seconds INT,
+            free_heap INT,
+            last_button TEXT,
+            metrics JSONB,
+            received_at TIMESTAMP NOT NULL DEFAULT NOW()
+        )
+    """)
+    await conn.execute(
+        "CREATE INDEX IF NOT EXISTS idx_heartbeats_device_id_received "
+        "ON device_heartbeats(device_id, received_at DESC)"
+    )
+
+
+@app.post("/api/esp/heartbeat")
+async def esp_heartbeat(
+    req: EspHeartbeatReq,
+    request: Request,
+    authorization: Optional[str] = Header(None),
+):
+    """ESP32/CYD heartbeat. Requires `Authorization: Bearer <signing_token>` from device verify.
+    Updates devices.last_seen + appends to device_heartbeats audit log.
+    Emits `device.heartbeat` event (throttled — first of day + every 100 heartbeats per device)."""
+    if not authorization or not authorization.lower().startswith("bearer "):
+        raise HTTPException(401, "missing bearer signing_token")
+    token = authorization[7:].strip()
+    if not token or len(token) < 16:
+        raise HTTPException(401, "invalid signing_token")
+
+    async with pool.acquire() as conn:
+        await _ensure_device_tables(conn)
+        await _ensure_heartbeat_table(conn)
+        dev = await conn.fetchrow(
+            "SELECT user_id, signing_token FROM devices WHERE device_id = $1 AND is_active = TRUE",
+            req.device_id
+        )
+        if not dev or dev["signing_token"] != token:
+            raise HTTPException(401, "device_id/token mismatch")
+
+        user_id = dev["user_id"]
+        client_ip = request.client.host if request.client else None
+
+        await conn.execute(
+            "UPDATE devices SET last_seen = NOW(), last_ip = $1 WHERE device_id = $2",
+            client_ip, req.device_id
+        )
+        hb_id = await conn.fetchval("""
+            INSERT INTO device_heartbeats
+                (device_id, user_id, fw, ssid, rssi, ip, uptime_seconds, free_heap, last_button, metrics)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10::jsonb)
+            RETURNING id
+        """, req.device_id, user_id, req.fw, req.ssid, req.rssi,
+             client_ip or req.ip, req.uptime_seconds, req.free_heap, req.last_button,
+             json.dumps(req.metrics or {}))
+
+        # Throttled event emission: first heartbeat of the day per device + milestone every 100
+        should_emit = False
+        today_count = await conn.fetchval(
+            "SELECT COUNT(*) FROM device_heartbeats "
+            "WHERE device_id = $1 AND received_at >= CURRENT_DATE",
+            req.device_id
+        )
+        if today_count is not None and today_count in (1, 100, 500, 1000):
+            should_emit = True
+
+    if should_emit:
+        try:
+            from shared.events import emit as _emit
+            await _emit(pool, "device.heartbeat", {
+                "device_id": req.device_id,
+                "user_id": user_id,
+                "fw": req.fw,
+                "today_count": today_count,
+            }, source="api.esp.heartbeat")
+        except Exception as e:
+            print(f"[esp_heartbeat][WARN] event emit failed: {e!r}")
+
+    return {"ok": True, "heartbeat_id": hb_id, "user_id": user_id, "server_time": datetime.utcnow().isoformat()}
+
+
+@app.get("/api/esp/commands/{device_id}")
+async def esp_get_pending_command(
+    device_id: str,
+    authorization: Optional[str] = Header(None),
+):
+    """Device polls for pending commands. Returns `{command: str | None}`.
+    Signing token auth. Pulls from device_commands table (FIFO, is_consumed=FALSE)."""
+    if not authorization or not authorization.lower().startswith("bearer "):
+        raise HTTPException(401, "missing bearer signing_token")
+    token = authorization[7:].strip()
+
+    async with pool.acquire() as conn:
+        await _ensure_device_tables(conn)
+        await conn.execute("""
+            CREATE TABLE IF NOT EXISTS device_commands (
+                id BIGSERIAL PRIMARY KEY,
+                device_id TEXT NOT NULL,
+                command TEXT NOT NULL,
+                payload JSONB DEFAULT '{}'::jsonb,
+                is_consumed BOOLEAN NOT NULL DEFAULT FALSE,
+                created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+                consumed_at TIMESTAMP,
+                created_by TEXT
+            )
+        """)
+        dev = await conn.fetchrow(
+            "SELECT user_id, signing_token FROM devices WHERE device_id = $1 AND is_active = TRUE",
+            device_id
+        )
+        if not dev or dev["signing_token"] != token:
+            raise HTTPException(401, "device_id/token mismatch")
+
+        row = await conn.fetchrow("""
+            SELECT id, command, payload FROM device_commands
+            WHERE device_id = $1 AND is_consumed = FALSE
+            ORDER BY id ASC LIMIT 1
+        """, device_id)
+        if not row:
+            return {"command": None}
+        await conn.execute(
+            "UPDATE device_commands SET is_consumed = TRUE, consumed_at = NOW() WHERE id = $1",
+            row["id"]
+        )
+        return {"command": row["command"], "payload": row["payload"], "cmd_id": row["id"]}
+
+
+@app.post("/api/esp/commands/{device_id}")
+async def esp_push_command(
+    device_id: str,
+    body: dict,
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None),
+):
+    """Admin pushes a command to a device queue. body: {command: str, payload?: dict}."""
+    admin_id, _role = _require_admin(authorization, x_admin_key)
+    cmd = (body or {}).get("command")
+    if not cmd or not isinstance(cmd, str):
+        raise HTTPException(400, "command (str) required")
+    payload = (body or {}).get("payload") or {}
+
+    async with pool.acquire() as conn:
+        await _ensure_device_tables(conn)
+        await conn.execute("""
+            CREATE TABLE IF NOT EXISTS device_commands (
+                id BIGSERIAL PRIMARY KEY,
+                device_id TEXT NOT NULL,
+                command TEXT NOT NULL,
+                payload JSONB DEFAULT '{}'::jsonb,
+                is_consumed BOOLEAN NOT NULL DEFAULT FALSE,
+                created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+                consumed_at TIMESTAMP,
+                created_by TEXT
+            )
+        """)
+        exists = await conn.fetchval("SELECT 1 FROM devices WHERE device_id = $1", device_id)
+        if not exists:
+            raise HTTPException(404, "device not found")
+        cmd_id = await conn.fetchval("""
+            INSERT INTO device_commands (device_id, command, payload, created_by)
+            VALUES ($1, $2, $3::jsonb, $4)
+            RETURNING id
+        """, device_id, cmd, json.dumps(payload), str(admin_id))
+    return {"ok": True, "cmd_id": cmd_id, "device_id": device_id}
 
 
 @app.get("/api/admin/devices/list")

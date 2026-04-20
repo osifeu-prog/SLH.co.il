@@ -210,6 +210,15 @@ async def main():
     except Exception as e:
         logger.warning("heartbeat init failed (non-fatal): %s", e)
 
+    # Ledger-specific: subscribe to event_log and fan out to Workers group + DMs.
+    if BOT_KEY == "ledger":
+        try:
+            from ledger_listener import run as _run_ledger_listener
+            asyncio.create_task(_run_ledger_listener(bot))
+            logger.info("ledger_listener task scheduled")
+        except Exception as e:
+            logger.warning("ledger_listener init failed (non-fatal): %s", e)
+
     await dp.start_polling(bot, drop_pending_updates=True)
 
 
