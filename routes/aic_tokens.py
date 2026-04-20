@@ -319,8 +319,7 @@ async def aic_stats():
 
 def _check_admin(x_admin_key: Optional[str]):
     admin_keys = [k.strip() for k in os.getenv("ADMIN_API_KEYS", "").split(",") if k.strip()]
-    if not admin_keys:
-        admin_keys = ["slh2026admin", "slh_admin_2026", "slh-spark-admin", "slh-institutional"]
+    # No public fallback — if env unset, admin calls fail 403 (set ADMIN_API_KEYS on Railway).
     if not x_admin_key or x_admin_key not in admin_keys:
         raise HTTPException(403, "admin key required")
 

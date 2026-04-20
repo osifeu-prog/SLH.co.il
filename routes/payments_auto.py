@@ -525,7 +525,7 @@ async def payment_geography(x_admin_key: Optional[str] = Header(None)):
     """Admin: breakdown of payments by country + currency + provider."""
     if _pool is None:
         raise HTTPException(500, "db pool not initialized")
-    admin_keys = [k.strip() for k in os.getenv("ADMIN_API_KEYS", "slh2026admin").split(",") if k.strip()]
+    admin_keys = [k.strip() for k in os.getenv("ADMIN_API_KEYS", "").split(",") if k.strip()]
     if x_admin_key not in admin_keys:
         raise HTTPException(403, "admin key required")
 

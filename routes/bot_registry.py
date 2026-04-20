@@ -46,8 +46,8 @@ BOT_SECRET = os.getenv("BOT_SYNC_SECRET", "slh_bot_heartbeat_2026")
 # Admin keys — for /list (read all). Reuses the main API's admin keys.
 ADMIN_KEYS_RAW = os.getenv("ADMIN_API_KEYS") or ""
 _ADMIN_KEYS = {k.strip() for k in ADMIN_KEYS_RAW.split(",") if k.strip()}
-if not _ADMIN_KEYS:
-    _ADMIN_KEYS = {"slh2026admin", "slh_admin_2026", "slh-spark-admin", "slh-institutional"}
+# If ADMIN_API_KEYS env is unset, leave _ADMIN_KEYS empty — admin calls will fail 403
+# (safer than falling back to a public default; set ADMIN_API_KEYS on Railway for prod).
 
 
 def set_pool(pool):

@@ -7,7 +7,7 @@ import urllib.request, json, time, datetime, os
 
 API = 'https://slh-api-production.up.railway.app'
 USER_ID = '224223270'
-ADMIN_KEY = 'slh2026admin'
+ADMIN_KEY = os.getenv('SLH_ADMIN_KEY', '')  # set SLH_ADMIN_KEY env to run auth-gated tests
 DATE = datetime.datetime.now().strftime('%Y%m%d')
 OUT = f'ops/API_STATUS_{DATE}.md'
 

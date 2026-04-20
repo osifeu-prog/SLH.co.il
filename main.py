@@ -40,6 +40,12 @@ from routes.agent_hub import router as agent_hub_router, set_pool as _agent_hub_
 from routes.campaign_admin import router as campaign_admin_router, set_pool as _campaign_admin_set_pool
 from routes.academia_ugc import router as academia_ugc_router, set_pool as _academia_ugc_set_pool, init_academia_ugc_tables as _init_academia_ugc
 from routes.bot_registry import router as bot_registry_router, set_pool as _bot_registry_set_pool, init_tables as _init_bot_registry
+from routes.admin_rotate import (
+    router as admin_rotate_router,
+    set_pool as _admin_rotate_set_pool,
+    init_admin_secrets_table as _init_admin_rotate,
+    check_db_admin_key as _check_db_admin_key,
+)
 from wellness_scheduler import init_wellness_scheduler, get_wellness_scheduler
 
 # === CONFIG ===
@@ -123,31 +129,30 @@ async def rate_limit_middleware(request: Request, call_next):
     return await call_next(request)
 
 
-# Accepted admin keys â€” matches the 4 passwords on admin.html frontend.
-# Override in production by setting ADMIN_API_KEYS env var (comma-separated).
-_ADMIN_KEYS_DEFAULT = {
-    "slh2026admin",        # primary (Osif)
-    "slh_admin_2026",      # partner A
-    "slh-spark-admin",     # partner B
-    "slh-institutional",   # accountant / lawyer
-}
+# Admin keys — env-sourced only (no public-source default).
+# Set ADMIN_API_KEYS on Railway (comma-separated). If unset, admin calls fail 403.
+# For runtime rotation without touching env, use POST /api/admin/rotate-key —
+# rotated keys live in the admin_secrets DB table and are additive to env keys.
 ADMIN_API_KEYS = set(
     (os.getenv("ADMIN_API_KEYS") or "").split(",")
 ) - {""}
 if not ADMIN_API_KEYS:
-    ADMIN_API_KEYS = _ADMIN_KEYS_DEFAULT
-    print("[SECURITY] WARNING: Using default ADMIN_API_KEYS. Set ADMIN_API_KEYS env var in production.")
+    print("[SECURITY] WARNING: ADMIN_API_KEYS env var is empty. Admin endpoints will reject all X-Admin-Key requests until either env is set or a key is rotated via /api/admin/rotate-key.")
 
 
 def _require_admin(authorization: Optional[str] = None, admin_key_header: Optional[str] = None) -> int:
     """Verify admin credentials. Accepts EITHER:
-    - X-Admin-Key: <one of ADMIN_API_KEYS> header
+    - X-Admin-Key: <one of ADMIN_API_KEYS env> or active DB-rotated key
     - Authorization: Bearer <jwt> where user_id == ADMIN_USER_ID
 
     Returns the admin user_id on success, raises HTTPException 403 otherwise.
     """
-    # Try admin key header first
+    # Try env admin keys first (fastest path, backward-compat)
     if admin_key_header and admin_key_header in ADMIN_API_KEYS:
+        return ADMIN_USER_ID
+
+    # Try DB-backed rotated keys (in-memory cached — no DB hit per request)
+    if admin_key_header and _check_db_admin_key(admin_key_header):
         return ADMIN_USER_ID
 
     # Try JWT
@@ -227,6 +232,7 @@ app.include_router(agent_hub_router)
 app.include_router(campaign_admin_router)
 app.include_router(academia_ugc_router)
 app.include_router(bot_registry_router)
+app.include_router(admin_rotate_router)
 
 # === DATABASE ===
 pool: Optional[asyncpg.Pool] = None
@@ -269,14 +275,14 @@ async def startup():
                        _dating_set_pool, _broadcast_set_pool, _love_set_pool, _treasury_set_pool,
                        _creator_set_pool, _wellness_set_pool, _threat_set_pool, _whatsapp_set_pool,
                        _system_audit_set_pool, _agent_hub_set_pool, _campaign_admin_set_pool, _academia_ugc_set_pool,
-                       _bot_registry_set_pool):
+                       _bot_registry_set_pool, _admin_rotate_set_pool):
             try:
                 setter(pool)
             except Exception as e:
                 print(f"[Startup][WARN] set_pool on {setter.__name__} failed: {e!r}")
 
         # Each init isolated — one failure doesn't block the others or healthcheck
-        for init_name, init_coro in (("wellness", _init_wellness), ("threat", _init_threat), ("whatsapp", _init_whatsapp), ("agent_hub", _init_agent_hub), ("academia_ugc", _init_academia_ugc), ("bot_registry", _init_bot_registry)):
+        for init_name, init_coro in (("wellness", _init_wellness), ("threat", _init_threat), ("whatsapp", _init_whatsapp), ("agent_hub", _init_agent_hub), ("academia_ugc", _init_academia_ugc), ("bot_registry", _init_bot_registry), ("admin_rotate", _init_admin_rotate)):
             try:
                 await asyncio.wait_for(init_coro(), timeout=15.0)
                 print(f"[Startup] {init_name} tables ready")
@@ -8028,7 +8034,7 @@ async def admin_login(req: AdminLoginRequest):
                 INSERT INTO admin_users (telegram_id, username, password_hash, display_name, role, created_by)
                 VALUES ($1, $2, $3, $4, $5, $6)
                 ON CONFLICT (username) DO NOTHING
-            """, 224223270, "osif", hash_admin_password("slh2026admin"), "Osif Ungar", "owner", 224223270)
+            """, 224223270, "osif", hash_admin_password(os.getenv("INITIAL_ADMIN_PASSWORD", "change_me_on_first_login_" + secrets.token_hex(4))), "Osif Ungar", "owner", 224223270)
             # Seed Tzvika as CEO
             await conn.execute("""
                 INSERT INTO admin_users (telegram_id, username, password_hash, display_name, role, created_by)

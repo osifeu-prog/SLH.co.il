@@ -200,7 +200,7 @@ def _parse_transfer_log(log: dict) -> Optional[dict]:
 @router.post("/scan")
 async def scan_recent_swaps(limit: int = 50, x_admin_key: Optional[str] = Header(None)):
     """Admin-triggered: pull recent SLH sales from the pair and attribute to users with linked wallets."""
-    admin_keys = [k.strip() for k in os.getenv("ADMIN_API_KEYS", "slh2026admin").split(",") if k.strip()]
+    admin_keys = [k.strip() for k in os.getenv("ADMIN_API_KEYS", "").split(",") if k.strip()]
     if not x_admin_key or x_admin_key not in admin_keys:
         raise HTTPException(403, "admin key required")
     if _pool is None:

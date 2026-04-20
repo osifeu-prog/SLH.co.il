@@ -54,7 +54,7 @@ ALLOWED_PRIORITIES = {"P0", "P1", "P2", "info"}
 
 def _admin_keys() -> set[str]:
     """Read admin keys from env. Mirrors the pattern in creator_economy.py."""
-    raw = os.getenv("ADMIN_API_KEYS") or os.getenv("ADMIN_API_KEY") or "slh2026admin"
+    raw = os.getenv("ADMIN_API_KEYS") or os.getenv("ADMIN_API_KEY") or ""
     return {k.strip() for k in raw.split(",") if k.strip()}
 
 

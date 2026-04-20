@@ -448,7 +448,7 @@ class SnapshotRefreshReq(BaseModel):
 @router.post("/roi/snapshot")
 async def refresh_roi_snapshot(req: SnapshotRefreshReq, x_admin_key: Optional[str] = Header(None)):
     """Admin: force-refresh XP snapshot for a specific user."""
-    admin_keys = [k.strip() for k in os.getenv("ADMIN_API_KEYS", "slh2026admin").split(",") if k.strip()]
+    admin_keys = [k.strip() for k in os.getenv("ADMIN_API_KEYS", "").split(",") if k.strip()]
     if x_admin_key not in admin_keys:
         raise HTTPException(403, "admin key required")
     if _pool is None:
@@ -482,7 +482,7 @@ async def refresh_roi_snapshot(req: SnapshotRefreshReq, x_admin_key: Optional[st
 @router.post("/roi/snapshot/all")
 async def refresh_all_snapshots(x_admin_key: Optional[str] = Header(None)):
     """Admin: recompute XP for all users — run as cron."""
-    admin_keys = [k.strip() for k in os.getenv("ADMIN_API_KEYS", "slh2026admin").split(",") if k.strip()]
+    admin_keys = [k.strip() for k in os.getenv("ADMIN_API_KEYS", "").split(",") if k.strip()]
     if x_admin_key not in admin_keys:
         raise HTTPException(403, "admin key required")
     if _pool is None:

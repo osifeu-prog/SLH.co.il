@@ -67,7 +67,7 @@ APPROVAL_STATUSES = {"pending", "approved", "rejected"}
 
 def _admin_keys() -> set[str]:
     """Read admin keys from env. Mirrors the pattern in agent_hub.py."""
-    raw = os.getenv("ADMIN_API_KEYS") or os.getenv("ADMIN_API_KEY") or "slh2026admin"
+    raw = os.getenv("ADMIN_API_KEYS") or os.getenv("ADMIN_API_KEY") or ""
     return {k.strip() for k in raw.split(",") if k.strip()}
 
 

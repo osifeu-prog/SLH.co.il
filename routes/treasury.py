@@ -182,7 +182,7 @@ async def burn_rate_preview():
 # ---------- Admin-only write endpoints ----------
 
 def _check_admin(x_admin_key: Optional[str]):
-    admin_keys = [k.strip() for k in os.getenv("ADMIN_API_KEYS", "slh2026admin").split(",") if k.strip()]
+    admin_keys = [k.strip() for k in os.getenv("ADMIN_API_KEYS", "").split(",") if k.strip()]
     if x_admin_key not in admin_keys:
         raise HTTPException(403, "admin key required")
 

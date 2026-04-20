@@ -28,7 +28,7 @@ def set_pool(pool):
 
 
 def _check_admin(key: Optional[str]) -> None:
-    allowed = (os.getenv("ADMIN_API_KEYS") or os.getenv("ADMIN_API_KEY") or "slh2026admin").split(",")
+    allowed = (os.getenv("ADMIN_API_KEYS") or os.getenv("ADMIN_API_KEY") or "").split(",")
     if not key or key.strip() not in [k.strip() for k in allowed]:
         raise HTTPException(status_code=401, detail="admin key required")
 

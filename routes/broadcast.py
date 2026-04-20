@@ -180,7 +180,7 @@ NETWORK_PUBLISHERS = {
 async def broadcast_publish(req: BroadcastReq, x_admin_key: Optional[str] = Header(None)):
     """Cross-post to selected networks. Returns per-network results."""
     # Admin check (broadcast is not public)
-    admin_keys = [k.strip() for k in os.getenv("ADMIN_API_KEYS", "slh2026admin").split(",") if k.strip()]
+    admin_keys = [k.strip() for k in os.getenv("ADMIN_API_KEYS", "").split(",") if k.strip()]
     if not x_admin_key or x_admin_key not in admin_keys:
         raise HTTPException(403, "admin key required (X-Admin-Key header)")
 
@@ -230,7 +230,7 @@ async def broadcast_publish(req: BroadcastReq, x_admin_key: Optional[str] = Head
 @router.post("/telegram")
 async def broadcast_telegram(req: BroadcastReq, x_admin_key: Optional[str] = Header(None)):
     """Telegram-only shortcut. Uses SLH_AIR_TOKEN + TELEGRAM_BROADCAST_CHANNEL."""
-    admin_keys = [k.strip() for k in os.getenv("ADMIN_API_KEYS", "slh2026admin").split(",") if k.strip()]
+    admin_keys = [k.strip() for k in os.getenv("ADMIN_API_KEYS", "").split(",") if k.strip()]
     if not x_admin_key or x_admin_key not in admin_keys:
         raise HTTPException(403, "admin key required")
     result = await _post_telegram(req.message, req.telegram_channel)
