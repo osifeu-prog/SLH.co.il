@@ -167,6 +167,17 @@ async def _collect_bots() -> dict:
                 "WHERE table_schema='public' AND table_name='bots')"
             )
             if has_bots:
+                # PRIMARY: use bot_registry heartbeat (last_heartbeat_at within 60s)
+                try:
+                    active = await conn.fetchval(
+                        "SELECT COUNT(*) FROM bots "
+                        "WHERE last_heartbeat_at >= NOW() - INTERVAL '60 seconds'"
+                    )
+                    if active is not None:
+                        return {"total": _TOTAL_BOTS, "active": int(active)}
+                except Exception:
+                    pass
+                # FALLBACK: older schemas (is_active/active flag columns)
                 for col_expr in ("is_active=TRUE", "active=TRUE", "status='active'"):
                     try:
                         active = await conn.fetchval(

@@ -197,6 +197,19 @@ async def main():
     logger.info("=" * 50)
     logger.info("SLH SPARK | %s (%s)", BOT_DISPLAY_NAME, BOT_KEY)
     logger.info("=" * 50)
+
+    # Start heartbeat to /api/bots/heartbeat (non-blocking, 30s cadence).
+    # If import or network fails, the bot keeps running — heartbeat is best-effort.
+    try:
+        from bot_heartbeat import start_heartbeat
+        start_heartbeat(
+            bot_name=BOT_KEY,
+            display_name=BOT_DISPLAY_NAME,
+            version="template-1.0",
+        )
+    except Exception as e:
+        logger.warning("heartbeat init failed (non-fatal): %s", e)
+
     await dp.start_polling(bot, drop_pending_updates=True)
 
 
