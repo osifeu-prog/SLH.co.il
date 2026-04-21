@@ -5,9 +5,18 @@
 
 ## 🎯 מה אתה צריך לדעת בשורה אחת
 
-**device-registry** = micro-service על port 8090 שמאפשר מכשירי ESP32 (ארנקים כשרים) להירשם למערכת עם phone number → SMS code → signing token. הקוד הוא ~40 שורות FastAPI.
+**⚠️ UPDATED 2026-04-20:** ה-micro-service המקומי על port 8090 **הוסר** (היה צעצוע in-memory שהטעה). ה-endpoints היחידים שפעילים הם ב-Railway API:
 
-ה‑**endpoint הראשי כבר חי** ב‑API הגדול: `/api/device/register` + `/api/device/verify`. הmicro-service המקומי הוא רק alternate path למקרים ללא internet מלא.
+- `POST /api/device/register` — שלב 1 (phone + device_id → 6-digit code)
+- `POST /api/device/verify` — שלב 2 (code → signing_token)
+- `GET  /api/device/claim/{device_id}` — device-side polling לאחר web pair
+- `POST /api/esp/heartbeat` — heartbeat עם Bearer token
+- `GET/POST /api/esp/commands/{device_id}` — remote command queue
+- `POST /api/admin/link-phone-tg` — קישור טלפון ל-TG id (admin)
+
+ה-UI לקישור נמצא ב-`https://slh-nft.com/device-pair.html` — משתמש בכל ה-endpoints מעל.
+ה-Dashboard ב-`https://slh-nft.com/chain-status.html`.
+ה-firmware ב-`ops/firmware/slh-device-v3/` עם `FLASH_INSTRUCTIONS.md`.
 
 ---
 

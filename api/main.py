@@ -10677,6 +10677,82 @@ class LinkPhoneTgReq(BaseModel):
     display_name: Optional[str] = None
 
 
+@app.get("/api/admin/events")
+async def admin_events_list(
+    limit: int = Query(50, le=200),
+    after_id: int = Query(0),
+    types: Optional[str] = Query(None, description="Comma-separated event types to filter"),
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None),
+):
+    """Admin: read event_log (ring buffer for chain-status page + debugging).
+
+    Returns newest events first by default. Use after_id=<n> for a cursor-style
+    read (events with id > n, oldest first — good for tailing).
+
+    Types can filter to a subset: e.g. `types=payment.cleared,stake.opened`.
+    """
+    _require_admin(authorization, x_admin_key)
+    type_list = None
+    if types:
+        type_list = [t.strip() for t in types.split(",") if t.strip()]
+
+    try:
+        from shared.events import ensure_event_log_table
+    except Exception as e:
+        raise HTTPException(503, f"events module unavailable: {e!r}")
+
+    async with pool.acquire() as conn:
+        await ensure_event_log_table(conn)
+        if after_id > 0:
+            if type_list:
+                rows = await conn.fetch(
+                    "SELECT id, event_type, payload, created_at, source FROM event_log "
+                    "WHERE id > $1 AND event_type = ANY($2::text[]) ORDER BY id ASC LIMIT $3",
+                    after_id, type_list, limit
+                )
+            else:
+                rows = await conn.fetch(
+                    "SELECT id, event_type, payload, created_at, source FROM event_log "
+                    "WHERE id > $1 ORDER BY id ASC LIMIT $2",
+                    after_id, limit
+                )
+        else:
+            if type_list:
+                rows = await conn.fetch(
+                    "SELECT id, event_type, payload, created_at, source FROM event_log "
+                    "WHERE event_type = ANY($1::text[]) ORDER BY id DESC LIMIT $2",
+                    type_list, limit
+                )
+            else:
+                rows = await conn.fetch(
+                    "SELECT id, event_type, payload, created_at, source FROM event_log "
+                    "ORDER BY id DESC LIMIT $1",
+                    limit
+                )
+        total = await conn.fetchval("SELECT COALESCE(MAX(id), 0) FROM event_log")
+        by_type = await conn.fetch(
+            "SELECT event_type, COUNT(*) AS n FROM event_log "
+            "WHERE created_at >= NOW() - INTERVAL '24 hours' "
+            "GROUP BY event_type ORDER BY n DESC"
+        )
+
+    return {
+        "total_events": int(total or 0),
+        "events_24h_by_type": {r["event_type"]: int(r["n"]) for r in by_type},
+        "events": [
+            {
+                "id": r["id"],
+                "type": r["event_type"],
+                "payload": r["payload"] if isinstance(r["payload"], dict) else json.loads(r["payload"]),
+                "created_at": r["created_at"].isoformat() if r["created_at"] else None,
+                "source": r["source"],
+            }
+            for r in rows
+        ],
+    }
+
+
 @app.post("/api/admin/link-phone-tg")
 async def link_phone_to_telegram(
     req: LinkPhoneTgReq,
