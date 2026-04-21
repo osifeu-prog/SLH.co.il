@@ -10930,9 +10930,25 @@ async def ops_reality(x_broadcast_key: Optional[str] = Header(None)):
         except Exception:
             referral_users = None
 
+    from decimal import Decimal as _Dec
     def _row(r):
-        return {k: (v.isoformat() if hasattr(v, 'isoformat') else float(v) if isinstance(v, Decimal) else v)
-                for k, v in dict(r).items()}
+        out = {}
+        for k, v in dict(r).items():
+            if v is None:
+                out[k] = None
+            elif hasattr(v, 'isoformat'):
+                out[k] = v.isoformat()
+            elif isinstance(v, _Dec):
+                out[k] = float(v)
+            else:
+                out[k] = v
+        # Also parse JSONB columns (asyncpg returns them as str)
+        if 'metadata' in out and isinstance(out['metadata'], str):
+            try:
+                out['metadata'] = json.loads(out['metadata'])
+            except Exception:
+                pass
+        return out
 
     # Classify users
     user_rows = [_row(r) for r in users]
