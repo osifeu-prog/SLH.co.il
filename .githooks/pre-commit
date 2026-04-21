@@ -12,7 +12,7 @@ MAX_TOTAL_LINES=300          # commit total (+/-) before requiring feat/refactor
 MAX_SINGLE_FILE_NET_DEL=100  # net deletion in one file before flagging
 
 # Commit-msg scope that bypasses MAX_TOTAL_LINES
-SCOPED_TYPES_REGEX='^(feat|refactor|docs)(\(.+\))?!?: '
+SCOPED_TYPES_REGEX='^(feat|refactor|docs|ops|chore|test)(\(.+\))?!?: '
 
 # Skip if nothing staged
 STAGED=$(git diff --cached --numstat)
