@@ -38,7 +38,14 @@
 
 ## What's pending (YOUR DECISIONS)
 
-### 🟡 Decision 1: Push Phase 0 DB Core + backend referral cap
+### ✅ Decision 1: Push Phase 0 DB Core + backend referral cap — COMPLETED 2026-04-21
+
+Commit `cfc98e4` pushed to Railway. `/api/health` returns 200 OK. Pool connected.
+Referral now enforces 2 tiers (Tier 1: 20%, Tier 2: 5%) in backend.
+Original pending section follows for reference only:
+
+<details>
+<summary>Original pending description</summary>
 `api/main.py` working copy contains:
 - **Phase 0 DB Core** (from earlier tonight's session) — `shared_db_core.py` unified pool, `/api/health` returns 503 honestly when DB is down. See `ops/NIGHT_20260421_PHASE0_DB_CORE.md`.
 - **My referral cap** — `REFERRAL_RATES = {1: 0.20, 2: 0.05}`, `MAX_GENERATIONS = 2`. Replaces old 10-tier logic.
@@ -57,13 +64,23 @@ git push origin master
 
 **Until this is pushed:** UI says "2 tiers" but backend still computes 10 if an old referral_rate dict is ever re-referenced. Current production computes correct rates from the old constants. **This is a UI/API mismatch but not a money-at-risk issue — only mismatch = the OLD "rich referral" endpoints return slightly higher numbers than the UI implies. Low urgency.**
 
-### 🟡 Decision 2: Seed Course #1 into Railway Postgres
-```bash
-# From any host with psql + Railway DATABASE_URL:
-psql "$DATABASE_URL" -f D:/SLH_ECOSYSTEM/ops/SEED_COURSE_1_DYNAMIC_YIELD.sql
-```
-Creates Osif instructor record + 3 course rows (Free/Pro/VIP) in `academy_courses`.
-Without this, the academia catalog won't show Course #1 rows (though the Featured Banner already works — it's hardcoded in HTML).
+</details>
+
+### ✅ Decision 2: Seed Course #1 into Railway Postgres — COMPLETED 2026-04-21
+
+**What was done:**
+- Ran `academia-bot/init.sql` on Railway (created missing `academy_courses` and `academy_licenses` tables)
+- Applied academia_ugc column additions (instructor_id, approval_status, language, preview_url)
+- Ran `ops/SEED_COURSE_1_DYNAMIC_YIELD.sql`
+
+**Result (verified via `/api/academia/courses`):**
+- Course id 2: `course-1-dynamic-yield-free` — ₪0
+- Course id 3: `course-1-dynamic-yield-pro` — ₪179
+- Course id 4: `course-1-dynamic-yield-vip` — ₪549
+- Instructor: Osif Kaufman Ungar (user_id 224223270, approved=TRUE, total_courses=3)
+
+<details>
+<summary>Original pending description</summary>
 
 ### 🟡 Decision 3: Restart AISITE lab
 `master_controller.py` bug is fixed. To restart:
@@ -79,8 +96,17 @@ cd D:\AISITE
 - Docker Desktop currently squats port 8001. If you want `panel.py` on 8001, either stop Docker or change panel's port
 - `secure/esp_command.json` contains a stale 2.5KB Hebrew text command from Apr 20 01:02 — safe to delete before restart
 
-### 🟡 Decision 4: Telegram broadcast to existing stakers
-Template ready in `ops/COPY_OVERHAUL_URGENT_20260420.md` under "What to tell existing users". Pin for 14 days recommended.
+### ✅ Decision 4: Telegram broadcast to existing stakers — COMPLETED 2026-04-21
+
+**Sent via `/api/broadcast/send` endpoint using ADMIN_BROADCAST_KEY:**
+- broadcast_id: 25
+- target: registered (11 recipients)
+- success: 11/11 delivered (0 failures)
+- Message: Dynamic Yield pivot announcement with links to Course #1 + /risk.html
+
+Message sent verbatim (Hebrew). Full copy in `ops/COPY_OVERHAUL_URGENT_20260420.md` under "What to tell existing users".
+
+**Recommended next follow-up:** Post the same text to the main public Telegram channel (not just registered users' DMs) + pin for 14 days. Broadcast endpoint only reaches the 11 registered users, not channel subscribers.
 
 ### 🟡 Decision 5: Legal entity registration
 `/risk.html` flags "operating as עוסק מורשה, not a registered company" as a Critical risk. Target: Q1 2026. Independent of my scope.
