@@ -179,6 +179,188 @@ async def burn_rate_preview():
     }
 
 
+# ---------- Single Truth Test (public sustainability snapshot) ----------
+# Answers the R >= P + W question from the Level 4 economic analysis.
+# Conversion rates are env-configurable and echoed in the response for honesty.
+_ZVK_ILS = float(os.getenv("ZVK_ILS", "4.4"))
+_SLH_ILS = float(os.getenv("SLH_PRICE_ILS", "444"))
+_BNB_ILS = float(os.getenv("BNB_ILS", "2200"))
+_TON_ILS = float(os.getenv("TON_ILS", "18"))
+_USD_ILS = float(os.getenv("USD_ILS", "3.65"))
+
+
+def _to_ils(amount: float, currency: str) -> float:
+    c = (currency or "").upper()
+    if c in ("ILS", "NIS"):
+        return amount
+    if c == "BNB":
+        return amount * _BNB_ILS
+    if c == "TON":
+        return amount * _TON_ILS
+    if c == "SLH":
+        return amount * _SLH_ILS
+    if c == "AIC":
+        return amount * _ZVK_ILS
+    if c == "USD":
+        return amount * _USD_ILS
+    # Unknown currency: treat as ILS rather than silently zero it out
+    return amount
+
+
+@router.get("/health")
+async def treasury_health():
+    """
+    Single Truth Test - R / P / W / Buffer snapshot for SLH sustainability.
+
+    R (Revenue In)        - treasury_revenue aggregated today / 7d / 30d / lifetime
+    P (Contingent Liab.)  - outstanding ZVK x ZVK_ILS + upcoming SLH buyback commitment
+    W (Executed Outflows) - treasury_buybacks.fiat_spent + treasury_burns valued in ILS
+    Buffer                - aic_reserve (USD) + max(0, R_lifetime - W)
+    Status                - pre_revenue / healthy / caution / undercollateralized
+    """
+    if _pool is None:
+        raise HTTPException(500, "db pool not initialized")
+
+    async with _pool.acquire() as conn:
+        await _ensure_tables(conn)
+
+        # ----- R: revenue by currency, per period -----
+        period_defs = [("today", "1 day"), ("d7", "7 days"), ("d30", "30 days"), ("lifetime", "100 years")]
+        revenue_periods: dict = {}
+        R_ils: dict = {}
+        for label, interval in period_defs:
+            rows = await conn.fetch(
+                f"""
+                SELECT currency, COALESCE(SUM(amount), 0) AS total, COUNT(*) AS count
+                FROM treasury_revenue
+                WHERE recorded_at > now() - interval '{interval}'
+                GROUP BY currency
+                """
+            )
+            by_cur = {r["currency"]: {"amount": float(r["total"]), "count": r["count"]} for r in rows}
+            revenue_periods[label] = by_cur
+            R_ils[label] = sum(_to_ils(d["amount"], cur) for cur, d in by_cur.items())
+
+        # ----- P: outstanding ZVK + upcoming buyback commitment -----
+        # aic_transactions may not exist yet on fresh DB; treat as zeros.
+        aic_outstanding = 0.0
+        try:
+            aic_net = await conn.fetchrow(
+                """
+                SELECT
+                  COALESCE(SUM(CASE WHEN kind='earn'  THEN amount ELSE 0 END), 0) AS earned,
+                  COALESCE(SUM(CASE WHEN kind='spend' THEN amount ELSE 0 END), 0) AS spent,
+                  COALESCE(SUM(CASE WHEN kind='mint'  THEN amount ELSE 0 END), 0) AS minted,
+                  COALESCE(SUM(CASE WHEN kind='burn'  THEN amount ELSE 0 END), 0) AS burned
+                FROM aic_transactions
+                """
+            )
+            aic_outstanding = max(0.0, (float(aic_net["earned"]) + float(aic_net["minted"]))
+                                   - (float(aic_net["spent"]) + float(aic_net["burned"])))
+        except Exception:
+            aic_outstanding = 0.0
+
+        P_zvk_contingent_ils = aic_outstanding * _ZVK_ILS
+
+        fiat_r_lifetime_ils = sum(
+            _to_ils(d["amount"], cur)
+            for cur, d in revenue_periods["lifetime"].items()
+            if (cur or "").upper() in ("ILS", "NIS", "BNB", "TON", "USD")
+        )
+        buyback_executed = await conn.fetchrow(
+            """
+            SELECT
+              COALESCE(SUM(fiat_spent), 0) AS fiat_ils,
+              COALESCE(SUM(slh_amount), 0) AS slh_bought,
+              COUNT(*) AS count
+            FROM treasury_buybacks
+            WHERE status = 'executed'
+            """
+        )
+        buyback_fiat_spent = float(buyback_executed["fiat_ils"])
+        slh_bought_total = float(buyback_executed["slh_bought"])
+        buybacks_count = int(buyback_executed["count"])
+        P_upcoming_buyback = max(0.0, BUYBACK_RATE_FIAT * fiat_r_lifetime_ils - buyback_fiat_spent)
+        P_total_ils = P_zvk_contingent_ils + P_upcoming_buyback
+
+        # ----- W: executed outflows -----
+        burn_rows = await conn.fetch(
+            "SELECT token, COALESCE(SUM(amount),0) AS total, COUNT(*) AS count FROM treasury_burns GROUP BY token"
+        )
+        burns_by_token = {
+            r["token"]: {"amount": float(r["total"]), "count": r["count"]} for r in burn_rows
+        }
+        W_burns_ils = sum(_to_ils(d["amount"], tok) for tok, d in burns_by_token.items())
+        W_total_ils = buyback_fiat_spent + W_burns_ils
+
+        # ----- Buffer -----
+        reserve_usd = 0.0
+        try:
+            reserve_usd = float(await conn.fetchval("SELECT COALESCE(SUM(usd_amount), 0) FROM aic_reserve") or 0)
+        except Exception:
+            reserve_usd = 0.0
+        reserve_ils = reserve_usd * _USD_ILS
+        net_treasury_ils = R_ils["lifetime"] - W_total_ils
+        buffer_ils = reserve_ils + max(0.0, net_treasury_ils)
+
+    # ----- Status -----
+    if P_total_ils < 100:
+        status = {"code": "pre_revenue", "color": "blue",
+                  "label_he": "pre-revenue", "coverage_ratio": None}
+    else:
+        coverage = buffer_ils / P_total_ils
+        if coverage >= 0.20:
+            status = {"code": "healthy", "color": "green",
+                      "label_he": "healthy", "coverage_ratio": round(coverage, 4)}
+        elif coverage >= 0.10:
+            status = {"code": "caution", "color": "yellow",
+                      "label_he": "caution", "coverage_ratio": round(coverage, 4)}
+        else:
+            status = {"code": "undercollateralized", "color": "red",
+                      "label_he": "undercollateralized", "coverage_ratio": round(coverage, 4)}
+
+    return {
+        "as_of": datetime.utcnow().isoformat() + "Z",
+        "rates_ils": {
+            "ZVK": _ZVK_ILS, "AIC": _ZVK_ILS, "SLH": _SLH_ILS,
+            "BNB": _BNB_ILS, "TON": _TON_ILS, "USD": _USD_ILS,
+        },
+        "R_revenue": {
+            "ils_today": round(R_ils["today"], 2),
+            "ils_7d": round(R_ils["d7"], 2),
+            "ils_30d": round(R_ils["d30"], 2),
+            "ils_lifetime": round(R_ils["lifetime"], 2),
+            "by_currency_period": revenue_periods,
+        },
+        "P_contingent_obligations": {
+            "ils_total": round(P_total_ils, 2),
+            "zvk_outstanding_units": round(aic_outstanding, 4),
+            "zvk_contingent_ils": round(P_zvk_contingent_ils, 2),
+            "upcoming_slh_buyback_ils": round(P_upcoming_buyback, 2),
+            "buyback_rate": BUYBACK_RATE_FIAT,
+        },
+        "W_outflows": {
+            "ils_total": round(W_total_ils, 2),
+            "buybacks_executed_ils": round(buyback_fiat_spent, 2),
+            "buybacks_slh_bought": slh_bought_total,
+            "buybacks_count": buybacks_count,
+            "burns_by_token": burns_by_token,
+            "burns_ils_equiv": round(W_burns_ils, 2),
+        },
+        "buffer": {
+            "ils_total": round(buffer_ils, 2),
+            "reserve_usd": reserve_usd,
+            "net_treasury_ils": round(net_treasury_ils, 2),
+        },
+        "status": status,
+        "notes": [
+            "Rates are fixed approximations from env vars; exposed under rates_ils for transparency.",
+            "P is contingent, not a guaranteed cash claim - ZVK is activity reward, not yield.",
+            "Status 'pre_revenue' means P < 100 ILS; coverage math kicks in above that threshold.",
+        ],
+    }
+
+
 # ---------- Admin-only write endpoints ----------
 
 def _check_admin(x_admin_key: Optional[str]):
