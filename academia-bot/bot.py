@@ -17,6 +17,7 @@ from decimal import Decimal
 
 import aiohttp
 import asyncpg
+from shared_db_core import init_db_pool as _shared_init_db_pool
 from aiogram import Bot, Dispatcher, F
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
@@ -108,7 +109,7 @@ SEED_COURSE = (
 
 async def init_db() -> None:
     global _pool
-    _pool = await asyncpg.create_pool(DATABASE_URL, min_size=1, max_size=5)
+    _pool = await _shared_init_db_pool(DATABASE_URL)
     async with _pool.acquire() as conn:
         await conn.execute(SCHEMA)
         await conn.execute(
