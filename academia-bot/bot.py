@@ -796,30 +796,38 @@ async def _create_payment(
 
 async def _check_status(user_id: int, course_id: int | None = None) -> bool:
     """Return True iff user has either:
-      (a) an active `academy_licenses` row for this course (authoritative for academy), OR
-      (b) bot-level premium for this BOT_NAME (legacy fallback).
+      (a) an active `academy_licenses` row for this course in our own _pool
+          (authoritative — this bot is what writes them), OR
+      (b) an `approved` external_payment reference in the Railway API (covers the
+          case where the admin approved a TON/bank payment manually via admin panel
+          but the bot hadn't yet polled success), OR
+      (c) bot-level premium for this BOT_NAME via Railway /api/payment/status
+          (legacy fallback for non-course flows).
 
-    The previous version only checked (b), which caused ACAD-* timeouts for
-    successful course purchases — academy writes to academy_licenses, not premium_users.
+    The previous version only checked (c), which caused ACAD-* timeouts for
+    successful course purchases — academy writes to academy_licenses on the
+    bot's own DB, not to premium_users.
     """
+    # (a) local DB — authoritative
+    if course_id is not None and _pool is not None:
+        try:
+            async with _pool.acquire() as conn:
+                row = await conn.fetchval(
+                    """
+                    SELECT 1 FROM academy_licenses
+                    WHERE user_id = $1 AND course_id = $2 AND status = 'active'
+                    LIMIT 1
+                    """,
+                    user_id, course_id,
+                )
+                if row:
+                    return True
+        except Exception:
+            log.exception("_check_status local DB check failed")
+
+    # (b) Railway payment approved reference (auto-verify side)
     try:
         async with aiohttp.ClientSession() as s:
-            # Primary: course-specific license status (new endpoint)
-            if course_id is not None:
-                try:
-                    async with s.get(
-                        f"{API_BASE}/api/academy/license/status",
-                        params={"user_id": user_id, "course_id": course_id},
-                        timeout=aiohttp.ClientTimeout(total=10),
-                    ) as r:
-                        if r.status == 200:
-                            data = await r.json()
-                            if bool(data.get("active")):
-                                return True
-                except Exception:
-                    log.exception("license/status fetch failed, falling back to payment/status")
-
-            # Fallback: legacy bot-level premium (kept for non-academy flows)
             async with s.get(
                 f"{API_BASE}/api/payment/status/{user_id}",
                 params={"bot_name": BOT_NAME},
@@ -828,9 +836,17 @@ async def _check_status(user_id: int, course_id: int | None = None) -> bool:
                 if r.status != 200:
                     return False
                 data = await r.json()
-                return bool(data.get("has_premium"))
+                # (c) legacy premium check
+                if bool(data.get("has_premium")):
+                    return True
+                # (b) check last_external payment for this course reference
+                ext = data.get("last_external") or {}
+                if ext.get("status") == "approved" and course_id is not None:
+                    # Approved payment exists — treat as success signal
+                    return True
+                return False
     except Exception:
-        log.exception("_check_status failed")
+        log.exception("_check_status Railway API check failed")
         return False
 
 

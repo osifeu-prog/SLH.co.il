@@ -762,6 +762,11 @@ async def license_status(user_id: int, course_id: int):
     Returns `{active: bool, license_id: int|None, payment_id: str|None, granted_at: iso|None}`
     for the (user_id, course_id) pair.
 
+    Graceful: if `academy_licenses` table does not exist on this DB (e.g. Railway
+    instance when the local bot writes to its own postgres), returns
+    `{active: false}` rather than 500. The bot's own `_check_status` also
+    consults its local pool directly as primary source of truth.
+
     This replaces the bot's previous reliance on /api/payment/status/{uid}.has_premium,
     which reflects bot-level subscriptions — not course purchases — and was the
     root cause of ACAD-* payment timeouts even after successful payment.
@@ -769,15 +774,21 @@ async def license_status(user_id: int, course_id: int):
     await _require_pool()
     try:
         async with _pool.acquire() as conn:
-            row = await conn.fetchrow(
-                """
-                SELECT id, payment_id, status, created_at
-                FROM academy_licenses
-                WHERE user_id = $1 AND course_id = $2 AND status = 'active'
-                ORDER BY id DESC LIMIT 1
-                """,
-                user_id, course_id,
-            )
+            try:
+                row = await conn.fetchrow(
+                    """
+                    SELECT id, payment_id, status, created_at
+                    FROM academy_licenses
+                    WHERE user_id = $1 AND course_id = $2 AND status = 'active'
+                    ORDER BY id DESC LIMIT 1
+                    """,
+                    user_id, course_id,
+                )
+            except Exception as _inner:
+                # Table may not exist on this DB instance — graceful fallback.
+                logger.warning(f"[academia-ugc] license_status inner query failed: {_inner!r}")
+                return {"active": False, "license_id": None, "payment_id": None,
+                        "granted_at": None, "note": "table_unavailable"}
         if not row:
             return {"active": False, "license_id": None, "payment_id": None, "granted_at": None}
         return {
