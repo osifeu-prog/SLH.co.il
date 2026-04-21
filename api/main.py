@@ -7292,7 +7292,7 @@ P2P_VALID_STATUSES = {"active", "filled", "cancelled"}
 
 
 async def _ensure_p2p_orders_table(conn):
-    """Create p2p_orders table if it does not exist."""
+    """Create p2p_orders table if it does not exist, and add columns added after initial deploy."""
     await conn.execute("""
         CREATE TABLE IF NOT EXISTS p2p_orders (
             id              SERIAL PRIMARY KEY,
@@ -7306,6 +7306,16 @@ async def _ensure_p2p_orders_table(conn):
             created_at      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         )
     """)
+    # Migrations: add columns if not present (idempotent)
+    for col_sql in [
+        "ALTER TABLE p2p_orders ADD COLUMN IF NOT EXISTS buyer_id BIGINT",
+        "ALTER TABLE p2p_orders ADD COLUMN IF NOT EXISTS filled_at TIMESTAMP",
+        "ALTER TABLE p2p_orders ADD COLUMN IF NOT EXISTS cancelled_at TIMESTAMP",
+    ]:
+        try:
+            await conn.execute(col_sql)
+        except Exception:
+            pass
 
 
 class P2PCreateOrder(BaseModel):
@@ -7325,7 +7335,7 @@ class P2PFillOrder(BaseModel):
 # â”€â”€ POST /api/p2p/create-order â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 @app.post("/api/p2p/create-order")
 async def p2p_create_order(body: P2PCreateOrder):
-    """Create a new P2P sell order."""
+    """Create a new P2P sell order. Escrows (debits) the seller's token balance immediately."""
     if body.token.upper() not in P2P_VALID_TOKENS:
         raise HTTPException(400, f"Invalid token. Must be one of: {', '.join(P2P_VALID_TOKENS)}")
     if body.currency.upper() not in P2P_VALID_CURRENCIES:
@@ -7335,30 +7345,48 @@ async def p2p_create_order(body: P2PCreateOrder):
     if body.amount <= 0 or body.price_per_unit <= 0:
         raise HTTPException(400, "Amount and price must be positive")
 
+    token = body.token.upper()
     async with pool.acquire() as conn:
         await _ensure_p2p_orders_table(conn)
-        row = await conn.fetchrow("""
-            INSERT INTO p2p_orders (seller_id, token, amount, price_per_unit, currency, payment_method, status)
-            VALUES ($1, $2, $3, $4, $5, $6, 'active')
-            RETURNING id, seller_id, token, amount, price_per_unit, currency, payment_method, status, created_at
-        """, body.seller_id, body.token.upper(), body.amount, body.price_per_unit,
-             body.currency.upper(), body.payment_method)
 
-        await audit_log_write(
-            conn,
-            action="p2p.create_order",
-            actor_type="user",
-            actor_user_id=body.seller_id,
-            resource_type="p2p_order",
-            resource_id=str(row["id"]),
-            metadata={
-                "token": body.token.upper(),
-                "amount": body.amount,
-                "price_per_unit": body.price_per_unit,
-                "currency": body.currency.upper(),
-                "payment_method": body.payment_method,
-            },
-        )
+        # ── Escrow: verify + debit seller balance atomically ──────────
+        async with conn.transaction():
+            balance = await conn.fetchval(
+                "SELECT balance FROM token_balances WHERE user_id=$1 AND token=$2",
+                body.seller_id, token
+            ) or 0
+            if float(balance) < body.amount:
+                raise HTTPException(400, f"יתרה לא מספיקה: יש {float(balance):.4f} {token}, נדרש {body.amount}")
+
+            await conn.execute(
+                "UPDATE token_balances SET balance = balance - $1, updated_at = CURRENT_TIMESTAMP "
+                "WHERE user_id=$2 AND token=$3",
+                body.amount, body.seller_id, token
+            )
+
+            row = await conn.fetchrow("""
+                INSERT INTO p2p_orders (seller_id, token, amount, price_per_unit, currency, payment_method, status)
+                VALUES ($1, $2, $3, $4, $5, $6, 'active')
+                RETURNING id, seller_id, token, amount, price_per_unit, currency, payment_method, status, created_at
+            """, body.seller_id, token, body.amount, body.price_per_unit,
+                 body.currency.upper(), body.payment_method)
+
+            await audit_log_write(
+                conn,
+                action="p2p.create_order",
+                actor_type="user",
+                actor_user_id=body.seller_id,
+                resource_type="p2p_order",
+                resource_id=str(row["id"]),
+                metadata={
+                    "token": token,
+                    "amount": body.amount,
+                    "price_per_unit": body.price_per_unit,
+                    "currency": body.currency.upper(),
+                    "payment_method": body.payment_method,
+                    "escrowed": True,
+                },
+            )
 
     return {
         "ok": True,
@@ -7453,7 +7481,7 @@ async def p2p_list_orders(
 # â”€â”€ POST /api/p2p/fill-order â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 @app.post("/api/p2p/fill-order")
 async def p2p_fill_order(body: P2PFillOrder):
-    """Mark an active P2P order as filled by a buyer."""
+    """Fill an active P2P order: transfers escrowed tokens to buyer atomically."""
     async with pool.acquire() as conn:
         await _ensure_p2p_orders_table(conn)
 
@@ -7463,39 +7491,59 @@ async def p2p_fill_order(body: P2PFillOrder):
         if not row:
             raise HTTPException(404, "Order not found")
         if row["status"] != "active":
-            raise HTTPException(400, f"Order is already {row['status']}")
+            raise HTTPException(400, f"ההזמנה כבר {row['status']}")
         if row["seller_id"] == body.buyer_id:
             raise HTTPException(400, "Seller cannot fill own order")
 
-        await conn.execute(
-            "UPDATE p2p_orders SET status = 'filled' WHERE id = $1",
-            body.order_id,
-        )
+        async with conn.transaction():
+            # Credit tokens to buyer (seller was debited at create-order time)
+            await conn.execute("""
+                INSERT INTO token_balances (user_id, token, balance)
+                VALUES ($1, $2, $3)
+                ON CONFLICT (user_id, token) DO UPDATE
+                  SET balance = token_balances.balance + EXCLUDED.balance,
+                      updated_at = CURRENT_TIMESTAMP
+            """, body.buyer_id, row["token"], float(row["amount"]))
 
-        await audit_log_write(
-            conn,
-            action="p2p.fill_order",
-            actor_type="user",
-            actor_user_id=body.buyer_id,
-            resource_type="p2p_order",
-            resource_id=str(body.order_id),
-            metadata={
-                "seller_id": row["seller_id"],
-                "buyer_id": body.buyer_id,
-                "token": row["token"],
-                "amount": float(row["amount"]),
-                "price_per_unit": float(row["price_per_unit"]),
-                "currency": row["currency"],
-            },
-        )
+            # Mark order filled with buyer_id + timestamp
+            await conn.execute(
+                "UPDATE p2p_orders SET status='filled', buyer_id=$1, filled_at=NOW() WHERE id=$2",
+                body.buyer_id, body.order_id,
+            )
 
-    return {"ok": True, "message": "Order filled successfully", "order_id": body.order_id}
+            await audit_log_write(
+                conn,
+                action="p2p.fill_order",
+                actor_type="user",
+                actor_user_id=body.buyer_id,
+                resource_type="p2p_order",
+                resource_id=str(body.order_id),
+                metadata={
+                    "seller_id": row["seller_id"],
+                    "buyer_id": body.buyer_id,
+                    "token": row["token"],
+                    "amount": float(row["amount"]),
+                    "price_per_unit": float(row["price_per_unit"]),
+                    "currency": row["currency"],
+                    "total_price": round(float(row["amount"]) * float(row["price_per_unit"]), 2),
+                },
+            )
+
+    return {
+        "ok": True,
+        "order_id": body.order_id,
+        "token": row["token"],
+        "amount": float(row["amount"]),
+        "total_price": round(float(row["amount"]) * float(row["price_per_unit"]), 2),
+        "currency": row["currency"],
+        "seller_id": row["seller_id"],
+    }
 
 
 # â”€â”€ DELETE /api/p2p/cancel-order/{id} â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 @app.delete("/api/p2p/cancel-order/{order_id}")
 async def p2p_cancel_order(order_id: int, seller_id: int = Query(..., description="Seller's telegram ID")):
-    """Cancel an active P2P order. Only the seller can cancel their own order."""
+    """Cancel an active P2P order. Returns escrowed tokens to seller."""
     async with pool.acquire() as conn:
         await _ensure_p2p_orders_table(conn)
 
@@ -7507,32 +7555,104 @@ async def p2p_cancel_order(order_id: int, seller_id: int = Query(..., descriptio
         if row["seller_id"] != seller_id:
             raise HTTPException(403, "Only the seller can cancel this order")
         if row["status"] != "active":
-            raise HTTPException(400, f"Order is already {row['status']}")
+            raise HTTPException(400, f"ההזמנה כבר {row['status']}")
 
-        await conn.execute(
-            "UPDATE p2p_orders SET status = 'cancelled' WHERE id = $1",
-            order_id,
-        )
+        async with conn.transaction():
+            # Refund escrowed tokens to seller
+            await conn.execute("""
+                INSERT INTO token_balances (user_id, token, balance)
+                VALUES ($1, $2, $3)
+                ON CONFLICT (user_id, token) DO UPDATE
+                  SET balance = token_balances.balance + EXCLUDED.balance,
+                      updated_at = CURRENT_TIMESTAMP
+            """, row["seller_id"], row["token"], float(row["amount"]))
 
-        await audit_log_write(
-            conn,
-            action="p2p.cancel_order",
-            actor_type="user",
-            actor_user_id=seller_id,
-            resource_type="p2p_order",
-            resource_id=str(order_id),
-            metadata={
-                "token": row["token"],
-                "amount": float(row["amount"]),
-                "price_per_unit": float(row["price_per_unit"]),
-            },
-        )
+            await conn.execute(
+                "UPDATE p2p_orders SET status='cancelled', cancelled_at=NOW() WHERE id=$1",
+                order_id,
+            )
 
-    return {"ok": True, "message": "Order cancelled", "order_id": order_id}
+            await audit_log_write(
+                conn,
+                action="p2p.cancel_order",
+                actor_type="user",
+                actor_user_id=seller_id,
+                resource_type="p2p_order",
+                resource_id=str(order_id),
+                metadata={
+                    "token": row["token"],
+                    "amount": float(row["amount"]),
+                    "refunded": True,
+                },
+            )
+
+    return {“ok”: True, “message”: “Order cancelled — tokens refunded”, “order_id”: order_id,
+            “refunded_token”: row[“token”], “refunded_amount”: float(row[“amount”])}
+
+
+# ── POST /api/p2p/bot-transfer ──────────────────────────────────────────────
+# Direct internal transfer for bot use — no JWT needed, authenticated by BOT_SYNC_SECRET.
+# Used by airdrop-bot for /send_SLH, /send_ZVK, /send_MNH commands.
+
+class BotTransferRequest(BaseModel):
+    from_user_id: int
+    to_user_id: int
+    token: str      # SLH / ZVK / MNH / REP
+    amount: float
+    memo: Optional[str] = “”
+
+@app.post(“/api/p2p/bot-transfer”)
+async def p2p_bot_transfer(body: BotTransferRequest, x_bot_secret: Optional[str] = Header(None)):
+    “””Internal transfer via bot. Authenticated with X-Bot-Secret header.”””
+    expected = os.getenv(“BOT_SYNC_SECRET”, “slh-bot-sync-2026-default-please-override”)
+    if x_bot_secret != expected:
+        raise HTTPException(403, “Invalid bot secret”)
+    if body.from_user_id == body.to_user_id:
+        raise HTTPException(400, “Cannot transfer to self”)
+    if body.amount <= 0:
+        raise HTTPException(400, “Amount must be positive”)
+    token = body.token.upper()
+    if token not in (“SLH”, “ZVK”, “MNH”, “REP”):
+        raise HTTPException(400, “Token must be SLH, ZVK, MNH or REP”)
+
+    async with pool.acquire() as conn:
+        async with conn.transaction():
+            balance = await conn.fetchval(
+                “SELECT balance FROM token_balances WHERE user_id=$1 AND token=$2”,
+                body.from_user_id, token
+            ) or 0
+            if float(balance) < body.amount:
+                raise HTTPException(400, f”יתרה לא מספיקה: {float(balance):.4f} {token}”)
+
+            await conn.execute(
+                “UPDATE token_balances SET balance = balance - $1, updated_at = CURRENT_TIMESTAMP “
+                “WHERE user_id=$2 AND token=$3”,
+                body.amount, body.from_user_id, token
+            )
+            await conn.execute(“””
+                INSERT INTO token_balances (user_id, token, balance)
+                VALUES ($1, $2, $3)
+                ON CONFLICT (user_id, token) DO UPDATE
+                  SET balance = token_balances.balance + EXCLUDED.balance, updated_at = CURRENT_TIMESTAMP
+            “””, body.to_user_id, token, body.amount)
+
+            xfer_id = await conn.fetchval(“””
+                INSERT INTO internal_transfers (from_user_id, to_user_id, token, amount, memo, fee)
+                VALUES ($1, $2, $3, $4, $5, 0) RETURNING id
+            “””, body.from_user_id, body.to_user_id, token, body.amount, body.memo or “bot-transfer”)
+
+            await audit_log_write(
+                conn, action=”bot_transfer”, actor_type=”bot”,
+                actor_user_id=body.from_user_id, resource_type=”internal_transfer”,
+                resource_id=str(xfer_id), amount_native=body.amount, amount_currency=token,
+            )
+
+    return {“ok”: True, “transfer_id”: xfer_id, “token”: token, “amount”: body.amount,
+            “from”: body.from_user_id, “to”: body.to_user_id}
 
 
 # ============================================================
-# P2P ORDER BOOK â€” JWT-Authenticated Endpoints (v2)
+# P2P ORDER BOOK — JWT-Authenticated Endpoints (v2)
 # ============================================================
 # These endpoints use JWT bearer tokens to identify the caller.
 # The seller/buyer is derived from the JWT, not from the request body.
