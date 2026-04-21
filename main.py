@@ -10671,6 +10671,74 @@ async def esp_push_command(
     return {"ok": True, "cmd_id": cmd_id, "device_id": device_id}
 
 
+class LinkPhoneTgReq(BaseModel):
+    phone: str
+    telegram_id: int
+    display_name: Optional[str] = None
+
+
+@app.post("/api/admin/link-phone-tg")
+async def link_phone_to_telegram(
+    req: LinkPhoneTgReq,
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None),
+):
+    """Admin: link an existing users_by_phone row to a Telegram user_id.
+
+    After this call, future /api/device/register requests for this phone will
+    deliver the 6-digit code via Telegram DM rather than falling back to SMS.
+
+    Idempotent: calling twice with the same pair is a no-op.
+    Upserts the row if the phone doesn't exist yet.
+    """
+    admin_id, _role = _require_admin(authorization, x_admin_key)
+    phone = _normalize_phone(req.phone)
+    if len(phone) < 10:
+        raise HTTPException(400, "invalid phone")
+    if req.telegram_id <= 0:
+        raise HTTPException(400, "telegram_id must be positive int")
+
+    async with pool.acquire() as conn:
+        await _ensure_device_tables(conn)
+        existing = await conn.fetchrow(
+            "SELECT user_id, telegram_id FROM users_by_phone WHERE phone = $1", phone
+        )
+        if existing:
+            if existing["telegram_id"] == req.telegram_id:
+                return {"ok": True, "already_linked": True,
+                        "user_id": existing["user_id"], "phone": phone,
+                        "telegram_id": req.telegram_id}
+            await conn.execute(
+                "UPDATE users_by_phone SET telegram_id = $1, "
+                "display_name = COALESCE($2, display_name) WHERE phone = $3",
+                req.telegram_id, req.display_name, phone
+            )
+            user_id = existing["user_id"]
+            action = "relinked"
+        else:
+            user_id = await conn.fetchval(
+                "INSERT INTO users_by_phone (phone, telegram_id, display_name) "
+                "VALUES ($1, $2, $3) RETURNING user_id",
+                phone, req.telegram_id, req.display_name
+            )
+            action = "created"
+
+    try:
+        from shared.events import emit as _emit
+        await _emit(pool, "phone.tg_linked", {
+            "user_id": user_id,
+            "phone_suffix": phone[-4:],
+            "telegram_id": req.telegram_id,
+            "action": action,
+            "by_admin": str(admin_id),
+        }, source="api.admin.link-phone-tg")
+    except Exception as _e:
+        print(f"[link_phone_tg][WARN] emit failed: {_e!r}")
+
+    return {"ok": True, "already_linked": False, "action": action,
+            "user_id": user_id, "phone": phone, "telegram_id": req.telegram_id}
+
+
 @app.get("/api/admin/devices/list")
 async def devices_list_admin(
     user_id: Optional[int] = None,
