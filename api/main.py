@@ -10640,7 +10640,7 @@ async def esp_push_command(
     x_admin_key: Optional[str] = Header(None),
 ):
     """Admin pushes a command to a device queue. body: {command: str, payload?: dict}."""
-    admin_id, _role = _require_admin(authorization, x_admin_key)
+    admin_id = _require_admin(authorization, x_admin_key)
     cmd = (body or {}).get("command")
     if not cmd or not isinstance(cmd, str):
         raise HTTPException(400, "command (str) required")
@@ -10767,7 +10767,7 @@ async def link_phone_to_telegram(
     Idempotent: calling twice with the same pair is a no-op.
     Upserts the row if the phone doesn't exist yet.
     """
-    admin_id, _role = _require_admin(authorization, x_admin_key)
+    admin_id = _require_admin(authorization, x_admin_key)
     phone = _normalize_phone(req.phone)
     if len(phone) < 10:
         raise HTTPException(400, "invalid phone")
