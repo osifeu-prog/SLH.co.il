@@ -319,6 +319,43 @@ async def treasury_health():
             status = {"code": "undercollateralized", "color": "red",
                       "label_he": "undercollateralized", "coverage_ratio": round(coverage, 4)}
 
+    # ----- Breakeven (Level 5 model) -----
+    # Milestones from ops/LEVEL_5_SLH_BREAKEVEN_MODEL.md
+    BE_SURVIVAL = float(os.getenv("BREAKEVEN_SURVIVAL_ILS", "1000"))
+    BE_SUSTAIN = float(os.getenv("BREAKEVEN_SUSTAIN_ILS", "5000"))
+    BE_THRIVING = float(os.getenv("BREAKEVEN_THRIVING_ILS", "20000"))
+
+    r30 = float(R_ils["d30"])
+    if r30 >= BE_THRIVING:
+        next_tier = "above_thriving"
+    elif r30 >= BE_SUSTAIN:
+        next_tier = "thriving"
+    elif r30 >= BE_SURVIVAL:
+        next_tier = "sustainable"
+    else:
+        next_tier = "survival"
+
+    breakeven = {
+        "current_r_ils_30d": round(r30, 2),
+        "targets_ils_per_mo": {
+            "survival": BE_SURVIVAL,
+            "sustainable": BE_SUSTAIN,
+            "thriving": BE_THRIVING,
+        },
+        "progress_pct": {
+            "survival": round(100 * r30 / BE_SURVIVAL, 1) if BE_SURVIVAL else None,
+            "sustainable": round(100 * r30 / BE_SUSTAIN, 1) if BE_SUSTAIN else None,
+            "thriving": round(100 * r30 / BE_THRIVING, 1) if BE_THRIVING else None,
+        },
+        "next_milestone": next_tier,
+        "gap_to_next_ils": (
+            max(0.0, BE_SURVIVAL - r30) if next_tier == "survival"
+            else max(0.0, BE_SUSTAIN - r30) if next_tier == "sustainable"
+            else max(0.0, BE_THRIVING - r30) if next_tier == "thriving"
+            else 0.0
+        ),
+    }
+
     return {
         "as_of": datetime.utcnow().isoformat() + "Z",
         "rates_ils": {
@@ -353,10 +390,12 @@ async def treasury_health():
             "net_treasury_ils": round(net_treasury_ils, 2),
         },
         "status": status,
+        "breakeven": breakeven,
         "notes": [
             "Rates are fixed approximations from env vars; exposed under rates_ils for transparency.",
             "P is contingent, not a guaranteed cash claim - ZVK is activity reward, not yield.",
             "Status 'pre_revenue' means P < 100 ILS; coverage math kicks in above that threshold.",
+            "Breakeven milestones (survival=1000, sustainable=5000, thriving=20000 ILS/mo) from ops/LEVEL_5_SLH_BREAKEVEN_MODEL.md",
         ],
     }
 
