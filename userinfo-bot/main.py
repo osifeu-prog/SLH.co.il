@@ -618,7 +618,7 @@ async def inline_handler(query: InlineQuery):
                 message_text=(
                     f"\U0001f91d <b>Join SLH Ecosystem!</b>\n\n"
                     f"https://t.me/SLH_AIR_bot?start=ref_{uid}\n\n"
-                    f"\U0001f4b0 4%-65% APY | \U0001f6d2 SaaS | \U0001f3a8 NFT | \U0001f3ae Games"
+                    f"\U0001f4b0 Revenue Share Pool | \U0001f6d2 SaaS | \U0001f3a8 NFT | \U0001f3ae Games"
                 ),
                 parse_mode=ParseMode.HTML,
             ),
