@@ -491,8 +491,14 @@ async def payment_status(user_id: int, bot_name: str = "ecosystem"):
             """,
             user_id, bot_name,
         )
+        # NOTE: deposits schema uses `token` (not currency) and `confirmed_at` (not created_at).
+        # Aliased here so the response shape stays the same for bot clients
+        # (academia-bot _check_status, etc.). Bug fix 2026-04-21: endpoint was 500ing on every
+        # call because of column mismatch — which killed the ACAD payment verification flow
+        # for user 8789977826 (4x ILS 49 paid, 0 licenses granted).
         last_dep = await conn.fetchrow(
-            "SELECT id, amount, currency, tx_hash, status, created_at FROM deposits WHERE user_id = $1 ORDER BY id DESC LIMIT 1",
+            "SELECT id, amount, token AS currency, tx_hash, status, confirmed_at AS created_at "
+            "FROM deposits WHERE user_id = $1 ORDER BY id DESC LIMIT 1",
             user_id,
         )
         last_ext = await conn.fetchrow(
