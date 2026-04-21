@@ -20,6 +20,8 @@ import asyncio
 import asyncpg
 import aiohttp
 
+from shared_db_core import init_db_pool as _shared_init_db_pool, db_health as _shared_db_health
+
 from routes.ai_chat import router as ai_chat_router, set_aic_pool as _ai_chat_set_aic_pool
 from routes.payments_auto import router as payments_auto_router, set_pool as _payments_set_pool
 from routes.payments_monitor import router as payments_monitor_router, set_pool as _payments_monitor_set_pool, start_monitor as _payments_monitor_start
@@ -236,6 +238,7 @@ app.include_router(admin_rotate_router)
 
 # === DATABASE ===
 pool: Optional[asyncpg.Pool] = None
+_db_init_failed: bool = False  # True when shared_db_core pool init fails — /api/health returns 503
 
 @app.on_event("startup")
 async def startup():
@@ -257,17 +260,21 @@ async def startup():
     if _security_warnings:
         print(f"[SECURITY WARNING] {len(_security_warnings)} default credentials detected. Set env vars on Railway before production.")
 
-    # STARTUP HARDENING: 10s timeout on pool creation — Railway healthcheck fails
-    # after 5min, so we must let uvicorn bind even if DB is slow.
+    # STARTUP HARDENING: use shared_db_core.init_db_pool (single source of truth).
+    # Railway healthcheck fails after 5min, so we let uvicorn bind even if DB is slow;
+    # BUT /api/health now returns 503 honestly when pool is unavailable (no silent lies).
+    global _db_init_failed
     try:
         pool = await asyncio.wait_for(
-            asyncpg.create_pool(DATABASE_URL, min_size=2, max_size=10),
+            _shared_init_db_pool(DATABASE_URL),
             timeout=10.0,
         )
-        print("[Startup] DB pool created")
+        _db_init_failed = False
+        print("[Startup] DB pool created via shared_db_core")
     except Exception as e:
-        print(f"[Startup][ERROR] DB pool creation failed: {e!r} — continuing without pool; endpoints that need DB will 503")
+        print(f"[Startup][CRITICAL] DB pool init failed: {e!r} — /api/health will return 503")
         pool = None
+        _db_init_failed = True
 
     if pool is not None:
         for setter in (_payments_set_pool, _payments_monitor_set_pool, _community_plus_set_pool,
@@ -2959,13 +2966,19 @@ async def get_stats():
 # === HEALTH ===
 @app.get("/api/health")
 async def health():
-    """Health check"""
-    try:
-        async with pool.acquire() as conn:
-            await conn.fetchval("SELECT 1")
-        return {"status": "ok", "db": "connected", "version": "1.1.0"}
-    except Exception as e:
-        return JSONResponse({"status": "error", "db": str(e)}, status_code=503)
+    """Health check — returns 503 when DB pool is unavailable (Phase 0: no silent lies)."""
+    if pool is None or _db_init_failed:
+        return JSONResponse(
+            {"status": "error", "db": "pool_unavailable", "version": "1.1.0"},
+            status_code=503,
+        )
+    ok = await _shared_db_health()
+    if not ok:
+        return JSONResponse(
+            {"status": "error", "db": "ping_failed", "version": "1.1.0"},
+            status_code=503,
+        )
+    return {"status": "ok", "db": "connected", "version": "1.1.0"}
 
 
 # === TOKEN TRANSFERS ===
@@ -3012,21 +3025,17 @@ async def transfer_tokens(req: TransferRequest):
     return {"status": "ok", "amount": req.amount, "token": req.token}
 
 
-# === MULTI-GENERATION REFERRAL SYSTEM ===
-# Commission rates by generation (up to 10 levels)
+# === TWO-TIER AFFILIATE PROGRAM ===
+# Per 2026-04-20 Dynamic Yield pivot: reduced from 10-gen to 2-tier to comply with
+# securities regulation (MLM/Ponzi-adjacent structure removed).
+# See ops/DYNAMIC_YIELD_SPEC_20260420.md §7 and COPY_OVERHAUL_URGENT_20260420.md.
+# Payouts funded from separate referral budget carved out of real system revenue
+# (course sales, marketplace fees, SaaS subs) — NOT from other users' deposits.
 REFERRAL_RATES = {
-    1: 0.10,   # 10% - direct referral
-    2: 0.05,   # 5%
-    3: 0.03,   # 3%
-    4: 0.02,   # 2%
-    5: 0.01,   # 1%
-    6: 0.005,  # 0.5%
-    7: 0.005,
-    8: 0.005,
-    9: 0.005,
-    10: 0.005,
+    1: 0.20,   # Tier 1 (direct referral): 20% of their purchase
+    2: 0.05,   # Tier 2 (referral's referral): 5% of their purchase
 }
-MAX_GENERATIONS = 10
+MAX_GENERATIONS = 2
 
 
 async def get_referral_chain(conn, user_id: int) -> list[int]:
@@ -6237,14 +6246,14 @@ OG_PAGE_CONFIG = {
     "dex-launch":   {"title": "DEX Launch Calculator", "subtitle": "AMM math \u00b7 Slippage \u00b7 5 scenarios from \u003232", "accent": "#f3ba2f", "icon": "DEX"},
     "daily-blog":   {"title": "SLH Daily Blog", "subtitle": "What we shipped today", "accent": "#00e887", "icon": "BLOG"},
     "guides":       {"title": "SLH Guides", "subtitle": "Step-by-step tutorials", "accent": "#00ff41", "icon": "DOCS"},
-    "referral":     {"title": "SLH Referral Program", "subtitle": "10 generations of commissions", "accent": "#a855f7", "icon": "REF"},
+    "referral":     {"title": "SLH Affiliate Program", "subtitle": "Two-tier \u00b7 20% direct + 5% Tier 2", "accent": "#a855f7", "icon": "REF"},
     "healing":      {"title": "SLH Healing Vision", "subtitle": "The currency of healing, education, and aid", "accent": "#ff6b9d", "icon": "HEAL"},
-    "liquidity":    {"title": "SLH Liquidity & Staking", "subtitle": "9 plans \u00b7 Up to 65% APY \u00b7 TON/SLH/BNB", "accent": "#00e887", "icon": "LP"},
+    "liquidity":    {"title": "SLH Liquidity & Staking", "subtitle": "Revenue Share Pool \u00b7 Dynamic Yield \u00b7 TON/SLH/BNB", "accent": "#00e887", "icon": "LP"},
     "challenge":    {"title": "21-Day Challenge", "subtitle": "\u05e8\u05d9\u05e4\u05d5\u05d9 \u00b7 \u05de\u05d3\u05d9\u05d8\u05e6\u05d9\u05d4 \u00b7 \u05e7\u05d4\u05d9\u05dc\u05d4", "accent": "#ff6b9d", "icon": "21"},
     "jubilee":      {"title": "SLH Jubilee Year", "subtitle": "Biblical economic reset \u2014 Healing through blockchain", "accent": "#7cb342", "icon": "YOV"},
     "member":       {"title": "SLH Member Card", "subtitle": "Your personal NFT \u00b7 Genesis Status \u00b7 REP Score", "accent": "#a855f7", "icon": "NFT"},
     "p2p":          {"title": "SLH P2P Trading", "subtitle": "Trade directly with community members", "accent": "#00b4d8", "icon": "P2P"},
-    "staking":      {"title": "SLH Staking", "subtitle": "Earn up to 65% APY \u00b7 4 lock periods", "accent": "#ffd700", "icon": "STAK"},
+    "staking":      {"title": "SLH Staking", "subtitle": "Revenue Share Pool \u00b7 Dynamic Yield \u00b7 4 lock tiers", "accent": "#ffd700", "icon": "STAK"},
     "whitepaper":   {"title": "SLH Whitepaper", "subtitle": "Architecture \u00b7 Tokenomics \u00b7 Vision", "accent": "#6c5ce7", "icon": "WP"},
     "privacy":      {"title": "SLH Privacy Policy", "subtitle": "Your data, your rights", "accent": "#888", "icon": "PRIV"},
     "terms":        {"title": "SLH Terms of Service", "subtitle": "Usage terms and conditions", "accent": "#888", "icon": "TOS"},
