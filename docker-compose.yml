@@ -121,6 +121,7 @@ services:
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_wallet
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
       TON_API_KEY: ${TON_API_KEY}
+      BASE_URL: https://slh-nft.com
       ENV: prod
 
   factory-bot:
@@ -482,7 +483,7 @@ services:
       WEWORK_TEAMVIWER_TOKEN: ${WEWORK_TEAMVIWER_TOKEN}
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
       SLH_API_BASE: https://slh-api-production.up.railway.app
-      SUPPORT_HANDLE: "@SLHSupport"
+      SUPPORT_HANDLE: "@osifeu_prog"
       ACADEMIA_BOT_NAME: academia
 
 volumes:

@@ -1,0 +1,234 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH ┬╖ ╫⌐╫¿╫⌐╫¿╫¬ ╫ö╫₧╫ó╫¿╫¢╫¬</title>
+<link rel="stylesheet" href="/css/style.css">
+<style>
+  body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: #0b1020; color: #e9ecf2; padding: 20px; max-width: 1200px; margin: 0 auto; }
+  h1 { color: #7ab4ff; margin: 0 0 6px; }
+  .subtitle { color: #8a98bf; margin: 0 0 22px; font-size: 14px; }
+  .chain { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 22px; }
+  .node { background: #12182f; border: 1px solid #223058; border-radius: 12px; padding: 14px 16px; }
+  .node h3 { margin: 0 0 8px; color: #b5c6eb; font-size: 14px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+  .node .dot { width: 10px; height: 10px; border-radius: 50%; background: #555; display: inline-block; }
+  .dot.ok { background: #4ade80; box-shadow: 0 0 10px #4ade8080; }
+  .dot.warn { background: #fbbf24; }
+  .dot.err { background: #f87171; }
+  .stat { font-size: 20px; font-weight: 700; color: #fff; }
+  .caption { color: #8a98bf; font-size: 12px; margin-top: 4px; }
+  .panel { background: #12182f; border: 1px solid #223058; border-radius: 12px; padding: 16px; margin-bottom: 14px; }
+  .panel h2 { margin: 0 0 12px; color: #7ab4ff; font-size: 18px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 8px 6px; text-align: right; border-bottom: 1px solid #223058; }
+  th { color: #9db0d4; font-weight: 500; }
+  .refresh-hint { color: #5a6a99; font-size: 12px; text-align: center; margin-top: 18px; }
+  .err-text { color: #f87171; font-size: 13px; }
+  .ok-text { color: #4ade80; }
+</style>
+</head>
+<body>
+<h1>≡ƒöù ╫⌐╫¿╫⌐╫¿╫¬ SLH ΓÇö ╫₧╫ª╫æ ╫ù╫Ö</h1>
+<p class="subtitle">device ΓåÆ TG ΓåÆ Guardian ΓåÆ Ledger ΓåÆ API ΓÇö ╫¿╫ó╫á╫ò╫ƒ ╫É╫ò╫ÿ╫ò╫₧╫ÿ╫Ö ╫¢╫£ 15 ╫⌐╫á╫Ö╫ò╫¬</p>
+
+<div class="chain" id="chain">
+  <div class="node" id="node-api">
+    <h3>Railway API <span class="dot" id="dot-api"></span></h3>
+    <div class="stat" id="stat-api">ΓÇö</div>
+    <div class="caption">/api/health latency</div>
+  </div>
+  <div class="node" id="node-devices">
+    <h3>╫₧╫¢╫⌐╫Ö╫¿╫Ö╫¥ <span class="dot" id="dot-devices"></span></h3>
+    <div class="stat" id="stat-devices">ΓÇö</div>
+    <div class="caption">╫ñ╫ó╫Ö╫£╫Ö╫¥ ╫æ-24 ╫⌐╫ó╫ò╫¬ ╫É╫ù╫¿╫ò╫á╫ò╫¬</div>
+  </div>
+  <div class="node" id="node-guardian">
+    <h3>Guardian <span class="dot" id="dot-guardian"></span></h3>
+    <div class="stat" id="stat-guardian">ΓÇö</div>
+    <div class="caption">╫ô╫Ö╫ò╫ò╫ù╫Ö╫¥ ╫ñ╫ó╫Ö╫£╫Ö╫¥ + ╫ù╫í╫ò╫₧╫Ö╫¥</div>
+  </div>
+  <div class="node" id="node-ledger">
+    <h3>Ledger (╫Ö╫ò╫¥) <span class="dot" id="dot-ledger"></span></h3>
+    <div class="stat" id="stat-ledger">ΓÇö</div>
+    <div class="caption">╫í╫ö"╫¢ SLH/MNH/ZVK ╫⌐╫á╫ó╫ò</div>
+  </div>
+  <div class="node" id="node-staking">
+    <h3>Staking <span class="dot" id="dot-staking"></span></h3>
+    <div class="stat" id="stat-staking">ΓÇö</div>
+    <div class="caption">╫ñ╫ó╫Ö╫£ ┬╖ TON + SLH ╫á╫ó╫ò╫£╫Ö╫¥</div>
+  </div>
+</div>
+
+<div class="panel">
+  <h2>≡ƒôƒ ╫₧╫¢╫⌐╫Ö╫¿╫Ö╫¥ ΓÇö 10 ╫ö╫É╫ù╫¿╫ò╫á╫Ö╫¥ ╫£╫ñ╫Ö heartbeat</h2>
+  <table>
+    <thead><tr><th>device_id</th><th>user_id</th><th>fw</th><th>ssid</th><th>last_seen</th></tr></thead>
+    <tbody id="tbl-devices"><tr><td colspan="5" class="caption">╫ÿ╫ò╫ó╫ƒΓÇª</td></tr></tbody>
+  </table>
+</div>
+
+<div class="panel">
+  <h2>≡ƒÜ¿ Guardian ΓÇö 10 ╫ô╫Ö╫ò╫ò╫ù╫Ö╫¥ ╫É╫ù╫¿╫ò╫á╫Ö╫¥</h2>
+  <table>
+    <thead><tr><th>user_id</th><th>ZUZ</th><th>╫ù╫í╫ò╫¥</th><th>╫ô╫Ö╫ò╫ò╫ù╫Ö╫¥</th></tr></thead>
+    <tbody id="tbl-guardian"><tr><td colspan="4" class="caption">╫ÿ╫ò╫ó╫ƒΓÇª</td></tr></tbody>
+  </table>
+</div>
+
+<div class="panel">
+  <h2>≡ƒôí Events ΓÇö 20 ╫É╫ù╫¿╫ò╫á╫Ö╫¥</h2>
+  <table>
+    <thead><tr><th>id</th><th>type</th><th>╫₧╫¬╫Ö</th><th>╫¬╫ò╫¢╫ƒ</th></tr></thead>
+    <tbody id="tbl-events"><tr><td colspan="4" class="caption">╫ÿ╫ò╫ó╫ƒΓÇª</td></tr></tbody>
+  </table>
+</div>
+
+<p class="refresh-hint" id="refresh-hint">ΓÇö</p>
+
+<script>
+const API = "https://slh-api-production.up.railway.app";
+const ADMIN_KEY_LS = "slh_admin_password";
+
+function getAdminKey() {
+  return localStorage.getItem(ADMIN_KEY_LS) || "";
+}
+
+async function fetchJSON(url, opts = {}) {
+  const headers = {...(opts.headers || {})};
+  const key = getAdminKey();
+  if (key) headers["X-Admin-Key"] = key;
+  const t0 = performance.now();
+  const r = await fetch(url, {...opts, headers});
+  const ms = performance.now() - t0;
+  const body = r.ok ? await r.json().catch(() => null) : null;
+  return {ok: r.ok, status: r.status, body, ms: Math.round(ms)};
+}
+
+function setDot(id, cls) {
+  const el = document.getElementById(id);
+  el.className = 'dot ' + cls;
+}
+
+function isoToShort(iso) {
+  if (!iso) return 'ΓÇö';
+  try {
+    const d = new Date(iso);
+    return d.toLocaleString('he-IL', {hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit'});
+  } catch(e) { return iso; }
+}
+
+async function refresh() {
+  // API health
+  const health = await fetchJSON(`${API}/api/health`);
+  document.getElementById('stat-api').textContent = health.ok ? `${health.ms} ms` : 'DOWN';
+  setDot('dot-api', health.ok ? 'ok' : 'err');
+
+  // Devices list (admin)
+  const devices = await fetchJSON(`${API}/api/admin/devices/list?limit=10`);
+  if (devices.ok && devices.body?.devices) {
+    const ds = devices.body.devices;
+    const active24h = ds.filter(d => {
+      if (!d.last_seen) return false;
+      return new Date(d.last_seen).getTime() > Date.now() - 86400000;
+    }).length;
+    document.getElementById('stat-devices').textContent = `${active24h} / ${ds.length}`;
+    setDot('dot-devices', active24h > 0 ? 'ok' : 'warn');
+
+    const tbody = document.getElementById('tbl-devices');
+    tbody.innerHTML = ds.length === 0 ?
+      `<tr><td colspan="5" class="caption">╫É╫Ö╫ƒ ╫₧╫¢╫⌐╫Ö╫¿╫Ö╫¥</td></tr>` :
+      ds.slice(0, 10).map(d => `
+        <tr>
+          <td style="font-family:monospace">${d.device_id}</td>
+          <td>${d.user_id ?? 'ΓÇö'}</td>
+          <td>${d.device_type || 'ΓÇö'}</td>
+          <td>${d.phone ? '≡ƒô▒ ' + d.phone.slice(-4) : 'ΓÇö'}</td>
+          <td>${isoToShort(d.last_seen)}</td>
+        </tr>`).join('');
+  } else {
+    setDot('dot-devices', 'err');
+    document.getElementById('stat-devices').textContent = 'ERR';
+    document.getElementById('tbl-devices').innerHTML =
+      `<tr><td colspan="5" class="err-text">${devices.status} ΓÇö ╫ª╫¿╫Ö╫Ü admin key ╫æ-localStorage</td></tr>`;
+  }
+
+  // Guardian
+  const bl = await fetchJSON(`${API}/api/guardian/blacklist?limit=10`);
+  if (bl.ok && Array.isArray(bl.body)) {
+    const active = bl.body.filter(u => u.ban_active).length;
+    document.getElementById('stat-guardian').textContent = `${bl.body.length} (${active} ╫ù╫í╫ò╫₧╫Ö╫¥)`;
+    setDot('dot-guardian', active > 0 ? 'warn' : 'ok');
+    const tbody = document.getElementById('tbl-guardian');
+    tbody.innerHTML = bl.body.length === 0 ?
+      `<tr><td colspan="4" class="caption">Γ£¿ ╫¿╫Ö╫º</td></tr>` :
+      bl.body.map(u => `
+        <tr>
+          <td>${u.user_id}</td>
+          <td>${(u.zuz_score || 0).toFixed(0)}</td>
+          <td>${u.ban_active ? '≡ƒöÆ' : 'ΓÜá∩╕Å'}</td>
+          <td>${u.total_reports || 0}</td>
+        </tr>`).join('');
+  } else {
+    setDot('dot-guardian', 'err');
+    document.getElementById('stat-guardian').textContent = 'ERR';
+  }
+
+  // Ledger volume (today) ΓÇö we'll estimate from /api/tokenomics/stats
+  const stats = await fetchJSON(`${API}/api/tokenomics/stats`);
+  if (stats.ok) {
+    const t = stats.body;
+    const today = (t.transfers_today || 0);
+    document.getElementById('stat-ledger').textContent = `${today} Γåö`;
+    setDot('dot-ledger', today > 0 ? 'ok' : 'warn');
+  } else {
+    setDot('dot-ledger', 'err');
+  }
+
+  // Staking
+  const stake = await fetchJSON(`${API}/api/staking/plans`);
+  if (stake.ok) {
+    const total = stake.body?.total_locked_ton || stake.body?.total_staked || 'ΓÇö';
+    document.getElementById('stat-staking').textContent = `${total} TON`;
+    setDot('dot-staking', 'ok');
+  } else {
+    setDot('dot-staking', 'err');
+  }
+
+  // Events (admin) ΓÇö reads from event_log via the new /api/admin/events endpoint
+  const events = await fetchJSON(`${API}/api/admin/events?limit=20`);
+  if (events.ok && Array.isArray(events.body?.events)) {
+    const tbody = document.getElementById('tbl-events');
+    tbody.innerHTML = events.body.events.length === 0 ?
+      `<tr><td colspan="4" class="caption">╫É╫Ö╫ƒ events ╫ó╫ô╫Ö╫Ö╫ƒ ΓÇö ╫ö╫₧╫¬╫ƒ ╫£╫ö╫ò╫ô╫ó╫¬ payment / stake / device</td></tr>` :
+      events.body.events.map(e => {
+        const p = e.payload || {};
+        const snippet = Object.entries(p).slice(0, 3).map(([k, v]) => `${k}=${String(v).slice(0, 40)}`).join(', ');
+        return `
+          <tr>
+            <td>${e.id}</td>
+            <td style="color:#7ab4ff;font-family:monospace">${e.type}</td>
+            <td>${isoToShort(e.created_at)}</td>
+            <td style="font-size:11px;color:#9db0d4">${snippet}</td>
+          </tr>`;
+      }).join('');
+    // Update ledger card with 24h by-type breakdown (override earlier heuristic)
+    const by = events.body.events_24h_by_type || {};
+    const total24h = Object.values(by).reduce((a, b) => a + b, 0);
+    if (total24h > 0) {
+      document.getElementById('stat-ledger').textContent = `${total24h} events/24h`;
+      setDot('dot-ledger', 'ok');
+    }
+  } else {
+    document.getElementById('tbl-events').innerHTML =
+      `<tr><td colspan="4" class="err-text">${events.status} ΓÇö ╫ª╫¿╫Ö╫Ü admin key ╫æ-localStorage</td></tr>`;
+  }
+
+  document.getElementById('refresh-hint').textContent = '╫ó╫ò╫ô╫¢╫ƒ: ' + new Date().toLocaleTimeString('he-IL');
+}
+
+refresh();
+setInterval(refresh, 15000);
+</script>
+</body>
+</html>

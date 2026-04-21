@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+# SLH Spark · pre-commit guard
+# Blocks commits that look like accidental drift reverts.
+# Install: git config core.hooksPath .githooks
+# Bypass (for legitimate large commits): GUARD_CONFIRMED=1 git commit ...
+# Docs: ops/HOOKS_IMPROVEMENT_PLAN_20260421.md
+
+set -u
+
+# Thresholds
+MAX_TOTAL_LINES=300          # commit total (+/-) before requiring feat/refactor/docs tag
+MAX_SINGLE_FILE_NET_DEL=100  # net deletion in one file before flagging
+
+# Commit-msg scope that bypasses MAX_TOTAL_LINES
+SCOPED_TYPES_REGEX='^(feat|refactor|docs)(\(.+\))?!?: '
+
+# Skip if nothing staged
+STAGED=$(git diff --cached --numstat)
+[ -z "$STAGED" ] && exit 0
+
+# Read commit message (may be empty at this point — from -m or editor)
+COMMIT_MSG_FILE="${GIT_DIR:-.git}/COMMIT_EDITMSG"
+COMMIT_MSG=""
+[ -f "$COMMIT_MSG_FILE" ] && COMMIT_MSG=$(head -1 "$COMMIT_MSG_FILE" 2>/dev/null || true)
+
+total_added=0
+total_removed=0
+warnings=()
+
+while IFS=$'\t' read -r added removed path; do
+    # Skip binary (git marks as '-')
+    [ "$added" = "-" ] && continue
+    [ -z "$added" ] && continue
+
+    total_added=$((total_added + added))
+    total_removed=$((total_removed + removed))
+
+    # Rule 2: single-file large net deletion
+    net_del=$((removed - added))
+    if [ "$net_del" -gt "$MAX_SINGLE_FILE_NET_DEL" ]; then
+        warnings+=("LARGE_DELETE: $path — net -$net_del lines (removed=$removed, added=$added)")
+    fi
+done <<< "$STAGED"
+
+total_changes=$((total_added + total_removed))
+
+# Rule 1: total diff size without scoped commit tag
+if [ "$total_changes" -gt "$MAX_TOTAL_LINES" ]; then
+    if ! echo "$COMMIT_MSG" | grep -qE "$SCOPED_TYPES_REGEX"; then
+        warnings+=("OVERSIZED: $total_changes lines total (threshold: $MAX_TOTAL_LINES). Commit msg needs feat/refactor/docs prefix or GUARD_CONFIRMED=1.")
+    fi
+fi
+
+# No warnings → pass
+[ "${#warnings[@]}" -eq 0 ] && exit 0
+
+# Bypass
+if [ -n "${GUARD_CONFIRMED:-}" ]; then
+    echo "⚠️  pre-commit guard: ${#warnings[@]} warning(s) bypassed via GUARD_CONFIRMED=1" >&2
+    printf '  - %s\n' "${warnings[@]}" >&2
+    exit 0
+fi
+
+# Block
+echo "" >&2
+echo "🛑 pre-commit guard — ${#warnings[@]} check(s) failed:" >&2
+echo "" >&2
+for w in "${warnings[@]}"; do
+    echo "  • $w" >&2
+done
+echo "" >&2
+echo "Review the staged diff:" >&2
+echo "  git diff --cached --stat" >&2
+echo "" >&2
+echo "If intentional, re-run with:" >&2
+echo "  GUARD_CONFIRMED=1 git commit ..." >&2
+echo "" >&2
+echo "Docs: ops/HOOKS_IMPROVEMENT_PLAN_20260421.md" >&2
+exit 1

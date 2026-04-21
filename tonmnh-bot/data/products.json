@@ -1,17 +1,26 @@
 {
   "1": {
-    "name": "Affiliate Link + SLH VIP Group",
+    "name": "SLH VIP Pack — Affiliate + קהילה פרימיום",
     "price": 22.221,
-    "group_link": "https://t.me/+aww1rlTDUSplODc0"
+    "group_link": "https://t.me/+aww1rlTDUSplODc0",
+    "description": "קישור Affiliate אישי + כניסה לקבוצת VIP SLH Spark. כולל: 0.25 SLH + 1,000 ZVK + גישה למכירת קורסים."
   },
   "2": {
-    "name": "ORG",
+    "name": "ORG — חברות ארגונית",
     "price": 0.3,
-    "group_link": ""
+    "group_link": "https://t.me/+aww1rlTDUSplODc0",
+    "description": "חברות ברמת ORG — גישה לכלים ארגוניים, Whitelist לכל ההשקות העתידיות, 500 ZVK."
   },
   "3": {
-    "name": "STRAT",
+    "name": "STRAT — אסטרטגיות מסחר",
     "price": 0.5,
-    "group_link": ""
+    "group_link": "https://t.me/+aww1rlTDUSplODc0",
+    "description": "גישה לאסטרטגיות המסחר של SLH: BTC/USDT Bot, Staking Plans 48-65% APY, P2P flows."
+  },
+  "4": {
+    "name": "Genesis Stake — TON Staking חודשי",
+    "price": 1.0,
+    "group_link": "https://slh-nft.com/staking.html",
+    "description": "Stake 1 TON למשך 30 יום ב-48% APY שנתי. תגמולים יומיים, משיכה אחרי 30 יום."
   }
 }

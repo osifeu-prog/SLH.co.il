@@ -129,7 +129,8 @@ def _get_user(user_id: int) -> dict:
     if user_id not in _user_data:
         _user_data[user_id] = {
             "username": "", "first_name": "",
-            "slh_balance": 199788.32, "zvk_balance": 1000,
+            "slh_balance": 0.0, "zvk_balance": 0,
+            "mnh_balance": 0.0, "rep_balance": 0, "zuz_balance": 0,
             "ton_available": 0.0, "ton_locked": 0.0,
             "ton_connected": False, "bnb_connected": False,
             "referrer": None, "referral_count": 0,
@@ -140,6 +141,7 @@ def _get_user(user_id: int) -> dict:
             "risk_daily_loss": 10, "risk_max_position": 50, "risk_stop_loss": True,
             "joined": datetime.utcnow().isoformat(),
             "hub_points": 0,
+            "balances_loaded": False,
         }
     return _user_data[user_id]
 
@@ -311,6 +313,22 @@ class SLHInvestmentBot:
         except Exception as e:
             logger.warning(f"[bot-sync] failed for {chat_id}: {e}")
 
+        # === SYNC REAL TOKEN BALANCES FROM RAILWAY DB ===
+        try:
+            api_base = os.getenv("SLH_API_URL", "https://slh-api-production.up.railway.app")
+            bal_resp = self.session.get(f"{api_base}/api/wallet/{chat_id}/balances", timeout=5)
+            if bal_resp.status_code == 200:
+                bal_data = bal_resp.json().get("balances", {})
+                user["slh_balance"] = float(bal_data.get("SLH", user["slh_balance"]))
+                user["zvk_balance"] = int(bal_data.get("ZVK", user["zvk_balance"]))
+                user["mnh_balance"] = float(bal_data.get("MNH", user.get("mnh_balance", 0.0)))
+                user["rep_balance"] = int(bal_data.get("REP", user.get("rep_balance", 0)))
+                user["zuz_balance"] = int(bal_data.get("ZUZ", user.get("zuz_balance", 0)))
+                user["balances_loaded"] = True
+                logger.info(f"[bal-sync] ✅ {chat_id}: SLH={user['slh_balance']}, ZVK={user['zvk_balance']}")
+        except Exception as e:
+            logger.warning(f"[bal-sync] failed for {chat_id}: {e}")
+
         invested = user["ton_locked"]
         profit = user["ton_locked"] * 0.04 if user["ton_locked"] > 0 else 0
         status = "✅ משקיע פעיל" if user["activated"] else "⏳ ממתין להפעלה"
@@ -428,8 +446,27 @@ class SLHInvestmentBot:
             [{"text": "🔙 חזרה לתפריט", "callback_data": "menu_main"}],
         ]}
 
+    def _refresh_balances(self, chat_id: int):
+        """Pull fresh token balances from Railway API into in-memory dict."""
+        user = _get_user(chat_id)
+        try:
+            api_base = os.getenv("SLH_API_URL", "https://slh-api-production.up.railway.app")
+            r = self.session.get(f"{api_base}/api/wallet/{chat_id}/balances", timeout=5)
+            if r.status_code == 200:
+                bal = r.json().get("balances", {})
+                user["slh_balance"] = float(bal.get("SLH", user["slh_balance"]))
+                user["zvk_balance"] = int(bal.get("ZVK", user["zvk_balance"]))
+                user["mnh_balance"] = float(bal.get("MNH", user.get("mnh_balance", 0.0)))
+                user["rep_balance"] = int(bal.get("REP", user.get("rep_balance", 0)))
+                user["zuz_balance"] = int(bal.get("ZUZ", user.get("zuz_balance", 0)))
+                user["balances_loaded"] = True
+        except Exception as e:
+            logger.warning(f"[_refresh_balances] {chat_id}: {e}")
+
     def handle_wallet(self, chat_id, message_id=None):
         user = _get_user(chat_id)
+        # Always pull fresh balances from DB before displaying wallet
+        self._refresh_balances(chat_id)
 
         # ── Try real blockchain wallet ──
         if self._wallet_ready and self.wallet:
@@ -850,6 +887,7 @@ class SLHInvestmentBot:
 
     def handle_dashboard(self, chat_id):
         user = _get_user(chat_id)
+        self._refresh_balances(chat_id)
         ton_total = user["ton_available"] + user["ton_locked"]
         active_deposits = len([d for d in user.get("deposits", []) if d.get("status") == "active"])
         pending_deposits = len([d for d in user.get("deposits", []) if d.get("status") == "pending"])
