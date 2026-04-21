@@ -27,6 +27,9 @@ import aiohttp
 from fastapi import APIRouter, HTTPException, Header, Request
 from pydantic import BaseModel
 
+# Sibling import — revenue recording helper. Same module, no new deps.
+from routes.treasury import record_revenue_internal as _record_revenue
+
 router = APIRouter(prefix="/api/payment", tags=["Payments"])
 
 TON_PAY_ADDRESS = os.getenv("TON_PAY_ADDRESS", "").strip()
@@ -157,6 +160,25 @@ async def _issue_receipt(conn, user_id: int, source_type: str, source_id: int, a
     )
     final_number = f"SLH-{today}-{row['id']:06d}"
     await conn.execute("UPDATE payment_receipts SET receipt_number = $1 WHERE id = $2", final_number, row["id"])
+
+    # Record this as treasury revenue so it lands on /api/treasury/health.
+    # Safe no-op on failure; never blocks a receipt.
+    await _record_revenue(
+        conn,
+        source_type="payment_receipt",
+        amount_gross=float(amount),
+        currency=currency,
+        source_id=int(row["id"]),
+        user_id=user_id,
+        metadata={
+            "receipt_number": final_number,
+            "origin_source_type": source_type,
+            "origin_source_id": source_id,
+            "tokens_granted": float(tokens_granted or 0),
+            "tokens_currency": tokens_currency,
+        },
+    )
+
     return {
         "id": row["id"],
         "receipt_number": final_number,

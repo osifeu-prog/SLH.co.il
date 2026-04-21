@@ -391,6 +391,25 @@ async def purchase_complete(req: PurchaseCompleteReq):
             req.item_id, seller_id, req.buyer_id, amt, cur, usd,
         )
 
+        # Record the house cut as treasury revenue so it lands on /api/treasury/health.
+        # Default MARKETPLACE_HOUSE_CUT=0 preserves existing seller economics (100% to seller).
+        # Set env MARKETPLACE_HOUSE_CUT=0.15 on Railway to start monetizing.
+        from routes.treasury import record_revenue_internal as _record_revenue
+        await _record_revenue(
+            conn,
+            source_type="marketplace_sale",
+            amount_gross=amt,
+            currency=cur,
+            source_id=int(sale_id) if sale_id else None,
+            user_id=req.buyer_id,
+            metadata={
+                "item_id": req.item_id,
+                "seller_id": seller_id,
+                "amount_usd": usd,
+                "receipt_number": req.receipt_number,
+            },
+        )
+
         # Decrement stock
         await conn.execute("UPDATE marketplace_items SET stock = stock - 1 WHERE id = $1", req.item_id)
 

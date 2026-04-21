@@ -23,6 +23,7 @@ Endpoints:
 """
 from __future__ import annotations
 
+import json
 import os
 from typing import Optional
 from datetime import datetime
@@ -40,12 +41,92 @@ BURN_RATE_AIC = float(os.getenv("TREASURY_BURN_RATE_AIC", "0.02"))  # 2% default
 # Buyback policy — what % of fiat revenue the treasury commits to SLH buyback
 BUYBACK_RATE_FIAT = float(os.getenv("TREASURY_BUYBACK_RATE", "0.10"))  # 10% default
 
+# House cut configuration (Level 5 model) — % of gross sale that becomes house revenue.
+# Default 0 keeps behavior identical to pre-audit; set via env to monetize channels.
+MARKETPLACE_HOUSE_CUT = float(os.getenv("MARKETPLACE_HOUSE_CUT", "0"))     # 0 = current state (full 100% to seller)
+ACADEMIA_HOUSE_CUT = float(os.getenv("ACADEMIA_HOUSE_CUT", "0.30"))        # CLAUDE.md says 70/30 to lecturer
+PAYMENT_HOUSE_CUT = float(os.getenv("PAYMENT_HOUSE_CUT", "1.0"))           # direct deposits = 100% treasury
+
 DEAD_ADDRESS = "0x000000000000000000000000000000000000dEaD"
 
 
 def set_pool(pool):
     global _pool
     _pool = pool
+
+
+async def record_revenue_internal(
+    conn,
+    source_type: str,
+    amount_gross: float,
+    currency: str,
+    source_id: Optional[int] = None,
+    user_id: Optional[int] = None,
+    house_cut: Optional[float] = None,
+    metadata: Optional[dict] = None,
+) -> None:
+    """
+    Call this from any payment flow to make revenue visible in /api/treasury/health.
+
+    Uses the SAME DB connection as the caller — no HTTP round-trip, safe inside
+    an existing transaction. Swallows errors by design: better to have invisible
+    revenue than to break a customer's purchase because of an audit bug.
+
+    Args:
+        conn: asyncpg connection/transaction in which the parent sale is committed
+        source_type: canonical tag, e.g. 'marketplace_sale' | 'academia_course' |
+                     'academia_vip' | 'ambassador_sub' | 'payment_receipt' | 'genesis_nft'
+        amount_gross: the full ticket charged to the customer (in `currency` units)
+        currency: 'ILS' | 'BNB' | 'TON' | 'SLH' | 'AIC' | 'USD'
+        source_id: FK to the parent sale/receipt row (for audit trace)
+        user_id: the paying customer (optional)
+        house_cut: fraction of gross that becomes house revenue; if None, picks a
+                   sensible default based on source_type
+        metadata: additional JSON context (gross, seller_id, etc.)
+    """
+    try:
+        # Choose cut default if caller didn't specify
+        if house_cut is None:
+            st = (source_type or "").lower()
+            if st in ("marketplace_sale", "marketplace_order"):
+                house_cut = MARKETPLACE_HOUSE_CUT
+            elif st in ("academia_course", "academia_enrollment"):
+                house_cut = ACADEMIA_HOUSE_CUT
+            elif st in ("academia_vip", "ambassador_sub", "premium_group", "genesis_nft"):
+                house_cut = 1.0  # full to treasury
+            elif st == "payment_receipt":
+                house_cut = PAYMENT_HOUSE_CUT
+            else:
+                house_cut = 1.0
+
+        house_amount = float(amount_gross) * float(house_cut or 0.0)
+        if house_amount <= 0:
+            # Nothing to record (valid state for current marketplace config), but
+            # still leave an audit trail with amount=0 so the flow is visible.
+            pass
+
+        meta = dict(metadata or {})
+        meta["gross_amount"] = float(amount_gross)
+        meta["house_cut_applied"] = float(house_cut or 0.0)
+        meta["currency_raw"] = currency
+
+        await conn.execute(
+            """
+            INSERT INTO treasury_revenue
+                (source_type, source_id, amount, currency, user_id, metadata)
+            VALUES ($1, $2, $3, $4, $5, $6::jsonb)
+            """,
+            source_type,
+            source_id,
+            house_amount,
+            (currency or "").upper(),
+            user_id,
+            json.dumps(meta, default=str),
+        )
+    except Exception:
+        # Intentionally swallowed — revenue-recording bugs must NEVER break sales.
+        # See ops/REVENUE_RECORDING_AUDIT_20260421.md for why this is the policy.
+        pass
 
 
 async def _ensure_tables(conn):
