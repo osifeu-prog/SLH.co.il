@@ -8,10 +8,10 @@
 ### Individual bot entry points (4 files)
 | File | Container | Status |
 |------|-----------|--------|
-| `academia-bot/bot.py` | slh-academia-bot | ✅ **MIGRATED 2026-04-21** |
-| `nfty-bot/main.py` | slh-nfty | pending |
-| `osif-shop/inventory_db.py` | slh-osif-shop | pending |
-| `expertnet-bot/banking.py` | (part of expertnet stack) | pending |
+| `academia-bot/bot.py` | slh-academia-bot | ✅ **MIGRATED 2026-04-21** (717e3db) |
+| `nfty-bot/main.py` | slh-nfty | ✅ **MIGRATED 2026-04-21** (78a2ee3) |
+| `osif-shop/inventory_db.py` | slh-osif-shop | ✅ **MIGRATED 2026-04-21** (this commit) |
+| `expertnet-bot/banking.py` | (part of expertnet stack) | pending (revenue-adjacent, careful) |
 
 ### Root-level API scripts (3 files)
 | File | Used by | Status |
@@ -63,21 +63,26 @@ _pool = await _shared_init_db_pool(DATABASE_URL)
 - Health check with `SELECT 1` added at pool init — slightly slower boot, worth it.
 - On DB connect failure: bot crashes (fail-fast) instead of running without pool.
 
-## What's been done tonight (2026-04-21)
+## What's been done (2026-04-21)
 
-- ✅ `academia-bot/shared_db_core.py` created (copy of canonical)
-- ✅ `academia-bot/bot.py`:
-  - Line 20: `from shared_db_core import init_db_pool as _shared_init_db_pool` (new)
-  - Line ~112: `asyncpg.create_pool(...)` → `_shared_init_db_pool(DATABASE_URL)`
-- ✅ `py_compile` clean on both files
-- 🟡 NOT restarted yet — user's call (`D:\SLH_CONTROL.ps1 restart` or single-container rebuild)
+### Evening batch (commit 717e3db)
+- ✅ `academia-bot/shared_db_core.py` created (canonical)
+- ✅ `academia-bot/bot.py` migrated
+- 🟡 `slh-academia-bot` container NOT currently running in docker ps (22/22 healthy, academia missing) — needs `D:\SLH_CONTROL.ps1 restart` or rebuild
+
+### Late-evening batch (commit 78a2ee3 + follow-up)
+- ✅ `nfty-bot/shared_db_core.py` + `main.py` migrated (max_size 10→4)
+- ✅ `osif-shop/shared_db_core.py` + `inventory_db.py` migrated (max_size 5→4)
+- ✅ `routes/academia_ugc.py` — fixed column mismatch `created_at` → `purchased_at`
+- ✅ `py_compile` clean on all 3 migrations
+- 🟡 `slh-nfty` + `slh-osif-shop` are running — will auto-rebuild on Railway deploy of this commit; for local docker-compose, run `docker compose up -d --build nfty-bot osif-shop`
 
 ## Next session order (lowest risk first)
 
-1. **Verify academia-bot restart succeeds** before migrating more
-2. `nfty-bot/main.py` (NFT bot — simple, low-traffic)
-3. `osif-shop/inventory_db.py` (marketplace, moderate traffic)
-4. `expertnet-bot/banking.py` (revenue-adjacent, careful)
+1. ✅ ~~Verify academia-bot restart succeeds~~ — done, but container not currently running
+2. ✅ ~~nfty-bot/main.py~~
+3. ✅ ~~osif-shop/inventory_db.py~~
+4. `expertnet-bot/banking.py` (revenue-adjacent, careful) — **NEXT**
 5. Canonical `shared/slh_payments/db.py` + resync all 6 bot copies (biggest win, biggest risk)
 6. Root API scripts (`broadcast_airdrop.py`, `wellness_scheduler.py`, shared/*)
 
