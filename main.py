@@ -11075,7 +11075,7 @@ async def ops_reality(x_broadcast_key: Optional[str] = Header(None)):
     total_users = len(user_rows)
     real_users = [u for u in user_rows if u['telegram_id'] >= 1000000]
     test_users = [u for u in user_rows if u['telegram_id'] < 1000000]
-    founder_ids = {224223270, 7757102350, 8789977826}
+    founder_ids = {224223270, 7757102350, 8789977826, 1185887485}  # incl. Tzvika Kaufman (co-founder)
     founder_rows = [u for u in real_users if u['telegram_id'] in founder_ids]
     community_rows = [u for u in real_users if u['telegram_id'] not in founder_ids]
 
