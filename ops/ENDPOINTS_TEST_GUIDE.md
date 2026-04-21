@@ -175,6 +175,56 @@ curl.exe -s "https://slh-api-production.up.railway.app/api/stats"
 curl.exe -s "https://slh-api-production.up.railway.app/api/analytics/stats?admin_key=osif_slh_admin_2024"
 ```
 
+### Event Log (ring buffer — chain-status page source)
+```powershell
+# Newest 50 events
+curl.exe -s -H "X-Admin-Key: $env:ADMIN_KEY" "https://slh-api-production.up.railway.app/api/admin/events?limit=50"
+
+# Tail cursor (events after id 100, oldest first)
+curl.exe -s -H "X-Admin-Key: $env:ADMIN_KEY" "https://slh-api-production.up.railway.app/api/admin/events?after_id=100&limit=50"
+
+# Filter by type
+curl.exe -s -H "X-Admin-Key: $env:ADMIN_KEY" "https://slh-api-production.up.railway.app/api/admin/events?types=payment.cleared,stake.opened"
+```
+Returns: `{total_events, events_24h_by_type, events: [{id, event_type, payload, created_at, source}]}`.
+
+### Link phone → Telegram ID
+```powershell
+curl.exe -X POST -H "X-Admin-Key: $env:ADMIN_KEY" -H "Content-Type: application/json" `
+  -d '{"phone":"+972501234567","telegram_id":224223270}' `
+  "https://slh-api-production.up.railway.app/api/admin/link-phone-tg"
+```
+
+---
+
+## 7b. DEVICE CHAIN (ESP32 ↔ Phone ↔ API)
+
+### Register device (from device, begins pair flow)
+```powershell
+curl.exe -X POST -H "Content-Type: application/json" `
+  -d '{"mac":"AA:BB:CC:DD:EE:FF"}' `
+  "https://slh-api-production.up.railway.app/api/device/register"
+```
+
+### Verify phone → sign device
+```powershell
+curl.exe -X POST -H "Content-Type: application/json" `
+  -d '{"dev_code":"<from register>","phone":"+972501234567","otp":"1234"}' `
+  "https://slh-api-production.up.railway.app/api/device/verify"
+```
+
+### Device heartbeat (bearer = signing_token)
+```powershell
+curl.exe -X POST -H "Authorization: Bearer <signing_token>" -H "Content-Type: application/json" `
+  -d '{"mac":"AA:BB:CC:DD:EE:FF","fw":"v3.0","uptime":120}' `
+  "https://slh-api-production.up.railway.app/api/esp/heartbeat"
+```
+
+### Device claim status (poll from pair page)
+```powershell
+curl.exe -s "https://slh-api-production.up.railway.app/api/device/claim/<dev_code>"
+```
+
 ---
 
 ## 8. AI CHAT

@@ -1,6 +1,20 @@
 # SLH Task Board — Sprint 2026-04
 > Single source of truth for all tasks
-> Last updated: 2026-04-14 Session 12
+> Last updated: 2026-04-21 Night Late (chain events closeout)
+
+---
+
+## COMPLETED IN SESSION (21 April 2026 evening)
+
+### Chain Events Closeout
+- [x] `GET /api/admin/events` endpoint — ring buffer over event_log with cursor + types filter + 24h breakdown (commit `192e12e`)
+- [x] `chain-status.html` — Events panel renders 20 latest events; Ledger day card reads events/24h (commit `251195a`)
+- [x] Deleted toy `device-registry/main.py` — Railway endpoints authoritative, README + ESP_QUICKSTART updated
+- [x] Wired `chain-status.html` into admin.html sidebar (System section) and ops-dashboard.html header
+- [x] API docs updated — `ops/ENDPOINTS_TEST_GUIDE.md` sections 7 (admin events + link-phone-tg) and new 7b (device chain full flow)
+- [x] Memory + handoff — `project_night_20260421_late.md` + `SESSION_HANDOFF_20260421_LATE.md`
+
+---
 
 ---
 
