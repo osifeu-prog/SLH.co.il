@@ -774,10 +774,13 @@ async def license_status(user_id: int, course_id: int):
     await _require_pool()
     try:
         async with _pool.acquire() as conn:
+            # academia-bot schema uses `purchased_at` (not `created_at`) — see
+            # academia-bot/bot.py SCHEMA. Use coalesce-style graceful picks so
+            # this endpoint survives schema drift across DBs.
             try:
                 row = await conn.fetchrow(
                     """
-                    SELECT id, payment_id, status, created_at
+                    SELECT id, payment_id, status, purchased_at AS granted_at
                     FROM academy_licenses
                     WHERE user_id = $1 AND course_id = $2 AND status = 'active'
                     ORDER BY id DESC LIMIT 1
@@ -785,7 +788,7 @@ async def license_status(user_id: int, course_id: int):
                     user_id, course_id,
                 )
             except Exception as _inner:
-                # Table may not exist on this DB instance — graceful fallback.
+                # Table may not exist on this DB instance (Railway vs local bot DB).
                 logger.warning(f"[academia-ugc] license_status inner query failed: {_inner!r}")
                 return {"active": False, "license_id": None, "payment_id": None,
                         "granted_at": None, "note": "table_unavailable"}
@@ -795,7 +798,7 @@ async def license_status(user_id: int, course_id: int):
             "active": True,
             "license_id": int(row["id"]),
             "payment_id": row["payment_id"],
-            "granted_at": _iso(row["created_at"]),
+            "granted_at": _iso(row["granted_at"]),
         }
     except Exception as e:  # noqa: BLE001
         logger.error(f"[academia-ugc] license_status failed: {e!r}")

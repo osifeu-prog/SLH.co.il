@@ -14,6 +14,7 @@ from typing import Any, Optional
 
 import aiohttp
 import asyncpg
+from shared_db_core import init_db_pool as _shared_init_db_pool
 from aiogram import Bot, Dispatcher, F, Router
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
@@ -96,7 +97,9 @@ async def create_http_session() -> aiohttp.ClientSession:
     return aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=15))
 
 async def create_pool() -> asyncpg.Pool:
-    return await asyncpg.create_pool(dsn=DATABASE_URL, min_size=1, max_size=10, command_timeout=30)
+    # Phase 0B (2026-04-21): unified pool via shared_db_core (fail-fast, health-checked).
+    # max_size drops 10→4 to fit Railway's 88-conn budget across 22 containers.
+    return await _shared_init_db_pool(DATABASE_URL)
 
 async def bootstrap_db(pool: asyncpg.Pool) -> None:
     async with pool.acquire() as conn:
