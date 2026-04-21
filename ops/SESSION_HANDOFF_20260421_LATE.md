@@ -1,21 +1,23 @@
-# Session Handoff — 2026-04-21 Late (Chain Events Closeout)
+# Session Handoff — 2026-04-21 Late (Chain Events Closeout + UX + Wallet Polish)
 
 > Single doc to read for anyone continuing this work tomorrow, for archive, or for a fresh executor agent.
 
 ## TL;DR
-Chain close is **done at both code level AND UI level**. Admin dashboard + ops-dashboard both link to `/chain-status.html`. Event endpoint is live and protected. Documentation is up-to-date. Only ops work (env vars, token rotation, ESP32 flash) remains for Osif.
+Chain close is **done at both code level AND UI level**. Admin, ops-dashboard, and user dashboard all link into the chain (chain-status + device-pair). Event endpoint is live + protected + has a live 24h stream panel on ops-dashboard. wallet.html has on-chain refresh UX. Guardian bot token rotated + local envs updated. Only remaining work: Osif sets Railway env vars (GUARDIAN_BOT_TOKEN + LEDGER_WORKERS_CHAT_ID) + flashes ESP32 firmware + pastes admin key into localStorage to see live data.
 
 ---
 
 ## What shipped in this session
 
-### Commits (3 repos, 4 commits)
+### Commits (2 repos, 6 commits)
 | Repo | Commit | Summary |
 |------|--------|---------|
 | `osifeu-prog/slh-api` | `192e12e` | feat+cleanup: `GET /api/admin/events` + remove toy device-registry |
 | `osifeu-prog/osifeu-prog.github.io` | `251195a` | feat(chain-status): live events panel via /api/admin/events |
-| `osifeu-prog/osifeu-prog.github.io` | (pending) | feat(nav): chain-status links in admin.html + ops-dashboard.html |
-| `osifeu-prog/slh-api` | (pending) | docs: events + device chain in ENDPOINTS_TEST_GUIDE |
+| `osifeu-prog/slh-api` | `8fb0468` | docs: chain-events closeout — endpoints guide + task board + session handoff |
+| `osifeu-prog/osifeu-prog.github.io` | `aea4e86` | feat(nav): chain-status links in admin.html + ops-dashboard.html |
+| `osifeu-prog/osifeu-prog.github.io` | `f01a31a` | feat(dashboard): device-pair link + Hardware Pairing panel |
+| `osifeu-prog/osifeu-prog.github.io` | `da00881` | feat(ops+wallet): live event stream + web3 refresh UX |
 
 ### Products (5 items)
 1. **`GET /api/admin/events`** — ring buffer read over `event_log`. Query params: `limit` (≤200), `after_id` (cursor), `types` (csv filter). Returns `{total_events, events_24h_by_type, events[]}`. Protected with X-Admin-Key.

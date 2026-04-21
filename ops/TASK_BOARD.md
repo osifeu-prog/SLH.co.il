@@ -13,6 +13,10 @@
 - [x] Wired `chain-status.html` into admin.html sidebar (System section) and ops-dashboard.html header
 - [x] API docs updated — `ops/ENDPOINTS_TEST_GUIDE.md` sections 7 (admin events + link-phone-tg) and new 7b (device chain full flow)
 - [x] Memory + handoff — `project_night_20260421_late.md` + `SESSION_HANDOFF_20260421_LATE.md`
+- [x] `dashboard.html` — new "⛓ Pair Device" link + Hardware Pairing panel (commit `f01a31a`)
+- [x] `ops-dashboard.html` — new Event Stream (24h) section with 4 KPI cards + breakdown bars + 30s auto-refresh (commit `da00881`)
+- [x] `wallet.html` — web3 Refresh button + BSCScan deep-link + live timestamp (commit `da00881`)
+- [x] Guardian bot token rotated — 2 local .env files updated; SLH_ADMIN_KEY + SLH_API_URL added to Guardian .env; @Grdian_bot verified (id 8521882513). Railway update still pending.
 
 ---
 
