@@ -8,32 +8,34 @@
 ### Individual bot entry points (4 files)
 | File | Container | Status |
 |------|-----------|--------|
-| `academia-bot/bot.py` | slh-academia-bot | ✅ **MIGRATED 2026-04-21** (717e3db) |
-| `nfty-bot/main.py` | slh-nfty | ✅ **MIGRATED 2026-04-21** (78a2ee3) |
-| `osif-shop/inventory_db.py` | slh-osif-shop | ✅ **MIGRATED 2026-04-21** (this commit) |
-| `expertnet-bot/banking.py` | (part of expertnet stack) | pending (revenue-adjacent, careful) |
+| `academia-bot/bot.py` | slh-academia-bot | ✅ **MIGRATED** 717e3db (container down — needs restart) |
+| `nfty-bot/main.py` | slh-nfty | ✅ **MIGRATED** 78a2ee3 |
+| `osif-shop/inventory_db.py` | slh-osif-shop | ✅ **MIGRATED** dba134e |
+| `expertnet-bot/banking.py` | expertnet stack | ✅ **MIGRATED** e1b560b |
 
-### Root-level API scripts (3 files)
+### Root-level API scripts (5 files)
 | File | Used by | Status |
 |------|---------|--------|
-| `broadcast_airdrop.py` | Admin broadcasts | pending |
-| `wellness_scheduler.py` | API startup | pending |
-| `shared/ledger_listener.py` | Ledger audit | pending |
-| `shared/community_api.py` | Community features | pending |
-| `shared/wallet_engine.py` | Wallet flows | pending |
+| `broadcast_airdrop.py` | Admin broadcasts | ✅ **MIGRATED** e1b560b (try/fallback) |
+| `wellness_scheduler.py` | API startup | ✅ **MIGRATED** e1b560b (try/fallback) |
+| `shared/ledger_listener.py` | Ledger audit | ✅ **MIGRATED** e1b560b (try/fallback) |
+| `shared/community_api.py` | Community features | ✅ **MIGRATED** e1b560b (try/fallback) |
+| `shared/wallet_engine.py` | Wallet flows | ✅ **MIGRATED** e1b560b (try/fallback) |
 
-### Shared library copies — unification target (8 files)
+### Shared library copies — unification target (10 files)
 The `shared/slh_payments/` library is COPIED across 7 bots (anti-pattern):
-- `shared/slh_payments/db.py` (canonical)
-- `wallet/shared/slh_payments/db.py`
-- `factory/shared/slh_payments/db.py`
-- `fun/shared/slh_payments/db.py`
-- `admin-bot/shared/slh_payments/db.py`
-- `botshop/shared/slh_payments/db.py`
-- `expertnet-bot/shared/slh_payments/db.py`
-- `shared/slh_payments/ledger.py` + 2 copies
+- `shared/slh_payments/db.py` (canonical) ✅ **MIGRATED** e1b560b
+- `wallet/shared/slh_payments/db.py` ✅ resynced e1b560b
+- `factory/shared/slh_payments/db.py` ✅ resynced e1b560b
+- `fun/shared/slh_payments/db.py` ✅ resynced e1b560b
+- `admin-bot/shared/slh_payments/db.py` ✅ resynced e1b560b
+- `botshop/shared/slh_payments/db.py` 🟡 **blocked** — `botshop` is a git submodule; migration needs a commit in its own repo
+- `expertnet-bot/shared/slh_payments/db.py` ✅ resynced e1b560b
+- `shared/slh_payments/ledger.py` (canonical) ✅ **MIGRATED** e1b560b
+- `admin-bot/shared/slh_payments/ledger.py` ✅ resynced e1b560b
+- `expertnet-bot/shared/slh_payments/ledger.py` ✅ resynced e1b560b
 
-**Unification strategy:** update canonical `shared/slh_payments/db.py` to use `init_db_pool`, then resync all copies (`cp canonical → each`).
+**Unification strategy:** canonical updated + resync done. Going forward, bump canonical and `cp` fan-out.
 
 ## Migration pattern per bot
 
@@ -79,12 +81,18 @@ _pool = await _shared_init_db_pool(DATABASE_URL)
 
 ## Next session order (lowest risk first)
 
-1. ✅ ~~Verify academia-bot restart succeeds~~ — done, but container not currently running
-2. ✅ ~~nfty-bot/main.py~~
-3. ✅ ~~osif-shop/inventory_db.py~~
-4. `expertnet-bot/banking.py` (revenue-adjacent, careful) — **NEXT**
-5. Canonical `shared/slh_payments/db.py` + resync all 6 bot copies (biggest win, biggest risk)
-6. Root API scripts (`broadcast_airdrop.py`, `wellness_scheduler.py`, shared/*)
+1. ✅ ~~Verify academia-bot restart succeeds~~ — migrated, container needs restart
+2. ✅ ~~nfty-bot/main.py~~ — migrated, running
+3. ✅ ~~osif-shop/inventory_db.py~~ — migrated, running
+4. ✅ ~~expertnet-bot/banking.py~~ — migrated
+5. ✅ ~~Canonical `shared/slh_payments/db.py` + resync all 6 bot copies~~ — 5/6 done, botshop submodule pending
+6. ✅ ~~Root API scripts~~ — migrated (5/5)
+
+### Remaining
+- `botshop/shared/slh_payments/db.py` — submodule, separate commit in its own repo.
+- Container restarts / rebuilds so the new code actually loads:
+  - `slh-academia-bot` (currently down — `docker compose up -d --build academia-bot`)
+  - `slh-nfty`, `slh-osif-shop`, expertnet, wallet, factory, fun, admin-bot after Railway redeploy of main.py (if applicable) and/or `docker compose up -d --build <service>` locally.
 
 ## Emergency rollback (per bot)
 
