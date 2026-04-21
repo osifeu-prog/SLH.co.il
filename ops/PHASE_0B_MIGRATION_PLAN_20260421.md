@@ -29,7 +29,7 @@ The `shared/slh_payments/` library is COPIED across 7 bots (anti-pattern):
 - `factory/shared/slh_payments/db.py` ✅ resynced e1b560b
 - `fun/shared/slh_payments/db.py` ✅ resynced e1b560b
 - `admin-bot/shared/slh_payments/db.py` ✅ resynced e1b560b
-- `botshop/shared/slh_payments/db.py` 🟡 **blocked** — `botshop` is a git submodule; migration needs a commit in its own repo
+- `botshop/shared/slh_payments/db.py` ✅ **MIGRATED** d8d08cb (separate repo `GATE_BOTSHOP`, pushed as 4fcb78f after rebase)
 - `expertnet-bot/shared/slh_payments/db.py` ✅ resynced e1b560b
 - `shared/slh_payments/ledger.py` (canonical) ✅ **MIGRATED** e1b560b
 - `admin-bot/shared/slh_payments/ledger.py` ✅ resynced e1b560b
@@ -89,7 +89,6 @@ _pool = await _shared_init_db_pool(DATABASE_URL)
 6. ✅ ~~Root API scripts~~ — migrated (5/5)
 
 ### Remaining
-- `botshop/shared/slh_payments/db.py` — submodule, separate commit in its own repo.
 - Container restarts / rebuilds so the new code actually loads:
   - `slh-academia-bot` (currently down — `docker compose up -d --build academia-bot`)
   - `slh-nfty`, `slh-osif-shop`, expertnet, wallet, factory, fun, admin-bot after Railway redeploy of main.py (if applicable) and/or `docker compose up -d --build <service>` locally.
