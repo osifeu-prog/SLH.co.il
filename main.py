@@ -11266,3 +11266,91 @@ async def performance_snapshot():
         "top_5_by_volume": top_by_volume,
         "tokens": tokens,
     }
+
+
+# ===== PERFORMANCE DIGEST FOR TELEGRAM (#11 from OPEN_TASKS) =====
+# Formatted HTML (Telegram-compatible) version of /api/performance.
+# Used by Guardian bot (/performance command) or any push-alert script.
+
+@app.get("/api/performance/digest")
+async def performance_digest():
+    """Pre-formatted Telegram HTML digest of latest backtest snapshot.
+    No auth (same data as /api/performance, just pre-rendered for convenience)."""
+    import glob
+    import csv as _csv
+    from pathlib import Path as _P
+
+    project_root = _P(__file__).resolve().parent.parent
+    candidates = sorted(
+        glob.glob(str(project_root / "backtest_*.csv")),
+        reverse=True,
+    )
+    if not candidates:
+        return {
+            "available": False,
+            "text": "<b>SLH Research Lab</b>\n\nNo backtest snapshot yet.\nRun <code>python daily_backtest.py</code>.",
+            "parse_mode": "HTML",
+        }
+
+    latest = candidates[0]
+    tokens = []
+    try:
+        with open(latest, "r", encoding="utf-8") as f:
+            reader = _csv.DictReader(f)
+            for row in reader:
+                try:
+                    tokens.append({
+                        "symbol": row.get("symbol") or "?",
+                        "price": float(row.get("price_usd") or 0),
+                        "liq": float(row.get("liquidity_usd") or 0),
+                        "vol": float(row.get("volume_usd_24h") or 0),
+                    })
+                except Exception:
+                    pass
+    except Exception as e:
+        return {"available": False, "text": f"Read error: {e!r}"}
+
+    if not tokens:
+        return {"available": False, "text": "No rows in snapshot."}
+
+    def _fmt_usd(n):
+        if n >= 1e9:
+            return f"${n/1e9:.2f}B"
+        if n >= 1e6:
+            return f"${n/1e6:.2f}M"
+        if n >= 1e3:
+            return f"${n/1e3:.1f}K"
+        return f"${n:.2f}"
+
+    total_liq = sum(t["liq"] for t in tokens)
+    total_vol = sum(t["vol"] for t in tokens)
+    top = sorted(tokens, key=lambda t: t["vol"], reverse=True)[:5]
+
+    lines = [
+        "<b>SLH Research Lab  Daily Digest</b>",
+        f"<i>Source:</i> <code>{_P(latest).name}</code>",
+        "",
+        f"<b>Tokens tracked:</b> {len(tokens)}",
+        f"<b>Total liquidity:</b> {_fmt_usd(total_liq)}",
+        f"<b>24h volume:</b> {_fmt_usd(total_vol)}",
+        "",
+        "<b>Top 5 by volume:</b>",
+    ]
+    for i, t in enumerate(top, 1):
+        lines.append(
+            f"  {i}. <code>{t['symbol']}</code>  ·  "
+            f"${t['price']:.4f}  ·  Vol {_fmt_usd(t['vol'])}  ·  Liq {_fmt_usd(t['liq'])}"
+        )
+    lines += [
+        "",
+        "<i>Research lab data. Not investment advice.</i>",
+        '<a href="https://slh-nft.com/performance.html">Full details</a>',
+    ]
+
+    return {
+        "available": True,
+        "text": "\n".join(lines),
+        "parse_mode": "HTML",
+        "source_file": _P(latest).name,
+        "token_count": len(tokens),
+    }
