@@ -10845,3 +10845,151 @@ async def devices_list_admin(
 # ===== END DEVICE ONBOARDING =====
 
 
+
+
+# ===== OPS REALITY ENDPOINT — auth via ADMIN_BROADCAST_KEY =====
+# Osif's "single source of truth" admin snapshot. Accepts ADMIN_BROADCAST_KEY
+# (default: slh-broadcast-2026-change-me) because ADMIN_API_KEYS is often
+# empty on Railway (chicken-and-egg with rotation). Read-only; no mutations.
+# Used by /admin/reality.html to give Osif real control without phantom data.
+
+@app.get("/api/ops/reality")
+async def ops_reality(x_broadcast_key: Optional[str] = Header(None)):
+    """Return a full snapshot of real platform state. Auth: X-Broadcast-Key header."""
+    if not x_broadcast_key or x_broadcast_key != ADMIN_BROADCAST_KEY:
+        raise HTTPException(403, "Broadcast key required in X-Broadcast-Key header")
+    if pool is None or _db_init_failed:
+        raise HTTPException(503, "DB pool unavailable")
+
+    async with pool.acquire() as conn:
+        # Users
+        users = await conn.fetch("""
+            SELECT telegram_id, username, first_name, is_registered, beta_user,
+                   beta_coupon_code, beta_nft_number, eth_wallet, ton_wallet,
+                   last_login, registered_at, language_pref
+              FROM web_users
+              ORDER BY telegram_id
+        """)
+
+        # External payments (ILS bank/credit card)
+        payments = await conn.fetch("""
+            SELECT id, user_id, provider, provider_tx_id, amount, currency,
+                   status, plan_key, bot_name, metadata, created_at
+              FROM external_payments
+              ORDER BY created_at DESC
+        """)
+
+        # Academy licenses
+        licenses = await conn.fetch("""
+            SELECT l.id, l.user_id, l.course_id, l.payment_id, l.status, l.purchased_at,
+                   c.slug, c.title_he, c.price_ils
+              FROM academy_licenses l
+              LEFT JOIN academy_courses c ON c.id = l.course_id
+              ORDER BY l.purchased_at DESC
+        """)
+
+        # Academy courses
+        courses = await conn.fetch("""
+            SELECT id, slug, title_he, price_ils, price_slh, active,
+                   instructor_id, approval_status, language
+              FROM academy_courses
+              ORDER BY id
+        """)
+
+        # Deposits (on-chain)
+        deposits = await conn.fetch("""
+            SELECT id, user_id, address, amount, token, tx_hash, chain, status, confirmed_at
+              FROM deposits
+              ORDER BY id DESC
+              LIMIT 100
+        """)
+
+        # Marketplace
+        marketplace_items = await conn.fetchval("SELECT COUNT(*) FROM marketplace_items")
+        marketplace_orders = await conn.fetchval("SELECT COUNT(*) FROM marketplace_orders")
+
+        # Staking
+        try:
+            stakes = await conn.fetchval("SELECT COUNT(*) FROM staking_positions WHERE status='active'")
+        except Exception:
+            stakes = None
+
+        # Broadcasts sent
+        try:
+            broadcasts = await conn.fetch("""
+                SELECT id, sent_at, target, total_targets, success_count, fail_count, message_preview
+                  FROM broadcast_log
+                  ORDER BY id DESC LIMIT 20
+            """)
+        except Exception:
+            broadcasts = []
+
+        # Referrals
+        try:
+            referral_users = await conn.fetchval("SELECT COUNT(*) FROM referrals WHERE referrer_id IS NOT NULL")
+        except Exception:
+            referral_users = None
+
+    def _row(r):
+        return {k: (v.isoformat() if hasattr(v, 'isoformat') else float(v) if isinstance(v, Decimal) else v)
+                for k, v in dict(r).items()}
+
+    # Classify users
+    user_rows = [_row(r) for r in users]
+    total_users = len(user_rows)
+    real_users = [u for u in user_rows if u['telegram_id'] >= 1000000]
+    test_users = [u for u in user_rows if u['telegram_id'] < 1000000]
+    founder_ids = {224223270, 7757102350, 8789977826}
+    founder_rows = [u for u in real_users if u['telegram_id'] in founder_ids]
+    community_rows = [u for u in real_users if u['telegram_id'] not in founder_ids]
+
+    payment_rows = [_row(r) for r in payments]
+    real_payments = [p for p in payment_rows
+                     if not (p.get('metadata') or {}).get('self_test')]
+    self_test_payments = [p for p in payment_rows
+                          if (p.get('metadata') or {}).get('self_test')]
+
+    return {
+        "generated_at": datetime.utcnow().isoformat() + "Z",
+        "summary": {
+            "users": {
+                "total": total_users,
+                "real": len(real_users),
+                "founders": len(founder_rows),
+                "community": len(community_rows),
+                "test_or_fake": len(test_users),
+                "genesis49": sum(1 for u in real_users if u.get('beta_user')),
+                "registered": sum(1 for u in real_users if u.get('is_registered')),
+            },
+            "payments": {
+                "total_rows": len(payment_rows),
+                "real_customer_payments": len(real_payments),
+                "founder_self_test": len(self_test_payments),
+                "total_real_ils": sum(float(p['amount']) for p in real_payments),
+                "total_self_test_ils": sum(float(p['amount']) for p in self_test_payments),
+            },
+            "licenses": {
+                "total": len(licenses),
+                "to_real_customers": sum(1 for l in licenses if l['user_id'] not in founder_ids),
+            },
+            "courses_active": sum(1 for c in courses if c['active']),
+            "deposits_onchain": len(deposits),
+            "marketplace_items": marketplace_items,
+            "marketplace_orders": marketplace_orders,
+            "active_stakes": stakes,
+            "users_with_referral": referral_users,
+        },
+        "users": {
+            "founders": founder_rows,
+            "community": community_rows,
+            "test_or_fake": test_users,
+        },
+        "payments": {
+            "real_customer": real_payments,
+            "founder_self_test": self_test_payments,
+        },
+        "licenses": [_row(r) for r in licenses],
+        "courses": [_row(r) for r in courses],
+        "deposits": [_row(r) for r in deposits],
+        "recent_broadcasts": [_row(r) for r in broadcasts],
+    }
