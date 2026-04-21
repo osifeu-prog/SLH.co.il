@@ -11009,3 +11009,260 @@ async def ops_reality(x_broadcast_key: Optional[str] = Header(None)):
         "deposits": [_row(r) for r in deposits],
         "recent_broadcasts": [_row(r) for r in broadcasts],
     }
+
+
+# ===== PUBLIC EVENTS FEED (#13 from OPEN_TASKS) =====
+# Read-only, no auth, ring-buffer slice from event_log.
+# Strips sensitive metadata fields before returning to public.
+PUBLIC_EVENT_TYPES = {
+    "payment.cleared", "stake.opened", "stake.closed",
+    "course.purchased", "academy.payout_made", "broadcast.send",
+    "user.registered", "device.paired", "chain.event",
+}
+PUBLIC_STRIP_META_KEYS = {"user_id", "admin_id", "ip_address", "token",
+                          "password", "secret", "key", "telegram_id",
+                          "phone", "email"}
+
+@app.get("/api/events/public")
+async def events_public(limit: int = Query(30, le=100), since_id: int = Query(0)):
+    """Public feed of platform events - no auth, no PII.
+
+    Used by homepage / marketing pages to show 'live activity' without
+    exposing user identities. Safe for anyone to poll.
+    """
+    if pool is None or _db_init_failed:
+        raise HTTPException(503, "DB pool unavailable")
+
+    async with pool.acquire() as conn:
+        try:
+            rows = await conn.fetch("""
+                SELECT id, event_type, created_at, metadata
+                  FROM event_log
+                  WHERE event_type = ANY($1::text[])
+                    AND id > $2
+                  ORDER BY id DESC
+                  LIMIT $3
+            """, list(PUBLIC_EVENT_TYPES), since_id, limit)
+        except Exception:
+            return {"events": [], "error": "event_log_unavailable"}
+
+    events = []
+    for r in rows:
+        meta = dict(r).get("metadata") or {}
+        if isinstance(meta, str):
+            try:
+                meta = json.loads(meta)
+            except Exception:
+                meta = {}
+        public_meta = {k: v for k, v in meta.items() if k not in PUBLIC_STRIP_META_KEYS}
+        if "user_id" in meta:
+            public_meta["user_hash"] = hashlib.sha256(
+                str(meta["user_id"]).encode()
+            ).hexdigest()[:8]
+        events.append({
+            "id": r["id"],
+            "type": r["event_type"],
+            "at": r["created_at"].isoformat() if r["created_at"] else None,
+            "meta": public_meta,
+        })
+    return {"events": events, "total_returned": len(events)}
+
+
+# ===== OPS MUTATIONS (A5 from REALITY_RESET roadmap) =====
+# Admin actions authenticated via ADMIN_BROADCAST_KEY (same pattern as /api/ops/reality).
+# These enable Osif to manage users without waiting for ADMIN_API_KEYS rotation.
+
+class OpsCreditRequest(BaseModel):
+    user_id: int
+    amount: float
+    token: str = "ZVK"
+    reason: Optional[str] = None
+
+@app.post("/api/ops/credit")
+async def ops_credit(req: OpsCreditRequest, x_broadcast_key: Optional[str] = Header(None)):
+    """Credit tokens to a user. Auth: X-Broadcast-Key header."""
+    if not x_broadcast_key or x_broadcast_key != ADMIN_BROADCAST_KEY:
+        raise HTTPException(403, "Broadcast key required")
+    if pool is None or _db_init_failed:
+        raise HTTPException(503, "DB pool unavailable")
+    if req.amount <= 0:
+        raise HTTPException(400, "amount must be positive")
+    if req.token not in {"ZVK", "SLH", "MNH", "TON"}:
+        raise HTTPException(400, "token must be one of ZVK/SLH/MNH/TON")
+
+    async with pool.acquire() as conn:
+        user = await conn.fetchrow("SELECT telegram_id FROM web_users WHERE telegram_id=$1", req.user_id)
+        if not user:
+            raise HTTPException(404, f"user {req.user_id} not found")
+
+        try:
+            await conn.execute("""
+                INSERT INTO token_transfers (from_user_id, to_user_id, token, amount, memo, tx_type, created_at)
+                VALUES (0, $1, $2, $3, $4, 'admin_credit', NOW())
+            """, req.user_id, req.token, req.amount, req.reason or "ops credit by admin")
+        except Exception as e:
+            try:
+                await conn.execute("""
+                    INSERT INTO event_log (event_type, metadata, created_at)
+                    VALUES ('admin.credit', $1::jsonb, NOW())
+                """, json.dumps({
+                    "user_id": req.user_id,
+                    "token": req.token,
+                    "amount": req.amount,
+                    "reason": req.reason,
+                }))
+            except Exception as e2:
+                raise HTTPException(500, f"credit failed: {e!r} / {e2!r}")
+
+    return {"ok": True, "user_id": req.user_id, "credited": f"{req.amount} {req.token}"}
+
+
+class OpsApprovePaymentRequest(BaseModel):
+    external_payment_id: int
+    grant_course_id: Optional[int] = None
+    note: Optional[str] = None
+
+@app.post("/api/ops/approve-payment")
+async def ops_approve_payment(req: OpsApprovePaymentRequest, x_broadcast_key: Optional[str] = Header(None)):
+    """Force-approve an external_payment and optionally grant an academy_license.
+    Auth: X-Broadcast-Key header."""
+    if not x_broadcast_key or x_broadcast_key != ADMIN_BROADCAST_KEY:
+        raise HTTPException(403, "Broadcast key required")
+    if pool is None or _db_init_failed:
+        raise HTTPException(503, "DB pool unavailable")
+
+    async with pool.acquire() as conn:
+        pay = await conn.fetchrow("""
+            SELECT id, user_id, provider_tx_id, status, plan_key
+              FROM external_payments WHERE id=$1
+        """, req.external_payment_id)
+        if not pay:
+            raise HTTPException(404, f"payment {req.external_payment_id} not found")
+
+        if pay["status"] != "approved":
+            await conn.execute(
+                "UPDATE external_payments SET status='approved' WHERE id=$1",
+                req.external_payment_id,
+            )
+
+        license_id = None
+        if req.grant_course_id:
+            existing = await conn.fetchval(
+                "SELECT id FROM academy_licenses WHERE user_id=$1 AND course_id=$2 AND status='active'",
+                pay["user_id"], req.grant_course_id,
+            )
+            if existing:
+                license_id = existing
+            else:
+                license_id = await conn.fetchval("""
+                    INSERT INTO academy_licenses (user_id, course_id, payment_id, status, purchased_at)
+                    VALUES ($1, $2, $3, 'active', NOW())
+                    RETURNING id
+                """, pay["user_id"], req.grant_course_id, pay["provider_tx_id"])
+
+    return {
+        "ok": True,
+        "external_payment_id": req.external_payment_id,
+        "status": "approved",
+        "user_id": pay["user_id"],
+        "license_id": license_id,
+    }
+
+
+class OpsBanRequest(BaseModel):
+    user_id: int
+    reason: str
+    revert: bool = False
+
+@app.post("/api/ops/ban")
+async def ops_ban(req: OpsBanRequest, x_broadcast_key: Optional[str] = Header(None)):
+    """Flip is_registered on web_users. Auth: X-Broadcast-Key header."""
+    if not x_broadcast_key or x_broadcast_key != ADMIN_BROADCAST_KEY:
+        raise HTTPException(403, "Broadcast key required")
+    if pool is None or _db_init_failed:
+        raise HTTPException(503, "DB pool unavailable")
+
+    async with pool.acquire() as conn:
+        user = await conn.fetchrow("SELECT telegram_id, is_registered FROM web_users WHERE telegram_id=$1", req.user_id)
+        if not user:
+            raise HTTPException(404, f"user {req.user_id} not found")
+
+        new_registered = True if req.revert else False
+        await conn.execute(
+            "UPDATE web_users SET is_registered=$1 WHERE telegram_id=$2",
+            new_registered, req.user_id,
+        )
+        try:
+            await conn.execute("""
+                INSERT INTO event_log (event_type, metadata, created_at)
+                VALUES ('admin.ban', $1::jsonb, NOW())
+            """, json.dumps({
+                "user_id": req.user_id,
+                "action": "revert" if req.revert else "ban",
+                "reason": req.reason,
+            }))
+        except Exception:
+            pass
+
+    return {"ok": True, "user_id": req.user_id, "is_registered": new_registered,
+            "action": "revert" if req.revert else "ban"}
+
+
+# ===== PERFORMANCE ENDPOINT (#9 from OPEN_TASKS) =====
+# Reads the latest backtest_YYYYMMDD_HHMMSS.csv from the project root and
+# returns aggregated metrics. No auth (public pre-launch transparency).
+
+@app.get("/api/performance")
+async def performance_snapshot():
+    """Latest backtest snapshot from the local CSV (no auth, public data)."""
+    import glob
+    import csv as _csv
+    from pathlib import Path as _P
+
+    project_root = _P(__file__).resolve().parent.parent
+    candidates = sorted(
+        glob.glob(str(project_root / "backtest_*.csv")),
+        reverse=True,
+    )
+    if not candidates:
+        return {
+            "available": False,
+            "message": "No backtest CSV present. Run daily_backtest.py to generate.",
+            "generated_at": None,
+            "tokens": [],
+        }
+
+    latest = candidates[0]
+    tokens = []
+    try:
+        with open(latest, "r", encoding="utf-8") as f:
+            reader = _csv.DictReader(f)
+            for row in reader:
+                try:
+                    tokens.append({
+                        "address": row.get("address"),
+                        "symbol": row.get("symbol"),
+                        "price_usd": float(row.get("price_usd") or 0),
+                        "liquidity_usd": float(row.get("liquidity_usd") or 0),
+                        "volume_usd_24h": float(row.get("volume_usd_24h") or 0),
+                        "collected_at": row.get("collected_at"),
+                    })
+                except Exception:
+                    pass
+    except Exception as e:
+        return {"available": False, "message": f"read error: {e!r}"}
+
+    total_liquidity = sum(t["liquidity_usd"] for t in tokens)
+    total_volume = sum(t["volume_usd_24h"] for t in tokens)
+    top_by_volume = sorted(tokens, key=lambda t: t["volume_usd_24h"], reverse=True)[:5]
+
+    return {
+        "available": True,
+        "source_file": _P(latest).name,
+        "generated_at": tokens[0]["collected_at"] if tokens else None,
+        "token_count": len(tokens),
+        "total_liquidity_usd": total_liquidity,
+        "total_volume_24h_usd": total_volume,
+        "top_5_by_volume": top_by_volume,
+        "tokens": tokens,
+    }
