@@ -84,7 +84,12 @@ async def send_telegram_message(session, chat_id, text):
 
 async def broadcast_airdrop():
     """Main broadcast function"""
-    pool = await asyncpg.create_pool(DATABASE_URL)
+    # Phase 0B (2026-04-21): unified fail-fast pool via shared_db_core.
+    try:
+        from shared_db_core import init_db_pool as _shared_init_db_pool
+        pool = await _shared_init_db_pool(DATABASE_URL)
+    except Exception:
+        pool = await asyncpg.create_pool(DATABASE_URL)
 
     try:
         users = await get_all_users(pool)

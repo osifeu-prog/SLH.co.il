@@ -185,7 +185,15 @@ async def run(bot) -> None:
     if not WORKERS_CHAT_ID:
         logger.warning("LEDGER_WORKERS_CHAT_ID not set — listener will run silently (no workers fanout)")
 
-    pool = await asyncpg.create_pool(DATABASE_URL, min_size=1, max_size=3)
+    # Phase 0B (2026-04-21): unified fail-fast pool via shared_db_core.
+    # Falls back to direct create_pool if shared_db_core unavailable (e.g. in a
+    # bot container that didn't copy the file).
+    try:
+        from shared_db_core import init_db_pool as _shared_init_db_pool
+        pool = await _shared_init_db_pool(DATABASE_URL)
+    except Exception as _shared_err:
+        logger.warning("shared_db_core unavailable, direct pool: %s", _shared_err)
+        pool = await asyncpg.create_pool(DATABASE_URL, min_size=1, max_size=3)
     cursor = _load_cursor()
     logger.info("ledger_listener started: cursor=%s workers_chat=%s", cursor, WORKERS_CHAT_ID or "(none)")
 

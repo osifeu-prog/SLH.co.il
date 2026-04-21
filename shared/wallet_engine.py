@@ -173,7 +173,13 @@ class WalletEngine:
 
     async def init(self) -> None:
         """Call once at app startup."""
-        self._pool = await asyncpg.create_pool(self._db_url, min_size=2, max_size=10)
+        # Phase 0B (2026-04-21): unified fail-fast pool via shared_db_core.
+        try:
+            from shared_db_core import init_db_pool as _shared_init_db_pool
+            self._pool = await _shared_init_db_pool(self._db_url)
+        except Exception as _shared_err:
+            logger.warning(f"shared_db_core unavailable, direct pool: {_shared_err}")
+            self._pool = await asyncpg.create_pool(self._db_url, min_size=2, max_size=10)
         self._redis = aioredis.from_url(self._redis_url, decode_responses=True)
         self._http = httpx.AsyncClient(timeout=15)
         # ensure tables

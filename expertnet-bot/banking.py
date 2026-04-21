@@ -9,6 +9,8 @@ from datetime import datetime, timedelta
 from typing import Optional
 import uuid
 
+from shared_db_core import init_db_pool as _shared_init_db_pool
+
 log = logging.getLogger("slh.banking")
 
 _pool = None
@@ -16,9 +18,12 @@ _pool = None
 async def pool():
     global _pool
     if _pool is None:
-        _pool = await asyncpg.create_pool(
+        # Phase 0B (2026-04-21): unified fail-fast pool via shared_db_core.
+        # max_size standardized 5→4 per plan. Revenue-adjacent module —
+        # fail-fast is especially important: better a crash than silent
+        # double-counting if DB is flaky.
+        _pool = await _shared_init_db_pool(
             os.getenv("DATABASE_URL", "postgresql://postgres:slh_secure_2026@postgres:5432/slh_main"),
-            min_size=1, max_size=5,
         )
     return _pool
 

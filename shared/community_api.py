@@ -165,7 +165,12 @@ SEED_POSTS = [
 async def init_db():
     """Create pool, run schema, seed if empty."""
     global pool
-    pool = await asyncpg.create_pool(DATABASE_URL, min_size=2, max_size=10)
+    # Phase 0B (2026-04-21): unified fail-fast pool via shared_db_core.
+    try:
+        from shared_db_core import init_db_pool as _shared_init_db_pool
+        pool = await _shared_init_db_pool(DATABASE_URL)
+    except Exception:
+        pool = await asyncpg.create_pool(DATABASE_URL, min_size=2, max_size=10)
     async with pool.acquire() as conn:
         await conn.execute(SCHEMA_SQL)
         # Seed if empty

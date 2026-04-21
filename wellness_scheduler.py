@@ -22,7 +22,14 @@ class WellnessScheduler:
 
     async def start(self):
         """Initialize database connection and start scheduler"""
-        self.pool = await asyncpg.create_pool(self.database_url, min_size=2, max_size=10)
+        # Phase 0B (2026-04-21): unified fail-fast pool via shared_db_core.
+        # max_size standardized 10→4 per Phase 0B plan.
+        try:
+            from shared_db_core import init_db_pool as _shared_init_db_pool
+            self.pool = await _shared_init_db_pool(self.database_url)
+        except Exception as _shared_err:
+            logger.warning(f"shared_db_core unavailable, direct pool: {_shared_err}")
+            self.pool = await asyncpg.create_pool(self.database_url, min_size=2, max_size=10)
 
         # Load all existing schedules from database
         await self._load_schedules()

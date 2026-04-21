@@ -9,11 +9,20 @@ _pool: Optional[asyncpg.Pool] = None
 async def get_pool() -> asyncpg.Pool:
     global _pool
     if _pool is None:
-        _pool = await asyncpg.create_pool(
-            os.getenv("DATABASE_URL", "postgresql://postgres:slh_secure_2026@postgres:5432/slh_main"),
-            min_size=1,
-            max_size=5,
-        )
+        # Phase 0B (2026-04-21): unified fail-fast pool via shared_db_core.
+        # max_size standardized 5→4. Falls back to direct create_pool when
+        # shared_db_core isn't on sys.path (e.g. a bot image that didn't bundle it).
+        try:
+            from shared_db_core import init_db_pool as _shared_init_db_pool
+            _pool = await _shared_init_db_pool(
+                os.getenv("DATABASE_URL", "postgresql://postgres:slh_secure_2026@postgres:5432/slh_main"),
+            )
+        except Exception:
+            _pool = await asyncpg.create_pool(
+                os.getenv("DATABASE_URL", "postgresql://postgres:slh_secure_2026@postgres:5432/slh_main"),
+                min_size=1,
+                max_size=4,
+            )
     return _pool
 
 
