@@ -1,74 +1,128 @@
 ﻿import os, requests, asyncpg, json
 from datetime import datetime
 from telegram import Bot, Update
-from telegram.ext import Application, CommandHandler
+from telegram.ext import Application, CommandHandler, ContextTypes
 
-BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "8724910039:AAFkZYO_fV5VFdDpzszWHfhYvJRO25b1fDg")
-ADMIN_IDS = [8789977826, 584203384, 546671882]
+BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+MASTER_ADMIN_ID = 8789977826
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 # ------------------- DB Functions -------------------
 async def init_db():
     conn = await asyncpg.connect(DATABASE_URL)
     await conn.execute('''
-        CREATE TABLE IF NOT EXISTS roi_history (id SERIAL PRIMARY KEY, roi REAL, timestamp TEXT, signal_name TEXT);
-        CREATE TABLE IF NOT EXISTS feedback (id SERIAL PRIMARY KEY, user_id TEXT, username TEXT, message TEXT, timestamp TEXT);
-        CREATE TABLE IF NOT EXISTS users (user_id TEXT PRIMARY KEY, username TEXT, first_seen TEXT)
+        CREATE TABLE IF NOT EXISTS admins (
+            user_id TEXT PRIMARY KEY,
+            added_by TEXT,
+            added_at TEXT
+        );
+        CREATE TABLE IF NOT EXISTS admin_requests (
+            user_id TEXT PRIMARY KEY,
+            username TEXT,
+            requested_at TEXT
+        );
     ''')
     await conn.close()
 
-async def save_feedback(user_id, username, message):
+async def is_admin(user_id):
     conn = await asyncpg.connect(DATABASE_URL)
-    await conn.execute('INSERT INTO feedback (user_id, username, message, timestamp) VALUES ($1, $2, $3, $4)', str(user_id), username, message, datetime.now().isoformat())
+    row = await conn.fetchrow('SELECT user_id FROM admins WHERE user_id = $1', str(user_id))
+    await conn.close()
+    return row is not None or str(user_id) == str(MASTER_ADMIN_ID)
+
+async def add_admin(admin_id, added_by):
+    conn = await asyncpg.connect(DATABASE_URL)
+    await conn.execute('INSERT INTO admins (user_id, added_by, added_at) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING', str(admin_id), str(added_by), datetime.now().isoformat())
     await conn.close()
 
-async def register_user(user_id, username):
+async def remove_admin(admin_id):
     conn = await asyncpg.connect(DATABASE_URL)
-    await conn.execute('INSERT INTO users (user_id, username, first_seen) VALUES ($1, $2, $3) ON CONFLICT (user_id) DO NOTHING', str(user_id), username, datetime.now().isoformat())
+    await conn.execute('DELETE FROM admins WHERE user_id = $1', str(admin_id))
     await conn.close()
 
-async def save_roi(roi, signal_name="Signal"):
+async def list_admins():
     conn = await asyncpg.connect(DATABASE_URL)
-    await conn.execute('INSERT INTO roi_history (roi, timestamp, signal_name) VALUES ($1, $2, $3)', roi, datetime.now().isoformat(), signal_name)
+    rows = await conn.fetch('SELECT user_id, added_at FROM admins ORDER BY added_at DESC')
+    await conn.close()
+    return rows
+
+async def save_request(user_id, username):
+    conn = await asyncpg.connect(DATABASE_URL)
+    await conn.execute('INSERT INTO admin_requests (user_id, username, requested_at) VALUES ($1, $2, $3) ON CONFLICT (user_id) DO UPDATE SET username = $2, requested_at = $3', str(user_id), username, datetime.now().isoformat())
+    await conn.close()
+
+async def get_requests():
+    conn = await asyncpg.connect(DATABASE_URL)
+    rows = await conn.fetch('SELECT user_id, username, requested_at FROM admin_requests ORDER BY requested_at DESC')
+    await conn.close()
+    return rows
+
+async def clear_request(user_id):
+    conn = await asyncpg.connect(DATABASE_URL)
+    await conn.execute('DELETE FROM admin_requests WHERE user_id = $1', str(user_id))
     await conn.close()
 
 # ------------------- Handlers -------------------
 async def start(update, context):
-    await register_user(update.effective_user.id, update.effective_user.username)
-    await update.message.reply_text(f"🤖 SLH Macro Bot\n/roi - Last ROI\n/price - BTC\n/feedback <msg>\nAdmin: /status, /send_alert, /users")
+    await update.message.reply_text("🤖 SLH Macro Bot\n/request_admin - Request admin access\n/list_admins - List admins\n/status - System status (admin)\n/feedback <msg> - Send feedback")
 
-async def feedback(update, context):
-    if not context.args:
-        await update.message.reply_text("Usage: /feedback <message>")
-        return
+async def request_admin(update, context):
     user = update.effective_user
-    msg = " ".join(context.args)
-    await save_feedback(user.id, user.username or "no_username", msg)
-    await update.message.reply_text("✅ Thanks for your feedback!")
+    await save_request(user.id, user.username or "no_username")
     bot = Bot(token=BOT_TOKEN)
-    for admin_id in ADMIN_IDS:
-        await bot.send_message(chat_id=admin_id, text=f"📢 New feedback from @{user.username or user.id}: {msg}")
+    await bot.send_message(chat_id=MASTER_ADMIN_ID, text=f"📢 Admin request from @{user.username or user.id} (ID: {user.id})\nUse /approve_admin {user.id} to approve")
+    await update.message.reply_text("✅ Request sent to master admin. You will be notified once approved.")
 
-async def roi(update, context):
-    conn = await asyncpg.connect(DATABASE_URL)
-    row = await conn.fetchrow('SELECT roi, timestamp, signal_name FROM roi_history ORDER BY id DESC LIMIT 1')
-    await conn.close()
-    if row:
-        await update.message.reply_text(f"📊 Last ROI: {row[0]}% from {row[2]} at {row[1][:16]}")
-    else:
-        await update.message.reply_text("⏳ No ROI yet")
+async def approve_admin(update, context):
+    if update.effective_user.id != MASTER_ADMIN_ID:
+        await update.message.reply_text("⛔ Only master admin can approve.")
+        return
+    if not context.args:
+        await update.message.reply_text("Usage: /approve_admin <user_id>")
+        return
+    new_admin_id = context.args[0]
+    await add_admin(new_admin_id, MASTER_ADMIN_ID)
+    await clear_request(new_admin_id)
+    await update.message.reply_text(f"✅ User {new_admin_id} is now an admin.")
+    bot = Bot(token=BOT_TOKEN)
+    await bot.send_message(chat_id=new_admin_id, text="🎉 You are now an admin! Use /status, /users, /send_alert")
 
-async def price(update, context):
-    try:
-        r = requests.get("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd")
-        price = r.json()["bitcoin"]["usd"]
-        await update.message.reply_text(f"💰 BTC: ${price:,.0f}")
-    except:
-        await update.message.reply_text("⚠️ Error fetching price")
+async def revoke_admin(update, context):
+    if update.effective_user.id != MASTER_ADMIN_ID:
+        await update.message.reply_text("⛔ Only master admin can revoke.")
+        return
+    if not context.args:
+        await update.message.reply_text("Usage: /revoke_admin <user_id>")
+        return
+    await remove_admin(context.args[0])
+    await update.message.reply_text(f"✅ User {context.args[0]} is no longer an admin.")
+
+async def list_admins_cmd(update, context):
+    if not await is_admin(update.effective_user.id):
+        await update.message.reply_text("⛔ Admins only.")
+        return
+    rows = await list_admins()
+    msg = "👑 **Admins:**\n"
+    for r in rows:
+        msg += f"• {r['user_id']} (added {r['added_at'][:16]})\n"
+    await update.message.reply_text(msg, parse_mode="Markdown")
+
+async def requests_list(update, context):
+    if update.effective_user.id != MASTER_ADMIN_ID:
+        await update.message.reply_text("⛔ Only master admin.")
+        return
+    rows = await get_requests()
+    if not rows:
+        await update.message.reply_text("No pending requests.")
+        return
+    msg = "📋 **Pending admin requests:**\n"
+    for r in rows:
+        msg += f"• @{r['username']} (ID: {r['user_id']}) at {r['requested_at'][:16]}\n"
+    await update.message.reply_text(msg, parse_mode="Markdown")
 
 async def status(update, context):
-    if update.effective_user.id not in ADMIN_IDS:
-        await update.message.reply_text("⛔ Admin only")
+    if not await is_admin(update.effective_user.id):
+        await update.message.reply_text("⛔ Admins only.")
         return
     db_ok = False
     try:
@@ -80,48 +134,65 @@ async def status(update, context):
     await update.message.reply_text(f"📡 System Status\nPostgreSQL: {'✅' if db_ok else '❌'}\nBot: ✅ Running")
 
 async def users(update, context):
-    if update.effective_user.id not in ADMIN_IDS:
-        await update.message.reply_text("⛔ Admin only")
+    if not await is_admin(update.effective_user.id):
+        await update.message.reply_text("⛔ Admins only.")
         return
     conn = await asyncpg.connect(DATABASE_URL)
     rows = await conn.fetch('SELECT user_id, username, first_seen FROM users ORDER BY first_seen DESC LIMIT 10')
     await conn.close()
     if not rows:
-        await update.message.reply_text("No users yet")
+        await update.message.reply_text("No users yet.")
         return
     msg = "👥 **Recent users:**\n"
     for r in rows:
         msg += f"• {r['username'] or r['user_id']} ({r['first_seen'][:16]})\n"
     await update.message.reply_text(msg, parse_mode="Markdown")
 
+async def feedback(update, context):
+    if not context.args:
+        await update.message.reply_text("Usage: /feedback <message>")
+        return
+    msg = " ".join(context.args)
+    conn = await asyncpg.connect(DATABASE_URL)
+    await conn.execute('INSERT INTO feedback (user_id, username, message, timestamp) VALUES ($1, $2, $3, $4)', str(update.effective_user.id), update.effective_user.username or "no_username", msg, datetime.now().isoformat())
+    await conn.close()
+    await update.message.reply_text("✅ Thanks for your feedback!")
+    bot = Bot(token=BOT_TOKEN)
+    admins = await list_admins()
+    for a in admins:
+        await bot.send_message(chat_id=int(a['user_id']), text=f"📢 New feedback from @{update.effective_user.username or update.effective_user.id}: {msg}")
+
 async def send_alert(update, context):
-    if update.effective_user.id not in ADMIN_IDS:
-        await update.message.reply_text("⛔ Admin only")
+    if not await is_admin(update.effective_user.id):
+        await update.message.reply_text("⛔ Admins only.")
         return
     if not context.args:
-        await update.message.reply_text("/send_alert <message>")
+        await update.message.reply_text("Usage: /send_alert <message>")
         return
     msg = " ".join(context.args)
     bot = Bot(token=BOT_TOKEN)
-    for admin_id in ADMIN_IDS:
-        await bot.send_message(chat_id=admin_id, text=f"📢 ALERT: {msg}")
-    await update.message.reply_text("✅ Alert sent")
+    admins = await list_admins()
+    for a in admins:
+        await bot.send_message(chat_id=int(a['user_id']), text=f"📢 ALERT: {msg}")
+    await update.message.reply_text("✅ Alert sent to all admins.")
 
-def main():
-    import asyncio
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(init_db())
+# ------------------- Main -------------------
+async def main():
+    await init_db()
     app = Application.builder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler("feedback", feedback))
-    app.add_handler(CommandHandler("roi", roi))
-    app.add_handler(CommandHandler("price", price))
+    app.add_handler(CommandHandler("request_admin", request_admin))
+    app.add_handler(CommandHandler("approve_admin", approve_admin))
+    app.add_handler(CommandHandler("revoke_admin", revoke_admin))
+    app.add_handler(CommandHandler("list_admins", list_admins_cmd))
+    app.add_handler(CommandHandler("requests", requests_list))
     app.add_handler(CommandHandler("status", status))
     app.add_handler(CommandHandler("users", users))
+    app.add_handler(CommandHandler("feedback", feedback))
     app.add_handler(CommandHandler("send_alert", send_alert))
-    print("🤖 Bot running with PostgreSQL")
-    app.run_polling()
+    print("🤖 Bot running with admin request system")
+    await app.run_polling()
 
 if __name__ == "__main__":
-    main()
+    import asyncio
+    asyncio.run(main())
