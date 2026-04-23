@@ -4,17 +4,11 @@ import asyncpg
 from datetime import datetime
 from telegram import Bot
 from telegram.ext import Application, CommandHandler
-import redis
-import json
 
 BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "8724910039:AAFkZYO_fV5VFdDpzszWHfhYvJRO25b1fDg")
 CHAT_ID_OSIF = os.getenv("TELEGRAM_CHAT_ID_OSIF", "584203384")
 CHAT_ID_TZVIKA = os.getenv("TELEGRAM_CHAT_ID_TZVIKA", "546671882")
 DATABASE_URL = os.getenv("DATABASE_URL")
-REDIS_URL = os.getenv("REDIS_URL")
-
-# Redis connection (for caching/rate limiting later)
-redis_client = redis.from_url(REDIS_URL) if REDIS_URL else None
 
 async def init_db():
     conn = await asyncpg.connect(DATABASE_URL)
@@ -35,8 +29,6 @@ async def save_roi(roi, signal_name="Signal"):
         roi, datetime.now().isoformat(), signal_name
     )
     await conn.close()
-    if redis_client:
-        redis_client.lpush("roi_history", json.dumps({"roi": roi, "timestamp": datetime.now().isoformat(), "signal": signal_name}))
 
 async def start(update, context):
     await update.message.reply_text("🤖 SLH Macro Bot is alive!\n/roi - Show ROI\n/price - BTC\n/help - Help")
@@ -77,7 +69,7 @@ async def main():
     app.add_handler(CommandHandler("roi", roi))
     app.add_handler(CommandHandler("price", price))
     app.add_handler(CommandHandler("help", help_cmd))
-    print("🤖 Bot running with PostgreSQL + Redis")
+    print("🤖 Bot running with PostgreSQL")
     await app.run_polling()
 
 if __name__ == "__main__":
