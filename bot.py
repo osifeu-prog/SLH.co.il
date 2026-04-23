@@ -4,7 +4,7 @@ from telegram import Bot, Update
 from telegram.ext import Application, CommandHandler
 
 BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "8724910039:AAFkZYO_fV5VFdDpzszWHfhYvJRO25b1fDg")
-ADMIN_IDS = [584203384, 546671882]
+ADMIN_IDS = [584203384]
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 # ------------------- DB Functions -------------------
