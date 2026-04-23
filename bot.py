@@ -1,25 +1,13 @@
-﻿import os, requests, asyncpg, redis, json
+﻿import os, requests, asyncpg, json
 from datetime import datetime
 from telegram import Bot, Update
-from telegram.ext import Application, CommandHandler, ContextTypes
+from telegram.ext import Application, CommandHandler
 
 BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "8724910039:AAFkZYO_fV5VFdDpzszWHfhYvJRO25b1fDg")
 ADMIN_IDS = [584203384, 546671882]
 DATABASE_URL = os.getenv("DATABASE_URL")
-REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
-DOMAIN = "https://slh.co.il"
-RAILWAY_URL = "https://slhcoil-production.up.railway.app"
-GITHUB_REPO = "https://github.com/osifeu-prog/SLH.co.il"
 
-# Redis
-try:
-    redis_client = redis.from_url(REDIS_URL)
-    redis_client.ping()
-    REDIS_OK = True
-except:
-    REDIS_OK = False
-    redis_client = None
-
+# ------------------- DB Functions -------------------
 async def init_db():
     conn = await asyncpg.connect(DATABASE_URL)
     await conn.execute('''
@@ -44,23 +32,10 @@ async def save_roi(roi, signal_name="Signal"):
     await conn.execute('INSERT INTO roi_history (roi, timestamp, signal_name) VALUES ($1, $2, $3)', roi, datetime.now().isoformat(), signal_name)
     await conn.close()
 
-async def get_roi_history(limit=10):
-    conn = await asyncpg.connect(DATABASE_URL)
-    rows = await conn.fetch(f'SELECT roi, timestamp, signal_name FROM roi_history ORDER BY id DESC LIMIT {limit}')
-    await conn.close()
-    return rows
-
-def admin_only(func):
-    async def wrapper(update, context):
-        if update.effective_user.id not in ADMIN_IDS:
-            await update.message.reply_text("⛔ Access denied.")
-            return
-        return await func(update, context)
-    return wrapper
-
+# ------------------- Handlers -------------------
 async def start(update, context):
     await register_user(update.effective_user.id, update.effective_user.username)
-    await update.message.reply_text(f"🤖 SLH Macro Bot\n/roi - Last ROI\n/price - BTC\n/feedback <msg>\n/status - Admin", parse_mode="Markdown")
+    await update.message.reply_text(f"🤖 SLH Macro Bot\n/roi - Last ROI\n/price - BTC\n/feedback <msg>\nAdmin: /status, /send_alert, /users")
 
 async def feedback(update, context):
     if not context.args:
@@ -83,26 +58,18 @@ async def roi(update, context):
     else:
         await update.message.reply_text("⏳ No ROI yet")
 
-async def roi_history(update, context):
-    rows = await get_roi_history(10)
-    if not rows:
-        await update.message.reply_text("No ROI history")
-        return
-    msg = "📈 **Last 10 ROI:**\n"
-    for r in rows:
-        msg += f"• {r['roi']}% - {r['signal_name']} ({r['timestamp'][:16]})\n"
-    await update.message.reply_text(msg, parse_mode="Markdown")
-
 async def price(update, context):
     try:
         r = requests.get("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd")
         price = r.json()["bitcoin"]["usd"]
         await update.message.reply_text(f"💰 BTC: ${price:,.0f}")
     except:
-        await update.message.reply_text("⚠️ Error")
+        await update.message.reply_text("⚠️ Error fetching price")
 
-@admin_only
 async def status(update, context):
+    if update.effective_user.id not in ADMIN_IDS:
+        await update.message.reply_text("⛔ Admin only")
+        return
     db_ok = False
     try:
         conn = await asyncpg.connect(DATABASE_URL)
@@ -110,10 +77,27 @@ async def status(update, context):
         await conn.close()
         db_ok = True
     except: pass
-    await update.message.reply_text(f"📡 System Status\nPostgreSQL: {'✅' if db_ok else '❌'}\nRedis: {'✅' if REDIS_OK else '❌'}", parse_mode="Markdown")
+    await update.message.reply_text(f"📡 System Status\nPostgreSQL: {'✅' if db_ok else '❌'}\nBot: ✅ Running")
 
-@admin_only
+async def users(update, context):
+    if update.effective_user.id not in ADMIN_IDS:
+        await update.message.reply_text("⛔ Admin only")
+        return
+    conn = await asyncpg.connect(DATABASE_URL)
+    rows = await conn.fetch('SELECT user_id, username, first_seen FROM users ORDER BY first_seen DESC LIMIT 10')
+    await conn.close()
+    if not rows:
+        await update.message.reply_text("No users yet")
+        return
+    msg = "👥 **Recent users:**\n"
+    for r in rows:
+        msg += f"• {r['username'] or r['user_id']} ({r['first_seen'][:16]})\n"
+    await update.message.reply_text(msg, parse_mode="Markdown")
+
 async def send_alert(update, context):
+    if update.effective_user.id not in ADMIN_IDS:
+        await update.message.reply_text("⛔ Admin only")
+        return
     if not context.args:
         await update.message.reply_text("/send_alert <message>")
         return
@@ -132,12 +116,11 @@ def main():
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("feedback", feedback))
     app.add_handler(CommandHandler("roi", roi))
-    app.add_handler(CommandHandler("roi_history", roi_history))
     app.add_handler(CommandHandler("price", price))
     app.add_handler(CommandHandler("status", status))
+    app.add_handler(CommandHandler("users", users))
     app.add_handler(CommandHandler("send_alert", send_alert))
-    app.add_handler(CommandHandler("help", start))
-    print("🤖 Bot running with PostgreSQL + Redis")
+    print("🤖 Bot running with PostgreSQL")
     app.run_polling()
 
 if __name__ == "__main__":
