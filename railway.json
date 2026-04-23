@@ -1,0 +1,29 @@
+﻿{
+  "version": 1,
+  "services": [
+    {
+      "name": "bot",
+      "command": "python bot.py",
+      "env": {
+        "DATABASE_URL": "postgresql://...",
+        "TELEGRAM_BOT_TOKEN": "..."
+      }
+    },
+    {
+      "name": "monitor",
+      "command": "python monitor/api.py",
+      "port": 8080,
+      "env": {
+        "DATABASE_URL": "postgresql://..."
+      }
+    },
+    {
+      "name": "scheduler",
+      "command": "python clock.py",
+      "env": {
+        "DATABASE_URL": "postgresql://...",
+        "TELEGRAM_BOT_TOKEN": "..."
+      }
+    }
+  ]
+}

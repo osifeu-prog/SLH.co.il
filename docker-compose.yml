@@ -1,64 +1,70 @@
 ﻿version: '3.8'
 
 services:
-  postgres:
-    image: postgres:15
+  bot:
+    build: .
+    command: python bot.py
     environment:
-      POSTGRES_DB: slh_db
-      POSTGRES_USER: slh_user
-      POSTGRES_PASSWORD: slh_password
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - slh_network
-
-  redis:
-    image: redis:7-alpine
-    networks:
-      - slh_network
-
-  backend:
-    build: ./backend
-    environment:
-      - DATABASE_URL=postgresql://slh_user:slh_password@postgres:5432/slh_db
-      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=${DATABASE_URL}
       - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+    depends_on:
+      - redis
+      - postgres
+    restart: always
+
+  monitor:
+    build: .
+    command: python monitor/api.py
+    ports:
+      - "8080:8080"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
     depends_on:
       - postgres
-      - redis
-    ports:
-      - "8000:8000"
-    networks:
-      - slh_network
+    restart: always
 
-  bot:
-    build: ./bot
+  signal_scheduler:
+    build: .
+    command: python -c "
+import asyncio
+import schedule
+import time
+from signals.alert_bot import run_signal_engine
+
+async def job():
+    await run_signal_engine()
+
+def run_async_job():
+    asyncio.run(job())
+
+# Run every hour
+schedule.every(1).hours.do(run_async_job)
+
+while True:
+    schedule.run_pending()
+    time.sleep(60)
+"
     environment:
+      - DATABASE_URL=${DATABASE_URL}
       - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
-      - TELEGRAM_CHAT_ID_OSIF=${TELEGRAM_CHAT_ID_OSIF}
-      - TELEGRAM_CHAT_ID_TZVIKA=${TELEGRAM_CHAT_ID_TZVIKA}
-      - WHATSAPP_PHONE_OSIF=${WHATSAPP_PHONE_OSIF}
-      - WHATSAPP_PHONE_TZVIKA=${WHATSAPP_PHONE_TZVIKA}
-      - BACKEND_URL=http://backend:8000
     depends_on:
-      - backend
       - redis
-    networks:
-      - slh_network
+      - postgres
+    restart: always
 
-  frontend:
-    build: ./frontend
-    ports:
-      - "3000:3000"
+  redis:
+    image: redis:alpine
+    restart: always
+
+  postgres:
+    image: postgres:15-alpine
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:8000/api
-    depends_on:
-      - backend
-    networks:
-      - slh_network
+      - POSTGRES_DB=railway
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
 
 volumes:
   postgres_data:
-
-networks:
-  slh_network:
