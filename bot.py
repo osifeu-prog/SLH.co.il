@@ -1,4 +1,8 @@
-﻿import logging
+﻿import asyncio
+import sys
+if sys.platform == "win32":
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+import logging
 import sys
 import os
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -271,3 +275,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
