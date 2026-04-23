@@ -85,10 +85,11 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"🤖 Welcome {user.first_name}!\n\n"
         f"Commands:\n"
         f"/status - System status\n"
-        f"/add_roi <percent> [desc] - Add ROI\n"
+        f"/add_roi <percent> [desc] - Add ROI (admin)\n"
         f"/last_roi - Last ROI\n"
         f"/feedback <msg> - Send feedback\n"
-        f"/request_admin - Request admin rights"
+        f"/request_admin - Request admin rights\n"
+        f"/make_me_admin - Become first admin"
     )
 
 async def status(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -122,7 +123,7 @@ async def add_roi(update: Update, context: ContextTypes.DEFAULT_TYPE):
         cur.execute('SELECT is_admin FROM users WHERE user_id = %s', (user_id,))
         is_admin = cur.fetchone()
         if not is_admin or not is_admin[0]:
-            await update.message.reply_text("❌ Admin only")
+            await update.message.reply_text("❌ Admin only. Use /make_me_admin first")
             return
         roi = float(context.args[0])
         desc = ' '.join(context.args[1:]) if len(context.args) > 1 else "No description"
@@ -192,6 +193,32 @@ async def request_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
         cur.close()
         conn.close()
 
+async def make_me_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Make the first user admin (one-time command)"""
+    user_id = update.effective_user.id
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute('SELECT COUNT(*) FROM users WHERE is_admin = TRUE')
+        admin_count = cur.fetchone()[0]
+        
+        if admin_count == 0:
+            cur.execute('UPDATE users SET is_admin = TRUE WHERE user_id = %s', (user_id,))
+            conn.commit()
+            await update.message.reply_text("✅ You are now an admin! 🎉\n\nYou can now use:\n/add_roi 25 \"Test ROI\"")
+        else:
+            cur.execute('SELECT is_admin FROM users WHERE user_id = %s', (user_id,))
+            is_admin = cur.fetchone()
+            if is_admin and is_admin[0]:
+                await update.message.reply_text("✅ You are already an admin!")
+            else:
+                await update.message.reply_text("❌ An admin already exists. Ask them to approve you with /request_admin")
+    except Exception as e:
+        await update.message.reply_text(f"Error: {e}")
+    finally:
+        cur.close()
+        conn.close()
+
 async def main():
     logger.info("Starting bot...")
     init_db()
@@ -202,6 +229,7 @@ async def main():
     app.add_handler(CommandHandler("last_roi", last_roi))
     app.add_handler(CommandHandler("feedback", feedback))
     app.add_handler(CommandHandler("request_admin", request_admin))
+    app.add_handler(CommandHandler("make_me_admin", make_me_admin))
     logger.info("Bot started polling...")
     await app.initialize()
     await app.start()
