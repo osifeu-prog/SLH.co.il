@@ -1,25 +1,33 @@
 ﻿import os
 import requests
+import sqlite3
+from datetime import datetime
 from telegram import Bot
 from telegram.ext import Application, CommandHandler
 
-BOT_TOKEN = "8724910039:AAFkZYO_fV5VFdDpzszWHfhYvJRO25b1fDg"
-CHAT_ID_OSIF = "584203384"
-CHAT_ID_TZVIKA = "546671882"
+BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "8724910039:AAFkZYO_fV5VFdDpzszWHfhYvJRO25b1fDg")
+CHAT_ID_OSIF = os.getenv("TELEGRAM_CHAT_ID_OSIF", "584203384")
+CHAT_ID_TZVIKA = os.getenv("TELEGRAM_CHAT_ID_TZVIKA", "546671882")
 
 roi_history = []
 
+def save_roi(roi):
+    conn = sqlite3.connect("roi.db")
+    c = conn.cursor()
+    c.execute('CREATE TABLE IF NOT EXISTS roi_history (roi REAL, timestamp TEXT)')
+    c.execute('INSERT INTO roi_history VALUES (?, ?)', (roi, datetime.now().isoformat()))
+    conn.commit()
+    conn.close()
+
 async def start(update, context):
-    await update.message.reply_text(
-        "🤖 SLH Macro Bot is alive!\n\nCommands:\n/roi - Show ROI\n/price - BTC price\n/help - Help"
-    )
+    await update.message.reply_text("🤖 SLH Macro Bot is alive!\n/roi - ROI\n/price - BTC")
 
 async def roi(update, context):
     if roi_history:
         last = roi_history[-1]
         await update.message.reply_text(f"📊 Last ROI: {last['roi']:.2f}%")
     else:
-        await update.message.reply_text("⏳ No ROI data yet")
+        await update.message.reply_text("⏳ No ROI yet")
 
 async def price(update, context):
     try:
@@ -27,10 +35,10 @@ async def price(update, context):
         price = r.json()["bitcoin"]["usd"]
         await update.message.reply_text(f"💰 Bitcoin: ${price:,.0f}")
     except:
-        await update.message.reply_text("⚠️ Error fetching price")
+        await update.message.reply_text("⚠️ Error")
 
 async def help_cmd(update, context):
-    await update.message.reply_text("/start - Start\n/roi - Show ROI\n/price - BTC price")
+    await update.message.reply_text("/start, /roi, /price")
 
 def send_roi_alert(roi_percent, signal_name="Signal"):
     message = f"📈 {signal_name}\nROI: {roi_percent:.2f}%"
@@ -39,7 +47,8 @@ def send_roi_alert(roi_percent, signal_name="Signal"):
         bot.send_message(chat_id=CHAT_ID_OSIF, text=message)
     if CHAT_ID_TZVIKA:
         bot.send_message(chat_id=CHAT_ID_TZVIKA, text=message)
-    roi_history.append({"roi": roi_percent, "timestamp": __import__('datetime').datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
+    roi_history.append({"roi": roi_percent, "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
+    save_roi(roi_percent)
 
 def main():
     app = Application.builder().token(BOT_TOKEN).build()
