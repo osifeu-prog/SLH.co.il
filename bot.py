@@ -1,4 +1,7 @@
-﻿import os, requests, asyncpg, json
+﻿import logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+import os, requests, asyncpg, json
 from datetime import datetime
 from telegram import Bot, Update
 from telegram.ext import Application, CommandHandler, ContextTypes
@@ -210,6 +213,13 @@ async def send_alert(update, context):
 
 # ------------------- Main -------------------
 async def main():
+    logger.info("Starting bot...")
+    try:
+        await init_db()
+        logger.info("Database initialized")
+    except Exception as e:
+        logger.error(f"DB init failed: {e}")
+        return
     await init_db()
     app = Application.builder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
@@ -223,11 +233,13 @@ async def main():
     app.add_handler(CommandHandler("feedback", feedback))
     app.add_handler(CommandHandler("send_alert", send_alert))
     print("🤖 Bot running with admin request system")
-    await app.run_polling()
+            logger.info("Bot started polling...")
+        await app.run_polling()
 
 if __name__ == "__main__":
     import asyncio
     asyncio.run(main())
+
 
 
 
