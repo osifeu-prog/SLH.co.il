@@ -162,6 +162,38 @@ async def feedback(update, context):
     for a in admins:
         await bot.send_message(chat_id=int(a['user_id']), text=f"📢 New feedback from @{update.effective_user.username or update.effective_user.id}: {msg}")
 
+
+async def signals(update, context):
+    """Check trading signals - /signals"""
+    if not await is_admin(update.effective_user.id):
+        await update.message.reply_text("⛔ Admins only.")
+        return
+    await update.message.reply_text("🔄 Fetching latest signals...")
+    from signals.engine import check_signals
+    result = await check_signals()
+    if "error" in result:
+        await update.message.reply_text(f"❌ Error: {result['error']}")
+        return
+    msg = f"""📊 **Trading Signals** (BTC: ${result['btc_price']:,.2f})
+
+**RSI:** {result['rsi']} {'(Neutral)' if 30 < result['rsi'] < 70 else '(Extreme!)'}
+
+**MACD:**
+• Line: {result['macd']['line']}
+• Signal: {result['macd']['signal']}
+• Histogram: {result['macd']['histogram']}
+
+**Signals:**
+"""
+    if result['signals']:
+        for s in result['signals']:
+            msg += f"\n• **{s['indicator']}:** {s['signal']} ({s['strength']})\n  {s['reason']}"
+    else:
+        msg += "\n• No active signals"
+    
+    await update.message.reply_text(msg, parse_mode="Markdown")
+
+
 async def send_alert(update, context):
     if not await is_admin(update.effective_user.id):
         await update.message.reply_text("⛔ Admins only.")
@@ -196,4 +228,6 @@ async def main():
 if __name__ == "__main__":
     import asyncio
     asyncio.run(main())
+
+
 
