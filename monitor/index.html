@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>SLH Monitor - Dynamic</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:#0f172a;color:#fff;font-family:sans-serif;padding:2rem}
+        .container{max-width:1200px;margin:0 auto}
+        h1{text-align:center;margin-bottom:2rem;font-size:2rem}
+        .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}
+        .card{background:#1e293b;border-radius:1rem;padding:1.5rem;transition:transform0.2s}
+        .card:hover{transform:translateY(-5px)}
+        .card h2{color:#6366f1;margin-bottom:1rem;font-size:1.5rem}
+        .status{font-size:3rem;margin:1rem0}
+        .green{color:#10b981}
+        .red{color:#ef4444}
+        .value{font-size:2rem;font-weight:bold;color:#fbbf24}
+        .last-update{text-align:center;margin-top:2rem;color:#94a3b8;font-size:0.875rem}
+        .refresh-btn{background:#6366f1;color:#fff;border:none;padding:0.5rem1rem;border-radius:0.5rem;cursor:pointer;margin-top:1rem}
+        .refresh-btn:hover{background:#4f46e5}
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>📊 SLH.co.il - מערכת ניטור</h1>
+    <div class="grid" id="dashboard">
+        <div class="card">🔄 טוען...</div>
+    </div>
+    <div class="last-update">
+        <span id="timestamp"></span>
+        <br>
+        <button class="refresh-btn" onclick="loadData()">🔄 רענן</button>
+    </div>
+</div>
+<script>
+    async function loadData() {
+        try {
+            const res = await fetch('/api/status');
+            const data = await res.json();
+            const html = `
+                <div class="card">
+                    <h2>🤖 בוט טלגרם</h2>
+                    <div class="status ${data.bot ? 'green' : 'red'}">${data.bot ? '✅ פעיל' : '❌ מושבת'}</div>
+                </div>
+                <div class="card">
+                    <h2>🗄️ PostgreSQL</h2>
+                    <div class="status ${data.db ? 'green' : 'red'}">${data.db ? '✅ מחובר' : '❌ מנותק'}</div>
+                </div>
+                <div class="card">
+                    <h2>👥 משתמשים רשומים</h2>
+                    <div class="value">${data.users || 0}</div>
+                </div>
+                <div class="card">
+                    <h2>💬 פידבקים אחרונים</h2>
+                    <div class="value">${data.recent_feedback || 0}</div>
+                </div>
+                <div class="card">
+                    <h2>👑 אדמינים פעילים</h2>
+                    <div class="value">${data.admins || 0}</div>
+                </div>
+                <div class="card">
+                    <h2>💰 ROI אחרון</h2>
+                    <div class="value ${data.last_roi && data.last_roi > 0 ? 'green' : 'red'}">${data.last_roi ? data.last_roi + '%' : 'אין נתונים'}</div>
+                </div>
+            `;
+            document.getElementById('dashboard').innerHTML = html;
+            document.getElementById('timestamp').innerHTML = `עודכן לאחרונה: ${new Date().toLocaleTimeString('he-IL')}`;
+        } catch(e) {
+            document.getElementById('dashboard').innerHTML = '<div class="card">❌ שגיאה בטעינת נתונים</div>';
+        }
+    }
+    loadData();
+    setInterval(loadData, 10000);
+</script>
+</body>
+</html>

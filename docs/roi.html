@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>SLH.co.il - ROI Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body{background:#0f172a;color:#fff;font-family:sans-serif;padding:2rem}
+        .container{max-width:1000px;margin:0 auto}
+        h1{text-align:center;margin-bottom:2rem}
+        .card{background:#1e293b;border-radius:1rem;padding:1.5rem;margin-bottom:1.5rem}
+        canvas{max-height:400px}
+        .roi-value{font-size:3rem;color:#10b981;text-align:center}
+        .positive{color:#10b981}
+        .negative{color:#ef4444}
+        table{width:100%;border-collapse:collapse}
+        th,td{padding:0.75rem;text-align:center;border-bottom:1px solid #334155}
+        th{background:#0f172a}
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>📈 SLH ROI Dashboard</h1>
+    <div class="card">
+        <canvas id="roiChart"></canvas>
+    </div>
+    <div class="card">
+        <h2>📊 היסטוריית ROI</h2>
+        <div id="last-roi" class="roi-value">-</div>
+        <table id="roi-table">
+            <thead><tr><th>תאריך</th><th>ROI %</th><th>הערות</th><th>נרשם ע"י</th></tr></thead>
+            <tbody><tr><td colspan="4">טוען...</td></tr></tbody>
+        </table>
+    </div>
+</div>
+<script>
+    async function loadROI() {
+        try {
+            const res = await fetch('/api/roi');
+            const data = await res.json();
+            
+            if(data.history && data.history.length > 0) {
+                // Update last ROI
+                const last = data.history[0];
+                document.getElementById('last-roi').innerHTML = 
+                    `<span class="${last.roi_percent >= 0 ? 'positive' : 'negative'}">${last.roi_percent}%</span>`;
+                
+                // Fill table
+                const tbody = document.querySelector('#roi-table tbody');
+                tbody.innerHTML = data.history.map(row => `
+                    <tr>
+                        <td>${new Date(row.created_at).toLocaleDateString('he-IL')}</td>
+                        <td class="${row.roi_percent >= 0 ? 'positive' : 'negative'}">${row.roi_percent}%</td>
+                        <td>${row.notes || '-'}</td>
+                        <td>${row.user_id || '-'}</td>
+                    </tr>
+                `).join('');
+                
+                // Create chart
+                const ctx = document.getElementById('roiChart').getContext('2d');
+                const reversed = [...data.history].reverse();
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: reversed.map(r => new Date(r.created_at).toLocaleDateString()),
+                        datasets: [{
+                            label: 'ROI %',
+                            data: reversed.map(r => r.roi_percent),
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { labels: { color: '#fff' } }
+                        },
+                        scales: {
+                            y: { grid: { color: '#334155' }, ticks: { color: '#fff' } },
+                            x: { ticks: { color: '#fff' } }
+                        }
+                    }
+                });
+            }
+        } catch(e) {
+            console.error(e);
+            document.querySelector('#roi-table tbody').innerHTML = '<tr><td colspan="4">❌ שגיאה בטעינה</td></tr>';
+        }
+    }
+    loadROI();
+</script>
+</body>
+</html>
