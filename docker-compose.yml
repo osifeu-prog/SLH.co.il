@@ -1,0 +1,64 @@
+﻿version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: slh_db
+      POSTGRES_USER: slh_user
+      POSTGRES_PASSWORD: slh_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - slh_network
+
+  redis:
+    image: redis:7-alpine
+    networks:
+      - slh_network
+
+  backend:
+    build: ./backend
+    environment:
+      - DATABASE_URL=postgresql://slh_user:slh_password@postgres:5432/slh_db
+      - REDIS_URL=redis://redis:6379
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "8000:8000"
+    networks:
+      - slh_network
+
+  bot:
+    build: ./bot
+    environment:
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - TELEGRAM_CHAT_ID_OSIF=${TELEGRAM_CHAT_ID_OSIF}
+      - TELEGRAM_CHAT_ID_TZVIKA=${TELEGRAM_CHAT_ID_TZVIKA}
+      - WHATSAPP_PHONE_OSIF=${WHATSAPP_PHONE_OSIF}
+      - WHATSAPP_PHONE_TZVIKA=${WHATSAPP_PHONE_TZVIKA}
+      - BACKEND_URL=http://backend:8000
+    depends_on:
+      - backend
+      - redis
+    networks:
+      - slh_network
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000/api
+    depends_on:
+      - backend
+    networks:
+      - slh_network
+
+volumes:
+  postgres_data:
+
+networks:
+  slh_network:
