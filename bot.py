@@ -18,9 +18,26 @@ logger = logging.getLogger(__name__)
 TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
 DATABASE_URL = os.getenv('DATABASE_URL')
 
+def _serve_static_and_exit():
+    # Fallback for Railway services that deploy this repo without TELEGRAM_BOT_TOKEN
+    # (e.g. the SLH.co.il service, which is meant to serve the website, not run the bot).
+    # Without this fallback, those services crash-loop because railway.json's startCommand
+    # is shared across all services in the project.
+    import http.server
+    import socketserver
+    port = int(os.getenv('PORT', '8080'))
+    docs_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'docs')
+    if not os.path.isdir(docs_dir):
+        logger.error("No TELEGRAM_BOT_TOKEN and docs/ not present — cannot fall back to static serve")
+        sys.exit(1)
+    os.chdir(docs_dir)
+    handler = http.server.SimpleHTTPRequestHandler
+    logger.info(f"TELEGRAM_BOT_TOKEN not set — serving {docs_dir} on :{port}")
+    with socketserver.TCPServer(('', port), handler) as httpd:
+        httpd.serve_forever()
+
 if not TOKEN:
-    logger.error("TELEGRAM_BOT_TOKEN not set")
-    sys.exit(1)
+    _serve_static_and_exit()
 if not DATABASE_URL:
     logger.error("DATABASE_URL not set")
     sys.exit(1)
