@@ -21,7 +21,15 @@ from aiogram.types import Message
 
 import auth
 import session
-import claude_client
+
+# Choose AI client: if ANTHROPIC_API_KEY is set, use paid Anthropic (with tool use);
+# otherwise fall back to the free SLH multi-provider endpoint (chat-only, Groq/Gemini).
+if os.getenv("ANTHROPIC_API_KEY", "").startswith("sk-"):
+    import claude_client as ai_client
+    _AI_MODE = "anthropic-tools"
+else:
+    import free_ai_client as ai_client
+    _AI_MODE = "slh-multiprovider-free"
 
 API_BASE = os.getenv("SLH_API_BASE", "https://slh-api-production.up.railway.app")
 ADMIN_KEY = os.getenv("ADMIN_API_KEY", "")
@@ -55,14 +63,12 @@ async def cmd_start(msg: Message) -> None:
         await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
         return
     await msg.answer(
-        "שלום עוסיף. אני SLH Claude — הגשר שלך לניהול המערכת מהטלגרם.\n\n"
-        "*מה אני יודע לעשות:*\n"
-        "• לקרוא קבצים מ-D:\\\\SLH\\_ECOSYSTEM\n"
-        "• להריץ git / docker / curl\n"
-        "• לבדוק את ה-API ב-Railway\n"
-        "• לזכור את השיחה בינינו\n\n"
-        "תן לי משימה בעברית ואני מבצע.\n"
-        "פקודות: /clear — מחק היסטוריה, /status — בדיקת מצב, /help — עזרה"
+        "שלום עוסיף\\. אני SLH Claude \\(mode: `" + _AI_MODE + "`\\)\\.\n\n"
+        "*פקודות מהירות \\(ללא עלות\\):*\n"
+        "`/ps` `/bots` `/logs <name>` `/git` `/health` `/price` `/devices` `/task <טקסט>`\n\n"
+        "*שיחה חופשית:*\n"
+        "כל טקסט אחר → AI \\(groq/gemini חינם כרגע\\)\n\n"
+        "עוד עזרה: `/help`"
     )
 
 
@@ -72,20 +78,24 @@ async def cmd_help(msg: Message) -> None:
         await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
         return
     await msg.answer(
-        "*פקודות ישירות \\(ללא Claude, מהירות וללא עלות\\):*\n"
+        "*פקודות Direct \\(ללא AI, מיידי\\):*\n"
+        "/ps — רשימת containers רצים\n"
+        "/bots — ספירה של bot fleet \\+ סטטוס\n"
+        "/logs \\<name\\> — 25 שורות אחרונות של container\n"
+        "/git \\<status\\|log\\|diff\\|branch\\> \\[website\\]\n"
         "/health — בריאות ה\\-API \\+ DB\n"
         "/price — מחירי SLH/MNH/ZVK\n"
         "/devices — רשימת ESP\\-ים מחוברים\n"
-        "/task \\<טקסט\\> — הוסף למשימות\n\n"
-        "*פקודות Claude \\(מפעילות LLM, עולות\\):*\n"
-        "/status — בדיקת מצב מורכבת\n"
-        "/clear — מחק היסטוריית שיחה\n\n"
-        "*שיחה חופשית:*\n"
-        "כל טקסט אחר מופעל ב\\-Claude עם tools \\(read\\_file, bash, git, curl\\)\\.\n\n"
-        "*דוגמאות למשימות:*\n"
-        "• \"מה שינית בגיט היום?\"\n"
-        "• \"הראה לי את 30 השורות הראשונות של CLAUDE\\.md\"\n"
-        "• \"אילו קונטיינרים רצים?\""
+        "/task \\<טקסט\\> — הוסף למשימות\n"
+        "/ai\\_mode — מה מצב ה\\-AI כרגע\n\n"
+        "*שיחה חופשית \\(AI\\):*\n"
+        f"כל טקסט אחר מופעל ב\\-AI \\({_AI_MODE}\\)\\.\n"
+        "אם ANTHROPIC\\_API\\_KEY לא מוגדר — משתמש ב\\-groq\\+gemini \\(חינם\\)\\.\n\n"
+        "*דוגמאות:*\n"
+        "• `/ps` — מי רץ עכשיו?\n"
+        "• `/logs slh\\-guardian\\-bot`\n"
+        "• `/git status website`\n"
+        "• \"מה הכי דחוף לעשות עכשיו?\""
     )
 
 
@@ -236,7 +246,7 @@ async def cmd_status(msg: Message) -> None:
         return
     await msg.answer("מבצע בדיקת מצב מהירה...")
     try:
-        reply, new_msgs = await claude_client.converse(
+        reply, new_msgs = await ai_client.converse(
             history=[],
             user_text="בצע בדיקה מהירה: 1) curl ל-/api/health של Railway, 2) git status בשני ה-repos (D:\\SLH_ECOSYSTEM ו-D:\\SLH_ECOSYSTEM\\website), 3) docker ps. תן סיכום של 3-5 שורות בעברית.",
         )
@@ -258,6 +268,106 @@ async def cmd_clear(msg: Message) -> None:
     await msg.answer(f"נוקה. נמחקו {n} הודעות.")
 
 
+# ---------- Direct executor commands (no AI, no cost) ----------
+import subprocess
+
+_SAFE_EXEC_ALLOWLIST = {
+    "docker ps", "docker compose ps", "docker stats --no-stream",
+    "git status", "git log --oneline -10", "git diff --stat",
+    "df -h", "uptime", "uname -a",
+}
+
+
+def _run_cmd(cmd: str, timeout: int = 15) -> str:
+    """Run a shell command and return stdout+stderr, capped."""
+    try:
+        result = subprocess.run(
+            cmd, shell=True, capture_output=True, text=True,
+            timeout=timeout, cwd="/workspace",
+        )
+        out = (result.stdout or "") + (result.stderr or "")
+        return out[:3500] or "(no output)"
+    except subprocess.TimeoutExpired:
+        return f"⏱ command timed out after {timeout}s"
+    except Exception as e:
+        return f"⚠️ {type(e).__name__}: {e}"
+
+
+@dp.message(Command("ps"))
+async def cmd_ps(msg: Message) -> None:
+    if not auth.is_authorized(msg.from_user.id):
+        await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
+        return
+    out = _run_cmd("docker ps --format 'table {{.Names}}\\t{{.Status}}'")
+    await msg.answer(f"```\n{out}\n```")
+
+
+@dp.message(Command("logs"))
+async def cmd_logs(msg: Message) -> None:
+    if not auth.is_authorized(msg.from_user.id):
+        await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
+        return
+    parts = (msg.text or "").split(maxsplit=1)
+    if len(parts) < 2:
+        await msg.answer("שימוש: `/logs \\<container\\-name\\>`  \nלמשל: `/logs slh\\-claude\\-bot`")
+        return
+    name = parts[1].strip().replace(";", "").replace("&", "").replace("|", "")
+    # Allowlist prefix check
+    if not name.startswith(("slh-", "slh_")):
+        await msg.answer("רק containers עם prefix `slh-` מותרים.")
+        return
+    out = _run_cmd(f"docker logs {name} --tail 25 2>&1")
+    await msg.answer(f"*logs {name}:*\n```\n{out[-3500:]}\n```")
+
+
+@dp.message(Command("git"))
+async def cmd_git(msg: Message) -> None:
+    if not auth.is_authorized(msg.from_user.id):
+        await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
+        return
+    parts = (msg.text or "").split(maxsplit=1)
+    subcmd = (parts[1].strip() if len(parts) > 1 else "status").split()[0]
+    safe_subs = {"status", "log", "diff", "branch"}
+    if subcmd not in safe_subs:
+        await msg.answer(f"פקודת git מותרות בלבד: {', '.join(safe_subs)}")
+        return
+    repo_hint = (parts[1].strip() if len(parts) > 1 else "")
+    repo = "website" if "website" in repo_hint else "."
+    if subcmd == "log":
+        out = _run_cmd(f"cd {repo} && git log --oneline -10")
+    elif subcmd == "diff":
+        out = _run_cmd(f"cd {repo} && git diff --stat")
+    elif subcmd == "branch":
+        out = _run_cmd(f"cd {repo} && git branch --show-current")
+    else:
+        out = _run_cmd(f"cd {repo} && git status -s")
+    await msg.answer(f"*git {subcmd} @ {repo}:*\n```\n{out}\n```")
+
+
+@dp.message(Command("bots"))
+async def cmd_bots(msg: Message) -> None:
+    if not auth.is_authorized(msg.from_user.id):
+        await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
+        return
+    out = _run_cmd("docker ps --format '{{.Names}}' | grep ^slh- | sort | wc -l")
+    running = out.strip()
+    out_list = _run_cmd("docker ps --format '{{.Names}}: {{.Status}}' | grep ^slh- | sort")
+    await msg.answer(
+        f"*Bot fleet: {running} רצים*\n```\n{out_list[:3500]}\n```"
+    )
+
+
+@dp.message(Command("ai_mode"))
+async def cmd_ai_mode(msg: Message) -> None:
+    if not auth.is_authorized(msg.from_user.id):
+        await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
+        return
+    await msg.answer(
+        f"*AI mode:* `{_AI_MODE}`\n\n"
+        f"{'✅ Anthropic Claude עם tool use (עולה כסף)' if _AI_MODE == 'anthropic-tools' else '✅ SLH multi-provider (Groq/Gemini חינם)'}"
+    )
+
+
 @dp.message(F.text)
 async def on_text(msg: Message) -> None:
     if not auth.is_authorized(msg.from_user.id):
@@ -272,7 +382,7 @@ async def on_text(msg: Message) -> None:
 
     try:
         hist = await session.history(msg.chat.id)
-        reply, new_msgs = await claude_client.converse(hist, text)
+        reply, new_msgs = await ai_client.converse(hist, text)
         for m in new_msgs:
             await session.append(msg.chat.id, m["role"], m["content"])
         for chunk in _chunks(reply):
