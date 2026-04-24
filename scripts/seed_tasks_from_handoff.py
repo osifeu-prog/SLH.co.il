@@ -18,11 +18,6 @@ import sys
 import urllib.request
 
 API_BASE = os.getenv("API_BASE", "https://slh-api-production.up.railway.app")
-ADMIN_KEY = os.getenv("ADMIN_API_KEY") or os.getenv("ADMIN_BROADCAST_KEY")
-
-if not ADMIN_KEY:
-    print("ERROR: set ADMIN_API_KEY env var")
-    sys.exit(1)
 
 
 # Tasks extracted from ops/KNOWN_ISSUES.md + TEAM_HANDOFF_20260424/*.md
@@ -266,13 +261,18 @@ TASKS = [
 
 
 def main():
+    admin_key = os.getenv("ADMIN_API_KEY") or os.getenv("ADMIN_BROADCAST_KEY")
+    if not admin_key:
+        print("ERROR: set ADMIN_API_KEY env var")
+        sys.exit(1)
+
     payload = {"tasks": TASKS, "skip_duplicates_by_source": True}
     req = urllib.request.Request(
         f"{API_BASE}/api/admin/tasks/bulk-import",
         data=json.dumps(payload).encode("utf-8"),
         headers={
             "Content-Type": "application/json",
-            "X-Admin-Key": ADMIN_KEY,
+            "X-Admin-Key": admin_key,
         },
         method="POST",
     )
