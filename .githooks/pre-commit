@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+# SLH.co.il pre-commit hook — blocks commits containing secrets.
+# Install once: git config core.hooksPath .githooks && chmod +x .githooks/pre-commit
+# Bypass in true emergencies only: git commit --no-verify  (don't default to this)
+
+set -euo pipefail
+
+# Patterns — each line is a regex. Finding ANY match in a STAGED change blocks the commit.
+# ---------------------------------------------------------------
+# 1. Telegram bot tokens: 9-12 digits, colon, 35-char base64
+# 2. OpenAI project keys (sk-proj-...)
+# 3. OpenAI legacy keys (sk-... at least 40 chars)
+# 4. Anthropic keys (sk-ant-...)
+# 5. AWS access keys (AKIA...)
+# 6. Postgres URLs with inline password
+# 7. Ethereum/BSC private keys (0x + 64 hex)
+# 8. GitHub PATs (ghp_... / github_pat_...)
+# ---------------------------------------------------------------
+PATTERNS=(
+    '[0-9]{9,12}:[A-Za-z0-9_-]{30,}'
+    'sk-proj-[A-Za-z0-9_-]{40,}'
+    'sk-[A-Za-z0-9]{40,}'
+    'sk-ant-[A-Za-z0-9_-]{40,}'
+    'AKIA[0-9A-Z]{16}'
+    'postgres(ql)?://[^:]+:[^@[:space:]]+@'
+    '(^|[^A-Fa-f0-9])0x[A-Fa-f0-9]{64}([^A-Fa-f0-9]|$)'
+    'ghp_[A-Za-z0-9]{36,}'
+    'github_pat_[A-Za-z0-9_]{70,}'
+)
+
+# Files to NEVER include, even if pattern matches fail
+FORBIDDEN_FILENAMES=(
+    '\.env$'
+    '\.env\..*'
+)
+
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+RESET='\033[0m'
+
+fail=0
+
+# 1. Block forbidden filenames outright
+for name_pat in "${FORBIDDEN_FILENAMES[@]}"; do
+    matches=$(git diff --cached --name-only --diff-filter=A | grep -E "$name_pat" || true)
+    if [ -n "$matches" ]; then
+        echo -e "${RED}BLOCKED: file matching '$name_pat' staged for first commit:${RESET}"
+        echo "$matches" | sed 's/^/  /'
+        echo "  Add to .gitignore and 'git rm --cached <file>'."
+        fail=1
+    fi
+done
+
+# 2. Scan staged content against secret patterns
+# Use diff with context 0 to keep scan tight. '-G' alone does include/exclude matching,
+# but we want to actually REPORT matches, so use diff -U0 | grep.
+staged_diff=$(git diff --cached -U0 || true)
+if [ -n "$staged_diff" ]; then
+    for pat in "${PATTERNS[@]}"; do
+        # Only scan lines that start with '+' (added) to avoid blocking on existing lines removed.
+        matches=$(echo "$staged_diff" | grep -E "^\+" | grep -E "$pat" || true)
+        if [ -n "$matches" ]; then
+            echo -e "${RED}BLOCKED: secret pattern matched${RESET}  ${YELLOW}[$pat]${RESET}"
+            echo "$matches" | head -5 | sed 's/^/  /'
+            line_count=$(echo "$matches" | wc -l)
+            if [ "$line_count" -gt 5 ]; then
+                echo "  ...and $((line_count - 5)) more."
+            fi
+            fail=1
+        fi
+    done
+fi
+
+if [ "$fail" -eq 1 ]; then
+    echo ""
+    echo -e "${RED}Commit aborted.${RESET}"
+    echo ""
+    echo "If a match is a false positive:"
+    echo "  1. Check it's truly not a secret (e.g. a test fixture, a public contract address)"
+    echo "  2. Replace with a clearly-fake value (TEST_xxx, PLACEHOLDER, 0x0000...)"
+    echo "  3. Or bypass ONCE: git commit --no-verify  (and explain in commit message)"
+    exit 1
+fi
+
+exit 0
