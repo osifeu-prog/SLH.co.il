@@ -11143,20 +11143,22 @@ async def events_public(limit: int = Query(30, le=100), since_id: int = Query(0)
 
     async with pool.acquire() as conn:
         try:
+            from shared.events import ensure_event_log_table
+            await ensure_event_log_table(conn)
             rows = await conn.fetch("""
-                SELECT id, event_type, created_at, metadata
+                SELECT id, event_type, created_at, payload
                   FROM event_log
                   WHERE event_type = ANY($1::text[])
                     AND id > $2
                   ORDER BY id DESC
                   LIMIT $3
             """, list(PUBLIC_EVENT_TYPES), since_id, limit)
-        except Exception:
-            return {"events": [], "error": "event_log_unavailable"}
+        except Exception as _e:
+            return {"events": [], "error": "event_log_unavailable", "reason": repr(_e)[:200]}
 
     events = []
     for r in rows:
-        meta = dict(r).get("metadata") or {}
+        meta = dict(r).get("payload") or {}
         if isinstance(meta, str):
             try:
                 meta = json.loads(meta)
@@ -11211,7 +11213,7 @@ async def ops_credit(req: OpsCreditRequest, x_broadcast_key: Optional[str] = Hea
         except Exception as e:
             try:
                 await conn.execute("""
-                    INSERT INTO event_log (event_type, metadata, created_at)
+                    INSERT INTO event_log (event_type, payload, created_at)
                     VALUES ('admin.credit', $1::jsonb, NOW())
                 """, json.dumps({
                     "user_id": req.user_id,
@@ -11302,7 +11304,7 @@ async def ops_ban(req: OpsBanRequest, x_broadcast_key: Optional[str] = Header(No
         )
         try:
             await conn.execute("""
-                INSERT INTO event_log (event_type, metadata, created_at)
+                INSERT INTO event_log (event_type, payload, created_at)
                 VALUES ('admin.ban', $1::jsonb, NOW())
             """, json.dumps({
                 "user_id": req.user_id,
