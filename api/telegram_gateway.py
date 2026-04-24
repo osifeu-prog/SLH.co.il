@@ -241,29 +241,36 @@ async def verify_bot_request(
 
 
 async def _audit(request: Request, user: TelegramUser, status: str) -> None:
-    """Write an event_log row when the table exists. Silent no-op otherwise."""
+    """Write an event_log row when the table exists. Silent no-op otherwise.
+
+    Uses shared.events.emit() so the schema stays aligned with the rest of
+    the system (event_type / payload / source / created_at). Previously this
+    function tried to INSERT columns that don't exist in the canonical schema
+    (telegram_id, slh_user_id) and silently failed — the try/except swallowed
+    every write. Now the telegram_id + slh_user_id live inside payload JSON.
+    """
     db_pool = getattr(request.app.state, "db_pool", None)
     if not db_pool:
         return
     try:
-        async with db_pool.acquire() as conn:
-            await conn.execute(
-                """
-                INSERT INTO event_log (event_type, telegram_id, slh_user_id, payload, created_at)
-                VALUES ($1, $2, $3, $4, NOW())
-                """,
-                f"gateway.{user.source}",
-                user.telegram_id,
-                user.slh_user_id,
-                json.dumps(
-                    {
-                        "path": str(request.url.path) if request else None,
-                        "is_admin": user.is_admin,
-                        "status": status,
-                    }
-                ),
-            )
+        from shared.events import emit as _emit  # lazy to avoid startup coupling
     except Exception:
+        return
+    try:
+        await _emit(
+            db_pool,
+            event_type=f"gateway.{user.source}",
+            payload={
+                "telegram_id": user.telegram_id,
+                "slh_user_id": user.slh_user_id,
+                "path": str(request.url.path) if request else None,
+                "is_admin": user.is_admin,
+                "status": status,
+            },
+            source="telegram_gateway",
+        )
+    except Exception:
+        # Non-fatal: audit must never block a request. Logged at emit() layer.
         pass
 
 

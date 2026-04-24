@@ -26,21 +26,14 @@ Priority legend:
 - **Evidence:** `main.py:10498-10499` returns `dev_code` field so QR-pairing devs can see what to type. In production this exposes the code for attackers.
 - **Fix:** gate behind `DEV=true` env var or remove entirely for prod responses.
 
-### K-4. `/api/events/public` returns `event_log_unavailable`
-- **Evidence:** confirmed 500-ish response with that payload via curl.
-- **Impact:** `/live.html` + `chain-status.html` + Mini App dashboard show "no events" panel permanently.
-- **Fix:** create `event_log` table with schema matching `api/telegram_gateway._audit()` writer:
+### K-4. ~~`/api/events/public` returns `event_log_unavailable`~~ **RESOLVED 2026-04-24**
+- **Was:** `/api/events/public` returned `{error:"event_log_unavailable"}`.
+- **Reality:** The table was created lazily via `shared.events.ensure_event_log_table()` which `/api/events/public` already calls on every hit. Live probe: `curl /api/events/public?limit=3` → `{"events":[],"total_returned":0}` (empty but correct).
+- **Fix applied:** Aligned `api/telegram_gateway._audit()` to use the canonical `shared.events.emit()` helper instead of a raw INSERT with wrong columns. Previous audit writes silently failed; now they succeed.
+- **Canonical schema** (from `shared/events.py`):
   ```sql
-  CREATE TABLE event_log (
-    id BIGSERIAL PRIMARY KEY,
-    event_type TEXT NOT NULL,
-    telegram_id BIGINT,
-    slh_user_id INTEGER,
-    payload JSONB,
-    created_at TIMESTAMPTZ DEFAULT NOW()
-  );
-  CREATE INDEX ix_event_log_created_at ON event_log (created_at DESC);
-  CREATE INDEX ix_event_log_type ON event_log (event_type);
+  event_log (id BIGSERIAL, event_type TEXT, payload JSONB, created_at TIMESTAMP, source TEXT)
+  -- NOTE: telegram_id and slh_user_id live INSIDE payload JSON, not as top-level columns
   ```
 
 ### K-5. `initShared()` never fires on 121 HTML pages
@@ -52,9 +45,15 @@ Priority legend:
   ```
 - **Note:** the new `/miniapp/dashboard.html` does NOT need this; it uses its own init flow via `telegram-web-app.js` + the shim added 2026-04-21.
 
-### K-6. `marketplace.html` + `team.html` return 404
-- **Evidence:** `curl -I https://slh-nft.com/marketplace.html` → 404 despite `project_night_20260420.md` claiming "LIVE".
-- **Fix:** the files exist locally in `website/` but were never pushed. Commit + push from `D:\SLH_ECOSYSTEM\website`.
+### K-6a. ~~`marketplace.html` 404~~ **RESOLVED 2026-04-24**
+- **Was:** 404 despite `project_night_20260420.md` memory claiming "Marketplace LIVE (5 items)".
+- **Reality:** page was never in git — memory was wrong. API `/api/marketplace/items` did return 5 items though, so the data side was correct.
+- **Fix applied:** built `website/marketplace.html` from scratch — fetches `/api/marketplace/items?limit=50`, renders as grid with category filters (digital/physical/service/course), real stats strip, stock badges, "רכוש עכשיו" CTA linking to `/pay.html?product_id=mkt-<id>&amount=...`. Zero fake data. Commit shipped.
+
+### K-6b. `team.html` 404 (still open)
+- **Evidence:** `curl -I https://slh-nft.com/team.html` → 404. Not in git, not in local tree.
+- **Blocker:** no `/api/team` endpoint exists in `main.py`. Building a static HTML with names+photos would violate the "no fake data" rule.
+- **Fix:** (1) build `GET /api/team` returning founders + contributors from the `users` table filtered by role/flag; (2) add `assets/team/` directory for photos; (3) build `website/team.html` consuming the endpoint. Estimated 2 hours end-to-end.
 
 ### K-7. Phase 0B docker rebuild required
 - **Evidence:** 9 bots have code changes committed but running containers are from a stale image.
