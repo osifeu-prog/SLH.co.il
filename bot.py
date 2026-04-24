@@ -6,7 +6,9 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, ContextTypes, CallbackQueryHandler
 import psycopg2
 from psycopg2.extras import RealDictCursor
-from datetime import datetime
+from datetime import datetime, timedelta
+
+BOT_START_TIME = datetime.utcnow()
 
 # Fix for event loop on Windows
 if sys.platform == "win32":
@@ -182,6 +184,99 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def preorder(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await _reply_guardian_preorder(update, update.effective_user, source="command")
+
+async def health(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Public command — quick pulse of the bot + DB."""
+    up = datetime.utcnow() - BOT_START_TIME
+    hours, rem = divmod(int(up.total_seconds()), 3600)
+    minutes, seconds = divmod(rem, 60)
+    uptime = f"{hours}h {minutes}m {seconds}s"
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute("SELECT COUNT(*) FROM users")
+        users_total = cur.fetchone()[0]
+        cur.execute("SELECT COUNT(*) FROM preorders")
+        preorders_total = cur.fetchone()[0]
+        cur.execute("SELECT COUNT(*) FROM roi_records")
+        roi_total = cur.fetchone()[0]
+        db_ok = True
+    except Exception as e:
+        users_total = preorders_total = roi_total = -1
+        db_ok = False
+        db_err = str(e)
+    finally:
+        cur.close()
+        conn.close()
+
+    lines = [
+        "🩺 *Bot Health*",
+        "",
+        f"⏱ uptime: `{uptime}`",
+        f"💾 DB: {'✅ ok' if db_ok else '❌ ' + db_err}",
+        f"👥 users: `{users_total}`",
+        f"🛡 preorders: `{preorders_total}`",
+        f"📊 roi_records: `{roi_total}`",
+    ]
+    await update.message.reply_text("\n".join(lines), parse_mode='Markdown')
+
+async def stats(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Admin-only: 7-day window summary."""
+    user_id = update.effective_user.id
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute('SELECT is_admin FROM users WHERE user_id = %s', (user_id,))
+        row = cur.fetchone()
+        if not row or not row[0]:
+            await update.message.reply_text("❌ Admin only.")
+            return
+
+        week_cutoff_iso = (datetime.utcnow() - timedelta(days=7)).isoformat()
+        cur.execute(
+            "SELECT COUNT(*) FROM users WHERE first_seen IS NOT NULL AND first_seen >= %s",
+            (week_cutoff_iso,)
+        )
+        new_users_7d = cur.fetchone()[0]
+        cur.execute(
+            "SELECT COUNT(*) FROM roi_records WHERE created_at >= NOW() - INTERVAL '7 days'"
+        )
+        roi_7d = cur.fetchone()[0]
+        cur.execute(
+            "SELECT COUNT(*) FROM feedback WHERE timestamp IS NOT NULL AND timestamp >= %s",
+            (week_cutoff_iso,)
+        )
+        fb_7d = cur.fetchone()[0]
+        cur.execute(
+            "SELECT COUNT(*) FROM preorders WHERE created_at >= NOW() - INTERVAL '7 days'"
+        )
+        preorders_7d = cur.fetchone()[0]
+        cur.execute(
+            "SELECT status, COUNT(*) FROM preorders GROUP BY status ORDER BY status"
+        )
+        preorder_status = cur.fetchall()
+
+        lines = [
+            "📈 *7-Day Stats*",
+            "",
+            f"👥 new users: `{new_users_7d}`",
+            f"💰 ROI entries: `{roi_7d}`",
+            f"💬 feedback: `{fb_7d}`",
+            f"🛡 preorders: `{preorders_7d}`",
+            "",
+            "*Preorder pipeline:*",
+        ]
+        if preorder_status:
+            for status_name, count in preorder_status:
+                lines.append(f"  • {status_name}: `{count}`")
+        else:
+            lines.append("  _(empty)_")
+        await update.message.reply_text("\n".join(lines), parse_mode='Markdown')
+    except Exception as e:
+        await update.message.reply_text(f"Error: {e}")
+    finally:
+        cur.close()
+        conn.close()
 
 async def preorders_list(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Admin-only: list pending pre-orders."""
@@ -393,6 +488,8 @@ async def docs_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
 📖 **Commands:**
 `/menu` - Main menu
 `/status` - System status
+`/health` - Bot health + DB
+`/stats` - 7-day stats (admin)
 `/preorder` - שריון Guardian early bird
 `/add_roi` - Add ROI
 `/last_roi` - Last ROI
@@ -470,6 +567,8 @@ async def main():
     app.add_handler(CommandHandler("make_me_admin", make_me_admin))
     app.add_handler(CommandHandler("preorder", preorder))
     app.add_handler(CommandHandler("preorders", preorders_list))
+    app.add_handler(CommandHandler("health", health))
+    app.add_handler(CommandHandler("stats", stats))
     app.add_handler(CallbackQueryHandler(handle_callback))
     
     logger.info("Bot started polling...")
