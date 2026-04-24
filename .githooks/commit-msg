@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+# SLH Spark · commit-msg hook — enforces conventional-commit scope for large diffs.
+# Runs AFTER pre-commit, with the real commit message passed as $1.
+#
+# Fixes the bug where pre-commit couldn't read the current message
+# (COMMIT_EDITMSG at pre-commit time contained the PREVIOUS commit's text).
+#
+# Install: git config core.hooksPath .githooks (already set)
+# Bypass: GUARD_CONFIRMED=1 git commit ...
+
+set -u
+
+MSG_FILE="$1"
+[ -f "$MSG_FILE" ] || exit 0
+
+# First line is the subject
+SUBJECT=$(head -1 "$MSG_FILE" | sed 's/[[:space:]]*$//')
+[ -z "$SUBJECT" ] && exit 0  # empty message handled elsewhere
+
+# Rule: large commits (>300 lines) must be tagged feat/refactor/docs/ops/chore/test/fix
+SCOPED_TYPES_REGEX='^(feat|refactor|docs|ops|chore|test|fix)(\(.+\))?!?: '
+
+STAGED=$(git diff --cached --numstat 2>/dev/null || true)
+total_added=0
+total_removed=0
+while IFS=$'\t' read -r added removed path; do
+    [ "$added" = "-" ] && continue
+    [ -z "$added" ] && continue
+    total_added=$((total_added + added))
+    total_removed=$((total_removed + removed))
+done <<< "$STAGED"
+total_changes=$((total_added + total_removed))
+
+MAX_TOTAL_LINES=300
+
+if [ "$total_changes" -gt "$MAX_TOTAL_LINES" ]; then
+    if ! echo "$SUBJECT" | grep -qE "$SCOPED_TYPES_REGEX"; then
+        if [ -n "${GUARD_CONFIRMED:-}" ]; then
+            echo "⚠️  commit-msg: oversized ($total_changes lines) without scoped prefix — bypassed via GUARD_CONFIRMED=1" >&2
+            exit 0
+        fi
+        echo "" >&2
+        echo "🛑 commit-msg — OVERSIZED COMMIT needs scoped prefix" >&2
+        echo "" >&2
+        echo "  Diff size: $total_changes lines (threshold: $MAX_TOTAL_LINES)" >&2
+        echo "  Subject:   $SUBJECT" >&2
+        echo "" >&2
+        echo "  Rewrite as one of:" >&2
+        echo "    feat(scope): ..." >&2
+        echo "    refactor(scope): ..." >&2
+        echo "    docs(scope): ..." >&2
+        echo "    ops(scope): ..." >&2
+        echo "    chore(scope): ..." >&2
+        echo "    test(scope): ..." >&2
+        echo "    fix(scope): ..." >&2
+        echo "" >&2
+        echo "  Or bypass: GUARD_CONFIRMED=1 git commit ..." >&2
+        exit 1
+    fi
+fi
+
+exit 0
