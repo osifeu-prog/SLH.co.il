@@ -110,6 +110,39 @@ The other agent announced it would build:
 
 ---
 
+### Agent: Claude Opus 4.7 (1M context) — Telegram-First / Gateway / SMS Session
+**Reporting window:** 2026-04-23 overnight → 2026-04-24 morning
+**Current status:** ✅ Session closed — handed off
+**What I did this session:**
+1. **ESP32 flash + diagnostics** — fixed 3 compile errors in `main.cpp` (ArduinoJson `|` on casted double), added serial logs for each boot stage, added MAC + pair_url + `alive` counter. Physical device `esp32-14335C6C32C0` verified alive + reaches Railway. Pairing awaits Osif click.
+2. **Mojibake root-cause + repair** — `main.py` had 861 `U+FFFD` chars. Restored from clean backup, stripped BOM. Documented as K-9c in `ops/KNOWN_ISSUES.md`.
+3. **SMS provider shipped** — `api/sms_provider.py` (210 lines) with Twilio + Inforu + 019 + stub + disabled. `main.py` was importing this **before the file existed** — would have broken every `/api/device/register` on Railway. Commit `afc2354`.
+4. **Fixed SMS dev-code regression** — reverted over-aggressive `RAILWAY_ENVIRONMENT` gate; now exposes `_dev_code` only when provider is `stub`/`disabled`/`none`.
+5. **Telegram Gateway wired in** — PH2-1 done. `api/telegram_gateway.py` imported with fail-safe try/except; `app.state.db_pool` exposed; `/api/miniapp/me` + `/api/miniapp/health` endpoints live. Verified: `{"gateway_loaded":true,"admin_ids_count":1,"primary_bot_token_set":false}`.
+6. **Mini Apps shipped** — `/miniapp/{dashboard,wallet,device}.html` + `miniapp.css` + `miniapp.js`. Dashboard is full port of legacy dashboard + initData shim. Commit `9feb3bc`.
+7. **Ops docs** — `ops/TELEGRAM_FIRST_MIGRATION_PLAN.md`, `ops/OPS_RUNBOOK.md`, `ops/KNOWN_ISSUES.md` (27 verified items), `ops/SESSION_HANDOFF_20260421_TELEGRAM_FIRST.md`, `ops/slh-start.ps1`.
+8. **@SLH_Claude_bot** +4 direct-API handlers (`/health`, `/price`, `/devices`, `/task` — zero LLM cost).
+
+**Did NOT do (deliberate):**
+- לא הגדרתי ENV vars על Railway (TELEGRAM_BOT_TOKEN, SMS_PROVIDER, DEV_EXPOSE_OTP) — dashboard action only.
+- לא הרצתי BotFather setup.
+- לא יצרתי טבלת `event_log` — left as PH2-2.
+- לא יצרתי Control Center — הסוכן המקביל כבר שיגר `admin/control-center.html` + `command-center.html` + `admin/tokens.html` (commits `cbb9314`, `104bcc7`). אימתתי 200 על כולם.
+
+**Git state at close:**
+- `slh-api` master: `afc2354` + merges live on Railway (health 200).
+- `osifeu-prog.github.io` main: `9feb3bc` live on GitHub Pages.
+
+**Osif-only blockers that remain:**
+1. Set `TELEGRAM_BOT_TOKEN` env var on Railway (Mini Apps will 500 until set).
+2. Set `SMS_PROVIDER=inforu` (or twilio) + provider creds on Railway.
+3. BotFather: set Mini App URL for `@WEWORK_teamviwer_bot` → `https://slh-nft.com/miniapp/dashboard.html`.
+4. Finish ESP pairing — code 210918 expired; open pair page, enter phone, get fresh code, click verify.
+
+**Next session trigger:** Osif sets 3 env vars above, OR Osif asks for PH2-2 (event_log table via Railway shell).
+
+---
+
 ### Agent: [Slot Open] — Infrastructure/DevOps Agent
 **Claim this slot if you're working on:**
 - Railway deploy unblock
