@@ -79,6 +79,19 @@ def init_db():
                 timestamp TEXT
             )
         ''')
+        cur.execute('''
+            CREATE TABLE IF NOT EXISTS preorders (
+                id SERIAL PRIMARY KEY,
+                user_id BIGINT,
+                username TEXT,
+                first_name TEXT,
+                product TEXT,
+                source TEXT,
+                status TEXT DEFAULT 'interested',
+                notes TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
         conn.commit()
         logger.info("Database initialized successfully")
     except Exception as e:
@@ -102,6 +115,42 @@ def get_main_menu():
     return InlineKeyboardMarkup(keyboard)
 
 # Command handlers
+def _save_preorder(user, product: str, source: str) -> int:
+    """Insert pre-order interest, return row id. Idempotent by (user_id, product)."""
+    conn = get_db()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "SELECT id FROM preorders WHERE user_id = %s AND product = %s",
+            (user.id, product),
+        )
+        existing = cur.fetchone()
+        if existing:
+            return existing[0]
+        cur.execute(
+            "INSERT INTO preorders (user_id, username, first_name, product, source) "
+            "VALUES (%s, %s, %s, %s, %s) RETURNING id",
+            (user.id, user.username, user.first_name, product, source),
+        )
+        new_id = cur.fetchone()[0]
+        conn.commit()
+        return new_id
+    finally:
+        cur.close()
+        conn.close()
+
+async def _reply_guardian_preorder(update, user, source: str):
+    pid = _save_preorder(user, "guardian", source)
+    await update.message.reply_text(
+        "🛡️ *SLH Guardian — שריון מקום*\n\n"
+        f"קיבלנו את העניין שלך (רישום #{pid}).\n\n"
+        "📦 מכשיר הדגל — ₪888 ב-early bird (99 ראשונים)\n"
+        "📅 שחרור רשמי: 7.11.2026\n\n"
+        "נחזור אליך תוך 24 שעות עם פרטי תשלום ומשלוח.\n"
+        "שאלות דחופות? @osifeu_prog",
+        parse_mode='Markdown'
+    )
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     now_iso = datetime.utcnow().isoformat()
@@ -121,10 +170,49 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         cur.close()
         conn.close()
 
+    # Deep-link from slh.co.il/guardian.html → t.me/SLH_macro_bot?start=guardian
+    if context.args and context.args[0] == "guardian":
+        await _reply_guardian_preorder(update, user, source="deeplink")
+        return
+
     await update.message.reply_text(
         f"🤖 Welcome {user.first_name}!\n\n"
         f"Send /menu to see all commands"
     )
+
+async def preorder(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await _reply_guardian_preorder(update, update.effective_user, source="command")
+
+async def preorders_list(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Admin-only: list pending pre-orders."""
+    user_id = update.effective_user.id
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute('SELECT is_admin FROM users WHERE user_id = %s', (user_id,))
+        row = cur.fetchone()
+        if not row or not row[0]:
+            await update.message.reply_text("❌ Admin only.")
+            return
+        cur.execute(
+            "SELECT id, user_id, username, first_name, product, status, created_at "
+            "FROM preorders ORDER BY created_at DESC LIMIT 50"
+        )
+        rows = cur.fetchall()
+        if not rows:
+            await update.message.reply_text("📋 אין הזמנות מוקדמות עדיין.")
+            return
+        lines = ["📋 *הזמנות מוקדמות (אחרונות 50):*", ""]
+        for r in rows:
+            pid, uid, uname, fname, product, status, ts = r
+            uname_s = f"@{uname}" if uname else (fname or str(uid))
+            lines.append(f"`#{pid}` {uname_s} · {product} · {status} · {ts.strftime('%Y-%m-%d %H:%M')}")
+        await update.message.reply_text("\n".join(lines), parse_mode='Markdown')
+    except Exception as e:
+        await update.message.reply_text(f"Error: {e}")
+    finally:
+        cur.close()
+        conn.close()
 
 async def menu_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
@@ -305,6 +393,7 @@ async def docs_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
 📖 **Commands:**
 `/menu` - Main menu
 `/status` - System status
+`/preorder` - שריון Guardian early bird
 `/add_roi` - Add ROI
 `/last_roi` - Last ROI
 `/feedback_ai` - Smart feedback
@@ -379,6 +468,8 @@ async def main():
     app.add_handler(CommandHandler("docs", docs_cmd))
     app.add_handler(CommandHandler("request_admin", request_admin))
     app.add_handler(CommandHandler("make_me_admin", make_me_admin))
+    app.add_handler(CommandHandler("preorder", preorder))
+    app.add_handler(CommandHandler("preorders", preorders_list))
     app.add_handler(CallbackQueryHandler(handle_callback))
     
     logger.info("Bot started polling...")

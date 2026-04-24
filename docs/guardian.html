@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SLH Guardian — Early Bird Pre-Order</title>
+<meta name="description" content="מכשיר הדגל של SLH — 99 יחידות early bird ב-₪888 לפני ההשקה הרשמית ב-7.11.2026">
+<meta property="og:title" content="SLH Guardian — Pre-Order">
+<meta property="og:description" content="99 יחידות ראשונות ב-₪888 · אחר כך ₪1,299 · השקה רשמית 7.11.2026">
+<style>
+* { box-sizing: border-box }
+body { margin: 0; background: #0f172a; color: #fff; font-family: 'Segoe UI', -apple-system, sans-serif; line-height: 1.6 }
+.wrap { max-width: 760px; margin: 0 auto; padding: 2rem 1.25rem }
+.badge { display: inline-block; background: #fbbf24; color: #0f172a; padding: 0.35rem 0.85rem; border-radius: 999px; font-weight: 700; font-size: 0.85rem; margin-bottom: 1rem }
+h1 { font-size: 2.5rem; margin: 0 0 0.5rem; line-height: 1.15 }
+h1 .accent { color: #6366f1 }
+.lead { font-size: 1.15rem; color: #cbd5e1; margin-bottom: 2rem }
+.card { background: #1e293b; border-radius: 1rem; padding: 1.75rem; margin-bottom: 1.5rem; border: 1px solid #334155 }
+.price-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0 }
+.price-box { background: #0f172a; padding: 1.25rem; border-radius: 0.75rem; text-align: center }
+.price-box.early { border: 2px solid #10b981 }
+.price-tag { font-size: 2rem; font-weight: 800; margin: 0.25rem 0 }
+.price-box.early .price-tag { color: #10b981 }
+.price-label { color: #94a3b8; font-size: 0.85rem }
+.stock-bar { background: #0f172a; height: 14px; border-radius: 999px; overflow: hidden; margin: 0.75rem 0 0.35rem }
+.stock-fill { background: linear-gradient(90deg, #10b981, #6366f1); height: 100%; width: 100%; transition: width .3s }
+.stock-text { color: #94a3b8; font-size: 0.9rem; text-align: center }
+.features { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 1rem }
+.feat { background: #0f172a; padding: 1rem; border-radius: 0.6rem }
+.feat-icon { font-size: 1.5rem; display: block; margin-bottom: 0.4rem }
+.gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.75rem; margin-top: 1rem }
+.gallery-slot { background: #0f172a; aspect-ratio: 4/3; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; color: #475569; border: 1px dashed #334155; font-size: 0.8rem; text-align: center; padding: 0.5rem }
+.cta-row { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem }
+.btn { background: #6366f1; color: #fff; padding: 1rem 1.5rem; border-radius: 0.6rem; text-decoration: none; display: inline-block; font-weight: 700; text-align: center; font-size: 1.05rem; border: none; cursor: pointer; transition: background .2s }
+.btn:hover { background: #4f46e5 }
+.btn-primary { background: #10b981 }
+.btn-primary:hover { background: #059669 }
+.btn-secondary { background: #475569 }
+.timeline { list-style: none; padding: 0; margin: 1rem 0 }
+.timeline li { padding: 0.5rem 0; border-bottom: 1px solid #334155; display: flex; justify-content: space-between }
+.timeline li:last-child { border: none }
+.dim { color: #94a3b8 }
+.footer { text-align: center; color: #64748b; font-size: 0.85rem; margin-top: 2rem }
+.footer a { color: #94a3b8 }
+@media (max-width: 480px) {
+  h1 { font-size: 1.85rem }
+  .price-grid { grid-template-columns: 1fr }
+  .wrap { padding: 1.25rem 1rem }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <span class="badge">🔥 Early Bird · 99 יחידות בלבד</span>
+  <h1><span class="accent">SLH Guardian</span><br>מכשיר הדגל של SLH</h1>
+  <p class="lead">הזמנה מוקדמת לקהילה — לפני ההשקה הציבורית הרשמית ב-7 בנובמבר 2026.</p>
+
+  <div class="card">
+    <div class="price-grid">
+      <div class="price-box early">
+        <div class="price-label">Early Bird (99 ראשונים)</div>
+        <div class="price-tag">₪888</div>
+        <div class="price-label">הזמנה מוקדמת</div>
+      </div>
+      <div class="price-box">
+        <div class="price-label">מחיר השקה רשמי</div>
+        <div class="price-tag dim">₪1,299</div>
+        <div class="price-label">מ-7.11.2026</div>
+      </div>
+    </div>
+
+    <div class="stock-bar"><div class="stock-fill" id="stockFill"></div></div>
+    <div class="stock-text"><span id="stockLeft">99</span> / 99 יחידות זמינות ב-early bird</div>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">מה יקבל הראשון בתור?</h2>
+    <div class="features">
+      <div class="feat"><span class="feat-icon">📟</span><strong>המכשיר הפיזי</strong><br><span class="dim">ESP32 + מסך TFT + WiFi + I/O</span></div>
+      <div class="feat"><span class="feat-icon">🔗</span><strong>חיבור לאקוסיסטם</strong><br><span class="dim">אינטגרציה מלאה עם SLH API</span></div>
+      <div class="feat"><span class="feat-icon">🧪</span><strong>גישת beta מוקדמת</strong><br><span class="dim">לפני שחרור ציבורי</span></div>
+      <div class="feat"><span class="feat-icon">💬</span><strong>קו ישיר למפתח</strong><br><span class="dim">ערוץ פרטי למשוב + עדכונים</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">גלריה</h2>
+    <div class="gallery">
+      <div class="gallery-slot">תמונה 1<br>(הוסף ב-assets/guardian-1.jpg)</div>
+      <div class="gallery-slot">תמונה 2<br>(הוסף ב-assets/guardian-2.jpg)</div>
+      <div class="gallery-slot">תמונה 3<br>(הוסף ב-assets/guardian-3.jpg)</div>
+      <div class="gallery-slot">וידאו<br>(הוסף ב-assets/guardian-demo.mp4)</div>
+    </div>
+    <p class="dim" style="margin-top:1rem; font-size:0.9rem">מקום ל-4 תמונות ו-1 וידאו. לדרוס את ה-placeholders האלה — הוסף קבצים לתיקייה <code>docs/assets/</code> ועדכן את הקוד.</p>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">איך זה עובד?</h2>
+    <ul class="timeline">
+      <li><span>1. שריון מקום</span><span class="dim">היום — לחיצה למטה</span></li>
+      <li><span>2. אישור + פרטי תשלום</span><span class="dim">תוך 24 שעות בטלגרם</span></li>
+      <li><span>3. ייצור ושילוח</span><span class="dim">ספטמבר–אוקטובר 2026</span></li>
+      <li><span>4. השקה רשמית</span><span class="dim">7.11.2026</span></li>
+    </ul>
+  </div>
+
+  <div class="cta-row">
+    <a href="https://t.me/SLH_macro_bot?start=guardian" class="btn btn-primary">🛡️ שריין לי את המקום (Telegram)</a>
+    <a href="https://t.me/osifeu_prog" class="btn btn-secondary">💬 שאלות? דבר איתי ישיר</a>
+  </div>
+
+  <div class="footer">
+    <p>SLH.co.il · <a href="https://www.slh.co.il">חזרה לעמוד הבית</a> · <a href="https://slh-nft.com">SLH Ecosystem</a></p>
+    <p class="dim">99 יחידות בלבד במחיר early bird. ההצעה תקפה עד גמר המלאי או עד 7.11.2026 — המוקדם מביניהם.</p>
+  </div>
+
+</div>
+
+<script>
+// Client-side stock counter — for visual urgency only.
+// Real authoritative stock lives in the DB; this pulls from a simple JSON endpoint later.
+// For now, a static value Osif can edit by changing this single number.
+(function() {
+  const RESERVED = 0; // ← Osif: edit this as pre-orders come in (0 to 99)
+  const TOTAL = 99;
+  const left = Math.max(0, TOTAL - RESERVED);
+  document.getElementById('stockLeft').textContent = left;
+  document.getElementById('stockFill').style.width = (left / TOTAL * 100) + '%';
+})();
+</script>
+
+</body>
+</html>
