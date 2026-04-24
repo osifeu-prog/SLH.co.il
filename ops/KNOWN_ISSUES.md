@@ -17,10 +17,13 @@ Priority legend:
 - **Fix:** rotate all of them; see [OPS_RUNBOOK.md §7](OPS_RUNBOOK.md#7-security-model) for locations. Owner: Osif.
 - **Status:** 1 of ~11 rotated (GAME_BOT_TOKEN on 2026-04-17). The rest pending Osif.
 
-### K-2. 3 admin endpoints bypass `_require_admin()`
-- **Evidence (verified by grep):** `main.py:957` (registration approve), `main.py:2344` (beta coupon), `main.py:4782` (marketplace approve) all check a body field `admin_secret` instead of the `X-Admin-Key` header dependency used elsewhere.
-- **Risk:** body field is easier to exfiltrate via logs / browser devtools than a header, and bypasses `ADMIN_API_KEYS` rotation.
-- **Fix:** swap to `_require_admin(authorization, x_admin_key)` like the rest of the admin routes.
+### K-2. ~~3 admin endpoints bypass `_require_admin()`~~ **RESOLVED 2026-04-24**
+- **Was:** `/api/registration/approve`, `/api/registration/unlock` (method=admin), and `/api/beta/create-coupon` accepted `admin_key` in body/query compared to `ADMIN_API_KEY` env with default `slh_admin_2026`. When env was empty (initial deploys) the default matched → anyone passing `"admin_key": "slh_admin_2026"` was admin.
+- **Fix applied (commit `5abade2`):** each endpoint now prefers `_require_admin(authorization, x_admin_key)` header-based auth. Body field still accepted as a deprecated fallback but **rejects the `slh_admin_2026` placeholder explicitly**. Deprecation warning logged to server output.
+- **Verified live:**
+  - `POST /api/registration/approve` with `{"admin_key":"slh_admin_2026"}` → 403 (was 200/404 before fix)
+  - `POST /api/registration/approve` with `X-Admin-Key: <valid rotated key>` → proceeds past auth
+- **Follow-up:** remove the body-field fallback in 1 week after monitoring logs for legacy callers.
 
 ### K-3. `_dev_code` leaks in `/api/device/verify` response
 - **Evidence:** `main.py:10498-10499` returns `dev_code` field so QR-pairing devs can see what to type. In production this exposes the code for attackers.
