@@ -298,18 +298,20 @@ async def roadmap(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(roadmap_text, parse_mode='Markdown')
 
 async def docs_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # Commands wrapped in backticks so Markdown doesn't strip the underscores
+    # (Telegram legacy Markdown treats _word_ as italic; backticks = code span, no parsing).
     docs_text = """📚 **SLH.co.il Documentation**
 
 📖 **Commands:**
-/menu - Main menu
-/status - System status
-/add_roi - Add ROI
-/last_roi - Last ROI
-/feedback_ai - Smart feedback
-/suggest - Suggest improvement
-/report - Report issue
-/summary_today - Daily summary
-/roadmap - Roadmap
+`/menu` - Main menu
+`/status` - System status
+`/add_roi` - Add ROI
+`/last_roi` - Last ROI
+`/feedback_ai` - Smart feedback
+`/suggest` - Suggest improvement
+`/report` - Report issue
+`/summary_today` - Daily summary
+`/roadmap` - Roadmap
 
 🌐 **Web:**
 • https://www.slh.co.il
@@ -346,17 +348,17 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.answer()
     
     if query.data == "menu_roi":
-        await query.edit_message_text("💰 **ROI:**\n/add_roi [amount]\n/last_roi", parse_mode='Markdown')
+        await query.edit_message_text("💰 **ROI:**\n`/add_roi` [amount]\n`/last_roi`", parse_mode='Markdown')
     elif query.data == "menu_feedback":
-        await query.edit_message_text("💬 **Feedback:**\n/feedback_ai [msg]\n/suggest [idea]\n/report [issue]", parse_mode='Markdown')
+        await query.edit_message_text("💬 **Feedback:**\n`/feedback_ai` [msg]\n`/suggest` [idea]\n`/report` [issue]", parse_mode='Markdown')
     elif query.data == "menu_status":
-        await query.edit_message_text("📊 **Status:**\n/status", parse_mode='Markdown')
+        await query.edit_message_text("📊 **Status:**\n`/status`", parse_mode='Markdown')
     elif query.data == "menu_ai":
-        await query.edit_message_text("🤖 **AI:**\n/summary_today\n/feedback_ai", parse_mode='Markdown')
+        await query.edit_message_text("🤖 **AI:**\n`/summary_today`\n`/feedback_ai`", parse_mode='Markdown')
     elif query.data == "menu_docs":
-        await query.edit_message_text("📚 **Docs:**\n/roadmap\n/docs", parse_mode='Markdown')
+        await query.edit_message_text("📚 **Docs:**\n`/roadmap`\n`/docs`", parse_mode='Markdown')
     elif query.data == "menu_admin":
-        await query.edit_message_text("👑 **Admin:**\n/request_admin\n/make_me_admin", parse_mode='Markdown')
+        await query.edit_message_text("👑 **Admin:**\n`/request_admin`\n`/make_me_admin`", parse_mode='Markdown')
 
 async def main():
     logger.info("Starting bot...")
