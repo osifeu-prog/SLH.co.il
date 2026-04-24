@@ -10371,15 +10371,40 @@ async def device_register(req: DeviceRegisterReq, request: Request):
             except Exception:
                 pass
 
-    # TODO: SMS fallback via Twilio/Vonage if not tg_sent
-    # For now, return info about delivery path
+    # Real SMS fallback (Twilio / Inforu / sms019 / stub). See api/sms_provider.py.
+    sms_sent = False
+    sms_provider = "none"
+    sms_error = None
+    if not tg_sent:
+        try:
+            from api.sms_provider import send_otp as _send_otp
+            sms_result = await _send_otp(phone, code, purpose="device_pair")
+            sms_sent = sms_result.ok and not sms_result.stub
+            sms_provider = sms_result.provider
+            sms_error = sms_result.error
+        except Exception as e:
+            sms_error = f"sms_module_error: {type(e).__name__}: {e}"
+
+    delivery = "telegram" if tg_sent else ("sms" if sms_sent else "pending")
+
+    # Expose the code for the web pair page ONLY when nothing actually delivered.
+    # On Railway (prod) this is disabled unless DEV_EXPOSE_OTP=1 is set.
+    expose_dev_code = (not tg_sent) and (not sms_sent)
+    if os.getenv("RAILWAY_ENVIRONMENT") and not os.getenv("DEV_EXPOSE_OTP"):
+        expose_dev_code = False
+
     return {
         "ok": True,
-        "delivery": "telegram" if tg_sent else "pending_sms",
+        "delivery": delivery,
         "expires_in": 300,
-        "message": "קוד אימות נשלח" + (" לטלגרם שלך" if tg_sent else " (SMS fallback not yet configured)"),
-        # DEV ONLY: expose code if SMS not configured and no TG linked — remove in prod
-        "_dev_code": None if tg_sent else code,
+        "sms_provider": sms_provider,
+        "message": (
+            "קוד אימות נשלח לטלגרם שלך" if tg_sent
+            else f"קוד אימות נשלח ב-SMS ({sms_provider})" if sms_sent
+            else "SMS עדיין לא מחובר — הקוד מוצג לבדיקה"
+        ),
+        "sms_error": sms_error if not sms_sent else None,
+        "_dev_code": code if expose_dev_code else None,
     }
 
 
