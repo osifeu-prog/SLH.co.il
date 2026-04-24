@@ -3,13 +3,13 @@ from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
 from alembic import context
 
-# ייבוא ה-Base והמודלים שלך
+# ×™×™×‘×•× ×”-Base ×•×”×ž×•×“×œ×™× ×©×œ×š
 from backend.app.db.database import Base
-from backend.app.models.models import User # וודא שכל המודלים מיובאים כאן
+from backend.app.models.models import User # ×•×•×“× ×©×›×œ ×”×ž×•×“×œ×™× ×ž×™×•×‘××™× ×›××Ÿ
 
 config = context.config
 
-# הגדרת כתובת ה-DB ממשתני סביבה (כמו ב-Railway)
+# ×”×’×“×¨×ª ×›×ª×•×‘×ª ×”-DB ×ž×ž×©×ª× ×™ ×¡×‘×™×‘×” (×›×ž×• ×‘-Railway)
 db_url = os.getenv("DATABASE_URL", "sqlite:///./test.db")
 if db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql://", 1)

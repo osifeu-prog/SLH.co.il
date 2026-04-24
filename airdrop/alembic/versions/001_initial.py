@@ -7,7 +7,7 @@ branch_labels = None
 depends_on = None
 
 def upgrade():
-    # בדיקה והוספת עמודות לטבלת users
+    # ×‘×“×™×§×” ×•×”×•×¡×¤×ª ×¢×ž×•×“×•×ª ×œ×˜×‘×œ×ª users
     conn = op.get_bind()
     inspector = sa.inspect(conn)
     columns = [c['name'] for c in inspector.get_columns('users')]

@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
 TON Airdrop Bot - Professional Version
 Modern, professional Telegram bot for TON Airdrop

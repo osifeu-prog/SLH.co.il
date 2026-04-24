@@ -1,5 +1,5 @@
 """
-SLH Payment Monitor — automatic BSC/TON ingestion.
+SLH Payment Monitor â€” automatic BSC/TON ingestion.
 
 Polls Genesis wallets every POLL_INTERVAL seconds. When a new incoming
 transaction is found that is not yet recorded, tries to match it against

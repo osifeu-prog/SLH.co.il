@@ -1,11 +1,13 @@
-FROM python:3.11-slim
+﻿FROM python:3.11-slim
 
 WORKDIR /app
 
 RUN pip install --no-cache-dir aiogram==3.26.0 asyncpg python-dotenv requests aiohttp
 
 COPY shared/ /app/shared/
+COPY shared_db_core.py /app/
 
 ENV PYTHONPATH="/app:/app/shared"
 
 CMD ["sh", "-c", "export BOT_TOKEN=\"$BOT_TOKEN\" && python /app/shared/bot_template.py"]
+

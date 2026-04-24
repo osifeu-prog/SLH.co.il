@@ -1,4 +1,4 @@
-﻿import redis
+import redis
 import os
 import json
 

@@ -1,5 +1,5 @@
 """
-Blockchain Verification Helpers — REAL public-API clients
+Blockchain Verification Helpers â€” REAL public-API clients
 ==========================================================
 Shared module used by routes/arkham_bridge.py (and any other router that needs
 verified on-chain data) to replace the previous mock "Arkham Intelligence"
@@ -13,7 +13,7 @@ Clients provided:
 
 All clients are async (aiohttp), have a 10s default timeout, and degrade
 gracefully on rate-limit / network / parse failure rather than raising into the
-caller — on failure they return a dict with ``source`` set to a marker like
+caller â€” on failure they return a dict with ``source`` set to a marker like
 ``"rate_limited"`` or ``"network_error"`` so the calling router can record that
 "we tried, here's why we have no data" instead of returning fake numbers.
 
@@ -58,7 +58,7 @@ GOPLUS_CHAIN_IDS = {
 
 # SLH token (context for default balance probes on BSC)
 SLH_CONTRACT_BSC = "0xACb0A09414CEA1C879c67bB7A877E4e19480f022"
-SLH_DECIMALS = 15  # Non-standard — SLH uses 15, not the ERC-20 default 18
+SLH_DECIMALS = 15  # Non-standard â€” SLH uses 15, not the ERC-20 default 18
 
 
 # ---------------------------------------------------------------
@@ -81,10 +81,10 @@ async def _http_get_json(
       - parse_error    (body not JSON)
       - aiohttp_missing
 
-    Never raises — callers can always safely inspect the returned dict.
+    Never raises â€” callers can always safely inspect the returned dict.
     """
     if aiohttp is None:
-        logger.error("aiohttp not available — cannot reach %s", url)
+        logger.error("aiohttp not available â€” cannot reach %s", url)
         return {"source": "aiohttp_missing", "data": None, "error": "aiohttp not installed"}
 
     merged_headers = {"User-Agent": DEFAULT_UA, "Accept": "application/json"}
@@ -109,7 +109,7 @@ async def _http_get_json(
                     return {"source": "http_error", "data": None, "http_status": status, "body": body}
                 try:
                     return await resp.json(content_type=None)
-                except Exception as e:  # noqa: BLE001 — JSON parse failure
+                except Exception as e:  # noqa: BLE001 â€” JSON parse failure
                     logger.warning("Failed to parse JSON from %s: %s", url, e)
                     return {"source": "parse_error", "data": None, "error": str(e)}
     except asyncio.TimeoutError:
@@ -265,7 +265,7 @@ class GoPlusClient:
 
     @staticmethod
     def _truthy(val: Any) -> bool:
-        """GoPlus returns '1'/'0' strings, bools, ints — normalize."""
+        """GoPlus returns '1'/'0' strings, bools, ints â€” normalize."""
         if val is None:
             return False
         if isinstance(val, bool):
@@ -422,7 +422,7 @@ class ChainabuseClient:
 # ---------------------------------------------------------------
 
 class TonCenterClient:
-    """Free TON wallet info — used for TON address verification."""
+    """Free TON wallet info â€” used for TON address verification."""
 
     BASE_URL = "https://toncenter.com/api/v2/getAddressInformation"
 
@@ -468,7 +468,7 @@ class TonCenterClient:
 
 class BlockchainThreatClient:
     """
-    Thin façade that combines GoPlus + BscScan + Chainabuse into the shape the
+    Thin faÃ§ade that combines GoPlus + BscScan + Chainabuse into the shape the
     existing arkham_bridge router expects. Replaces the old mock ArkhamClient.
     """
 

@@ -1,5 +1,5 @@
 """
-SLH SPARK SYSTEM — Super Admin Bot (@MY_SUPER_ADMIN_bot)
+SLH SPARK SYSTEM â€” Super Admin Bot (@MY_SUPER_ADMIN_bot)
 Central control panel: broadcast, airdrop, gift, users, payments, stats, studio.
 Industry-grade: FSM flows, confirmation step, Railway DB, full audit logging.
 """
@@ -45,9 +45,9 @@ ECOSYSTEM_BOTS = {
     "community":{"name": "SLH Community",   "username": "SLH_community_bot",     "container": "slh-fun"},
 }
 
-TOKEN_EMOJIS = {"SLH": "💎", "ZVK": "🟡", "MNH": "🔵", "REP": "⭐", "ZUZ": "🔴"}
+TOKEN_EMOJIS = {"SLH": "ðŸ’Ž", "ZVK": "ðŸŸ¡", "MNH": "ðŸ”µ", "REP": "â­", "ZUZ": "ðŸ”´"}
 
-# ─── DB ───────────────────────────────────────────────────────
+# â”€â”€â”€ DB â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async def get_db() -> asyncpg.Pool:
     global _db_pool
     if _db_pool is None and RAILWAY_DB_URL:
@@ -89,7 +89,7 @@ async def log_broadcast(total, sent, failed, preview, actor="admin_bot"):
         VALUES (NOW(), 'ALL_USERS', $1, $2, $3, $4, $5)
     """, total, sent, failed, preview[:200], actor)
 
-# ─── FSM States ───────────────────────────────────────────────
+# â”€â”€â”€ FSM States â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 class BroadcastFlow(StatesGroup):
     target   = State()
     gift     = State()
@@ -104,24 +104,24 @@ class AirdropFlow(StatesGroup):
 class GiftFlow(StatesGroup):
     waiting  = State()
 
-# ─── Helpers ──────────────────────────────────────────────────
+# â”€â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 def is_admin(uid: int) -> bool:
     return uid == ADMIN_USER_ID
 
 def target_kb():
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="👥 כל המשתמשים",   callback_data="bc_target:all")],
-        [InlineKeyboardButton(text="✅ רשומים בלבד",   callback_data="bc_target:registered")],
-        [InlineKeyboardButton(text="❌ ביטול",          callback_data="bc_cancel")],
+        [InlineKeyboardButton(text="ðŸ‘¥ ×›×œ ×”×ž×©×ª×ž×©×™×",   callback_data="bc_target:all")],
+        [InlineKeyboardButton(text="âœ… ×¨×©×•×ž×™× ×‘×œ×‘×“",   callback_data="bc_target:registered")],
+        [InlineKeyboardButton(text="âŒ ×‘×™×˜×•×œ",          callback_data="bc_cancel")],
     ])
 
 def gift_kb():
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🎁 Airdrop יומי (0.12 SLH+8 ZVK+32 MNH+12 REP+100 ZUZ)", callback_data="bc_gift:daily")],
-        [InlineKeyboardButton(text="🇮🇱 יום עצמאות (78 ZVK + 78 REP)",                        callback_data="bc_gift:independence")],
-        [InlineKeyboardButton(text="⭐ REP בלבד (+50)",                                       callback_data="bc_gift:rep50")],
-        [InlineKeyboardButton(text="🚫 ללא מתנה",                                             callback_data="bc_gift:none")],
-        [InlineKeyboardButton(text="❌ ביטול",                                                 callback_data="bc_cancel")],
+        [InlineKeyboardButton(text="ðŸŽ Airdrop ×™×•×ž×™ (0.12 SLH+8 ZVK+32 MNH+12 REP+100 ZUZ)", callback_data="bc_gift:daily")],
+        [InlineKeyboardButton(text="ðŸ‡®ðŸ‡± ×™×•× ×¢×¦×ž××•×ª (78 ZVK + 78 REP)",                        callback_data="bc_gift:independence")],
+        [InlineKeyboardButton(text="â­ REP ×‘×œ×‘×“ (+50)",                                       callback_data="bc_gift:rep50")],
+        [InlineKeyboardButton(text="ðŸš« ×œ×œ× ×ž×ª× ×”",                                             callback_data="bc_gift:none")],
+        [InlineKeyboardButton(text="âŒ ×‘×™×˜×•×œ",                                                 callback_data="bc_cancel")],
     ])
 
 GIFT_PRESETS = {
@@ -134,7 +134,7 @@ GIFT_PRESETS = {
 def gift_label(key: str) -> str:
     g = GIFT_PRESETS.get(key, {})
     if not g:
-        return "ללא מתנה"
+        return "×œ×œ× ×ž×ª× ×”"
     return " | ".join(f"{TOKEN_EMOJIS.get(t,'')}{t}+{v}" for t, v in g.items())
 
 async def do_broadcast(users, message_text, gifts, actor="admin_bot"):
@@ -169,54 +169,54 @@ async def do_broadcast(users, message_text, gifts, actor="admin_bot"):
     await log_broadcast(len(users), sent, failed, message_text[:200], actor)
     return sent, failed, None
 
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # /start
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 @dp.message(Command("start"))
 async def start_cmd(m: types.Message):
     if not is_admin(m.from_user.id):
-        await m.answer("❌ גישה לאדמינים בלבד.")
+        await m.answer("âŒ ×’×™×©×” ×œ××“×ž×™× ×™× ×‘×œ×‘×“.")
         return
     await m.answer(
-        "```\n ███████╗██╗     ██╗  ██╗\n ██╔════╝██║     ██║  ██║\n"
-        " ███████╗██║     ████████║\n ╚════██║██║     ██╔════██║\n"
-        " ███████║███████╗██║  ██║\n ╚══════╝╚══════╝╚═╝  ╚═╝\n```\n"
-        "*SLH SPARK SYSTEM* — Mission Control 🚀\n\n"
-        "📣 *שידורים:*\n"
-        "/broadcast — שלח הודעה + מתנה לכולם\n"
-        "/airdrop   — חלוקת טוקנים מהירה\n"
-        "/gift      — מתנה לאדם ספציפי\n\n"
-        "📊 *ניהול:*\n"
-        "/dashboard — סקירת מצב\n"
-        "/payments  — תשלומים ממתינים\n"
-        "/users     — רשימת משתמשים\n"
-        "/stats     — סטטיסטיקות\n"
-        "/bots      — רשימת בוטים\n"
-        "/revenue   — דוח הכנסות\n\n"
-        "🎨 *כלים:*\n"
-        "/studio    — Image Studio",
+        "```\n â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•—â–ˆâ–ˆâ•—     â–ˆâ–ˆâ•—  â–ˆâ–ˆâ•—\n â–ˆâ–ˆâ•”â•â•â•â•â•â–ˆâ–ˆâ•‘     â–ˆâ–ˆâ•‘  â–ˆâ–ˆâ•‘\n"
+        " â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•—â–ˆâ–ˆâ•‘     â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•‘\n â•šâ•â•â•â•â–ˆâ–ˆâ•‘â–ˆâ–ˆâ•‘     â–ˆâ–ˆâ•”â•â•â•â•â–ˆâ–ˆâ•‘\n"
+        " â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•‘â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•—â–ˆâ–ˆâ•‘  â–ˆâ–ˆâ•‘\n â•šâ•â•â•â•â•â•â•â•šâ•â•â•â•â•â•â•â•šâ•â•  â•šâ•â•\n```\n"
+        "*SLH SPARK SYSTEM* â€” Mission Control ðŸš€\n\n"
+        "ðŸ“£ *×©×™×“×•×¨×™×:*\n"
+        "/broadcast â€” ×©×œ×— ×”×•×“×¢×” + ×ž×ª× ×” ×œ×›×•×œ×\n"
+        "/airdrop   â€” ×—×œ×•×§×ª ×˜×•×§× ×™× ×ž×”×™×¨×”\n"
+        "/gift      â€” ×ž×ª× ×” ×œ××“× ×¡×¤×¦×™×¤×™\n\n"
+        "ðŸ“Š *× ×™×”×•×œ:*\n"
+        "/dashboard â€” ×¡×§×™×¨×ª ×ž×¦×‘\n"
+        "/payments  â€” ×ª×©×œ×•×ž×™× ×ž×ž×ª×™× ×™×\n"
+        "/users     â€” ×¨×©×™×ž×ª ×ž×©×ª×ž×©×™×\n"
+        "/stats     â€” ×¡×˜×˜×™×¡×˜×™×§×•×ª\n"
+        "/bots      â€” ×¨×©×™×ž×ª ×‘×•×˜×™×\n"
+        "/revenue   â€” ×“×•×— ×”×›× ×¡×•×ª\n\n"
+        "ðŸŽ¨ *×›×œ×™×:*\n"
+        "/studio    â€” Image Studio",
         parse_mode="Markdown",
     )
 
-# ═══════════════════════════════════════════════════════════════
-# /broadcast — FSM flow: target → gift → message → confirm → send
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# /broadcast â€” FSM flow: target â†’ gift â†’ message â†’ confirm â†’ send
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 @dp.message(Command("broadcast"))
 async def broadcast_start(m: types.Message, state: FSMContext):
     if not is_admin(m.from_user.id):
         return
     await state.clear()
     await state.set_state(BroadcastFlow.target)
-    await m.answer("📣 *שידור חדש*\n\nבחר קהל יעד:", parse_mode="Markdown", reply_markup=target_kb())
+    await m.answer("ðŸ“£ *×©×™×“×•×¨ ×—×“×©*\n\n×‘×—×¨ ×§×”×œ ×™×¢×“:", parse_mode="Markdown", reply_markup=target_kb())
 
 @dp.callback_query(F.data.startswith("bc_target:"), BroadcastFlow.target)
 async def bc_target(cb: types.CallbackQuery, state: FSMContext):
     target = cb.data.split(":")[1]
     await state.update_data(target=target)
     await state.set_state(BroadcastFlow.gift)
-    label = "כל המשתמשים" if target == "all" else "רשומים בלבד"
+    label = "×›×œ ×”×ž×©×ª×ž×©×™×" if target == "all" else "×¨×©×•×ž×™× ×‘×œ×‘×“"
     await cb.message.edit_text(
-        f"✅ קהל: *{label}*\n\nבחר מתנה לצירוף:",
+        f"âœ… ×§×”×œ: *{label}*\n\n×‘×—×¨ ×ž×ª× ×” ×œ×¦×™×¨×•×£:",
         parse_mode="Markdown", reply_markup=gift_kb()
     )
     await cb.answer()
@@ -227,7 +227,7 @@ async def bc_gift(cb: types.CallbackQuery, state: FSMContext):
     await state.update_data(gift_key=gift_key)
     await state.set_state(BroadcastFlow.message)
     await cb.message.edit_text(
-        f"🎁 מתנה: *{gift_label(gift_key)}*\n\n✍️ כעת כתוב את ההודעה:",
+        f"ðŸŽ ×ž×ª× ×”: *{gift_label(gift_key)}*\n\nâœï¸ ×›×¢×ª ×›×ª×•×‘ ××ª ×”×”×•×“×¢×”:",
         parse_mode="Markdown"
     )
     await cb.answer()
@@ -246,29 +246,29 @@ async def bc_message(m: types.Message, state: FSMContext):
     await state.update_data(message=m.text, users_count=len(users))
     await state.set_state(BroadcastFlow.confirm)
 
-    gift_str = gift_label(gift_key) if gifts else "ללא מתנה"
+    gift_str = gift_label(gift_key) if gifts else "×œ×œ× ×ž×ª× ×”"
     preview = m.text[:300] + ("..." if len(m.text) > 300 else "")
 
     kb = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="✅ שלח עכשיו",  callback_data="bc_confirm:yes")],
-        [InlineKeyboardButton(text="❌ בטל",        callback_data="bc_confirm:no")],
+        [InlineKeyboardButton(text="âœ… ×©×œ×— ×¢×›×©×™×•",  callback_data="bc_confirm:yes")],
+        [InlineKeyboardButton(text="âŒ ×‘×˜×œ",        callback_data="bc_confirm:no")],
     ])
     await m.answer(
-        f"📋 *אישור שידור*\n\n"
-        f"👥 קהל: {len(users)} משתמשים\n"
-        f"🎁 מתנה: {gift_str}\n\n"
-        f"📝 *תצוגה מקדימה:*\n{preview}",
+        f"ðŸ“‹ *××™×©×•×¨ ×©×™×“×•×¨*\n\n"
+        f"ðŸ‘¥ ×§×”×œ: {len(users)} ×ž×©×ª×ž×©×™×\n"
+        f"ðŸŽ ×ž×ª× ×”: {gift_str}\n\n"
+        f"ðŸ“ *×ª×¦×•×’×” ×ž×§×“×™×ž×”:*\n{preview}",
         parse_mode="Markdown", reply_markup=kb
     )
 
 @dp.callback_query(F.data.startswith("bc_confirm:"), BroadcastFlow.confirm)
 async def bc_confirm(cb: types.CallbackQuery, state: FSMContext):
     if not is_admin(cb.from_user.id):
-        await cb.answer("❌")
+        await cb.answer("âŒ")
         return
     if cb.data == "bc_confirm:no":
         await state.clear()
-        await cb.message.edit_text("❌ שידור בוטל.")
+        await cb.message.edit_text("âŒ ×©×™×“×•×¨ ×‘×•×˜×œ.")
         return
 
     data    = await state.get_data()
@@ -278,13 +278,13 @@ async def bc_confirm(cb: types.CallbackQuery, state: FSMContext):
     gifts   = GIFT_PRESETS[gift_key]
     users   = await get_all_users() if target == "all" else await get_registered_users()
 
-    await cb.message.edit_text(f"⏳ שולח ל-{len(users)} משתמשים...")
+    await cb.message.edit_text(f"â³ ×©×•×œ×— ×œ-{len(users)} ×ž×©×ª×ž×©×™×...")
     await cb.answer()
 
     # Build final message with gift info
     if gifts:
-        gift_lines = "\n".join(f"• {TOKEN_EMOJIS.get(t,'')}{t}: +{v}" for t, v in gifts.items())
-        full_msg = f"{message}\n\n🎁 *מתנה מ-SLH Spark:*\n{gift_lines}"
+        gift_lines = "\n".join(f"â€¢ {TOKEN_EMOJIS.get(t,'')}{t}: +{v}" for t, v in gifts.items())
+        full_msg = f"{message}\n\nðŸŽ *×ž×ª× ×” ×ž-SLH Spark:*\n{gift_lines}"
     else:
         full_msg = message
 
@@ -292,29 +292,29 @@ async def bc_confirm(cb: types.CallbackQuery, state: FSMContext):
     await state.clear()
 
     await cb.message.answer(
-        f"✅ *שידור הושלם!*\n\n"
-        f"👥 משתמשים: {len(users)}\n"
-        f"📤 נשלח: {sent}\n"
-        f"❌ נכשל: {failed}" + (f"\n⚠️ {err}" if err else ""),
+        f"âœ… *×©×™×“×•×¨ ×”×•×©×œ×!*\n\n"
+        f"ðŸ‘¥ ×ž×©×ª×ž×©×™×: {len(users)}\n"
+        f"ðŸ“¤ × ×©×œ×—: {sent}\n"
+        f"âŒ × ×›×©×œ: {failed}" + (f"\nâš ï¸ {err}" if err else ""),
         parse_mode="Markdown"
     )
 
 @dp.callback_query(F.data == "bc_cancel")
 async def bc_cancel(cb: types.CallbackQuery, state: FSMContext):
     await state.clear()
-    await cb.message.edit_text("❌ בוטל.")
+    await cb.message.edit_text("âŒ ×‘×•×˜×œ.")
     await cb.answer()
 
-# ═══════════════════════════════════════════════════════════════
-# /airdrop — FSM: target → preset gift → confirm
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# /airdrop â€” FSM: target â†’ preset gift â†’ confirm
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 @dp.message(Command("airdrop"))
 async def airdrop_start(m: types.Message, state: FSMContext):
     if not is_admin(m.from_user.id):
         return
     await state.clear()
     await state.set_state(AirdropFlow.target)
-    await m.answer("💰 *Airdrop מהיר*\n\nבחר קהל:", parse_mode="Markdown", reply_markup=target_kb())
+    await m.answer("ðŸ’° *Airdrop ×ž×”×™×¨*\n\n×‘×—×¨ ×§×”×œ:", parse_mode="Markdown", reply_markup=target_kb())
 
 @dp.callback_query(F.data.startswith("bc_target:"), AirdropFlow.target)
 async def airdrop_target(cb: types.CallbackQuery, state: FSMContext):
@@ -322,7 +322,7 @@ async def airdrop_target(cb: types.CallbackQuery, state: FSMContext):
     await state.update_data(target=target)
     await state.set_state(AirdropFlow.tokens)
     await cb.message.edit_text(
-        "💰 *בחר חבילת Airdrop:*",
+        "ðŸ’° *×‘×—×¨ ×—×‘×™×œ×ª Airdrop:*",
         parse_mode="Markdown", reply_markup=gift_kb()
     )
     await cb.answer()
@@ -332,7 +332,7 @@ async def airdrop_tokens(cb: types.CallbackQuery, state: FSMContext):
     gift_key = cb.data.split(":")[1]
     gifts    = GIFT_PRESETS[gift_key]
     if not gifts:
-        await cb.message.edit_text("⚠️ בחרת ללא מתנה — airdrop בוטל.")
+        await cb.message.edit_text("âš ï¸ ×‘×—×¨×ª ×œ×œ× ×ž×ª× ×” â€” airdrop ×‘×•×˜×œ.")
         await state.clear()
         await cb.answer()
         return
@@ -345,14 +345,14 @@ async def airdrop_tokens(cb: types.CallbackQuery, state: FSMContext):
     await state.set_state(AirdropFlow.confirm)
 
     kb = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="✅ אשר Airdrop", callback_data="ad_confirm:yes")],
-        [InlineKeyboardButton(text="❌ בטל",          callback_data="ad_confirm:no")],
+        [InlineKeyboardButton(text="âœ… ××©×¨ Airdrop", callback_data="ad_confirm:yes")],
+        [InlineKeyboardButton(text="âŒ ×‘×˜×œ",          callback_data="ad_confirm:no")],
     ])
     await cb.message.edit_text(
-        f"💰 *אישור Airdrop*\n\n"
-        f"👥 משתמשים: {len(users)}\n"
-        f"🎁 {gift_label(gift_key)}\n\n"
-        f"⚠️ פעולה זו תכתוב לDB ישירות.",
+        f"ðŸ’° *××™×©×•×¨ Airdrop*\n\n"
+        f"ðŸ‘¥ ×ž×©×ª×ž×©×™×: {len(users)}\n"
+        f"ðŸŽ {gift_label(gift_key)}\n\n"
+        f"âš ï¸ ×¤×¢×•×œ×” ×–×• ×ª×›×ª×•×‘ ×œDB ×™×©×™×¨×•×ª.",
         parse_mode="Markdown", reply_markup=kb
     )
     await cb.answer()
@@ -360,11 +360,11 @@ async def airdrop_tokens(cb: types.CallbackQuery, state: FSMContext):
 @dp.callback_query(F.data.startswith("ad_confirm:"), AirdropFlow.confirm)
 async def airdrop_confirm(cb: types.CallbackQuery, state: FSMContext):
     if not is_admin(cb.from_user.id):
-        await cb.answer("❌")
+        await cb.answer("âŒ")
         return
     if cb.data == "ad_confirm:no":
         await state.clear()
-        await cb.message.edit_text("❌ Airdrop בוטל.")
+        await cb.message.edit_text("âŒ Airdrop ×‘×•×˜×œ.")
         return
 
     data     = await state.get_data()
@@ -373,7 +373,7 @@ async def airdrop_confirm(cb: types.CallbackQuery, state: FSMContext):
     gifts    = GIFT_PRESETS[gift_key]
     users    = await get_all_users() if target == "all" else await get_registered_users()
 
-    await cb.message.edit_text(f"⏳ מחלק ל-{len(users)} משתמשים...")
+    await cb.message.edit_text(f"â³ ×ž×—×œ×§ ×œ-{len(users)} ×ž×©×ª×ž×©×™×...")
     await cb.answer()
 
     pool = await get_db()
@@ -387,23 +387,23 @@ async def airdrop_confirm(cb: types.CallbackQuery, state: FSMContext):
                         f"AIRDROP: {gift_label(gift_key)}", "admin_bot_airdrop")
     await state.clear()
     await cb.message.answer(
-        f"✅ *Airdrop הושלם!*\n\n"
-        f"👥 משתמשים: {len(users)}\n"
-        f"💾 עסקאות: {tx}\n"
-        f"🎁 {gift_label(gift_key)}",
+        f"âœ… *Airdrop ×”×•×©×œ×!*\n\n"
+        f"ðŸ‘¥ ×ž×©×ª×ž×©×™×: {len(users)}\n"
+        f"ðŸ’¾ ×¢×¡×§××•×ª: {tx}\n"
+        f"ðŸŽ {gift_label(gift_key)}",
         parse_mode="Markdown"
     )
 
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # /gift <telegram_id|@username> <amount> <TOKEN>
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 @dp.message(Command("gift"))
 async def gift_cmd(m: types.Message):
     if not is_admin(m.from_user.id):
         return
     parts = m.text.split()[1:]
     if len(parts) != 3:
-        await m.answer("שימוש: `/gift <telegram_id> <amount> <TOKEN>`\nדוגמה: `/gift 224223270 100 ZVK`",
+        await m.answer("×©×™×ž×•×©: `/gift <telegram_id> <amount> <TOKEN>`\n×“×•×’×ž×”: `/gift 224223270 100 ZVK`",
                        parse_mode="Markdown")
         return
     try:
@@ -411,12 +411,12 @@ async def gift_cmd(m: types.Message):
         amount = float(parts[1])
         token  = parts[2].upper()
     except ValueError:
-        await m.answer("❌ פרמטרים שגויים.")
+        await m.answer("âŒ ×¤×¨×ž×˜×¨×™× ×©×’×•×™×™×.")
         return
 
     pool = await get_db()
     if not pool:
-        await m.answer("❌ DB לא זמין.")
+        await m.answer("âŒ DB ×œ× ×–×ž×™×Ÿ.")
         return
 
     await credit_tokens(uid, {token: amount})
@@ -425,32 +425,32 @@ async def gift_cmd(m: types.Message):
         uid, token
     )
     await m.answer(
-        f"✅ *מתנה נשלחה!*\n\n"
-        f"👤 ID: `{uid}`\n"
-        f"🎁 {TOKEN_EMOJIS.get(token,'')}{token}: +{amount}\n"
-        f"💰 יתרה חדשה: {bal}",
+        f"âœ… *×ž×ª× ×” × ×©×œ×—×”!*\n\n"
+        f"ðŸ‘¤ ID: `{uid}`\n"
+        f"ðŸŽ {TOKEN_EMOJIS.get(token,'')}{token}: +{amount}\n"
+        f"ðŸ’° ×™×ª×¨×” ×—×“×©×”: {bal}",
         parse_mode="Markdown"
     )
 
-# ═══════════════════════════════════════════════════════════════
-# /users — רשימת משתמשים
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# /users â€” ×¨×©×™×ž×ª ×ž×©×ª×ž×©×™×
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 @dp.message(Command("users"))
 async def users_cmd(m: types.Message):
     if not is_admin(m.from_user.id):
         return
     users = await get_all_users()
     reg   = [u for u in users if u["is_registered"]]
-    lines = [f"👥 *משתמשים ({len(users)} סה\"כ | {len(reg)} רשומים)*\n"]
+    lines = [f"ðŸ‘¥ *×ž×©×ª×ž×©×™× ({len(users)} ×¡×”\"×› | {len(reg)} ×¨×©×•×ž×™×)*\n"]
     for u in users:
-        mark = "✅" if u["is_registered"] else "⏳"
+        mark = "âœ…" if u["is_registered"] else "â³"
         name = u["first_name"] or u["username"] or "?"
-        lines.append(f"{mark} {name} — `{u['telegram_id']}`")
+        lines.append(f"{mark} {name} â€” `{u['telegram_id']}`")
     await m.answer("\n".join(lines), parse_mode="Markdown")
 
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # /dashboard, /payments, /stats, /bots, /revenue (unchanged core)
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 @dp.message(Command("dashboard"))
 async def dashboard_cmd(m: types.Message):
     if not is_admin(m.from_user.id):
@@ -463,17 +463,17 @@ async def dashboard_cmd(m: types.Message):
             "SELECT COUNT(*) FROM web_users WHERE is_registered=TRUE"
         ) or 0
     lines = [
-        "📊 *SLH SPARK DASHBOARD*\n",
-        f"🌐 רשומים באתר: {reg_count}",
-        f"👥 משתמשים (legacy): {stats['total_users']}",
-        f"✅ מאושרים: {stats['approved']}",
-        f"⏳ ממתינים: {stats['pending']}",
-        f"💰 הכנסות: {stats['total_revenue']:.0f} ₪\n",
-        "*לפי בוט:*",
+        "ðŸ“Š *SLH SPARK DASHBOARD*\n",
+        f"ðŸŒ ×¨×©×•×ž×™× ×‘××ª×¨: {reg_count}",
+        f"ðŸ‘¥ ×ž×©×ª×ž×©×™× (legacy): {stats['total_users']}",
+        f"âœ… ×ž××•×©×¨×™×: {stats['approved']}",
+        f"â³ ×ž×ž×ª×™× ×™×: {stats['pending']}",
+        f"ðŸ’° ×”×›× ×¡×•×ª: {stats['total_revenue']:.0f} â‚ª\n",
+        "*×œ×¤×™ ×‘×•×˜:*",
     ]
     for row in stats["by_bot"]:
-        lines.append(f"  • {row['bot_name']}: {row['cnt']} משתמשים | {float(row['revenue']):.0f} ₪")
-    lines.append(f"\n⏰ עדכון: {datetime.now().strftime('%H:%M:%S %d/%m/%Y')}")
+        lines.append(f"  â€¢ {row['bot_name']}: {row['cnt']} ×ž×©×ª×ž×©×™× | {float(row['revenue']):.0f} â‚ª")
+    lines.append(f"\nâ° ×¢×“×›×•×Ÿ: {datetime.now().strftime('%H:%M:%S %d/%m/%Y')}")
     await m.answer("\n".join(lines), parse_mode="Markdown")
 
 @dp.message(Command("payments"))
@@ -482,19 +482,19 @@ async def payments_cmd(m: types.Message):
         return
     pending = await pay_db.get_pending_payments()
     if not pending:
-        await m.answer("✅ אין תשלומים ממתינים!")
+        await m.answer("âœ… ××™×Ÿ ×ª×©×œ×•×ž×™× ×ž×ž×ª×™× ×™×!")
         return
     for p in pending[:10]:
         kb = InlineKeyboardMarkup(inline_keyboard=[[
-            InlineKeyboardButton(text="✅ אשר", callback_data=f"adm_approve:{p['id']}"),
-            InlineKeyboardButton(text="❌ דחה", callback_data=f"adm_reject:{p['id']}"),
+            InlineKeyboardButton(text="âœ… ××©×¨", callback_data=f"adm_approve:{p['id']}"),
+            InlineKeyboardButton(text="âŒ ×“×—×”", callback_data=f"adm_reject:{p['id']}"),
         ]])
         text = (
-            f"💳 *תשלום #{p['id']}*\n"
-            f"בוט: {p['bot_name']}\n"
-            f"משתמש: @{p['username'] or '?'} ({p['user_id']})\n"
-            f"סכום: {p['payment_amount']} {p['payment_currency']}\n"
-            f"תאריך: {p['created_at'].strftime('%d/%m %H:%M') if p['created_at'] else '?'}"
+            f"ðŸ’³ *×ª×©×œ×•× #{p['id']}*\n"
+            f"×‘×•×˜: {p['bot_name']}\n"
+            f"×ž×©×ª×ž×©: @{p['username'] or '?'} ({p['user_id']})\n"
+            f"×¡×›×•×: {p['payment_amount']} {p['payment_currency']}\n"
+            f"×ª××¨×™×š: {p['created_at'].strftime('%d/%m %H:%M') if p['created_at'] else '?'}"
         )
         if p.get("payment_proof_file_id"):
             try:
@@ -503,9 +503,9 @@ async def payments_cmd(m: types.Message):
                 continue
             except Exception:
                 pass
-        await m.answer(text + "\n(אין תמונה)", parse_mode="Markdown", reply_markup=kb)
+        await m.answer(text + "\n(××™×Ÿ ×ª×ž×•× ×”)", parse_mode="Markdown", reply_markup=kb)
     if len(pending) > 10:
-        await m.answer(f"ועוד {len(pending)-10} תשלומים...")
+        await m.answer(f"×•×¢×•×“ {len(pending)-10} ×ª×©×œ×•×ž×™×...")
 
 @dp.callback_query(F.data.startswith("adm_approve:"))
 async def approve_cb(cb: types.CallbackQuery):
@@ -514,10 +514,10 @@ async def approve_cb(cb: types.CallbackQuery):
     pid    = int(cb.data.split(":")[1])
     result = await pay_db.approve_payment(pid, cb.from_user.id)
     if result:
-        txt = f"✅ אושר #{pid} | {result['bot_name']} | @{result.get('username','?')}"
+        txt = f"âœ… ××•×©×¨ #{pid} | {result['bot_name']} | @{result.get('username','?')}"
         await (cb.message.edit_caption(caption=txt) if cb.message.photo
                else cb.message.edit_text(txt))
-    await cb.answer("אושר!" if result else "לא נמצא")
+    await cb.answer("××•×©×¨!" if result else "×œ× × ×ž×¦×")
 
 @dp.callback_query(F.data.startswith("adm_reject:"))
 async def reject_cb(cb: types.CallbackQuery):
@@ -526,10 +526,10 @@ async def reject_cb(cb: types.CallbackQuery):
     pid    = int(cb.data.split(":")[1])
     result = await pay_db.reject_payment(pid, cb.from_user.id)
     if result:
-        txt = f"❌ נדחה #{pid} | @{result.get('username','?')}"
+        txt = f"âŒ × ×“×—×” #{pid} | @{result.get('username','?')}"
         await (cb.message.edit_caption(caption=txt) if cb.message.photo
                else cb.message.edit_text(txt))
-    await cb.answer("נדחה")
+    await cb.answer("× ×“×—×”")
 
 @dp.message(Command("stats"))
 async def stats_cmd(m: types.Message):
@@ -538,13 +538,13 @@ async def stats_cmd(m: types.Message):
     stats = await pay_db.get_stats()
     total_monthly = sum(BOT_PRICING[k].price_ils for k in BOT_PRICING)
     await m.answer(
-        f"📈 *סטטיסטיקות*\n\n"
-        f"משתמשים רשומים: {stats['total_users']}\n"
-        f"משלמים: {stats['approved']}\n"
-        f"ממתינים: {stats['pending']}\n"
-        f"הכנסות כולל: {stats['total_revenue']:.0f} ₪\n\n"
-        f"פוטנציאל/משתמש: {total_monthly} ₪\n"
-        f"פוטנציאל/100 משתמשים: {total_monthly*100:,.0f} ₪",
+        f"ðŸ“ˆ *×¡×˜×˜×™×¡×˜×™×§×•×ª*\n\n"
+        f"×ž×©×ª×ž×©×™× ×¨×©×•×ž×™×: {stats['total_users']}\n"
+        f"×ž×©×œ×ž×™×: {stats['approved']}\n"
+        f"×ž×ž×ª×™× ×™×: {stats['pending']}\n"
+        f"×”×›× ×¡×•×ª ×›×•×œ×œ: {stats['total_revenue']:.0f} â‚ª\n\n"
+        f"×¤×•×˜× ×¦×™××œ/×ž×©×ª×ž×©: {total_monthly} â‚ª\n"
+        f"×¤×•×˜× ×¦×™××œ/100 ×ž×©×ª×ž×©×™×: {total_monthly*100:,.0f} â‚ª",
         parse_mode="Markdown"
     )
 
@@ -552,12 +552,12 @@ async def stats_cmd(m: types.Message):
 async def bots_cmd(m: types.Message):
     if not is_admin(m.from_user.id):
         return
-    lines = ["🤖 *רשימת בוטים*\n"]
+    lines = ["ðŸ¤– *×¨×©×™×ž×ª ×‘×•×˜×™×*\n"]
     for key, info in ECOSYSTEM_BOTS.items():
         pricing = BOT_PRICING.get(key)
-        price   = f"{pricing.price_ils}₪" if pricing else "?"
-        lines.append(f"• *{info['name']}* @{info['username']} | {price}")
-    lines.append(f"\nסה\"כ בוטים פעילים: {len(ECOSYSTEM_BOTS)}")
+        price   = f"{pricing.price_ils}â‚ª" if pricing else "?"
+        lines.append(f"â€¢ *{info['name']}* @{info['username']} | {price}")
+    lines.append(f"\n×¡×”\"×› ×‘×•×˜×™× ×¤×¢×™×œ×™×: {len(ECOSYSTEM_BOTS)}")
     await m.answer("\n".join(lines), parse_mode="Markdown")
 
 @dp.message(Command("revenue"))
@@ -565,34 +565,34 @@ async def revenue_cmd(m: types.Message):
     if not is_admin(m.from_user.id):
         return
     stats = await pay_db.get_stats()
-    lines = ["💰 *דוח הכנסות*\n"]
+    lines = ["ðŸ’° *×“×•×— ×”×›× ×¡×•×ª*\n"]
     for row in stats["by_bot"]:
-        lines.append(f"• {row['bot_name']}: {float(row['revenue']):.0f} ₪ ({row['cnt']} משתמשים)")
-    lines.append(f"\n*סה\"כ: {stats['total_revenue']:.0f} ₪*")
+        lines.append(f"â€¢ {row['bot_name']}: {float(row['revenue']):.0f} â‚ª ({row['cnt']} ×ž×©×ª×ž×©×™×)")
+    lines.append(f"\n*×¡×”\"×›: {stats['total_revenue']:.0f} â‚ª*")
     await m.answer("\n".join(lines), parse_mode="Markdown")
 
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # Access requests callbacks (unchanged)
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 @dp.message(Command("requests"))
 async def access_requests_cmd(m: types.Message):
     if not is_admin(m.from_user.id):
         return
     pending = await pay_db.get_pending_access_requests()
     if not pending:
-        await m.answer("✅ אין בקשות גישה ממתינות!")
+        await m.answer("âœ… ××™×Ÿ ×‘×§×©×•×ª ×’×™×©×” ×ž×ž×ª×™× ×•×ª!")
         return
     for p in pending[:10]:
         kb = InlineKeyboardMarkup(inline_keyboard=[[
-            InlineKeyboardButton(text="✅ אשר", callback_data=f"acc_ok:{p['id']}"),
-            InlineKeyboardButton(text="❌ דחה", callback_data=f"acc_no:{p['id']}"),
+            InlineKeyboardButton(text="âœ… ××©×¨", callback_data=f"acc_ok:{p['id']}"),
+            InlineKeyboardButton(text="âŒ ×“×—×”", callback_data=f"acc_no:{p['id']}"),
         ]])
         text = (
-            f"📋 בקשת גישה #{p['id']}\n"
-            f"משתמש: @{p.get('username') or '?'} ({p['user_id']})\n"
-            f"בוט: {p['bot_name']}\n"
-            f"סיבה: {p.get('reason') or '-'}\n"
-            f"תאריך: {str(p.get('created_at',''))[:16]}"
+            f"ðŸ“‹ ×‘×§×©×ª ×’×™×©×” #{p['id']}\n"
+            f"×ž×©×ª×ž×©: @{p.get('username') or '?'} ({p['user_id']})\n"
+            f"×‘×•×˜: {p['bot_name']}\n"
+            f"×¡×™×‘×”: {p.get('reason') or '-'}\n"
+            f"×ª××¨×™×š: {str(p.get('created_at',''))[:16]}"
         )
         if p.get("receipt_file_id"):
             try:
@@ -610,11 +610,11 @@ async def approve_access_cb(cb: types.CallbackQuery):
     if result:
         try:
             await bot.send_message(result["user_id"],
-                "✅ בקשת הגישה שלך אושרה!\nכל הפיצ'רים זמינים עבורך. 🚀")
+                "âœ… ×‘×§×©×ª ×”×’×™×©×” ×©×œ×š ××•×©×¨×”!\n×›×œ ×”×¤×™×¦'×¨×™× ×–×ž×™× ×™× ×¢×‘×•×¨×š. ðŸš€")
         except Exception:
             pass
-        await cb.message.edit_text(f"✅ אושר | @{result.get('username','?')}")
-    await cb.answer("✅")
+        await cb.message.edit_text(f"âœ… ××•×©×¨ | @{result.get('username','?')}")
+    await cb.answer("âœ…")
 
 @dp.callback_query(F.data.startswith("acc_no:"))
 async def reject_access_cb(cb: types.CallbackQuery):
@@ -624,15 +624,15 @@ async def reject_access_cb(cb: types.CallbackQuery):
     if result:
         try:
             await bot.send_message(result["user_id"],
-                "❌ בקשת הגישה נדחתה.\nלפרטים: /premium")
+                "âŒ ×‘×§×©×ª ×”×’×™×©×” × ×“×—×ª×”.\n×œ×¤×¨×˜×™×: /premium")
         except Exception:
             pass
-        await cb.message.edit_text(f"❌ נדחה | @{result.get('username','?')}")
-    await cb.answer("❌")
+        await cb.message.edit_text(f"âŒ × ×“×—×” | @{result.get('username','?')}")
+    await cb.answer("âŒ")
 
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # Image Studio (unchanged logic, refactored strings)
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 user_image_mode = {}
 
 @dp.message(Command("studio"))
@@ -641,10 +641,10 @@ async def studio_menu(m: types.Message):
     if not is_admin(m.from_user.id):
         return
     kb = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="📷 שינוי גודל", callback_data="studio:resize_menu")],
-        [InlineKeyboardButton(text="🎬 יצירת GIF",  callback_data="studio:gif_menu")],
+        [InlineKeyboardButton(text="ðŸ“· ×©×™× ×•×™ ×’×•×“×œ", callback_data="studio:resize_menu")],
+        [InlineKeyboardButton(text="ðŸŽ¬ ×™×¦×™×¨×ª GIF",  callback_data="studio:gif_menu")],
     ])
-    await m.answer("🎨 *SLH Image Studio*\n\nבחר מה לעשות:", parse_mode="Markdown", reply_markup=kb)
+    await m.answer("ðŸŽ¨ *SLH Image Studio*\n\n×‘×—×¨ ×ž×” ×œ×¢×©×•×ª:", parse_mode="Markdown", reply_markup=kb)
 
 @dp.callback_query(F.data == "studio:resize_menu")
 async def resize_menu(cb: types.CallbackQuery):
@@ -654,29 +654,29 @@ async def resize_menu(cb: types.CallbackQuery):
         [InlineKeyboardButton(text="512x512 (Sticker)",     callback_data="studio:set_resize:512x512")],
         [InlineKeyboardButton(text="1280x720 (HD)",         callback_data="studio:set_resize:1280x720")],
         [InlineKeyboardButton(text="1080x1080 (Instagram)", callback_data="studio:set_resize:1080x1080")],
-        [InlineKeyboardButton(text="📷 כל הגדלים",         callback_data="studio:set_resize:all")],
+        [InlineKeyboardButton(text="ðŸ“· ×›×œ ×”×’×“×œ×™×",         callback_data="studio:set_resize:all")],
     ])
-    await cb.message.answer("📷 *שינוי גודל*\n\nבחר גודל, אחר כך שלח תמונה:", parse_mode="Markdown", reply_markup=kb)
+    await cb.message.answer("ðŸ“· *×©×™× ×•×™ ×’×•×“×œ*\n\n×‘×—×¨ ×’×•×“×œ, ××—×¨ ×›×š ×©×œ×— ×ª×ž×•× ×”:", parse_mode="Markdown", reply_markup=kb)
     await cb.answer()
 
 @dp.callback_query(F.data == "studio:gif_menu")
 async def gif_menu(cb: types.CallbackQuery):
     kb = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🌀 Zoom",    callback_data="studio:set_gif:zoom")],
-        [InlineKeyboardButton(text="💫 Pulse",   callback_data="studio:set_gif:pulse")],
-        [InlineKeyboardButton(text="🌊 Wave",    callback_data="studio:set_gif:wave")],
-        [InlineKeyboardButton(text="✨ Sparkle", callback_data="studio:set_gif:sparkle")],
-        [InlineKeyboardButton(text="🔄 Rotate",  callback_data="studio:set_gif:rotate")],
-        [InlineKeyboardButton(text="🎬 כל האנימציות", callback_data="studio:set_gif:all")],
+        [InlineKeyboardButton(text="ðŸŒ€ Zoom",    callback_data="studio:set_gif:zoom")],
+        [InlineKeyboardButton(text="ðŸ’« Pulse",   callback_data="studio:set_gif:pulse")],
+        [InlineKeyboardButton(text="ðŸŒŠ Wave",    callback_data="studio:set_gif:wave")],
+        [InlineKeyboardButton(text="âœ¨ Sparkle", callback_data="studio:set_gif:sparkle")],
+        [InlineKeyboardButton(text="ðŸ”„ Rotate",  callback_data="studio:set_gif:rotate")],
+        [InlineKeyboardButton(text="ðŸŽ¬ ×›×œ ×”×× ×™×ž×¦×™×•×ª", callback_data="studio:set_gif:all")],
     ])
-    await cb.message.answer("🎬 *יצירת GIF*\n\nבחר סגנון:", parse_mode="Markdown", reply_markup=kb)
+    await cb.message.answer("ðŸŽ¬ *×™×¦×™×¨×ª GIF*\n\n×‘×—×¨ ×¡×’× ×•×Ÿ:", parse_mode="Markdown", reply_markup=kb)
     await cb.answer()
 
 @dp.callback_query(F.data.startswith("studio:set_"))
 async def set_mode(cb: types.CallbackQuery):
     mode = cb.data.replace("studio:set_", "")
     user_image_mode[cb.from_user.id] = mode
-    await cb.message.answer(f"✅ מוד נבחר: `{mode}`\n\n📷 עכשיו שלח תמונה!", parse_mode="Markdown")
+    await cb.message.answer(f"âœ… ×ž×•×“ × ×‘×—×¨: `{mode}`\n\nðŸ“· ×¢×›×©×™×• ×©×œ×— ×ª×ž×•× ×”!", parse_mode="Markdown")
     await cb.answer()
 
 @dp.message(F.photo)
@@ -685,7 +685,7 @@ async def handle_photo(m: types.Message):
         return
     mode = user_image_mode.get(m.from_user.id, "")
     if not mode:
-        await m.answer("📷 שלחת תמונה! אבל קודם בחר מה לעשות:\n/studio")
+        await m.answer("ðŸ“· ×©×œ×—×ª ×ª×ž×•× ×”! ××‘×œ ×§×•×“× ×‘×—×¨ ×ž×” ×œ×¢×©×•×ª:\n/studio")
         return
     try:
         from PIL import Image, ImageEnhance
@@ -695,7 +695,7 @@ async def handle_photo(m: types.Message):
         file  = await bot.get_file(photo.file_id)
         data  = await bot.download_file(file.file_path)
         img   = Image.open(BytesIO(data.read())).convert("RGB")
-        await m.answer("⏳ מעבד...")
+        await m.answer("â³ ×ž×¢×‘×“...")
 
         if mode.startswith("resize:"):
             size_key = mode.split(":")[1]
@@ -706,12 +706,12 @@ async def handle_photo(m: types.Message):
                 buf = BytesIO()
                 img.copy().resize(sz, Image.LANCZOS).save(buf, format="PNG")
                 buf.seek(0)
-                await m.answer_document(BufferedInputFile(buf.read(), f"slh_{name}.png"), caption=f"✅ {name}")
+                await m.answer_document(BufferedInputFile(buf.read(), f"slh_{name}.png"), caption=f"âœ… {name}")
 
         elif mode.startswith("gif:"):
             effect    = mode.split(":")[1]
             to_run    = [effect] if effect != "all" else ["zoom","pulse","wave","sparkle","rotate"]
-            eff_names = {"zoom":"🌀 Zoom","pulse":"💫 Pulse","wave":"🌊 Wave","sparkle":"✨ Sparkle","rotate":"🔄 Rotate"}
+            eff_names = {"zoom":"ðŸŒ€ Zoom","pulse":"ðŸ’« Pulse","wave":"ðŸŒŠ Wave","sparkle":"âœ¨ Sparkle","rotate":"ðŸ”„ Rotate"}
             for eff in to_run:
                 frames, n = [], 20
                 if eff == "zoom":
@@ -742,28 +742,28 @@ async def handle_photo(m: types.Message):
                     buf = BytesIO()
                     frames[0].save(buf,format="GIF",save_all=True,append_images=frames[1:],duration=80,loop=0)
                     buf.seek(0)
-                    await m.answer_document(BufferedInputFile(buf.read(),f"slh_{eff}.gif"), caption=f"🎬 {eff_names.get(eff,eff)}")
+                    await m.answer_document(BufferedInputFile(buf.read(),f"slh_{eff}.gif"), caption=f"ðŸŽ¬ {eff_names.get(eff,eff)}")
 
         user_image_mode.pop(m.from_user.id, None)
-        await m.answer("✅ סיימתי! לעוד: /studio")
+        await m.answer("âœ… ×¡×™×™×ž×ª×™! ×œ×¢×•×“: /studio")
     except Exception as e:
-        await m.answer(f"❌ שגיאה: {e}")
+        await m.answer(f"âŒ ×©×’×™××”: {e}")
 
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # Main
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 async def main():
     await pay_db.init_schema()
     try:
         pool = await get_db()
         if pool:
-            logger.info("Railway DB connected ✅")
+            logger.info("Railway DB connected âœ…")
         else:
-            logger.warning("Railway DB not configured — token ops disabled")
+            logger.warning("Railway DB not configured â€” token ops disabled")
     except Exception as e:
         logger.warning(f"Railway DB init failed: {e}")
     logger.info("=" * 50)
-    logger.info("SLH SPARK SYSTEM | Super Admin Bot — READY")
+    logger.info("SLH SPARK SYSTEM | Super Admin Bot â€” READY")
     logger.info("=" * 50)
     await dp.start_polling(bot, drop_pending_updates=True)
 

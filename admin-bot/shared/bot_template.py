@@ -3,7 +3,7 @@ SLH Minimal Bot Template - used for bots without dedicated code.
 Provides: /start, /premium, payment proof handling, admin approve/reject.
 
 Usage:
-    BOT_KEY=campaign BOT_DESCRIPTION="קמפיינים שיווקיים" python bot_template.py
+    BOT_KEY=campaign BOT_DESCRIPTION="×§×ž×¤×™×™× ×™× ×©×™×•×•×§×™×™×" python bot_template.py
 """
 import os
 import sys

@@ -1,10 +1,10 @@
 """
-SLH AI Chat — Multi-provider backend with automatic fallback
+SLH AI Chat â€” Multi-provider backend with automatic fallback
 Providers (in priority order):
-  1. Groq (free tier — llama-3.3-70b)
-  2. Google Gemini (free tier — gemini-2.0-flash)
-  3. Together.ai (free tier — meta-llama/Llama-3.3-70B-Instruct-Turbo-Free)
-  4. OpenAI (paid — gpt-4o, if key available)
+  1. Groq (free tier â€” llama-3.3-70b)
+  2. Google Gemini (free tier â€” gemini-2.0-flash)
+  3. Together.ai (free tier â€” meta-llama/Llama-3.3-70B-Instruct-Turbo-Free)
+  4. OpenAI (paid â€” gpt-4o, if key available)
 Keeps all API keys secure on server side.
 """
 from fastapi import APIRouter, HTTPException
@@ -21,11 +21,11 @@ GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 TOGETHER_API_KEY = os.environ.get("TOGETHER_API_KEY", "")
 
-SLH_SYSTEM_PROMPT = """You are SLH AI Assistant — the smart assistant for the SLH Ecosystem crypto investment platform.
+SLH_SYSTEM_PROMPT = """You are SLH AI Assistant â€” the smart assistant for the SLH Ecosystem crypto investment platform.
 
 About SLH:
 - SLH is an Israeli crypto ecosystem with 20+ Telegram bots, a website (slh-nft.com), and its own token
-- SLH Token: BSC contract 0xACb0A09414CEA1C879c67bB7A877E4e19480f022, price ₪444 ($121.64)
+- SLH Token: BSC contract 0xACb0A09414CEA1C879c67bB7A877E4e19480f022, price â‚ª444 ($121.64)
 - 12 tokens in the ecosystem, 176 holders, 111M supply
 - Staking plans: 30/60/90/180 days with up to 65% annual yield
 - Admin wallet BSC: 0xD0617B54FB4b6b66307846f217b4D685800E3dA4
@@ -50,7 +50,7 @@ Important rules:
 # === Provider Definitions ===
 
 async def _call_groq(client: httpx.AsyncClient, messages: list) -> tuple[str, str]:
-    """Groq — free tier, Llama 3.3 70B, very fast."""
+    """Groq â€” free tier, Llama 3.3 70B, very fast."""
     model = "llama-3.3-70b-versatile"
     r = await client.post(
         "https://api.groq.com/openai/v1/chat/completions",
@@ -62,7 +62,7 @@ async def _call_groq(client: httpx.AsyncClient, messages: list) -> tuple[str, st
 
 
 async def _call_gemini(client: httpx.AsyncClient, messages: list) -> tuple[str, str]:
-    """Google Gemini — free tier, Gemini 2.0 Flash."""
+    """Google Gemini â€” free tier, Gemini 2.0 Flash."""
     model = "gemini-2.0-flash"
     # Gemini uses different message format
     contents = []
@@ -90,7 +90,7 @@ async def _call_gemini(client: httpx.AsyncClient, messages: list) -> tuple[str, 
 
 
 async def _call_together(client: httpx.AsyncClient, messages: list) -> tuple[str, str]:
-    """Together.ai — free tier, Llama 3.3 70B Turbo."""
+    """Together.ai â€” free tier, Llama 3.3 70B Turbo."""
     model = "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"
     r = await client.post(
         "https://api.together.xyz/v1/chat/completions",
@@ -102,7 +102,7 @@ async def _call_together(client: httpx.AsyncClient, messages: list) -> tuple[str
 
 
 async def _call_openai(client: httpx.AsyncClient, messages: list) -> tuple[str, str]:
-    """OpenAI — paid, GPT-4o."""
+    """OpenAI â€” paid, GPT-4o."""
     model = os.environ.get("OPENAI_MODEL", "gpt-4o")
     r = await client.post(
         "https://api.openai.com/v1/chat/completions",
@@ -160,7 +160,7 @@ class MeteredChatResponse(BaseModel):
 async def ai_chat(req: ChatRequest):
     providers = _get_providers()
     if not providers:
-        raise HTTPException(status_code=503, detail="AI service not configured — no API keys set")
+        raise HTTPException(status_code=503, detail="AI service not configured â€” no API keys set")
 
     lang_hint = {
         "he": "Respond in Hebrew.",
@@ -215,7 +215,7 @@ async def _check_and_reserve_aic(user_id: int, expected_cost: float) -> tuple[fl
     Returns (balance_before, welcome_gift_amount). Raises 402 if still insufficient.
     """
     if _aic_pool_ref is None:
-        return (float("inf"), 0)  # AIC not wired — pass through
+        return (float("inf"), 0)  # AIC not wired â€” pass through
 
     async with _aic_pool_ref.acquire() as conn:
         # Ensure tables exist
@@ -235,7 +235,7 @@ async def _check_and_reserve_aic(user_id: int, expected_cost: float) -> tuple[fl
         )
         welcome = 0.0
         if row is None or float(row["lifetime_earned"]) == 0:
-            # First touch — welcome gift
+            # First touch â€” welcome gift
             await conn.execute(
                 """
                 INSERT INTO aic_balances (user_id, balance, lifetime_earned)
@@ -308,9 +308,9 @@ async def ai_chat_metered(req: MeteredChatRequest):
     """
     providers = _get_providers()
     if not providers:
-        raise HTTPException(status_code=503, detail="AI service not configured — no API keys set")
+        raise HTTPException(status_code=503, detail="AI service not configured â€” no API keys set")
 
-    # Estimate cost — assume free tier first
+    # Estimate cost â€” assume free tier first
     estimated_cost = FREE_TIER_COST
     balance_before, welcome = await _check_and_reserve_aic(req.user_id, estimated_cost)
 
@@ -337,7 +337,7 @@ async def ai_chat_metered(req: MeteredChatRequest):
                 actual_cost = PAID_TIER_COST if tier == "paid" else FREE_TIER_COST
                 # Re-check balance if paid
                 if tier == "paid" and balance_before < actual_cost:
-                    # downgrade — should not happen because we already reserved free cost,
+                    # downgrade â€” should not happen because we already reserved free cost,
                     # but protect against provider switch mid-flight
                     raise HTTPException(
                         status_code=402,

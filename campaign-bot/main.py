@@ -1,5 +1,5 @@
 """
-SLH Campaign SaaS - כלי ניהול קמפיינים למובילי דעת קהל
+SLH Campaign SaaS - ×›×œ×™ × ×™×”×•×œ ×§×ž×¤×™×™× ×™× ×œ×ž×•×‘×™×œ×™ ×“×¢×ª ×§×”×œ
 Powered by SPARK IND | SLH Ecosystem
 """
 import os

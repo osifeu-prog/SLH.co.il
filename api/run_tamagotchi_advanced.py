@@ -1,4 +1,4 @@
-﻿import asyncio
+import asyncio
 import logging
 from aiogram import Bot, Dispatcher
 from handlers.tamagotchi import register_handlers_tamagotchi, init_db, send_reminders

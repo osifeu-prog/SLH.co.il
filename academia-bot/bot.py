@@ -1,8 +1,8 @@
-"""@WEWORK_teamviwer_bot — SLH Academia licensing bot.
+"""@WEWORK_teamviwer_bot â€” SLH Academia licensing bot.
 
 aiogram 3.x. Sells academy licenses paid via TON / BNB / ILS (Bit manual).
 Polls Railway /api/payment/status/{user_id} to confirm and then writes to
-academy_licenses. No fake success — every confirm hits the Railway API.
+academy_licenses. No fake success â€” every confirm hits the Railway API.
 
 Hebrew UI, English logs. Every handler is wrapped in try/except with
 logging.exception so a broken DB query never silently kills the polling loop.
@@ -99,8 +99,8 @@ CREATE INDEX IF NOT EXISTS idx_acad_user ON academy_licenses(user_id);
 
 SEED_COURSE = (
     "intro-slh",
-    "[DEMO] מבוא ל-SLH — השקעה וקריפטו לישראלים",
-    "קורס יסוד שעוזר להבין את השוק, הסיכונים, והפלטפורמה.",
+    "[DEMO] ×ž×‘×•× ×œ-SLH â€” ×”×©×§×¢×” ×•×§×¨×™×¤×˜×• ×œ×™×©×¨××œ×™×",
+    "×§×•×¨×¡ ×™×¡×•×“ ×©×¢×•×–×¨ ×œ×”×‘×™×Ÿ ××ª ×”×©×•×§, ×”×¡×™×›×•× ×™×, ×•×”×¤×œ×˜×¤×•×¨×ž×”.",
     Decimal("49.0"),
     Decimal("0.11"),
     "https://slh-nft.com/academy/intro-slh",
@@ -131,29 +131,29 @@ async def init_db() -> None:
 
 def main_menu_kb(is_instructor: bool = False, is_approved: bool = False) -> InlineKeyboardMarkup:
     rows = [
-        [InlineKeyboardButton(text="רכוש רישיון", callback_data="menu:buy")],
+        [InlineKeyboardButton(text="×¨×›×•×© ×¨×™×©×™×•×Ÿ", callback_data="menu:buy")],
         [
             InlineKeyboardButton(
-                text="הרישיונות שלי", callback_data="menu:my_licenses"
+                text="×”×¨×™×©×™×•× ×•×ª ×©×œ×™", callback_data="menu:my_licenses"
             )
         ],
     ]
     if is_approved:
         rows.append(
-            [InlineKeyboardButton(text="📤 העלה קורס", callback_data="instr:upload")]
+            [InlineKeyboardButton(text="ðŸ“¤ ×”×¢×œ×” ×§×•×¨×¡", callback_data="instr:upload")]
         )
         rows.append(
-            [InlineKeyboardButton(text="💰 ההכנסות שלי", callback_data="instr:earnings")]
+            [InlineKeyboardButton(text="ðŸ’° ×”×”×›× ×¡×•×ª ×©×œ×™", callback_data="instr:earnings")]
         )
     elif is_instructor:
         rows.append(
-            [InlineKeyboardButton(text="⏳ ממתין לאישור מדריך", callback_data="instr:pending")]
+            [InlineKeyboardButton(text="â³ ×ž×ž×ª×™×Ÿ ×œ××™×©×•×¨ ×ž×“×¨×™×š", callback_data="instr:pending")]
         )
     else:
         rows.append(
-            [InlineKeyboardButton(text="🎓 הצטרף כמדריך", callback_data="instr:register")]
+            [InlineKeyboardButton(text="ðŸŽ“ ×”×¦×˜×¨×£ ×›×ž×“×¨×™×š", callback_data="instr:register")]
         )
-    rows.append([InlineKeyboardButton(text="תמיכה", callback_data="menu:support")])
+    rows.append([InlineKeyboardButton(text="×ª×ž×™×›×”", callback_data="menu:support")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
@@ -164,12 +164,12 @@ def course_list_kb(courses) -> InlineKeyboardMarkup:
         rows.append(
             [
                 InlineKeyboardButton(
-                    text=f"{c['title_he']} · {price_ils}₪",
+                    text=f"{c['title_he']} Â· {price_ils}â‚ª",
                     callback_data=f"course:{c['id']}",
                 )
             ]
         )
-    rows.append([InlineKeyboardButton(text="חזרה", callback_data="menu:home")])
+    rows.append([InlineKeyboardButton(text="×—×–×¨×”", callback_data="menu:home")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
@@ -179,26 +179,26 @@ def payment_methods_kb(course_id: int, allow_phone_pay: bool = False) -> InlineK
     have no phone configured so those buttons are hidden."""
     rows = [
         [
-            InlineKeyboardButton(text="💎 TON", callback_data=f"pay:{course_id}:ton"),
-            InlineKeyboardButton(text="🟡 BNB / BSC", callback_data=f"pay:{course_id}:bsc"),
+            InlineKeyboardButton(text="ðŸ’Ž TON", callback_data=f"pay:{course_id}:ton"),
+            InlineKeyboardButton(text="ðŸŸ¡ BNB / BSC", callback_data=f"pay:{course_id}:bsc"),
         ],
         [
-            InlineKeyboardButton(text="🦊 MetaMask (BSC)", callback_data=f"pay:{course_id}:metamask"),
-            InlineKeyboardButton(text="🥞 PancakeSwap → SLH", callback_data=f"pay:{course_id}:pancakeswap"),
+            InlineKeyboardButton(text="ðŸ¦Š MetaMask (BSC)", callback_data=f"pay:{course_id}:metamask"),
+            InlineKeyboardButton(text="ðŸ¥ž PancakeSwap â†’ SLH", callback_data=f"pay:{course_id}:pancakeswap"),
         ],
         [
-            InlineKeyboardButton(text="🏦 העברה בנקאית", callback_data=f"pay:{course_id}:bank"),
-            InlineKeyboardButton(text="⭐ Telegram Stars", callback_data=f"pay:{course_id}:stars"),
+            InlineKeyboardButton(text="ðŸ¦ ×”×¢×‘×¨×” ×‘× ×§××™×ª", callback_data=f"pay:{course_id}:bank"),
+            InlineKeyboardButton(text="â­ Telegram Stars", callback_data=f"pay:{course_id}:stars"),
         ],
     ]
     if allow_phone_pay:
         rows.append([
-            InlineKeyboardButton(text="📱 Bit / PayBox (למדריך)", callback_data=f"pay:{course_id}:phone"),
+            InlineKeyboardButton(text="ðŸ“± Bit / PayBox (×œ×ž×“×¨×™×š)", callback_data=f"pay:{course_id}:phone"),
         ])
     rows.append([
-        InlineKeyboardButton(text="💼 חלופה: זמן עבודה / זהב / אחר", callback_data=f"pay:{course_id}:alt"),
+        InlineKeyboardButton(text="ðŸ’¼ ×—×œ×•×¤×”: ×–×ž×Ÿ ×¢×‘×•×“×” / ×–×”×‘ / ××—×¨", callback_data=f"pay:{course_id}:alt"),
     ])
-    rows.append([InlineKeyboardButton(text="חזרה", callback_data="menu:buy")])
+    rows.append([InlineKeyboardButton(text="×—×–×¨×”", callback_data="menu:buy")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
@@ -208,9 +208,9 @@ def payment_methods_kb(course_id: int, allow_phone_pay: bool = False) -> InlineK
 
 
 WELCOME = (
-    "🎓 <b>ברוך הבא לאקדמיית SLH</b>\n\n"
-    "כאן אתה רוכש רישיונות לקורסי ההשקעה והקריפטו של SLH.\n"
-    "בחר פעולה מהתפריט:"
+    "ðŸŽ“ <b>×‘×¨×•×š ×”×‘× ×œ××§×“×ž×™×™×ª SLH</b>\n\n"
+    "×›××Ÿ ××ª×” ×¨×•×›×© ×¨×™×©×™×•× ×•×ª ×œ×§×•×¨×¡×™ ×”×”×©×§×¢×” ×•×”×§×¨×™×¤×˜×• ×©×œ SLH.\n"
+    "×‘×—×¨ ×¤×¢×•×œ×” ×ž×”×ª×¤×¨×™×˜:"
 )
 
 
@@ -227,15 +227,15 @@ async def cmd_start(msg: Message) -> None:
 async def cmd_help(msg: Message) -> None:
     try:
         await msg.answer(
-            "<b>פקודות</b>\n"
-            "/start — תפריט ראשי\n"
-            "/buy — רכישת קורס\n"
-            "/my_licenses — הרישיונות שלי\n"
-            "/become_instructor — הצטרף כמדריך\n"
-            "/upload_course — העלה קורס (מדריכים מאושרים בלבד)\n"
-            "/my_earnings — ההכנסות שלי כמדריך\n"
-            "/help — מסך זה\n\n"
-            f"תמיכה: {SUPPORT_HANDLE}"
+            "<b>×¤×§×•×“×•×ª</b>\n"
+            "/start â€” ×ª×¤×¨×™×˜ ×¨××©×™\n"
+            "/buy â€” ×¨×›×™×©×ª ×§×•×¨×¡\n"
+            "/my_licenses â€” ×”×¨×™×©×™×•× ×•×ª ×©×œ×™\n"
+            "/become_instructor â€” ×”×¦×˜×¨×£ ×›×ž×“×¨×™×š\n"
+            "/upload_course â€” ×”×¢×œ×” ×§×•×¨×¡ (×ž×“×¨×™×›×™× ×ž××•×©×¨×™× ×‘×œ×‘×“)\n"
+            "/my_earnings â€” ×”×”×›× ×¡×•×ª ×©×œ×™ ×›×ž×“×¨×™×š\n"
+            "/help â€” ×ž×¡×š ×–×”\n\n"
+            f"×ª×ž×™×›×”: {SUPPORT_HANDLE}"
         )
     except Exception:
         log.exception("cmd_help failed")
@@ -250,7 +250,7 @@ async def cmd_buy(msg: Message) -> None:
         log.exception("cmd_buy failed")
         try:
             await msg.answer(
-                "שגיאה בטעינת הקורסים. נסה שוב או פנה לתמיכה "
+                "×©×’×™××” ×‘×˜×¢×™× ×ª ×”×§×•×¨×¡×™×. × ×¡×” ×©×•×‘ ××• ×¤× ×” ×œ×ª×ž×™×›×” "
                 f"{SUPPORT_HANDLE}.",
                 reply_markup=main_menu_kb(),
             )
@@ -267,7 +267,7 @@ async def cmd_my_licenses(msg: Message) -> None:
         log.exception("cmd_my_licenses failed")
         try:
             await msg.answer(
-                "שגיאה בטעינת הרישיונות. נסה שוב או פנה לתמיכה "
+                "×©×’×™××” ×‘×˜×¢×™× ×ª ×”×¨×™×©×™×•× ×•×ª. × ×¡×” ×©×•×‘ ××• ×¤× ×” ×œ×ª×ž×™×›×” "
                 f"{SUPPORT_HANDLE}.",
                 reply_markup=main_menu_kb(),
             )
@@ -288,7 +288,7 @@ async def cb_home(cq: CallbackQuery) -> None:
         await cq.answer()
     except Exception:
         log.exception("cb_home failed")
-        await cq.answer("שגיאה", show_alert=False)
+        await cq.answer("×©×’×™××”", show_alert=False)
 
 
 @dp.callback_query(F.data == "menu:buy")
@@ -309,12 +309,12 @@ async def cb_my_licenses(cq: CallbackQuery) -> None:
 async def cb_support(cq: CallbackQuery) -> None:
     try:
         await cq.message.edit_text(
-            f"לתמיכה: {SUPPORT_HANDLE}\nנחזור אליך בהקדם.",
+            f"×œ×ª×ž×™×›×”: {SUPPORT_HANDLE}\n× ×—×–×•×¨ ××œ×™×š ×‘×”×§×“×.",
             reply_markup=InlineKeyboardMarkup(
                 inline_keyboard=[
                     [
                         InlineKeyboardButton(
-                            text="חזרה", callback_data="menu:home"
+                            text="×—×–×¨×”", callback_data="menu:home"
                         )
                     ]
                 ]
@@ -352,30 +352,30 @@ async def cb_course(cq: CallbackQuery) -> None:
             except Exception:
                 pass
         if not c:
-            await cq.answer("הקורס לא נמצא", show_alert=True)
+            await cq.answer("×”×§×•×¨×¡ ×œ× × ×ž×¦×", show_alert=True)
             return
 
-        included_lines = ["📚 <b>מה כלול בקורס:</b>"]
+        included_lines = ["ðŸ“š <b>×ž×” ×›×œ×•×œ ×‘×§×•×¨×¡:</b>"]
         if c["materials_url"]:
-            included_lines.append("• גישה מלאה לחומרי הקורס (וידאו + טקסט)")
-            included_lines.append("• רישיון לכל החיים — צפה מתי שתרצה")
+            included_lines.append("â€¢ ×’×™×©×” ×ž×œ××” ×œ×—×•×ž×¨×™ ×”×§×•×¨×¡ (×•×™×“××• + ×˜×§×¡×˜)")
+            included_lines.append("â€¢ ×¨×™×©×™×•×Ÿ ×œ×›×œ ×”×—×™×™× â€” ×¦×¤×” ×ž×ª×™ ×©×ª×¨×¦×”")
         else:
-            included_lines.append("• תוכן בהכנה — פנה לתמיכה לפרטים")
-        included_lines.append("• תעודת השלמה (Premium לבוט)")
-        included_lines.append("• השתתפות בקהילת לומדי SLH")
+            included_lines.append("â€¢ ×ª×•×›×Ÿ ×‘×”×›× ×” â€” ×¤× ×” ×œ×ª×ž×™×›×” ×œ×¤×¨×˜×™×")
+        included_lines.append("â€¢ ×ª×¢×•×“×ª ×”×©×œ×ž×” (Premium ×œ×‘×•×˜)")
+        included_lines.append("â€¢ ×”×©×ª×ª×¤×•×ª ×‘×§×”×™×œ×ª ×œ×•×ž×“×™ SLH")
         included = "\n".join(included_lines)
 
         instructor_line = (
-            f"\n👨\u200d🏫 מדריך: {instructor_name}\n" if instructor_name else ""
+            f"\nðŸ‘¨\u200dðŸ« ×ž×“×¨×™×š: {instructor_name}\n" if instructor_name else ""
         )
 
         text = (
             f"<b>{c['title_he']}</b>\n"
             f"{instructor_line}\n"
-            f"{c['description_he'] or 'תיאור מלא בקרוב — פנה לתמיכה למידע.'}\n\n"
+            f"{c['description_he'] or '×ª×™××•×¨ ×ž×œ× ×‘×§×¨×•×‘ â€” ×¤× ×” ×œ×ª×ž×™×›×” ×œ×ž×™×“×¢.'}\n\n"
             f"{included}\n\n"
-            f"💰 <b>מחיר:</b> {c['price_ils'] or 0}₪ · {c['price_slh'] or 0} SLH\n\n"
-            f"בחר אמצעי תשלום מתוך הרשת המלאה שלנו:"
+            f"ðŸ’° <b>×ž×—×™×¨:</b> {c['price_ils'] or 0}â‚ª Â· {c['price_slh'] or 0} SLH\n\n"
+            f"×‘×—×¨ ××ž×¦×¢×™ ×ª×©×œ×•× ×ž×ª×•×š ×”×¨×©×ª ×”×ž×œ××” ×©×œ× ×•:"
         )
         await cq.message.edit_text(
             text,
@@ -385,7 +385,7 @@ async def cb_course(cq: CallbackQuery) -> None:
         await cq.answer()
     except Exception:
         log.exception("cb_course failed")
-        await cq.answer("שגיאה בטעינת הקורס", show_alert=True)
+        await cq.answer("×©×’×™××” ×‘×˜×¢×™× ×ª ×”×§×•×¨×¡", show_alert=True)
 
 
 @dp.callback_query(F.data.startswith("pay:"))
@@ -394,7 +394,7 @@ async def cb_pay(cq: CallbackQuery) -> None:
     # Without this, the user sees a hung click and may type new commands,
     # causing the actual payment response to surface out-of-order later.
     try:
-        await cq.answer("טוען אמצעי תשלום…")
+        await cq.answer("×˜×•×¢×Ÿ ××ž×¦×¢×™ ×ª×©×œ×•×â€¦")
     except Exception:
         log.exception("cb_pay early ack failed")
     try:
@@ -410,10 +410,10 @@ async def cb_pay(cq: CallbackQuery) -> None:
                 course_id,
             )
         if not c:
-            await cq.answer("הקורס לא נמצא", show_alert=True)
+            await cq.answer("×”×§×•×¨×¡ ×œ× × ×ž×¦×", show_alert=True)
             return
 
-        # Telegram Stars (XTR) — native invoice, no manual flow.
+        # Telegram Stars (XTR) â€” native invoice, no manual flow.
         if method == "stars":
             await _send_stars_invoice(cq.message.chat.id, c)
             return
@@ -424,7 +424,7 @@ async def cb_pay(cq: CallbackQuery) -> None:
         )
         if not payment_id:
             await cq.message.edit_text(
-                "שגיאה ביצירת התשלום. נסה שוב מאוחר יותר או פנה לתמיכה "
+                "×©×’×™××” ×‘×™×¦×™×¨×ª ×”×ª×©×œ×•×. × ×¡×” ×©×•×‘ ×ž××•×—×¨ ×™×•×ª×¨ ××• ×¤× ×” ×œ×ª×ž×™×›×” "
                 f"{SUPPORT_HANDLE}.",
                 reply_markup=main_menu_kb(),
             )
@@ -436,7 +436,7 @@ async def cb_pay(cq: CallbackQuery) -> None:
             # WebApp: opens buy.html#bank inside the Telegram Mini App
             action_rows.append([
                 InlineKeyboardButton(
-                    text="🌐 פתח טופס בנק (Mini App)",
+                    text="ðŸŒ ×¤×ª×— ×˜×•×¤×¡ ×‘× ×§ (Mini App)",
                     web_app=WebAppInfo(url="https://slh-nft.com/buy.html#bank"),
                 )
             ])
@@ -444,16 +444,16 @@ async def cb_pay(cq: CallbackQuery) -> None:
             slh_contract = "0xACb0A09414CEA1C879c67bB7A877E4e19480f022"
             action_rows.append([
                 InlineKeyboardButton(
-                    text="🥞 פתח PancakeSwap",
+                    text="ðŸ¥ž ×¤×ª×— PancakeSwap",
                     url=f"https://pancakeswap.finance/swap?outputCurrency={slh_contract}&chain=bsc",
                 )
             ])
         action_rows.append([
-            InlineKeyboardButton(text="חזרה לתפריט", callback_data="menu:home")
+            InlineKeyboardButton(text="×—×–×¨×” ×œ×ª×¤×¨×™×˜", callback_data="menu:home")
         ])
 
         await cq.message.edit_text(
-            instructions + "\n\nאני מאמת אוטומטית עד 10 דקות. המתן להודעה…",
+            instructions + "\n\n×× ×™ ×ž××ž×ª ××•×˜×•×ž×˜×™×ª ×¢×“ 10 ×“×§×•×ª. ×”×ž×ª×Ÿ ×œ×”×•×“×¢×”â€¦",
             reply_markup=InlineKeyboardMarkup(inline_keyboard=action_rows),
             disable_web_page_preview=True,
         )
@@ -467,7 +467,7 @@ async def cb_pay(cq: CallbackQuery) -> None:
                 uri = _wallet_uri("ton", addr, amount)
                 await _send_payment_qr(
                     cq.message.chat.id,
-                    caption=f"📷 סרוק עם Tonkeeper / @wallet — {amount} TON ל-{addr[:8]}…",
+                    caption=f"ðŸ“· ×¡×¨×•×§ ×¢× Tonkeeper / @wallet â€” {amount} TON ×œ-{addr[:8]}â€¦",
                     uri=uri,
                 )
         elif method in ("bsc", "metamask"):
@@ -477,17 +477,17 @@ async def cb_pay(cq: CallbackQuery) -> None:
                 uri = _wallet_uri(method, addr, amount)
                 await _send_payment_qr(
                     cq.message.chat.id,
-                    caption=f"📷 סרוק עם MetaMask / Trust — {amount} BNB ל-{addr[:8]}…",
+                    caption=f"ðŸ“· ×¡×¨×•×§ ×¢× MetaMask / Trust â€” {amount} BNB ×œ-{addr[:8]}â€¦",
                     uri=uri,
                 )
         elif method == "pancakeswap":
             await _send_payment_qr(
                 cq.message.chat.id,
-                caption="📷 סרוק לפתיחת PancakeSwap בארנק שלך",
+                caption="ðŸ“· ×¡×¨×•×§ ×œ×¤×ª×™×—×ª PancakeSwap ×‘××¨× ×§ ×©×œ×š",
                 uri="https://pancakeswap.finance/swap?outputCurrency=0xACb0A09414CEA1C879c67bB7A877E4e19480f022&chain=bsc",
             )
 
-        # Background poll loop (skip for alt/phone — manual-only flows).
+        # Background poll loop (skip for alt/phone â€” manual-only flows).
         if method not in ("alt", "phone"):
             asyncio.create_task(
                 _wait_and_grant(
@@ -501,7 +501,7 @@ async def cb_pay(cq: CallbackQuery) -> None:
         log.exception("cb_pay failed")
         try:
             await cq.message.answer(
-                "שגיאה בטיפול בתשלום. נסה שוב או פנה ל-" + SUPPORT_HANDLE,
+                "×©×’×™××” ×‘×˜×™×¤×•×œ ×‘×ª×©×œ×•×. × ×¡×” ×©×•×‘ ××• ×¤× ×” ×œ-" + SUPPORT_HANDLE,
                 reply_markup=main_menu_kb(),
             )
         except Exception:
@@ -523,7 +523,7 @@ async def _show_courses(chat_id: int, edit_msg: Message | None = None) -> None:
             )
         log.info("_show_courses fetched %d active course(s) for chat=%s", len(rows), chat_id)
         if not rows:
-            text = "אין קורסים זמינים כרגע."
+            text = "××™×Ÿ ×§×•×¨×¡×™× ×–×ž×™× ×™× ×›×¨×’×¢."
             if edit_msg:
                 await edit_msg.edit_text(text, reply_markup=main_menu_kb())
             else:
@@ -532,7 +532,7 @@ async def _show_courses(chat_id: int, edit_msg: Message | None = None) -> None:
                 )
             return
 
-        text = "<b>קורסים זמינים:</b>\nבחר קורס להמשך."
+        text = "<b>×§×•×¨×¡×™× ×–×ž×™× ×™×:</b>\n×‘×—×¨ ×§×•×¨×¡ ×œ×”×ž×©×š."
         kb = course_list_kb(rows)
         if edit_msg:
             await edit_msg.edit_text(text, reply_markup=kb)
@@ -543,7 +543,7 @@ async def _show_courses(chat_id: int, edit_msg: Message | None = None) -> None:
         try:
             await bot.send_message(
                 chat_id,
-                "שגיאה בטעינת הקורסים. נסה שוב מאוחר יותר.",
+                "×©×’×™××” ×‘×˜×¢×™× ×ª ×”×§×•×¨×¡×™×. × ×¡×” ×©×•×‘ ×ž××•×—×¨ ×™×•×ª×¨.",
                 reply_markup=main_menu_kb(),
             )
         except Exception:
@@ -569,25 +569,25 @@ async def _show_licenses(
             )
         if not rows:
             text = (
-                "אין לך רישיונות פעילים עדיין.\n"
-                "לחץ /buy כדי לרכוש קורס."
+                "××™×Ÿ ×œ×š ×¨×™×©×™×•× ×•×ª ×¤×¢×™×œ×™× ×¢×“×™×™×Ÿ.\n"
+                "×œ×—×¥ /buy ×›×“×™ ×œ×¨×›×•×© ×§×•×¨×¡."
             )
         else:
-            lines = ["<b>הרישיונות שלך:</b>", ""]
+            lines = ["<b>×”×¨×™×©×™×•× ×•×ª ×©×œ×š:</b>", ""]
             for r in rows:
                 date = (
                     r["purchased_at"].strftime("%Y-%m-%d")
                     if r["purchased_at"]
-                    else "—"
+                    else "â€”"
                 )
-                status = "פעיל" if r["status"] == "active" else r["status"]
+                status = "×¤×¢×™×œ" if r["status"] == "active" else r["status"]
                 link = (
-                    f'\n<a href="{r["materials_url"]}">גישה לחומרים</a>'
+                    f'\n<a href="{r["materials_url"]}">×’×™×©×” ×œ×—×•×ž×¨×™×</a>'
                     if r["materials_url"]
                     else ""
                 )
                 lines.append(
-                    f"• {r['title_he']}\n  נרכש: {date} · {status}{link}"
+                    f"â€¢ {r['title_he']}\n  × ×¨×›×©: {date} Â· {status}{link}"
                 )
             text = "\n".join(lines)
 
@@ -595,7 +595,7 @@ async def _show_licenses(
             inline_keyboard=[
                 [
                     InlineKeyboardButton(
-                        text="חזרה", callback_data="menu:home"
+                        text="×—×–×¨×”", callback_data="menu:home"
                     )
                 ]
             ]
@@ -611,7 +611,7 @@ async def _show_licenses(
     except Exception:
         log.exception("_show_licenses failed")
         await bot.send_message(
-            chat_id, "שגיאה בטעינת הרישיונות.", reply_markup=main_menu_kb()
+            chat_id, "×©×’×™××” ×‘×˜×¢×™× ×ª ×”×¨×™×©×™×•× ×•×ª.", reply_markup=main_menu_kb()
         )
 
 
@@ -624,7 +624,7 @@ def _wallet_uri(method: str, address: str, amount: float) -> str:
     """Build a wallet-deep-link URI that mobile wallets can scan/open.
 
     TON: ton://transfer/{addr}?amount={nano}
-    BSC: ethereum:{addr}@56?value={wei}  (EIP-681 — Trust/MetaMask understand)
+    BSC: ethereum:{addr}@56?value={wei}  (EIP-681 â€” Trust/MetaMask understand)
     """
     if method == "ton":
         nano = int(amount * 1_000_000_000)
@@ -632,11 +632,11 @@ def _wallet_uri(method: str, address: str, amount: float) -> str:
     if method in ("bsc", "metamask"):
         wei = int(amount * 1_000_000_000_000_000_000)
         return f"ethereum:{address}@56?value={wei}"
-    return address  # PancakeSwap etc — just encode the address
+    return address  # PancakeSwap etc â€” just encode the address
 
 
 async def _send_payment_qr(chat_id: int, caption: str, uri: str) -> None:
-    """Send a QR photo to the user. Failures are logged, not raised — the
+    """Send a QR photo to the user. Failures are logged, not raised â€” the
     text instructions already give the address, so QR is a nice-to-have."""
     try:
         await bot.send_photo(
@@ -674,7 +674,7 @@ async def _create_payment(
     payment_id is None.
 
     For TON/BSC we use local reference IDs (the verify endpoint takes a
-    tx_hash later — see _check_status). For ILS/Bit we record via
+    tx_hash later â€” see _check_status). For ILS/Bit we record via
     /api/payment/external/record so Osif can approve manually via the
     admin panel; the bot polls payment status to pick up the approval.
     """
@@ -682,55 +682,55 @@ async def _create_payment(
     ref = f"ACAD-{user_id}-{course['id']}-{int(datetime.utcnow().timestamp())}"
 
     if method == "ton":
-        addr = cfg.get("ton_address") or "—"
+        addr = cfg.get("ton_address") or "â€”"
         min_ton = course["price_slh"] or cfg.get("premium_min_ton") or 0.01
         instr = (
-            f"<b>תשלום ב-TON</b>\n\n"
-            f"שלח <code>{min_ton}</code> TON לכתובת:\n"
+            f"<b>×ª×©×œ×•× ×‘-TON</b>\n\n"
+            f"×©×œ×— <code>{min_ton}</code> TON ×œ×›×ª×•×‘×ª:\n"
             f"<code>{addr}</code>\n\n"
-            f"מזהה תשלום: <code>{ref}</code>"
+            f"×ž×–×”×” ×ª×©×œ×•×: <code>{ref}</code>"
         )
         return ref, instr
 
     if method == "bsc":
-        addr = cfg.get("bsc_genesis_address") or "—"
+        addr = cfg.get("bsc_genesis_address") or "â€”"
         min_bnb = cfg.get("premium_min_bnb") or 0.0005
         instr = (
-            f"<b>תשלום ב-BNB (BSC)</b>\n\n"
-            f"שלח לפחות <code>{min_bnb}</code> BNB לכתובת:\n"
+            f"<b>×ª×©×œ×•× ×‘-BNB (BSC)</b>\n\n"
+            f"×©×œ×— ×œ×¤×—×•×ª <code>{min_bnb}</code> BNB ×œ×›×ª×•×‘×ª:\n"
             f"<code>{addr}</code>\n\n"
-            f"מזהה תשלום: <code>{ref}</code>"
+            f"×ž×–×”×” ×ª×©×œ×•×: <code>{ref}</code>"
         )
         return ref, instr
 
     if method == "metamask":
-        addr = cfg.get("bsc_genesis_address") or "—"
+        addr = cfg.get("bsc_genesis_address") or "â€”"
         min_bnb = cfg.get("premium_min_bnb") or 0.0005
         instr = (
-            f"<b>תשלום ב-MetaMask (BSC)</b>\n\n"
-            f"1. פתח MetaMask ובחר רשת BNB Smart Chain.\n"
-            f"2. שלח לפחות <code>{min_bnb}</code> BNB לכתובת:\n"
+            f"<b>×ª×©×œ×•× ×‘-MetaMask (BSC)</b>\n\n"
+            f"1. ×¤×ª×— MetaMask ×•×‘×—×¨ ×¨×©×ª BNB Smart Chain.\n"
+            f"2. ×©×œ×— ×œ×¤×—×•×ª <code>{min_bnb}</code> BNB ×œ×›×ª×•×‘×ª:\n"
             f"<code>{addr}</code>\n\n"
-            f"מזהה תשלום: <code>{ref}</code>\n\n"
-            f"💡 אין לך MetaMask? התקן מ-metamask.io או השתמש ב-Trust Wallet."
+            f"×ž×–×”×” ×ª×©×œ×•×: <code>{ref}</code>\n\n"
+            f"ðŸ’¡ ××™×Ÿ ×œ×š MetaMask? ×”×ª×§×Ÿ ×ž-metamask.io ××• ×”×©×ª×ž×© ×‘-Trust Wallet."
         )
         return ref, instr
 
     if method == "pancakeswap":
         slh_contract = "0xACb0A09414CEA1C879c67bB7A877E4e19480f022"
         instr = (
-            f"<b>רכישה דרך PancakeSwap (SLH)</b>\n\n"
-            f"1. פתח: https://pancakeswap.finance/swap?outputCurrency={slh_contract}&chain=bsc\n"
-            f"2. החלף BNB → SLH לפי המחיר ({course['price_slh'] or 0} SLH).\n"
-            f"3. שלח את ה-SLH לכתובת Genesis:\n"
-            f"<code>{cfg.get('bsc_genesis_address') or '—'}</code>\n\n"
-            f"מזהה: <code>{ref}</code>\n\n"
-            f"💎 כל רכישת SLH מעניקה גם ZVK בונוס + REP points."
+            f"<b>×¨×›×™×©×” ×“×¨×š PancakeSwap (SLH)</b>\n\n"
+            f"1. ×¤×ª×—: https://pancakeswap.finance/swap?outputCurrency={slh_contract}&chain=bsc\n"
+            f"2. ×”×—×œ×£ BNB â†’ SLH ×œ×¤×™ ×”×ž×—×™×¨ ({course['price_slh'] or 0} SLH).\n"
+            f"3. ×©×œ×— ××ª ×”-SLH ×œ×›×ª×•×‘×ª Genesis:\n"
+            f"<code>{cfg.get('bsc_genesis_address') or 'â€”'}</code>\n\n"
+            f"×ž×–×”×”: <code>{ref}</code>\n\n"
+            f"ðŸ’Ž ×›×œ ×¨×›×™×©×ª SLH ×ž×¢× ×™×§×” ×’× ZVK ×‘×•× ×•×¡ + REP points."
         )
         return ref, instr
 
     if method == "bank":
-        # Bank transfer to Tzvika (CEO) — same flow as buy.html
+        # Bank transfer to Tzvika (CEO) â€” same flow as buy.html
         try:
             async with aiohttp.ClientSession() as s:
                 payload = {
@@ -758,37 +758,37 @@ async def _create_payment(
             return None, ""
 
         instr = (
-            f"<b>העברה בנקאית</b>\n\n"
-            f"לקבלת פרטי חשבון בנק (לצביקה קאופמן, מנכ\"ל) פנה ל-{SUPPORT_HANDLE}.\n"
-            f"סכום: <code>{course['price_ils']}</code>₪\n"
-            f"מזהה תשלום: <code>{ref}</code>\n\n"
-            f"או מלא את הטופס המלא (8 שדות) באתר:\n"
+            f"<b>×”×¢×‘×¨×” ×‘× ×§××™×ª</b>\n\n"
+            f"×œ×§×‘×œ×ª ×¤×¨×˜×™ ×—×©×‘×•×Ÿ ×‘× ×§ (×œ×¦×‘×™×§×” ×§××•×¤×ž×Ÿ, ×ž× ×›\"×œ) ×¤× ×” ×œ-{SUPPORT_HANDLE}.\n"
+            f"×¡×›×•×: <code>{course['price_ils']}</code>â‚ª\n"
+            f"×ž×–×”×” ×ª×©×œ×•×: <code>{ref}</code>\n\n"
+            f"××• ×ž×œ× ××ª ×”×˜×•×¤×¡ ×”×ž×œ× (8 ×©×“×•×ª) ×‘××ª×¨:\n"
             f"https://slh-nft.com/buy.html#bank\n\n"
-            f"לאחר אישור ידני תקבל את הגישה לחומרים."
+            f"×œ××—×¨ ××™×©×•×¨ ×™×“× ×™ ×ª×§×‘×œ ××ª ×”×’×™×©×” ×œ×—×•×ž×¨×™×."
         )
         return ref, instr
 
     if method == "phone":
-        # Bit/PayBox routing to instructor's payout_phone (Phase 2 — requires
+        # Bit/PayBox routing to instructor's payout_phone (Phase 2 â€” requires
         # academy_instructors.payout_phone column and per-course lookup).
         instr = (
-            f"<b>📱 Bit / PayBox למדריך</b>\n\n"
-            f"שיטת תשלום זו זמינה רק כאשר המדריך הגדיר טלפון.\n"
-            f"פנה למדריך ישירות או ל-{SUPPORT_HANDLE} למידע נוסף.\n\n"
-            f"מזהה: <code>{ref}</code>"
+            f"<b>ðŸ“± Bit / PayBox ×œ×ž×“×¨×™×š</b>\n\n"
+            f"×©×™×˜×ª ×ª×©×œ×•× ×–×• ×–×ž×™× ×” ×¨×§ ×›××©×¨ ×”×ž×“×¨×™×š ×”×’×“×™×¨ ×˜×œ×¤×•×Ÿ.\n"
+            f"×¤× ×” ×œ×ž×“×¨×™×š ×™×©×™×¨×•×ª ××• ×œ-{SUPPORT_HANDLE} ×œ×ž×™×“×¢ × ×•×¡×£.\n\n"
+            f"×ž×–×”×”: <code>{ref}</code>"
         )
         return ref, instr
 
     if method == "alt":
         instr = (
-            f"<b>💼 חלופות תשלום</b>\n\n"
-            f"אנו מקבלים גם:\n"
-            f"• ⏱ זמן עבודה / הספק (תרומה לפרויקט)\n"
-            f"• 🥇 זהב פיזי (לפי שווי שוק)\n"
-            f"• 🪙 OTC קריפטו (USDT, USDC, BTC, ETH)\n"
-            f"• 🔄 Swap מבוטים אחרים שלנו (ZVK, MNH)\n\n"
-            f"פנה ל-{SUPPORT_HANDLE} עם המזהה <code>{ref}</code> "
-            f"לבחירת המסלול המתאים לך."
+            f"<b>ðŸ’¼ ×—×œ×•×¤×•×ª ×ª×©×œ×•×</b>\n\n"
+            f"×× ×• ×ž×§×‘×œ×™× ×’×:\n"
+            f"â€¢ â± ×–×ž×Ÿ ×¢×‘×•×“×” / ×”×¡×¤×§ (×ª×¨×•×ž×” ×œ×¤×¨×•×™×§×˜)\n"
+            f"â€¢ ðŸ¥‡ ×–×”×‘ ×¤×™×–×™ (×œ×¤×™ ×©×•×•×™ ×©×•×§)\n"
+            f"â€¢ ðŸª™ OTC ×§×¨×™×¤×˜×• (USDT, USDC, BTC, ETH)\n"
+            f"â€¢ ðŸ”„ Swap ×ž×‘×•×˜×™× ××—×¨×™× ×©×œ× ×• (ZVK, MNH)\n\n"
+            f"×¤× ×” ×œ-{SUPPORT_HANDLE} ×¢× ×”×ž×–×”×” <code>{ref}</code> "
+            f"×œ×‘×—×™×¨×ª ×”×ž×¡×œ×•×œ ×”×ž×ª××™× ×œ×š."
         )
         return ref, instr
 
@@ -798,7 +798,7 @@ async def _create_payment(
 async def _check_status(user_id: int, course_id: int | None = None) -> bool:
     """Return True iff user has either:
       (a) an active `academy_licenses` row for this course in our own _pool
-          (authoritative — this bot is what writes them), OR
+          (authoritative â€” this bot is what writes them), OR
       (b) an `approved` external_payment reference in the Railway API (covers the
           case where the admin approved a TON/bank payment manually via admin panel
           but the bot hadn't yet polled success), OR
@@ -806,10 +806,10 @@ async def _check_status(user_id: int, course_id: int | None = None) -> bool:
           (legacy fallback for non-course flows).
 
     The previous version only checked (c), which caused ACAD-* timeouts for
-    successful course purchases — academy writes to academy_licenses on the
+    successful course purchases â€” academy writes to academy_licenses on the
     bot's own DB, not to premium_users.
     """
-    # (a) local DB — authoritative
+    # (a) local DB â€” authoritative
     if course_id is not None and _pool is not None:
         try:
             async with _pool.acquire() as conn:
@@ -843,7 +843,7 @@ async def _check_status(user_id: int, course_id: int | None = None) -> bool:
                 # (b) check last_external payment for this course reference
                 ext = data.get("last_external") or {}
                 if ext.get("status") == "approved" and course_id is not None:
-                    # Approved payment exists — treat as success signal
+                    # Approved payment exists â€” treat as success signal
                     return True
                 return False
     except Exception:
@@ -862,7 +862,7 @@ async def _wait_and_grant(
             if not await _check_status(user_id, course.get("id") if isinstance(course, dict) else None):
                 continue
 
-            # Confirmed — grant license (idempotent per user+course).
+            # Confirmed â€” grant license (idempotent per user+course).
             assert _pool is not None
             async with _pool.acquire() as conn:
                 existing = await conn.fetchval(
@@ -882,12 +882,12 @@ async def _wait_and_grant(
                         course["id"],
                         payment_id,
                     )
-            link = course["materials_url"] or "—"
+            link = course["materials_url"] or "â€”"
             await bot.send_message(
                 chat_id,
-                f"✅ <b>התשלום אושר</b>\n\n"
-                f"הרישיון ל'{course['title_he']}' פעיל.\n"
-                f'גישה לחומרים: <a href="{link}">{link}</a>',
+                f"âœ… <b>×”×ª×©×œ×•× ××•×©×¨</b>\n\n"
+                f"×”×¨×™×©×™×•×Ÿ ×œ'{course['title_he']}' ×¤×¢×™×œ.\n"
+                f'×’×™×©×” ×œ×—×•×ž×¨×™×: <a href="{link}">{link}</a>',
                 disable_web_page_preview=False,
             )
             return
@@ -895,8 +895,8 @@ async def _wait_and_grant(
         # Timeout.
         await bot.send_message(
             chat_id,
-            "לא הצלחנו לאמת את התשלום ב-10 דקות האחרונות.\n"
-            f"אם שילמת, פנה ל-{SUPPORT_HANDLE} עם מזהה "
+            "×œ× ×”×¦×œ×—× ×• ×œ××ž×ª ××ª ×”×ª×©×œ×•× ×‘-10 ×“×§×•×ª ×”××—×¨×•× ×•×ª.\n"
+            f"×× ×©×™×œ×ž×ª, ×¤× ×” ×œ-{SUPPORT_HANDLE} ×¢× ×ž×–×”×” "
             f"<code>{payment_id}</code>.",
         )
     except Exception:
@@ -904,18 +904,18 @@ async def _wait_and_grant(
         try:
             await bot.send_message(
                 chat_id,
-                f"שגיאה באימות. פנה לתמיכה {SUPPORT_HANDLE} "
-                f"(מזהה: {payment_id}).",
+                f"×©×’×™××” ×‘××™×ž×•×ª. ×¤× ×” ×œ×ª×ž×™×›×” {SUPPORT_HANDLE} "
+                f"(×ž×–×”×”: {payment_id}).",
             )
         except Exception:
             log.exception("failed to notify user of _wait_and_grant error")
 
 
 # ----------------------------------------------------------------------------
-# Telegram Stars (XTR) — native invoice flow
+# Telegram Stars (XTR) â€” native invoice flow
 # ----------------------------------------------------------------------------
 
-# Conversion: 1 XTR ≈ $0.013 ≈ ₪0.05 (rough)
+# Conversion: 1 XTR â‰ˆ $0.013 â‰ˆ â‚ª0.05 (rough)
 ILS_PER_STAR = 0.05
 
 
@@ -926,11 +926,11 @@ def _course_to_stars(price_ils: float | None) -> int:
 
 
 async def _send_stars_invoice(chat_id: int, course) -> None:
-    """Send a native Telegram Stars invoice. The user pays inside Telegram —
+    """Send a native Telegram Stars invoice. The user pays inside Telegram â€”
     no bank, no crypto. We grant the license on successful_payment."""
     stars = _course_to_stars(course["price_ils"])
     title = course["title_he"][:32]  # Telegram limit
-    description = (course["description_he"] or "רישיון לכל החיים לקורס SLH")[:255]
+    description = (course["description_he"] or "×¨×™×©×™×•×Ÿ ×œ×›×œ ×”×—×™×™× ×œ×§×•×¨×¡ SLH")[:255]
     payload = f"academy_stars:{course['id']}"
     try:
         await bot.send_invoice(
@@ -947,8 +947,8 @@ async def _send_stars_invoice(chat_id: int, course) -> None:
         try:
             await bot.send_message(
                 chat_id,
-                "❌ לא הצלחנו לפתוח חשבונית Stars. ודא שאפליקציית Telegram מעודכנת, "
-                f"או פנה ל-{SUPPORT_HANDLE}.",
+                "âŒ ×œ× ×”×¦×œ×—× ×• ×œ×¤×ª×•×— ×—×©×‘×•× ×™×ª Stars. ×•×“× ×©××¤×œ×™×§×¦×™×™×ª Telegram ×ž×¢×•×“×›× ×ª, "
+                f"××• ×¤× ×” ×œ-{SUPPORT_HANDLE}.",
             )
         except Exception:
             pass
@@ -957,7 +957,7 @@ async def _send_stars_invoice(chat_id: int, course) -> None:
 @dp.pre_checkout_query()
 async def on_pre_checkout(q: PreCheckoutQuery) -> None:
     """Telegram requires explicit ack for every pre_checkout. We always
-    approve — the actual ledger entry happens on successful_payment."""
+    approve â€” the actual ledger entry happens on successful_payment."""
     try:
         await bot.answer_pre_checkout_query(q.id, ok=True)
     except Exception:
@@ -966,7 +966,7 @@ async def on_pre_checkout(q: PreCheckoutQuery) -> None:
 
 @dp.message(F.successful_payment)
 async def on_successful_payment(msg: Message) -> None:
-    """Stars payment confirmed by Telegram — grant the license immediately."""
+    """Stars payment confirmed by Telegram â€” grant the license immediately."""
     try:
         sp = msg.successful_payment
         if not sp or not sp.invoice_payload.startswith("academy_stars:"):
@@ -983,8 +983,8 @@ async def on_successful_payment(msg: Message) -> None:
             )
             if not c:
                 await msg.answer(
-                    f"⚠️ התשלום התקבל אבל הקורס לא נמצא. פנה ל-{SUPPORT_HANDLE} "
-                    f"עם מזהה: {sp.telegram_payment_charge_id}"
+                    f"âš ï¸ ×”×ª×©×œ×•× ×”×ª×§×‘×œ ××‘×œ ×”×§×•×¨×¡ ×œ× × ×ž×¦×. ×¤× ×” ×œ-{SUPPORT_HANDLE} "
+                    f"×¢× ×ž×–×”×”: {sp.telegram_payment_charge_id}"
                 )
                 return
 
@@ -1002,11 +1002,11 @@ async def on_successful_payment(msg: Message) -> None:
                     """,
                     user_id, course_id, f"stars:{sp.telegram_payment_charge_id}",
                 )
-        link = c["materials_url"] or "—"
+        link = c["materials_url"] or "â€”"
         await msg.answer(
-            f"✅ <b>התשלום ב-Stars אושר ⭐</b>\n\n"
-            f"הרישיון ל'{c['title_he']}' פעיל.\n"
-            f'גישה לחומרים: <a href="{link}">{link}</a>',
+            f"âœ… <b>×”×ª×©×œ×•× ×‘-Stars ××•×©×¨ â­</b>\n\n"
+            f"×”×¨×™×©×™×•×Ÿ ×œ'{c['title_he']}' ×¤×¢×™×œ.\n"
+            f'×’×™×©×” ×œ×—×•×ž×¨×™×: <a href="{link}">{link}</a>',
             disable_web_page_preview=False,
         )
     except Exception:
@@ -1026,12 +1026,12 @@ async def main() -> None:
 
 
 # ============================================================================
-# UGC EXTENSION — instructor onboarding, course upload, earnings.
+# UGC EXTENSION â€” instructor onboarding, course upload, earnings.
 # Talks to Railway /api/academia/* (router academia_ugc.py).
 # ============================================================================
 
 # In-memory wizard state. user_id -> {"flow": str, "step": str, "data": dict}.
-# Process-local (lost on restart) — acceptable for short multi-step flows.
+# Process-local (lost on restart) â€” acceptable for short multi-step flows.
 _wizards: dict[int, dict] = {}
 
 
@@ -1088,7 +1088,7 @@ async def _instructor_status(user_id: int) -> tuple[bool, bool]:
 def _cancel_kb() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text="❌ ביטול", callback_data="wiz:cancel")]
+            [InlineKeyboardButton(text="âŒ ×‘×™×˜×•×œ", callback_data="wiz:cancel")]
         ]
     )
 
@@ -1096,7 +1096,7 @@ def _cancel_kb() -> InlineKeyboardMarkup:
 def _back_home_kb() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text="חזרה לתפריט", callback_data="menu:home")]
+            [InlineKeyboardButton(text="×—×–×¨×” ×œ×ª×¤×¨×™×˜", callback_data="menu:home")]
         ]
     )
 
@@ -1118,8 +1118,8 @@ async def cb_instr_register(cq: CallbackQuery) -> None:
 async def cb_instr_pending(cq: CallbackQuery) -> None:
     try:
         await cq.message.edit_text(
-            "⏳ <b>הבקשה שלך כמדריך ממתינה לאישור מנהל.</b>\n\n"
-            "תקבל הודעה ברגע שהאישור יושלם.",
+            "â³ <b>×”×‘×§×©×” ×©×œ×š ×›×ž×“×¨×™×š ×ž×ž×ª×™× ×” ×œ××™×©×•×¨ ×ž× ×”×œ.</b>\n\n"
+            "×ª×§×‘×œ ×”×•×“×¢×” ×‘×¨×’×¢ ×©×”××™×©×•×¨ ×™×•×©×œ×.",
             reply_markup=_back_home_kb(),
         )
         await cq.answer()
@@ -1133,22 +1133,22 @@ async def _start_register_wizard(chat_id: int, user_id: int) -> None:
         if is_approved:
             await bot.send_message(
                 chat_id,
-                "✅ אתה כבר רשום כמדריך מאושר.",
+                "âœ… ××ª×” ×›×‘×¨ ×¨×©×•× ×›×ž×“×¨×™×š ×ž××•×©×¨.",
                 reply_markup=_back_home_kb(),
             )
             return
         if is_instr:
             await bot.send_message(
                 chat_id,
-                "⏳ הבקשה שלך כמדריך כבר נשלחה וממתינה לאישור.",
+                "â³ ×”×‘×§×©×” ×©×œ×š ×›×ž×“×¨×™×š ×›×‘×¨ × ×©×œ×—×” ×•×ž×ž×ª×™× ×” ×œ××™×©×•×¨.",
                 reply_markup=_back_home_kb(),
             )
             return
         _wizards[user_id] = {"flow": "register", "step": "display_name", "data": {}}
         await bot.send_message(
             chat_id,
-            "🎓 <b>הצטרפות כמדריך</b>\n\n"
-            "שלב 1/4 — מה השם שיוצג לתלמידים? (עד 200 תווים)",
+            "ðŸŽ“ <b>×”×¦×˜×¨×¤×•×ª ×›×ž×“×¨×™×š</b>\n\n"
+            "×©×œ×‘ 1/4 â€” ×ž×” ×”×©× ×©×™×•×¦×’ ×œ×ª×œ×ž×™×“×™×? (×¢×“ 200 ×ª×•×•×™×)",
             reply_markup=_cancel_kb(),
         )
     except Exception:
@@ -1174,23 +1174,23 @@ async def _start_upload_wizard(chat_id: int, user_id: int) -> None:
         if not is_instr:
             await bot.send_message(
                 chat_id,
-                "תחילה הצטרף כמדריך עם /become_instructor.",
+                "×ª×—×™×œ×” ×”×¦×˜×¨×£ ×›×ž×“×¨×™×š ×¢× /become_instructor.",
                 reply_markup=_back_home_kb(),
             )
             return
         if not is_approved:
             await bot.send_message(
                 chat_id,
-                "⏳ הבקשה שלך כמדריך עדיין לא אושרה. אנא המתן.",
+                "â³ ×”×‘×§×©×” ×©×œ×š ×›×ž×“×¨×™×š ×¢×“×™×™×Ÿ ×œ× ××•×©×¨×”. ×× × ×”×ž×ª×Ÿ.",
                 reply_markup=_back_home_kb(),
             )
             return
         _wizards[user_id] = {"flow": "upload", "step": "slug", "data": {}}
         await bot.send_message(
             chat_id,
-            "📤 <b>העלאת קורס חדש</b>\n\n"
-            "שלב 1/7 — מזהה (slug) באנגלית (אותיות, מספרים, מקפים): "
-            "למשל <code>crypto-101</code>",
+            "ðŸ“¤ <b>×”×¢×œ××ª ×§×•×¨×¡ ×—×“×©</b>\n\n"
+            "×©×œ×‘ 1/7 â€” ×ž×–×”×” (slug) ×‘×× ×’×œ×™×ª (××•×ª×™×•×ª, ×ž×¡×¤×¨×™×, ×ž×§×¤×™×): "
+            "×œ×ž×©×œ <code>crypto-101</code>",
             reply_markup=_cancel_kb(),
         )
     except Exception:
@@ -1216,19 +1216,19 @@ async def _show_earnings(
     try:
         data = await _api_get(f"/api/academia/earnings/{user_id}")
         if not data or not data.get("instructor_id"):
-            text = "אינך רשום כמדריך עדיין. השתמש ב-/become_instructor."
+            text = "××™× ×š ×¨×©×•× ×›×ž×“×¨×™×š ×¢×“×™×™×Ÿ. ×”×©×ª×ž×© ×‘-/become_instructor."
         else:
             t = data.get("totals", {})
             split = data.get("split", {})
             text = (
-                "💰 <b>ההכנסות שלך</b>\n\n"
-                f"מכירות: <b>{t.get('sales_count', 0)}</b>\n"
-                f"סך ברוטו: <b>{t.get('gross_ils', 0):.2f}₪</b>\n"
-                f"חלוקה: {split.get('instructor_pct', 70)}% מדריך / "
-                f"{split.get('platform_pct', 30)}% פלטפורמה\n\n"
-                f"💵 הרווחת: <b>{t.get('instructor_cut_ils', 0):.2f}₪</b>\n"
-                f"⏳ ממתין לתשלום: <b>{t.get('unpaid_ils', 0):.2f}₪</b>\n"
-                f"✅ שולם: <b>{t.get('paid_ils', 0):.2f}₪</b>\n"
+                "ðŸ’° <b>×”×”×›× ×¡×•×ª ×©×œ×š</b>\n\n"
+                f"×ž×›×™×¨×•×ª: <b>{t.get('sales_count', 0)}</b>\n"
+                f"×¡×š ×‘×¨×•×˜×•: <b>{t.get('gross_ils', 0):.2f}â‚ª</b>\n"
+                f"×—×œ×•×§×”: {split.get('instructor_pct', 70)}% ×ž×“×¨×™×š / "
+                f"{split.get('platform_pct', 30)}% ×¤×œ×˜×¤×•×¨×ž×”\n\n"
+                f"ðŸ’µ ×”×¨×•×•×—×ª: <b>{t.get('instructor_cut_ils', 0):.2f}â‚ª</b>\n"
+                f"â³ ×ž×ž×ª×™×Ÿ ×œ×ª×©×œ×•×: <b>{t.get('unpaid_ils', 0):.2f}â‚ª</b>\n"
+                f"âœ… ×©×•×œ×: <b>{t.get('paid_ils', 0):.2f}â‚ª</b>\n"
             )
         kb = _back_home_kb()
         if edit_msg:
@@ -1238,7 +1238,7 @@ async def _show_earnings(
     except Exception:
         log.exception("_show_earnings failed")
         await bot.send_message(
-            chat_id, "שגיאה בטעינת ההכנסות.", reply_markup=_back_home_kb()
+            chat_id, "×©×’×™××” ×‘×˜×¢×™× ×ª ×”×”×›× ×¡×•×ª.", reply_markup=_back_home_kb()
         )
 
 
@@ -1250,9 +1250,9 @@ async def cb_wiz_cancel(cq: CallbackQuery) -> None:
     try:
         is_instr, is_approved = await _instructor_status(cq.from_user.id)
         await cq.message.edit_text(
-            "בוטל. " + WELCOME, reply_markup=main_menu_kb(is_instr, is_approved)
+            "×‘×•×˜×œ. " + WELCOME, reply_markup=main_menu_kb(is_instr, is_approved)
         )
-        await cq.answer("בוטל")
+        await cq.answer("×‘×•×˜×œ")
     except Exception:
         log.exception("cb_wiz_cancel failed")
 
@@ -1264,7 +1264,7 @@ async def wizard_router(msg: Message) -> None:
     """Route plain-text replies into an active wizard, if any."""
     state = _wizards.get(msg.from_user.id)
     if not state:
-        return  # no active wizard — silently ignore
+        return  # no active wizard â€” silently ignore
     try:
         if state["flow"] == "register":
             await _wizard_register_step(msg, state)
@@ -1272,7 +1272,7 @@ async def wizard_router(msg: Message) -> None:
             await _wizard_upload_step(msg, state)
     except Exception:
         log.exception("wizard_router failed")
-        await msg.answer("שגיאה בתהליך, נסה שוב.", reply_markup=_back_home_kb())
+        await msg.answer("×©×’×™××” ×‘×ª×”×œ×™×š, × ×¡×” ×©×•×‘.", reply_markup=_back_home_kb())
         _wizards.pop(msg.from_user.id, None)
 
 
@@ -1282,49 +1282,49 @@ async def _wizard_register_step(msg: Message, state: dict) -> None:
 
     if state["step"] == "display_name":
         if len(text) > 200:
-            await msg.answer("שם ארוך מדי (עד 200 תווים). נסה שוב.")
+            await msg.answer("×©× ××¨×•×š ×ž×“×™ (×¢×“ 200 ×ª×•×•×™×). × ×¡×” ×©×•×‘.")
             return
         state["data"]["display_name"] = text
         state["step"] = "bio"
         await msg.answer(
-            "שלב 2/4 — כתוב ביוגרפיה קצרה (עד 4000 תווים) שתופיע בעמוד הקורסים שלך:",
+            "×©×œ×‘ 2/4 â€” ×›×ª×•×‘ ×‘×™×•×’×¨×¤×™×” ×§×¦×¨×” (×¢×“ 4000 ×ª×•×•×™×) ×©×ª×•×¤×™×¢ ×‘×¢×ž×•×“ ×”×§×•×¨×¡×™× ×©×œ×š:",
             reply_markup=_cancel_kb(),
         )
         return
 
     if state["step"] == "bio":
         if len(text) > 4000:
-            await msg.answer("ביו ארוך מדי (עד 4000 תווים). נסה שוב.")
+            await msg.answer("×‘×™×• ××¨×•×š ×ž×“×™ (×¢×“ 4000 ×ª×•×•×™×). × ×¡×” ×©×•×‘.")
             return
         state["data"]["bio_he"] = text
         state["step"] = "wallet"
         await msg.answer(
-            "שלב 3/4 — כתובת ארנק לתשלומים (TON או BSC). "
-            "אפשר לדלג עם המילה <code>דלג</code>:",
+            "×©×œ×‘ 3/4 â€” ×›×ª×•×‘×ª ××¨× ×§ ×œ×ª×©×œ×•×ž×™× (TON ××• BSC). "
+            "××¤×©×¨ ×œ×“×œ×’ ×¢× ×”×ž×™×œ×” <code>×“×œ×’</code>:",
             reply_markup=_cancel_kb(),
         )
         return
 
     if state["step"] == "wallet":
-        wallet = None if text in ("דלג", "skip", "-") else text
+        wallet = None if text in ("×“×œ×’", "skip", "-") else text
         if wallet and len(wallet) > 200:
-            await msg.answer("הכתובת ארוכה מדי. נסה שוב.")
+            await msg.answer("×”×›×ª×•×‘×ª ××¨×•×›×” ×ž×“×™. × ×¡×” ×©×•×‘.")
             return
         state["data"]["payout_wallet"] = wallet
         state["step"] = "phone"
         await msg.answer(
-            "שלב 4/4 — מספר טלפון ל-Bit / PayBox (תלמידים יוכלו לשלם אליך ישירות). "
-            "אפשר לדלג עם <code>דלג</code>:",
+            "×©×œ×‘ 4/4 â€” ×ž×¡×¤×¨ ×˜×œ×¤×•×Ÿ ×œ-Bit / PayBox (×ª×œ×ž×™×“×™× ×™×•×›×œ×• ×œ×©×œ× ××œ×™×š ×™×©×™×¨×•×ª). "
+            "××¤×©×¨ ×œ×“×œ×’ ×¢× <code>×“×œ×’</code>:",
             reply_markup=_cancel_kb(),
         )
         return
 
     if state["step"] == "phone":
-        phone = None if text in ("דלג", "skip", "-") else text
+        phone = None if text in ("×“×œ×’", "skip", "-") else text
         if phone:
             cleaned = phone.replace("+", "").replace("-", "").replace(" ", "").replace("(", "").replace(")", "")
             if not cleaned.isdigit() or len(phone) > 50:
-                await msg.answer("טלפון לא תקין. ספרות בלבד (אפשר עם +, רווחים, מקפים), עד 50 תווים.")
+                await msg.answer("×˜×œ×¤×•×Ÿ ×œ× ×ª×§×™×Ÿ. ×¡×¤×¨×•×ª ×‘×œ×‘×“ (××¤×©×¨ ×¢× +, ×¨×•×•×—×™×, ×ž×§×¤×™×), ×¢×“ 50 ×ª×•×•×™×.")
                 return
         state["data"]["payout_phone"] = phone
         # Submit
@@ -1341,19 +1341,19 @@ async def _wizard_register_step(msg: Message, state: dict) -> None:
         _wizards.pop(user_id, None)
         if not result:
             await msg.answer(
-                "❌ לא הצלחנו לשמור את הבקשה. נסה שוב מאוחר יותר.",
+                "âŒ ×œ× ×”×¦×œ×—× ×• ×œ×©×ž×•×¨ ××ª ×”×‘×§×©×”. × ×¡×” ×©×•×‘ ×ž××•×—×¨ ×™×•×ª×¨.",
                 reply_markup=_back_home_kb(),
             )
             return
         phone_note = (
-            "\n\n📱 הטלפון נשמר — תלמידים יראו אופציית Bit/PayBox עבור הקורסים שלך."
+            "\n\nðŸ“± ×”×˜×œ×¤×•×Ÿ × ×©×ž×¨ â€” ×ª×œ×ž×™×“×™× ×™×¨××• ××•×¤×¦×™×™×ª Bit/PayBox ×¢×‘×•×¨ ×”×§×•×¨×¡×™× ×©×œ×š."
             if phone else ""
         )
         await msg.answer(
-            "✅ <b>הבקשה התקבלה!</b>\n\n"
-            f"{result.get('message', 'ממתין לאישור מנהל')}"
+            "âœ… <b>×”×‘×§×©×” ×”×ª×§×‘×œ×”!</b>\n\n"
+            f"{result.get('message', '×ž×ž×ª×™×Ÿ ×œ××™×©×•×¨ ×ž× ×”×œ')}"
             f"{phone_note}\n\n"
-            "תקבל הודעה ברגע שתאושר ותוכל להעלות קורסים.",
+            "×ª×§×‘×œ ×”×•×“×¢×” ×‘×¨×’×¢ ×©×ª××•×©×¨ ×•×ª×•×›×œ ×œ×”×¢×œ×•×ª ×§×•×¨×¡×™×.",
             reply_markup=_back_home_kb(),
         )
 
@@ -1366,30 +1366,30 @@ async def _wizard_upload_step(msg: Message, state: dict) -> None:
         slug = text.lower()
         if not slug or len(slug) > 120 or not all(c.isalnum() or c in "-_" for c in slug):
             await msg.answer(
-                "מזהה לא תקין. השתמש באותיות באנגלית, מספרים, מקפים בלבד."
+                "×ž×–×”×” ×œ× ×ª×§×™×Ÿ. ×”×©×ª×ž×© ×‘××•×ª×™×•×ª ×‘×× ×’×œ×™×ª, ×ž×¡×¤×¨×™×, ×ž×§×¤×™× ×‘×œ×‘×“."
             )
             return
         state["data"]["slug"] = slug
         state["step"] = "title"
-        await msg.answer("שלב 2/7 — שם הקורס בעברית (עד 300 תווים):", reply_markup=_cancel_kb())
+        await msg.answer("×©×œ×‘ 2/7 â€” ×©× ×”×§×•×¨×¡ ×‘×¢×‘×¨×™×ª (×¢×“ 300 ×ª×•×•×™×):", reply_markup=_cancel_kb())
         return
 
     if state["step"] == "title":
         if not text or len(text) > 300:
-            await msg.answer("שם לא תקין. נסה שוב.")
+            await msg.answer("×©× ×œ× ×ª×§×™×Ÿ. × ×¡×” ×©×•×‘.")
             return
         state["data"]["title_he"] = text
         state["step"] = "description"
         await msg.answer(
-            "שלב 3/7 — תיאור הקורס (אפשר לדלג עם <code>דלג</code>):",
+            "×©×œ×‘ 3/7 â€” ×ª×™××•×¨ ×”×§×•×¨×¡ (××¤×©×¨ ×œ×“×œ×’ ×¢× <code>×“×œ×’</code>):",
             reply_markup=_cancel_kb(),
         )
         return
 
     if state["step"] == "description":
-        state["data"]["description_he"] = None if text in ("דלג", "skip", "-") else text
+        state["data"]["description_he"] = None if text in ("×“×œ×’", "skip", "-") else text
         state["step"] = "price_ils"
-        await msg.answer("שלב 4/7 — מחיר בשקלים (מספר, למשל <code>149</code>):", reply_markup=_cancel_kb())
+        await msg.answer("×©×œ×‘ 4/7 â€” ×ž×—×™×¨ ×‘×©×§×œ×™× (×ž×¡×¤×¨, ×œ×ž×©×œ <code>149</code>):", reply_markup=_cancel_kb())
         return
 
     if state["step"] == "price_ils":
@@ -1398,12 +1398,12 @@ async def _wizard_upload_step(msg: Message, state: dict) -> None:
             if price < 0:
                 raise ValueError
         except ValueError:
-            await msg.answer("מחיר לא תקין. הקלד מספר.")
+            await msg.answer("×ž×—×™×¨ ×œ× ×ª×§×™×Ÿ. ×”×§×œ×“ ×ž×¡×¤×¨.")
             return
         state["data"]["price_ils"] = price
         state["step"] = "price_slh"
         await msg.answer(
-            "שלב 5/7 — מחיר ב-SLH (מספר, למשל <code>0.5</code>, או <code>0</code>):",
+            "×©×œ×‘ 5/7 â€” ×ž×—×™×¨ ×‘-SLH (×ž×¡×¤×¨, ×œ×ž×©×œ <code>0.5</code>, ××• <code>0</code>):",
             reply_markup=_cancel_kb(),
         )
         return
@@ -1414,27 +1414,27 @@ async def _wizard_upload_step(msg: Message, state: dict) -> None:
             if price_slh < 0:
                 raise ValueError
         except ValueError:
-            await msg.answer("מחיר לא תקין. הקלד מספר.")
+            await msg.answer("×ž×—×™×¨ ×œ× ×ª×§×™×Ÿ. ×”×§×œ×“ ×ž×¡×¤×¨.")
             return
         state["data"]["price_slh"] = price_slh
         state["step"] = "materials"
         await msg.answer(
-            "שלב 6/7 — קישור לחומרי הקורס (URL, אפשר לדלג):",
+            "×©×œ×‘ 6/7 â€” ×§×™×©×•×¨ ×œ×—×•×ž×¨×™ ×”×§×•×¨×¡ (URL, ××¤×©×¨ ×œ×“×œ×’):",
             reply_markup=_cancel_kb(),
         )
         return
 
     if state["step"] == "materials":
-        state["data"]["materials_url"] = None if text in ("דלג", "skip", "-") else text
+        state["data"]["materials_url"] = None if text in ("×“×œ×’", "skip", "-") else text
         state["step"] = "preview"
         await msg.answer(
-            "שלב 7/7 — קישור לתצוגה מקדימה (URL, אפשר לדלג):",
+            "×©×œ×‘ 7/7 â€” ×§×™×©×•×¨ ×œ×ª×¦×•×’×” ×ž×§×“×™×ž×” (URL, ××¤×©×¨ ×œ×“×œ×’):",
             reply_markup=_cancel_kb(),
         )
         return
 
     if state["step"] == "preview":
-        state["data"]["preview_url"] = None if text in ("דלג", "skip", "-") else text
+        state["data"]["preview_url"] = None if text in ("×“×œ×’", "skip", "-") else text
         # Submit
         payload = {
             "instructor_user_id": user_id,
@@ -1451,16 +1451,16 @@ async def _wizard_upload_step(msg: Message, state: dict) -> None:
         _wizards.pop(user_id, None)
         if not result:
             await msg.answer(
-                "❌ לא הצלחנו ליצור את הקורס. ייתכן שהמזהה כבר תפוס. "
-                "נסה שוב עם מזהה אחר.",
+                "âŒ ×œ× ×”×¦×œ×—× ×• ×œ×™×¦×•×¨ ××ª ×”×§×•×¨×¡. ×™×™×ª×›×Ÿ ×©×”×ž×–×”×” ×›×‘×¨ ×ª×¤×•×¡. "
+                "× ×¡×” ×©×•×‘ ×¢× ×ž×–×”×” ××—×¨.",
                 reply_markup=_back_home_kb(),
             )
             return
         await msg.answer(
-            "✅ <b>הקורס נוצר!</b>\n\n"
-            f"מזהה: <code>{result.get('slug')}</code>\n"
-            f"סטטוס: {result.get('approval_status', 'pending')}\n\n"
-            "הקורס יופיע בקטלוג לאחר אישור מנהל.",
+            "âœ… <b>×”×§×•×¨×¡ × ×•×¦×¨!</b>\n\n"
+            f"×ž×–×”×”: <code>{result.get('slug')}</code>\n"
+            f"×¡×˜×˜×•×¡: {result.get('approval_status', 'pending')}\n\n"
+            "×”×§×•×¨×¡ ×™×•×¤×™×¢ ×‘×§×˜×œ×•×’ ×œ××—×¨ ××™×©×•×¨ ×ž× ×”×œ.",
             reply_markup=_back_home_kb(),
         )
 

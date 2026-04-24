@@ -1,5 +1,5 @@
 """
-Treasury — revenue tracking, buyback log, burn events.
+Treasury â€” revenue tracking, buyback log, burn events.
 
 Purpose: transparency about what the treasury does with revenue.
 Every sale that goes through the ecosystem leaves a trail:
@@ -7,19 +7,19 @@ Every sale that goes through the ecosystem leaves a trail:
   2. buyback_events: planned/executed SLH buybacks from market
   3. burn_events: tokens sent to dead address (AIC internally, SLH on-chain)
 
-No signer integration yet — SLH buybacks + burns logged here but
+No signer integration yet â€” SLH buybacks + burns logged here but
 executed manually by Osif via MetaMask. This gives us a public audit
 trail without needing hot wallets on Railway.
 
 Endpoints:
-  GET  /api/treasury/summary           — totals (revenue, bought back, burned)
-  GET  /api/treasury/buybacks          — chronological buyback log
-  GET  /api/treasury/burns             — chronological burn log
-  POST /api/treasury/revenue/record   — internal; called by payments_auto on each sale
-  POST /api/treasury/buyback/log      — admin; log a buyback after MetaMask TX
-  POST /api/treasury/burn/log          — admin; log a burn after MetaMask TX
-  GET  /api/treasury/burn-rate         — how much would be auto-burned from unburned AIC
-  POST /api/treasury/aic/burn          — admin; execute AIC burn (2% of marketplace in AIC)
+  GET  /api/treasury/summary           â€” totals (revenue, bought back, burned)
+  GET  /api/treasury/buybacks          â€” chronological buyback log
+  GET  /api/treasury/burns             â€” chronological burn log
+  POST /api/treasury/revenue/record   â€” internal; called by payments_auto on each sale
+  POST /api/treasury/buyback/log      â€” admin; log a buyback after MetaMask TX
+  POST /api/treasury/burn/log          â€” admin; log a burn after MetaMask TX
+  GET  /api/treasury/burn-rate         â€” how much would be auto-burned from unburned AIC
+  POST /api/treasury/aic/burn          â€” admin; execute AIC burn (2% of marketplace in AIC)
 """
 from __future__ import annotations
 
@@ -35,9 +35,9 @@ router = APIRouter(prefix="/api/treasury", tags=["Treasury"])
 
 _pool = None
 
-# Burn policy — what percentage of AIC-denominated marketplace sales get burned
+# Burn policy â€” what percentage of AIC-denominated marketplace sales get burned
 BURN_RATE_AIC = float(os.getenv("TREASURY_BURN_RATE_AIC", "0.02"))  # 2% default
-# Buyback policy — what % of fiat revenue the treasury commits to SLH buyback
+# Buyback policy â€” what % of fiat revenue the treasury commits to SLH buyback
 BUYBACK_RATE_FIAT = float(os.getenv("TREASURY_BUYBACK_RATE", "0.10"))  # 10% default
 
 DEAD_ADDRESS = "0x000000000000000000000000000000000000dEaD"

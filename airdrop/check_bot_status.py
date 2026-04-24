@@ -1,4 +1,4 @@
-﻿import requests
+import requests
 
 try:
     # בדוק אם הבוט רץ

@@ -6,10 +6,10 @@ When a user buys SLH on PancakeSwap with a known wallet, auto-credits
 their account + grants any corresponding premium.
 
 Public endpoints:
-  POST /api/pancakeswap/link-wallet   — user links their BSC wallet to user_id
-  GET  /api/pancakeswap/recent-swaps  — last N swaps on the SLH/WBNB pair
-  POST /api/pancakeswap/scan           — force-scan recent blocks (admin-triggered)
-  GET  /api/pancakeswap/user/{user_id}/swaps — swaps attributed to this user
+  POST /api/pancakeswap/link-wallet   â€” user links their BSC wallet to user_id
+  GET  /api/pancakeswap/recent-swaps  â€” last N swaps on the SLH/WBNB pair
+  POST /api/pancakeswap/scan           â€” force-scan recent blocks (admin-triggered)
+  GET  /api/pancakeswap/user/{user_id}/swaps â€” swaps attributed to this user
 
 Reads on-chain logs via Etherscan V2 API (chainid=56). No keys required for
 basic queries (rate-limited); uses BSCSCAN_API_KEY if present.

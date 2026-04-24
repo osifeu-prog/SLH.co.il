@@ -1,6 +1,6 @@
-"""Campaign admin — lead visibility + status tracking.
+"""Campaign admin â€” lead visibility + status tracking.
 
-Osif was blind to who registered via /api/campaign/register — 10 real leads
+Osif was blind to who registered via /api/campaign/register â€” 10 real leads
 sitting in DB with no way to see them. This router exposes:
   GET  /api/admin/campaign/list?campaign_id=&status=&limit=&offset=
   GET  /api/admin/campaign/stats                (all-campaign summary)

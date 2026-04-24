@@ -1,15 +1,15 @@
 """
-SLH Community Plus — Layer 1 chat upgrade
+SLH Community Plus â€” Layer 1 chat upgrade
 ==========================================
 Reactions (6 emoji types), threaded replies, last-seen presence.
 
 Endpoints:
-  POST /api/community/posts/{post_id}/react        — toggle/change emoji reaction
-  GET  /api/community/posts/{post_id}/reactions    — counts by type + my reaction
-  POST /api/community/comments/{comment_id}/reply  — reply to a comment (1 level nest)
-  GET  /api/community/posts/{post_id}/threaded     — post + nested comments tree
-  POST /api/presence/heartbeat                     — touch user last_seen
-  GET  /api/presence/{user_id}                     — user last_seen + online status
+  POST /api/community/posts/{post_id}/react        â€” toggle/change emoji reaction
+  GET  /api/community/posts/{post_id}/reactions    â€” counts by type + my reaction
+  POST /api/community/comments/{comment_id}/reply  â€” reply to a comment (1 level nest)
+  GET  /api/community/posts/{post_id}/threaded     â€” post + nested comments tree
+  POST /api/presence/heartbeat                     â€” touch user last_seen
+  GET  /api/presence/{user_id}                     â€” user last_seen + online status
 
 Added 2026-04-17 (layer 1 chat upgrade).
 """
@@ -90,7 +90,7 @@ async def post_react(post_id: int, req: ReactReq):
             post_id, uname,
         )
         if existing and existing["reaction_type"] == rtype:
-            # Same reaction — toggle off (remove)
+            # Same reaction â€” toggle off (remove)
             await conn.execute("DELETE FROM post_reactions WHERE id=$1", existing["id"])
             action = "removed"
         elif existing:
@@ -284,7 +284,7 @@ async def presence_get(username: str):
 
 @router.get("/api/presence/bulk")
 async def presence_bulk(usernames: str):
-    """Comma-separated list of usernames → online status for each."""
+    """Comma-separated list of usernames â†’ online status for each."""
     if _pool is None:
         raise HTTPException(500, "db pool not initialized")
     names = [n.strip() for n in usernames.split(",") if n.strip()][:100]

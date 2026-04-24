@@ -418,12 +418,12 @@ async def whatsapp_send_invite(
 
     # Default messages
     messages = {
-        "website": "ברוכים הבאים ל-SLH Spark! 🚀 בקרו בחזקות: https://slh-nft.com",
-        "bot": "בואו להצטרף לבוט SLH שלנו ולהתחיל להשתמש בתוקנים: https://t.me/SLH_AIR_bot",
-        "course": "קורס חדש זמין עכשיו! השתמשו בקוד SLH2026 להנחה:",
+        "website": "×‘×¨×•×›×™× ×”×‘××™× ×œ-SLH Spark! ðŸš€ ×‘×§×¨×• ×‘×—×–×§×•×ª: https://slh-nft.com",
+        "bot": "×‘×•××• ×œ×”×¦×˜×¨×£ ×œ×‘×•×˜ SLH ×©×œ× ×• ×•×œ×”×ª×—×™×œ ×œ×”×©×ª×ž×© ×‘×ª×•×§× ×™×: https://t.me/SLH_AIR_bot",
+        "course": "×§×•×¨×¡ ×—×“×© ×–×ž×™×Ÿ ×¢×›×©×™×•! ×”×©×ª×ž×©×• ×‘×§×•×“ SLH2026 ×œ×”× ×—×”:",
     }
 
-    message_text = req.message or messages.get(req.invite_type, "ברוכים הבאים ל-SLH Spark!")
+    message_text = req.message or messages.get(req.invite_type, "×‘×¨×•×›×™× ×”×‘××™× ×œ-SLH Spark!")
 
     twilio_message_id = None
     delivery_status = "pending"

@@ -17,7 +17,7 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# אין לנו כאן metadata כי אנחנו עושים migration ידני (לא autogenerate)
+# ××™×Ÿ ×œ× ×• ×›××Ÿ metadata ×›×™ ×× ×—× ×• ×¢×•×©×™× migration ×™×“× ×™ (×œ× autogenerate)
 target_metadata = None
 
 def get_url() -> str:

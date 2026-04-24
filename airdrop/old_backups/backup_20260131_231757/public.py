@@ -9,14 +9,14 @@ def ping():
 @router.post('/airdrop')
 def send_airdrop(user_id: str, amount: int):
     '''
-    פונקציה ניסיונית לשליחת איירדרופ
-    - user_id: מזהה המשתמש
-    - amount: כמות tokens לשליחה
+    ×¤×•× ×§×¦×™×” × ×™×¡×™×•× ×™×ª ×œ×©×œ×™×—×ª ××™×™×¨×“×¨×•×¤
+    - user_id: ×ž×–×”×” ×”×ž×©×ª×ž×©
+    - amount: ×›×ž×•×ª tokens ×œ×©×œ×™×—×”
     '''
     if amount <= 0:
         raise HTTPException(status_code=400, detail='Amount must be positive')
 
-    # לוג בסיסי לניסויי איירדרופ
+    # ×œ×•×’ ×‘×¡×™×¡×™ ×œ× ×™×¡×•×™×™ ××™×™×¨×“×¨×•×¤
     print(f"[AIRDROP] Sending {amount} tokens to {user_id}")
 
     return {'user_id': user_id, 'amount': amount, 'status': 'success'}

@@ -41,7 +41,7 @@ class WalletSendRequest(BaseModel):
     request_id: str
 
 
-# ========= FAKE STORAGE (נחליף אחר כך DB אמיתי) =========
+# ========= FAKE STORAGE (× ×—×œ×™×£ ××—×¨ ×›×š DB ××ž×™×ª×™) =========
 
 IDEMPOTENCY_STORE = {}
 BALANCE_STORE = {

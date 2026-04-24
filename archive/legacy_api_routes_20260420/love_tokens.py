@@ -1,13 +1,13 @@
 """
-Love Tokens — virtual affection economy.
+Love Tokens â€” virtual affection economy.
 
 STATUS: STUB (schema + endpoints live, but not wired to any UI yet).
-Disabled on the frontend — users see nothing. DB tables created lazily.
+Disabled on the frontend â€” users see nothing. DB tables created lazily.
 
 Three token types:
-  HUG (🤗)     — 5 AIC to send — gentle, friend-level
-  KISS (💋)    — 20 AIC        — intimate, match-level
-  HANDSHAKE (🤝) — 2 AIC       — formal, greeting-level
+  HUG (ðŸ¤—)     â€” 5 AIC to send â€” gentle, friend-level
+  KISS (ðŸ’‹)    â€” 20 AIC        â€” intimate, match-level
+  HANDSHAKE (ðŸ¤) â€” 2 AIC       â€” formal, greeting-level
 
 Why no UI yet: waiting on Osif's call on:
   - final pricing (5/20/2 AIC placeholder)
@@ -20,14 +20,14 @@ Flip on by:
   2. Wiring a UI button on /dating.html (send button) + /profile.html (view)
 
 Endpoints:
-  GET  /api/love/balance/{user_id}    — all 3 token balances (no auth — public profile view)
-  GET  /api/love/received/{user_id}   — list of last N received tokens + from whom (last 100)
-  POST /api/love/send                  — send token (requires AIC, respects daily cap)
-  GET  /api/love/config                — current pricing + daily caps (read-only)
+  GET  /api/love/balance/{user_id}    â€” all 3 token balances (no auth â€” public profile view)
+  GET  /api/love/received/{user_id}   â€” list of last N received tokens + from whom (last 100)
+  POST /api/love/send                  â€” send token (requires AIC, respects daily cap)
+  GET  /api/love/config                â€” current pricing + daily caps (read-only)
 
 Tables (auto-created on first call):
-  love_token_balances  — per-user per-type counter
-  love_token_transfers — append-only ledger
+  love_token_balances  â€” per-user per-type counter
+  love_token_transfers â€” append-only ledger
 
 All costs/prices are configurable via env vars (see LOVE_PRICES below).
 """
@@ -47,7 +47,7 @@ _pool = None
 
 ENABLED = os.getenv("LOVE_TOKENS_ENABLED", "0") == "1"
 
-# Editable pricing + caps — no UI yet. Change via Railway env vars when ready.
+# Editable pricing + caps â€” no UI yet. Change via Railway env vars when ready.
 LOVE_PRICES = {
     "hug":       int(os.getenv("LOVE_PRICE_HUG", "5")),        # AIC cost
     "kiss":      int(os.getenv("LOVE_PRICE_KISS", "20")),
@@ -102,8 +102,8 @@ async def love_config():
         "prices_in_aic": LOVE_PRICES,
         "daily_cap_per_recipient": DAILY_CAP_PER_RECIPIENT,
         "token_types": ["hug", "kiss", "handshake"],
-        "icons": {"hug": "🤗", "kiss": "💋", "handshake": "🤝"},
-        "note": "Stub — UI not yet wired. Enable via env LOVE_TOKENS_ENABLED=1 after UI ships.",
+        "icons": {"hug": "ðŸ¤—", "kiss": "ðŸ’‹", "handshake": "ðŸ¤"},
+        "note": "Stub â€” UI not yet wired. Enable via env LOVE_TOKENS_ENABLED=1 after UI ships.",
     }
 
 
@@ -169,14 +169,14 @@ async def love_send(req: SendLoveReq):
         if today_count >= DAILY_CAP_PER_RECIPIENT:
             raise HTTPException(429, f"daily cap reached: {DAILY_CAP_PER_RECIPIENT} tokens/day/recipient")
 
-        # Charge AIC — uses aic_tokens module if available, else skip (stub mode)
+        # Charge AIC â€” uses aic_tokens module if available, else skip (stub mode)
         try:
             await conn.execute(
                 "UPDATE aic_balances SET balance = balance - $1 WHERE user_id = $2 AND balance >= $1",
                 cost, req.sender_id,
             )
         except Exception:
-            pass  # AIC not wired yet — running free until enabled
+            pass  # AIC not wired yet â€” running free until enabled
 
         xfer_id = await conn.fetchval(
             """
@@ -209,5 +209,5 @@ async def love_send(req: SendLoveReq):
         "recipient_id": req.recipient_id,
         "token_type": req.token_type,
         "aic_cost": cost,
-        "message": "נשלח! הצד השני יראה את זה בקרוב.",
+        "message": "× ×©×œ×—! ×”×¦×“ ×”×©× ×™ ×™×¨××” ××ª ×–×” ×‘×§×¨×•×‘.",
     }

@@ -3,7 +3,7 @@ from pydantic import BaseModel
 import logging
 import os
 
-# Logging מתקדם
+# Logging ×ž×ª×§×“×
 log_folder = os.path.join(os.getcwd(), 'logs')
 os.makedirs(log_folder, exist_ok=True)
 logging.basicConfig(
@@ -31,10 +31,10 @@ def send_airdrop(request: AirdropRequest):
     print(message)
     logging.info(message)
 
-    # Mock שליחת token
+    # Mock ×©×œ×™×—×ª token
     return {
         'user_id': request.user_id,
         'amount': request.amount,
         'status': 'success',
-        'note': 'mock send - ניסוי'
+        'note': 'mock send - × ×™×¡×•×™'
     }

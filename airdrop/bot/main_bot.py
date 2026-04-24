@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
 TON Airdrop Bot - Connected to Management Panel
 גרסה מחוברת לפאנל הניהול החדש

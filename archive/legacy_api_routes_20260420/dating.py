@@ -1,5 +1,5 @@
 """
-SLH Dating — Quality-gated matchmaking
+SLH Dating â€” Quality-gated matchmaking
 ========================================
 For @G4meb0t_bot_bot + website/dating.html.
 
@@ -7,13 +7,13 @@ Built around Osif's real goals: verified-experts, deep values,
 not Tinder-style. Age 18+ required. Minors blocked by age field.
 
 Endpoints:
-  POST /api/dating/profile            — create or update profile
-  GET  /api/dating/profile/{user_id}  — get my profile (private)
-  GET  /api/dating/profile/{user_id}/public — public view of another user
-  POST /api/dating/match/candidates   — return 10 potential matches
-  POST /api/dating/match/action       — like/pass/superlike
-  GET  /api/dating/matches/{user_id}  — mutual matches (can chat)
-  GET  /api/dating/stats              — global (not personal)
+  POST /api/dating/profile            â€” create or update profile
+  GET  /api/dating/profile/{user_id}  â€” get my profile (private)
+  GET  /api/dating/profile/{user_id}/public â€” public view of another user
+  POST /api/dating/match/candidates   â€” return 10 potential matches
+  POST /api/dating/match/action       â€” like/pass/superlike
+  GET  /api/dating/matches/{user_id}  â€” mutual matches (can chat)
+  GET  /api/dating/stats              â€” global (not personal)
 
 Privacy:
 - Phone/email NEVER exposed in public profile
@@ -156,7 +156,7 @@ async def create_or_update_profile(req: ProfileReq):
             req.city, req.country_code, req.bio, interests, req.looking_for,
             req.has_children, req.wants_children, req.profession, req.languages, req.photo_url,
         )
-    return {"ok": True, "user_id": req.user_id, "message": "פרופיל נשמר. נסה למצוא התאמות."}
+    return {"ok": True, "user_id": req.user_id, "message": "×¤×¨×•×¤×™×œ × ×©×ž×¨. × ×¡×” ×œ×ž×¦×•× ×”×ª××ž×•×ª."}
 
 
 @router.get("/profile/{user_id}")
@@ -173,7 +173,7 @@ async def get_my_profile(user_id: int):
 
 @router.get("/profile/{user_id}/public")
 async def get_public_profile(user_id: int):
-    """Public view — no phone/email/contact details."""
+    """Public view â€” no phone/email/contact details."""
     if _pool is None:
         raise HTTPException(500, "db pool not initialized")
     async with _pool.acquire() as conn:
@@ -275,7 +275,7 @@ async def match_action(req: ActionReq):
             req.from_user_id, req.to_user_id, req.action,
         )
 
-        # Check for mutual like → match
+        # Check for mutual like â†’ match
         is_match = False
         if req.action in ("like", "superlike"):
             reciprocal = await conn.fetchval(
@@ -301,13 +301,13 @@ async def match_action(req: ActionReq):
         "ok": True,
         "action": req.action,
         "is_match": is_match,
-        "message": "🎉 התאמה הדדית! אתם יכולים לדבר עכשיו." if is_match else "הפעולה נשמרה.",
+        "message": "ðŸŽ‰ ×”×ª××ž×” ×”×“×“×™×ª! ××ª× ×™×›×•×œ×™× ×œ×“×‘×¨ ×¢×›×©×™×•." if is_match else "×”×¤×¢×•×œ×” × ×©×ž×¨×”.",
     }
 
 
 @router.get("/matches/{user_id}")
 async def my_matches(user_id: int):
-    """All mutual matches — people who liked you back."""
+    """All mutual matches â€” people who liked you back."""
     if _pool is None:
         raise HTTPException(500, "db pool not initialized")
     async with _pool.acquire() as conn:

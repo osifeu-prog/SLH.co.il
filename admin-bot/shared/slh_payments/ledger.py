@@ -13,7 +13,7 @@ async def get_pool():
     global _pool
     if _pool is None:
         # Phase 0B (2026-04-21): unified fail-fast pool via shared_db_core.
-        # max_size standardized 5→4.
+        # max_size standardized 5â†’4.
         try:
             from shared_db_core import init_db_pool as _shared_init_db_pool
             _pool = await _shared_init_db_pool(
@@ -64,9 +64,9 @@ async def transfer(from_uid: int, to_uid: int, token: str, amount: float,
     Returns: (success, message, new_from_balance, new_to_balance)
     """
     if amount <= 0:
-        return False, "סכום חייב להיות חיובי", 0, 0
+        return False, "×¡×›×•× ×—×™×™×‘ ×œ×”×™×•×ª ×—×™×•×‘×™", 0, 0
     if from_uid == to_uid:
-        return False, "לא ניתן להעביר לעצמך", 0, 0
+        return False, "×œ× × ×™×ª×Ÿ ×œ×”×¢×‘×™×¨ ×œ×¢×¦×ž×š", 0, 0
 
     pool = await get_pool()
     async with pool.acquire() as conn:
@@ -78,7 +78,7 @@ async def transfer(from_uid: int, to_uid: int, token: str, amount: float,
             )
             if not row or float(row["balance"]) < amount + fee:
                 current = float(row["balance"]) if row else 0
-                return False, f"יתרה לא מספקת ({current:.4f} {token})", current, 0
+                return False, f"×™×ª×¨×” ×œ× ×ž×¡×¤×§×ª ({current:.4f} {token})", current, 0
 
             # Ensure receiver has a balance row
             await conn.execute(
@@ -113,7 +113,7 @@ async def transfer(from_uid: int, to_uid: int, token: str, amount: float,
                 "SELECT balance FROM token_balances WHERE user_id=$1 AND token=$2", to_uid, token
             )
 
-    return True, "העברה בוצעה!", float(from_bal), float(to_bal)
+    return True, "×”×¢×‘×¨×” ×‘×•×¦×¢×”!", float(from_bal), float(to_bal)
 
 
 async def mint(user_id: int, token: str, amount: float, memo: str = "mint"):

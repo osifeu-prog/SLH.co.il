@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
 TON Airdrop Bot - Stable Version
 מונע conflicts ומנהל סטטיסטיקות

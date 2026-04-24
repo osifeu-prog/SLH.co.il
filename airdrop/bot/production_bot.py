@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
 TON Airdrop Bot - Production Version
 מחובר ל-API ב-Railway

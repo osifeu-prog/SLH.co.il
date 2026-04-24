@@ -1,4 +1,4 @@
-﻿import os
+import os
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse, HTMLResponse
 from datetime import datetime
