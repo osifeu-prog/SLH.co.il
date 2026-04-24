@@ -985,12 +985,29 @@ async def registration_submit_proof(req: RegistrationProofRequest, authorization
 
 
 @app.post("/api/registration/approve")
-async def registration_approve(req: RegistrationApproveRequest):
-    """Admin approves a registration payment. Credits 0.1 SLH + triggers referral commissions."""
-    # Admin verification: check admin_key or accept from known admin
-    admin_secret = os.getenv("ADMIN_API_KEY", "slh_admin_2026")
-    if req.admin_key != admin_secret:
-        raise HTTPException(403, "Invalid admin key")
+async def registration_approve(
+    req: RegistrationApproveRequest,
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key"),
+):
+    """Admin approves a registration payment. Credits 0.1 SLH + triggers referral commissions.
+
+    Auth: X-Admin-Key header (or Authorization: Bearer <jwt>). Body field
+    `admin_key` still accepted as a deprecated fallback but logs a warning.
+    """
+    # Security: prefer header-based auth (goes through _require_admin which
+    # checks ADMIN_API_KEYS env + rotated DB keys + JWT).
+    try:
+        _require_admin(authorization, x_admin_key)
+    except HTTPException:
+        # Fallback: body field admin_key (deprecated — logs warning + only accepts env-matched value, not defaults)
+        env_keys = {k for k in os.getenv("ADMIN_API_KEYS", "").split(",") if k.strip()}
+        legacy_key = os.getenv("ADMIN_API_KEY", "")
+        if legacy_key:
+            env_keys.add(legacy_key)
+        if not (req.admin_key and req.admin_key in env_keys and req.admin_key != "slh_admin_2026"):
+            raise HTTPException(403, "Admin authentication required (use X-Admin-Key header)")
+        print(f"[SECURITY][DEPRECATED] /api/registration/approve called with body admin_key — migrate to X-Admin-Key header")
 
     async with pool.acquire() as conn:
         # Verify pending registration exists
@@ -1059,15 +1076,20 @@ class UnlockRequest(BaseModel):
 
 
 @app.post("/api/registration/unlock")
-async def registration_unlock(req: UnlockRequest):
+async def registration_unlock(
+    req: UnlockRequest,
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key"),
+):
     """Unlock a user's full access via one of 3 methods:
 
-    1. payment_proof â€” user submits TX hash, goes to pending_review
-    2. coupon â€” user enters beta code, instantly unlocked if code valid + available
-    3. admin â€” admin key bypasses everything, instant unlock
+    1. payment_proof — user submits TX hash, goes to pending_review
+    2. coupon — user enters beta code, instantly unlocked if code valid + available
+    3. admin — admin key bypasses everything, instant unlock
+         (auth via X-Admin-Key header preferred; body field deprecated)
 
     This is the NEW flow that doesn't require JWT, so it works with the
-    seamless bot â†’ /start â†’ dashboard?uid= onboarding.
+    seamless bot → /start → dashboard?uid= onboarding.
     """
     if not req.user_id:
         raise HTTPException(400, "user_id required")
@@ -1095,11 +1117,21 @@ async def registration_unlock(req: UnlockRequest):
                 "message": "User is already registered"
             }
 
-        # â”€â”€â”€ Method 1: Admin override â”€â”€â”€
+        # ─── Method 1: Admin override ───
         if req.method == "admin":
-            admin_secret = os.getenv("ADMIN_API_KEY", "slh_admin_2026")
-            if req.admin_key != admin_secret:
-                raise HTTPException(403, "Invalid admin key")
+            # Security: prefer header auth. Body field admin_key still accepted
+            # as deprecated fallback (logs warning). Default "slh_admin_2026"
+            # is NEVER a valid key — admins must rotate.
+            try:
+                _require_admin(authorization, x_admin_key)
+            except HTTPException:
+                env_keys = {k for k in os.getenv("ADMIN_API_KEYS", "").split(",") if k.strip()}
+                legacy_key = os.getenv("ADMIN_API_KEY", "")
+                if legacy_key and legacy_key != "slh_admin_2026":
+                    env_keys.add(legacy_key)
+                if not (req.admin_key and req.admin_key in env_keys and req.admin_key != "slh_admin_2026"):
+                    raise HTTPException(403, "Admin authentication required (use X-Admin-Key header)")
+                print(f"[SECURITY][DEPRECATED] /api/registration/unlock method=admin called with body admin_key — migrate to X-Admin-Key header")
             async with conn.transaction():
                 await conn.execute("""
                     UPDATE web_users SET is_registered = TRUE, registered_at = CURRENT_TIMESTAMP
@@ -2372,11 +2404,29 @@ async def record_distribution(user_id: int, referred_user_id: int, verify: bool 
 
 
 @app.post("/api/beta/create-coupon")
-async def beta_create_coupon(admin_key: str, code: str, max_uses: int = 49, slh_bonus: float = 0.1):
-    """Admin: create a new beta coupon code."""
-    admin_secret = os.getenv("ADMIN_API_KEY", "slh_admin_2026")
-    if admin_key != admin_secret:
-        raise HTTPException(403, "Invalid admin key")
+async def beta_create_coupon(
+    code: str,
+    max_uses: int = 49,
+    slh_bonus: float = 0.1,
+    admin_key: str = "",
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key"),
+):
+    """Admin: create a new beta coupon code.
+
+    Auth: X-Admin-Key header (or Authorization: Bearer <jwt>). The query
+    parameter `admin_key` is still accepted as a deprecated fallback.
+    """
+    try:
+        _require_admin(authorization, x_admin_key)
+    except HTTPException:
+        env_keys = {k for k in os.getenv("ADMIN_API_KEYS", "").split(",") if k.strip()}
+        legacy_key = os.getenv("ADMIN_API_KEY", "")
+        if legacy_key and legacy_key != "slh_admin_2026":
+            env_keys.add(legacy_key)
+        if not (admin_key and admin_key in env_keys and admin_key != "slh_admin_2026"):
+            raise HTTPException(403, "Admin authentication required (use X-Admin-Key header)")
+        print(f"[SECURITY][DEPRECATED] /api/beta/create-coupon called with query admin_key — migrate to X-Admin-Key header")
     code = code.strip().upper()
     if not code or len(code) < 4:
         raise HTTPException(400, "Code must be at least 4 characters")
