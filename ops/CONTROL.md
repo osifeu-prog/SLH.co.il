@@ -39,7 +39,7 @@
 
 | When | Who | What |
 |---|---|---|
-| 2026-04-25 | Funnel+Control session (me) | Registered in alignment doc (late). Deleted 3 unused pages. Built this CONTROL.md. |
+| 2026-04-25 | Funnel+Control session (me) | Registered in alignment doc (late). Deleted 3 unused pages. Built CONTROL.md + CUSTOMER_PROSPECTUS_DEMO.md. Closed session. |
 | 2026-04-25 | External agent | "mass update" `a799300` — 30k line commit, ugly but not broken |
 | 2026-04-24 | Voice/Swarm session | Voice POC page + Swarm POC page + network.html expanded to 61 nodes |
 | 2026-04-24 | Telegram-first session | SMS provider + Mini Apps + telegram_gateway wired |
@@ -71,8 +71,10 @@ Full session log: `ops/SYSTEM_ALIGNMENT_20260424.md` § Active Agents
 |---|---|
 | Who's working on what | `ops/SYSTEM_ALIGNMENT_20260424.md` |
 | "How do I run the system?" | `ops/OPS_RUNBOOK.md` + `slh-start.ps1` |
+| **Customer-facing prospectus (demo)** | `ops/CUSTOMER_PROSPECTUS_DEMO.md` ← fill [DEMO] markers + PDF |
 | Customer replied — what next? | `ops/CUSTOMER_ONE_PLAYBOOK.md` |
 | Customer didn't reply, it's been 24h | `ops/FOLLOWUP_TEMPLATES.md` |
+| Test the payment flow end-to-end | `ops/TEST_PAYMENT_GUIDE.md` + `pay-test.html` |
 | All API endpoints | `ops/API_REFERENCE.md` |
 | Something broke | `ops/OPS_RUNBOOK.md` → `ops/INCIDENTS.md` |
 | What I am thinking long-term | `ops/ROADMAP_Q2_2026.md` (planned) |

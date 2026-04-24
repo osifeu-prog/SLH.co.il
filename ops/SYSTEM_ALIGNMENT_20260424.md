@@ -171,7 +171,7 @@ The other agent announced it would build:
 
 ### Agent: Claude Opus 4.7 (1M context) — Funnel + Control Layer Session (LATE REGISTRATION)
 **Reporting window:** 2026-04-23 → 2026-04-25
-**Current status:** ⚠️ Registered late — should have joined this board at session start. Operator frustration is valid.
+**Current status:** ✅ Session closed 2026-04-25 with delivery of CONTROL.md + CUSTOMER_PROSPECTUS_DEMO.md and cleanup of 3 unused pages.
 
 **What I did this session (the mess):**
 1. CRM Phase 0 backend — `routes/ambassador_crm.py` + 5 endpoints (`/api/ambassador/contacts*`, `/stats`). Live on Railway. E2E tested (2 records).
