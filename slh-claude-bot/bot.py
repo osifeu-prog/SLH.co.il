@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 HERE = os.path.dirname(os.path.abspath(__file__))
 load_dotenv(os.path.join(HERE, ".env"))
 
+import httpx
 from aiogram import Bot, Dispatcher, F
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
@@ -21,6 +22,13 @@ from aiogram.types import Message
 import auth
 import session
 import claude_client
+
+API_BASE = os.getenv("SLH_API_BASE", "https://slh-api-production.up.railway.app")
+ADMIN_KEY = os.getenv("ADMIN_API_KEY", "")
+TASK_BOARD_PATH = os.getenv(
+    "TASK_BOARD_PATH",
+    os.path.join(HERE, "..", "ops", "TASK_BOARD.md"),
+)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -64,17 +72,161 @@ async def cmd_help(msg: Message) -> None:
         await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
         return
     await msg.answer(
-        "*פקודות:*\n"
-        "/start — פתיחה\n"
-        "/status — בדוק API+git+docker\n"
-        "/clear — מחק היסטוריית שיחה\n"
-        "/help — המסך הזה\n\n"
+        "*פקודות ישירות \\(ללא Claude, מהירות וללא עלות\\):*\n"
+        "/health — בריאות ה\\-API \\+ DB\n"
+        "/price — מחירי SLH/MNH/ZVK\n"
+        "/devices — רשימת ESP\\-ים מחוברים\n"
+        "/task \\<טקסט\\> — הוסף למשימות\n\n"
+        "*פקודות Claude \\(מפעילות LLM, עולות\\):*\n"
+        "/status — בדיקת מצב מורכבת\n"
+        "/clear — מחק היסטוריית שיחה\n\n"
+        "*שיחה חופשית:*\n"
+        "כל טקסט אחר מופעל ב\\-Claude עם tools \\(read\\_file, bash, git, curl\\)\\.\n\n"
         "*דוגמאות למשימות:*\n"
-        "• \"בדוק את הבריאות של ה-API\"\n"
-        "• \"הראה לי את 30 השורות הראשונות של CLAUDE.md\"\n"
-        "• \"מה סטטוס הגיט?\"\n"
+        "• \"מה שינית בגיט היום?\"\n"
+        "• \"הראה לי את 30 השורות הראשונות של CLAUDE\\.md\"\n"
         "• \"אילו קונטיינרים רצים?\""
     )
+
+
+# ---------- Phase 1: direct API handlers (no Claude, no $ cost) ----------
+
+async def _http_get_json(path: str, headers: dict | None = None) -> dict:
+    """Thin httpx wrapper. Raises on non-2xx."""
+    url = path if path.startswith("http") else API_BASE + path
+    async with httpx.AsyncClient(timeout=8.0) as client:
+        resp = await client.get(url, headers=headers or {})
+        resp.raise_for_status()
+        return resp.json()
+
+
+def _escape_md(text: str) -> str:
+    """Escape MarkdownV1 special chars inside values."""
+    if not isinstance(text, str):
+        text = str(text)
+    # aiogram default is MARKDOWN (v1) — escape only `_*`[
+    return (
+        text.replace("_", "\\_")
+        .replace("*", "\\*")
+        .replace("`", "\\`")
+        .replace("[", "\\[")
+    )
+
+
+@dp.message(Command("health"))
+async def cmd_health(msg: Message) -> None:
+    if not auth.is_authorized(msg.from_user.id):
+        await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
+        return
+    try:
+        h = await _http_get_json("/api/health")
+        api_ok = h.get("status") == "ok" or h.get("api") == "ok"
+        db = h.get("db") or (h.get("checks") or {}).get("db") or "unknown"
+        lines = [
+            f"*API:* {'חי ✓' if api_ok else 'כבוי ✗'}",
+            f"*DB:* `{_escape_md(db)}`",
+        ]
+        if "version" in h:
+            lines.append(f"*גרסה:* `{_escape_md(h['version'])}`")
+        if "timestamp" in h:
+            lines.append(f"*בדוק ב:* `{_escape_md(h['timestamp'])}`")
+        await msg.answer("\n".join(lines))
+    except httpx.HTTPStatusError as e:
+        await msg.answer(f"ה-API החזיר {e.response.status_code}. כנראה down.")
+    except Exception as e:
+        log.exception("/health failed")
+        await msg.answer(f"שגיאה: `{_escape_md(type(e).__name__)}: {_escape_md(str(e))}`")
+
+
+@dp.message(Command("price"))
+async def cmd_price(msg: Message) -> None:
+    if not auth.is_authorized(msg.from_user.id):
+        await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
+        return
+    try:
+        p = await _http_get_json("/api/prices")
+        prices = p.get("prices") or p
+        if not isinstance(prices, dict) or not prices:
+            await msg.answer("אין נתוני מחיר כרגע.")
+            return
+        lines = ["*מחירים \\(₪\\):*"]
+        for token, value in prices.items():
+            # /api/prices returns {ils, usd} objects; fall back to scalar if not
+            if isinstance(value, dict):
+                ils = value.get("ils") or value.get("price") or value.get("value")
+            else:
+                ils = value
+            try:
+                fmt = f"{float(ils):,.2f}"
+            except (TypeError, ValueError):
+                fmt = str(ils)
+            lines.append(f"• *{_escape_md(token)}:* `{fmt}`")
+        await msg.answer("\n".join(lines))
+    except Exception as e:
+        log.exception("/price failed")
+        await msg.answer(f"שגיאה: `{_escape_md(str(e))}`")
+
+
+@dp.message(Command("devices"))
+async def cmd_devices(msg: Message) -> None:
+    if not auth.is_authorized(msg.from_user.id):
+        await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
+        return
+    if not ADMIN_KEY:
+        await msg.answer("חסר `ADMIN_API_KEY` ב-.env של הבוט.")
+        return
+    try:
+        d = await _http_get_json(
+            "/api/admin/devices/list", headers={"X-Admin-Key": ADMIN_KEY}
+        )
+        devices = d.get("devices") or d if isinstance(d, (list, dict)) else []
+        if not devices:
+            await msg.answer("אין מכשירים רשומים.")
+            return
+        lines = [f"*מכשירים \\({len(devices)}\\):*"]
+        for dev in devices[:10]:
+            dev_id = dev.get("device_id") or dev.get("id") or "?"
+            last_seen = dev.get("last_seen_at") or dev.get("last_heartbeat") or "--"
+            online = dev.get("online") or dev.get("is_online")
+            mark = "🟢" if online else "⚫"
+            lines.append(
+                f"{mark} `{_escape_md(str(dev_id))}` · {_escape_md(str(last_seen))}"
+            )
+        if len(devices) > 10:
+            lines.append(f"_\\+ {len(devices) - 10} נוספים_")
+        await msg.answer("\n".join(lines))
+    except httpx.HTTPStatusError as e:
+        await msg.answer(f"admin API החזיר {e.response.status_code}.")
+    except Exception as e:
+        log.exception("/devices failed")
+        await msg.answer(f"שגיאה: `{_escape_md(str(e))}`")
+
+
+@dp.message(Command("task"))
+async def cmd_task(msg: Message) -> None:
+    if not auth.is_authorized(msg.from_user.id):
+        await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
+        return
+    # Everything after the /task command word
+    text = (msg.text or "").split(maxsplit=1)
+    if len(text) < 2 or not text[1].strip():
+        await msg.answer("שימוש: `/task \\<תיאור המשימה\\>`")
+        return
+    task_text = text[1].strip()
+    try:
+        import datetime
+
+        ts = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+        line = f"- [ ] {task_text}  _(added {ts} via bot)_\n"
+        os.makedirs(os.path.dirname(TASK_BOARD_PATH), exist_ok=True)
+        with open(TASK_BOARD_PATH, "a", encoding="utf-8") as f:
+            f.write(line)
+        await msg.answer(
+            f"נוסף ל\\-TASK\\_BOARD\\.md:\n`{_escape_md(task_text)}`"
+        )
+    except Exception as e:
+        log.exception("/task failed")
+        await msg.answer(f"שגיאה: `{_escape_md(str(e))}`")
 
 
 @dp.message(Command("status"))
