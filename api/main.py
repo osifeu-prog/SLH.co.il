@@ -20,6 +20,28 @@ import asyncio
 import asyncpg
 import aiohttp
 
+# Telegram-first Gateway (Phase 2 wire-in, 2026-04-23).
+# Mini App endpoints depend on verify_miniapp_request; bot handlers can use verify_bot_request.
+# Import is isolated in try/except so a missing module can't block API boot.
+try:
+    from api.telegram_gateway import (
+        TelegramUser,
+        verify_miniapp_request,
+        verify_bot_request,
+        require_admin,
+        GatewayError,
+    )
+    _GATEWAY_AVAILABLE = True
+except Exception as _gw_err:  # pragma: no cover
+    import logging as _log
+    _log.warning("telegram_gateway unavailable: %s", _gw_err)
+    _GATEWAY_AVAILABLE = False
+    TelegramUser = None  # type: ignore
+    verify_miniapp_request = None  # type: ignore
+    verify_bot_request = None  # type: ignore
+    require_admin = None  # type: ignore
+    GatewayError = None  # type: ignore
+
 from shared_db_core import init_db_pool as _shared_init_db_pool, db_health as _shared_db_health
 
 from routes.ai_chat import router as ai_chat_router, set_aic_pool as _ai_chat_set_aic_pool
@@ -281,6 +303,9 @@ async def startup():
         _db_init_failed = True
 
     if pool is not None:
+        # Expose the pool on app.state so the Telegram Gateway (and any future
+        # Depends() consumer) can resolve telegram_id -> SLH user_id from any route.
+        app.state.db_pool = pool
         for setter in (_payments_set_pool, _payments_monitor_set_pool, _community_plus_set_pool,
                        _aic_set_pool, _ps_set_pool, _ai_chat_set_aic_pool, _sudoku_set_pool,
                        _dating_set_pool, _broadcast_set_pool, _love_set_pool, _treasury_set_pool,
@@ -2984,6 +3009,55 @@ async def health():
             status_code=503,
         )
     return {"status": "ok", "db": "connected", "version": "1.1.0"}
+
+
+# === TELEGRAM MINI APP GATEWAY ===
+# Gated behind _GATEWAY_AVAILABLE so a missing telegram_gateway.py can't
+# break startup. The endpoint below proves the wiring end-to-end: a Mini App
+# opens with initData → gateway verifies HMAC → returns the resolved user.
+
+if _GATEWAY_AVAILABLE:
+    @app.get("/api/miniapp/me")
+    async def miniapp_me(user: "TelegramUser" = Depends(verify_miniapp_request)):
+        """Minimum Mini App endpoint: validates Telegram initData and returns identity.
+
+        Call from Mini App JS:
+            fetch('/api/miniapp/me', {
+              headers: { 'X-Telegram-Init-Data': Telegram.WebApp.initData }
+            })
+
+        Returns 401 with detail.code='empty_init_data' / 'bad_signature' /
+        'stale_init_data' / 'no_user' on failure. 200 on success.
+        """
+        return {
+            "telegram_id": user.telegram_id,
+            "slh_user_id": user.slh_user_id,
+            "is_admin": user.is_admin,
+            "username": user.username,
+            "first_name": user.first_name,
+            "source": user.source,
+        }
+
+    @app.get("/api/miniapp/health")
+    async def miniapp_health():
+        """Unauthenticated probe for dashboards — proves the gateway module loaded."""
+        import os as _os
+        return {
+            "gateway_loaded": True,
+            "admin_ids_count": len(
+                {x for x in (_os.getenv("ADMIN_TELEGRAM_IDS", "224223270") or "").split(",") if x.strip()}
+            ),
+            "primary_bot_token_set": bool(
+                _os.getenv("TELEGRAM_BOT_TOKEN") or _os.getenv("SLH_CLAUDE_BOT_TOKEN")
+            ),
+        }
+else:
+    @app.get("/api/miniapp/health")
+    async def miniapp_health_disabled():
+        return JSONResponse(
+            {"gateway_loaded": False, "reason": "api.telegram_gateway import failed"},
+            status_code=503,
+        )
 
 
 # === TOKEN TRANSFERS ===
@@ -10389,11 +10463,15 @@ async def device_register(req: DeviceRegisterReq, request: Request):
 
     delivery = "telegram" if tg_sent else ("sms" if sms_sent else "pending")
 
-    # Expose the code for the web pair page ONLY when nothing actually delivered.
-    # On Railway (prod) this is disabled unless DEV_EXPOSE_OTP=1 is set.
-    expose_dev_code = (not tg_sent) and (not sms_sent)
-    if os.getenv("RAILWAY_ENVIRONMENT") and not os.getenv("DEV_EXPOSE_OTP"):
-        expose_dev_code = False
+    # Expose the dev code in the web response ONLY when no real delivery channel
+    # is configured. If an admin wired a real SMS provider and it fails, we
+    # don't fall through — we surface the error instead (forces admin to fix).
+    # stub/disabled/none = nothing real is configured, so it's safe to expose.
+    expose_dev_code = (
+        (not tg_sent)
+        and (not sms_sent)
+        and sms_provider in ("stub", "disabled", "none")
+    )
 
     return {
         "ok": True,
