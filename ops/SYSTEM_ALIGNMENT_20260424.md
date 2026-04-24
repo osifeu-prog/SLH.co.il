@@ -3,6 +3,10 @@
 **Purpose:** קו יישור בין כל הסוכנים הפעילים — מה כל אחד עושה, מה כבר נעשה, מה חוסם, מה לא לעשות.
 **Usage:** כל סוכן חדש שנכנס לפרויקט **חייב לקרוא את המסמך הזה**, להוסיף את השם שלו בסעיף "Active Agents" ולעדכן את סעיף "Status" שלו בסוף כל סשן.
 
+**🔗 Paired document:** [`ops/AGENT_COORDINATION_20260424.md`](AGENT_COORDINATION_20260424.md) — shared protocol rules
+(written by another agent in parallel). Both are complementary: this doc = **active status board**,
+the other = **protocol rules**. Read both.
+
 ---
 
 ## 🛑 STOP — Read This First
