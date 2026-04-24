@@ -110,22 +110,16 @@
         
         animate();
         
-        // Fetch bot status
-        async function updateStatus() {
-            try {
-                const response = await fetch('https://api.telegram.org/bot8724910039:AAFkZYO_fV5VFdDpzszWHfhYvJRO25b1fDg/getMe');
-                const data = await response.json();
-                if (data.ok) {
-                    document.getElementById('botStatus').textContent = '✅ Online';
-                    document.getElementById('neuronCount').textContent = neurons.length;
-                }
-            } catch(e) {
-                document.getElementById('botStatus').textContent = '⚠️ Checking...';
-            }
+        // Static status — never expose bot token from a public static page.
+        // If live status is needed, add a backend endpoint (e.g. /api/status on monitor.slh.co.il)
+        // that proxies the Telegram getMe call server-side.
+        function updateStatus() {
+            const el = document.getElementById('botStatus');
+            if (el) el.textContent = '🟢 SLH Macro';
+            const n = document.getElementById('neuronCount');
+            if (n) n.textContent = neurons.length;
         }
-        
         updateStatus();
-        setInterval(updateStatus, 30000);
         
         // Handle resize
         window.addEventListener('resize', () => {

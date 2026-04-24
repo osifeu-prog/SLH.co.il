@@ -1,0 +1,44 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Deploy scripts with inline secrets
+deploy.sh
+deploy.*.sh
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+
+# Logs
+*.log
+logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Backups / scratch
+*.backup
+*.old
+bot_minimal.py
+bot_simple.py
+temp_*.py
+_inspect_*.py
+fix_db.py
+fix_user_id_type.py
+
+# Railway
+.railway/

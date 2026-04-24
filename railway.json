@@ -1,26 +1,9 @@
 {
-  "version": 1,
-  "services": [
-    {
-      "name": "bot",
-      "command": "python bot.py",
-      "env": {
-        "TELEGRAM_BOT_TOKEN": "8724910039:AAFkZYO_fV5VFdDpzszWHfhYvJRO25b1fDg",
-        "DATABASE_URL": "postgresql://postgres:qxGyrlTdbsHgyeYBzPDuzPrlEtflQMrW@shortline.proxy.rlwy.net:17860/railway"
-      }
-    },
-    {
-      "name": "monitor",
-      "command": "python monitor/api.py",
-      "port": 8080,
-      "env": {
-        "DATABASE_URL": "postgresql://postgres:qxGyrlTdbsHgyeYBzPDuzPrlEtflQMrW@shortline.proxy.rlwy.net:17860/railway"
-      }
-    },
-    {
-      "name": "www",
-      "command": "python -m http.server 8080 --directory docs",
-      "port": 8080
-    }
-  ]
+  "build": {
+    "builder": "NIXPACKS"
+  },
+  "deploy": {
+    "startCommand": "python bot.py",
+    "restartPolicyType": "ON_FAILURE"
+  }
 }

@@ -1,9 +1,2 @@
-python-telegram-bot==20.7
-asyncpg==0.29.0
-requests==2.31.0
-pandas==2.2.0
-numpy==1.26.3
-redis==5.0.1
-celery==5.3.4
-schedule==1.2.0
+﻿python-telegram-bot==20.7
 psycopg2-binary==2.9.9
