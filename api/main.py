@@ -111,6 +111,7 @@ from routes.ambassador_crm import router as ambassador_crm_router, set_pool as _
 from routes.device_inventory import router as device_inventory_router, set_pool as _device_inventory_set_pool
 from routes.tasks import router as tasks_router, set_pool as _tasks_set_pool
 from routes.bot_registry import router as bot_registry_router, set_pool as _bot_registry_set_pool, init_tables as _init_bot_registry
+from routes.rotation_pipeline import router as rotation_pipeline_router
 from routes.admin_rotate import (
     router as admin_rotate_router,
     set_pool as _admin_rotate_set_pool,
@@ -304,6 +305,7 @@ app.include_router(campaign_admin_router)
 app.include_router(academia_ugc_router)
 app.include_router(bot_registry_router)
 app.include_router(admin_rotate_router)
+app.include_router(rotation_pipeline_router)
 app.include_router(ambassador_crm_router)
 app.include_router(device_inventory_router)
 app.include_router(tasks_router)
@@ -3169,6 +3171,126 @@ else:
             {"gateway_loaded": False, "reason": "api.telegram_gateway import failed"},
             status_code=503,
         )
+
+
+# ============================================================================
+# AI Spark — Subscription mirror endpoints (Phase B)
+# slh-claude-bot is the canonical source (SQLite). It pushes state here so the
+# Mini App widget can show live tier + quota without bouncing through the bot.
+# Dual-write architecture: bot writes SQLite first (always succeeds), then
+# best-effort POST here (failure is logged but doesn't break bot).
+# ============================================================================
+
+_AI_SPARK_SCHEMA = """
+CREATE TABLE IF NOT EXISTS ai_spark_subscriptions (
+    user_id                       BIGINT PRIMARY KEY,
+    tier                          TEXT NOT NULL DEFAULT 'free',
+    current_period_start          TIMESTAMP NOT NULL DEFAULT NOW(),
+    current_period_end            TIMESTAMP NOT NULL,
+    messages_used_this_period     INTEGER NOT NULL DEFAULT 0,
+    quota_total                   INTEGER NOT NULL DEFAULT 10,
+    payment_provider              TEXT,
+    last_synced_at                TIMESTAMP NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_ai_spark_subs_period_end
+    ON ai_spark_subscriptions(current_period_end);
+"""
+_ai_spark_init_done = False
+
+
+async def _ensure_ai_spark_schema(conn) -> None:
+    global _ai_spark_init_done
+    if _ai_spark_init_done:
+        return
+    await conn.execute(_AI_SPARK_SCHEMA)
+    _ai_spark_init_done = True
+
+
+class AISparkSyncReq(BaseModel):
+    user_id: int
+    tier: str
+    current_period_start: str
+    current_period_end: str
+    messages_used_this_period: int = 0
+    quota_total: int = 10
+    payment_provider: Optional[str] = None
+
+
+@app.post("/api/ai_spark/sync")
+async def ai_spark_sync(req: AISparkSyncReq, request: Request):
+    """Admin-only: slh-claude-bot calls this after each subscription change."""
+    admin_key = request.headers.get("X-Admin-Key", "")
+    raw_keys = os.getenv("ADMIN_API_KEYS", "") or ""
+    valid_keys = {k.strip() for k in raw_keys.split(",") if k.strip()}
+    if not valid_keys or admin_key not in valid_keys:
+        raise HTTPException(403, "admin auth required")
+    if pool is None:
+        raise HTTPException(503, "db pool not ready")
+    async with pool.acquire() as conn:
+        await _ensure_ai_spark_schema(conn)
+        await conn.execute(
+            """
+            INSERT INTO ai_spark_subscriptions
+                (user_id, tier, current_period_start, current_period_end,
+                 messages_used_this_period, quota_total, payment_provider, last_synced_at)
+            VALUES ($1, $2, $3::timestamp, $4::timestamp, $5, $6, $7, NOW())
+            ON CONFLICT (user_id) DO UPDATE SET
+                tier = EXCLUDED.tier,
+                current_period_start = EXCLUDED.current_period_start,
+                current_period_end = EXCLUDED.current_period_end,
+                messages_used_this_period = EXCLUDED.messages_used_this_period,
+                quota_total = EXCLUDED.quota_total,
+                payment_provider = EXCLUDED.payment_provider,
+                last_synced_at = NOW()
+            """,
+            req.user_id, req.tier, req.current_period_start, req.current_period_end,
+            req.messages_used_this_period, req.quota_total, req.payment_provider,
+        )
+    return {"ok": True, "user_id": req.user_id, "tier": req.tier}
+
+
+@app.get("/api/ai_spark/credits/{user_id}")
+async def ai_spark_credits(user_id: int):
+    """Public read: returns subscription state for Mini App widget.
+
+    Currently no auth — returns minimal safe info. If we ever store secrets
+    here (we shouldn't), gate with verify_miniapp_request. For now: tier +
+    quota are not sensitive (the bot already shows them via /credits).
+    """
+    if pool is None:
+        raise HTTPException(503, "db pool not ready")
+    async with pool.acquire() as conn:
+        await _ensure_ai_spark_schema(conn)
+        row = await conn.fetchrow(
+            """
+            SELECT tier, current_period_start, current_period_end,
+                   messages_used_this_period, quota_total, payment_provider,
+                   last_synced_at
+            FROM ai_spark_subscriptions
+            WHERE user_id = $1
+            """,
+            user_id,
+        )
+    if row is None:
+        return {
+            "user_id": user_id,
+            "tier": "free",
+            "messages_used": 0,
+            "quota_total": 10,
+            "period_end": None,
+            "exists": False,
+        }
+    return {
+        "user_id": user_id,
+        "tier": row["tier"],
+        "messages_used": row["messages_used_this_period"],
+        "quota_total": row["quota_total"],
+        "period_start": row["current_period_start"].isoformat() if row["current_period_start"] else None,
+        "period_end": row["current_period_end"].isoformat() if row["current_period_end"] else None,
+        "payment_provider": row["payment_provider"],
+        "last_synced_at": row["last_synced_at"].isoformat() if row["last_synced_at"] else None,
+        "exists": True,
+    }
 
 
 # === TOKEN TRANSFERS ===
