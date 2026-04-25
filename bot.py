@@ -94,6 +94,23 @@ def init_db():
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         ''')
+        # Mining ledger — tracks 2 SLH utility reward earned via Guardian device operation.
+        # NOT a token sale. Reward accrues over 90 days of device uptime post-launch (7.11.2026).
+        # See CLAUDE.md rule #2 + docs/SIG_STATISTICAL_DEFENSE.md for the legal/economic framing.
+        cur.execute('''
+            CREATE TABLE IF NOT EXISTS device_mining (
+                id SERIAL PRIMARY KEY,
+                user_id BIGINT,
+                device_serial TEXT UNIQUE,
+                slh_earned NUMERIC(18,8) DEFAULT 0,
+                slh_target NUMERIC(18,8) DEFAULT 2.0,
+                mining_started_at TIMESTAMP,
+                mining_ends_at TIMESTAMP,
+                last_heartbeat_at TIMESTAMP,
+                status TEXT DEFAULT 'pending_shipment',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
         conn.commit()
         logger.info("Database initialized successfully")
     except Exception as e:
@@ -147,9 +164,13 @@ async def _reply_guardian_preorder(update, user, source: str):
         "🛡️ *SLH Guardian — שריון מקום*\n\n"
         f"קיבלנו את העניין שלך (רישום #{pid}).\n\n"
         "📦 מכשיר הדגל — ₪888 ב-early bird (99 ראשונים)\n"
+        "🪙 *בונוס:* 2 SLH mining reward (90 ימי הפעלה)\n"
+        "📊 Target 65% APY · SIG-validated · forward-looking\n"
         "📅 שחרור רשמי: 7.11.2026\n\n"
         "נחזור אליך תוך 24 שעות עם פרטי תשלום ומשלוח.\n"
-        "שאלות דחופות? @osifeu_prog",
+        "שאלות דחופות? @osifeu_prog\n\n"
+        "_2 SLH = utility reward הנחצב דרך הפעלת המכשיר, לא רכישת טוקנים. "
+        "Target APY = forward-looking projection, לא הבטחה._",
         parse_mode='Markdown'
     )
 
@@ -277,6 +298,88 @@ async def stats(update: Update, context: ContextTypes.DEFAULT_TYPE):
     finally:
         cur.close()
         conn.close()
+
+async def mining_status(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """
+    Public command — shows the user how much SLH their Guardian device has mined.
+
+    Legal framing (CLAUDE.md rule #2): SLH is a utility reward earned via device
+    operation, NOT a token sale. The ₪888 pre-order pays for hardware. Display
+    must always reference SIG methodology and forward-looking disclaimer.
+    """
+    user_id = update.effective_user.id
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute(
+            "SELECT device_serial, slh_earned, slh_target, status, "
+            "mining_started_at, mining_ends_at "
+            "FROM device_mining WHERE user_id = %s "
+            "ORDER BY created_at DESC",
+            (user_id,)
+        )
+        rows = cur.fetchall()
+        if not rows:
+            await update.message.reply_text(
+                "🪙 *2 SLH Mining — לא נמצאו מכשירים*\n\n"
+                "אין לך מכשיר Guardian רשום עדיין.\n\n"
+                "📦 שריין מקום ב-early bird: /preorder\n"
+                "🔗 פרטים: https://www.slh.co.il/guardian.html\n\n"
+                "_2 SLH הוא utility reward הנחצב דרך הפעלת המכשיר — לא רכישת טוקנים._",
+                parse_mode='Markdown'
+            )
+            return
+
+        lines = ["🪙 *Mining Status — המכשירים שלך*", ""]
+        total_earned = 0
+        total_target = 0
+        for r in rows:
+            serial, earned, target, status, started, ends = r
+            earned = float(earned or 0)
+            target = float(target or 2.0)
+            total_earned += earned
+            total_target += target
+            pct = (earned / target * 100) if target else 0
+            bar_len = 20
+            filled = int(pct / 5)
+            bar = '█' * filled + '░' * (bar_len - filled)
+            serial_short = (serial or "TBD")[:12]
+            lines.append(f"📟 `{serial_short}` · {status}")
+            lines.append(f"   `{bar}` {earned:.4f} / {target:.2f} SLH ({pct:.1f}%)")
+            if started:
+                lines.append(f"   ⏱ התחלה: {started.strftime('%Y-%m-%d')}")
+            if ends:
+                lines.append(f"   🏁 סיום: {ends.strftime('%Y-%m-%d')}")
+            lines.append("")
+
+        lines.append(f"*סה\"כ: {total_earned:.4f} / {total_target:.2f} SLH*")
+        lines.append("")
+        lines.append("📊 *Target 65% APY · SIG-validated · σ=0.0049%*")
+        lines.append("_Forward-looking projection, not guaranteed. See /sig._")
+        await update.message.reply_text("\n".join(lines), parse_mode='Markdown')
+    except Exception as e:
+        await update.message.reply_text(f"Error: {e}")
+    finally:
+        cur.close()
+        conn.close()
+
+async def sig_info(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Public command — explains the SIG methodology + Target 65% APY framing."""
+    text = (
+        "📊 *SIG — Signal Information Gain*\n\n"
+        "מתודולוגיה סטטיסטית מאחורי היעד הכלכלי של SLH:\n\n"
+        "`APY_target = σ × √t × SIG × growth_factor`\n\n"
+        "🎯 *Target: 65% APY* (forward-looking, לא מובטח)\n"
+        "📐 σ = 0.0049% (פי 4.9 ממודל ללא SIG)\n"
+        "🔬 SIG-validated על נתוני backtest\n\n"
+        "*למה 65% הוא ראלי לעסק חדש?* — צמיחה אופיינית "
+        "של עסק בשלב 0→1 + עוצמת הסיגנל = יעד defensible מתמטית.\n\n"
+        "📄 מסמך מלא: https://www.slh.co.il/SIG_STATISTICAL_DEFENSE.md\n\n"
+        "⚠️ _Forward-looking projection. ביצועי עבר אינם מבטיחים "
+        "ביצועים עתידיים. לא הבטחת תשואה, לא ייעוץ השקעות, "
+        "לא הצעה ציבורית._"
+    )
+    await update.message.reply_text(text, parse_mode='Markdown')
 
 async def preorders_list(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Admin-only: list pending pre-orders."""
@@ -491,6 +594,8 @@ async def docs_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
 `/health` - Bot health + DB
 `/stats` - 7-day stats (admin)
 `/preorder` - שריון Guardian early bird
+`/mining_status` - 2 SLH Mining status (Guardian)
+`/sig` - SIG methodology + Target APY
 `/add_roi` - Add ROI
 `/last_roi` - Last ROI
 `/feedback_ai` - Smart feedback
@@ -501,6 +606,7 @@ async def docs_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 🌐 **Web:**
 • https://www.slh.co.il
+• https://www.slh.co.il/guardian.html
 • https://monitor.slh.co.il"""
     await update.message.reply_text(docs_text, parse_mode='Markdown')
 
@@ -567,6 +673,9 @@ async def main():
     app.add_handler(CommandHandler("make_me_admin", make_me_admin))
     app.add_handler(CommandHandler("preorder", preorder))
     app.add_handler(CommandHandler("preorders", preorders_list))
+    app.add_handler(CommandHandler("mining_status", mining_status))
+    app.add_handler(CommandHandler("mining", mining_status))
+    app.add_handler(CommandHandler("sig", sig_info))
     app.add_handler(CommandHandler("health", health))
     app.add_handler(CommandHandler("stats", stats))
     app.add_handler(CallbackQueryHandler(handle_callback))

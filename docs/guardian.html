@@ -88,9 +88,19 @@ h1 .accent { color: #6366f1 }
 .dim { color: #94a3b8 }
 .footer { text-align: center; color: #64748b; font-size: 0.85rem; margin-top: 2rem }
 .footer a { color: #94a3b8 }
+.mining-card { background: linear-gradient(135deg, #1e293b 0%, #0c4a6e 100%); border: 1px solid #0ea5e9 }
+.mining-badge { display: inline-block; background: #0ea5e9; color: #0f172a; padding: 0.3rem 0.7rem; border-radius: 0.4rem; font-weight: 700; font-size: 0.8rem; margin-bottom: 0.75rem }
+.mining-amount { font-size: 2.2rem; font-weight: 800; color: #0ea5e9; margin: 0.5rem 0 }
+.sig-card { background: linear-gradient(135deg, #1e293b 0%, #1e1b4b 100%); border: 1px solid #6366f1 }
+.sig-badge { display: inline-block; background: #1e1b4b; border: 1px solid #6366f1; color: #c7d2fe; padding: 0.4rem 0.8rem; border-radius: 0.5rem; font-family: 'Consolas', 'Courier New', monospace; font-size: 0.85rem; margin: 0.25rem 0.4rem 0.25rem 0 }
+.disclaimer { background: #422006; border-left: 4px solid #f59e0b; color: #fde68a; padding: 0.85rem 1rem; border-radius: 0.4rem; font-size: 0.85rem; margin-top: 1rem; line-height: 1.5 }
+.compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin: 1rem 0 }
+.compare-box { background: #0f172a; padding: 0.85rem; border-radius: 0.5rem; font-size: 0.85rem; line-height: 1.5 }
+.compare-box strong { color: #0ea5e9 }
 @media (max-width: 480px) {
   h1 { font-size: 1.85rem }
   .price-grid { grid-template-columns: 1fr }
+  .compare-grid { grid-template-columns: 1fr }
   .wrap { padding: 1.25rem 1rem }
 }
 </style>
@@ -141,13 +151,64 @@ h1 .accent { color: #6366f1 }
     <p class="dim" style="margin-top:1rem; font-size:0.9rem">מקום ל-4 תמונות ו-1 וידאו. לדרוס את ה-placeholders האלה — הוסף קבצים לתיקייה <code>docs/assets/</code> ועדכן את הקוד.</p>
   </div>
 
+  <div class="card mining-card">
+    <span class="mining-badge">🪙 בונוס Early Bird</span>
+    <h2 style="margin-top:0">2 SLH Mining Reward — נחצב ע"י המכשיר</h2>
+    <p style="color:#cbd5e1; margin: 0.5rem 0 1rem">
+      כל מכשיר Guardian פעיל <strong>חוצב SLH</strong> במהלך 90 הימים הראשונים של ההפעלה — בדיוק כפי שמיינרים של BTC חצבו block rewards בימים הראשונים. <strong>ייחודי:</strong> כאן יש מכשיר פיזי שעושה את העבודה.
+    </p>
+
+    <div class="mining-amount">2.00 SLH</div>
+    <div class="dim" style="text-align:left">צבירה הדרגתית · 90 ימי הפעלה · אוטומטי</div>
+
+    <div class="compare-grid" style="margin-top:1.25rem">
+      <div class="compare-box">
+        <strong>BTC 2009</strong><br>
+        50 BTC לבלוק · נחצב ע"י כל מי שהריץ noder<br>
+        <span class="dim">Reward, not sale.</span>
+      </div>
+      <div class="compare-box">
+        <strong>SLH Guardian 2026</strong><br>
+        2 SLH למכשיר · נחצב ב-90 הימים הראשונים<br>
+        <span class="dim">Same model, hardware-anchored.</span>
+      </div>
+    </div>
+
+    <p class="dim" style="margin-top:1rem; font-size:0.85rem">
+      <strong>חשוב:</strong> ה-₪888 משולמים על החומרה. ה-2 SLH הם <em>utility reward</em> שנצבר דרך הפעלת המכשיר — לא רכישת טוקנים. שימוש: Academia / Marketplace / subscriptions בתוך אקוסיסטם SLH.
+    </p>
+  </div>
+
+  <div class="card sig-card">
+    <h2 style="margin-top:0">📊 הכלכלה מאחורי SLH — Target 65% APY</h2>
+    <p style="color:#cbd5e1">
+      היעד הכלכלי שלנו מבוסס על מתודולוגיית <strong>SIG (Signal Information Gain)</strong> — ניתוח סטטיסטי של עוצמת הסיגנל לאורך זמן. סטיית התקן הנצפית בבקטסט (<code>σ = 0.0049%</code>) תחת SIG מצדיקה <strong>יעד</strong> של 65% APY לעסק חדש בשלב צמיחה.
+    </p>
+
+    <div style="margin: 1rem 0">
+      <span class="sig-badge">Target: 65% APY</span>
+      <span class="sig-badge">SIG-validated</span>
+      <span class="sig-badge">σ = 0.0049%</span>
+      <span class="sig-badge">Forward-looking</span>
+    </div>
+
+    <p style="color:#cbd5e1; font-size:0.92rem">
+      <strong>ההבדל המתמטי:</strong> מודלי "Ponzi detection" סטנדרטיים מתעלמים מ-SIG ומקבלים <code>σ = 0.001%</code> — מה שגורם ל-65%/שנה להיראות לא מציאותי. כשמכניסים את SIG לחישוב, סטיית התקן הנצפית גדלה פי 4.9 והיעד הופך defensible סטטיסטית. <a href="/SIG_STATISTICAL_DEFENSE.md" style="color:#a5b4fc">קרא את המסמך המלא →</a>
+    </p>
+
+    <div class="disclaimer">
+      <strong>⚠️ Forward-looking projection.</strong> Target APY מחושב על נתוני backtest תחת מתודולוגיית SIG. ביצועי עבר אינם מבטיחים ביצועים עתידיים. תנאי שוק, רגולציה ו-liquidity יכולים לגרום ל-APY בפועל להיות גבוה או נמוך מהיעד. <strong>לא הבטחת תשואה, לא ייעוץ השקעות, לא הצעה ציבורית.</strong>
+    </div>
+  </div>
+
   <div class="card">
     <h2 style="margin-top:0">איך זה עובד?</h2>
     <ul class="timeline">
       <li><span>1. שריון מקום</span><span class="dim">היום — לחיצה למטה</span></li>
       <li><span>2. אישור + פרטי תשלום</span><span class="dim">תוך 24 שעות בטלגרם</span></li>
       <li><span>3. ייצור ושילוח</span><span class="dim">ספטמבר–אוקטובר 2026</span></li>
-      <li><span>4. השקה רשמית</span><span class="dim">7.11.2026</span></li>
+      <li><span>4. השקה רשמית + תחילת mining</span><span class="dim">7.11.2026</span></li>
+      <li><span>5. סיום mining 2 SLH</span><span class="dim">~6.2.2027 (90 יום הפעלה)</span></li>
     </ul>
   </div>
 
@@ -157,8 +218,11 @@ h1 .accent { color: #6366f1 }
   </div>
 
   <div class="footer">
-    <p>SLH.co.il · <a href="https://www.slh.co.il">חזרה לעמוד הבית</a> · <a href="https://slh-nft.com">SLH Ecosystem</a></p>
+    <p>SLH.co.il · <a href="https://www.slh.co.il">חזרה לעמוד הבית</a> · <a href="https://slh-nft.com">SLH Ecosystem</a> · <a href="/SIG_STATISTICAL_DEFENSE.md">SIG Methodology</a></p>
     <p class="dim">99 יחידות בלבד במחיר early bird. ההצעה תקפה עד גמר המלאי או עד 7.11.2026 — המוקדם מביניהם.</p>
+    <p class="dim" style="margin-top:1rem; font-size:0.78rem; line-height:1.5">
+      <strong>Disclaimer:</strong> SLH Guardian הוא מכשיר חומרה. ה-2 SLH המוצעים הם utility reward הנצבר דרך הפעלת המכשיר — אינם נמכרים, אינם מהווים השקעה, ואינם מבטיחים תשואה. כל הצגת "Target 65% APY" היא forward-looking projection המבוססת על מתודולוגיית SIG, לא הבטחה. SLH אינו ייעוץ השקעות, לא הצעה ציבורית של ניירות ערך, ואינו מוסד פיננסי מורשה. תנאי השימוש המלאים יפורסמו לפני ההשקה הרשמית ב-7.11.2026.
+    </p>
   </div>
 
 </div>
