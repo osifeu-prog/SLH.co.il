@@ -86,7 +86,7 @@ async def cmd_start(msg: Message) -> None:
         tier_line = ""
     # Send as plain text (no parse_mode) to avoid backslash pollution.
     await msg.answer(
-        f"שלום עוסיף 👋\n"
+        f"שלום אוסיף 👋\n"
         f"אני SLH Claude — מצב: {_AI_MODE}\n"
         f"{tier_line}\n"
         f"━━━ AI Spark ━━━\n"

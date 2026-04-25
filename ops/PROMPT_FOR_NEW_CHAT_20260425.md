@@ -4,7 +4,7 @@
 COPY EVERYTHING BELOW THIS LINE INTO THE NEW CHAT
 ────────────────────────────────────────────────────────────────────────
 
-אני עוסיף — Telegram ID 224223270, @osifeu_prog. אני בעלים יחיד של פרויקט SLH Spark — אקוסיסטם השקעות קריפטו בישראל. הפרויקט יושב ב-`D:\SLH_ECOSYSTEM\`. שני repos: `github.com/osifeu-prog/slh-api` (Railway) ו-`github.com/osifeu-prog/osifeu-prog.github.io` (GitHub Pages → slh-nft.com). API ב-`slh-api-production.up.railway.app`.
+אני אוסיף — Telegram ID 224223270, @osifeu_prog. אני בעלים יחיד של פרויקט SLH Spark — אקוסיסטם השקעות קריפטו בישראל. הפרויקט יושב ב-`D:\SLH_ECOSYSTEM\`. שני repos: `github.com/osifeu-prog/slh-api` (Railway) ו-`github.com/osifeu-prog/osifeu-prog.github.io` (GitHub Pages → slh-nft.com). API ב-`slh-api-production.up.railway.app`.
 
 **הסשן הקודם רץ ~14 שעות והשאיר handoff מלא.** קרא לפני שאתה עושה משהו:
 1. `D:\SLH_ECOSYSTEM\ops\SESSION_HANDOFF_20260425_FULL.md` — סיכום מלא של מה נעשה ומה נפתח
