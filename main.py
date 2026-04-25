@@ -64,6 +64,17 @@ except Exception as _bc_err:  # pragma: no cover
     _BOTS_CATALOG_AVAILABLE = False
     _bots_catalog = None  # type: ignore
 
+# Personal expense tracker — Phase 1 of cashflow management feature.
+# Per-user expenses table + monthly summary + recurring detection.
+try:
+    from api import expenses as _expenses_router
+    _EXPENSES_AVAILABLE = True
+except Exception as _exp_err:  # pragma: no cover
+    import logging as _log
+    _log.warning("expenses router unavailable: %s", _exp_err)
+    _EXPENSES_AVAILABLE = False
+    _expenses_router = None  # type: ignore
+
 from shared_db_core import init_db_pool as _shared_init_db_pool, db_health as _shared_db_health
 
 from routes.ai_chat import router as ai_chat_router, set_aic_pool as _ai_chat_set_aic_pool
@@ -293,6 +304,9 @@ if _SWARM_AVAILABLE and _swarm is not None:
 # Bot catalog router (DB-backed CRUD for /admin/tokens + /admin/rotate-token)
 if _BOTS_CATALOG_AVAILABLE and _bots_catalog is not None:
     app.include_router(_bots_catalog.router)
+
+if _EXPENSES_AVAILABLE and _expenses_router is not None:
+    app.include_router(_expenses_router.router)
 
 # === DATABASE ===
 pool: Optional[asyncpg.Pool] = None
