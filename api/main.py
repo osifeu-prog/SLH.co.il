@@ -53,6 +53,17 @@ except Exception as _sw_err:  # pragma: no cover
     _SWARM_AVAILABLE = False
     _swarm = None  # type: ignore
 
+# Bot catalog — DB-backed list of all 31 Telegram bots in the fleet.
+# Used by /admin/tokens.html + /admin/rotate-token.html instead of hardcoded JS arrays.
+try:
+    from api import admin_bots_catalog as _bots_catalog
+    _BOTS_CATALOG_AVAILABLE = True
+except Exception as _bc_err:  # pragma: no cover
+    import logging as _log
+    _log.warning("admin_bots_catalog unavailable: %s", _bc_err)
+    _BOTS_CATALOG_AVAILABLE = False
+    _bots_catalog = None  # type: ignore
+
 from shared_db_core import init_db_pool as _shared_init_db_pool, db_health as _shared_db_health
 
 from routes.ai_chat import router as ai_chat_router, set_aic_pool as _ai_chat_set_aic_pool
@@ -278,6 +289,10 @@ app.include_router(tasks_router)
 # Swarm router — devices mesh API (gated; OK if module is missing).
 if _SWARM_AVAILABLE and _swarm is not None:
     app.include_router(_swarm.router)
+
+# Bot catalog router (DB-backed CRUD for /admin/tokens + /admin/rotate-token)
+if _BOTS_CATALOG_AVAILABLE and _bots_catalog is not None:
+    app.include_router(_bots_catalog.router)
 
 # === DATABASE ===
 pool: Optional[asyncpg.Pool] = None
