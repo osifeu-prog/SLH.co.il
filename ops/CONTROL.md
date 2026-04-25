@@ -6,25 +6,36 @@
 
 ---
 
-## 🎯 STATE RIGHT NOW
+## 🎯 STATE RIGHT NOW (verified 2026-04-25)
 
 | | |
 |---|---|
 | **Revenue (₪)** | **0** — no paying customer yet |
-| **API** | 🟢 live · https://slh-api-production.up.railway.app/api/health |
-| **Website** | 🟢 live · https://slh-nft.com (127 pages) |
+| **API** | 🟢 live · v1.1.0 · db connected |
+| **Website** | 🟢 live · https://slh-nft.com (127 pages, GitHub Pages) |
 | **Bots (25)** | 🟢 running · ledger-bot rebuilt + fixed |
-| **CRM (Ambassador)** | 🟢 live · `POST /api/ambassador/contacts` works end-to-end |
-| **Tzvika → founder** | 🟢 deployed |
+| **CRM (Ambassador)** | 🟢 live · 5 endpoints + 2 test records |
+| **Tzvika → founder** | 🟢 deployed (`b48a1b1`) |
 | **Data integrity** | 🟢 clean · 1 HIGH remaining (legit library default) |
+| **event_log** | 🟢 **active · 17 events captured** (device.registered, device.heartbeat) |
+| **ESP32 fleet** | 🟢 **6 devices registered · `esp32-14335C6C32C0` heartbeating live since 2026-04-23** |
+| **Telegram Gateway** | 🟡 gateway_loaded=true · `primary_bot_token_set=false` (env var pending) |
+| **Mini Apps** | 🟡 code live · will 500 until TELEGRAM_BOT_TOKEN env set |
+| **Public events feed** | 🟢 endpoint live · 0 visible items (filter mismatch — see Note A) |
 
 ---
 
 ## 👉 TODAY — 3 actions only you can do
 
-1. **Railway dashboard health check** — one browser visit to https://railway.app/project/slh-api → Deployments. Confirm latest commit deployed. ⏱ 30s
-2. **Global git config** (still `Your Name <your.email@example.com>`) — PowerShell: `git config --global user.name "Osif Kaufman Ungar" ; git config --global user.email "osif.erez.ungar@gmail.com"`. ⏱ 10s
-3. **Yaara reply** — if she replied to the WhatsApp you sent, open `ops/CUSTOMER_ONE_PLAYBOOK.md` and follow Stage 1-5. If no reply yet, skip.
+1. **Railway env vars** (THE blocker) — Variables tab on Railway:
+   - `TELEGRAM_BOT_TOKEN` = `<from @BotFather for @WEWORK_teamviwer_bot>`
+   - `SMS_PROVIDER` = `stub`
+   - `DEV_EXPOSE_OTP` = `true`
+   - Verify: `curl https://slh-api-production.up.railway.app/api/miniapp/health` → expect `primary_bot_token_set: true`. ⏱ 3 min
+2. **BotFather** `/setdomain` for `@WEWORK_teamviwer_bot` → `https://slh-nft.com/miniapp/dashboard.html`. ⏱ 30 s
+3. **Global git config** — `git config --global user.name "Osif Kaufman Ungar" ; git config --global user.email "osif.erez.ungar@gmail.com"`. ⏱ 10 s
+
+> Note A: `/api/events/public` returns `{events:[],total:0}` because event_log only has `device.*` events; PUBLIC_EVENT_TYPES filter expects `payment.cleared`, `stake.opened`, `broadcast.send`, etc. First broadcast/payment will populate it.
 
 ## 🕰 PENDING OTHERS (not your move)
 
@@ -101,9 +112,11 @@ Update when numbers change. Don't pad.
 |---|---|---|
 | Real paying customers | **0** | reality.users |
 | Revenue this month (₪) | **0** | reality.payments |
-| Waitlist signups | (unknown — reality dump doesn't break out) | — |
 | Tokens (types live) | 5 (SLH, MNH, ZVK, REP, ZUZ) + AIC | — |
 | Users registered | 21 | /api/ops/reality |
+| ESP32 devices registered | **6** (1 actively heartbeating) | /api/admin/devices/list |
+| event_log entries (total) | **17** | /api/admin/events |
+| events in last 24h by type | device.registered=2, device.heartbeat=2 | /api/admin/events |
 | DMs sent (last 48h) | 6 (5 delivered · 0 engagement via bot) · 1 WhatsApp personal | broadcast_history |
 | On-chain tx processed | Osif's own Genesis deposits (test only) | bscscan |
 | Railway deploys (last 48h) | 10+ | git log |
