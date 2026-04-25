@@ -207,6 +207,34 @@ from api.sms_provider import provider_status
 print(provider_status())
 ```
 
+### Swarm — independent device mesh API
+
+Phase-1 endpoints from `ops/SWARM_V1_BLUEPRINT_20260424.md`. All under `/api/swarm/`.
+Module: `api/swarm.py`. Wired into `main.py` via `app.include_router(_swarm.router)`,
+gated behind `_SWARM_AVAILABLE` so a missing module can't block API boot.
+
+| Verb + Path | Auth | Purpose |
+|---|---|---|
+| `POST /api/swarm/devices/register` | none (POC) | First-boot register: device_id + public_key + type. Idempotent. |
+| `POST /api/swarm/devices/heartbeat` | none | Every 30s from device — updates last_heartbeat, RSSI, battery, peers_seen. |
+| `POST /api/swarm/events` | none | Mesh events (button press, sensor reading, signed-tx). Mirrored to `/api/events/public`. |
+| `GET  /api/swarm/devices/{id}/commands` | none | Device polls — returns queued commands, atomically marks delivered. |
+| `POST /api/swarm/commands/queue` | **X-Admin-Key** | Admin queues a command for a device. TTL configurable. |
+| `POST /api/swarm/commands/{id}/ack` | none | Device acks executing the command + optional result payload. |
+| `GET  /api/swarm/devices` | none | List devices (no PII; just IDs + types + heartbeat + online flag). |
+| `GET  /api/swarm/stats` | none | Snapshot for `/my.html` and `/miniapp/swarm.html` dashboards. |
+
+**Tables auto-created on first hit** (ensure_schema): `swarm_devices`, `swarm_events`,
+`swarm_commands`. Schema in `api/swarm.py`.
+
+**Live verify after deploy:**
+```powershell
+curl.exe -s "https://slh-api-production.up.railway.app/api/swarm/stats"
+# expected: {"total_devices":0,"online":0,"events_24h":0,"pending_commands":0}
+```
+
+**Mini App:** `/miniapp/swarm.html` — 4-tile stats + per-device list + command-broadcast input.
+
 ### Known security debt
 - 3 admin endpoints in `main.py` still use `admin_secret` body field instead of `_require_admin()` header (registration approve @957, beta coupon @2344, marketplace approve @4782). P0 fix.
 - JWT_SECRET + ADMIN_API_KEYS default to empty on startup with only a warning (should fail-fast in prod).

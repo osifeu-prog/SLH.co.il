@@ -42,6 +42,17 @@ except Exception as _gw_err:  # pragma: no cover
     require_admin = None  # type: ignore
     GatewayError = None  # type: ignore
 
+# SLH Swarm — independent device mesh router (Phase 1 of SWARM_V1_BLUEPRINT).
+# Same fail-safe pattern as the gateway: missing module can't block API boot.
+try:
+    from api import swarm as _swarm
+    _SWARM_AVAILABLE = True
+except Exception as _sw_err:  # pragma: no cover
+    import logging as _log
+    _log.warning("swarm router unavailable: %s", _sw_err)
+    _SWARM_AVAILABLE = False
+    _swarm = None  # type: ignore
+
 from shared_db_core import init_db_pool as _shared_init_db_pool, db_health as _shared_db_health
 
 from routes.ai_chat import router as ai_chat_router, set_aic_pool as _ai_chat_set_aic_pool
@@ -261,6 +272,10 @@ app.include_router(bot_registry_router)
 app.include_router(admin_rotate_router)
 app.include_router(ambassador_crm_router)
 app.include_router(tasks_router)
+
+# Swarm router — devices mesh API (gated; OK if module is missing).
+if _SWARM_AVAILABLE and _swarm is not None:
+    app.include_router(_swarm.router)
 
 # === DATABASE ===
 pool: Optional[asyncpg.Pool] = None
