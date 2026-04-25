@@ -29,6 +29,14 @@ if not BOT_TOKEN:
 RAILWAY_DB_URL = os.getenv("DATABASE_URL") or os.getenv("RAILWAY_DATABASE_URL")
 AIRDROP_BOT_TOKEN = os.getenv("AIRDROP_BOT_TOKEN", "").strip()
 
+# ── Control Center HTTP targets ─────────────────────────────────────
+API_BASE             = os.getenv("SLH_API_BASE", "https://slh-api-production.up.railway.app")
+SLH_ADMIN_API_KEY    = os.getenv("ADMIN_API_KEY", "slh_admin_2026_rotated_04_20")
+SLH_BROADCAST_KEY    = os.getenv("ADMIN_BROADCAST_KEY", "slh-broadcast-2026-change-me")
+GITHUB_API_REPO      = "https://api.github.com/repos/osifeu-prog/slh-api"
+WEBSITE_OPS_BASE     = "https://slh-nft.com/ops"
+OPS_VIEWER_BASE      = "https://slh-nft.com/ops-viewer.html?file="
+
 bot = Bot(BOT_TOKEN)
 dp  = Dispatcher(storage=MemoryStorage())
 
