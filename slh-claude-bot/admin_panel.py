@@ -148,6 +148,63 @@ def register(dp: Dispatcher, auth_module) -> None:
             f"  Provider: `{sub.payment_provider or 'none'}`"
         )
 
+    @dp.message(Command("grandfather"))
+    async def cmd_grandfather(msg: Message):
+        """
+        Bulk-grant Pro to a user with custom duration. Same effect as /set_tier
+        but semantic — for early-access promos to community members.
+
+        Usage: /grandfather <user_id> [days=30] [tier=pro]
+        """
+        if not auth_module.is_authorized(msg.from_user.id):
+            await msg.answer(auth_module.unauthorized_reply_he(msg.from_user.id))
+            return
+        parts = (msg.text or "").split()
+        if len(parts) < 2:
+            await msg.answer(
+                "שימוש: `/grandfather <user_id> [days=30] [tier=pro]`\n\n"
+                "דוגמאות:\n"
+                "  `/grandfather 224223270` — Pro 30 ימים\n"
+                "  `/grandfather 224223270 90` — Pro 90 ימים\n"
+                "  `/grandfather 224223270 30 vip` — VIP 30 ימים"
+            )
+            return
+        try:
+            target_uid = int(parts[1])
+        except ValueError:
+            await msg.answer("user_id חייב להיות מספר.")
+            return
+        try:
+            days = int(parts[2]) if len(parts) > 2 else 30
+        except ValueError:
+            days = 30
+        tier = parts[3].lower() if len(parts) > 3 else "pro"
+        if tier not in pricing.TIERS:
+            await msg.answer(f"Tier לא תקף: {tier}. אפשרי: {', '.join(pricing.TIERS.keys())}")
+            return
+        if days < 1 or days > 365:
+            await msg.answer("days בטווח 1-365.")
+            return
+
+        sub = await subscriptions.upgrade(
+            user_id=target_uid,
+            tier=tier,
+            provider="grandfather",
+            payment_id=f"granted_by_{msg.from_user.id}_for_{days}d",
+            period_days=days,
+        )
+        spec = pricing.TIERS[tier]
+        await msg.answer(
+            f"✅ *Grandfathered*\n\n"
+            f"User: `{target_uid}`\n"
+            f"Tier: *{spec.name_he}* ({tier})\n"
+            f"מכסה: {spec.monthly_quota or 'unlimited'} הודעות\n"
+            f"תקופה: {days} ימים\n"
+            f"מסתיים: `{sub.current_period_end[:10]}`\n\n"
+            f"_שלח לו: יש לך עכשיו Pro חינם עד {sub.current_period_end[:10]}. "
+            f"שלח /credits לבדוק._"
+        )
+
     @dp.message(Command("set_tier"))
     async def cmd_set_tier(msg: Message):
         if not auth_module.is_authorized(msg.from_user.id):

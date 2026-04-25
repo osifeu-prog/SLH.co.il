@@ -610,6 +610,36 @@ async def cmd_ai_mode(msg: Message) -> None:
     )
 
 
+# Photo/screenshot handler — saves incoming images to /workspace/incoming_screenshots/
+# so the human operator can read them via Read tool from outside the container.
+@dp.message(F.photo)
+async def on_photo(msg: Message) -> None:
+    if not auth.is_authorized(msg.from_user.id):
+        await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
+        return
+    try:
+        from datetime import datetime
+        photo = msg.photo[-1]  # largest size
+        file = await bot.get_file(photo.file_id)
+        ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+        out_dir = "/workspace/incoming_screenshots"
+        os.makedirs(out_dir, exist_ok=True)
+        out_path = f"{out_dir}/screenshot_{ts}_{msg.from_user.id}.jpg"
+        await bot.download_file(file.file_path, out_path)
+        # Optional caption
+        cap = (msg.caption or "").strip()
+        log.info(f"saved screenshot from {msg.from_user.id} to {out_path} (caption='{cap[:60]}')")
+        await msg.answer(
+            f"✅ קיבלתי תמונה ושמרתי\\.\n"
+            f"📂 `screenshot_{ts}`\n"
+            f"{'📝 ' + _escape_md(cap[:200]) if cap else ''}\n\n"
+            f"Claude ניגש לקובץ הזה ויקרא אותו\\."
+        )
+    except Exception as e:
+        log.exception("photo save failed")
+        await msg.answer(f"שגיאה בשמירת התמונה: `{type(e).__name__}: {e}`")
+
+
 # Filter excludes slash-commands so they fall through to Command-filtered
 # handlers registered LATER (payment_flow, admin_panel, editor_commands).
 @dp.message(F.text & ~F.text.startswith("/"))
@@ -710,7 +740,13 @@ async def main() -> None:
     # F.text now excludes slash-commands these can register at runtime safely)
     payment_flow.register(dp, auth)
     admin_panel.register(dp, auth)
-    log.info("payment_flow + admin_panel wired in")
+    try:
+        import railway_ops
+        railway_ops.register(dp, auth)
+        log.info("payment_flow + admin_panel + railway_ops wired in")
+    except Exception as e:
+        log.warning(f"railway_ops not loaded: {e}")
+        log.info("payment_flow + admin_panel wired in")
     # Wire up editor commands (cat/ls/grep/append/replace/newpage/commit/push/sync/draft/apply/reject)
     try:
         import editor_commands
