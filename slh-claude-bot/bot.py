@@ -21,15 +21,31 @@ from aiogram.types import Message
 
 import auth
 import session
+import quota
+import subscriptions
+import payment_flow
+import admin_panel
 
-# Choose AI client: if ANTHROPIC_API_KEY is set, use paid Anthropic (with tool use);
-# otherwise fall back to the free SLH multi-provider endpoint (chat-only, Groq/Gemini).
-if os.getenv("ANTHROPIC_API_KEY", "").startswith("sk-"):
-    import claude_client as ai_client
-    _AI_MODE = "anthropic-tools"
+# Two AI clients available simultaneously:
+# - free_ai_client (Groq/Gemini): always loaded, used for Free tier
+# - claude_client (Anthropic+tools): loaded only if ANTHROPIC_API_KEY set,
+#   used for Pro/VIP tiers
+# `quota.check()` per-message decides which one to call based on user's tier.
+import free_ai_client as _free_client
+_anthropic_available = os.getenv("ANTHROPIC_API_KEY", "").startswith("sk-")
+if _anthropic_available:
+    import claude_client as _claude_client
+    _AI_MODE = "anthropic-tools+free-fallback"
 else:
-    import free_ai_client as ai_client
-    _AI_MODE = "slh-multiprovider-free"
+    _claude_client = None
+    _AI_MODE = "free-only (set ANTHROPIC_API_KEY to enable paid tiers)"
+
+
+def _pick_ai_client(use_anthropic: bool):
+    """Returns (client_module, provider_name, model_name)."""
+    if use_anthropic and _claude_client is not None:
+        return _claude_client, "anthropic", os.getenv("CLAUDE_MODEL", "claude-sonnet-4-5-20250929")
+    return _free_client, "free", "groq/gemini"
 
 API_BASE = os.getenv("SLH_API_BASE", "https://slh-api-production.up.railway.app")
 ADMIN_KEY = os.getenv("ADMIN_API_KEY", "")
@@ -62,24 +78,36 @@ async def cmd_start(msg: Message) -> None:
     if not auth.is_authorized(msg.from_user.id):
         await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
         return
+    # Lazy-create subscription row + show tier
+    try:
+        sub = await subscriptions.get_or_create(msg.from_user.id)
+        tier_line = f"💎 Tier: {sub.tier} · {sub.messages_used_this_period} הודעות החודש\n"
+    except Exception:
+        tier_line = ""
     # Send as plain text (no parse_mode) to avoid backslash pollution.
     await msg.answer(
         f"שלום עוסיף 👋\n"
-        f"אני SLH Claude — מצב נוכחי: {_AI_MODE}\n\n"
+        f"אני SLH Claude — מצב: {_AI_MODE}\n"
+        f"{tier_line}\n"
+        f"━━━ AI Spark ━━━\n"
+        f"/upgrade   — שדרוג ל-Pro/VIP\n"
+        f"/credits   — מכסה זמינה החודש\n"
+        f"/pricing   — השוואת חבילות\n\n"
         f"━━━ הכי שימושי ━━━\n"
         f"/control   — סיכום מערכת בשורה אחת\n"
         f"/health    — בריאות API + DB\n"
         f"/swarm     — 4 המכשירים שלך\n"
         f"/devices   — רשימת ESP מחוברים\n"
         f"/price     — מחירי SLH/MNH/ZVK\n\n"
-        f"━━━ מתקדם ━━━\n"
-        f"/ps        — docker containers (אם זמין)\n"
-        f"/bots      — bot fleet status\n"
-        f"/logs <X>  — לוגים של container\n"
-        f"/git       — סטטוס repo\n"
-        f"/task <X>  — הוסף משימה ל-TASK_BOARD.md\n\n"
+        f"━━━ Admin ━━━\n"
+        f"/revenue        — MRR + רווח 30 יום\n"
+        f"/anthropic_spend — עלות AI\n"
+        f"/top_users      — Top 10 לפי שימוש\n"
+        f"/quota_user <id> — בדיקה למשתמש ספציפי\n\n"
+        f"━━━ Ops ━━━\n"
+        f"/ps  /bots  /logs <X>  /git  /task <X>\n\n"
         f"━━━ שיחה חופשית ━━━\n"
-        f"כל טקסט אחר → AI חינם (groq/gemini)\n\n"
+        f"כל טקסט אחר → AI לפי ה-tier שלך\n\n"
         f"עזרה מלאה: /help",
         parse_mode=None,
     )
@@ -533,16 +561,22 @@ async def cmd_git(msg: Message) -> None:
         await msg.answer(f"פקודת git מותרות בלבד: {', '.join(safe_subs)}")
         return
     repo_hint = (parts[1].strip() if len(parts) > 1 else "")
-    repo = "website" if "website" in repo_hint else "."
-    if subcmd == "log":
-        out = _run_cmd(f"cd {repo} && git log --oneline -10")
-    elif subcmd == "diff":
-        out = _run_cmd(f"cd {repo} && git diff --stat")
-    elif subcmd == "branch":
-        out = _run_cmd(f"cd {repo} && git branch --show-current")
+    # Default = website (small repo); switch to main only if user says api/main
+    if "api" in repo_hint or "main" in repo_hint:
+        repo = "/workspace"
     else:
-        out = _run_cmd(f"cd {repo} && git status -s")
-    await msg.answer(f"*git {subcmd} @ {repo}:*\n```\n{out}\n```")
+        repo = "/workspace/website"
+    if subcmd == "log":
+        out = _run_cmd(f"cd {repo} && git log --oneline -10", timeout=10)
+    elif subcmd == "diff":
+        out = _run_cmd(f"cd {repo} && git diff --stat HEAD", timeout=10)
+    elif subcmd == "branch":
+        out = _run_cmd(f"cd {repo} && git branch --show-current", timeout=5)
+    else:
+        # -uno = no untracked (workspace has 100s of untracked backup files)
+        out = _run_cmd(f"cd {repo} && git status -s -uno", timeout=10)
+    repo_short = "website" if "website" in repo else "main"
+    await msg.answer(f"*git {subcmd} @ `{repo_short}`:*\n```\n{out[:3500]}\n```")
 
 
 @dp.message(Command("bots"))
@@ -569,7 +603,9 @@ async def cmd_ai_mode(msg: Message) -> None:
     )
 
 
-@dp.message(F.text)
+# Filter excludes slash-commands so they fall through to Command-filtered
+# handlers registered LATER (payment_flow, admin_panel, editor_commands).
+@dp.message(F.text & ~F.text.startswith("/"))
 async def on_text(msg: Message) -> None:
     if not auth.is_authorized(msg.from_user.id):
         await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
@@ -578,16 +614,54 @@ async def on_text(msg: Message) -> None:
     if not text.strip():
         return
 
+    # ==== QUOTA GATE ====
+    decision = await quota.check(msg.from_user.id)
+    if not decision.allowed:
+        await msg.answer(decision.refusal_he, parse_mode="Markdown")
+        return
+
     # Show "typing" while we think
     await bot.send_chat_action(msg.chat.id, "typing")
 
+    client, provider, model = _pick_ai_client(decision.use_anthropic)
+
     try:
         hist = await session.history(msg.chat.id)
-        reply, new_msgs = await ai_client.converse(hist, text)
+        reply, new_msgs = await client.converse(hist, text)
         for m in new_msgs:
             await session.append(msg.chat.id, m["role"], m["content"])
+
+        # ==== USAGE LOG ====
+        # Token counts are best-effort estimates until claude_client.converse
+        # returns real usage. char/4 is a rough heuristic.
+        tokens_in = max(1, sum(len(str(m.get("content", ""))) for m in hist) // 4)
+        tokens_out = max(1, len(reply) // 4)
+        cost_cents = 0
+        if provider == "anthropic":
+            # Anthropic Sonnet 4.5: $3/Mtok in, $15/Mtok out → cents
+            cost_usd = (tokens_in * 3.0 + tokens_out * 15.0) / 1_000_000
+            cost_cents = int(cost_usd * 100)
+        await quota.record(
+            user_id=msg.from_user.id,
+            chat_id=msg.chat.id,
+            tier=decision.tier,
+            provider=provider,
+            model=model,
+            tokens_in=tokens_in,
+            tokens_out=tokens_out,
+            cost_usd_cents=cost_cents,
+        )
+
         for chunk in _chunks(reply):
             await msg.answer(chunk)
+
+        # Low-quota nudge — only on transitions
+        new_remaining = decision.quota_remaining - 1
+        if 0 < new_remaining <= 3 and decision.tier == "free":
+            await msg.answer(
+                f"⚠️ נשארו לך {new_remaining} הודעות החודש. "
+                f"שדרג ל-Pro: `/upgrade pro`"
+            )
     except Exception as e:
         log.exception("converse failed")
         err = f"שגיאה: `{type(e).__name__}: {e}`"
@@ -598,6 +672,12 @@ async def on_text(msg: Message) -> None:
 
 async def main() -> None:
     await session.init_db()
+    await subscriptions.init_db()
+    # Wire monetization (must register BEFORE F.text handler runs, but since
+    # F.text now excludes slash-commands these can register at runtime safely)
+    payment_flow.register(dp, auth)
+    admin_panel.register(dp, auth)
+    log.info("payment_flow + admin_panel wired in")
     # Wire up editor commands (cat/ls/grep/append/replace/newpage/commit/push/sync/draft/apply/reject)
     try:
         import editor_commands
@@ -605,7 +685,7 @@ async def main() -> None:
         log.info("editor_commands wired in")
     except Exception as e:
         log.warning(f"editor_commands not loaded: {e}")
-    log.info("starting @SLH_Claude_bot")
+    log.info(f"starting @SLH_Claude_bot · AI mode: {_AI_MODE}")
     me = await bot.get_me()
     log.info(f"connected as @{me.username} (id={me.id})")
     await dp.start_polling(bot)
