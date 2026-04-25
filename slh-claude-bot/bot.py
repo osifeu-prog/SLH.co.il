@@ -78,24 +78,21 @@ async def cmd_help(msg: Message) -> None:
         await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
         return
     await msg.answer(
-        "*פקודות Direct \\(ללא AI, מיידי\\):*\n"
-        "/ps — רשימת containers רצים\n"
-        "/bots — ספירה של bot fleet \\+ סטטוס\n"
-        "/logs \\<name\\> — 25 שורות אחרונות של container\n"
-        "/git \\<status\\|log\\|diff\\|branch\\> \\[website\\]\n"
-        "/health — בריאות ה\\-API \\+ DB\n"
-        "/price — מחירי SLH/MNH/ZVK\n"
-        "/devices — רשימת ESP\\-ים מחוברים\n"
-        "/task \\<טקסט\\> — הוסף למשימות\n"
-        "/ai\\_mode — מה מצב ה\\-AI כרגע\n\n"
-        "*שיחה חופשית \\(AI\\):*\n"
-        f"כל טקסט אחר מופעל ב\\-AI \\({_AI_MODE}\\)\\.\n"
-        "אם ANTHROPIC\\_API\\_KEY לא מוגדר — משתמש ב\\-groq\\+gemini \\(חינם\\)\\.\n\n"
+        "*🤖 פקודות Ops \\(מיידי, ללא AI\\):*\n"
+        "`/ps` `/bots` `/logs <name>` `/git` `/health` `/price` `/devices` `/task` `/ai_mode`\n\n"
+        "*🛠 פקודות עורך \\(שליטה באתר\\):*\n"
+        "`/cat` `/ls` `/grep` `/find`\n"
+        "`/append` `/replace` `/newpage`\n"
+        "`/commit` `/push` `/sync`\n"
+        "`/draft` `/apply` `/reject`\n"
+        "פירוט מלא: `/editor`\n\n"
+        f"*🧠 שיחה חופשית \\(AI: {_AI_MODE}\\):*\n"
+        "כל טקסט אחר נענה דרך Groq חינם\\.\n\n"
         "*דוגמאות:*\n"
-        "• `/ps` — מי רץ עכשיו?\n"
-        "• `/logs slh\\-guardian\\-bot`\n"
-        "• `/git status website`\n"
-        "• \"מה הכי דחוף לעשות עכשיו?\""
+        "• `/ls website`\n"
+        "• `/cat website/voice\\.html`\n"
+        "• `/draft website/index\\.html שנה את הכותרת`\n"
+        "• `/sync \"feat: my edit\"`"
     )
 
 
@@ -209,6 +206,56 @@ async def cmd_devices(msg: Message) -> None:
         await msg.answer(f"admin API החזיר {e.response.status_code}.")
     except Exception as e:
         log.exception("/devices failed")
+        await msg.answer(f"שגיאה: `{_escape_md(str(e))}`")
+
+
+@dp.message(Command("swarm"))
+async def cmd_swarm(msg: Message) -> None:
+    """Show SLH Swarm mesh status — total/online/events/pending + per-device list."""
+    if not auth.is_authorized(msg.from_user.id):
+        await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
+        return
+    try:
+        stats = await _http_get_json("/api/swarm/stats")
+        devices_resp = await _http_get_json("/api/swarm/devices?limit=20")
+        devices = devices_resp.get("devices", [])
+
+        lines = [
+            "*🐝 רשת Swarm:*",
+            f"• *סה״כ:* `{stats.get('total_devices', 0)}` · "
+            f"*online:* `{stats.get('online', 0)}`",
+            f"• *events 24h:* `{stats.get('events_24h', 0)}` · "
+            f"*commands ממתינות:* `{stats.get('pending_commands', 0)}`",
+        ]
+
+        if devices:
+            lines.append("\n*מכשירים:*")
+            for d in devices[:10]:
+                dev_id = d.get("device_id", "?")
+                online = d.get("online", False)
+                mark = "🟢" if online else "⚫"
+                rssi = d.get("last_rssi")
+                bat = d.get("last_battery_pct")
+                tail_bits = []
+                if rssi is not None:
+                    tail_bits.append(f"RSSI {rssi}dBm")
+                if bat is not None:
+                    tail_bits.append(f"{bat}%")
+                tail = " · ".join(tail_bits)
+                lines.append(
+                    f"{mark} `{_escape_md(str(dev_id))}`"
+                    + (f" · {_escape_md(tail)}" if tail else "")
+                )
+            if len(devices) > 10:
+                lines.append(f"_\\+ {len(devices) - 10} נוספים_")
+        else:
+            lines.append(
+                "\n_אין מכשירים רשומים עדיין\\. כשתבעיר את ה-firmware עם תמיכת ESP-NOW, המכשירים יירשמו אוטומטית\\._"
+            )
+
+        await msg.answer("\n".join(lines))
+    except Exception as e:
+        log.exception("/swarm failed")
         await msg.answer(f"שגיאה: `{_escape_md(str(e))}`")
 
 
@@ -397,6 +444,13 @@ async def on_text(msg: Message) -> None:
 
 async def main() -> None:
     await session.init_db()
+    # Wire up editor commands (cat/ls/grep/append/replace/newpage/commit/push/sync/draft/apply/reject)
+    try:
+        import editor_commands
+        editor_commands.register(dp, auth, _chunks)
+        log.info("editor_commands wired in")
+    except Exception as e:
+        log.warning(f"editor_commands not loaded: {e}")
     log.info("starting @SLH_Claude_bot")
     me = await bot.get_me()
     log.info(f"connected as @{me.username} (id={me.id})")
