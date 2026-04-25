@@ -26,17 +26,33 @@ AI_USER_ID = os.getenv("SLH_AI_USER_ID", "claude_bot_admin")
 DEFAULT_LANG = os.getenv("SLH_AI_LANG", "he")
 TIMEOUT = float(os.getenv("SLH_AI_TIMEOUT", "45"))
 
-_SYSTEM_PROMPT = (
-    "אתה SLH Claude — העוזר האישי של אוסיף, הבעלים של אקוסיסטם SLH. "
-    "ענה בעברית, קצר וישיר. אם נשאלת על פקודות docker/git/file — "
-    "הציע לאוסיף להשתמש ב-slash commands: /ps, /logs <bot>, /git, /health, /price, /devices. "
-    "לא תענה על שאלות שלא קשורות ל-SLH אלא אם כן זה ברור. "
-    "הפרויקט: website ב-GitHub Pages (slh-nft.com), API ב-Railway, 25 Telegram bots, "
-    "token SLH ב-BSC, phase 2 vision (Voice + Swarm)."
+_SYSTEM_PROMPT_FREE = (
+    "אתה SLH Claude — עוזר אישי של אוסיף ומשתמשי SLH Spark. "
+    "**אל תציג את עצמך בכל תשובה.** ענה ישר לשאלה. עברית, קצר.\n"
+    "אם נשאלת על פעולות מערכת (docker/git/קבצים) — הציע slash commands: "
+    "/ps /logs <bot> /git /health /price /devices /credits.\n"
+    "לא חורג מנושאי SLH אלא אם ברור. רקע: website (slh-nft.com), "
+    "API (Railway), 25 Telegram bots, SLH token (BSC), Phase 2 (Voice/Swarm)."
 )
 
+_SYSTEM_PROMPT_PRO_FALLBACK = (
+    "אתה SLH Claude (Pro mode · fallback). "
+    "**אל תציג את עצמך בכל תשובה.** ענה ישירות, בעברית, קצר ופרקטי.\n"
+    "המשתמש שילם על חבילת Pro עם Claude + tools, אבל כעת Anthropic balance ריק "
+    "ואתה רץ דרך Groq Llama 3.3 70B ללא יכולת לבצע tools. "
+    "אם נשאלת לבצע פעולה (קריאת קובץ, git, deploy) — הסבר שזה ידרוש את ה-Anthropic "
+    "balance ושפעולות ידניות אפשריות עם slash commands: /ps /logs <bot> /git /health "
+    "/devices /control /swarm /credits /upgrade.\n"
+    "לעומת זאת, אתה כן יכול: לתת ייעוץ, לכתוב טקסטים, לעשות research, לסכם, לתרגם, "
+    "לתכנן ארכיטקטורה, לעזור עם debug היפותטי. הצע ערך גם בלי tools."
+)
 
-async def converse(history: List[dict], user_text: str) -> Tuple[str, List[dict]]:
+# Backwards compat default
+_SYSTEM_PROMPT = _SYSTEM_PROMPT_FREE
+
+
+async def converse(history: List[dict], user_text: str,
+                   tier_mode: str = "free") -> Tuple[str, List[dict]]:
     """Send user_text to /api/ai/chat and return (reply, new_msgs_for_history).
 
     Signature-compatible with claude_client.converse() so bot.py can swap us in.
@@ -44,6 +60,8 @@ async def converse(history: List[dict], user_text: str) -> Tuple[str, List[dict]
     Args:
         history: list of {"role": "user"|"assistant", "content": str}
         user_text: the new user message
+        tier_mode: 'free' or 'pro_fallback' — selects appropriate system prompt
+                   so Pro users in fallback get a more capable / honest persona.
 
     Returns:
         (reply_text, new_msgs) where new_msgs is the pair [user_msg, assistant_msg]
@@ -63,7 +81,10 @@ async def converse(history: List[dict], user_text: str) -> Tuple[str, List[dict]
         context_parts.append(f"[{role}] {content}")
 
     context_block = "\n".join(context_parts) if context_parts else ""
-    composed = _SYSTEM_PROMPT
+    if tier_mode == "pro_fallback":
+        composed = _SYSTEM_PROMPT_PRO_FALLBACK
+    else:
+        composed = _SYSTEM_PROMPT_FREE
     if context_block:
         composed += "\n\n--- שיחה קודמת ---\n" + context_block
     composed += f"\n\n--- הודעה נוכחית ---\n{user_text}"
@@ -103,5 +124,6 @@ async def converse(history: List[dict], user_text: str) -> Tuple[str, List[dict]
 
 
 # Backwards-compatible alias
-async def chat(history: List[dict], user_text: str) -> Tuple[str, List[dict]]:
-    return await converse(history, user_text)
+async def chat(history: List[dict], user_text: str,
+               tier_mode: str = "free") -> Tuple[str, List[dict]]:
+    return await converse(history, user_text, tier_mode=tier_mode)

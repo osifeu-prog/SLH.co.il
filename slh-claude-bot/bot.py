@@ -683,7 +683,9 @@ async def on_text(msg: Message) -> None:
                 client = _free_client
                 provider = "free-fallback"
                 model = "groq/llama-3.3-70b-versatile"
-                reply, new_msgs = await client.converse(hist, text)
+                # Pass tier_mode='pro_fallback' so the system prompt knows the
+                # user paid for Pro — answer richly + acknowledge tool absence.
+                reply, new_msgs = await client.converse(hist, text, tier_mode="pro_fallback")
                 # Tell the user once per message — visible Pro-tier degradation
                 reply = ("⚠️ _Pro tier זמני על Groq Llama (Anthropic balance ריק). "
                          "תפעולה רגילה תחזור מיד שיתווסף balance._\n\n") + reply
