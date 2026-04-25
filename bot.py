@@ -4,6 +4,7 @@ import sys
 import asyncio
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, ContextTypes, CallbackQueryHandler
+from telegram.error import InvalidToken
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from datetime import datetime, timedelta
@@ -687,4 +688,14 @@ async def main():
     await asyncio.Event().wait()
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    # Resilience: if the Telegram token is rejected (rotated/revoked/invalid),
+    # don't crash-loop — fall back to serving the static site so slh.co.il
+    # stays online while the operator rotates the token in Railway env.
+    try:
+        asyncio.run(main())
+    except InvalidToken as e:
+        logger.error(f"TELEGRAM_BOT_TOKEN rejected by Telegram: {e}. "
+                     f"Falling back to static site serve. "
+                     f"Operator: rotate token in BotFather and update "
+                     f"Railway env var TELEGRAM_BOT_TOKEN, then redeploy.")
+        _serve_static_and_exit()
