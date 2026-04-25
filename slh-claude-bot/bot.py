@@ -62,13 +62,26 @@ async def cmd_start(msg: Message) -> None:
     if not auth.is_authorized(msg.from_user.id):
         await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
         return
+    # Send as plain text (no parse_mode) to avoid backslash pollution.
     await msg.answer(
-        "שלום עוסיף\\. אני SLH Claude \\(mode: `" + _AI_MODE + "`\\)\\.\n\n"
-        "*פקודות מהירות \\(ללא עלות\\):*\n"
-        "`/ps` `/bots` `/logs <name>` `/git` `/health` `/price` `/devices` `/task <טקסט>`\n\n"
-        "*שיחה חופשית:*\n"
-        "כל טקסט אחר → AI \\(groq/gemini חינם כרגע\\)\n\n"
-        "עוד עזרה: `/help`"
+        f"שלום עוסיף 👋\n"
+        f"אני SLH Claude — מצב נוכחי: {_AI_MODE}\n\n"
+        f"━━━ הכי שימושי ━━━\n"
+        f"/control   — סיכום מערכת בשורה אחת\n"
+        f"/health    — בריאות API + DB\n"
+        f"/swarm     — 4 המכשירים שלך\n"
+        f"/devices   — רשימת ESP מחוברים\n"
+        f"/price     — מחירי SLH/MNH/ZVK\n\n"
+        f"━━━ מתקדם ━━━\n"
+        f"/ps        — docker containers (אם זמין)\n"
+        f"/bots      — bot fleet status\n"
+        f"/logs <X>  — לוגים של container\n"
+        f"/git       — סטטוס repo\n"
+        f"/task <X>  — הוסף משימה ל-TASK_BOARD.md\n\n"
+        f"━━━ שיחה חופשית ━━━\n"
+        f"כל טקסט אחר → AI חינם (groq/gemini)\n\n"
+        f"עזרה מלאה: /help",
+        parse_mode=None,
     )
 
 
@@ -209,6 +222,92 @@ async def cmd_devices(msg: Message) -> None:
         await msg.answer(f"שגיאה: `{_escape_md(str(e))}`")
 
 
+@dp.message(Command("control"))
+async def cmd_control(msg: Message) -> None:
+    """One-shot ops summary: API + DB + Gateway + Swarm + Marketplace + Events.
+
+    This is THE 'where do I stand right now' command Osif's advisor asked for.
+    No AI, no token cost, ~500ms response. Plain text, no markdown traps.
+    """
+    if not auth.is_authorized(msg.from_user.id):
+        await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
+        return
+
+    sections = []
+    timestamp = __import__("datetime").datetime.now().strftime("%H:%M:%S %d/%m")
+
+    # 1. API health
+    try:
+        h = await _http_get_json("/api/health")
+        api_ok = h.get("status") == "ok"
+        db_ok = h.get("db") == "connected"
+        sections.append(
+            f"🟢 API: ok · DB: {h.get('db','?')} · v{h.get('version','?')}"
+            if api_ok and db_ok
+            else f"🔴 API: {h}"
+        )
+    except Exception as e:
+        sections.append(f"🔴 API: unreachable ({type(e).__name__})")
+
+    # 2. Gateway
+    try:
+        g = await _http_get_json("/api/miniapp/health")
+        if g.get("gateway_loaded"):
+            tok = "✓" if g.get("primary_bot_token_set") else "⚠ TELEGRAM_BOT_TOKEN חסר"
+            sections.append(f"🟢 Gateway: loaded · admins:{g.get('admin_ids_count')} · bot_token:{tok}")
+        else:
+            sections.append(f"🔴 Gateway: not loaded")
+    except Exception as e:
+        sections.append(f"⚪ Gateway: skip ({type(e).__name__})")
+
+    # 3. Swarm
+    try:
+        s = await _http_get_json("/api/swarm/stats")
+        sections.append(
+            f"🐝 Swarm: {s.get('online',0)}/{s.get('total_devices',0)} online · "
+            f"{s.get('events_24h',0)} events 24h · {s.get('pending_commands',0)} cmds pending"
+        )
+    except Exception as e:
+        sections.append(f"⚪ Swarm: skip ({type(e).__name__})")
+
+    # 4. Marketplace
+    try:
+        m = await _http_get_json("/api/marketplace/items?limit=100")
+        items = [i for i in (m.get("items") or []) if i.get("status") == "approved"]
+        sections.append(f"🛒 Marketplace: {len(items)} פריטים approved")
+    except Exception as e:
+        sections.append(f"⚪ Marketplace: skip")
+
+    # 5. Recent events
+    try:
+        e = await _http_get_json("/api/events/public?limit=5")
+        evts = e.get("events") or []
+        if evts:
+            recent = ", ".join(set(ev.get("type") or ev.get("event_type", "?") for ev in evts[:5]))
+            sections.append(f"📡 Events 5 last: {recent}")
+        else:
+            sections.append("📡 Events: 0 (פיד פעילות ריק)")
+    except Exception:
+        sections.append(f"⚪ Events: skip")
+
+    # 6. Your queue (4 user-action blockers)
+    queue_items = []
+    if 'g' in locals() and not g.get("primary_bot_token_set"):
+        queue_items.append("• הגדר TELEGRAM_BOT_TOKEN ב-Railway")
+    queue_items.append("• פייר ESP — שלח /devices לבדיקה")
+    queue_items.append("• הגדר SMS_PROVIDER ב-Railway (Inforu)")
+    queue_items.append("• BotFather: הגדר Mini App URL")
+
+    sections.append("")
+    sections.append("📋 התור שלך:")
+    sections.extend(queue_items)
+    sections.append("")
+    sections.append(f"🏠 הבית: https://slh-nft.com/my.html")
+    sections.append(f"⏱ נבדק: {timestamp}")
+
+    await msg.answer("\n".join(sections), parse_mode=None)
+
+
 @dp.message(Command("swarm"))
 async def cmd_swarm(msg: Message) -> None:
     """Show SLH Swarm mesh status — total/online/events/pending + per-device list."""
@@ -325,25 +424,80 @@ _SAFE_EXEC_ALLOWLIST = {
 }
 
 
+def _resolve_cwd() -> str:
+    """Pick a valid working dir. /workspace works in container, falls back
+    to repo root on local Windows installs."""
+    candidates = ["/workspace", os.path.join(HERE, ".."), HERE]
+    for c in candidates:
+        if c and os.path.isdir(c):
+            return c
+    return os.getcwd()
+
+
+_CMD_CWD = _resolve_cwd()
+
+
 def _run_cmd(cmd: str, timeout: int = 15) -> str:
     """Run a shell command and return stdout+stderr, capped."""
     try:
         result = subprocess.run(
             cmd, shell=True, capture_output=True, text=True,
-            timeout=timeout, cwd="/workspace",
+            timeout=timeout, cwd=_CMD_CWD,
         )
         out = (result.stdout or "") + (result.stderr or "")
         return out[:3500] or "(no output)"
     except subprocess.TimeoutExpired:
         return f"⏱ command timed out after {timeout}s"
+    except FileNotFoundError as e:
+        # Docker / git not in PATH — friendly message
+        return f"⚠️ command not found: {e}"
     except Exception as e:
         return f"⚠️ {type(e).__name__}: {e}"
+
+
+def _has_binary(name: str) -> bool:
+    import shutil
+    return shutil.which(name) is not None
 
 
 @dp.message(Command("ps"))
 async def cmd_ps(msg: Message) -> None:
     if not auth.is_authorized(msg.from_user.id):
         await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
+        return
+    if not _has_binary("docker"):
+        # Fallback: list services from docker-compose.yml so the user sees
+        # the configured fleet even when the bot has no docker socket.
+        compose_path = os.path.join(_CMD_CWD, "docker-compose.yml")
+        if os.path.isfile(compose_path):
+            try:
+                with open(compose_path, "r", encoding="utf-8") as f:
+                    raw = f.read()
+                services = []
+                in_services = False
+                for line in raw.splitlines():
+                    if line.startswith("services:"):
+                        in_services = True
+                        continue
+                    if in_services:
+                        if line and not line.startswith((" ", "\t")):
+                            break
+                        # Service names are 2-space indented and end with ':'
+                        if line.startswith("  ") and not line.startswith("    ") and line.rstrip().endswith(":"):
+                            services.append(line.strip().rstrip(":"))
+                services_str = "\n".join(f"• {s}" for s in services[:40])
+                await msg.answer(
+                    "🐳 docker לא מותקן בסביבה הזו של הבוט.\n\n"
+                    f"שירותים שמוגדרים ב-docker-compose.yml ({len(services)}):\n"
+                    f"{services_str}\n\n"
+                    "להפעלת הסטטוס בפועל הרץ במחשב המארח: `docker compose ps`",
+                    parse_mode=None,
+                )
+                return
+            except Exception as e:
+                await msg.answer(f"docker חסר ולא הצלחתי לקרוא compose: {e}")
+                return
+        await msg.answer("🐳 docker לא מותקן + docker-compose.yml לא נמצא.", parse_mode=None)
         return
     out = _run_cmd("docker ps --format 'table {{.Names}}\\t{{.Status}}'")
     await msg.answer(f"```\n{out}\n```")
