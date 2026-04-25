@@ -3,11 +3,13 @@
 One public async function: `send_otp(phone, code, purpose)`.
 Behavior selected by env var `SMS_PROVIDER`:
 
-    twilio   — Twilio REST API. Needs TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM
-    inforu   — Israeli Inforu (infobip-like) REST API. Needs INFORU_USERNAME, INFORU_API_TOKEN, INFORU_SENDER
-    sms019   — 019 Mobile (Israeli). Needs SMS019_USERNAME, SMS019_PASSWORD, SMS019_SENDER
-    stub     — no-op, returns success=True with note. Used in dev.
-    disabled — explicit refusal, returns success=False. For prod when not yet wired.
+    twilio       — Twilio REST API. Needs TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM
+    inforu       — Israeli Inforu (infobip-like) REST API. Needs INFORU_USERNAME, INFORU_API_TOKEN, INFORU_SENDER
+    sms019       — 019 Mobile (Israeli). Needs SMS019_USERNAME, SMS019_PASSWORD, SMS019_SENDER
+    infinireach  — InfiniReach Multi-Platform Gateway (sends through your own Android phone via SIM).
+                   Needs INFINIREACH_API_KEY, INFINIREACH_FROM (e164 phone of your registered device)
+    stub         — no-op, returns success=True with note. Used in dev.
+    disabled     — explicit refusal, returns success=False. For prod when not yet wired.
 
 If SMS_PROVIDER is unset we default to `stub` in development and `disabled` in production
 (detected by presence of RAILWAY_ENVIRONMENT env var).
@@ -150,6 +152,58 @@ async def _send_sms019(phone: str, body: str) -> SmsResult:
     return SmsResult(ok=True, provider="sms019")
 
 
+async def _send_infinireach(phone: str, body: str) -> SmsResult:
+    """InfiniReach (api.infinireach.io) — sends through Osif's Android phone via SIM.
+    Free tier: 1 device, unlimited SMS via your own carrier plan.
+    """
+    key = os.getenv("INFINIREACH_API_KEY")
+    sender = os.getenv("INFINIREACH_FROM") or os.getenv("INFINIREACH_DEVICE_PHONE")
+    api_url = os.getenv("INFINIREACH_API_URL", "https://api.infinireach.io/api/v1/messages")
+    if not key:
+        return SmsResult(ok=False, provider="infinireach", error="INFINIREACH_API_KEY missing")
+    if not sender:
+        return SmsResult(ok=False, provider="infinireach", error="INFINIREACH_FROM missing (e164 phone)")
+    payload = {
+        "channel": "sms",
+        "e164From": sender,
+        "to": phone,
+        "message": body,
+    }
+    # Cloudflare-friendly UA — empty/Python UA gets blocked with code 1010
+    headers = {
+        "X-API-Key": key,
+        "Content-Type": "application/json",
+        "User-Agent": "Mozilla/5.0 (compatible; SLH-Bot/1.0)",
+        "Accept": "application/json",
+    }
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            resp = await client.post(api_url, json=payload, headers=headers)
+    except httpx.TimeoutException:
+        return SmsResult(ok=False, provider="infinireach", error="timeout (>30s)")
+    if resp.status_code >= 400:
+        return SmsResult(
+            ok=False,
+            provider="infinireach",
+            error=f"http {resp.status_code}: {resp.text[:200]}",
+        )
+    try:
+        j = resp.json()
+        if j.get("success") is True:
+            return SmsResult(
+                ok=True,
+                provider="infinireach",
+                message_id=str(j.get("messageId") or j.get("jobId") or ""),
+            )
+        return SmsResult(
+            ok=False,
+            provider="infinireach",
+            error=str(j.get("error") or j.get("message") or "unknown"),
+        )
+    except Exception:
+        return SmsResult(ok=True, provider="infinireach")  # best-effort
+
+
 async def _send_stub(phone: str, body: str) -> SmsResult:
     """Dev-only stub: logs, does not send. ok=True so flow proceeds with _dev_code exposure."""
     log.info("SMS stub: phone=%s body_len=%d (not actually sent)", _mask_phone(phone), len(body))
@@ -181,6 +235,8 @@ async def send_otp(phone: str, code: str, purpose: str = "device_pair") -> SmsRe
             return await _send_inforu(phone, body)
         if provider == "sms019":
             return await _send_sms019(phone, body)
+        if provider == "infinireach":
+            return await _send_infinireach(phone, body)
         if provider == "stub":
             return await _send_stub(phone, body)
         if provider == "disabled":
@@ -203,6 +259,10 @@ def provider_status() -> dict:
         ),
         "inforu": bool(os.getenv("INFORU_USERNAME") and os.getenv("INFORU_API_TOKEN")),
         "sms019": bool(os.getenv("SMS019_USERNAME") and os.getenv("SMS019_PASSWORD")),
+        "infinireach": bool(
+            os.getenv("INFINIREACH_API_KEY")
+            and (os.getenv("INFINIREACH_FROM") or os.getenv("INFINIREACH_DEVICE_PHONE"))
+        ),
     }
     return {
         "provider": provider,

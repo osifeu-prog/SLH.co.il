@@ -10564,7 +10564,12 @@ async def device_register(req: DeviceRegisterReq, request: Request):
     sms_error = None
     if not tg_sent:
         try:
-            from api.sms_provider import send_otp as _send_otp
+            # On Railway: sms_provider.py is at /app/sms_provider.py (api/ is the build root)
+            # On local dev: file is at api/sms_provider.py — fall back if Railway-style fails
+            try:
+                from sms_provider import send_otp as _send_otp
+            except ImportError:
+                from api.sms_provider import send_otp as _send_otp
             sms_result = await _send_otp(phone, code, purpose="device_pair")
             sms_sent = sms_result.ok and not sms_result.stub
             sms_provider = sms_result.provider
