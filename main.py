@@ -75,6 +75,17 @@ except Exception as _exp_err:  # pragma: no cover
     _EXPENSES_AVAILABLE = False
     _expenses_router = None  # type: ignore
 
+# Secrets vault — unified inventory of all credentials (bot tokens, API keys,
+# DB creds, AI providers). Stores metadata only, never secret values.
+try:
+    from api import admin_secrets_catalog as _secrets_vault
+    _SECRETS_VAULT_AVAILABLE = True
+except Exception as _sv_err:  # pragma: no cover
+    import logging as _log
+    _log.warning("secrets_vault unavailable: %s", _sv_err)
+    _SECRETS_VAULT_AVAILABLE = False
+    _secrets_vault = None  # type: ignore
+
 from shared_db_core import init_db_pool as _shared_init_db_pool, db_health as _shared_db_health
 
 from routes.ai_chat import router as ai_chat_router, set_aic_pool as _ai_chat_set_aic_pool
@@ -307,6 +318,9 @@ if _BOTS_CATALOG_AVAILABLE and _bots_catalog is not None:
 
 if _EXPENSES_AVAILABLE and _expenses_router is not None:
     app.include_router(_expenses_router.router)
+
+if _SECRETS_VAULT_AVAILABLE and _secrets_vault is not None:
+    app.include_router(_secrets_vault.router)
 
 # === DATABASE ===
 pool: Optional[asyncpg.Pool] = None
