@@ -26,6 +26,13 @@ import subscriptions
 import payment_flow
 import admin_panel
 
+# Defensive import — anthropic may not be installed in all environments.
+try:
+    from anthropic import BadRequestError as AnthropicBadRequest
+except ImportError:
+    class AnthropicBadRequest(Exception):
+        pass
+
 # Two AI clients available simultaneously:
 # - free_ai_client (Groq/Gemini): always loaded, used for Free tier
 # - claude_client (Anthropic+tools): loaded only if ANTHROPIC_API_KEY set,
@@ -627,7 +634,32 @@ async def on_text(msg: Message) -> None:
 
     try:
         hist = await session.history(msg.chat.id)
-        reply, new_msgs = await client.converse(hist, text)
+
+        # Try the chosen client. If Anthropic returns a credit-balance error,
+        # silently fall back to the free Groq pipeline so paid users still get
+        # value (we'll log it as 'free-fallback' so /revenue cost numbers stay
+        # honest, and prepend a one-line note so the user knows what happened).
+        try:
+            reply, new_msgs = await client.converse(hist, text)
+        except AnthropicBadRequest as e:
+            err_msg = str(e).lower()
+            balance_exhausted = (
+                provider == "anthropic"
+                and ("credit balance" in err_msg or "credit_balance" in err_msg
+                     or "insufficient" in err_msg or "billing" in err_msg)
+            )
+            if balance_exhausted:
+                log.warning(f"Anthropic balance exhausted, falling back to free: {e}")
+                client = _free_client
+                provider = "free-fallback"
+                model = "groq/llama-3.3-70b-versatile"
+                reply, new_msgs = await client.converse(hist, text)
+                # Tell the user once per message — visible Pro-tier degradation
+                reply = ("⚠️ _Pro tier זמני על Groq Llama (Anthropic balance ריק). "
+                         "תפעולה רגילה תחזור מיד שיתווסף balance._\n\n") + reply
+            else:
+                raise
+
         for m in new_msgs:
             await session.append(msg.chat.id, m["role"], m["content"])
 
@@ -641,6 +673,7 @@ async def on_text(msg: Message) -> None:
             # Anthropic Sonnet 4.5: $3/Mtok in, $15/Mtok out → cents
             cost_usd = (tokens_in * 3.0 + tokens_out * 15.0) / 1_000_000
             cost_cents = int(cost_usd * 100)
+        # provider == 'free-fallback' or 'free' → cost_cents stays 0
         await quota.record(
             user_id=msg.from_user.id,
             chat_id=msg.chat.id,

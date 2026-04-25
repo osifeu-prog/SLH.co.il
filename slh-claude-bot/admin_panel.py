@@ -55,6 +55,56 @@ def register(dp: Dispatcher, auth_module) -> None:
             + "\n".join(f"  • {p}: {d['messages']}" for p, d in stats["usage_by_provider"].items())
         )
 
+    @dp.message(Command("anthropic_status"))
+    async def cmd_anthropic_status(msg: Message):
+        """Probe Anthropic key state: auth + balance — without printing the key."""
+        if not auth_module.is_authorized(msg.from_user.id):
+            await msg.answer(auth_module.unauthorized_reply_he(msg.from_user.id))
+            return
+        import os, httpx
+        key = os.getenv("ANTHROPIC_API_KEY", "")
+        if not key.startswith("sk-"):
+            await msg.answer(
+                "🔴 *ANTHROPIC_API_KEY*\nלא טעון או לא מתחיל ב-sk-.\n"
+                "הוסף ב-`slh-claude-bot/.env` ועשה `docker compose up -d --force-recreate claude-bot`.")
+            return
+        # Step 1: auth check via /v1/models (free, doesn't consume credit)
+        try:
+            r = httpx.get(
+                "https://api.anthropic.com/v1/models",
+                headers={"x-api-key": key, "anthropic-version": "2023-06-01"},
+                timeout=10,
+            )
+            auth_ok = (r.status_code == 200)
+        except Exception as e:
+            auth_ok = False
+            r_text = f"err: {type(e).__name__}"
+        # Step 2: tiny balance probe — 1-token call. If it 400s with "credit balance",
+        # we know there's $0; if it 200s, balance exists.
+        try:
+            from anthropic import Anthropic
+            c = Anthropic(api_key=key)
+            c.messages.create(
+                model=os.getenv("CLAUDE_MODEL", "claude-sonnet-4-5-20250929"),
+                max_tokens=1,
+                messages=[{"role": "user", "content": "."}],
+            )
+            balance_ok = True
+            balance_note = "יש balance — Pro tier יעבוד באופן ישיר"
+        except Exception as e:
+            err = str(e).lower()
+            balance_ok = False
+            if "credit balance" in err or "credit_balance" in err or "billing" in err:
+                balance_note = "$0 balance — Pro tier יחזור ל-Groq fallback אוטומטית"
+            else:
+                balance_note = f"err: {type(e).__name__}: {str(e)[:80]}"
+        await msg.answer(
+            f"🔑 *Anthropic Status*\n"
+            f"  auth: {'✅' if auth_ok else '❌'}\n"
+            f"  balance: {'✅' if balance_ok else '⚠️'}\n"
+            f"  → {balance_note}"
+        )
+
     @dp.message(Command("anthropic_spend"))
     async def cmd_spend(msg: Message):
         if not auth_module.is_authorized(msg.from_user.id):
