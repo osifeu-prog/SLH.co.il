@@ -143,6 +143,57 @@ The other agent announced it would build:
 
 ---
 
+### Agent: Claude Opus 4.7 (1M context) — AI Spark Pro Tier + Packaging Session
+**Reporting window:** 2026-04-25 (this session)
+**Current status:** 🟡 in-progress · LATE REGISTRATION (worked first, registered after operator pasted MASTER_PROMPT)
+
+**What I did this session BEFORE registering (mistake — should have registered first):**
+
+*On `slh-api` master (commit `74b428b`):*
+1. Built `@SLH_Claude_bot` AI Spark Pro/VIP/Free tier system:
+   - `slh-claude-bot/pricing.py` — single source of truth (tier specs, margin math)
+   - `slh-claude-bot/subscriptions.py` — async SQLite (extends `sessions.db`)
+   - `slh-claude-bot/quota.py` — middleware: check before AI call, record after
+   - `slh-claude-bot/payment_flow.py` — Telegram Stars: `/upgrade /pricing /credits`
+   - `slh-claude-bot/admin_panel.py` — `/revenue /quota_user /set_tier /anthropic_spend /top_users`
+   - `slh-claude-bot/migrations/001_subscriptions.sql`
+   - `bot.py` — F.text now excludes slash-commands (so Command-filtered handlers fire); on_text gates via `quota.check`; logs usage post-call
+   - `auth.py` — multi-admin via `ADMIN_TELEGRAM_IDS` env (224223270 + 8789977826 both authorized)
+   - `claude_client.py` — SYSTEM_PROMPT recognizes both telegram IDs as same Osif
+2. Tuned tier quotas after live margin verification:
+   - Pro: ₪29 / 70 messages → +₪10.85 margin (53%)
+   - VIP: ₪99 / 350 fair-use → +₪22.05 margin (32%)
+3. Verified live in container: free user lazy-creates subscription, quota check returns correct tier+remaining, no Anthropic key needed for Free path.
+4. `ops/AI_REVENUE_MODEL.md` — canonical revenue model + ops doc.
+5. `ops/SESSION_HANDOFF_20260425_AI_SPARK.md` — next-session handoff (this is in addition to the alignment entry — operator may consolidate later if needed).
+
+*On separate repo `D:\SLH.co.il` (commit `c48789a`):*
+6. SIG statistical defense + 2 SLH device mining reward + `CLAUDE.md` agent rules + bot.py InvalidToken→static-fallback (resilience for Railway monitor.slh service).
+
+**What I deliberately did NOT touch:**
+- Other agents' Phase 3 work (ESP catalog, 3-Bot rotation spec, PAGE_INVENTORY) — respected scope.
+- `api/main.py` / root `main.py` — no changes (Railway sync rule respected).
+- Did NOT create new website pages — extended `slh-claude-bot/` only.
+- Did NOT touch the 6 unused funnel pages flagged for deletion — that's the cleanup agent's call.
+
+**Acknowledged secrets leak (this session):** `railway variables` and `railway logs` output exposed `TELEGRAM_BOT_TOKEN`, `DATABASE_URL` postgres password, and `OPENAI_API_KEY` to chat. Flagged to operator with rotation URLs. Both Telegram tokens were rotated by operator, then the new tokens were also pasted by operator → 3rd rotation pending. DB + OpenAI rotation also pending.
+
+**Git state at registration:**
+- `slh-api` master: `74b428b` (pushed). API healthy.
+- `D:\SLH.co.il` main: `c48789a` (pushed). www.slh.co.il live with new content; monitor.slh.co.il in static-fallback mode (bot crashloop until token rotation).
+- `osifeu-prog.github.io` main: untouched by me.
+
+**What I'm doing NEXT in this session (Option C — Packaging-first):**
+- Recommend Option C from MASTER_PROMPT §8 — Telegram Mini App.
+- Reasoning: One env var (`TELEGRAM_BOT_TOKEN` on Railway) unblocks BOTH the already-built `/miniapp/dashboard.html` AND my AI Spark `/upgrade` flow (Stars require bot token). Highest leverage / lowest operator friction (3 min from operator).
+- After operator sets env: I'll wire AI Spark tier + quota into `/miniapp/dashboard.html` (extend, not new page), smoke-test gateway, and produce a single-step BotFather setdomain instruction.
+
+**My next session trigger:** operator confirms `TELEGRAM_BOT_TOKEN` is set on Railway and `curl /api/miniapp/health` returns `primary_bot_token_set:true` → I ship Mini App + AI Spark integration smoke test.
+
+**Started:** 2026-04-25 ~13:30 (Israel time)
+
+---
+
 ### Agent: [Slot Open] — Infrastructure/DevOps Agent
 **Claim this slot if you're working on:**
 - Railway deploy unblock
