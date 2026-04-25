@@ -75,6 +75,7 @@ from routes.agent_hub import router as agent_hub_router, set_pool as _agent_hub_
 from routes.campaign_admin import router as campaign_admin_router, set_pool as _campaign_admin_set_pool
 from routes.academia_ugc import router as academia_ugc_router, set_pool as _academia_ugc_set_pool, init_academia_ugc_tables as _init_academia_ugc
 from routes.ambassador_crm import router as ambassador_crm_router, set_pool as _ambassador_crm_set_pool
+from routes.device_inventory import router as device_inventory_router, set_pool as _device_inventory_set_pool
 from routes.tasks import router as tasks_router, set_pool as _tasks_set_pool
 from routes.bot_registry import router as bot_registry_router, set_pool as _bot_registry_set_pool, init_tables as _init_bot_registry
 from routes.admin_rotate import (
@@ -271,6 +272,7 @@ app.include_router(academia_ugc_router)
 app.include_router(bot_registry_router)
 app.include_router(admin_rotate_router)
 app.include_router(ambassador_crm_router)
+app.include_router(device_inventory_router)
 app.include_router(tasks_router)
 
 # Swarm router — devices mesh API (gated; OK if module is missing).
@@ -327,7 +329,8 @@ async def startup():
                        _creator_set_pool, _wellness_set_pool, _threat_set_pool, _whatsapp_set_pool,
                        _system_audit_set_pool, _agent_hub_set_pool, _campaign_admin_set_pool, _academia_ugc_set_pool,
                        _bot_registry_set_pool, _admin_rotate_set_pool,
-                       _ambassador_crm_set_pool, _tasks_set_pool):
+                       _ambassador_crm_set_pool, _tasks_set_pool,
+                       _device_inventory_set_pool):
             try:
                 setter(pool)
             except Exception as e:
