@@ -207,6 +207,33 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def preorder(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await _reply_guardian_preorder(update, update.effective_user, source="command")
 
+async def tokens_status(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Admin-only: render bot token health matrix.
+    From this service we only see TELEGRAM_BOT_TOKEN; other env vars are unknowns
+    (will show as ⚪). Full multi-bot view requires running this from the central
+    bot service that has all the *_BOT_TOKEN env vars set."""
+    user_id = update.effective_user.id
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute('SELECT is_admin FROM users WHERE user_id = %s', (user_id,))
+        row = cur.fetchone()
+        if not row or not row[0]:
+            await update.message.reply_text("❌ Admin only.")
+            return
+    finally:
+        cur.close()
+        conn.close()
+
+    try:
+        # Lazy import so the bot still starts if ops/ is missing for any reason
+        sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "ops"))
+        from token_monitor import check_all, render_telegram  # type: ignore
+        statuses = await check_all()
+        await update.message.reply_text(render_telegram(statuses), parse_mode='Markdown')
+    except Exception as e:
+        await update.message.reply_text(f"Error: {e}")
+
 async def health(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Public command — quick pulse of the bot + DB."""
     up = datetime.utcnow() - BOT_START_TIME
@@ -594,6 +621,7 @@ async def docs_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
 `/status` - System status
 `/health` - Bot health + DB
 `/stats` - 7-day stats (admin)
+`/tokens` - Bot token health matrix (admin)
 `/preorder` - שריון Guardian early bird
 `/mining_status` - 2 SLH Mining status (Guardian)
 `/sig` - SIG methodology + Target APY
@@ -679,6 +707,7 @@ async def main():
     app.add_handler(CommandHandler("sig", sig_info))
     app.add_handler(CommandHandler("health", health))
     app.add_handler(CommandHandler("stats", stats))
+    app.add_handler(CommandHandler("tokens", tokens_status))
     app.add_handler(CallbackQueryHandler(handle_callback))
     
     logger.info("Bot started polling...")
