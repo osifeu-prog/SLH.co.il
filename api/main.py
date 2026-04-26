@@ -86,6 +86,28 @@ except Exception as _sv_err:  # pragma: no cover
     _SECRETS_VAULT_AVAILABLE = False
     _secrets_vault = None  # type: ignore
 
+# Secrets vault Phase 2 — scheduled health sweep + Telegram alerts + daily digest.
+# Sits on top of admin_secrets_catalog (reuses _run_probe + _ensure_schema).
+try:
+    from api import admin_secret_alerts as _secret_alerts
+    _SECRET_ALERTS_AVAILABLE = True
+except Exception as _sa_err:  # pragma: no cover
+    import logging as _log
+    _log.warning("secret_alerts unavailable: %s", _sa_err)
+    _SECRET_ALERTS_AVAILABLE = False
+    _secret_alerts = None  # type: ignore
+
+# Public security beacon — sanitized aggregate counts for /my.html and any
+# other personal page. No auth, no key names, no per-secret detail.
+try:
+    from api import public_security_status as _public_security
+    _PUBLIC_SECURITY_AVAILABLE = True
+except Exception as _ps_err:  # pragma: no cover
+    import logging as _log
+    _log.warning("public_security unavailable: %s", _ps_err)
+    _PUBLIC_SECURITY_AVAILABLE = False
+    _public_security = None  # type: ignore
+
 from shared_db_core import init_db_pool as _shared_init_db_pool, db_health as _shared_db_health
 
 from routes.ai_chat import router as ai_chat_router, set_aic_pool as _ai_chat_set_aic_pool
@@ -325,6 +347,12 @@ if _EXPENSES_AVAILABLE and _expenses_router is not None:
 
 if _SECRETS_VAULT_AVAILABLE and _secrets_vault is not None:
     app.include_router(_secrets_vault.router)
+
+if _SECRET_ALERTS_AVAILABLE and _secret_alerts is not None:
+    app.include_router(_secret_alerts.router)
+
+if _PUBLIC_SECURITY_AVAILABLE and _public_security is not None:
+    app.include_router(_public_security.router)
 
 # === DATABASE ===
 pool: Optional[asyncpg.Pool] = None
