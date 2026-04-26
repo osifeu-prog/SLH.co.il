@@ -623,11 +623,23 @@ async def main():
     log.info(f"Admin: {ADMIN_USER_ID}")
     log.info(f"Payments module: {'loaded' if HAS_PAYMENTS else 'not available'}")
 
+    me = None
     try:
         me = await bot.get_me()
         log.info(f"Bot: @{me.username} ({me.id})")
     except Exception as e:
         log.error(f"Failed to get bot info: {e}")
+
+    # Coordination: register inbound + post ready (no-op if env unset)
+    try:
+        from shared.coordination import init_coordination_for_bot
+        await init_coordination_for_bot(
+            bot, dp,
+            name="game-bot",
+            username=(me.username if me else None),
+        )
+    except Exception as e:
+        log.warning(f"coordination init failed: {e}")
 
     await dp.start_polling(bot)
 

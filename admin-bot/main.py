@@ -1006,6 +1006,18 @@ async def main():
     logger.info("=" * 50)
     logger.info("SLH SPARK SYSTEM | Super Admin Bot â€” READY")
     logger.info("=" * 50)
+    # Coordination: register inbound + post ready (no-op if env unset)
+    try:
+        from shared.coordination import init_coordination_for_bot
+        me = await bot.get_me()
+        await init_coordination_for_bot(
+            bot, dp,
+            name="admin-bot",
+            username=me.username,
+        )
+    except Exception as e:
+        logger.warning("coordination init failed: %s", e)
+
     await dp.start_polling(bot, drop_pending_updates=True)
 
 if __name__ == "__main__":
