@@ -108,6 +108,7 @@ from routes.agent_hub import router as agent_hub_router, set_pool as _agent_hub_
 from routes.campaign_admin import router as campaign_admin_router, set_pool as _campaign_admin_set_pool
 from routes.academia_ugc import router as academia_ugc_router, set_pool as _academia_ugc_set_pool, init_academia_ugc_tables as _init_academia_ugc
 from routes.ambassador_crm import router as ambassador_crm_router, set_pool as _ambassador_crm_set_pool
+from routes.therapists import router as therapists_router, set_pool as _therapists_set_pool
 from routes.device_inventory import router as device_inventory_router, set_pool as _device_inventory_set_pool
 from routes.tasks import router as tasks_router, set_pool as _tasks_set_pool
 from routes.bot_registry import router as bot_registry_router, set_pool as _bot_registry_set_pool, init_tables as _init_bot_registry
@@ -307,6 +308,7 @@ app.include_router(bot_registry_router)
 app.include_router(admin_rotate_router)
 app.include_router(rotation_pipeline_router)
 app.include_router(ambassador_crm_router)
+app.include_router(therapists_router)
 app.include_router(device_inventory_router)
 app.include_router(tasks_router)
 
@@ -374,7 +376,7 @@ async def startup():
                        _creator_set_pool, _wellness_set_pool, _threat_set_pool, _whatsapp_set_pool,
                        _system_audit_set_pool, _agent_hub_set_pool, _campaign_admin_set_pool, _academia_ugc_set_pool,
                        _bot_registry_set_pool, _admin_rotate_set_pool,
-                       _ambassador_crm_set_pool, _tasks_set_pool,
+                       _ambassador_crm_set_pool, _therapists_set_pool, _tasks_set_pool,
                        _device_inventory_set_pool):
             try:
                 setter(pool)
@@ -7261,8 +7263,15 @@ async def _build_member_card_data(conn, user_id: int) -> dict:
         "SELECT COUNT(*) FROM referrals WHERE referrer_id = $1", user_id,
     ) or 0
 
-    # --- is_therapist: currently no dedicated column, default False ---
-    is_therapist = False
+    # --- is_therapist: real lookup against users.is_therapist (added by routes/therapists.py _ensure_table) ---
+    # Wrapped in try/except so member-card still works even if no therapist endpoint
+    # has been hit yet (column wouldn't exist) or if the user row is in web_users but not users.
+    try:
+        is_therapist = bool(await conn.fetchval(
+            "SELECT is_therapist FROM users WHERE user_id = $1", user_id,
+        ))
+    except Exception:
+        is_therapist = False
 
     # --- ASCII art card ---
     tier_emoji = TIER_EMOJIS.get(tier, "\U0001f331")

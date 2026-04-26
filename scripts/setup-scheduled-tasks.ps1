@@ -36,6 +36,18 @@ $TASKS = @(
         Description = "Compiles and DMs Osif a daily summary at 21:00 Israel time"
         Script      = "$REPO\scripts\daily_digest.py"
         Trigger     = "Daily at 21:00"
+    },
+    @{
+        Name        = "SLH_Secrets_Sweep"
+        Description = "Health-checks all 12 vault secrets every 6h, fires Telegram alerts on transitions"
+        Script      = "$REPO\scripts\secrets_health_sweep.py"
+        Trigger     = "Every 6 hours"
+    },
+    @{
+        Name        = "SLH_Secrets_Digest"
+        Description = "Sends Hebrew Telegram digest of secret health + overdue rotations daily at 21:05"
+        Script      = "$REPO\scripts\secrets_daily_digest.py"
+        Trigger     = "Daily at 21:05"
     }
 )
 
@@ -96,6 +108,16 @@ function Install-All {
             "SLH_Daily_Digest" {
                 # Daily at 21:00
                 $trigger = New-ScheduledTaskTrigger -Daily -At "21:00"
+            }
+            "SLH_Secrets_Sweep" {
+                # Every 6 hours starting from now
+                $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date) `
+                    -RepetitionInterval (New-TimeSpan -Hours 6) `
+                    -RepetitionDuration ([TimeSpan]::MaxValue)
+            }
+            "SLH_Secrets_Digest" {
+                # Daily at 21:05 (5 min after general digest, so sweep already ran)
+                $trigger = New-ScheduledTaskTrigger -Daily -At "21:05"
             }
         }
 
