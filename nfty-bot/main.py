@@ -1425,6 +1425,18 @@ async def main():
     dp.startup.register(on_startup)
     dp.shutdown.register(on_shutdown)
 
+    # Coordination: register inbound + post ready (no-op if env unset)
+    try:
+        from shared.coordination import init_coordination_for_bot
+        me = await bot.get_me()
+        await init_coordination_for_bot(
+            bot, dp,
+            name="nfty-bot",
+            username=me.username,
+        )
+    except Exception as e:
+        log.warning("coordination init failed: %s", e)
+
     await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
 
 if __name__ == "__main__":
