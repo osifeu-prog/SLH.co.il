@@ -366,3 +366,301 @@ async def reject_application(
         raise HTTPException(404, "application not found")
     return {"ok": True, "application_id": application_id, "status": "rejected",
             "therapist": _serialize(row)}
+
+
+# ── public directory (no auth) ──
+def _serialize_public(row) -> dict:
+    """Public-safe projection — no email/phone/handle exposed."""
+    return {
+        "id":              row["id"],
+        "name":            row["name"],
+        "profession":      row["profession"],
+        "experience_yrs":  row["experience_yrs"],
+        "specialties":     row["specialties"],
+        "hours_per_week":  row["hours_per_week"],
+        "bio":             row["bio"],
+        "rate_zvk":        float(row["rate_zvk"]) if row["rate_zvk"] is not None else 0.0,
+    }
+
+
+@router.get("/public")
+async def list_public_therapists(
+    profession: Optional[str] = Query(None, description="Substring filter on profession"),
+    search: Optional[str] = Query(None, description="Substring on name/specialties/bio"),
+    limit: int = Query(50, ge=1, le=200),
+    offset: int = Query(0, ge=0),
+):
+    """
+    Public list of approved therapists. No auth, no PII (no email/phone/handle).
+    Powers /therapists.html directory page.
+    """
+    if _pool is None:
+        raise HTTPException(503, "DB not ready")
+
+    conds = ["status = 'approved'", "deleted_at IS NULL"]
+    params: list = []
+
+    if profession:
+        params.append(f"%{profession}%")
+        conds.append(f"profession ILIKE ${len(params)}")
+
+    if search:
+        params.append(f"%{search}%")
+        ph = f"${len(params)}"
+        conds.append(f"(name ILIKE {ph} OR specialties ILIKE {ph} OR bio ILIKE {ph})")
+
+    where_sql = " AND ".join(conds)
+    filter_params = params.copy()
+    params.extend([limit, offset])
+
+    async with _pool.acquire() as conn:
+        await _ensure_table(conn)
+        rows = await conn.fetch(
+            f"SELECT id, name, profession, experience_yrs, specialties, "
+            f"hours_per_week, bio, rate_zvk "
+            f"FROM therapists WHERE {where_sql} "
+            f"ORDER BY approved_at DESC NULLS LAST, created_at DESC "
+            f"LIMIT ${len(params) - 1} OFFSET ${len(params)}",
+            *params,
+        )
+        total = await conn.fetchval(
+            f"SELECT COUNT(*) FROM therapists WHERE {where_sql}",
+            *filter_params,
+        )
+
+    return {
+        "therapists": [_serialize_public(r) for r in rows],
+        "total":      total,
+        "limit":      limit,
+        "offset":     offset,
+    }
+
+
+@router.get("/{therapist_id}/public")
+async def get_public_therapist(therapist_id: int):
+    """Single approved therapist's public profile. No auth, no PII."""
+    if _pool is None:
+        raise HTTPException(503, "DB not ready")
+
+    async with _pool.acquire() as conn:
+        await _ensure_table(conn)
+        row = await conn.fetchrow(
+            "SELECT id, name, profession, experience_yrs, specialties, "
+            "hours_per_week, bio, rate_zvk FROM therapists "
+            "WHERE id = $1 AND status = 'approved' AND deleted_at IS NULL",
+            therapist_id,
+        )
+    if not row:
+        raise HTTPException(404, "therapist not found or not approved")
+    return _serialize_public(row)
+
+
+# ── self-service for approved therapists (JWT or ?uid= fallback) ──
+# JWT_SECRET is currently empty on Railway (CLAUDE.md pending item), so we
+# accept either:
+#   - Authorization: Bearer <jwt>  (preferred, when JWT_SECRET is set)
+#   - ?uid=<user_id>               (interim, mirrors main.py:/api/me)
+# When JWT_SECRET lands, Phase 3.5 can drop the ?uid= path and require Bearer.
+
+def _resolve_user_id(authorization: Optional[str], uid: Optional[int]) -> int:
+    """Resolve user_id from Bearer JWT (if JWT_SECRET set) or ?uid= fallback."""
+    if uid is not None and uid > 0:
+        return uid
+    # JWT path — best-effort decode without forcing a hard secret dependency.
+    if authorization and authorization.lower().startswith("bearer "):
+        token = authorization[7:].strip()
+        secret = os.getenv("JWT_SECRET", "").strip()
+        if secret:
+            try:
+                import jwt as _jwt  # type: ignore
+                payload = _jwt.decode(token, secret, algorithms=["HS256"])
+                sub = payload.get("sub") or payload.get("user_id")
+                if sub:
+                    return int(sub)
+            except Exception:
+                pass
+    raise HTTPException(401, "auth required (Bearer JWT or ?uid=<id>)")
+
+
+class TherapistMeUpdate(BaseModel):
+    bio: Optional[str] = Field(None, max_length=2000)
+    rate_zvk: Optional[float] = Field(None, ge=0, le=1000)
+    hours_per_week: Optional[str] = Field(None, max_length=20)
+    specialties: Optional[str] = Field(None, max_length=2000)
+
+
+class AvailabilityUpdate(BaseModel):
+    availability: dict = Field(..., description="Weekly schedule, e.g. {'mon':[{'from':'09:00','to':'12:00'}], ...}")
+
+
+@router.get("/me")
+async def get_me(
+    uid: Optional[int] = Query(None, description="Interim until JWT_SECRET is set"),
+    authorization: Optional[str] = Header(None),
+):
+    """
+    Approved therapist's own profile. 404 if not a therapist (used by
+    dashboard-therapist.html to gate access).
+    """
+    user_id = _resolve_user_id(authorization, uid)
+    if _pool is None:
+        raise HTTPException(503, "DB not ready")
+
+    async with _pool.acquire() as conn:
+        await _ensure_table(conn)
+        row = await conn.fetchrow(
+            "SELECT * FROM therapists "
+            "WHERE user_id = $1 AND status = 'approved' AND deleted_at IS NULL",
+            user_id,
+        )
+    if not row:
+        raise HTTPException(404, "not a therapist (or pending approval)")
+    return _serialize(row)
+
+
+@router.patch("/me")
+async def update_me(
+    req: TherapistMeUpdate,
+    uid: Optional[int] = Query(None),
+    authorization: Optional[str] = Header(None),
+):
+    """Approved therapists update their own bio/rate/hours/specialties."""
+    user_id = _resolve_user_id(authorization, uid)
+    if _pool is None:
+        raise HTTPException(503, "DB not ready")
+
+    updates = {k: v for k, v in req.model_dump().items() if v is not None}
+    if not updates:
+        raise HTTPException(400, "no fields to update")
+
+    set_parts = [f"{col} = ${i+1}" for i, col in enumerate(updates.keys())]
+    set_parts.append("updated_at = NOW()")
+    set_sql = ", ".join(set_parts)
+    params = list(updates.values()) + [user_id]
+
+    async with _pool.acquire() as conn:
+        await _ensure_table(conn)
+        row = await conn.fetchrow(
+            f"UPDATE therapists SET {set_sql} "
+            f"WHERE user_id = ${len(params)} AND status = 'approved' AND deleted_at IS NULL "
+            f"RETURNING *",
+            *params,
+        )
+    if not row:
+        raise HTTPException(404, "not a therapist or not approved")
+    return {"ok": True, "therapist": _serialize(row)}
+
+
+@router.get("/availability")
+async def get_availability(
+    uid: Optional[int] = Query(None),
+    authorization: Optional[str] = Header(None),
+):
+    """Get the approved therapist's weekly availability JSON."""
+    user_id = _resolve_user_id(authorization, uid)
+    if _pool is None:
+        raise HTTPException(503, "DB not ready")
+
+    async with _pool.acquire() as conn:
+        await _ensure_table(conn)
+        row = await conn.fetchrow(
+            "SELECT availability FROM therapists "
+            "WHERE user_id = $1 AND status = 'approved' AND deleted_at IS NULL",
+            user_id,
+        )
+    if not row:
+        raise HTTPException(404, "not a therapist or not approved")
+    avail = row["availability"]
+    # asyncpg returns JSONB as str sometimes — normalize to dict
+    if isinstance(avail, str):
+        import json as _json
+        try:
+            avail = _json.loads(avail)
+        except Exception:
+            avail = {}
+    return {"availability": avail or {}}
+
+
+@router.put("/availability")
+async def put_availability(
+    req: AvailabilityUpdate,
+    uid: Optional[int] = Query(None),
+    authorization: Optional[str] = Header(None),
+):
+    """Replace the approved therapist's weekly availability JSON."""
+    user_id = _resolve_user_id(authorization, uid)
+    if _pool is None:
+        raise HTTPException(503, "DB not ready")
+
+    import json as _json
+    payload = _json.dumps(req.availability)
+
+    async with _pool.acquire() as conn:
+        await _ensure_table(conn)
+        row = await conn.fetchrow(
+            "UPDATE therapists SET availability = $1::JSONB, updated_at = NOW() "
+            "WHERE user_id = $2 AND status = 'approved' AND deleted_at IS NULL "
+            "RETURNING availability",
+            payload, user_id,
+        )
+    if not row:
+        raise HTTPException(404, "not a therapist or not approved")
+    saved = row["availability"]
+    if isinstance(saved, str):
+        try:
+            saved = _json.loads(saved)
+        except Exception:
+            saved = {}
+    return {"ok": True, "availability": saved or {}}
+
+
+# ── Telegram bot deep-link (Phase 4) ──
+class TelegramLink(BaseModel):
+    telegram_id: int
+    application_id: int
+    kind: str = Field("therapist", pattern="^therapist$")
+
+
+@router.post("/telegram/link", include_in_schema=True)
+async def telegram_link(
+    req: TelegramLink,
+    x_bot_secret: Optional[str] = Header(None),
+):
+    """
+    Bot-side endpoint: pair a Telegram account with a therapist application.
+
+    Auth: shared secret header `X-Bot-Secret` matching env TELEGRAM_LINK_SECRET.
+    The bot has already verified the user's telegram_id via aiogram update,
+    so the only thing we need to authenticate is the calling bot itself.
+
+    Idempotent: same (telegram_id, application_id) replay returns ok without
+    creating duplicates. Application must be in 'approved' status.
+    """
+    expected = os.getenv("TELEGRAM_LINK_SECRET", "").strip()
+    if not expected or x_bot_secret != expected:
+        raise HTTPException(403, "bad bot secret")
+    if _pool is None:
+        raise HTTPException(503, "DB not ready")
+
+    async with _pool.acquire() as conn:
+        await _ensure_table(conn)
+        row = await conn.fetchrow(
+            "SELECT id, status, telegram_id FROM therapists "
+            "WHERE id = $1 AND deleted_at IS NULL",
+            req.application_id,
+        )
+        if not row:
+            raise HTTPException(404, "application not found")
+        if row["status"] != "approved":
+            raise HTTPException(400, f"application status is {row['status']!r}, must be 'approved' before linking")
+        if row["telegram_id"] == req.telegram_id:
+            return {"ok": True, "linked": True, "idempotent": True,
+                    "application_id": req.application_id, "telegram_id": req.telegram_id}
+
+        await conn.execute(
+            "UPDATE therapists SET telegram_id = $1, updated_at = NOW() "
+            "WHERE id = $2 AND deleted_at IS NULL",
+            req.telegram_id, req.application_id,
+        )
+    return {"ok": True, "linked": True, "application_id": req.application_id,
+            "telegram_id": req.telegram_id}
