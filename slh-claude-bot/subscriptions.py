@@ -20,12 +20,20 @@ from __future__ import annotations
 import os
 import json
 import datetime as dt
+import logging
 from dataclasses import dataclass
 from typing import Optional
 
 import aiosqlite
+import httpx
 
 import pricing
+
+# Phase B mirror — bot pushes state to slh-api Postgres so the Mini App
+# widget can show live tier+quota. Best-effort: never raises.
+SLH_API_BASE = os.getenv("SLH_API_BASE", "https://slh-api-production.up.railway.app")
+ADMIN_API_KEY = os.getenv("ADMIN_API_KEY", "")
+_mirror_log = logging.getLogger("subscriptions.mirror")
 
 DB_PATH = os.getenv("SESSION_DB", "/workspace/slh-claude-bot/sessions.db")
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -64,6 +72,38 @@ def _now_iso() -> str:
 def _period_end(start_iso: str, days: int = 30) -> str:
     start = dt.datetime.fromisoformat(start_iso)
     return (start + dt.timedelta(days=days)).isoformat(timespec="seconds")
+
+
+async def _mirror_to_pg(sub: SubscriptionRow) -> None:
+    """Best-effort: push subscription state to Railway Postgres via API.
+
+    Never raises — SQLite stays canonical for quota.check (latency-sensitive).
+    Logged failures are observable via /anthropic_status / docker logs.
+    """
+    if not ADMIN_API_KEY:
+        return  # Mirror disabled (no admin key configured)
+    spec = pricing.TIERS.get(sub.tier, pricing.TIERS["free"])
+    quota_total = spec.monthly_quota if spec.monthly_quota > 0 else spec.fair_use_cap
+    payload = {
+        "user_id": sub.user_id,
+        "tier": sub.tier,
+        "current_period_start": sub.current_period_start,
+        "current_period_end": sub.current_period_end,
+        "messages_used_this_period": sub.messages_used_this_period,
+        "quota_total": quota_total,
+        "payment_provider": sub.payment_provider,
+    }
+    try:
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            r = await client.post(
+                f"{SLH_API_BASE}/api/ai_spark/sync",
+                headers={"X-Admin-Key": ADMIN_API_KEY, "Content-Type": "application/json"},
+                json=payload,
+            )
+            if r.status_code >= 400:
+                _mirror_log.warning(f"PG mirror returned {r.status_code}: {r.text[:120]}")
+    except Exception as e:
+        _mirror_log.warning(f"PG mirror failed (non-fatal): {type(e).__name__}: {e}")
 
 
 async def get_or_create(user_id: int) -> SubscriptionRow:
@@ -129,7 +169,10 @@ async def upgrade(user_id: int, tier: str, provider: str, payment_id: str,
             (tier, now, end, provider, payment_id, now, user_id),
         )
         await db.commit()
-    return await get_or_create(user_id)
+    sub = await get_or_create(user_id)
+    # Phase B: mirror to Railway Postgres (best-effort, non-blocking failure)
+    await _mirror_to_pg(sub)
+    return sub
 
 
 async def increment_usage_counter(user_id: int) -> int:
@@ -146,7 +189,14 @@ async def increment_usage_counter(user_id: int) -> int:
             (user_id,),
         )
         row = await cur.fetchone()
-        return row[0] if row else 0
+        new_count = row[0] if row else 0
+    # Phase B: mirror updated counter to Railway PG (best-effort)
+    try:
+        sub = await get_or_create(user_id)
+        await _mirror_to_pg(sub)
+    except Exception as e:
+        _mirror_log.warning(f"increment mirror skipped: {e}")
+    return new_count
 
 
 async def record_usage(user_id: int, chat_id: int, tier: str, provider: str,
