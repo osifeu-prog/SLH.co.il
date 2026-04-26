@@ -270,6 +270,38 @@ async def _ensure_schema(pool) -> None:
         await conn.execute(
             "CREATE INDEX IF NOT EXISTS ix_secrets_status ON secrets_catalog (status)"
         )
+        # ── Phase 2: alerts schema (additive, idempotent) ─────────────────────
+        # Adds cooldown + alert tracking columns + secret_alerts table for
+        # the scheduled health sweep and Telegram digest.
+        await conn.execute(
+            "ALTER TABLE secrets_catalog ADD COLUMN IF NOT EXISTS last_alert_at TIMESTAMPTZ"
+        )
+        await conn.execute(
+            "ALTER TABLE secrets_catalog ADD COLUMN IF NOT EXISTS last_alert_result TEXT"
+        )
+        await conn.execute(
+            "ALTER TABLE secrets_catalog ADD COLUMN IF NOT EXISTS alert_cooldown_hours INT NOT NULL DEFAULT 24"
+        )
+        await conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS secret_alerts (
+                id          BIGSERIAL PRIMARY KEY,
+                secret_id   BIGINT REFERENCES secrets_catalog(id) ON DELETE CASCADE,
+                alert_type  TEXT NOT NULL,
+                prev_status TEXT,
+                new_status  TEXT,
+                detail      TEXT,
+                notified_via TEXT,
+                fired_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
+            )
+            """
+        )
+        await conn.execute(
+            "CREATE INDEX IF NOT EXISTS ix_secret_alerts_fired ON secret_alerts (fired_at DESC)"
+        )
+        await conn.execute(
+            "CREATE INDEX IF NOT EXISTS ix_secret_alerts_secret ON secret_alerts (secret_id)"
+        )
         # Seed if empty
         existing = await conn.fetchval("SELECT COUNT(*) FROM secrets_catalog")
         if (existing or 0) == 0:
@@ -494,32 +526,27 @@ async def mark_rotated(
     return {"ok": True, "secret": _row_to_dict(row)}
 
 
-@router.post("/{secret_id}/check-health")
-async def check_health(
-    secret_id: int,
-    request: Request,
-    authorization: Optional[str] = Header(None),
-    x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key"),
-):
-    """Best-effort health probe — try to actually use the secret to verify it works.
+async def _run_probe(key_name: str) -> tuple[str, Optional[str]]:
+    """Probe the actual provider to verify the secret currently works.
 
-    For each provider we know, attempts a no-op API call (free / lightweight)
-    and reports whether the credential is currently accepted. The ACTUAL secret
-    value never leaves the server (it's read from env, used in the request,
-    and the response is parsed but never stored).
+    Reads the secret from THIS process's env vars (never from DB / never
+    accepts as argument), issues a no-op API call, and returns a status
+    tuple. The secret value itself never leaves this process.
+
+    Result codes (small closed set so callers can branch reliably):
+        ok            — provider accepted the key
+        bad_key       — provider rejected the key (401/403)
+        missing       — env var is not set on this process
+        service_error — provider returned 5xx
+        unknown       — provider returned something we couldn't classify
+        skipped       — no probe implemented for this key_name
+        error         — exception while probing (network etc)
+
+    Reused by /check-health (single-secret) and /sweep (batch). Pure HTTP,
+    no DB access — sweep handles persistence + alerts on top.
     """
-    _admin(authorization, x_admin_key)
-    pool = _pool(request)
-    await _ensure_schema(pool)
-
-    async with pool.acquire() as conn:
-        row = await conn.fetchrow("SELECT * FROM secrets_catalog WHERE id = $1", secret_id)
-    if not row:
-        raise HTTPException(404, "secret not found")
-
-    key_name = row["key_name"]
-    result = "skipped"
-    detail = None
+    result: str = "skipped"
+    detail: Optional[str] = None
 
     try:
         if key_name == "ANTHROPIC_API_KEY":
@@ -602,6 +629,37 @@ async def check_health(
             result, detail = "skipped", "no probe implemented"
     except Exception as e:
         result, detail = "error", f"{type(e).__name__}: {e}"
+
+    return result, detail
+
+
+@router.post("/{secret_id}/check-health")
+async def check_health(
+    secret_id: int,
+    request: Request,
+    authorization: Optional[str] = Header(None),
+    x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key"),
+):
+    """Best-effort health probe — try to actually use the secret to verify it works.
+
+    For each provider we know, attempts a no-op API call (free / lightweight)
+    and reports whether the credential is currently accepted. The ACTUAL secret
+    value never leaves the server (it's read from env, used in the request,
+    and the response is parsed but never stored).
+
+    Probe logic lives in `_run_probe(key_name)` so the scheduled sweep
+    (api/admin_secret_alerts.py) can reuse the same code path.
+    """
+    _admin(authorization, x_admin_key)
+    pool = _pool(request)
+    await _ensure_schema(pool)
+
+    async with pool.acquire() as conn:
+        row = await conn.fetchrow("SELECT * FROM secrets_catalog WHERE id = $1", secret_id)
+    if not row:
+        raise HTTPException(404, "secret not found")
+
+    result, detail = await _run_probe(row["key_name"])
 
     async with pool.acquire() as conn:
         await conn.execute(
