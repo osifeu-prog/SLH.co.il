@@ -6,8 +6,11 @@ COPY campaign-bot/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY campaign-bot/ .
+# Root shared/ for cross-bot coordination (post_event_via_token works with PTB)
+COPY shared/ /app/shared/
 
-ENV PYTHONUNBUFFERED=1
-ENV MODE=polling
+ENV PYTHONUNBUFFERED=1 \
+    MODE=polling \
+    PYTHONPATH=/app:/app/shared
 
 CMD ["python", "main.py"]

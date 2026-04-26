@@ -224,8 +224,27 @@ async def photo_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("\u2705 \u05d0\u05d9\u05e9\u05d5\u05e8 \u05ea\u05e9\u05dc\u05d5\u05dd \u05d4\u05ea\u05e7\u05d1\u05dc!\n\u05de\u05de\u05ea\u05d9\u05df \u05dc\u05d0\u05d9\u05e9\u05d5\u05e8...")
 
 
+async def _coord_post_init(application):
+    """PTB post_init hook: post 'ready' event to coordination group.
+
+    PTB Application doesn't share an aiogram bot instance, so we use
+    post_event_via_token (raw HTTP). No-op if COORDINATION_GROUP_CHAT_ID
+    is unset. Inbound coordination is not yet wired for PTB bots —
+    Phase 2C follow-up.
+    """
+    try:
+        from shared.coordination import post_event_via_token
+        me = await application.bot.get_me()
+        await post_event_via_token(
+            TOKEN, "campaign-bot", "ready",
+            f"@{me.username} polling",
+        )
+    except Exception as e:
+        logger.warning(f"coordination init failed: {e}")
+
+
 def main():
-    app = ApplicationBuilder().token(TOKEN).build()
+    app = ApplicationBuilder().token(TOKEN).post_init(_coord_post_init).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("help", help_cmd))
     app.add_handler(CommandHandler("campaigns", campaigns_cmd))
