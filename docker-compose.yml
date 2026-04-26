@@ -59,6 +59,7 @@ services:
       REDIS_URL: redis://redis:6379/0
       REDIS_STREAM: slh:updates
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+      COORDINATION_GROUP_CHAT_ID: ${COORDINATION_GROUP_CHAT_ID:-}
       ADMIN_ID: ${ADMIN_USER_ID:-224223270}
       MODE: polling
       ENV: prod
@@ -102,6 +103,7 @@ services:
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_botshop
       WEBHOOK_URL: ""
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+      COORDINATION_GROUP_CHAT_ID: ${COORDINATION_GROUP_CHAT_ID:-}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-slh_admin_2026}
       MODE: polling
       ENV: prod
@@ -120,6 +122,7 @@ services:
       TELEGRAM_BOT_TOKEN: ${WALLET_BOT_TOKEN}
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_wallet
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+      COORDINATION_GROUP_CHAT_ID: ${COORDINATION_GROUP_CHAT_ID:-}
       TON_API_KEY: ${TON_API_KEY}
       BASE_URL: https://slh-nft.com
       ENV: prod
@@ -141,6 +144,7 @@ services:
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_factory
       REDIS_URL: redis://redis:6379/3
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+      COORDINATION_GROUP_CHAT_ID: ${COORDINATION_GROUP_CHAT_ID:-}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-slh_admin_2026}
       MODE: polling
       ENV: prod
@@ -176,6 +180,7 @@ services:
       RAILWAY_DATABASE_URL: ${RAILWAY_DATABASE_URL:-}
       AIRDROP_BOT_TOKEN: ${AIRDROP_BOT_TOKEN}
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+      COORDINATION_GROUP_CHAT_ID: ${COORDINATION_GROUP_CHAT_ID:-}
 
   airdrop-bot:
     build:
@@ -217,6 +222,7 @@ services:
       SUPPORT_GROUP_ID: ${CAMPAIGN_SUPPORT_GROUP_ID:-}
       ADMIN_IDS: ${ADMIN_USER_ID:-224223270}
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+      COORDINATION_GROUP_CHAT_ID: ${COORDINATION_GROUP_CHAT_ID:-}
 
   game-bot:
     build:
@@ -231,6 +237,7 @@ services:
       BOT_TOKEN: ${GAME_BOT_TOKEN}
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+      COORDINATION_GROUP_CHAT_ID: ${COORDINATION_GROUP_CHAT_ID:-}
 
   ton-mnh-bot:
     build:
@@ -244,6 +251,7 @@ services:
       RPC_URL: https://toncenter.com/api/v2
       TON_NETWORK: mainnet
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+      COORDINATION_GROUP_CHAT_ID: ${COORDINATION_GROUP_CHAT_ID:-}
 
   slh-ton-bot:
     build:
@@ -263,6 +271,7 @@ services:
       PRICE_TON: "4.0"
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+      COORDINATION_GROUP_CHAT_ID: ${COORDINATION_GROUP_CHAT_ID:-}
 
   ledger-bot:
     build:
@@ -285,6 +294,7 @@ services:
       PRICE_TON: "2.5"
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+      COORDINATION_GROUP_CHAT_ID: ${COORDINATION_GROUP_CHAT_ID:-}
 
   osif-shop-bot:
     build:
@@ -304,6 +314,7 @@ services:
       WEBAPP_URL: ${OSIFSHOP_WEBAPP_URL:-https://came-coffee-digit-useful.trycloudflare.com}
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+      COORDINATION_GROUP_CHAT_ID: ${COORDINATION_GROUP_CHAT_ID:-}
 
   nifti-bot:
     build:
@@ -314,6 +325,7 @@ services:
     environment:
       BOT_TOKEN: ${NIFTI_PUBLISHER_TOKEN}
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+      COORDINATION_GROUP_CHAT_ID: ${COORDINATION_GROUP_CHAT_ID:-}
 
   chance-bot:
     build:
@@ -333,6 +345,7 @@ services:
       PRICE_TON: "1.0"
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+      COORDINATION_GROUP_CHAT_ID: ${COORDINATION_GROUP_CHAT_ID:-}
 
   nfty-bot:
     container_name: slh-nfty
@@ -375,6 +388,7 @@ services:
       PRICE_TON: "1.5"
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+      COORDINATION_GROUP_CHAT_ID: ${COORDINATION_GROUP_CHAT_ID:-}
 
   crazy-panel-bot:
     build:
@@ -394,6 +408,7 @@ services:
       PRICE_TON: "2.5"
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+      COORDINATION_GROUP_CHAT_ID: ${COORDINATION_GROUP_CHAT_ID:-}
 
   nft-shop-bot:
     build:
@@ -413,6 +428,7 @@ services:
       PRICE_TON: "2.5"
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+      COORDINATION_GROUP_CHAT_ID: ${COORDINATION_GROUP_CHAT_ID:-}
 
   beynonibank-bot:
     build:
@@ -432,6 +448,7 @@ services:
       PRICE_TON: "2"
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+      COORDINATION_GROUP_CHAT_ID: ${COORDINATION_GROUP_CHAT_ID:-}
 
   test-bot:
     build:
@@ -451,6 +468,7 @@ services:
       PRICE_TON: "0"
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-slh_secure_2026}@postgres:5432/slh_main
       ADMIN_USER_ID: ${ADMIN_USER_ID:-224223270}
+      COORDINATION_GROUP_CHAT_ID: ${COORDINATION_GROUP_CHAT_ID:-}
 
   # Telegram-native executor bot — @SLH_Claude_bot
   # Bridges Osif's phone to the SLH workspace via Anthropic Claude.

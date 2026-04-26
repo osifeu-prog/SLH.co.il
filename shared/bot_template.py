@@ -151,6 +151,22 @@ async def main():
     await pay_db.init_schema()
     await referral_engine.init_schema()
 
+    # Coordination: register inbound handlers + post ready event to the shared
+    # agents group. No-op if COORDINATION_GROUP_CHAT_ID is unset. Wraps in
+    # try/except so any networking issue with the coord group never blocks the
+    # bot from starting.
+    try:
+        from shared.coordination import init_coordination_for_bot
+        me = await bot.get_me()
+        await init_coordination_for_bot(
+            bot, dp,
+            name=BOT_KEY,
+            username=me.username,
+            info_text=f"{BOT_DISPLAY_NAME} (@{me.username})",
+        )
+    except Exception as e:
+        logger.warning("coordination init failed: %s", e)
+
     logger.info("Starting bot: %s (%s)", BOT_DISPLAY_NAME, BOT_KEY)
 
     await dp.start_polling(bot)

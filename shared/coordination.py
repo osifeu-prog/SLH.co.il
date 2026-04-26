@@ -211,3 +211,55 @@ def register_inbound(
         len(handlers),
         ", ".join(sorted(handlers.keys())),
     )
+
+
+async def init_coordination_for_bot(
+    bot,
+    dispatcher,
+    name: str,
+    username: Optional[str] = None,
+    extra_handlers: Optional[Dict[str, Callable[..., Awaitable]]] = None,
+    info_text: Optional[str] = None,
+) -> bool:
+    """One-call convenience wrapper for any aiogram-based SLH bot.
+
+    Registers default inbound handlers (`ping`, `who`) plus any in
+    `extra_handlers`, then posts a `ready` event to the coordination group.
+
+    Usage:
+
+        async def main():
+            ...
+            from shared.coordination import init_coordination_for_bot
+            me = await bot.get_me()
+            await init_coordination_for_bot(
+                bot, dp,
+                name="ledger",
+                username=me.username,
+            )
+            await dp.start_polling(bot)
+
+    Returns True iff the ready event was sent (False on disabled or failure).
+    Never raises.
+    """
+    if not is_enabled():
+        return False
+
+    bot_handle = (username or name).lstrip("@")
+    info = info_text or f"@{bot_handle}"
+
+    async def _ping(msg) -> None:
+        await msg.reply("pong")
+
+    async def _who(msg) -> None:
+        await msg.reply(f"[i] {name} ({info})")
+
+    handlers: Dict[str, Callable[..., Awaitable]] = {
+        "ping": _ping,
+        "who": _who,
+    }
+    if extra_handlers:
+        handlers.update(extra_handlers)
+
+    register_inbound(dispatcher, bot_handle, handlers)
+    return await post_event(bot, name, "ready", f"{info} polling started")
