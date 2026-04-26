@@ -1,20 +1,21 @@
 {
+  "_note": "group_link removed for products 1-3 on 2026-04-26: previous link (+aww1rlTDUSplODc0) is reserved for INTERNAL agent coordination — not for commercial sale. Replacement VIP group TBD; user_commands.vip_group falls back to 'No group link found. Contact admin.' which is fine until a real group is provisioned.",
   "1": {
     "name": "SLH VIP Pack — Affiliate + קהילה פרימיום",
     "price": 22.221,
-    "group_link": "https://t.me/+aww1rlTDUSplODc0",
+    "group_link": "",
     "description": "קישור Affiliate אישי + כניסה לקבוצת VIP SLH Spark. כולל: 0.25 SLH + 1,000 ZVK + גישה למכירת קורסים."
   },
   "2": {
     "name": "ORG — חברות ארגונית",
     "price": 0.3,
-    "group_link": "https://t.me/+aww1rlTDUSplODc0",
+    "group_link": "",
     "description": "חברות ברמת ORG — גישה לכלים ארגוניים, Whitelist לכל ההשקות העתידיות, 500 ZVK."
   },
   "3": {
     "name": "STRAT — אסטרטגיות מסחר",
     "price": 0.5,
-    "group_link": "https://t.me/+aww1rlTDUSplODc0",
+    "group_link": "",
     "description": "גישה לאסטרטגיות המסחר של SLH: BTC/USDT Bot, Staking Plans 48-65% APY, P2P flows."
   },
   "4": {

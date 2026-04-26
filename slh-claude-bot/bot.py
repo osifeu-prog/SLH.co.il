@@ -75,6 +75,56 @@ bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.MARKDOW
 dp = Dispatcher()
 
 
+# ---------- Cross-bot coordination (shared agents group) ----------
+# Registers BEFORE the @dp.message handlers below so coord group messages
+# don't get swallowed by the F.text catch-all on_text() handler. No-op when
+# COORDINATION_GROUP_CHAT_ID is unset. See shared/coordination.py.
+import sys as _sys
+_WORKSPACE_ROOT = "/workspace" if os.path.isdir("/workspace/shared") else os.path.abspath(os.path.join(HERE, ".."))
+if _WORKSPACE_ROOT not in _sys.path:
+    _sys.path.insert(0, _WORKSPACE_ROOT)
+try:
+    from shared import coordination as _coord
+    log.info("shared.coordination loaded; enabled=%s", _coord.is_enabled())
+except Exception as _coord_err:
+    _coord = None
+    log.warning("shared.coordination not loadable: %s", _coord_err)
+
+
+_BOT_USERNAME_FOR_COORD = os.getenv("SLH_CLAUDE_BOT_USERNAME", "SLH_Claude_bot").lstrip("@")
+
+
+async def _coord_ping(msg) -> None:
+    await msg.reply("pong")
+
+
+async def _coord_health_handler(msg) -> None:
+    try:
+        h = await _http_get_json("/api/health")
+        await msg.reply(
+            f"[OK] API: {h.get('status','?')} · DB: {h.get('db','?')} · v{h.get('version','?')}"
+        )
+    except Exception as e:
+        await msg.reply(f"[X!] {type(e).__name__}: {e}")
+
+
+async def _coord_who_handler(msg) -> None:
+    me = await bot.get_me()
+    await msg.reply(f"[i] @{me.username} (claude-bot) · AI={_AI_MODE}")
+
+
+if _coord is not None:
+    _coord.register_inbound(
+        dp,
+        _BOT_USERNAME_FOR_COORD,
+        handlers={
+            "ping": _coord_ping,
+            "health": _coord_health_handler,
+            "who": _coord_who_handler,
+        },
+    )
+
+
 # Telegram messages are capped at 4096 chars; split long replies
 def _chunks(text: str, size: int = 4000) -> list[str]:
     return [text[i : i + size] for i in range(0, len(text), size)] or [text]
@@ -742,6 +792,16 @@ async def main() -> None:
     # F.text now excludes slash-commands these can register at runtime safely)
     payment_flow.register(dp, auth)
     admin_panel.register(dp, auth)
+    # Rotation panel must register BEFORE the F.text handler in bot.py runs
+    # so its token-input filter gets first crack at user messages when a
+    # rotation flow is pending. Order matters: aiogram dispatches in
+    # registration order.
+    try:
+        import rotation_panel
+        rotation_panel.register(dp, auth)
+        log.info("rotation_panel wired in")
+    except Exception as e:
+        log.warning(f"rotation_panel not loaded: {e}")
     try:
         import railway_ops
         railway_ops.register(dp, auth)
@@ -759,6 +819,12 @@ async def main() -> None:
     log.info(f"starting @SLH_Claude_bot · AI mode: {_AI_MODE}")
     me = await bot.get_me()
     log.info(f"connected as @{me.username} (id={me.id})")
+    # Announce startup to the coordination group (no-op if disabled)
+    if _coord is not None:
+        await _coord.post_event(
+            bot, "claude-bot", "ready",
+            f"@{me.username} polling · AI={_AI_MODE}"
+        )
     await dp.start_polling(bot)
 
 
