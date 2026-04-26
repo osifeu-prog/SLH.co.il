@@ -3256,6 +3256,29 @@ async def ai_spark_sync(req: AISparkSyncReq, request: Request):
         raise HTTPException(403, "admin auth required")
     if pool is None:
         raise HTTPException(503, "db pool not ready")
+
+    # asyncpg requires datetime instances for TIMESTAMP columns — strings raise
+    # DataError even with explicit ::timestamp cast. Parse defensively here so
+    # the bot can keep sending ISO-8601 strings.
+    def _parse_dt(value):
+        if isinstance(value, datetime):
+            return value
+        # Strip trailing 'Z' (UTC) and microseconds; fromisoformat handles most cases
+        s = str(value).rstrip("Z")
+        try:
+            return datetime.fromisoformat(s)
+        except ValueError:
+            # Fallback: best-effort common formats
+            for fmt in ("%Y-%m-%dT%H:%M:%S.%f", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S"):
+                try:
+                    return datetime.strptime(s, fmt)
+                except ValueError:
+                    continue
+            raise HTTPException(400, f"invalid datetime: {value!r}")
+
+    period_start_dt = _parse_dt(req.current_period_start)
+    period_end_dt = _parse_dt(req.current_period_end)
+
     async with pool.acquire() as conn:
         await _ensure_ai_spark_schema(conn)
         await conn.execute(
@@ -3263,7 +3286,7 @@ async def ai_spark_sync(req: AISparkSyncReq, request: Request):
             INSERT INTO ai_spark_subscriptions
                 (user_id, tier, current_period_start, current_period_end,
                  messages_used_this_period, quota_total, payment_provider, last_synced_at)
-            VALUES ($1, $2, $3::timestamp, $4::timestamp, $5, $6, $7, NOW())
+            VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
             ON CONFLICT (user_id) DO UPDATE SET
                 tier = EXCLUDED.tier,
                 current_period_start = EXCLUDED.current_period_start,
@@ -3273,7 +3296,7 @@ async def ai_spark_sync(req: AISparkSyncReq, request: Request):
                 payment_provider = EXCLUDED.payment_provider,
                 last_synced_at = NOW()
             """,
-            req.user_id, req.tier, req.current_period_start, req.current_period_end,
+            req.user_id, req.tier, period_start_dt, period_end_dt,
             req.messages_used_this_period, req.quota_total, req.payment_provider,
         )
     return {"ok": True, "user_id": req.user_id, "tier": req.tier}
