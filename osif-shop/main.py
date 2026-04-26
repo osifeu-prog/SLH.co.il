@@ -637,6 +637,19 @@ async def main():
     log.info("=" * 40)
     log.info("OsifShop - Inventory Management")
     log.info("=" * 40)
+
+    # Coordination: register inbound + post ready (no-op if env unset)
+    try:
+        from shared.coordination import init_coordination_for_bot
+        me = await bot.get_me()
+        await init_coordination_for_bot(
+            bot, dp,
+            name="osif-shop",
+            username=me.username,
+        )
+    except Exception as e:
+        log.warning("coordination init failed: %s", e)
+
     await dp.start_polling(bot, drop_pending_updates=True)
 
 

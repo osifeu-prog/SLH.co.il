@@ -1022,6 +1022,18 @@ async def main() -> None:
     await init_db()
     me = await bot.get_me()
     log.info("starting academia-bot as @%s (id=%s)", me.username, me.id)
+
+    # Coordination: register inbound + post ready (no-op if env unset)
+    try:
+        from shared.coordination import init_coordination_for_bot
+        await init_coordination_for_bot(
+            bot, dp,
+            name="academia-bot",
+            username=me.username,
+        )
+    except Exception as e:
+        log.warning("coordination init failed: %s", e)
+
     await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
 
 

@@ -492,8 +492,10 @@ services:
   # @WEWORK_teamviwer_bot re-purposed as SLH Academy — real /buy flow + payments
   academia-bot:
     build:
-      context: ./academia-bot
-      dockerfile: Dockerfile
+      # Build from repo root so shared/ is in context. Dockerfile path is
+      # relative to context. Updated 2026-04-26 for coord wiring.
+      context: .
+      dockerfile: academia-bot/Dockerfile
     container_name: slh-academia-bot
     restart: always
     depends_on:
@@ -507,6 +509,7 @@ services:
       SLH_API_BASE: https://slh-api-production.up.railway.app
       SUPPORT_HANDLE: "@osifeu_prog"
       ACADEMIA_BOT_NAME: academia
+      COORDINATION_GROUP_CHAT_ID: ${COORDINATION_GROUP_CHAT_ID:-}
 
 volumes:
   pgdata:
