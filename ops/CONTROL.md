@@ -6,22 +6,35 @@
 
 ---
 
-## 🎯 STATE RIGHT NOW (verified 2026-04-25)
+## 🎯 STATE RIGHT NOW (verified 2026-04-26)
 
 | | |
 |---|---|
 | **Revenue (₪)** | **0** — no paying customer yet |
 | **API** | 🟢 live · v1.1.0 · db connected |
-| **Website** | 🟢 live · https://slh-nft.com (127 pages, GitHub Pages) |
+| **Website** | 🟢 live · https://slh-nft.com (127+ pages, GitHub Pages) |
 | **Bots (25)** | 🟢 running · ledger-bot rebuilt + fixed |
 | **CRM (Ambassador)** | 🟢 live · 5 endpoints + 2 test records |
 | **Tzvika → founder** | 🟢 deployed (`b48a1b1`) |
 | **Data integrity** | 🟢 clean · 1 HIGH remaining (legit library default) |
-| **event_log** | 🟢 **active · 17 events captured** (device.registered, device.heartbeat) |
-| **ESP32 fleet** | 🟢 **6 devices registered · `esp32-14335C6C32C0` heartbeating live since 2026-04-23** |
+| **event_log** | 🟢 **active · 17+ events captured** (device.registered, device.heartbeat) |
+| **ESP32 fleet** | 🟢 **6+ devices registered · `esp32-14335C6C32C0` heartbeating live** |
+| **AI Spark Pro tier** | 🟢 **LIVE** · /upgrade /credits /grandfather + Anthropic→Groq fallback · 5 grandfathered users in PG |
+| **AI Spark Mini App widget** | 🟢 **LIVE** · /api/ai_spark/credits returns real tier+quota from PG |
 | **Telegram Gateway** | 🟡 gateway_loaded=true · `primary_bot_token_set=false` (env var pending) |
-| **Mini Apps** | 🟡 code live · will 500 until TELEGRAM_BOT_TOKEN env set |
+| **Mini Apps (other)** | 🟡 code live · will 500 until TELEGRAM_BOT_TOKEN env set |
 | **Public events feed** | 🟢 endpoint live · 0 visible items (filter mismatch — see Note A) |
+
+### 🆕 AI Spark grandfathered users (live in PG)
+| User | Tier | Used/Quota | Provider |
+|------|------|-----------|----------|
+| Osif (224223270) | VIP | 0/350 | founder_grant |
+| Osif (8789977826) | Pro | 6/70 | manual_test_e2e |
+| Tzvika (1185887485) | Pro | 0/70 | grandfather_pre_activation |
+| Eliezer (8088324234) | Pro | 0/70 | grandfather_eliezer_crm |
+| Yahav (7940057720) | Pro | 0/70 | grandfather_yahav |
+
+When any of these /start the bot → they immediately see Pro/VIP tier active, no manual /grandfather needed.
 
 ---
 
