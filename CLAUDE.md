@@ -9,11 +9,16 @@
 
 ## Project Overview
 SLH Spark is an institutional-grade digital investment ecosystem with:
-- **Website:** 43 HTML pages on GitHub Pages (slh-nft.com)
-- **API:** FastAPI on Railway (slh-api-production.up.railway.app), ~7000 lines in main.py
-- **Bots:** 25 Telegram bots via Docker Compose (aiogram 3.x)
+- **Website:** 140+ HTML pages on GitHub Pages (slh-nft.com); 60 pages in root + subdirectories (blog/, admin/, miniapp/, academy/, prompts/)
+- **API:** FastAPI on Railway, ~230 endpoints, **11,765 lines** in main.py
+  - Production URL: `slhcoil-production.up.railway.app` and `www.slh.co.il`
+  - Railway service connected to: `osifeu-prog/SLH.co.il` (branch `main`)
+  - Older URL `slh-api-production.up.railway.app` may still respond — verify before deprecating
+- **Bots:** 25 Telegram bots via Docker Compose (aiogram 3.x), all currently on polling
 - **Blockchain:** SLH token on BSC (BEP-20), PancakeSwap V2 pool live
 - **Database:** PostgreSQL 15 + Redis 7
+- **ESP32:** Hardware device-registry + firmware (esp/, device-registry/)
+- **Design system:** New `css/slh-neural.css` provides DNA + Neural Network theme via `[data-theme="neural"]`
 
 ## 5-Token Economy
 | Token | Purpose | Status |
@@ -50,7 +55,8 @@ D:\SLH_ECOSYSTEM\              # Main project root
 ## Git Repos & Deployment
 | Repo | Branch | Deploys To |
 |------|--------|------------|
-| github.com/osifeu-prog/slh-api | master | Railway (auto-deploy) |
+| github.com/osifeu-prog/slh-api | master | (legacy — verify still in use) |
+| github.com/osifeu-prog/SLH.co.il | main | **Railway production** (slhcoil-production.up.railway.app + www.slh.co.il) |
 | github.com/osifeu-prog/osifeu-prog.github.io | main | GitHub Pages (slh-nft.com) |
 
 **CRITICAL:** Railway builds from ROOT main.py, not api/main.py. Always sync both:
@@ -95,10 +101,12 @@ git add main.py api/main.py
 - Default keys: slh2026admin (primary, will be rotated)
 
 ## Current State (update each session)
-- **API Version:** 1.1.0 (113 endpoints)
-- **Pages:** 43 HTML, all with analytics + AI assistant (100%)
-- **Theme coverage:** 42% (18/43 pages)
-- **i18n coverage:** 37% (16/43 pages)
+- **API Version:** ~1.1.0 (~230 endpoints in 11,765 lines of main.py)
+- **Pages:** 140+ HTML across root + subdirectories
+- **Theme coverage:** ~22% (31/140 pages have data-theme attribute)
+- **i18n coverage:** ~40% (57/140 pages reference translations.js or data-i18n)
+- **Design system:** `slh-neural.css` (new, 2026-04-27) — DNA + Neural theme available via `[data-theme="neural"]`
+- **Landing prototype:** `landing-v2.html` — investor-facing, demonstrates new design system
 - **Contributors:** 5 verified (Tzvika, Eli, Zohar, Osif, Yakir)
 - **Users registered:** 9 (4 contributors not yet logged into website)
 - **Genesis raised:** 0.08 BNB
@@ -117,14 +125,25 @@ git add main.py api/main.py
 4. Ask user what's priority today
 5. Check if Railway env vars are set (JWT_SECRET, ADMIN_API_KEYS)
 
-## Pending Critical Items (verified 2026-04-18)
-- [ ] **BLOCKED (Osif):** Railway env vars: JWT_SECRET (empty), ADMIN_API_KEYS (default) — requires Railway dashboard access
+## Pending Critical Items (verified 2026-04-27)
+- [ ] **🔴 P0 BLOCKED (Osif):** Railway env vars MISSING — only DATABASE_URL/REDIS_URL/OPENAI_API_KEY set. Need: JWT_SECRET, ADMIN_API_KEYS, ENCRYPTION_KEY, ADMIN_BROADCAST_KEY, INITIAL_ADMIN_PASSWORD, INITIAL_TZVIKA_PASSWORD, ADMIN_USER_ID. See `ops/SECURITY_FIX_PLAN_2026-04-27.md` Section A.
+- [ ] **🔴 P0:** Rotate Binance EXCHANGE_API_KEY/EXCHANGE_SECRET (live trading creds in .env)
+- [ ] **🔴 P0:** Rotate 30 remaining Telegram bot tokens (1/31 done — GAME_BOT_TOKEN on 2026-04-17)
+- [ ] **🟠 P1:** Add JWT auth to 3 sensitive endpoints (/api/user/{id}, /api/user/wallet/{id}, /api/user/full/{id}) — requires frontend audit first
+- [ ] **🟠 P1:** Remove .env backup files from project root (4 files, may contain old secrets)
+- [ ] **🟠 P1:** Remove test/demo code from production HTML (admin/reality.html, encryption.html)
 - [ ] 4 contributors need to log in to website to receive ZVK — external action
-- [ ] Rotate .env bot tokens (31 exposed in chat history) — 1/31 done today (GAME_BOT_TOKEN rotated 2026-04-17)
-- [ ] Webhook migration (polling → webhooks) — all 22 bots still polling, 0 webhook refs in docker-compose
-- [ ] wallet.html: show on-chain balances (BSC + TON) — 0 blockchain calls in wallet.html, endpoints ready
-- [ ] i18n on 27 more pages — 37% coverage, 63% remaining
-- [ ] Theme switcher on 25 more pages — 42% coverage, 58% remaining
+- [ ] Webhook migration (polling → webhooks) — all 25 bots still polling
+- [ ] wallet.html: show on-chain balances (BSC + TON) — endpoints ready
+- [ ] Migrate 109 remaining pages to slh-neural.css design system — see `ops/SLH_NEURAL_MIGRATION_2026-04-27.md`
+
+## Recent Session Changes (2026-04-27)
+- ✅ `main.py:8471` + `api/main.py:8471`: Replaced hardcoded `slh_ceo_2026` for Tzvika seed with `INITIAL_TZVIKA_PASSWORD` env var pattern (matches Osif at line 8465)
+- ✅ `docker-compose.yml:358`: nfty-bot DATABASE_URL now uses `${DB_PASSWORD:-...}` fallback
+- ✅ `website/css/slh-neural.css`: New design system — DNA + Neural theme, glassmorphism, token nodes, animated synapses
+- ✅ `website/landing-v2.html`: Investor-facing landing page prototype
+- ✅ `ops/SECURITY_FIX_PLAN_2026-04-27.md`: Full security audit + Railway env var instructions
+- ✅ `ops/SLH_NEURAL_MIGRATION_2026-04-27.md`: Migration plan for remaining 140 pages
 
 ## Full task status
 See [TASKS_STATUS_2026-04-18.md](TASKS_STATUS_2026-04-18.md) — consolidated status of all 73 tasks across 5 files, with honest verification against live state.

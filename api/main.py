@@ -127,6 +127,10 @@ from routes.arkham_bridge import router as threat_router, set_pool as _threat_se
 from routes.whatsapp import router as whatsapp_router, set_pool as _whatsapp_set_pool, init_whatsapp_tables as _init_whatsapp
 from routes.system_audit import router as system_audit_router, set_pool as _system_audit_set_pool
 from routes.agent_hub import router as agent_hub_router, set_pool as _agent_hub_set_pool, init_agent_hub_tables as _init_agent_hub
+from routes.system_status import router as system_status_router, set_pool as _system_status_set_pool
+from routes.investor_engine import router as investor_engine_router, set_pool as _investor_engine_set_pool
+from routes.courses import router as courses_router, set_pool as _courses_set_pool
+from routes.esp_events import router as esp_events_router, set_pool as _esp_events_set_pool
 from routes.campaign_admin import router as campaign_admin_router, set_pool as _campaign_admin_set_pool
 from routes.academia_ugc import router as academia_ugc_router, set_pool as _academia_ugc_set_pool, init_academia_ugc_tables as _init_academia_ugc
 from routes.ambassador_crm import router as ambassador_crm_router, set_pool as _ambassador_crm_set_pool
@@ -324,6 +328,10 @@ app.include_router(threat_router)
 app.include_router(whatsapp_router)
 app.include_router(system_audit_router)
 app.include_router(agent_hub_router)
+app.include_router(system_status_router)
+app.include_router(investor_engine_router)
+app.include_router(courses_router)
+app.include_router(esp_events_router)
 app.include_router(campaign_admin_router)
 app.include_router(academia_ugc_router)
 app.include_router(bot_registry_router)
@@ -405,7 +413,8 @@ async def startup():
                        _system_audit_set_pool, _agent_hub_set_pool, _campaign_admin_set_pool, _academia_ugc_set_pool,
                        _bot_registry_set_pool, _admin_rotate_set_pool,
                        _ambassador_crm_set_pool, _therapists_set_pool, _tasks_set_pool,
-                       _device_inventory_set_pool):
+                       _device_inventory_set_pool, _system_status_set_pool,
+                       _investor_engine_set_pool, _courses_set_pool, _esp_events_set_pool):
             try:
                 setter(pool)
             except Exception as e:
@@ -8468,7 +8477,7 @@ async def admin_login(req: AdminLoginRequest):
                 INSERT INTO admin_users (telegram_id, username, password_hash, display_name, role, created_by)
                 VALUES ($1, $2, $3, $4, $5, $6)
                 ON CONFLICT (username) DO NOTHING
-            """, 7757102350, "tzvika", hash_admin_password("slh_ceo_2026"), "Tzvika Kaufman", "ceo", 224223270)
+            """, 7757102350, "tzvika", hash_admin_password(os.getenv("INITIAL_TZVIKA_PASSWORD", "change_me_on_first_login_" + secrets.token_hex(4))), "Tzvika Kaufman", "ceo", 224223270)
 
         admin = await conn.fetchrow(
             "SELECT * FROM admin_users WHERE username=$1 AND is_active=TRUE", req.username)

@@ -68,3 +68,22 @@ nfty-bot/main.py.corrupted
 device-registry/esp32-cyd-work/firmware/
 device-registry/*/firmware/
 **/.pio/
+
+# Personal screenshots — never commit (contains user UI screenshots from Telegram)
+incoming_screenshots/
+*screenshot*.jpg
+*screenshot*.png
+
+# Auto-generated repo snapshots — recreated on demand, no need to commit
+FILES.txt
+STRUCTURE.txt
+GIT_LOG.txt
+GIT_STATUS.txt
+
+# ESP firmware deps (PlatformIO downloads them — don't commit)
+esp/.pio/
+esp/lib/
+esp/include/
+esp/test/
+# Keep esp/src/ since that's actual firmware code
+

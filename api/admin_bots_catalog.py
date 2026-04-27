@@ -38,6 +38,7 @@ class BotIn(BaseModel):
     service: Optional[str] = Field(None, max_length=64)  # slh-xxx (docker-compose service)
     notes: Optional[str] = Field(None, max_length=400)
     status: Optional[str] = Field("active", pattern=r"^(active|paused|deprecated|swap-target)$")
+    tier: Optional[str] = Field("medium", pattern=r"^(critical|high|medium|low)$")
 
 
 class BotUpdate(BaseModel):
@@ -47,6 +48,7 @@ class BotUpdate(BaseModel):
     service: Optional[str] = Field(None, max_length=64)
     notes: Optional[str] = Field(None, max_length=400)
     status: Optional[str] = Field(None, pattern=r"^(active|paused|deprecated|swap-target)$")
+    tier: Optional[str] = Field(None, pattern=r"^(critical|high|medium|low)$")
 
 
 class MarkRotated(BaseModel):
@@ -127,14 +129,62 @@ async def _ensure_schema(pool) -> None:
                 last_rotated_at TIMESTAMPTZ,
                 last_verified_at TIMESTAMPTZ,
                 status          TEXT NOT NULL DEFAULT 'active',
+                tier            TEXT NOT NULL DEFAULT 'medium',
                 notes           TEXT,
                 created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
                 updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
             )
             """
         )
+        # Migration for pre-tier rows: add column if missing, then enforce check.
+        await conn.execute(
+            "ALTER TABLE bot_catalog ADD COLUMN IF NOT EXISTS tier TEXT NOT NULL DEFAULT 'medium'"
+        )
+        # CHECK constraint added separately so the migration is idempotent on
+        # existing tables that already have the column without a check.
+        await conn.execute(
+            """
+            DO $$
+            BEGIN
+                IF NOT EXISTS (
+                    SELECT 1 FROM pg_constraint WHERE conname = 'bot_catalog_tier_chk'
+                ) THEN
+                    ALTER TABLE bot_catalog
+                    ADD CONSTRAINT bot_catalog_tier_chk
+                    CHECK (tier IN ('critical', 'high', 'medium', 'low'));
+                END IF;
+            END $$;
+            """
+        )
         await conn.execute(
             "CREATE INDEX IF NOT EXISTS ix_bot_catalog_status ON bot_catalog (status)"
+        )
+        await conn.execute(
+            "CREATE INDEX IF NOT EXISTS ix_bot_catalog_tier ON bot_catalog (tier)"
+        )
+        # Tier seeds — idempotent: only annotates rows whose tier is still the
+        # default 'medium', so manual edits via PATCH are preserved.
+        await conn.execute(
+            """
+            UPDATE bot_catalog SET tier = 'critical'
+            WHERE tier = 'medium' AND handle IN
+                ('@SLH_Claude_bot', '@WEWORK_teamviwer_bot')
+            """
+        )
+        await conn.execute(
+            """
+            UPDATE bot_catalog SET tier = 'high'
+            WHERE tier = 'medium' AND handle IN
+                ('@SLH_BotShop_bot', '@SLH_Wallet_bot', '@SLH_Spark_bot',
+                 '@SLH_Admin_bot', '@SLH_macro_bot')
+            """
+        )
+        await conn.execute(
+            """
+            UPDATE bot_catalog SET tier = 'low'
+            WHERE tier = 'medium' AND
+                (handle = '@SLH_Test_bot' OR status = 'swap-target')
+            """
         )
         # Seed if empty — preserves the existing fleet definition without
         # forcing the operator to re-enter 31 rows.
@@ -175,6 +225,7 @@ def _row_to_dict(r) -> dict:
         "last_rotated_at": r["last_rotated_at"].isoformat() if r["last_rotated_at"] else None,
         "last_verified_at": r["last_verified_at"].isoformat() if r["last_verified_at"] else None,
         "status": r["status"],
+        "tier": r["tier"] if "tier" in r else "medium",
         "notes": r["notes"],
         "created_at": r["created_at"].isoformat() if r["created_at"] else None,
     }
@@ -222,12 +273,12 @@ async def add_bot(
         try:
             row = await conn.fetchrow(
                 """
-                INSERT INTO bot_catalog (name, handle, env_var, service, status, notes)
-                VALUES ($1, $2, $3, $4, $5, $6)
+                INSERT INTO bot_catalog (name, handle, env_var, service, status, tier, notes)
+                VALUES ($1, $2, $3, $4, $5, $6, $7)
                 RETURNING *
                 """,
                 body.name, handle, body.env_var, body.service,
-                body.status or "active", body.notes,
+                body.status or "active", body.tier or "medium", body.notes,
             )
         except Exception as e:
             if "unique" in str(e).lower() or "duplicate" in str(e).lower():
@@ -251,7 +302,7 @@ async def update_bot(
 
     fields = []
     values = []
-    for k in ("name", "handle", "env_var", "service", "notes", "status"):
+    for k in ("name", "handle", "env_var", "service", "notes", "status", "tier"):
         v = getattr(body, k)
         if v is not None:
             if k == "handle" and not v.startswith("@"):
@@ -373,6 +424,10 @@ async def stats(
                 COUNT(*) FILTER (WHERE last_rotated_at IS NULL)  AS never_rotated,
                 COUNT(*) FILTER (WHERE last_rotated_at < NOW() - INTERVAL '90 days') AS stale_90d,
                 COUNT(*) FILTER (WHERE last_rotated_at < NOW() - INTERVAL '180 days') AS stale_180d,
+                COUNT(*) FILTER (WHERE tier = 'critical')        AS tier_critical,
+                COUNT(*) FILTER (WHERE tier = 'high')            AS tier_high,
+                COUNT(*) FILTER (WHERE tier = 'medium')          AS tier_medium,
+                COUNT(*) FILTER (WHERE tier = 'low')             AS tier_low,
                 COUNT(*)                                          AS total
             FROM bot_catalog
             """
@@ -386,4 +441,10 @@ async def stats(
         "never_rotated": int(s["never_rotated"] or 0),
         "stale_90d": int(s["stale_90d"] or 0),
         "stale_180d": int(s["stale_180d"] or 0),
+        "by_tier": {
+            "critical": int(s["tier_critical"] or 0),
+            "high":     int(s["tier_high"] or 0),
+            "medium":   int(s["tier_medium"] or 0),
+            "low":      int(s["tier_low"] or 0),
+        },
     }

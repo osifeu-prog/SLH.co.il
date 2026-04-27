@@ -1,0 +1,58 @@
+{
+  "_doc": "Maps env_var → Railway destination + tier. Populate IDs via scripts/railway_resolve_ids.py before first rotation. Schema: env_var → {project (label), service (label), environment (label), project_id, service_id, environment_id, tier, non_bot? (true for non-bot secrets)}.",
+  "_tiers": {
+    "critical": "ADMIN_API_KEYS, DATABASE_URL, ANTHROPIC_API_KEY, payment-bot tokens. 60s confirm window + broadcast to all admins.",
+    "high": "Money-touching bot tokens (Wallet, BotShop, Spark, Admin). Immediate execute + broadcast.",
+    "medium": "Most operational bots. Immediate execute + audit only.",
+    "low": "Test bots, swap-targets. No cooldown."
+  },
+  "version": 1,
+  "graphql_endpoint": "https://backboard.railway.app/graphql/v2",
+  "services": {
+    "_BOT_TOKENS_": "─── Bot tokens (rotate via @BotFather → pipeline) ───",
+
+    "SLH_CLAUDE_BOT_TOKEN":   {"project": "slh-api", "service": "slh-claude-bot",     "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "critical", "handle": "@SLH_Claude_bot"},
+    "ACADEMIA_BOT_TOKEN":     {"project": "slh-api", "service": "slh-academia-bot",   "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "critical", "handle": "@WEWORK_teamviwer_bot"},
+
+    "BOTSHOP_BOT_TOKEN":      {"project": "slh-api", "service": "slh-botshop",        "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "high",     "handle": "@SLH_BotShop_bot"},
+    "WALLET_BOT_TOKEN":       {"project": "slh-api", "service": "slh-wallet",         "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "high",     "handle": "@SLH_Wallet_bot"},
+    "CORE_BOT_TOKEN":         {"project": "slh-api", "service": "slh-core-bot",       "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "high",     "handle": "@SLH_Spark_bot"},
+    "ADMIN_BOT_TOKEN":        {"project": "slh-api", "service": "slh-admin",          "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "high",     "handle": "@SLH_Admin_bot"},
+    "TELEGRAM_BOT_TOKEN":     {"project": "diligent-radiance", "service": "monitor.slh", "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "high",   "handle": "@SLH_macro_bot"},
+
+    "GUARDIAN_BOT_TOKEN":     {"project": "slh-api", "service": "slh-guardian-bot",   "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "medium",   "handle": "@Grdian_bot"},
+    "FACTORY_BOT_TOKEN":      {"project": "slh-api", "service": "slh-factory",        "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "medium",   "handle": "@SLH_Factory_bot"},
+    "AIRDROP_BOT_TOKEN":      {"project": "slh-api", "service": "slh-airdrop",        "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "medium",   "handle": "@SLH_Airdrop_bot"},
+    "CAMPAIGN_TOKEN":         {"project": "slh-api", "service": "slh-campaign",       "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "medium",   "handle": "@SLH_Campaign_bot"},
+    "FUN_BOT_TOKEN":          {"project": "slh-api", "service": "slh-fun",            "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "medium",   "handle": "@SLH_Fun_bot"},
+    "GAME_BOT_TOKEN":         {"project": "slh-api", "service": "slh-game",           "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "medium",   "handle": "@SLH_Game_bot"},
+    "TON_MNH_TOKEN":          {"project": "slh-api", "service": "slh-ton-mnh",        "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "medium",   "handle": "@TonMNH_bot"},
+    "SLH_TON_TOKEN":          {"project": "slh-api", "service": "slh-ton",            "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "medium",   "handle": "@SLH_Ton_bot"},
+    "SLH_LEDGER_TOKEN":       {"project": "slh-api", "service": "slh-ledger",         "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "medium",   "handle": "@SLH_Ledger_bot"},
+    "OSIF_SHOP_TOKEN":        {"project": "slh-api", "service": "slh-osif-shop",      "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "medium",   "handle": "@osif_shop_bot"},
+    "NIFTI_PUBLISHER_TOKEN":  {"project": "slh-api", "service": "slh-nifti",          "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "medium",   "handle": "@Nifti_Publisher_bot"},
+    "CHANCE_PAIS_TOKEN":      {"project": "slh-api", "service": "slh-chance",         "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "medium",   "handle": "@Chance_Pais_bot"},
+    "NFTY_MADNESS_TOKEN":     {"project": "slh-api", "service": "slh-nfty",           "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "medium",   "handle": "@NFTY_Madness_bot"},
+    "CRAZY_PANEL_TOKEN":      {"project": "slh-api", "service": "slh-crazy-panel",    "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "medium",   "handle": "@Crazy_Panel_bot"},
+    "MY_NFT_SHOP_TOKEN":      {"project": "slh-api", "service": "slh-nft-shop",       "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "medium",   "handle": "@MyNFTShop_bot"},
+    "BEYNONIBANK_TOKEN":      {"project": "slh-api", "service": "slh-beynonibank",    "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "medium",   "handle": "@Beynonibank_bot"},
+    "EXPERTNET_BOT_TOKEN":    {"project": "slh-api", "service": "slh-expertnet",      "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "medium",   "handle": "@ExpertNet_bot"},
+    "SLH_AIR_TOKEN":          {"project": "slh-api", "service": "slh-air",            "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "medium",   "handle": "@SLH_AIR_bot"},
+    "G4ME_BOT_TOKEN":         {"project": "slh-api", "service": "slh-g4me",           "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "medium",   "handle": "@G4meb0t_bot"},
+
+    "TS_SET_TOKEN":           {"project": "slh-api", "service": "slh-ts-set",         "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "low",      "handle": "@TS_Set_bot"},
+    "MATCH_BOT_TOKEN":        {"project": "slh-api", "service": "slh-match",          "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "low",      "handle": "@SLH_Match_bot"},
+    "WELLNESS_BOT_TOKEN":     {"project": "slh-api", "service": "slh-wellness",       "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "low",      "handle": "@SLH_Wellness_bot"},
+    "USERINFO_BOT_TOKEN":     {"project": "slh-api", "service": "slh-userinfo",       "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "low",      "handle": "@SLH_UserInfo_bot"},
+    "TEST_BOT_TOKEN":         {"project": "slh-api", "service": "slh-test-bot",       "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "low",      "handle": "@SLH_Test_bot"},
+
+    "_NON_BOT_SECRETS_": "─── Non-bot critical secrets (also rotatable via pipeline) ───",
+
+    "ADMIN_API_KEYS":         {"project": "slh-api", "service": "slh-api",            "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "critical", "non_bot": true},
+    "ADMIN_BROADCAST_KEY":    {"project": "slh-api", "service": "slh-api",            "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "critical", "non_bot": true},
+    "DATABASE_URL":           {"project": "slh-api", "service": "slh-api",            "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "critical", "non_bot": true, "_warn": "rotating DB URL requires coordinated DB credential change — use Railway dashboard for now"},
+    "ANTHROPIC_API_KEY":      {"project": "slh-api", "service": "slh-claude-bot",     "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "critical", "non_bot": true},
+    "JWT_SECRET":             {"project": "slh-api", "service": "slh-api",            "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "critical", "non_bot": true},
+    "RAILWAY_API_TOKEN":      {"project": "slh-api", "service": "slh-api",            "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "critical", "non_bot": true, "_warn": "rotating the rotation token itself — push manually via Railway dashboard, not via pipeline (chicken-and-egg)"}
+  }
+}

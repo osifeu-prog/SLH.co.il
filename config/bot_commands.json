@@ -1,0 +1,67 @@
+{
+  "_doc": "Per-bot Telegram setMyCommands registry. Pushed automatically after every successful rotation via routes/rotation_pipeline.py. Each bot gets `default` + its `per_bot[handle]` extras. Hebrew descriptions OK (Telegram supports UTF-8). Max 100 commands per bot, max 256 chars per description.",
+  "version": 1,
+  "default": [
+    {"command": "start", "description": "התחל / Start"},
+    {"command": "help",  "description": "עזרה / Help"},
+    {"command": "menu",  "description": "תפריט / Menu"}
+  ],
+  "per_bot": {
+    "@SLH_Claude_bot": [
+      {"command": "admin",          "description": "פאנל אדמין מלא"},
+      {"command": "railway_status", "description": "מצב Railway"},
+      {"command": "railway_logs",   "description": "לוגים של שירות"},
+      {"command": "railway_vars",   "description": "רשימת משתני סביבה"},
+      {"command": "revenue",        "description": "הכנסות 30 יום"},
+      {"command": "anthropic_status", "description": "מצב Anthropic API"}
+    ],
+    "@WEWORK_teamviwer_bot": [
+      {"command": "vip",       "description": "הצטרף ל-VIP"},
+      {"command": "courses",   "description": "קורסים זמינים"},
+      {"command": "approve",   "description": "אישור תשלום"}
+    ],
+    "@SLH_Spark_bot": [
+      {"command": "wallet",   "description": "ארנק SLH"},
+      {"command": "stake",    "description": "Staking + Dynamic Yield"},
+      {"command": "courses",  "description": "Academia"},
+      {"command": "earn",     "description": "ZVK + רווחים"}
+    ],
+    "@SLH_Wallet_bot": [
+      {"command": "balance",  "description": "יתרה נוכחית"},
+      {"command": "deposit",  "description": "הפקדה"},
+      {"command": "withdraw", "description": "משיכה"},
+      {"command": "history",  "description": "היסטוריית טרנזקציות"}
+    ],
+    "@SLH_Admin_bot": [
+      {"command": "broadcast", "description": "ברודקאסט הודעה"},
+      {"command": "airdrop",   "description": "Airdrop טוקנים"},
+      {"command": "gift",      "description": "מתנה למשתמש"},
+      {"command": "users",     "description": "ניהול משתמשים"},
+      {"command": "payments",  "description": "ניהול תשלומים"}
+    ],
+    "@SLH_BotShop_bot": [
+      {"command": "shop",     "description": "BotShop — קטלוג"},
+      {"command": "orders",   "description": "ההזמנות שלי"}
+    ],
+    "@Grdian_bot": [
+      {"command": "scan",     "description": "סריקת חשבון"},
+      {"command": "report",   "description": "דווח על משתמש חשוד"}
+    ],
+    "@SLH_Airdrop_bot": [
+      {"command": "claim",    "description": "Claim airdrop"},
+      {"command": "status",   "description": "מצב airdrop"}
+    ],
+    "@SLH_Campaign_bot": [
+      {"command": "join",     "description": "הצטרפות לקמפיין"},
+      {"command": "refer",    "description": "קישור הפנייה"}
+    ],
+    "@SLH_Test_bot": [
+      {"command": "ping",     "description": "Test ping"},
+      {"command": "echo",     "description": "Echo back"}
+    ],
+    "@G4meb0t_bot": [
+      {"command": "match",    "description": "התאמת זוגיות"},
+      {"command": "profile",  "description": "פרופיל אישי"}
+    ]
+  }
+}
