@@ -4,6 +4,7 @@ SLH Airdrop Bot - גרסה סופית מעודכנת
 """
 
 import logging
+import os
 import requests
 import time
 import sys
@@ -17,6 +18,16 @@ TOKEN = "8530795944:AAFXDx-vWZPpiXTlfsv5izUayJ4OpLLq3Ls"
 API_URL = "https://successful-fulfillment-production.up.railway.app"
 ADMIN_ID = "224223270"  # 👈 זה המזהה הנכון שלך
 TON_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+
+# Therapists Network deep-link (Phase 4): /start therapist_<id> in this bot
+# pairs the Telegram account with an approved therapist application.
+# Both env vars must be set; if absent, the deep-link silently falls through
+# to the regular /start flow (no harm, just no link).
+SLH_THERAPISTS_API = os.getenv(
+    "SLH_THERAPISTS_API",
+    "https://slh-api-production.up.railway.app/api/therapists/telegram/link",
+)
+TELEGRAM_LINK_SECRET = os.getenv("TELEGRAM_LINK_SECRET", "")
 
 # ====================
 # SETUP
@@ -112,6 +123,70 @@ def get_payment_instructions():
 
 <b>שאלות?</b> @Osif83
 """
+
+# ====================
+# THERAPISTS DEEP-LINK (Phase 4)
+# ====================
+def _link_therapist_telegram(application_id: int, telegram_id: int) -> tuple[bool, str]:
+    """
+    Pair a Telegram chat_id with an approved therapist application_id by
+    calling SLH API's /api/therapists/telegram/link.
+
+    Returns (success, human_message). Idempotent server-side: replaying the
+    same (telegram_id, application_id) returns ok with idempotent=true.
+    """
+    if not TELEGRAM_LINK_SECRET:
+        logger.warning("TELEGRAM_LINK_SECRET not set — skipping therapist link")
+        return False, (
+            "⚠️ <b>חיבור הטלגרם זמנית לא זמין</b>\n\n"
+            "אדמין SLH צריך לקבוע <code>TELEGRAM_LINK_SECRET</code> ב-Railway "
+            "ובסביבת הבוט. נסה שוב בעוד מספר דקות."
+        )
+    try:
+        resp = requests.post(
+            SLH_THERAPISTS_API,
+            headers={
+                "Content-Type": "application/json",
+                "X-Bot-Secret": TELEGRAM_LINK_SECRET,
+            },
+            json={
+                "telegram_id": int(telegram_id),
+                "application_id": int(application_id),
+                "kind": "therapist",
+            },
+            timeout=10,
+        )
+        if resp.status_code == 200:
+            data = resp.json()
+            if data.get("idempotent"):
+                return True, (
+                    f"✅ <b>כבר חובר</b>\n\n"
+                    f"חשבון הטלגרם שלך כבר מקושר לאפליקציה #{application_id}."
+                )
+            return True, (
+                f"✅ <b>חוברת בהצלחה!</b>\n\n"
+                f"חשבון הטלגרם שלך מקושר עכשיו לאפליקציית מטפל #{application_id}.\n"
+                f"מעכשיו תקבל כאן התראות על פגישות חדשות, אישורים ותשלומים."
+            )
+        if resp.status_code == 403:
+            return False, "⚠️ <b>סוד בוט לא תקין</b> — פנה לתמיכה."
+        if resp.status_code == 404:
+            return False, (
+                f"❌ <b>אפליקציה #{application_id} לא נמצאה</b>\n\n"
+                "ייתכן שהאפליקציה נמחקה או שמספר האפליקציה שגוי. "
+                "פנה לתמיכה: @osifeu_prog"
+            )
+        if resp.status_code == 400:
+            return False, (
+                "⏳ <b>האפליקציה עדיין לא אושרה</b>\n\n"
+                "ברגע שצוות SLH יאשר את הבקשה — תוכל לחבר את הטלגרם שוב."
+            )
+        logger.error(f"Therapist link returned HTTP {resp.status_code}: {resp.text[:200]}")
+        return False, f"❌ שגיאה (HTTP {resp.status_code})"
+    except Exception as e:
+        logger.error(f"Therapist link failed: {e!r}")
+        return False, f"❌ שגיאת רשת: {e}"
+
 
 # ====================
 # BOT LOGIC
@@ -311,7 +386,27 @@ def main():
                         logger.info(f"📨 {name}: {text}")
                         
                         # פקודות מיוחדות
-                        if text == "/start":
+                        if text == "/start" or text.startswith("/start "):
+                            # Phase 4: deep-link parser. /start therapist_<id>
+                            # pairs the chat_id with an approved therapist app.
+                            arg = text[len("/start"):].strip()
+                            if arg.startswith("therapist_"):
+                                try:
+                                    app_id = int(arg.split("_", 1)[1])
+                                    ok, msg = _link_therapist_telegram(app_id, chat_id)
+                                    send_message(chat_id, msg)
+                                    if ok and str(chat_id) != ADMIN_ID:
+                                        send_message(
+                                            ADMIN_ID,
+                                            f"🩺 מטפל חיבר טלגרם:\n"
+                                            f"app #{app_id} ↔ tg {chat_id} ({name})",
+                                        )
+                                    # don't fall through to airdrop handler
+                                    continue
+                                except (ValueError, IndexError):
+                                    send_message(chat_id, "❌ קישור לא תקין. ודא שלחצת על הקישור המלא מהאתר.")
+                                    continue
+                            # Default: airdrop /start flow
                             bot.handle_start(chat_id, name, username)
                         
                         elif text == "/status":
