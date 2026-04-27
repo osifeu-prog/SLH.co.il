@@ -1,4 +1,4 @@
-﻿$ROOT="D:\SLH_PROJECT_V2"
+$ROOT="D:\SLH_PROJECT_V2"
 $TS=Get-Date -Format yyyyMMdd_HHmmss
 
 $BACKUP="$ROOT\backups\backup_$TS"

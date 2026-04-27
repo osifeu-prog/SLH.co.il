@@ -10,10 +10,11 @@
 ## Project Overview
 SLH Spark is an institutional-grade digital investment ecosystem with:
 - **Website:** 140+ HTML pages on GitHub Pages (slh-nft.com); 60 pages in root + subdirectories (blog/, admin/, miniapp/, academy/, prompts/)
-- **API:** FastAPI on Railway, ~230 endpoints, **11,765 lines** in main.py
-  - Production URL: `slhcoil-production.up.railway.app` and `www.slh.co.il`
-  - Railway service connected to: `osifeu-prog/SLH.co.il` (branch `main`)
-  - Older URL `slh-api-production.up.railway.app` may still respond — verify before deprecating
+- **API:** FastAPI ~230 endpoints, **11,765 lines** in main.py — **NOT YET DEPLOYED to Railway** (verified 2026-04-27 via HTTP logs returning 404 on /api/*).
+  - Code lives in `D:\SLH_ECOSYSTEM` (remote `origin` → `osifeu-prog/slh-api`)
+  - Railway service `SLH.co.il` runs a different codebase (Python http.server + Telegram bot from `osifeu-prog/SLH.co.il` repo) at `slhcoil-production.up.railway.app` + `www.slh.co.il`
+  - Plan: deploy FastAPI as a new Railway service `slh-fastapi` connected to `osifeu-prog/slh-api`. See `ops/VISION_NEXT_STEPS_2026-04-27.md`.
+  - Reality reference: `ops/SYSTEM_REALITY_2026-04-27.md`
 - **Bots:** 25 Telegram bots via Docker Compose (aiogram 3.x), all currently on polling
 - **Blockchain:** SLH token on BSC (BEP-20), PancakeSwap V2 pool live
 - **Database:** PostgreSQL 15 + Redis 7
@@ -120,10 +121,12 @@ git add main.py api/main.py
 
 ## Session Start Checklist
 1. Read latest `ops/SESSION_HANDOFF_*.md`
-2. `curl slh-api-production.up.railway.app/api/health`
-3. Check `git status` in both repos
-4. Ask user what's priority today
-5. Check if Railway env vars are set (JWT_SECRET, ADMIN_API_KEYS)
+2. Read `ops/SYSTEM_REALITY_2026-04-27.md` and `ops/VISION_NEXT_STEPS_2026-04-27.md` for current ground truth
+3. `curl https://slhcoil-production.up.railway.app/api/health` — returns 404 today (the simple bot, not FastAPI)
+4. Once FastAPI is deployed (per VISION_NEXT_STEPS): `curl https://slh-fastapi-production.up.railway.app/api/health`
+5. Check `git status` in both repos
+6. Ask user what's priority today
+7. Check if Railway env vars are set (JWT_SECRET, ADMIN_API_KEYS, etc.)
 
 ## Pending Critical Items (verified 2026-04-27)
 - [ ] **🔴 P0 BLOCKED (Osif):** Railway env vars MISSING — only DATABASE_URL/REDIS_URL/OPENAI_API_KEY set. Need: JWT_SECRET, ADMIN_API_KEYS, ENCRYPTION_KEY, ADMIN_BROADCAST_KEY, INITIAL_ADMIN_PASSWORD, INITIAL_TZVIKA_PASSWORD, ADMIN_USER_ID. See `ops/SECURITY_FIX_PLAN_2026-04-27.md` Section A.

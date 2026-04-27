@@ -1,4 +1,4 @@
-﻿$ErrorActionPreference = "Continue"
+$ErrorActionPreference = "Continue"
 $API = "https://slh-api-production.up.railway.app"
 
 "=== ADMIN API TEST ==="

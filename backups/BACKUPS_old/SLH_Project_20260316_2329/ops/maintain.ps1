@@ -1,4 +1,4 @@
-﻿Write-Host ""
+Write-Host ""
 Write-Host "SLH BOT MAINTENANCE"
 
 .\ops\stop.ps1

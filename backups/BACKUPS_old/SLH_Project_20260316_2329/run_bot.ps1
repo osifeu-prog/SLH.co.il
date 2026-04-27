@@ -1,4 +1,4 @@
-﻿$date = Get-Date -Format "yyyy-MM-dd_HH-mm"
+$date = Get-Date -Format "yyyy-MM-dd_HH-mm"
 Write-Host "--- Starting Backup ---" -ForegroundColor Cyan
 
 # 1. Export DB to CSV

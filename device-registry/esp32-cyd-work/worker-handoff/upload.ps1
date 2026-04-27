@@ -1,4 +1,4 @@
-﻿Write-Host "=== SLH ESP32 UPLOAD ===" -ForegroundColor Cyan
+Write-Host "=== SLH ESP32 UPLOAD ===" -ForegroundColor Cyan
 
 # בדוק שהמכשיר מחובר
 Write-Host "Checking connection..." -ForegroundColor Yellow

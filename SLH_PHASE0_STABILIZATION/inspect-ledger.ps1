@@ -1,4 +1,4 @@
-﻿$ErrorActionPreference = "Continue"
+$ErrorActionPreference = "Continue"
 
 "=== LEDGER LOCAL INSPECTION ==="
 "Time: $(Get-Date -Format s)"

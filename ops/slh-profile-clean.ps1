@@ -1,4 +1,4 @@
-﻿function Show-SLH-Header {
+function Show-SLH-Header {
     param($title = "SLH SPARK SYSTEM", $color = "Cyan")
     Write-Host ""
     Write-Host " =================================================" -ForegroundColor $color

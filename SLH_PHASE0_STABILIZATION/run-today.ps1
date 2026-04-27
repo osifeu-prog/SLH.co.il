@@ -1,4 +1,4 @@
-﻿Write-Host "`n=== RUN TODAY START ===`n" -ForegroundColor Cyan
+Write-Host "`n=== RUN TODAY START ===`n" -ForegroundColor Cyan
 
 Write-Host "1) Running ledger inspection..." -ForegroundColor Yellow
 powershell -ExecutionPolicy Bypass -File "$PSScriptRoot\inspect-ledger.ps1" | Tee-Object -FilePath "$PSScriptRoot\output_ledger.txt"

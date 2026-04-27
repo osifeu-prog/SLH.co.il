@@ -1,4 +1,4 @@
-﻿$global:SLH_BASE = "https://slh-api-production.up.railway.app"
+$global:SLH_BASE = "https://slh-api-production.up.railway.app"
 $global:ESP_DIR = "D:\SLH_ECOSYSTEM\esp"
 $global:API_DIR = "D:\SLH_ECOSYSTEM\api"
 

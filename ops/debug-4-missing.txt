@@ -1,0 +1,66 @@
+﻿fd0571e Add automation script and setup guide for Railway token rotation and service cleanup
+67031cf feat: cross-bot token monitor + /tokens command (Phase 0)
+3ba78cd ops: continuation prompt for new sessions / cross-agent handoff
+c48789a fix(bot): fallback to static serve on InvalidToken
+978f2b1 feat: SIG statistical defense + 2 SLH mining reward + agent rules
+a9a0fbe docs: Control Center design spec (12 sections, 27h roadmap)
+68339c2 feat(site): full SEO pass on guardian.html + assets/ README
+e42acbb ops: daily_digest.py ΓÇö readable text or JSON activity summary
+0ae77d7 docs: post-mortem of 3 session regressions
+0c82bce ops(hook): pre-commit secret scanner ΓÇö blocks 8 pattern families
+802ddf6 feat(bot): /health and /stats commands
+215335f ops: daily runbook + verify.ps1 health check + rotate-token walkthrough + dispatch report
+4a98124 feat: Guardian early-bird pre-order landing + bot flow
+d69ed37 fix(bot): wrap commands in backticks so Markdown doesn't eat underscores
+50ece9e fix(deploy): serve docs/ as static fallback when TELEGRAM_BOT_TOKEN missing
+c3f93a8 docs: rewrite README with full command reference, add FINAL_STATUS handoff
+0d05f09 fix(bot): align SQL to prod schema, remove broken healthcheck, purge leaked token
+48f2d78 fix: requirements and railway.json
+945bf66 feat: add make_me_admin command
+41a9f4e fix: clean requirements.txt with ascii encoding
+2e1b48e fix: add psycopg2-binary to requirements
+63d8eb0 fix: complete async bot for Railway
+c5b87a5 fix: add event loop policy for Railway
+1683578 restore: full bot with users, feedback, admin, PostgreSQL
+1345c7d fix: working bot with ROI and signals
+251aa48 feat: add neural commands to bot
+8792c12 feat: add neural mesh visualization
+2172c33 update OPS.md
+1d3d526 add bot_simple.py
+db32aba fix: use simple working bot
+e1d1166 fix: event loop issue - use asyncio.run()
+2910f89 fix: complete bot.py with full functionality
+76672b3 fix: use correct postgres user and add detailed logging
+58fd606 fix: repair railway.json encoding (remove BOM)
+30241f0 fix: add bot service to railway config
+61a4432 feat: add Procfile for multiple processes
+a2fe955 fix: add missing command handlers for ROI and signals
+877cffc fix: add logging and error handling to bot
+bb4bc3c feat: add scheduler for automatic signals every hour
+8afb9ae fix: add missing ROI and signals handlers to bot
+5d75103 feat: dynamic monitor, ROI system, signal engine with MACD/RSI
+60f960e docs: add PROGRESS.md with current status
+dfe148b docs: add README with project overview
+3f8b9b7 feat: admin request system - request, approve, revoke, list
+312c457 fix: update admin id to real chat id
+902876f fix: remove nextjs, use static html only
+1d2d51d fix: static frontend for slh.co.il
+61ecfbf add api endpoint for feedback data
+7663ad3 final: working frontend and bot
+ce5fcad feat: add basic frontend for slh.co.il
+4218e0a fix: admin ids - keep only Osif for now
+47cbc3a stable sync bot - no asyncio.run, admin commands fixed, users list added
+8e2340e fix: admin ids hardcoded correctly
+23663e5 final fix: event loop issue resolved, bot stable
+4a7479b feat: add /feedback, user registration, and notify admins
+a98e86b feat: full admin bot with PostgreSQL, Redis, status, deploy, alerts, broadcast
+3b9ac87 fix: remove redis dependency, keep only PostgreSQL
+255b331 fix: add asyncpg
+1154696 fix: add asyncpg and redis to requirements
+a968c7b feat: PostgreSQL + Redis integration, full ROI history
+fd345c0 stop bot - remove file
+607620a full bot with roi database
+d2bdea7 fix: remove railway.json, update bot for Python 3.13
+e6939d8 remove broken railway.json
+c9a9c50 first commit
+85720c8 Initial commit: SLH.co.il full stack setup
