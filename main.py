@@ -218,3 +218,6 @@ print("[Startup] All routers included. Economy dashboard + health ready.")
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
+@app.get("/", response_class=HTMLResponse)
+async def landing_page():
+    return open("index.html", encoding="utf-8").read()
