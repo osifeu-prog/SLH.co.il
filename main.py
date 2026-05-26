@@ -228,3 +228,8 @@ async def landing_page():
 async def command_center():
     return open('command-center.html', encoding='utf-8').read()
 
+
+@app.get('/pay', response_class=HTMLResponse)
+async def pay_page():
+    return open('pay.html', encoding='utf-8').read()
+
