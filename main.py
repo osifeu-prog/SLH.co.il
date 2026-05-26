@@ -223,3 +223,8 @@ if __name__ == "__main__":
 @app.get("/", response_class=HTMLResponse)
 async def landing_page():
     return open("index.html", encoding="utf-8").read()
+
+@app.get('/command-center', response_class=HTMLResponse)
+async def command_center():
+    return open('command-center.html', encoding='utf-8').read()
+
