@@ -15,6 +15,7 @@ import secrets
 from typing import Optional
 
 from fastapi import FastAPI, HTTPException, Depends, Query, Request, Header
+from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, RedirectResponse
 from pydantic import BaseModel
