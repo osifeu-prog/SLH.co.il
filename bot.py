@@ -192,25 +192,33 @@ async def cmd_start(msg: Message) -> None:
 
 @dp.message(Command("help"))
 async def cmd_help(msg: Message) -> None:
-    if not auth.is_authorized(msg.from_user.id):
-        await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
-        return
-    await msg.answer(
-        "*🤖 פקודות Ops \\(מיידי, ללא AI\\):*\n"
-        "`/ps` `/bots` `/logs <name>` `/git` `/health` `/price` `/devices` `/task` `/ai_mode`\n\n"
-        "*🛠 פקודות עורך \\(שליטה באתר\\):*\n"
-        "`/cat` `/ls` `/grep` `/find`\n"
-        "`/append` `/replace` `/newpage`\n"
-        "`/commit` `/push` `/sync`\n"
-        "`/draft` `/apply` `/reject`\n"
-        "פירוט מלא: `/editor`\n\n"
-        f"*🧠 שי�-ה �-ופשית \\(AI: {_AI_MODE}\\):*\n"
-        "כל טקסט א�-ר נענה דרך Groq �-ינם\\.\n\n"
-        "*דוגמאות:*\n"
-        "• `/ls website`\n"
-        "• `/cat website/voice\\.html`\n"
-        "• `/draft website/index\\.html שנה את הכותרת`\n"
-        "• `/sync \"feat: my edit\"`"
+async def cmd_help(msg: Message):
+    await msg.reply(
+        "SLH Claude  Command Reference\n\n"
+        "=== AI & Chat ===\n"
+        "/start  Main menu\n"
+        "/help  This reference\n"
+        "Any text  AI chat (Groq/Gemini)\n\n"
+        "=== Autonomous System ===\n"
+        "/ai_manager <goal>  Run AI pipeline\n"
+        "/audit  View audit trail\n"
+        "/dashboard  System status\n"
+        "/scan  Scan project\n"
+        "/plan <goal>  Plan tasks\n"
+        "/auto <goal>  Full auto pipeline\n\n"
+        "=== Crowdfunding ===\n"
+        "/crowdfunding  Campaign info\n"
+        "https://slh-nft.com/campaign  Landing page\n\n"
+        "=== Admin & Ops ===\n"
+        "/health  API+DB health\n"
+        "/devices  ESP devices\n"
+        "/revenue  MRR report\n"
+        "/top_users  Top 10\n"
+        "/ps /bots /logs /git /task\n\n"
+        "=== Editor (Git integration) ===\n"
+        "/cat /ls /grep /find /editor\n"
+        "/commit /push /sync\n\n"
+        "Dashboard: http://localhost:9000"
     )
 
 
