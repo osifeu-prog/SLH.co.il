@@ -18,14 +18,6 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.filters import Command
 from aiogram.types import Message
-# === CLEAN ENGLISH /start ===
-@dp.message(Command("start"))
-async def cmd_start_clean(msg: Message):
-    await msg.reply(
-        "Hello Osif 👋\nI am SLH Claude - your AI assistant.\n💎 Tier: free\n\n"
-        "Available:\n/dashboard\n/crowdfunding\n/points\n/daily\n/backup\n/help",
-        parse_mode=None
-    )
 
 import auth
 import session
@@ -82,6 +74,14 @@ if not TOKEN:
 bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN))
 dp = Dispatcher()
 
+# === CLEAN ENGLISH /start ===
+@dp.message(Command("start"))
+async def cmd_start_clean(msg: Message):
+    await msg.reply(
+        "Hello Osif 👋\nI am SLH Claude - your AI assistant.\n💎 Tier: free\n\n"
+        "Available:\n/dashboard\n/crowdfunding\n/points\n/daily\n/backup\n/help",
+        parse_mode=None
+    )
 
 # ---------- Cross-bot coordination (shared agents group) ----------
 # Registers BEFORE the @dp.message handlers below so coord group messages
@@ -138,7 +138,7 @@ def _chunks(text: str, size: int = 4000) -> list[str]:
     return [text[i : i + size] for i in range(0, len(text), size)] or [text]
 
 
-# OLD /start REMOVED
+@dp.message(Command("start"))
 async def cmd_start(msg: Message) -> None:
     if not auth.is_authorized(msg.from_user.id):
         await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
