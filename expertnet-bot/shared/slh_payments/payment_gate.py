@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 Universal Payment Gate for SLH Bots.
 
@@ -221,3 +222,5 @@ class PaymentGate:
         )
         await message.answer(text, parse_mode="Markdown")
         return False
+
+

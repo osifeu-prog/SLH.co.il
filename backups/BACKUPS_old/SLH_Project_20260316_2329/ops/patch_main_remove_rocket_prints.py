@@ -1,4 +1,5 @@
-﻿from pathlib import Path
+﻿# -*- coding: utf-8 -*-
+from pathlib import Path
 import re
 
 p = Path("main.py")
@@ -18,3 +19,5 @@ for line in lines:
 
 p.write_text("\n".join(out) + "\n", encoding="utf-8", newline="\n")
 print(f"OK: main.py rocket-print patched, changed={changed}")
+
+

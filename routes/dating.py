@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 SLH Dating — Quality-gated matchmaking
 ========================================
@@ -370,3 +371,4 @@ async def dating_stats():
 @router.get("/interests/list")
 async def list_interests():
     return {"interests": sorted(VALID_INTERESTS), "looking_for_options": sorted(VALID_LOOKING_FOR)}
+

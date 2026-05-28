@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 raise SystemExit(
     "LEGACY ENTRYPOINT BLOCKED: use ops/start-core.ps1 with webhook_server.py + worker.py, not main.py"
 )
@@ -9,3 +10,5 @@ async def smart_help(message: types.Message):
     lang = "he"
     help_text = f"{STRINGS[lang]['help_title']}\n\n{STRINGS[lang]['help_steps']}"
     await message.answer(help_text, parse_mode='HTML')
+
+

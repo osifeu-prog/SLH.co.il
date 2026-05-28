@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import sys
 import requests
 import json
@@ -112,3 +113,5 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+
+

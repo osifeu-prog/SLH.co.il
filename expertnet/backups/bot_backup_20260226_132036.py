@@ -1,4 +1,5 @@
-﻿import os, sqlite3, logging, shutil, datetime
+﻿# -*- coding: utf-8 -*-
+import os, sqlite3, logging, shutil, datetime
 from web3 import Web3
 from cryptography.fernet import Fernet
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
@@ -90,3 +91,4 @@ if __name__ == '__main__':
     app.add_handler(CallbackQueryHandler(handle_callback))
     print("--- V12 CORE READY ---")
     app.run_polling()
+

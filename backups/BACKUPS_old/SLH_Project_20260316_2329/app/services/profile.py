@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from app.db.database import db
 
 
@@ -61,3 +62,4 @@ async def get_user_profile(user_id: int):
         "daily": dict(daily_row) if daily_row else None,
         "claims_count": int(claims_count or 0),
     }
+

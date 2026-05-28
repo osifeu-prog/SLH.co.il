@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel
 from datetime import datetime
@@ -396,4 +397,6 @@ async def health_check():
         "database": "connected",
         "version": "2.0"
     }
+
+
 

@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 Blockchain Verification Helpers — REAL public-API clients
 ==========================================================
@@ -534,3 +535,4 @@ class BlockchainThreatClient:
             return []
         result = await self.chainabuse.get_reports(wallet)
         return result.get("reports") or []
+

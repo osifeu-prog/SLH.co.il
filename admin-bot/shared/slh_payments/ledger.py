@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 SLH Internal Token Ledger
 Fast, reliable token transfers without blockchain dependency.
@@ -171,3 +172,5 @@ async def get_leaderboard(token: str = "SLH", limit: int = 10) -> list:
             token, limit,
         )
     return [dict(r) for r in rows]
+
+

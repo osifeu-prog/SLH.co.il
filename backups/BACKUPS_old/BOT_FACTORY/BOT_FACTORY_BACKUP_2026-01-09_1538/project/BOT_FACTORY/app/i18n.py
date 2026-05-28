@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 # app/i18n.py
 from __future__ import annotations
 
@@ -456,3 +457,5 @@ def t(lang: str, key: str) -> str:
     if key in data_en:
         return data_en[key]
     return key
+
+

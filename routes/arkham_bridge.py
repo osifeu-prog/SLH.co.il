@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 Threat Intelligence Bridge — REAL on-chain verification + Community Fraud Detection
 ====================================================================================
@@ -605,3 +606,4 @@ async def get_fraud_network(phone: Optional[str] = None, wallet: Optional[str] =
     except Exception as e:
         logger.error(f"Error fetching network: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+

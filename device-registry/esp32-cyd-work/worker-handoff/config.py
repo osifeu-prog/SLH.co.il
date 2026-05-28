@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 WIFI_SSID = 'Beynoni'
 WIFI_PASS = '12345678'
 TON_URL = 'https://api.coingecko.com/api/v3/simple/price?ids=the-open-network&vs_currencies=usd'
@@ -13,3 +14,5 @@ PINS = {
     'RST': 12,
     'BL': 21
 }
+
+

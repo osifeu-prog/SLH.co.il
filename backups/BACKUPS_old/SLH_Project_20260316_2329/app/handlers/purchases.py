@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import re
 from typing import Any
 
@@ -488,3 +489,4 @@ async def cancel_order_cmd(message: Message):
         f"{t(lang, 'order.status', status=status_label(lang, row['status']))}\n"
         f"{t(lang, 'cancel_order.note', note=row.get('admin_note') or '-')}"
     )
+

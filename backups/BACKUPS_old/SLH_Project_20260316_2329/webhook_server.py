@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import os
 import sys
 import logging
@@ -67,3 +68,5 @@ async def readyz_alias():
 
 if __name__ == "__main__":
     uvicorn.run(app, host=os.getenv("HOST", "0.0.0.0"), port=int(os.getenv("PORT", "8080")), log_level="info")
+
+

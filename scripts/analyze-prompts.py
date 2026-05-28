@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 SLH Prompt Analyzer
 ====================
@@ -137,3 +137,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

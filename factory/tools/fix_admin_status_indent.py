@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from __future__ import annotations
 from pathlib import Path
 import re
@@ -45,3 +46,4 @@ t2 = t[:start] + replacement + t[end:]
 t2 = t2.replace("\r\n", "\n").replace("\r", "\n")
 p.write_text(t2, encoding="utf-8", newline="\n")
 print("OK: rewrote admin:status block with correct indentation")
+

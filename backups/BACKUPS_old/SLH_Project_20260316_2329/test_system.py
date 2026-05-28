@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import asyncio
 import os
 import asyncpg
@@ -46,3 +47,5 @@ async def test_all():
 
 if __name__ == '__main__':
     asyncio.run(test_all())
+
+

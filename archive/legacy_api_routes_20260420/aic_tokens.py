@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 SLH AIC Â· AI Credits â€” 6th internal token
 ==========================================
@@ -399,3 +400,5 @@ async def admin_reserve_add(req: ReserveAddReq, x_admin_key: Optional[str] = Hea
             Decimal(str(req.usd_amount)), req.source, req.note,
         )
     return {"ok": True, "id": row["id"], "recorded_at": row["recorded_at"].isoformat()}
+
+

@@ -1,4 +1,5 @@
-﻿import os
+﻿# -*- coding: utf-8 -*-
+import os
 import psycopg2
 from dotenv import load_dotenv
 
@@ -24,3 +25,5 @@ try:
     conn.close()
 except Exception as e:
     print(f"FAILURE: {e}")
+
+

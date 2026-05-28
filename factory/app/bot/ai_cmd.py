@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import os
@@ -60,3 +61,4 @@ async def ai_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         text = text[:3500] + "\n…(truncated)"
 
     await update.effective_message.reply_text(text)
+

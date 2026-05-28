@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from pathlib import Path
 
 p = Path("app/main.py")
@@ -18,3 +19,4 @@ t2 = t2.replace("\r\n", "\n").replace("\r", "\n")
 p.write_text(t2, encoding="utf-8", newline="\n")
 
 print("OK: removed broken admin:status tail (rc_ok.. before admin:chatid)")
+

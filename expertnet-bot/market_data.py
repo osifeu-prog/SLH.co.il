@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 Real Market Data - CoinGecko free API
 12 coins tracked: BTC, ETH, TON, BNB, SOL, DOGE, XRP, ADA, DOT, AVAX, MATIC, LINK
@@ -153,3 +154,5 @@ async def ton_to_ils():
     if prices and prices.get("TON"):
         return prices["TON"].get("ils", 14.8)
     return 14.8
+
+

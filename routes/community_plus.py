@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 SLH Community Plus — Layer 1 chat upgrade
 ==========================================
@@ -326,3 +327,4 @@ async def presence_online_count():
             "SELECT COUNT(*) FROM user_presence WHERE last_seen > now() - interval '3 minutes'"
         )
     return {"online_count": cnt or 0, "window_seconds": ONLINE_WINDOW_SECONDS}
+

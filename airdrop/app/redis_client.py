@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import redis
 import os
 import json
@@ -37,3 +38,5 @@ class RedisClient:
         return self.redis.incr(key)
 
 redis_client = RedisClient()
+
+

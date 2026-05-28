@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import os
@@ -137,3 +138,5 @@ def get_webhook_info_hint():
     if JSONResponse is not None:
         return JSONResponse({"ok": True, "hint": "Use Telegram API getWebhookInfo via https://api.telegram.org/bot<TOKEN>/getWebhookInfo"})
     return {"ok": True}
+
+

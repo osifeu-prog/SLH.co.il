@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from fastapi import FastAPI, Depends, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -178,3 +179,4 @@ async def server_error(request: Request, exc: HTTPException):
 @app.get("/live")
 async def liveness_probe():
     return {"status": "alive", "timestamp": datetime.utcnow().isoformat()}
+

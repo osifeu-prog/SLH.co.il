@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from pathlib import Path
 from textwrap import dedent
 
@@ -206,3 +207,4 @@ economy_path.write_text(economy_text, encoding="utf-8", newline="\n")
 xp_path.write_text(xp_text, encoding="utf-8", newline="\n")
 
 print("economy.py and xp.py rewritten cleanly")
+

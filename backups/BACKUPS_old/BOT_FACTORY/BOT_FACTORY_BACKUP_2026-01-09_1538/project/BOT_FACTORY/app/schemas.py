@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
@@ -27,3 +28,5 @@ class TransactionBase(BaseModel):
 
     class Config:
         from_attributes = True
+
+

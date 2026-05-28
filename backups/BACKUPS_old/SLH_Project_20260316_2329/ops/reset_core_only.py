@@ -1,4 +1,5 @@
-﻿from pathlib import Path
+﻿# -*- coding: utf-8 -*-
+from pathlib import Path
 
 code = r"""# SLH_BOT_CORE_ONLY (stable core, admin ops, polling retry)
 import os, sys, asyncio, logging
@@ -130,3 +131,5 @@ if __name__ == "__main__":
 """
 Path("main.py").write_text(code.replace("\r\n","\n") + ("\n" if not code.endswith("\n") else ""), encoding="utf-8", newline="\n")
 print("OK: main.py set to CORE-ONLY")
+
+

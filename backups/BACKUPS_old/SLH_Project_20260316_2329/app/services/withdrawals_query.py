@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from app.db.database import db
 
 
@@ -394,3 +395,4 @@ async def mark_withdraw_failed(withdrawal_id: int, admin_user_id: int, error_mes
                 return {"ok": True, "row": dict(updated)}
 
             return {"ok": False, "error": f"Withdrawal status is {status}, not pending/approved."}
+

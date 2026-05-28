@@ -1,4 +1,5 @@
-﻿import os, sqlite3, time
+﻿# -*- coding: utf-8 -*-
+import os, sqlite3, time
 from cryptography.fernet import Fernet
 from web3 import Web3
 
@@ -38,3 +39,4 @@ def run_diagnostic():
         print(f"{icon} {test}")
 
 run_diagnostic()
+

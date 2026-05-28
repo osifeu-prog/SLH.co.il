@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import secrets
 from decimal import Decimal
 
@@ -67,3 +68,4 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+

@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 import logging
@@ -38,3 +39,5 @@ def send_airdrop(request: AirdropRequest):
         'status': 'success',
         'note': 'mock send - × ×™×¡×•×™'
     }
+
+

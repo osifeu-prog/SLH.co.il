@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from pathlib import Path
 import re
 
@@ -83,3 +84,4 @@ text = text.replace('await message.answer("Usage: /status <user_id>")', 'await m
 
 path.write_text(text, encoding="utf-8", newline="\\n")
 print("DONE", n1, n2, n3, n4, n5, n6, n7)
+

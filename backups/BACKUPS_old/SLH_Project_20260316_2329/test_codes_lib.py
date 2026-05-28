@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 import psycopg2
 from typing import Optional, Dict, Any
 
@@ -70,3 +70,4 @@ def tc_code_is_usable(row: Optional[Dict[str, Any]]) -> bool:
     if row["max_uses"] is not None and int(row["used_count"] or 0) >= int(row["max_uses"]):
         return False
     return True
+

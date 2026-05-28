@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 Bot Registry + Heartbeat
 
@@ -219,3 +220,4 @@ async def remove_bot(
     async with _pool.acquire() as conn:
         result = await conn.execute("DELETE FROM bots WHERE bot_name=$1", bot_name)
     return {"ok": True, "deleted": bot_name, "affected": result}
+

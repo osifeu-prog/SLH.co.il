@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 SLH Minimal Bot Template - used for bots without dedicated code.
 Provides: /start, /premium, payment proof handling, admin approve/reject.
@@ -103,3 +104,5 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
+

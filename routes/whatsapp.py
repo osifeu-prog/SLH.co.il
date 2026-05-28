@@ -1,4 +1,4 @@
-"""
+﻿"""
 WhatsApp Integration Module
 Contact management + fraud detection system with Twilio gateway
 """
@@ -644,3 +644,4 @@ async def whatsapp_broadcast_message(
         except Exception as e:
             logger.error(f"Failed to broadcast: {e}")
             raise HTTPException(500, f"Error: {str(e)[:100]}")
+

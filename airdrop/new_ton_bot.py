@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import os
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
@@ -48,3 +49,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+

@@ -1,4 +1,4 @@
-# bot/utils.py
+﻿# bot/utils.py
 import logging
 
 logger = logging.getLogger(__name__)
@@ -11,3 +11,4 @@ def format_user_name(user):
         return user.username
     else:
         return f"User {user.id}"
+

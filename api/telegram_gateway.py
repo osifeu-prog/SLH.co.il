@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """Telegram Gateway Layer â€” Mini App initData validation + user resolution.
 
 This is the standardized entry point for ALL Telegram-originated requests
@@ -281,3 +282,5 @@ def require_admin(user: TelegramUser) -> TelegramUser:
             "not_admin", f"Telegram id {user.telegram_id} is not an admin", status=403
         )
     return user
+
+

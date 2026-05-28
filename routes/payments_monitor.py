@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 SLH Payment Monitor — automatic BSC/TON ingestion.
 
@@ -237,3 +238,4 @@ async def register_intent(user_id: int, chain: str, expected_amount: float, plan
             user_id, chain, expected_amount, plan_key, bot_name,
         )
     return {"ok": True, "intent_id": row["id"], "expires_at": row["expires_at"].isoformat()}
+

@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from pathlib import Path
 
 p = Path("app/services/tasks.py")
@@ -22,3 +23,4 @@ if old not in s:
 s = s.replace(old, new, 1)
 p.write_text(s, encoding="utf-8", newline="\n")
 print("tasks.py advisory lock migrated to bigint single-key")
+

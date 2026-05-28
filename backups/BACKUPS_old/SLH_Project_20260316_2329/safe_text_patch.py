@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from pathlib import Path
 import re
 import shutil
@@ -139,3 +140,4 @@ print("backup:", backup)
 print("constants replaced:", n_const)
 print("redeem replaced:", n_redeem)
 print("DONE")
+

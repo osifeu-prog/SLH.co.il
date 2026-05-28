@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from pathlib import Path
 import re
 
@@ -105,3 +106,4 @@ text = text.replace(
 
 path.write_text(text, encoding="utf-8", newline="\n")
 print("DONE")
+

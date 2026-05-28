@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from decimal import Decimal, InvalidOperation
@@ -85,3 +86,4 @@ async def admin_credit_ledger_cmd(update: Update, context: ContextTypes.DEFAULT_
         f"amount: {amt:.4f} SLH\n"
         f"tx_id: {tx_id}"
     )
+

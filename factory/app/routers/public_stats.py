@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import os
@@ -94,3 +95,5 @@ def stats():
     except Exception as ex:
         out["db"]["error"] = str(ex)
         return out
+
+

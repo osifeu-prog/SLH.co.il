@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from sqlalchemy import text
@@ -49,3 +50,5 @@ def list_positions(telegram_id: int, db: Session = Depends(get_db)):
         telegram_id=telegram_id,
         positions=[PositionOut(**r) for r in rows],
     )
+
+

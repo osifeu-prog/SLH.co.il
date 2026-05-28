@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from backend.app.db.database import engine, Base
 from backend.app.models.user import User
 
@@ -6,3 +7,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+

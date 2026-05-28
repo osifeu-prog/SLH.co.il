@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """SLH Swarm — independent device mesh API.
 
 Implements the Phase-1 endpoints from `ops/SWARM_V1_BLUEPRINT_20260424.md`.
@@ -462,3 +463,5 @@ async def stats(request: Request):
         "events_24h": int(s["events_24h"] or 0),
         "pending_commands": int(s["pending_commands"] or 0),
     }
+
+

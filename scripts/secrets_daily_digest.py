@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """SLH Secrets Vault — daily digest sender.
 
 Designed to be invoked by Windows Task Scheduler at 21:00 Israel time.
@@ -92,3 +92,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """
 Generate personalized Telegram outreach messages for SLH community members.
 
@@ -216,3 +216,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+

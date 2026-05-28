@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import asyncpg
 import os
 from dotenv import load_dotenv
@@ -35,3 +36,4 @@ class Database:
             self.pool = None
             print("DB disconnected")
 db = Database()
+

@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import os
 import json
 from redis.asyncio import Redis
@@ -27,3 +28,4 @@ async def enqueue_update(payload: dict) -> str:
         return msg_id
     finally:
         await r.aclose()
+

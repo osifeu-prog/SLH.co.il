@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, Boolean, Text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -47,3 +48,5 @@ def get_db():
         yield db
     finally:
         db.close()
+
+

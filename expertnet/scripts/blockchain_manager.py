@@ -1,4 +1,5 @@
-﻿import json
+﻿# -*- coding: utf-8 -*-
+import json
 import os
 from web3 import Web3
 from dotenv import load_dotenv
@@ -29,3 +30,5 @@ class BlockchainManager:
             return balance / (10**18)
         except:
             return 0
+
+

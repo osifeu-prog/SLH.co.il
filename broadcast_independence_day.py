@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 #!/usr/bin/env python3
 # SLH Spark — Independence Day Broadcast (2026)
 # Gift: 78 ZVK + 78 REP per registered user
@@ -117,3 +118,5 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
+

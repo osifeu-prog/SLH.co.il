@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 SPARK IND - Match & Friends Bot
 ================================
@@ -645,3 +646,5 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
+

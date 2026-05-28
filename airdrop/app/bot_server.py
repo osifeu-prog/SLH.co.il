@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 SLH Investment House + HUB BOT
 Full-featured investment house with HUB economic engine.
@@ -2357,3 +2358,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+

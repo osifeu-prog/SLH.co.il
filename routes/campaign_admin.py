@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """Campaign admin — lead visibility + status tracking.
 
 Osif was blind to who registered via /api/campaign/register — 10 real leads
@@ -177,3 +178,4 @@ async def delete_lead(lead_id: int, x_admin_key: Optional[str] = Header(None)):
         if not row:
             raise HTTPException(404, "lead not found")
     return {"deleted": row["id"]}
+

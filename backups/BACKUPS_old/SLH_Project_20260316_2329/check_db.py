@@ -1,4 +1,5 @@
-﻿import psycopg2
+﻿# -*- coding: utf-8 -*-
+import psycopg2
 
 conn = psycopg2.connect(
     dbname="postgres",
@@ -17,3 +18,5 @@ print(cur.fetchall())
 
 cur.close()
 conn.close()
+
+

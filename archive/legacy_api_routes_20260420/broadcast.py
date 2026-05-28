@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 SLH Broadcast â€” cross-post to multiple networks via one endpoint.
 Starts with Telegram channel (@slhniffty, @SLH_AIR bot tokens).
@@ -285,3 +286,5 @@ async def broadcast_history(user_id: int, limit: int = 20):
             for r in rows
         ],
     }
+
+

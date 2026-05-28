@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from aiogram import Router, F, types
 import os
 import logging
@@ -20,3 +21,4 @@ async def invite(message: types.Message):
     )
 
     await message.answer(text)
+

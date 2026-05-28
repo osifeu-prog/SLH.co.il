@@ -1,4 +1,5 @@
-﻿"""
+﻿# -*- coding: utf-8 -*-
+"""
 SLH Ecosystem API - FastAPI Backend
 Deployed on Railway | Connected to PostgreSQL
 Phase 0.5 - Economy Transparency + Health + Ops Reality
@@ -103,7 +104,7 @@ async def economy_status():
         "timestamp": datetime.utcnow().isoformat() + "Z",
         "title": "SLH Investment House - Economy Dashboard",
         "model": "Revenue Share Pool",
-        "principle": "Net Profit only → Payouts to investors. No dilution from new capital.",
+        "principle": "Net Profit only ? Payouts to investors. No dilution from new capital.",
 
         "treasury": {
             "estimated_balance_ils": 450000,
@@ -123,7 +124,7 @@ async def economy_status():
 
         "investor_engine": {
             "active_investors": active_investors,
-            "payout_model": "Net Profit × (Investor Share / Total Shares)",
+            "payout_model": "Net Profit � (Investor Share / Total Shares)",
             "next_payout": "Requires admin two-step approval"
         },
 
@@ -140,7 +141,7 @@ async def redirect_economy():
 
 # ==================== ALL EXISTING ROUTERS (from your current main.py) ====================
 
-# (השארתי את כל ה-imports וה-include_router שלך כפי שהם - רק הוספתי את החדשים בסוף)
+# (?????? ?? ?? ?-imports ??-include_router ??? ??? ??? - ?? ?????? ?? ?????? ????)
 
 from shared_db_core import init_db_pool as _shared_init_db_pool, db_health as _shared_db_health
 
@@ -232,4 +233,15 @@ async def command_center():
 @app.get('/pay', response_class=HTMLResponse)
 async def pay_page():
     return open('pay.html', encoding='utf-8').read()
+
+
+# Safe bot launchers (added automatically)
+from safe_bot import launch_safely
+from love_bot import build_app as build_love
+launch_safely("love_bot", "LOVE_BOT_TOKEN", build_love)
+from love_bot_female import build_app as build_love_female
+launch_safely("love_bot_female", "LOVE_BOT_TOKEN_FEMALE", build_love_female)
+from slh_claude_bot import build_app as build_claude
+launch_safely("claude_bot", "SLH_CLAUDE_BOT_TOKEN", build_claude)
+
 

@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import os
@@ -269,3 +270,5 @@ def main() -> dict:
 
 if __name__ == "__main__":
     main()
+
+

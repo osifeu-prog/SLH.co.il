@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 OsifShop - Inventory Management SaaS Bot
 Barcode scanning, stock management, reports.
@@ -655,3 +656,4 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+

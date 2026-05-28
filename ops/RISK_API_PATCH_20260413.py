@@ -1,4 +1,5 @@
-﻿# --- RISK DASHBOARD API PATCH START ---
+﻿# -*- coding: utf-8 -*-
+# --- RISK DASHBOARD API PATCH START ---
 
 @app.get("/api/risk/entities")
 async def api_risk_entities():
@@ -52,3 +53,4 @@ async def api_risk_external_watch():
         return {"ok": True, "total_assets": len(items), "items": items}
 
 # --- RISK DASHBOARD API PATCH END ---
+

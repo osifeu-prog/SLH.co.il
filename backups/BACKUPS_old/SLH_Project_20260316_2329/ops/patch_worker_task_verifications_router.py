@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from pathlib import Path
 
 p = Path("worker.py")
@@ -19,3 +20,4 @@ if 'dp.include_router(task_verifications_router)' not in s:
 
 p.write_text(s, encoding="utf-8", newline="\n")
 print("worker.py patched with task_verifications router")
+

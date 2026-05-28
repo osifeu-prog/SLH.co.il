@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 _TG_HANDLERS_SET = False
@@ -245,3 +246,5 @@ def ensure_handlers():
     except Exception as e:
         logging.exception("ensure_handlers failed: %s", e)
     _TG_HANDLERS_SET = True
+
+

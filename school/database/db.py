@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 ממשק מסד הנתונים - Crypto-Class
 """
@@ -111,3 +111,4 @@ def ensure_database_initialized():
 # אתחול אוטומטי בעת יבוא המודול
 if __name__ != "__main__":
     ensure_database_initialized()
+

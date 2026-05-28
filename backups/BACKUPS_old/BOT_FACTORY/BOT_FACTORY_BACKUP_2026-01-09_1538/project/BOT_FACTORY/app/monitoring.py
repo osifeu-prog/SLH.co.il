@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import os
 from typing import Any, Dict, List
 
@@ -96,3 +97,5 @@ def run_checks(quick: bool = True) -> Dict[str, Any]:
 def run_selftest(quick: bool = True) -> Dict[str, Any]:
     # Backward-compatible alias (older main.py imports run_selftest)
     return run_checks(quick=quick)
+
+

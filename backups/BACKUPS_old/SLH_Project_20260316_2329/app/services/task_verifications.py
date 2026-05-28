@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import json
 
 from app.db.database import db
@@ -426,3 +427,4 @@ async def review_task_verification(
                 "task_id": int(task_id),
                 "message": "Task verification rejected.",
             }
+

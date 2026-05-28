@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 <<<<<<< HEAD
 import json
 import uuid
@@ -127,3 +128,5 @@ app.run_polling()
 =======
 from .app.main import app  # noqa: F401
 >>>>>>> 03e5c1437b28768ba89ff31f6cea0fc62306fdf0
+
+

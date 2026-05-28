@@ -1,4 +1,5 @@
-﻿import os
+﻿# -*- coding: utf-8 -*-
+import os
 import shutil
 import subprocess
 from datetime import datetime
@@ -34,3 +35,4 @@ if __name__ == "__main__":
         subprocess.run(["python", "telegram_bot.py"])
     else:
         print("\n[!] Check failed. Fix missing files first.")
+

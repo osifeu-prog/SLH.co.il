@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 OsifShop - Inventory Database Module
 Shops, products, stock movements, reports.
@@ -271,3 +272,4 @@ async def export_csv(shop_id: int) -> str:
     for r in rows:
         lines.append(f"{r['barcode']},{r['name']},{r['brand']},{r['category']},{r['price']},{r['cost']},{r['quantity']},{r['min_quantity']}")
     return "\n".join(lines)
+

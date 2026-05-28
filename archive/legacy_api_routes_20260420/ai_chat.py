@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 SLH AI Chat â€” Multi-provider backend with automatic fallback
 Providers (in priority order):
@@ -389,3 +390,5 @@ async def ai_providers():
         ],
         "active_count": len(_get_providers())
     }
+
+

@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from pydantic import BaseModel
 from decimal import Decimal
 from datetime import datetime
@@ -22,3 +23,5 @@ class PositionOut(BaseModel):
 class PositionsResponse(BaseModel):
     telegram_id: int
     positions: List[PositionOut]
+
+

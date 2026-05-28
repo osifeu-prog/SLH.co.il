@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """
 Railway Deploy Watchdog — runs a tight health check and alerts if the Railway
 API version is stuck (i.e. commits accumulate on master but the live API
@@ -207,3 +207,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+

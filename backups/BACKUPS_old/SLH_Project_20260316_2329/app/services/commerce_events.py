@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import json
 
 
@@ -22,3 +23,4 @@ async def log_commerce_event(conn, order_id: int | None, event_type: str, actor_
         actor_user_id,
         payload_json,
     )
+

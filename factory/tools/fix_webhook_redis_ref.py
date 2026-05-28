@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from pathlib import Path
@@ -60,3 +61,4 @@ t2 = t[:m.start()] + block + t[m.end():]
 t2 = t2.replace("\r\n", "\n").replace("\r", "\n")
 p.write_text(t2, encoding="utf-8", newline="\n")
 print("OK: fixed webhook redis reference -> redis_client (request.app.state.redis fallback)")
+

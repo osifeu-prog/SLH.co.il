@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 Ambassador CRM — Phase 0 (MVP).
 
@@ -331,3 +332,4 @@ async def pipeline_stats(
         "total_contacts": total_cnt,
         "total_ils":      total_amt,
     }
+

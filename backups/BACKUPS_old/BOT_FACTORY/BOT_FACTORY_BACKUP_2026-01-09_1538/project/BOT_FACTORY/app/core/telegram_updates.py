@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import os
 import logging
 from typing import Any, Dict, Optional, Tuple
@@ -152,3 +153,4 @@ def register_update_once(update_dict: Dict[str, Any]) -> bool:
     except Exception as e:
         log.warning("register_update_once failed (allowing update): %s", e)
         return True
+

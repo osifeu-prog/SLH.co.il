@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 Love Tokens â€” virtual affection economy.
 
@@ -211,3 +212,5 @@ async def love_send(req: SendLoveReq):
         "aic_cost": cost,
         "message": "× ×©×œ×—! ×”×¦×“ ×”×©× ×™ ×™×¨××” ××ª ×–×” ×‘×§×¨×•×‘.",
     }
+
+

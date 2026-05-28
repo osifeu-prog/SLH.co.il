@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 Crypto-Class - מערכת מלאה משולבת
 גרסה 3.0.0 - מבוסס webhook בלבד, ללא polling
@@ -333,3 +333,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

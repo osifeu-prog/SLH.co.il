@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import json
 
 from app.db.database import db
@@ -76,3 +77,4 @@ async def grant_xp(user_id: int, event_type: str, xp_delta: int, payload: dict |
         "level": new_level,
         "xp_delta": int(xp_delta),
     }
+

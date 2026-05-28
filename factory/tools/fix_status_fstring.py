@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from __future__ import annotations
 from pathlib import Path
 import re
@@ -48,3 +49,4 @@ t2 = t[:m.start(2)] + block_body2 + t[m.end(2):]
 t2 = t2.replace("\r\n", "\n").replace("\r", "\n")
 p.write_text(t2, encoding="utf-8", newline="\n")
 print("OK: fixed admin:status message (no multi-line f-string)")
+

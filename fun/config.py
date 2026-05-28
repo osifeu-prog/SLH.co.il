@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import os
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
@@ -15,3 +16,5 @@ ALT_TELEGRAM_ROUTE = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"  # TON w
 COMPANY_BSC_WALLET = "0xd061de73B06d5E91bfA46b35EfB7B08b16903da4"  # BSC/BNB receiving wallet
 SLH_BSC_CONTRACT = "0xACb0A09414CEA1C879c67bB7A877E4e19480f022"  # SLH token on BSC
 ASSETS_PROMO_IMAGE_PATH = "assets/promo_image.jpg"
+
+

@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from typing import Optional
@@ -50,3 +51,4 @@ class BalanceOut(_Base):
     currency: str
     kind: str
     balance: str
+

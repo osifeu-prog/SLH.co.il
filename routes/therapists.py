@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 Therapists Network — Phase 2 (registration + admin approval).
 
@@ -664,3 +665,4 @@ async def telegram_link(
         )
     return {"ok": True, "linked": True, "application_id": req.application_id,
             "telegram_id": req.telegram_id}
+

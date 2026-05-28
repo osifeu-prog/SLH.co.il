@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """SLH Secrets Vault — Phase 2 alerts + scheduled sweep.
 
 Sits on top of api/admin_secrets_catalog.py:
@@ -529,3 +530,5 @@ async def digest_send(
             "alerts_24h": sum(int(r["n"] or 0) for r in recent_alerts),
         },
     }
+
+

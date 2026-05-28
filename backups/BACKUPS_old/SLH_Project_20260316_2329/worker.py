@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import os
 import sys
 import json
@@ -460,3 +461,4 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+

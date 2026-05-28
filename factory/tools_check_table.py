@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import os
 import psycopg2
 
@@ -10,3 +11,5 @@ cur.execute("SELECT to_regclass('public.telegram_updates');")
 print("telegram_updates =", cur.fetchone()[0])
 cur.close()
 conn.close()
+
+

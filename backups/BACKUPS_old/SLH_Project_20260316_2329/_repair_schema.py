@@ -1,4 +1,5 @@
-﻿import os, asyncio, asyncpg
+﻿# -*- coding: utf-8 -*-
+import os, asyncio, asyncpg
 
 SQL = """
 CREATE TABLE IF NOT EXISTS users (
@@ -85,3 +86,5 @@ async def main():
         await conn.close()
 
 asyncio.run(main())
+
+

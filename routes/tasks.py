@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 Mission Control — Tasks + Events.
 
@@ -555,3 +556,4 @@ async def overview(x_admin_key: Optional[str] = Header(None)):
         ],
         "generated_at": datetime.utcnow().isoformat() + "Z",
     }
+

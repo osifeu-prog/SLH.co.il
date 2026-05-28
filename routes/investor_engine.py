@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 SLH Investor Engine — Legitimate Revenue-Based Distribution
 ============================================================
@@ -733,3 +734,4 @@ async def investor_self_summary(telegram_id: int = Query(..., gt=0)):
         "recent_payouts": [dict(r) for r in recent_payouts],
         "transparency_url": "https://slh-nft.com/investor-engine.html",
     }
+

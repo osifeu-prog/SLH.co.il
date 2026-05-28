@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import logging
 from telegram import Bot, Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
@@ -115,3 +116,4 @@ async def process_webhook(update_dict: dict):
     if telegram_bot.application:
         update = Update.de_json(update_dict, telegram_bot.application.bot)
         await telegram_bot.application.process_update(update)
+

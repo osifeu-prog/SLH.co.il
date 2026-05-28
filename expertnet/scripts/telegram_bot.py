@@ -1,4 +1,5 @@
-﻿import os, sqlite3, logging, datetime, csv, psutil
+﻿# -*- coding: utf-8 -*-
+import os, sqlite3, logging, datetime, csv, psutil
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, CallbackQueryHandler
 
@@ -51,3 +52,4 @@ if __name__ == '__main__':
     app.add_handler(CallbackQueryHandler(handle_callback))
     print("--- SYSTEM ONLINE: V21.0 ---")
     app.run_polling()
+

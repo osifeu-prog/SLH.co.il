@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 @G4meb0t_bot_bot — SLH Dating Telegram bot
 ============================================
@@ -368,3 +369,5 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
+

@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from pathlib import Path
 import ast
 
@@ -8,3 +9,4 @@ for p in [Path("app/services/tasks.py"), Path("app/handlers/tasks.py")]:
         print(f"{p}: AST OK")
     except Exception as e:
         print(f"{p}: AST FAIL -> {e!r}")
+

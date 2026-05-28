@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 SLH Investment House - Telegram Investment Operating System
 5 Layers: UI | Market Intelligence | Execution | Risk | Business
@@ -1754,3 +1755,5 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
+

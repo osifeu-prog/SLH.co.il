@@ -1,4 +1,5 @@
-﻿from pathlib import Path
+﻿# -*- coding: utf-8 -*-
+from pathlib import Path
 import re
 
 p = Path("main.py")
@@ -30,3 +31,5 @@ for i, line in enumerate(lines):
 
 p.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 print("OK: main.py repaired (restored stats closing + neutralized rocket prints if present).")
+
+

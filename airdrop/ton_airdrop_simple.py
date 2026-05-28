@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 #!/usr/bin/env python3
 """
 TON Airdrop Bot - גרסה פשוטה ויציבה
@@ -175,3 +176,5 @@ def poll_updates():
 # ====================
 if __name__ == "__main__":
     poll_updates()
+
+

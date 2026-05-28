@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 Treasury â€” revenue tracking, buyback log, burn events.
 
@@ -295,3 +296,5 @@ async def execute_aic_burn(x_admin_key: Optional[str] = Header(None)):
             burn_amount,
         )
     return {"ok": True, "burn_id": bid, "burned_aic": burn_amount, "source_sales": float(aic_sales)}
+
+

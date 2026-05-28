@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 Admin Key Rotation — DB-backed admin secrets + in-memory cache.
 
@@ -253,3 +254,4 @@ async def admin_reload_keys(
     _lazy_require_admin()(authorization, x_admin_key)
     loaded = await reload_db_admin_keys()
     return {"ok": True, "active_db_keys": loaded}
+

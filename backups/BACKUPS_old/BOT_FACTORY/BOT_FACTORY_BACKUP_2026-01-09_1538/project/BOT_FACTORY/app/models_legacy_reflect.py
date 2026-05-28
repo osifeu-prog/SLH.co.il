@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 Reflect live DB schema into a separate MetaData and merge ONLY missing tables
 into Base.metadata.
@@ -34,3 +35,4 @@ def reflect_missing_tables_into_base_metadata(connection=None) -> None:
     finally:
         if close_conn:
             connection.close()
+

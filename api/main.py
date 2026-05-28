@@ -1,4 +1,5 @@
-﻿"""
+﻿# -*- coding: utf-8 -*-
+"""
 SLH Ecosystem API - FastAPI Backend
 Deployed on Railway | Connected to PostgreSQL
 """
@@ -11771,3 +11772,5 @@ async def performance_digest():
         "source_file": _P(latest).name,
         "token_count": len(tokens),
     }
+
+

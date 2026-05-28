@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 SLH SPARK SYSTEM â€” Super Admin Bot (@MY_SUPER_ADMIN_bot)
 Central control panel: broadcast, airdrop, gift, users, payments, stats, studio.
@@ -1022,3 +1023,5 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
+

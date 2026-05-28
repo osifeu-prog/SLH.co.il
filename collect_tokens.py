@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import requests
 import time
 import csv
@@ -73,3 +74,4 @@ if __name__ == '__main__':
         print(f"\n✅ Done. Collected {len(details_list)} tokens.")
     else:
         print("❌ No data collected.")
+

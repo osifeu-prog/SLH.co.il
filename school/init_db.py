@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 קובץ אתחול מסד נתונים - Crypto-Class
 """
@@ -69,3 +69,4 @@ except ImportError as e:
     print(f"❌ שגיאה ביבוא מודולים: {e}")
     print("📦 ודא שהתלויות מותקנות: pip install -r requirements.txt")
     sys.exit(1)
+

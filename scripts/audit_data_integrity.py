@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """
 Data Integrity Audit — scan SLH codebase for fake/mock/fallback patterns
 that violate CLAUDE.md's "never fake data in production" rule.
@@ -227,3 +227,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+

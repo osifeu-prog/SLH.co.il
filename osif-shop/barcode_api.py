@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 Barcode Product Lookup - Open Food Facts API
 Free, no API key needed. Returns product info from barcode.
@@ -35,3 +36,4 @@ async def lookup_barcode(barcode: str) -> dict | None:
     except Exception as e:
         log.warning("Barcode lookup failed for %s: %s", barcode, e)
         return None
+

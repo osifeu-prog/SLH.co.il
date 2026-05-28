@@ -1,4 +1,5 @@
-﻿from pathlib import Path
+﻿# -*- coding: utf-8 -*-
+from pathlib import Path
 import re
 
 p = Path("main.py")
@@ -99,3 +100,5 @@ s = s.replace(insert_anchor, admin_block.strip("\n") + "\n\n" + insert_anchor)
 
 p.write_text(s + ("\n" if not s.endswith("\n") else ""), encoding="utf-8", newline="\n")
 print("OK: admin panel v1 inserted")
+
+

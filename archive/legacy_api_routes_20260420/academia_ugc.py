@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 Academia UGC â€” User-Generated Content infrastructure for SLH Academia.
 
@@ -1071,3 +1072,5 @@ async def mark_earnings_paid(
     except Exception as e:  # noqa: BLE001
         logger.error(f"[academia-ugc] mark_earnings_paid failed: {e!r}")
         raise HTTPException(status_code=500, detail=str(e))
+
+

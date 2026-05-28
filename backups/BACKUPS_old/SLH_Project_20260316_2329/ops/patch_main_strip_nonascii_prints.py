@@ -1,4 +1,5 @@
-﻿from pathlib import Path
+﻿# -*- coding: utf-8 -*-
+from pathlib import Path
 import re
 
 p = Path("main.py")
@@ -25,3 +26,5 @@ if hits:
     print("Changed lines:")
     for i, l in hits[:20]:
         print(f"  L{i}: {l[:160]}")
+
+

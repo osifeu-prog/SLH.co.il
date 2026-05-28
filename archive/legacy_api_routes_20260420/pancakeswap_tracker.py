@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 SLH PancakeSwap TX Tracker
 ===========================
@@ -359,3 +360,5 @@ async def pancakeswap_stats():
         "unique_buyers": totals["unique_buyers"],
         "linked_wallets": linked_wallets,
     }
+
+

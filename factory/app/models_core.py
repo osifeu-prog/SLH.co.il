@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from sqlalchemy import (
@@ -81,3 +82,4 @@ class LedgerEntry(Base):
         # DB index is (account_id, created_at DESC)
         Index("ix_ledger_account_created_at", account_id, created_at.desc()),
     )
+

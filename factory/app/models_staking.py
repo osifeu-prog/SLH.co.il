@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from sqlalchemy import (
@@ -142,3 +143,4 @@ class StakingEvent(Base):
         Index("ix_staking_events_pool_id", "pool_id"),
         CheckConstraint("event_type <> ''", name="ck_staking_events_type_nonempty"),
     )
+

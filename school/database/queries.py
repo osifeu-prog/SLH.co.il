@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 מסד נתונים משודרג עם תכונות חדשות
 גרסה מלאה ומוכנה להפעלה
@@ -1273,3 +1273,4 @@ __all__ = [
     'get_today_stats', 'get_streak_stats', 'get_activity_stats',
     'get_daily_stats'
 ]
+

@@ -1,4 +1,5 @@
-﻿from pathlib import Path
+﻿# -*- coding: utf-8 -*-
+from pathlib import Path
 import re
 
 p = Path("main.py")
@@ -28,3 +29,5 @@ s = re.sub(r"(?m)^\s*print\(.*(🚀|U0001f680).*?\)\s*$", "print('BOT ONLINE')",
 
 p.write_text(s, encoding="utf-8", newline="\n")
 print("OK: patched main.py (UTF-8 + removed rocket prints).")
+
+

@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from datetime import datetime
@@ -70,3 +71,4 @@ class RedemptionRequest(Base):
 
 
 Index("ix_slh_ledger_ref", SLHLedger.ref_type, SLHLedger.ref_id)
+

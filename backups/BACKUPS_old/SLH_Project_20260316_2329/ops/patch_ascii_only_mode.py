@@ -1,4 +1,5 @@
-﻿from pathlib import Path
+﻿# -*- coding: utf-8 -*-
+from pathlib import Path
 import re
 
 # files that likely contain UI strings
@@ -88,3 +89,5 @@ for i,l in enumerate(lines):
 
 mp.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 print("OK: main.py heartbeat ensured")
+
+

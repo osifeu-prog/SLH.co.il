@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """SLH public security beacon — sanitized aggregate status, no auth.
 
 Used by /my.html and any other personal/public page that wants to surface a
@@ -135,3 +136,5 @@ def _empty(unavailable: bool, reason: Optional[str] = None) -> dict:
         "unavailable": unavailable,
         "reason": reason,
     }
+
+

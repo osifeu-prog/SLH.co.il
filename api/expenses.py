@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """SLH Expense Tracker — personal cashflow management for the owner + family.
 
 Built after Osif raised:
@@ -475,3 +476,5 @@ async def seed_initial(
             )
             inserted.append(_row_to_dict(row))
     return {"ok": True, "inserted": len(inserted), "expenses": inserted}
+
+

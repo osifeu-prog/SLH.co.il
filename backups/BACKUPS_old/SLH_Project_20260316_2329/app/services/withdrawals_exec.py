@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from app.db.database import db
 
 
@@ -12,3 +13,4 @@ async def get_withdrawal_for_execution(withdrawal_id: int) -> dict | None:
             withdrawal_id,
         )
     return dict(row) if row else None
+

@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 #!/usr/bin/env python3
 """
 TON Airdrop Bot - Connected to Management Panel
@@ -212,3 +213,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+

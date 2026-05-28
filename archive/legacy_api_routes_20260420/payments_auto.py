@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 SLH Auto-verify Payment Endpoints
 ==================================
@@ -587,3 +588,5 @@ async def user_receipts(user_id: int, limit: int = 50):
             user_id, max(1, min(limit, 500)),
         )
     return {"user_id": user_id, "receipts": [dict(r) for r in rows]}
+
+

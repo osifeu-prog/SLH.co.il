@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """Railway GraphQL client — programmatic env-var management + redeploys.
 
 Used by the rotation pipeline to push secrets and trigger redeploys without
@@ -236,3 +237,4 @@ async def health_probe() -> dict:
         return {"ok": True, "me_id": me.get("id"), "me_email": me.get("email")}
     except RailwayError as e:
         return {"ok": False, "error": str(e)}
+

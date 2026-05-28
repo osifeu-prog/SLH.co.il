@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from decimal import Decimal
@@ -35,3 +36,4 @@ async def history_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         memo = f" — {r.memo}" if r.memo else ""
         lines.append(f"[{r.created_at}] {r.direction} {Decimal(r.amount):.4f} {r.asset} (kind={r.kind}{other}){memo}")
     await update.effective_message.reply_text("\n".join(lines))
+

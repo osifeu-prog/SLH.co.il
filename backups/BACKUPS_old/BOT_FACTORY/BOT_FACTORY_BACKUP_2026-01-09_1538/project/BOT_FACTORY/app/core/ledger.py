@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -242,3 +243,4 @@ def get_history(telegram_id: int, limit: int = 10, asset: str = "SLH") -> List[L
             cur.close()
     finally:
         conn.close()
+

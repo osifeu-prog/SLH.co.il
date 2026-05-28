@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from pathlib import Path
 import re
 
@@ -234,3 +235,4 @@ bootstrap_path.write_text(bootstrap, encoding="utf-8", newline="\n")
 claim_path.write_text(claim, encoding="utf-8", newline="\n")
 
 print("patched worker.py, bootstrap.py, claim.py")
+

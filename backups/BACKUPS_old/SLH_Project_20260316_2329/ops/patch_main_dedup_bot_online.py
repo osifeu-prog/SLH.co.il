@@ -1,4 +1,5 @@
-﻿from pathlib import Path
+﻿# -*- coding: utf-8 -*-
+from pathlib import Path
 p=Path("main.py")
 lines=p.read_text(encoding="utf-8", errors="replace").splitlines()
 
@@ -15,3 +16,5 @@ for line in lines:
 
 p.write_text("\n".join(out)+"\n", encoding="utf-8", newline="\n")
 print("OK: dedup BOT ONLINE prints")
+
+

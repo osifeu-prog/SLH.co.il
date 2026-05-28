@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 SLH Sudoku â€” engagement + AIC earn
 ====================================
@@ -606,3 +607,5 @@ async def sudoku_global_stats():
         "daily_cap": DAILY_EARNING_CAP,
         "hint_cost": HINT_COST,
     }
+
+

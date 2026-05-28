@@ -1,4 +1,5 @@
-﻿from pathlib import Path
+﻿# -*- coding: utf-8 -*-
+from pathlib import Path
 
 p = Path("main.py")
 s = p.read_text(encoding="utf-8", errors="replace").splitlines()
@@ -13,3 +14,5 @@ for line in s:
 
 p.write_text("\n".join(out) + "\n", encoding="utf-8", newline="\n")
 print("OK: rocket removed/replaced in main.py")
+
+

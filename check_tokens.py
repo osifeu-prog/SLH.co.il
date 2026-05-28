@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import requests
 import time
 import csv
@@ -37,3 +38,4 @@ for addr in test_addresses:
     else:
         print(f"שגיאה ב-{addr[:10]}...")
     time.sleep(0.5)
+

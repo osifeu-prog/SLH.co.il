@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 #!/usr/bin/env python3
 # ============================================================
 # SLH SPARK — Broadcast Airdrop Script
@@ -143,3 +144,5 @@ async def broadcast_airdrop():
 
 if __name__ == "__main__":
     asyncio.run(broadcast_airdrop())
+
+

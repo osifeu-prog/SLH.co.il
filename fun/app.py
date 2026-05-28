@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 @SLH_community_bot — Main community bot
 Updated: April 15, 2026 — New 4-path funnel with campaign tracking
@@ -609,3 +610,5 @@ async def on_shutdown():
     except Exception as e:
         logger.error(f"Webhook delete failed: {e}")
     await bot.session.close()
+
+

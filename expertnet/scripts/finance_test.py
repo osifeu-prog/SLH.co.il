@@ -1,4 +1,5 @@
-﻿import sqlite3
+﻿# -*- coding: utf-8 -*-
+import sqlite3
 
 DB_PATH = r'D:\ExpertNet_Core\vault\expertnet.db'
 
@@ -24,3 +25,4 @@ def test_finance():
         print(f"{'' if status else ''} {f}")
 
 test_finance()
+

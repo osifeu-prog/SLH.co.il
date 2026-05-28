@@ -1,4 +1,5 @@
-﻿from pathlib import Path
+﻿# -*- coding: utf-8 -*-
+from pathlib import Path
 
 TARGET_LINE = 114  # לפי ה-traceback שלך
 
@@ -15,3 +16,5 @@ p.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 print("OK: patched main.py line", TARGET_LINE)
 print("OLD:", old[:200])
 print("NEW:", lines[TARGET_LINE-1])
+
+

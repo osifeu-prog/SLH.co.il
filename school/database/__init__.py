@@ -1,2 +1,3 @@
-# database/__init__.py
+﻿# database/__init__.py
 # קובץ ריק או עם תוכן בסיסי
+

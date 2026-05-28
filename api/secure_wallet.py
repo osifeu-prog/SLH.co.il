@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from fastapi import APIRouter, Depends, HTTPException, Header, Request
 from pydantic import BaseModel, Field
 from decimal import Decimal
@@ -120,3 +121,4 @@ async def secure_wallet_send(
         "status": "ok",
         "data": result
     }
+

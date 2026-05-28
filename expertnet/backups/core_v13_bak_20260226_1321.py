@@ -1,4 +1,5 @@
-﻿import os, sqlite3, logging, shutil, datetime, time
+﻿# -*- coding: utf-8 -*-
+import os, sqlite3, logging, shutil, datetime, time
 from web3 import Web3
 from cryptography.fernet import Fernet
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
@@ -125,3 +126,4 @@ if __name__ == '__main__':
     
     logger.info("--- EXPERTNET V13.0 IS RUNNING ---")
     app.run_polling(drop_pending_updates=True)
+

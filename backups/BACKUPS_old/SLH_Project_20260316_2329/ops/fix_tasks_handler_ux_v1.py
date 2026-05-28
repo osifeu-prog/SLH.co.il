@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from pathlib import Path
 
 p = Path("app/handlers/tasks.py")
@@ -118,3 +119,4 @@ async def claim_task_slash_text(message: types.Message):
 '''
 p.write_text(s, encoding="utf-8", newline="\n")
 print("tasks handler UX fixed")
+

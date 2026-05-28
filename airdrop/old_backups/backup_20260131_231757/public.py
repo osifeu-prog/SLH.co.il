@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from fastapi import APIRouter, HTTPException
 
 router = APIRouter()
@@ -20,3 +21,5 @@ def send_airdrop(user_id: str, amount: int):
     print(f"[AIRDROP] Sending {amount} tokens to {user_id}")
 
     return {'user_id': user_id, 'amount': amount, 'status': 'success'}
+
+

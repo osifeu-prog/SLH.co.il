@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import requests
 import sys
 
@@ -15,3 +16,5 @@ try:
 except Exception as e:
     print(f"❌ Error: {e}")
     sys.exit(1)
+
+

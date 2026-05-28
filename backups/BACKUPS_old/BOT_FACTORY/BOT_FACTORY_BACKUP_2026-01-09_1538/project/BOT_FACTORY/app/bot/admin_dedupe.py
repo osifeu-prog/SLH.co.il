@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import os
@@ -86,3 +87,4 @@ async def admin_dedupe_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         lines.append("• last: (empty)")
 
     await update.effective_message.reply_text("\n".join(lines))
+

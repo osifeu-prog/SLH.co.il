@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 Agent Hub â€” multi-agent coordination API for SLH Spark.
 
@@ -396,3 +397,5 @@ async def bulk_import(
     except Exception as e:  # noqa: BLE001
         logger.error(f"[agent-hub] bulk-import failed: {e!r}")
         raise HTTPException(status_code=500, detail=str(e))
+
+

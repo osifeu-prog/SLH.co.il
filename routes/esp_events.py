@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 SLH ESP32 Events → Revenue Bridge
 ==================================
@@ -192,3 +193,4 @@ async def promote_event(event_id: int, req: PromoteToRevenue,
             raise HTTPException(500, f"revenue_ledger not available: {e}")
         await conn.execute("UPDATE esp_events SET promoted_to_revenue_id=$1 WHERE id=$2", rev_id, event_id)
     return {"ok": True, "event_id": event_id, "revenue_id": rev_id}
+

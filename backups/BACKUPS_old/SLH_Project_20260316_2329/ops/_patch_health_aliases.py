@@ -1,4 +1,5 @@
-﻿from pathlib import Path
+﻿# -*- coding: utf-8 -*-
+from pathlib import Path
 
 p = Path("webhook_server.py")
 s = p.read_text(encoding="utf-8")
@@ -18,3 +19,5 @@ async def readyz_alias():
 
 p.write_text(s, encoding="utf-8", newline="\n")
 print("PATCHED webhook_server.py")
+
+

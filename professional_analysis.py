@@ -1,4 +1,5 @@
-﻿import pandas as pd
+﻿# -*- coding: utf-8 -*-
+import pandas as pd
 import numpy as np
 import requests
 import time
@@ -108,3 +109,5 @@ report = {
 }
 pd.DataFrame([report]).to_csv('performance_report.csv', index=False)
 print("\n✅ Report saved to performance_report.csv")
+
+

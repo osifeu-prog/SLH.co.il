@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 Love Tokens — virtual affection economy.
 
@@ -211,3 +212,4 @@ async def love_send(req: SendLoveReq):
         "aic_cost": cost,
         "message": "נשלח! הצד השני יראה את זה בקרוב.",
     }
+

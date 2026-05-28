@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import re
 
 with open('D:/SLH_ECOSYSTEM/website/admin.html', 'r', encoding='utf-8') as f:
@@ -47,3 +48,4 @@ for i, s in enumerate(scripts):
 with open('D:/SLH_ECOSYSTEM/website/admin.html', 'w', encoding='utf-8') as f:
     f.write(c)
 print(f'Done! {len(c)} chars, all checks passed')
+

@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from pathlib import Path
 
 p = Path("worker.py")
@@ -28,3 +29,4 @@ new_s = s[:idx] + insert_block + s[idx:]
 
 p.write_text(new_s, encoding="utf-8", newline="\n")
 print("worker.py restored: bot/dp/router init block")
+

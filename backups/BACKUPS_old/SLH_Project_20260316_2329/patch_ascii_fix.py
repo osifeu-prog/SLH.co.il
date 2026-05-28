@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from pathlib import Path
 import re
 import shutil
@@ -326,3 +327,4 @@ text = re.sub(
 path.write_text(text, encoding="utf-8", newline="\n")
 print("OK: bot_full.py patched")
 print(f"Backup: {backup}")
+

@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import requests
 import time
 import statistics
@@ -68,3 +69,4 @@ if __name__ == '__main__':
         print(f"סטיית תקן: ${statistics.stdev(prices):.6f}")
     else:
         print("אין נתוני מחיר להצגה.")
+

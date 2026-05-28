@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 try:
@@ -12,3 +13,5 @@ try:
     conn.close()
 except Exception as e:
     print(f'\x1b[31m[!] Error: {e}\x1b[0m')
+
+

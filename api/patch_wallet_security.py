@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from pathlib import Path
 
 path = Path(r"D:\SLH_ECOSYSTEM\api\main.py")
@@ -345,3 +346,4 @@ must_replace(old_wallet, new_wallet, "secure wallet_send")
 
 path.write_text(text, encoding="utf-8")
 print(f"[DONE] patched {path}")
+

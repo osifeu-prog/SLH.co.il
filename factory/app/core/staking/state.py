@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -35,3 +36,4 @@ def assert_transition(from_state: str, to_state: str) -> None:
 def can_withdraw(now: datetime, matures_at: datetime | None) -> bool:
     # Always allow withdrawal (penalty may apply). Lock logic enforced by service (penalty).
     return True
+

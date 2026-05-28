@@ -1,4 +1,5 @@
-﻿class UIManager:
+﻿# -*- coding: utf-8 -*-
+class UIManager:
     BANNER = " *ExpertNet SLH System - Active*"
     
     @staticmethod
@@ -12,3 +13,4 @@
                 f"סימול: {symbol}\n"
                 f"סך היצע: {supply:,.2f}\n\n"
                 f" *היתרה שלך:* {balance:,.2f} {symbol}")
+

@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """SLH Secrets Vault — unified inventory of every credential the system uses.
 
 The system has 12+ different secret types scattered across:
@@ -713,3 +714,5 @@ async def stats(
         "overdue": int(s["overdue"] or 0),
         "categories": int(s["categories"] or 0),
     }
+
+

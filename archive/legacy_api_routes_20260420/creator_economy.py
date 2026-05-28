@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 Creator Economy â€” XP = ROI metric + SLH Index.
 
@@ -524,3 +525,5 @@ async def refresh_all_snapshots(x_admin_key: Optional[str] = Header(None)):
                 continue
 
     return {"ok": True, "users_updated": updated}
+
+

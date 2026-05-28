@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import os
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse, HTMLResponse
@@ -182,3 +183,5 @@ if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))
     print(f"🚀 Starting API Server on port {port}")
     uvicorn.run(app, host="0.0.0.0", port=port)
+
+

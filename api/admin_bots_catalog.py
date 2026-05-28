@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """SLH Bot Catalog — persistent management of the 25+ Telegram bots in the fleet.
 
 Replaces the hardcoded `BOTS = [...]` array previously duplicated in
@@ -448,3 +449,5 @@ async def stats(
             "low":      int(s["tier_low"] or 0),
         },
     }
+
+

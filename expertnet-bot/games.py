@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 ZVIKUSH ULTIMATE ARCADE - Interactive Game Module
 Every game requires PLAYER INPUT - choose, aim, decide!
@@ -708,3 +709,5 @@ async def play_aladdin_choose(bot, chat_id, u, uid, choice):
             f"\u05e1\u05d4\"\u05db \u05e9\u05dc\u05dc: {game['loot']}\n\n"
             "\u05dc\u05e4\u05ea\u05d5\u05d7 \u05e2\u05d5\u05d3 \u05de\u05e2\u05e8\u05d4 \u05d0\u05d5 \u05dc\u05d1\u05e8\u05d5\u05d7?"
         )
+
+

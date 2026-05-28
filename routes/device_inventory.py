@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 Device Inventory — catalog of all SLH ESP32 devices (manufacturing → sale → activation).
 
@@ -286,3 +287,4 @@ async def inventory_stats(
         "total_devices": total_devices,
         "total_revenue_ils": total_revenue,
     }
+

@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 SLH Command Center — System Status Router
 ==========================================
@@ -424,3 +425,4 @@ async def intent_result(
              WHERE id = $3
         """, req.result, payload, req.intent_id)
     return {"ok": True}
+

@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 #!/usr/bin/env python3
 """
 SLH Telegram Push Alerts — daily digest + threshold-based alerts.
@@ -187,3 +188,4 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+

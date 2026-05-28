@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import os
 
 
@@ -23,3 +24,4 @@ ADMIN_USER_ID = load_admin_id()
 
 def is_admin(user_id: int) -> bool:
     return int(user_id) == ADMIN_USER_ID
+

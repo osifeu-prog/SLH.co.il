@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 SLH Wellness Task Scheduler - APScheduler Integration
 Handles cron-based task broadcasting and token distribution
@@ -194,3 +195,5 @@ def get_wellness_scheduler() -> WellnessScheduler:
     if not _wellness_scheduler:
         raise RuntimeError("Wellness scheduler not initialized")
     return _wellness_scheduler
+
+

@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """Token Rotation Pipeline — atomic rotate→push→redeploy→verify→audit→broadcast.
 
 Endpoint:  POST /api/admin/rotate-bot-token-pipeline
@@ -582,3 +583,4 @@ async def rotation_health(
             [x for x in (os.getenv("ADMIN_TELEGRAM_IDS", "224223270") or "").split(",") if x.strip()]
         ),
     }
+

@@ -1,4 +1,4 @@
-"""One-shot: capture the chat_id of the SLH coordination group.
+﻿"""One-shot: capture the chat_id of the SLH coordination group.
 
 Workflow:
   1. Add @SLH_Claude_bot (or any SLH bot) to the coordination group via the
@@ -136,3 +136,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+

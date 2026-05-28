@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 פקודות בוט סינכרוניות משודרגות
 גרסה מלאה ומוכנה להפעלה
@@ -971,3 +971,4 @@ __all__ = [
     'help_command', 'website', 'admin_panel', 'add_tokens',
     'reset_checkin'
 ]
+

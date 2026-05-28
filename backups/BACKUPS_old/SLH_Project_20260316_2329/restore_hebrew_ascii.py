@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from pathlib import Path
 
 path = Path(r"D:\SLH_PROJECT_V2\bot_full.py")
@@ -46,3 +47,4 @@ for old, new in pairs:
 
 path.write_text(text, encoding="utf-8", newline="\n")
 print(f"OK: replacements applied = {changed}")
+

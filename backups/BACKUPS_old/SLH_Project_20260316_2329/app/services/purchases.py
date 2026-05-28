@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import json
 import re
 
@@ -640,3 +641,4 @@ async def cancel_purchase_order(order_id: int, user_id: int) -> dict:
             )
 
     return {"ok": True, "row": dict(updated)}
+

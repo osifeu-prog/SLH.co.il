@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from datetime import datetime
@@ -277,3 +278,4 @@ def admin_list_redeems(
             for r in items
         ],
     }
+

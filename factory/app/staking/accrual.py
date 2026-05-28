@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from decimal import Decimal
 from .constants import YEAR_SECONDS, ZERO
 
@@ -11,3 +12,5 @@ def calculate_reward(
 
     rate = Decimal(apy_bps) / Decimal(10_000)
     return principal * rate * (Decimal(elapsed_seconds) / YEAR_SECONDS)
+
+

@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from pathlib import Path
 import re
 
@@ -31,3 +32,4 @@ text = re.sub(
 
 path.write_text(text, encoding="utf-8", newline="\n")
 print("OK: patched link label")
+

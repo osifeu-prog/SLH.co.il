@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 SLH Investment House - Core Banking Module
 Double-entry ledger, deposits, withdrawals, statements.
@@ -319,3 +320,5 @@ async def get_bank_stats():
         "pending_kyc": pending_kyc,
         "journal_entries": total_journal,
     }
+
+

@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import os, sys, glob
 
 print("PY:", sys.version)
@@ -52,3 +53,4 @@ try:
         print("alembic_version query ERROR:", repr(e))
 except Exception as e:
     print("DB inspect ERROR:", repr(e))
+

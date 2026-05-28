@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 # Marker revision to attach the investments branch onto the existing Alembic chain.
@@ -15,3 +16,4 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     pass
+

@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from decimal import Decimal
 from sqlalchemy.orm import Session
 
@@ -104,3 +105,5 @@ def internal_transfer(
     db.refresh(receiver)
     db.refresh(tx)
     return tx
+
+

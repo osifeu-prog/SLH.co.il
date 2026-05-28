@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 מודלים של מסד הנתונים
 גרסה מעודכנת ופשוטה
@@ -167,3 +167,4 @@ def create_tables():
 
 if __name__ == "__main__":
     create_tables()
+

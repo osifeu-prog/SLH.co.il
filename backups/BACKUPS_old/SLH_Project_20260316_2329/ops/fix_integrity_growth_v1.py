@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from pathlib import Path
 from textwrap import dedent
 
@@ -300,3 +301,4 @@ claim_path.write_text(claim_text, encoding="utf-8", newline="\n")
 bootstrap_path.write_text(bootstrap_text, encoding="utf-8", newline="\n")
 
 print("claim.py and bootstrap.py rewritten cleanly")
+

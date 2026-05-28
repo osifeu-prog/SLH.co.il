@@ -1,4 +1,5 @@
-﻿from cryptography.fernet import Fernet
+﻿# -*- coding: utf-8 -*-
+from cryptography.fernet import Fernet
 import os
 
 # הגדרת נתיב לשמירת המפתח
@@ -14,3 +15,4 @@ with open(key_path, "wb") as key_file:
 print(f"--- SUCCESS ---")
 print(f"Master Key Generated at: {key_path}")
 print(f"KEEP THIS FILE SAFE! If you lose it, you lose access to your encrypted vault.")
+

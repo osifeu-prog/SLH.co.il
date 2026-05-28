@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import os
 import asyncio
 import redis
@@ -107,3 +108,4 @@ def main():
     app.run_polling(drop_pending_updates=True)
 
 if __name__ == "__main__": main()
+

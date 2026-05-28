@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import requests
 
 try:
@@ -14,3 +15,5 @@ try:
         
 except Exception as e:
     print(f"❌ שגיאה: {e}")
+
+

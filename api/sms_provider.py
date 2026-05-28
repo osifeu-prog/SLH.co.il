@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """SLH SMS provider — pluggable OTP/verification code sender.
 
 One public async function: `send_otp(phone, code, purpose)`.
@@ -296,3 +297,5 @@ def _basic_auth(user: str, password: str) -> str:
 
     token = f"{user}:{password}".encode("utf-8")
     return base64.b64encode(token).decode("ascii")
+
+

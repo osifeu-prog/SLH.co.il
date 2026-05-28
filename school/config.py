@@ -1,4 +1,4 @@
-"""
+﻿"""
 הגדרות מערכת Crypto-Class
 """
 
@@ -28,3 +28,4 @@ class Config:
             raise ValueError("שגיאות בהגדרות: " + ", ".join(errors))
         
         return True
+

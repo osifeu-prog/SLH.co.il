@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import logging
 from decimal import Decimal
 from typing import Optional, Dict
@@ -100,3 +101,5 @@ def get_onchain_balances(address: str) -> Optional[Dict[str, Decimal]]:
             logger.warning("Failed to fetch SLH token balance: %s", e)
 
     return {"bnb": bnb, "slh": slh}
+
+

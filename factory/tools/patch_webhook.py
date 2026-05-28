@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from pathlib import Path
 import re
 
@@ -67,3 +68,4 @@ t2 = t[:m.start()] + replacement + t[m.end():]
 t2 = t2.replace("\r\n", "\n").replace("\r", "\n")
 p.write_text(t2, encoding="utf-8", newline="\n")
 print("OK: webhook now replies to /start and /chatid (async)")
+

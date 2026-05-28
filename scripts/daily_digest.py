@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """
 Daily Digest — every ~21:00 Israel time, compile a summary of what
 happened today and DM it to Osif.
@@ -209,3 +209,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+

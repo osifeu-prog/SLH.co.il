@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import hashlib
@@ -43,3 +44,4 @@ def admin_key_fingerprint(
         "provided_sha256_8": provided_sha8,
         "match": bool(provided) and (provided == expected),
     }
+

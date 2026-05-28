@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 STRINGS = {
     "he": {
         "store.title": "חנות",
@@ -227,3 +228,4 @@ def status_label(lang: str, status: str) -> str:
     if value == key:
         return t(lang, "status.unknown")
     return value
+

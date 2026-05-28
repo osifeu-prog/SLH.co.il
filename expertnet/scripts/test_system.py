@@ -1,4 +1,5 @@
-﻿import os, sqlite3
+﻿# -*- coding: utf-8 -*-
+import os, sqlite3
 from web3 import Web3
 
 DB_PATH = r'D:\ExpertNet_Core\vault\expertnet.db'
@@ -26,3 +27,4 @@ def run_tests():
     else: print(" אין חיבור לבלוקצ'יין")
 
 run_tests()
+

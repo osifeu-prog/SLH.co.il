@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 System Audit - live monitoring infrastructure for the SLH Spark ecosystem.
 
@@ -564,3 +565,4 @@ async def audit_health_check():
         "version": API_VERSION,
         "timestamp": datetime.utcnow().isoformat() + "Z",
     }
+

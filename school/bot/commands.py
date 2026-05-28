@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 מודול פקודות הבוט - Crypto-Class
 גרסה 2.4.0 - מלא ומאורגן עם כל הפקודות
@@ -1052,3 +1052,4 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
 if __name__ == "__main__":
     print("✅ קובץ commands.py נטען בהצלחה")
     print(f"📁 פקודות זמינות: {[func for func in dir() if not func.startswith('_')]}")
+

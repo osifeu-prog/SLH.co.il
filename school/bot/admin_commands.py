@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 פקודות אדמין - Crypto-Class
 פקודות ניהול מתקדמות למנהלי המערכת
@@ -313,3 +313,4 @@ async def reset_checkin(update, context):
     except Exception as e:
         logger.error(f"❌ שגיאה בפקודת reset_checkin: {e}")
         await update.message.reply_text("❌ שגיאה באיפוס צ'ק-אין.")
+

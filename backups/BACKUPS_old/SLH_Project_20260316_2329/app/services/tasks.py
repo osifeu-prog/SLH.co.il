@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import json
 
 from app.db.database import db
@@ -309,3 +310,4 @@ async def claim_task_reward(user_id: int, task_id: int) -> dict:
         "xp_total": new_xp,
         "level": new_level,
     }
+

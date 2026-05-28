@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import subprocess
 import time
 import sys
@@ -12,3 +13,4 @@ time.sleep(2) # מחכה רגע שהשרת יעלה
 # הפעלת הבוט בחלון הנוכחי
 print("🤖 Launching Telegram Bot...")
 subprocess.run(["py", "scripts\\telegram_bot.py"])
+

@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """@WEWORK_teamviwer_bot â€” SLH Academia licensing bot.
 
 aiogram 3.x. Sells academy licenses paid via TON / BNB / ILS (Bit manual).
@@ -153,7 +154,7 @@ def main_menu_kb(is_instructor: bool = False, is_approved: bool = False) -> Inli
         rows.append(
             [InlineKeyboardButton(text="ðŸŽ“ ×”×¦×˜×¨×£ ×›×ž×“×¨×™×š", callback_data="instr:register")]
         )
-    rows.append([InlineKeyboardButton(text="×ª×ž×™×›×”", callback_data="menu:support")])
+    rows.append([InlineKeyboardButton(text="תמיכה”", callback_data="menu:support")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
@@ -235,7 +236,7 @@ async def cmd_help(msg: Message) -> None:
             "/upload_course â€” ×”×¢×œ×” ×§×•×¨×¡ (×ž×“×¨×™×›×™× ×ž××•×©×¨×™× ×‘×œ×‘×“)\n"
             "/my_earnings â€” ×”×”×›× ×¡×•×ª ×©×œ×™ ×›×ž×“×¨×™×š\n"
             "/help â€” ×ž×¡×š ×–×”\n\n"
-            f"×ª×ž×™×›×”: {SUPPORT_HANDLE}"
+            f"תמיכה”: {SUPPORT_HANDLE}"
         )
     except Exception:
         log.exception("cmd_help failed")
@@ -250,7 +251,7 @@ async def cmd_buy(msg: Message) -> None:
         log.exception("cmd_buy failed")
         try:
             await msg.answer(
-                "×©×’×™××” ×‘×˜×¢×™× ×ª ×”×§×•×¨×¡×™×. × ×¡×” ×©×•×‘ ××• ×¤× ×” ×œ×ª×ž×™×›×” "
+                "×©×’×™××” ×‘×˜×¢×™× ×ª ×”×§×•×¨×¡×™×. × ×¡×” ×©×•×‘ ××• ×¤× ×” ×œתמיכה” "
                 f"{SUPPORT_HANDLE}.",
                 reply_markup=main_menu_kb(),
             )
@@ -267,7 +268,7 @@ async def cmd_my_licenses(msg: Message) -> None:
         log.exception("cmd_my_licenses failed")
         try:
             await msg.answer(
-                "×©×’×™××” ×‘×˜×¢×™× ×ª ×”×¨×™×©×™×•× ×•×ª. × ×¡×” ×©×•×‘ ××• ×¤× ×” ×œ×ª×ž×™×›×” "
+                "×©×’×™××” ×‘×˜×¢×™× ×ª ×”×¨×™×©×™×•× ×•×ª. × ×¡×” ×©×•×‘ ××• ×¤× ×” ×œתמיכה” "
                 f"{SUPPORT_HANDLE}.",
                 reply_markup=main_menu_kb(),
             )
@@ -309,7 +310,7 @@ async def cb_my_licenses(cq: CallbackQuery) -> None:
 async def cb_support(cq: CallbackQuery) -> None:
     try:
         await cq.message.edit_text(
-            f"×œ×ª×ž×™×›×”: {SUPPORT_HANDLE}\n× ×—×–×•×¨ ××œ×™×š ×‘×”×§×“×.",
+            f"×œתמיכה”: {SUPPORT_HANDLE}\n× ×—×–×•×¨ ××œ×™×š ×‘×”×§×“×.",
             reply_markup=InlineKeyboardMarkup(
                 inline_keyboard=[
                     [
@@ -360,7 +361,7 @@ async def cb_course(cq: CallbackQuery) -> None:
             included_lines.append("â€¢ ×’×™×©×” ×ž×œ××” ×œ×—×•×ž×¨×™ ×”×§×•×¨×¡ (×•×™×“××• + ×˜×§×¡×˜)")
             included_lines.append("â€¢ ×¨×™×©×™×•×Ÿ ×œ×›×œ ×”×—×™×™× â€” ×¦×¤×” ×ž×ª×™ ×©×ª×¨×¦×”")
         else:
-            included_lines.append("â€¢ ×ª×•×›×Ÿ ×‘×”×›× ×” â€” ×¤× ×” ×œ×ª×ž×™×›×” ×œ×¤×¨×˜×™×")
+            included_lines.append("â€¢ ×ª×•×›×Ÿ ×‘×”×›× ×” â€” ×¤× ×” ×œתמיכה” ×œ×¤×¨×˜×™×")
         included_lines.append("â€¢ ×ª×¢×•×“×ª ×”×©×œ×ž×” (Premium ×œ×‘×•×˜)")
         included_lines.append("â€¢ ×”×©×ª×ª×¤×•×ª ×‘×§×”×™×œ×ª ×œ×•×ž×“×™ SLH")
         included = "\n".join(included_lines)
@@ -372,7 +373,7 @@ async def cb_course(cq: CallbackQuery) -> None:
         text = (
             f"<b>{c['title_he']}</b>\n"
             f"{instructor_line}\n"
-            f"{c['description_he'] or '×ª×™××•×¨ ×ž×œ× ×‘×§×¨×•×‘ â€” ×¤× ×” ×œ×ª×ž×™×›×” ×œ×ž×™×“×¢.'}\n\n"
+            f"{c['description_he'] or '×ª×™××•×¨ ×ž×œ× ×‘×§×¨×•×‘ â€” ×¤× ×” ×œתמיכה” ×œ×ž×™×“×¢.'}\n\n"
             f"{included}\n\n"
             f"ðŸ’° <b>×ž×—×™×¨:</b> {c['price_ils'] or 0}â‚ª Â· {c['price_slh'] or 0} SLH\n\n"
             f"×‘×—×¨ ××ž×¦×¢×™ ×ª×©×œ×•× ×ž×ª×•×š ×”×¨×©×ª ×”×ž×œ××” ×©×œ× ×•:"
@@ -424,7 +425,7 @@ async def cb_pay(cq: CallbackQuery) -> None:
         )
         if not payment_id:
             await cq.message.edit_text(
-                "×©×’×™××” ×‘×™×¦×™×¨×ª ×”×ª×©×œ×•×. × ×¡×” ×©×•×‘ ×ž××•×—×¨ ×™×•×ª×¨ ××• ×¤× ×” ×œ×ª×ž×™×›×” "
+                "×©×’×™××” ×‘×™×¦×™×¨×ª ×”×ª×©×œ×•×. × ×¡×” ×©×•×‘ ×ž××•×—×¨ ×™×•×ª×¨ ××• ×¤× ×” ×œתמיכה” "
                 f"{SUPPORT_HANDLE}.",
                 reply_markup=main_menu_kb(),
             )
@@ -904,7 +905,7 @@ async def _wait_and_grant(
         try:
             await bot.send_message(
                 chat_id,
-                f"×©×’×™××” ×‘××™×ž×•×ª. ×¤× ×” ×œ×ª×ž×™×›×” {SUPPORT_HANDLE} "
+                f"×©×’×™××” ×‘××™×ž×•×ª. ×¤× ×” ×œתמיכה” {SUPPORT_HANDLE} "
                 f"(×ž×–×”×”: {payment_id}).",
             )
         except Exception:
@@ -1479,3 +1480,5 @@ async def _wizard_upload_step(msg: Message, state: dict) -> None:
 
 if __name__ == "__main__":
     asyncio.run(main())
+
+

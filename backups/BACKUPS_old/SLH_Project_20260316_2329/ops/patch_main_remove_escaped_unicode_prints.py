@@ -1,4 +1,5 @@
-﻿from pathlib import Path
+﻿# -*- coding: utf-8 -*-
+from pathlib import Path
 import re
 
 p = Path("main.py")
@@ -17,3 +18,5 @@ for i, line in enumerate(lines, start=1):
 
 p.write_text("\n".join(out) + "\n", encoding="utf-8", newline="\n")
 print(f"OK: replaced {changed} escaped-unicode print line(s) in main.py")
+
+

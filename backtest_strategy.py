@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import backtrader as bt
 import pandas as pd
 from datetime import datetime
@@ -69,3 +70,4 @@ if __name__ == '__main__':
     cerebro.run()
     print('Final Portfolio Value: %.2f' % cerebro.broker.getvalue())
     cerebro.plot()
+

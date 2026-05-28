@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 ZVIKUSH ARCADE - Extra Games
 Trivia (תשחצים), Minesweeper (שולה מוקשים), Sudoku hints
@@ -340,3 +341,5 @@ def mine_grid_keyboard_final(game):
             row.append(IKB(text=txt, callback_data="noop"))
         buttons.append(row)
     return IKM(inline_keyboard=buttons)
+
+

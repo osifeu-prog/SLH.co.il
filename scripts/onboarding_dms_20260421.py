@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """
 One-off: send 6 personalized DMs to SLH community members (night 21.4).
 Uses POST /api/broadcast/send with target=custom per recipient.
@@ -179,3 +179,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+

@@ -1,4 +1,5 @@
-﻿from pathlib import Path
+﻿# -*- coding: utf-8 -*-
+from pathlib import Path
 import re
 
 p = Path("webhook_server.py")
@@ -34,3 +35,5 @@ s = s.replace(anchor, insert, 1)
 
 p.write_text(s, encoding="utf-8", newline="\n")
 print("FIXED webhook_server.py")
+
+

@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import requests
 import time
 import json
@@ -22,3 +23,4 @@ if __name__ == '__main__':
     print(f"Found {len(tokens)} new tokens:")
     for token in tokens:
         print(token)
+

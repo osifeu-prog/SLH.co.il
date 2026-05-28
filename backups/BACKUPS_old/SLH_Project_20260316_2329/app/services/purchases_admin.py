@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import json
 
 from app.services.commerce_events import log_commerce_event
@@ -864,3 +865,5 @@ async def fraud_guard_payment_ref(conn, payment_ref: str, exclude_order_id: int 
         return {"ok": False, "error": "Payment reference already used"}
 
     return {"ok": True}
+
+

@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 SLH API Health Check — Automated endpoint testing
 Run: python ops/api-health-check.py
@@ -107,3 +108,4 @@ with open(OUT, 'w', encoding='utf-8') as f:
     f.write(f'\n---\nGenerated: {ts}\n')
 
 print(f'\nDone: {ok_count}/{len(tests)} OK. Report: {OUT}')
+

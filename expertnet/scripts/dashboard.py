@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import sqlite3
 import pandas as pd
 from flask import Flask, render_template_string
@@ -56,3 +57,4 @@ def index():
 
 if __name__ == '__main__':
     app.run(port=5000)
+

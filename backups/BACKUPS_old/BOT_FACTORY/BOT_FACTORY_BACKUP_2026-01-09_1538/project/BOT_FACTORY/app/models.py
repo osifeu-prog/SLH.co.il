@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 from sqlalchemy import (
     Column,
     BigInteger,
@@ -45,3 +46,5 @@ class Transaction(Base):
     amount_slh = Column(Numeric(24, 6), nullable=False)
     tx_type = Column(String(50), nullable=False)
 from app.models_investments import Deposit, SLHLedger, RedemptionRequest  # noqa: F401
+
+

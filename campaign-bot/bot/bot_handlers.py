@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 import os
 from datetime import datetime
 from telegram import (
@@ -505,3 +506,5 @@ def get_conversation_handler():
         fallbacks=[CommandHandler("cancel", cancel)],
         per_message=False,
     )
+
+

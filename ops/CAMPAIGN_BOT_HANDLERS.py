@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 SLH Campaign Bot Handlers — Drop-in for community bot
 Handles /start promo_shekel_april26_<AFFCODE> and 4 path types
@@ -175,3 +176,4 @@ async def register_path(message: Message, path: str, ref_code: str = None, user_
 
 
 # Register router with: dp.include_router(router)
+

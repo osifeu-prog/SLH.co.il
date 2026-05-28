@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*-
 """
 SLH Content Marketplace — Courses + Premium Content + Creator Revenue Share
 ============================================================================
@@ -414,3 +415,4 @@ async def my_library(telegram_id: int = Query(..., gt=0)):
              ORDER BY s.paid_at DESC
         """, telegram_id)
     return {"library": [dict(r) for r in rows], "count": len(rows)}
+
