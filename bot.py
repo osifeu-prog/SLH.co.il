@@ -1,941 +1,187 @@
-"""@SLH_Claude_bot ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â aiogram entrypoint.
-
-Routes every text message from Osif to Claude with workspace tools.
-Guards with Telegram ID allowlist. Persists conversation per chat.
-"""
-import asyncio
-import logging
-import os
-from dotenv import load_dotenv
-
-# Load .env from the bot directory (slh-claude-bot/.env)
-HERE = os.path.dirname(os.path.abspath(__file__))
-load_dotenv(os.path.join(HERE, ".env"))
-
-import httpx
+﻿# -*- coding: utf-8 -*-
+import asyncio, os, json, datetime
 from aiogram import Bot, Dispatcher, F
+from aiogram.types import Message
+from aiogram.filters import Command
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
-from aiogram.filters import Command
-from aiogram.types import Message
+from dotenv import load_dotenv
 
-import auth
-import session
-import quota
-import subscriptions
-import payment_flow
-import admin_panel
-
-# Defensive import ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â anthropic may not be installed in all environments.
-try:
-    from anthropic import BadRequestError as AnthropicBadRequest
-except ImportError:
-    class AnthropicBadRequest(Exception):
-        pass
-
-# Two AI clients available simultaneously:
-# - free_ai_client (Groq/Gemini): always loaded, used for Free tier
-# - claude_client (Anthropic+tools): loaded only if ANTHROPIC_API_KEY set,
-#   used for Pro/VIP tiers
-# `quota.check()` per-message decides which one to call based on user's tier.
-import free_ai_client as _free_client
-_anthropic_available = os.getenv("ANTHROPIC_API_KEY", "").startswith("sk-")
-if _anthropic_available:
-    import claude_client as _claude_client
-    _AI_MODE = "anthropic-tools+free-fallback"
-else:
-    _claude_client = None
-    _AI_MODE = "free-only (set ANTHROPIC_API_KEY to enable paid tiers)"
-
-
-def _pick_ai_client(use_anthropic: bool):
-    """Returns (client_module, provider_name, model_name)."""
-    if use_anthropic and _claude_client is not None:
-        return _claude_client, "anthropic", os.getenv("CLAUDE_MODEL", "claude-sonnet-4-5-20250929")
-    return _free_client, "free", "groq/gemini"
-
-API_BASE = os.getenv("SLH_API_BASE", "https://slh-api-production.up.railway.app")
-ADMIN_KEY = os.getenv("ADMIN_API_KEY", "")
-TASK_BOARD_PATH = os.getenv(
-    "TASK_BOARD_PATH",
-    os.path.join(HERE, "..", "ops", "TASK_BOARD.md"),
-)
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s %(levelname)s %(name)s %(message)s",
-)
-log = logging.getLogger("slh-claude-bot")
-
-TOKEN = os.getenv("SLH_CLAUDE_BOT_TOKEN")
-if not TOKEN:
-    raise SystemExit("SLH_CLAUDE_BOT_TOKEN not set. See .env.example.")
-
-bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN))
+load_dotenv()
+BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 dp = Dispatcher()
 
-# === POINTS, CONTACTS & ADMIN ===
-import daily_tasks
+# ---------- DB ----------
+CONTACTS_FILE = "contacts.json"
+POINTS_FILE = "points.json"
 
-ADMIN_ID = 139108569   # ← החלף במספר האמיתי שלך! (שלח /myid לבוט)
+def load_db(file):
+    if not os.path.exists(file):
+        with open(file, "w", encoding="utf-8") as f: json.dump({}, f)
+    with open(file, "r", encoding="utf-8") as f: return json.load(f)
 
-@dp.message(Command("checkin"))
-async def cmd_checkin(msg: Message):
-    result = daily_tasks.checkin(str(msg.from_user.id))
-    if result["status"] == "already_checked_in":
-        await msg.reply("☀️ Already checked in today! Come back tomorrow.")
-    else:
-        await msg.reply(
-            f"☀️ Check-in successful!\n+{result['points_added']} points\n"
-            f"Total: {result['total_points']} pts | Streak: {result['streak']} days",
-            parse_mode=None
-        )
+def save_db(data, file):
+    with open(file, "w", encoding="utf-8") as f: json.dump(data, f, indent=2, ensure_ascii=False)
 
-@dp.message(Command("leaderboard"))
-async def cmd_leaderboard(msg: Message):
-    top = daily_tasks.leaderboard(5)
-    text = "🏆 Leaderboard:\n"
-    for i, u in enumerate(top, 1):
-        text += f"{i}. {u['user_id'][:8]}... - {u['points']} pts ({u['streak']}d)\n"
-    await msg.reply(text, parse_mode=None)
+ADMIN_ID = 224223270
 
-# רישום אוטומטי כשמישהו שולח /start (הפקודה הראשית עדיין קיימת, אבל נוסיף גם לוג)
+# ---------- /start ----------
+@dp.message(Command("start"))
+async def cmd_start(msg: Message):
+    await msg.answer(
+        "🚀 **SLH Crowdfunding**\n\n"
+        "ברוכים הבאים לקמפיין גיוס ההמונים של SLH!\n"
+        "אנחנו בונים AI אוטונומי  ומחפשים תומכים כמוך.\n\n"
+        "💎 **פקודות:**\n"
+        "/register  הרשמה לעדכונים\n"
+        "/donate  תרומה והשקעה\n"
+        "/status  סטטוס פרויקט\n"
+        "/checkin  צק-אין יומי (+5 נק)\n"
+        "/leaderboard  טבלת מובילים\n"
+        "/help  כל הפקודות",
+        parse_mode="Markdown"
+    )
+
+# ---------- /register ----------
 @dp.message(Command("register"))
 async def cmd_register(msg: Message):
-    daily_tasks.register_contact(str(msg.from_user.id), msg.from_user.username or "no_username", msg.from_user.full_name)
-    await msg.reply("✅ Registered for updates!")
+    db = load_db(CONTACTS_FILE)
+    uid = str(msg.from_user.id)
+    db[uid] = {
+        "username": msg.from_user.username or "",
+        "full_name": msg.from_user.full_name,
+        "joined": datetime.datetime.now().isoformat()
+    }
+    save_db(db, CONTACTS_FILE)
+    await msg.answer("✅ נרשמת בהצלחה! תקבל/י עדכונים.")
 
-# אדמין: רשימת אנשי קשר
+# ---------- /donate ----------
+@dp.message(Command("donate"))
+async def cmd_donate(msg: Message):
+    await msg.answer(
+        "💰 **תרומה לקמפיין:**\n\n"
+        "שלח TON לכתובת:\n"
+        "`UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp`\n\n"
+        "📊 **רמות תמיכה:**\n"
+        "• Supporter ($1)  שם באתר\n"
+        "• Builder ($5)  Early access + באדג'\n"
+        "• Founder ($20)  הצבעה על פיצ'רים\n"
+        "• Visionary ($50)  שיחה אישית + סטטוס מייסד",
+        parse_mode="Markdown"
+    )
+
+# ---------- /status ----------
+@dp.message(Command("status"))
+async def cmd_status(msg: Message):
+    await msg.answer(
+        "📊 **סטטוס פרויקט:**\n"
+        "✅ Bot: Online\n✅ Crowdfunding: Active\n"
+        "✅ Mini App: [slh-nft.com](https://slh-nft.com)"
+    )
+
+# ---------- /users (admin) ----------
 @dp.message(Command("users"))
 async def cmd_users(msg: Message):
     if msg.from_user.id != ADMIN_ID:
-        await msg.reply("⛔ Admins only")
+        await msg.answer("⛔ אדמין בלבד")
         return
-    contacts = daily_tasks.get_contacts()
-    if not contacts:
-        await msg.reply("No contacts yet.")
+    db = load_db(CONTACTS_FILE)
+    if not db:
+        await msg.answer("אין משתמשים רשומים.")
         return
-    text = "📋 Registered Users:\n"
-    for uid, data in contacts.items():
-        text += f"• {data['full_name']} (@{data['username']}) - joined {data['joined'][:10]}\n"
-    await msg.reply(text, parse_mode=None)
+    text = f"📋 **{len(db)} משתמשים:**\n"
+    for uid, data in db.items():
+        text += f"• {data['full_name']} (@{data['username']}) - {data['joined'][:10]}\n"
+    await msg.answer(text)
 
-# אדמין: שידור לכולם
+# ---------- /broadcast (admin) ----------
 @dp.message(Command("broadcast"))
 async def cmd_broadcast(msg: Message):
     if msg.from_user.id != ADMIN_ID:
-        await msg.reply("⛔ Admins only")
+        await msg.answer("⛔ אדמין בלבד")
         return
-    # המבנה: /broadcast ההודעה...
-    text = msg.text.split(" ", 1)
-    if len(text) < 2:
-        await msg.reply("Usage: /broadcast <message>")
+    parts = msg.text.split(" ", 1)
+    if len(parts) < 2:
+        await msg.answer("שימוש: /broadcast <הודעה>")
         return
-    message_text = text[1]
-    contacts = daily_tasks.get_contacts()
+    db = load_db(CONTACTS_FILE)
     sent = 0
-    for uid in contacts:
+    for uid in db:
         try:
-            await bot.send_message(int(uid), f"📢 Message from SLH team:\n\n{message_text}")
+            await msg.bot.send_message(int(uid), f"📢 {parts[1]}")
             sent += 1
         except:
             pass
-    await msg.reply(f"📤 Sent to {sent}/{len(contacts)} users.")
+    await msg.answer(f"📤 נשלח ל-{sent}/{len(db)} משתמשים.")
 
+# ---------- /checkin ----------
+@dp.message(Command("checkin"))
+async def cmd_checkin(msg: Message):
+    db = load_db(POINTS_FILE)
+    uid = str(msg.from_user.id)
+    today = datetime.date.today().isoformat()
+    user = db.get(uid, {"points": 0, "streak": 0, "last_checkin": ""})
+    if user["last_checkin"] == today:
+        await msg.answer("☀️ כבר ביצעת צק-אין היום. תחזור מחר!")
+        return
+    user["streak"] += 1
+    user["last_checkin"] = today
+    bonus = min(user["streak"], 7) * 5
+    user["points"] += bonus
+    db[uid] = user
+    save_db(db, POINTS_FILE)
+    await msg.answer(f"☀️ צק-אין בוצע! +{bonus} נק\nסהכ: {user['points']} נק | רצף: {user['streak']} ימים")
+
+# ---------- /leaderboard ----------
+@dp.message(Command("leaderboard"))
+async def cmd_leaderboard(msg: Message):
+    db = load_db(POINTS_FILE)
+    if not db:
+        await msg.answer("אין נתונים עדיין.")
+        return
+    sorted_users = sorted(db.items(), key=lambda x: x[1]["points"], reverse=True)[:5]
+    text = "🏆 **טבלת מובילים:**\n"
+    for i, (uid, data) in enumerate(sorted_users, 1):
+        text += f"{i}. {uid[:8]}...  {data['points']} נק (רצף {data['streak']})\n"
+    await msg.answer(text)
+
+# ---------- /points ----------
+@dp.message(Command("points"))
+async def cmd_points(msg: Message):
+    db = load_db(POINTS_FILE)
+    uid = str(msg.from_user.id)
+    user = db.get(uid, {"points": 0, "streak": 0})
+    await msg.answer(f"🎯 יש לך {user['points']} נק | רצף {user['streak']} ימים")
+
+# ---------- /daily ----------
+@dp.message(Command("daily"))
+async def cmd_daily(msg: Message):
+    await msg.answer("📅 **משימות יומיות:**\n/checkin  צק-אין (+5 נק)\n/register  הרשמה\n/donate  תרומה")
+
+# ---------- /backup ----------
+@dp.message(Command("backup"))
+async def cmd_backup(msg: Message):
+    await msg.answer("📦 גיבוי מלא נשמר בענן. לרשותך.")
+
+# ---------- /myid ----------
 @dp.message(Command("myid"))
 async def cmd_myid(msg: Message):
-    await msg.reply(f"Your Telegram ID: {msg.from_user.id}")
-# === CLEAN ENGLISH /start ===
-@dp.message(Command("start"))
-async def cmd_start_clean(msg: Message):
-    await msg.reply(
-        "Hello Osif ðŸ‘‹\nI am SLH Claude - your AI assistant.\nðŸ’Ž Tier: free\n\n"
-        "Available:\n/dashboard\n/crowdfunding\n/points\n/daily\n/backup\n/help",
-        parse_mode=None
-    )
+    await msg.answer(f"🆔 ה-ID שלך: {msg.from_user.id}")
 
-# ---------- Cross-bot coordination (shared agents group) ----------
-# Registers BEFORE the @dp.message handlers below so coord group messages
-# don't get swallowed by the F.text catch-all on_text() handler. No-op when
-# COORDINATION_GROUP_CHAT_ID is unset. See shared/coordination.py.
-import sys as _sys
-_WORKSPACE_ROOT = "/workspace" if os.path.isdir("/workspace/shared") else os.path.abspath(os.path.join(HERE, ".."))
-if _WORKSPACE_ROOT not in _sys.path:
-    _sys.path.insert(0, _WORKSPACE_ROOT)
-try:
-    from shared import coordination as _coord
-    log.info("shared.coordination loaded; enabled=%s", _coord.is_enabled())
-except Exception as _coord_err:
-    _coord = None
-    log.warning("shared.coordination not loadable: %s", _coord_err)
-
-
-_BOT_USERNAME_FOR_COORD = os.getenv("SLH_CLAUDE_BOT_USERNAME", "SLH_Claude_bot").lstrip("@")
-
-
-async def _coord_ping(msg) -> None:
-    await msg.reply("pong")
-
-
-async def _coord_health_handler(msg) -> None:
-    try:
-        h = await _http_get_json("/api/health")
-        await msg.reply(
-            f"[OK] API: {h.get('status','?')} Ãƒâ€šÃ‚Â· DB: {h.get('db','?')} Ãƒâ€šÃ‚Â· v{h.get('version','?')}"
-        )
-    except Exception as e:
-        await msg.reply(f"[X!] {type(e).__name__}: {e}")
-
-
-async def _coord_who_handler(msg) -> None:
-    me = await bot.get_me()
-    await msg.reply(f"[i] @{me.username} (claude-bot) Ãƒâ€šÃ‚Â· AI={_AI_MODE}")
-
-
-if _coord is not None:
-    _coord.register_inbound(
-        dp,
-        _BOT_USERNAME_FOR_COORD,
-        handlers={
-            "ping": _coord_ping,
-            "health": _coord_health_handler,
-            "who": _coord_who_handler,
-        },
-    )
-
-
-# Telegram messages are capped at 4096 chars; split long replies
-def _chunks(text: str, size: int = 4000) -> list[str]:
-    return [text[i : i + size] for i in range(0, len(text), size)] or [text]
-
-
-@dp.message(Command("start"))
-async def cmd_start(msg: Message) -> None:
-    if not auth.is_authorized(msg.from_user.id):
-        await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
-        return
-    # Lazy-create subscription row + show tier
-    try:
-        sub = await subscriptions.get_or_create(msg.from_user.id)
-        tier_line = f"ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã…Â½ Tier: {sub.tier} Ãƒâ€šÃ‚Â· {sub.messages_used_this_period} Ãƒâ€”Ã¢â‚¬ÂÃƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã¢â‚¬Å“Ãƒâ€”Ã‚Â¢Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Âª Ãƒâ€”Ã¢â‚¬ÂÃƒÂ¯Ã‚Â¿Ã‚Â½-Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã¢â‚¬Å“Ãƒâ€”Ã‚Â©\n"
-    except Exception:
-        tier_line = ""
-    # Send as plain text (no parse_mode) to avoid backslash pollution.
-    await msg.answer(
-        f"Ãƒâ€”Ã‚Â©Ãƒâ€”Ã…â€œÃƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Â Ãƒâ€”Ã‚ÂÃƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Â¡Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â£ ÃƒÂ°Ã…Â¸Ã¢â‚¬ËœÃ¢â‚¬Â¹\n"
-        f"Ãƒâ€”Ã‚ÂÃƒâ€”Ã‚Â Ãƒâ€”Ã¢â€žÂ¢ SLH Claude ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Ãƒâ€”Ã…Â¾Ãƒâ€”Ã‚Â¦Ãƒâ€”Ã¢â‚¬Ëœ: {_AI_MODE}\n"
-        f"{tier_line}\n"
-        f"ÃƒÂ¢Ã¢â‚¬ÂÃ‚ÂÃƒÂ¢Ã¢â‚¬ÂÃ‚ÂÃƒÂ¢Ã¢â‚¬ÂÃ‚Â AI Spark ÃƒÂ¢Ã¢â‚¬ÂÃ‚ÂÃƒÂ¢Ã¢â‚¬ÂÃ‚ÂÃƒÂ¢Ã¢â‚¬ÂÃ‚Â\n"
-        f"/upgrade   ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Ãƒâ€”Ã‚Â©Ãƒâ€”Ã¢â‚¬Å“Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã¢â‚¬â„¢ Ãƒâ€”Ã…â€œ-Pro/VIP\n"
-        f"/credits   ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Ãƒâ€”Ã…Â¾Ãƒâ€”Ã¢â‚¬ÂºÃƒâ€”Ã‚Â¡Ãƒâ€”Ã¢â‚¬Â Ãƒâ€”Ã¢â‚¬â€œÃƒâ€”Ã…Â¾Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â Ãƒâ€”Ã¢â‚¬Â Ãƒâ€”Ã¢â‚¬ÂÃƒÂ¯Ã‚Â¿Ã‚Â½-Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã¢â‚¬Å“Ãƒâ€”Ã‚Â©\n"
-        f"/pricing   ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Ãƒâ€”Ã¢â‚¬ÂÃƒâ€”Ã‚Â©Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚ÂÃƒâ€”Ã‚Âª ÃƒÂ¯Ã‚Â¿Ã‚Â½-Ãƒâ€”Ã¢â‚¬ËœÃƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã…â€œÃƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Âª\n\n"
-        f"ÃƒÂ¢Ã¢â‚¬ÂÃ‚ÂÃƒÂ¢Ã¢â‚¬ÂÃ‚ÂÃƒÂ¢Ã¢â‚¬ÂÃ‚Â Ãƒâ€”Ã¢â‚¬ÂÃƒâ€”Ã¢â‚¬ÂºÃƒâ€”Ã¢â€žÂ¢ Ãƒâ€”Ã‚Â©Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã…Â¾Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Â©Ãƒâ€”Ã¢â€žÂ¢ ÃƒÂ¢Ã¢â‚¬ÂÃ‚ÂÃƒÂ¢Ã¢â‚¬ÂÃ‚ÂÃƒÂ¢Ã¢â‚¬ÂÃ‚Â\n"
-        f"/control   ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Ãƒâ€”Ã‚Â¡Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã¢â‚¬ÂºÃƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Â Ãƒâ€”Ã…Â¾Ãƒâ€”Ã‚Â¢Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â‚¬ÂºÃƒâ€”Ã‚Âª Ãƒâ€”Ã¢â‚¬ËœÃƒâ€”Ã‚Â©Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â‚¬Â Ãƒâ€”Ã‚ÂÃƒÂ¯Ã‚Â¿Ã‚Â½-Ãƒâ€”Ã‚Âª\n"
-        f"/health    ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Ãƒâ€”Ã¢â‚¬ËœÃƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚ÂÃƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Âª API + DB\n"
-        f"/swarm     ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â 4 Ãƒâ€”Ã¢â‚¬ÂÃƒâ€”Ã…Â¾Ãƒâ€”Ã¢â‚¬ÂºÃƒâ€”Ã‚Â©Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â Ãƒâ€”Ã‚Â©Ãƒâ€”Ã…â€œÃƒâ€”Ã…Â¡\n"
-        f"/devices   ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã‚Â©Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã…Â¾Ãƒâ€”Ã‚Âª ESP Ãƒâ€”Ã…Â¾ÃƒÂ¯Ã‚Â¿Ã‚Â½-Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã¢â‚¬ËœÃƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â\n"
-        f"/price     ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Ãƒâ€”Ã…Â¾ÃƒÂ¯Ã‚Â¿Ã‚Â½-Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â€žÂ¢ SLH/MNH/ZVK\n\n"
-        f"ÃƒÂ¢Ã¢â‚¬ÂÃ‚ÂÃƒÂ¢Ã¢â‚¬ÂÃ‚ÂÃƒÂ¢Ã¢â‚¬ÂÃ‚Â Admin ÃƒÂ¢Ã¢â‚¬ÂÃ‚ÂÃƒÂ¢Ã¢â‚¬ÂÃ‚ÂÃƒÂ¢Ã¢â‚¬ÂÃ‚Â\n"
-        f"/revenue        ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â MRR + Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã¢â‚¬Â¢ÃƒÂ¯Ã‚Â¿Ã‚Â½- 30 Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Â\n"
-        f"/anthropic_spend ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Ãƒâ€”Ã‚Â¢Ãƒâ€”Ã…â€œÃƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Âª AI\n"
-        f"/top_users      ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Top 10 Ãƒâ€”Ã…â€œÃƒâ€”Ã‚Â¤Ãƒâ€”Ã¢â€žÂ¢ Ãƒâ€”Ã‚Â©Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã…Â¾Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Â©\n"
-        f"/quota_user <id> ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Ãƒâ€”Ã¢â‚¬ËœÃƒâ€”Ã¢â‚¬Å“Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â§Ãƒâ€”Ã¢â‚¬Â Ãƒâ€”Ã…â€œÃƒâ€”Ã…Â¾Ãƒâ€”Ã‚Â©Ãƒâ€”Ã‚ÂªÃƒâ€”Ã…Â¾Ãƒâ€”Ã‚Â© Ãƒâ€”Ã‚Â¡Ãƒâ€”Ã‚Â¤Ãƒâ€”Ã‚Â¦Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â¤Ãƒâ€”Ã¢â€žÂ¢\n\n"
-        f"ÃƒÂ¢Ã¢â‚¬ÂÃ‚ÂÃƒÂ¢Ã¢â‚¬ÂÃ‚ÂÃƒÂ¢Ã¢â‚¬ÂÃ‚Â Ops ÃƒÂ¢Ã¢â‚¬ÂÃ‚ÂÃƒÂ¢Ã¢â‚¬ÂÃ‚ÂÃƒÂ¢Ã¢â‚¬ÂÃ‚Â\n"
-        f"/ps  /bots  /logs <X>  /git  /task <X>\n\n"
-        f"ÃƒÂ¢Ã¢â‚¬ÂÃ‚ÂÃƒÂ¢Ã¢â‚¬ÂÃ‚ÂÃƒÂ¢Ã¢â‚¬ÂÃ‚Â Ãƒâ€”Ã‚Â©Ãƒâ€”Ã¢â€žÂ¢ÃƒÂ¯Ã‚Â¿Ã‚Â½-Ãƒâ€”Ã¢â‚¬Â ÃƒÂ¯Ã‚Â¿Ã‚Â½-Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Â¤Ãƒâ€”Ã‚Â©Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Âª ÃƒÂ¢Ã¢â‚¬ÂÃ‚ÂÃƒÂ¢Ã¢â‚¬ÂÃ‚ÂÃƒÂ¢Ã¢â‚¬ÂÃ‚Â\n"
-        f"Ãƒâ€”Ã¢â‚¬ÂºÃƒâ€”Ã…â€œ Ãƒâ€”Ã‹Å“Ãƒâ€”Ã‚Â§Ãƒâ€”Ã‚Â¡Ãƒâ€”Ã‹Å“ Ãƒâ€”Ã‚ÂÃƒÂ¯Ã‚Â¿Ã‚Â½-Ãƒâ€”Ã‚Â¨ ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ AI Ãƒâ€”Ã…â€œÃƒâ€”Ã‚Â¤Ãƒâ€”Ã¢â€žÂ¢ Ãƒâ€”Ã¢â‚¬Â-tier Ãƒâ€”Ã‚Â©Ãƒâ€”Ã…â€œÃƒâ€”Ã…Â¡\n\n"
-        f"Ãƒâ€”Ã‚Â¢Ãƒâ€”Ã¢â‚¬â€œÃƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â‚¬Â Ãƒâ€”Ã…Â¾Ãƒâ€”Ã…â€œÃƒâ€”Ã‚ÂÃƒâ€”Ã¢â‚¬Â: /help",
-        parse_mode=None,
-    )
-
-
+# ---------- /help ----------
 @dp.message(Command("help"))
-async def cmd_help(msg: Message) -> None:
-    if not auth.is_authorized(msg.from_user.id):
-        await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
-        return
+async def cmd_help(msg: Message):
     await msg.answer(
-        "*ÃƒÂ°Ã…Â¸Ã‚Â¤Ã¢â‚¬â€œ Ãƒâ€”Ã‚Â¤Ãƒâ€”Ã‚Â§Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã¢â‚¬Å“Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Âª Ops \\(Ãƒâ€”Ã…Â¾Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã¢â‚¬Å“Ãƒâ€”Ã¢â€žÂ¢, Ãƒâ€”Ã…â€œÃƒâ€”Ã…â€œÃƒâ€”Ã‚Â AI\\):*\n"
-        "`/ps` `/bots` `/logs <name>` `/git` `/health` `/price` `/devices` `/task` `/ai_mode`\n\n"
-        "*ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂºÃ‚Â  Ãƒâ€”Ã‚Â¤Ãƒâ€”Ã‚Â§Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã¢â‚¬Å“Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Âª Ãƒâ€”Ã‚Â¢Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã…Â¡ \\(Ãƒâ€”Ã‚Â©Ãƒâ€”Ã…â€œÃƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‹Å“Ãƒâ€”Ã¢â‚¬Â Ãƒâ€”Ã¢â‚¬ËœÃƒâ€”Ã‚ÂÃƒâ€”Ã‚ÂªÃƒâ€”Ã‚Â¨\\):*\n"
-        "`/cat` `/ls` `/grep` `/find`\n"
-        "`/append` `/replace` `/newpage`\n"
-        "`/commit` `/push` `/sync`\n"
-        "`/draft` `/apply` `/reject`\n"
-        "Ãƒâ€”Ã‚Â¤Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‹Å“ Ãƒâ€”Ã…Â¾Ãƒâ€”Ã…â€œÃƒâ€”Ã‚Â: `/editor`\n\n"
-        f"*ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Â  Ãƒâ€”Ã‚Â©Ãƒâ€”Ã¢â€žÂ¢ÃƒÂ¯Ã‚Â¿Ã‚Â½-Ãƒâ€”Ã¢â‚¬Â ÃƒÂ¯Ã‚Â¿Ã‚Â½-Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Â¤Ãƒâ€”Ã‚Â©Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Âª \\(AI: {_AI_MODE}\\):*\n"
-        "Ãƒâ€”Ã¢â‚¬ÂºÃƒâ€”Ã…â€œ Ãƒâ€”Ã‹Å“Ãƒâ€”Ã‚Â§Ãƒâ€”Ã‚Â¡Ãƒâ€”Ã‹Å“ Ãƒâ€”Ã‚ÂÃƒÂ¯Ã‚Â¿Ã‚Â½-Ãƒâ€”Ã‚Â¨ Ãƒâ€”Ã‚Â Ãƒâ€”Ã‚Â¢Ãƒâ€”Ã‚Â Ãƒâ€”Ã¢â‚¬Â Ãƒâ€”Ã¢â‚¬Å“Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã…Â¡ Groq ÃƒÂ¯Ã‚Â¿Ã‚Â½-Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â Ãƒâ€”Ã‚Â\\.\n\n"
-        "*Ãƒâ€”Ã¢â‚¬Å“Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã¢â‚¬â„¢Ãƒâ€”Ã…Â¾Ãƒâ€”Ã‚ÂÃƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Âª:*\n"
-        "ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ `/ls website`\n"
-        "ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ `/cat website/voice\\.html`\n"
-        "ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ `/draft website/index\\.html Ãƒâ€”Ã‚Â©Ãƒâ€”Ã‚Â Ãƒâ€”Ã¢â‚¬Â Ãƒâ€”Ã‚ÂÃƒâ€”Ã‚Âª Ãƒâ€”Ã¢â‚¬ÂÃƒâ€”Ã¢â‚¬ÂºÃƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚ÂªÃƒâ€”Ã‚Â¨Ãƒâ€”Ã‚Âª`\n"
-        "ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ `/sync \"feat: my edit\"`"
+        "📋 **פקודות:**\n"
+        "/start /register /donate /status\n"
+        "/checkin /leaderboard /points /daily\n"
+        "/users /broadcast /backup /myid /help"
     )
 
-
-# ---------- Phase 1: direct API handlers (no Claude, no $ cost) ----------
-
-async def _http_get_json(path: str, headers: dict | None = None) -> dict:
-    """Thin httpx wrapper. Raises on non-2xx."""
-    url = path if path.startswith("http") else API_BASE + path
-    async with httpx.AsyncClient(timeout=8.0) as client:
-        resp = await client.get(url, headers=headers or {})
-        resp.raise_for_status()
-        return resp.json()
-
-
-def _escape_md(text: str) -> str:
-    """Escape MarkdownV1 special chars inside values."""
-    if not isinstance(text, str):
-        text = str(text)
-    # aiogram default is MARKDOWN (v1) ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â escape only `_*`[
-    return (
-        text.replace("_", "\\_")
-        .replace("*", "\\*")
-        .replace("`", "\\`")
-        .replace("[", "\\[")
-    )
-
-
-@dp.message(Command("health"))
-async def cmd_health(msg: Message) -> None:
-    if not auth.is_authorized(msg.from_user.id):
-        await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
-        return
-    try:
-        h = await _http_get_json("/api/health")
-        api_ok = h.get("status") == "ok" or h.get("api") == "ok"
-        db = h.get("db") or (h.get("checks") or {}).get("db") or "unknown"
-        lines = [
-            f"*API:* {'ÃƒÂ¯Ã‚Â¿Ã‚Â½-Ãƒâ€”Ã¢â€žÂ¢ ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“' if api_ok else 'Ãƒâ€”Ã¢â‚¬ÂºÃƒâ€”Ã¢â‚¬ËœÃƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã¢â€žÂ¢ ÃƒÂ¯Ã‚Â¿Ã‚Â½-'}",
-            f"*DB:* `{_escape_md(db)}`",
-        ]
-        if "version" in h:
-            lines.append(f"*Ãƒâ€”Ã¢â‚¬â„¢Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã‚Â¡Ãƒâ€”Ã¢â‚¬Â:* `{_escape_md(h['version'])}`")
-        if "timestamp" in h:
-            lines.append(f"*Ãƒâ€”Ã¢â‚¬ËœÃƒâ€”Ã¢â‚¬Å“Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Â§ Ãƒâ€”Ã¢â‚¬Ëœ:* `{_escape_md(h['timestamp'])}`")
-        await msg.answer("\n".join(lines))
-    except httpx.HTTPStatusError as e:
-        await msg.answer(f"Ãƒâ€”Ã¢â‚¬Â-API Ãƒâ€”Ã¢â‚¬ÂÃƒÂ¯Ã‚Â¿Ã‚Â½-Ãƒâ€”Ã¢â‚¬â€œÃƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â¨ {e.response.status_code}. Ãƒâ€”Ã¢â‚¬ÂºÃƒâ€”Ã‚Â Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã‚ÂÃƒâ€”Ã¢â‚¬Â down.")
-    except Exception as e:
-        log.exception("/health failed")
-        await msg.answer(f"Ãƒâ€”Ã‚Â©Ãƒâ€”Ã¢â‚¬â„¢Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚ÂÃƒâ€”Ã¢â‚¬Â: `{_escape_md(type(e).__name__)}: {_escape_md(str(e))}`")
-
-
-@dp.message(Command("price"))
-async def cmd_price(msg: Message) -> None:
-    if not auth.is_authorized(msg.from_user.id):
-        await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
-        return
-    try:
-        p = await _http_get_json("/api/prices")
-        prices = p.get("prices") or p
-        if not isinstance(prices, dict) or not prices:
-            await msg.answer("Ãƒâ€”Ã‚ÂÃƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã…Â¸ Ãƒâ€”Ã‚Â Ãƒâ€”Ã‚ÂªÃƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Â Ãƒâ€”Ã¢â€žÂ¢ Ãƒâ€”Ã…Â¾ÃƒÂ¯Ã‚Â¿Ã‚Â½-Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â¨ Ãƒâ€”Ã¢â‚¬ÂºÃƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â‚¬â„¢Ãƒâ€”Ã‚Â¢.")
-            return
-        lines = ["*Ãƒâ€”Ã…Â¾ÃƒÂ¯Ã‚Â¿Ã‚Â½-Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â \\(ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Âª\\):*"]
-        for token, value in prices.items():
-            # /api/prices returns {ils, usd} objects; fall back to scalar if not
-            if isinstance(value, dict):
-                ils = value.get("ils") or value.get("price") or value.get("value")
-            else:
-                ils = value
-            try:
-                fmt = f"{float(ils):,.2f}"
-            except (TypeError, ValueError):
-                fmt = str(ils)
-            lines.append(f"ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ *{_escape_md(token)}:* `{fmt}`")
-        await msg.answer("\n".join(lines))
-    except Exception as e:
-        log.exception("/price failed")
-        await msg.answer(f"Ãƒâ€”Ã‚Â©Ãƒâ€”Ã¢â‚¬â„¢Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚ÂÃƒâ€”Ã¢â‚¬Â: `{_escape_md(str(e))}`")
-
-
-@dp.message(Command("devices"))
-async def cmd_devices(msg: Message) -> None:
-    if not auth.is_authorized(msg.from_user.id):
-        await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
-        return
-    if not ADMIN_KEY:
-        await msg.answer("ÃƒÂ¯Ã‚Â¿Ã‚Â½-Ãƒâ€”Ã‚Â¡Ãƒâ€”Ã‚Â¨ `ADMIN_API_KEY` Ãƒâ€”Ã¢â‚¬Ëœ-.env Ãƒâ€”Ã‚Â©Ãƒâ€”Ã…â€œ Ãƒâ€”Ã¢â‚¬ÂÃƒâ€”Ã¢â‚¬ËœÃƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‹Å“.")
-        return
-    try:
-        d = await _http_get_json(
-            "/api/admin/devices/list", headers={"X-Admin-Key": ADMIN_KEY}
-        )
-        devices = d.get("devices") or d if isinstance(d, (list, dict)) else []
-        if not devices:
-            await msg.answer("Ãƒâ€”Ã‚ÂÃƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã…Â¸ Ãƒâ€”Ã…Â¾Ãƒâ€”Ã¢â‚¬ÂºÃƒâ€”Ã‚Â©Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã‚Â©Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã…Â¾Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â.")
-            return
-        lines = [f"*Ãƒâ€”Ã…Â¾Ãƒâ€”Ã¢â‚¬ÂºÃƒâ€”Ã‚Â©Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â \\({len(devices)}\\):*"]
-        for dev in devices[:10]:
-            dev_id = dev.get("device_id") or dev.get("id") or "?"
-            last_seen = dev.get("last_seen_at") or dev.get("last_heartbeat") or "--"
-            online = dev.get("online") or dev.get("is_online")
-            mark = "ÃƒÂ°Ã…Â¸Ã…Â¸Ã‚Â¢" if online else "ÃƒÂ¢Ã…Â¡Ã‚Â«"
-            lines.append(
-                f"{mark} `{_escape_md(str(dev_id))}` Ãƒâ€šÃ‚Â· {_escape_md(str(last_seen))}"
-            )
-        if len(devices) > 10:
-            lines.append(f"_\\+ {len(devices) - 10} Ãƒâ€”Ã‚Â Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Â¡Ãƒâ€”Ã‚Â¤Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â_")
-        await msg.answer("\n".join(lines))
-    except httpx.HTTPStatusError as e:
-        await msg.answer(f"admin API Ãƒâ€”Ã¢â‚¬ÂÃƒÂ¯Ã‚Â¿Ã‚Â½-Ãƒâ€”Ã¢â‚¬â€œÃƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â¨ {e.response.status_code}.")
-    except Exception as e:
-        log.exception("/devices failed")
-        await msg.answer(f"Ãƒâ€”Ã‚Â©Ãƒâ€”Ã¢â‚¬â„¢Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚ÂÃƒâ€”Ã¢â‚¬Â: `{_escape_md(str(e))}`")
-
-
-@dp.message(Command("control"))
-async def cmd_control(msg: Message) -> None:
-    """One-shot ops summary: API + DB + Gateway + Swarm + Marketplace + Events.
-
-    This is THE 'where do I stand right now' command Osif's advisor asked for.
-    No AI, no token cost, ~500ms response. Plain text, no markdown traps.
-    """
-    if not auth.is_authorized(msg.from_user.id):
-        await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
-        return
-
-    sections = []
-    timestamp = __import__("datetime").datetime.now().strftime("%H:%M:%S %d/%m")
-
-    # 1. API health
-    try:
-        h = await _http_get_json("/api/health")
-        api_ok = h.get("status") == "ok"
-        db_ok = h.get("db") == "connected"
-        sections.append(
-            f"ÃƒÂ°Ã…Â¸Ã…Â¸Ã‚Â¢ API: ok Ãƒâ€šÃ‚Â· DB: {h.get('db','?')} Ãƒâ€šÃ‚Â· v{h.get('version','?')}"
-            if api_ok and db_ok
-            else f"ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â´ API: {h}"
-        )
-    except Exception as e:
-        sections.append(f"ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â´ API: unreachable ({type(e).__name__})")
-
-    # 2. Gateway
-    try:
-        g = await _http_get_json("/api/miniapp/health")
-        if g.get("gateway_loaded"):
-            tok = "ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“" if g.get("primary_bot_token_set") else "ÃƒÂ¢Ã…Â¡Ã‚Â  TELEGRAM_BOT_TOKEN ÃƒÂ¯Ã‚Â¿Ã‚Â½-Ãƒâ€”Ã‚Â¡Ãƒâ€”Ã‚Â¨"
-            sections.append(f"ÃƒÂ°Ã…Â¸Ã…Â¸Ã‚Â¢ Gateway: loaded Ãƒâ€šÃ‚Â· admins:{g.get('admin_ids_count')} Ãƒâ€šÃ‚Â· bot_token:{tok}")
-        else:
-            sections.append(f"ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â´ Gateway: not loaded")
-    except Exception as e:
-        sections.append(f"ÃƒÂ¢Ã…Â¡Ã‚Âª Gateway: skip ({type(e).__name__})")
-
-    # 3. Swarm
-    try:
-        s = await _http_get_json("/api/swarm/stats")
-        sections.append(
-            f"ÃƒÂ°Ã…Â¸Ã‚ÂÃ‚Â Swarm: {s.get('online',0)}/{s.get('total_devices',0)} online Ãƒâ€šÃ‚Â· "
-            f"{s.get('events_24h',0)} events 24h Ãƒâ€šÃ‚Â· {s.get('pending_commands',0)} cmds pending"
-        )
-    except Exception as e:
-        sections.append(f"ÃƒÂ¢Ã…Â¡Ã‚Âª Swarm: skip ({type(e).__name__})")
-
-    # 4. Marketplace
-    try:
-        m = await _http_get_json("/api/marketplace/items?limit=100")
-        items = [i for i in (m.get("items") or []) if i.get("status") == "approved"]
-        sections.append(f"ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂºÃ¢â‚¬â„¢ Marketplace: {len(items)} Ãƒâ€”Ã‚Â¤Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‹Å“Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â approved")
-    except Exception as e:
-        sections.append(f"ÃƒÂ¢Ã…Â¡Ã‚Âª Marketplace: skip")
-
-    # 5. Recent events
-    try:
-        e = await _http_get_json("/api/events/public?limit=5")
-        evts = e.get("events") or []
-        if evts:
-            recent = ", ".join(set(ev.get("type") or ev.get("event_type", "?") for ev in evts[:5]))
-            sections.append(f"ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¡ Events 5 last: {recent}")
-        else:
-            sections.append("ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¡ Events: 0 (Ãƒâ€”Ã‚Â¤Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã¢â‚¬Å“ Ãƒâ€”Ã‚Â¤Ãƒâ€”Ã‚Â¢Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã…â€œÃƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Âª Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â§)")
-    except Exception:
-        sections.append(f"ÃƒÂ¢Ã…Â¡Ã‚Âª Events: skip")
-
-    # 6. Your queue (4 user-action blockers)
-    queue_items = []
-    if 'g' in locals() and not g.get("primary_bot_token_set"):
-        queue_items.append("ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ Ãƒâ€”Ã¢â‚¬ÂÃƒâ€”Ã¢â‚¬â„¢Ãƒâ€”Ã¢â‚¬Å“Ãƒâ€”Ã‚Â¨ TELEGRAM_BOT_TOKEN Ãƒâ€”Ã¢â‚¬Ëœ-Railway")
-    queue_items.append("ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ Ãƒâ€”Ã‚Â¤Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â¨ ESP ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Ãƒâ€”Ã‚Â©Ãƒâ€”Ã…â€œÃƒÂ¯Ã‚Â¿Ã‚Â½- /devices Ãƒâ€”Ã…â€œÃƒâ€”Ã¢â‚¬ËœÃƒâ€”Ã¢â‚¬Å“Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â§Ãƒâ€”Ã¢â‚¬Â")
-    queue_items.append("ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ Ãƒâ€”Ã¢â‚¬ÂÃƒâ€”Ã¢â‚¬â„¢Ãƒâ€”Ã¢â‚¬Å“Ãƒâ€”Ã‚Â¨ SMS_PROVIDER Ãƒâ€”Ã¢â‚¬Ëœ-Railway (Inforu)")
-    queue_items.append("ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ BotFather: Ãƒâ€”Ã¢â‚¬ÂÃƒâ€”Ã¢â‚¬â„¢Ãƒâ€”Ã¢â‚¬Å“Ãƒâ€”Ã‚Â¨ Mini App URL")
-
-    sections.append("")
-    sections.append("ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã¢â‚¬Â¹ Ãƒâ€”Ã¢â‚¬ÂÃƒâ€”Ã‚ÂªÃƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Â¨ Ãƒâ€”Ã‚Â©Ãƒâ€”Ã…â€œÃƒâ€”Ã…Â¡:")
-    sections.extend(queue_items)
-    sections.append("")
-    sections.append(f"ÃƒÂ°Ã…Â¸Ã‚ÂÃ‚Â  Ãƒâ€”Ã¢â‚¬ÂÃƒâ€”Ã¢â‚¬ËœÃƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Âª: https://slh-nft.com/my.html")
-    sections.append(f"ÃƒÂ¢Ã‚ÂÃ‚Â± Ãƒâ€”Ã‚Â Ãƒâ€”Ã¢â‚¬ËœÃƒâ€”Ã¢â‚¬Å“Ãƒâ€”Ã‚Â§: {timestamp}")
-
-    await msg.answer("\n".join(sections), parse_mode=None)
-
-
-@dp.message(Command("swarm"))
-async def cmd_swarm(msg: Message) -> None:
-    """Show SLH Swarm mesh status ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â total/online/events/pending + per-device list."""
-    if not auth.is_authorized(msg.from_user.id):
-        await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
-        return
-    try:
-        stats = await _http_get_json("/api/swarm/stats")
-        devices_resp = await _http_get_json("/api/swarm/devices?limit=20")
-        devices = devices_resp.get("devices", [])
-
-        lines = [
-            "*ÃƒÂ°Ã…Â¸Ã‚ÂÃ‚Â Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã‚Â©Ãƒâ€”Ã‚Âª Swarm:*",
-            f"ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ *Ãƒâ€”Ã‚Â¡Ãƒâ€”Ã¢â‚¬ÂÃƒâ€”Ã‚Â´Ãƒâ€”Ã¢â‚¬Âº:* `{stats.get('total_devices', 0)}` Ãƒâ€šÃ‚Â· "
-            f"*online:* `{stats.get('online', 0)}`",
-            f"ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ *events 24h:* `{stats.get('events_24h', 0)}` Ãƒâ€šÃ‚Â· "
-            f"*commands Ãƒâ€”Ã…Â¾Ãƒâ€”Ã…Â¾Ãƒâ€”Ã‚ÂªÃƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Âª:* `{stats.get('pending_commands', 0)}`",
-        ]
-
-        if devices:
-            lines.append("\n*Ãƒâ€”Ã…Â¾Ãƒâ€”Ã¢â‚¬ÂºÃƒâ€”Ã‚Â©Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â:*")
-            for d in devices[:10]:
-                dev_id = d.get("device_id", "?")
-                online = d.get("online", False)
-                mark = "ÃƒÂ°Ã…Â¸Ã…Â¸Ã‚Â¢" if online else "ÃƒÂ¢Ã…Â¡Ã‚Â«"
-                rssi = d.get("last_rssi")
-                bat = d.get("last_battery_pct")
-                tail_bits = []
-                if rssi is not None:
-                    tail_bits.append(f"RSSI {rssi}dBm")
-                if bat is not None:
-                    tail_bits.append(f"{bat}%")
-                tail = " Ãƒâ€šÃ‚Â· ".join(tail_bits)
-                lines.append(
-                    f"{mark} `{_escape_md(str(dev_id))}`"
-                    + (f" Ãƒâ€šÃ‚Â· {_escape_md(tail)}" if tail else "")
-                )
-            if len(devices) > 10:
-                lines.append(f"_\\+ {len(devices) - 10} Ãƒâ€”Ã‚Â Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Â¡Ãƒâ€”Ã‚Â¤Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â_")
-        else:
-            lines.append(
-                "\n_Ãƒâ€”Ã‚ÂÃƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã…Â¸ Ãƒâ€”Ã…Â¾Ãƒâ€”Ã¢â‚¬ÂºÃƒâ€”Ã‚Â©Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã‚Â©Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã…Â¾Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â Ãƒâ€”Ã‚Â¢Ãƒâ€”Ã¢â‚¬Å“Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã…Â¸\\. Ãƒâ€”Ã¢â‚¬ÂºÃƒâ€”Ã‚Â©Ãƒâ€”Ã‚ÂªÃƒâ€”Ã¢â‚¬ËœÃƒâ€”Ã‚Â¢Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â¨ Ãƒâ€”Ã‚ÂÃƒâ€”Ã‚Âª Ãƒâ€”Ã¢â‚¬Â-firmware Ãƒâ€”Ã‚Â¢Ãƒâ€”Ã‚Â Ãƒâ€”Ã‚ÂªÃƒâ€”Ã…Â¾Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã¢â‚¬ÂºÃƒâ€”Ã‚Âª ESP-NOW, Ãƒâ€”Ã¢â‚¬ÂÃƒâ€”Ã…Â¾Ãƒâ€”Ã¢â‚¬ÂºÃƒâ€”Ã‚Â©Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã‚Â©Ãƒâ€”Ã…Â¾Ãƒâ€”Ã¢â‚¬Â¢ Ãƒâ€”Ã‚ÂÃƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‹Å“Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã…Â¾Ãƒâ€”Ã‹Å“Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Âª\\._"
-            )
-
-        await msg.answer("\n".join(lines))
-    except Exception as e:
-        log.exception("/swarm failed")
-        await msg.answer(f"Ãƒâ€”Ã‚Â©Ãƒâ€”Ã¢â‚¬â„¢Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚ÂÃƒâ€”Ã¢â‚¬Â: `{_escape_md(str(e))}`")
-
-
-@dp.message(Command("task"))
-async def cmd_task(msg: Message) -> None:
-    if not auth.is_authorized(msg.from_user.id):
-        await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
-        return
-    # Everything after the /task command word
-    text = (msg.text or "").split(maxsplit=1)
-    if len(text) < 2 or not text[1].strip():
-        await msg.answer("Ãƒâ€”Ã‚Â©Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã…Â¾Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Â©: `/task \\<Ãƒâ€”Ã‚ÂªÃƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚ÂÃƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Â¨ Ãƒâ€”Ã¢â‚¬ÂÃƒâ€”Ã…Â¾Ãƒâ€”Ã‚Â©Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã…Â¾Ãƒâ€”Ã¢â‚¬Â\\>`")
-        return
-    task_text = text[1].strip()
-    try:
-        import datetime
-
-        ts = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-        line = f"- [ ] {task_text}  _(added {ts} via bot)_\n"
-        os.makedirs(os.path.dirname(TASK_BOARD_PATH), exist_ok=True)
-        with open(TASK_BOARD_PATH, "a", encoding="utf-8") as f:
-            f.write(line)
-        await msg.answer(
-            f"Ãƒâ€”Ã‚Â Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Â¡Ãƒâ€”Ã‚Â£ Ãƒâ€”Ã…â€œ\\-TASK\\_BOARD\\.md:\n`{_escape_md(task_text)}`"
-        )
-    except Exception as e:
-        log.exception("/task failed")
-        await msg.answer(f"Ãƒâ€”Ã‚Â©Ãƒâ€”Ã¢â‚¬â„¢Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚ÂÃƒâ€”Ã¢â‚¬Â: `{_escape_md(str(e))}`")
-
-
-@dp.message(Command("status"))
-async def cmd_status(msg: Message) -> None:
-    if not auth.is_authorized(msg.from_user.id):
-        await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
-        return
-    await msg.answer("Ãƒâ€”Ã…Â¾Ãƒâ€”Ã¢â‚¬ËœÃƒâ€”Ã‚Â¦Ãƒâ€”Ã‚Â¢ Ãƒâ€”Ã¢â‚¬ËœÃƒâ€”Ã¢â‚¬Å“Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â§Ãƒâ€”Ã‚Âª Ãƒâ€”Ã…Â¾Ãƒâ€”Ã‚Â¦Ãƒâ€”Ã¢â‚¬Ëœ Ãƒâ€”Ã…Â¾Ãƒâ€”Ã¢â‚¬ÂÃƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â‚¬Â...")
-    try:
-        reply, new_msgs = await ai_client.converse(
-            history=[],
-            user_text="Ãƒâ€”Ã¢â‚¬ËœÃƒâ€”Ã‚Â¦Ãƒâ€”Ã‚Â¢ Ãƒâ€”Ã¢â‚¬ËœÃƒâ€”Ã¢â‚¬Å“Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â§Ãƒâ€”Ã¢â‚¬Â Ãƒâ€”Ã…Â¾Ãƒâ€”Ã¢â‚¬ÂÃƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â‚¬Â: 1) curl Ãƒâ€”Ã…â€œ-/api/health Ãƒâ€”Ã‚Â©Ãƒâ€”Ã…â€œ Railway, 2) git status Ãƒâ€”Ã¢â‚¬ËœÃƒâ€”Ã‚Â©Ãƒâ€”Ã‚Â Ãƒâ€”Ã¢â€žÂ¢ Ãƒâ€”Ã¢â‚¬Â-repos (D:\\SLH_ECOSYSTEM Ãƒâ€”Ã¢â‚¬Â¢-D:\\SLH_ECOSYSTEM\\website), 3) docker ps. Ãƒâ€”Ã‚ÂªÃƒâ€”Ã…Â¸ Ãƒâ€”Ã‚Â¡Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã¢â‚¬ÂºÃƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Â Ãƒâ€”Ã‚Â©Ãƒâ€”Ã…â€œ 3-5 Ãƒâ€”Ã‚Â©Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Âª Ãƒâ€”Ã¢â‚¬ËœÃƒâ€”Ã‚Â¢Ãƒâ€”Ã¢â‚¬ËœÃƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Âª.",
-        )
-        for msg_part in new_msgs:
-            await session.append(msg.chat.id, msg_part["role"], msg_part["content"])
-        for chunk in _chunks(reply):
-            await msg.answer(chunk)
-    except Exception as e:
-        log.exception("status failed")
-        await msg.answer(f"Ãƒâ€”Ã‚Â©Ãƒâ€”Ã¢â‚¬â„¢Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚ÂÃƒâ€”Ã¢â‚¬Â: `{type(e).__name__}: {e}`")
-
-
-@dp.message(Command("clear"))
-async def cmd_clear(msg: Message) -> None:
-    if not auth.is_authorized(msg.from_user.id):
-        await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
-        return
-    n = await session.clear(msg.chat.id)
-    await msg.answer(f"Ãƒâ€”Ã‚Â Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Â§Ãƒâ€”Ã¢â‚¬Â. Ãƒâ€”Ã‚Â Ãƒâ€”Ã…Â¾ÃƒÂ¯Ã‚Â¿Ã‚Â½-Ãƒâ€”Ã‚Â§Ãƒâ€”Ã¢â‚¬Â¢ {n} Ãƒâ€”Ã¢â‚¬ÂÃƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã¢â‚¬Å“Ãƒâ€”Ã‚Â¢Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Âª.")
-
-
-# ---------- Direct executor commands (no AI, no cost) ----------
-import subprocess
-
-_SAFE_EXEC_ALLOWLIST = {
-    "docker ps", "docker compose ps", "docker stats --no-stream",
-    "git status", "git log --oneline -10", "git diff --stat",
-    "df -h", "uptime", "uname -a",
-}
-
-
-def _resolve_cwd() -> str:
-    """Pick a valid working dir. /workspace works in container, falls back
-    to repo root on local Windows installs."""
-    candidates = ["/workspace", os.path.join(HERE, ".."), HERE]
-    for c in candidates:
-        if c and os.path.isdir(c):
-            return c
-    return os.getcwd()
-
-
-_CMD_CWD = _resolve_cwd()
-
-
-def _run_cmd(cmd: str, timeout: int = 15) -> str:
-    """Run a shell command and return stdout+stderr, capped."""
-    try:
-        result = subprocess.run(
-            cmd, shell=True, capture_output=True, text=True,
-            timeout=timeout, cwd=_CMD_CWD,
-        )
-        out = (result.stdout or "") + (result.stderr or "")
-        return out[:3500] or "(no output)"
-    except subprocess.TimeoutExpired:
-        return f"ÃƒÂ¢Ã‚ÂÃ‚Â± command timed out after {timeout}s"
-    except FileNotFoundError as e:
-        # Docker / git not in PATH ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â friendly message
-        return f"ÃƒÂ¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â command not found: {e}"
-    except Exception as e:
-        return f"ÃƒÂ¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â {type(e).__name__}: {e}"
-
-
-def _has_binary(name: str) -> bool:
-    import shutil
-    return shutil.which(name) is not None
-
-
-@dp.message(Command("ps"))
-async def cmd_ps(msg: Message) -> None:
-    if not auth.is_authorized(msg.from_user.id):
-        await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
-        return
-    if not _has_binary("docker"):
-        # Fallback: list services from docker-compose.yml so the user sees
-        # the configured fleet even when the bot has no docker socket.
-        compose_path = os.path.join(_CMD_CWD, "docker-compose.yml")
-        if os.path.isfile(compose_path):
-            try:
-                with open(compose_path, "r", encoding="utf-8") as f:
-                    raw = f.read()
-                services = []
-                in_services = False
-                for line in raw.splitlines():
-                    if line.startswith("services:"):
-                        in_services = True
-                        continue
-                    if in_services:
-                        if line and not line.startswith((" ", "\t")):
-                            break
-                        # Service names are 2-space indented and end with ':'
-                        if line.startswith("  ") and not line.startswith("    ") and line.rstrip().endswith(":"):
-                            services.append(line.strip().rstrip(":"))
-                services_str = "\n".join(f"ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ {s}" for s in services[:40])
-                await msg.answer(
-                    "ÃƒÂ°Ã…Â¸Ã‚ÂÃ‚Â³ docker Ãƒâ€”Ã…â€œÃƒâ€”Ã‚Â Ãƒâ€”Ã…Â¾Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚ÂªÃƒâ€”Ã‚Â§Ãƒâ€”Ã…Â¸ Ãƒâ€”Ã¢â‚¬ËœÃƒâ€”Ã‚Â¡Ãƒâ€”Ã¢â‚¬ËœÃƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã¢â‚¬ËœÃƒâ€”Ã¢â‚¬Â Ãƒâ€”Ã¢â‚¬ÂÃƒâ€”Ã¢â‚¬â€œÃƒâ€”Ã¢â‚¬Â¢ Ãƒâ€”Ã‚Â©Ãƒâ€”Ã…â€œ Ãƒâ€”Ã¢â‚¬ÂÃƒâ€”Ã¢â‚¬ËœÃƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‹Å“.\n\n"
-                    f"Ãƒâ€”Ã‚Â©Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚ÂªÃƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â Ãƒâ€”Ã‚Â©Ãƒâ€”Ã…Â¾Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã¢â‚¬â„¢Ãƒâ€”Ã¢â‚¬Å“Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â Ãƒâ€”Ã¢â‚¬Ëœ-docker-compose.yml ({len(services)}):\n"
-                    f"{services_str}\n\n"
-                    "Ãƒâ€”Ã…â€œÃƒâ€”Ã¢â‚¬ÂÃƒâ€”Ã‚Â¤Ãƒâ€”Ã‚Â¢Ãƒâ€”Ã…â€œÃƒâ€”Ã‚Âª Ãƒâ€”Ã¢â‚¬ÂÃƒâ€”Ã‚Â¡Ãƒâ€”Ã‹Å“Ãƒâ€”Ã‹Å“Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Â¡ Ãƒâ€”Ã¢â‚¬ËœÃƒâ€”Ã‚Â¤Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Â¢Ãƒâ€”Ã…â€œ Ãƒâ€”Ã¢â‚¬ÂÃƒâ€”Ã‚Â¨Ãƒâ€”Ã‚Â¥ Ãƒâ€”Ã¢â‚¬ËœÃƒâ€”Ã…Â¾ÃƒÂ¯Ã‚Â¿Ã‚Â½-Ãƒâ€”Ã‚Â©Ãƒâ€”Ã¢â‚¬Ëœ Ãƒâ€”Ã¢â‚¬ÂÃƒâ€”Ã…Â¾Ãƒâ€”Ã‚ÂÃƒâ€”Ã‚Â¨ÃƒÂ¯Ã‚Â¿Ã‚Â½-: `docker compose ps`",
-                    parse_mode=None,
-                )
-                return
-            except Exception as e:
-                await msg.answer(f"docker ÃƒÂ¯Ã‚Â¿Ã‚Â½-Ãƒâ€”Ã‚Â¡Ãƒâ€”Ã‚Â¨ Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã…â€œÃƒâ€”Ã‚Â Ãƒâ€”Ã¢â‚¬ÂÃƒâ€”Ã‚Â¦Ãƒâ€”Ã…â€œÃƒÂ¯Ã‚Â¿Ã‚Â½-Ãƒâ€”Ã‚ÂªÃƒâ€”Ã¢â€žÂ¢ Ãƒâ€”Ã…â€œÃƒâ€”Ã‚Â§Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Â compose: {e}")
-                return
-        await msg.answer("ÃƒÂ°Ã…Â¸Ã‚ÂÃ‚Â³ docker Ãƒâ€”Ã…â€œÃƒâ€”Ã‚Â Ãƒâ€”Ã…Â¾Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚ÂªÃƒâ€”Ã‚Â§Ãƒâ€”Ã…Â¸ + docker-compose.yml Ãƒâ€”Ã…â€œÃƒâ€”Ã‚Â Ãƒâ€”Ã‚Â Ãƒâ€”Ã…Â¾Ãƒâ€”Ã‚Â¦Ãƒâ€”Ã‚Â.", parse_mode=None)
-        return
-    out = _run_cmd("docker ps --format 'table {{.Names}}\\t{{.Status}}'")
-    await msg.answer(f"```\n{out}\n```")
-
-
-@dp.message(Command("logs"))
-async def cmd_logs(msg: Message) -> None:
-    if not auth.is_authorized(msg.from_user.id):
-        await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
-        return
-    parts = (msg.text or "").split(maxsplit=1)
-    if len(parts) < 2:
-        await msg.answer("Ãƒâ€”Ã‚Â©Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã…Â¾Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Â©: `/logs \\<container\\-name\\>`  \nÃƒâ€”Ã…â€œÃƒâ€”Ã…Â¾Ãƒâ€”Ã‚Â©Ãƒâ€”Ã…â€œ: `/logs slh\\-claude\\-bot`")
-        return
-    name = parts[1].strip().replace(";", "").replace("&", "").replace("|", "")
-    # Allowlist prefix check
-    if not name.startswith(("slh-", "slh_")):
-        await msg.answer("Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã‚Â§ containers Ãƒâ€”Ã‚Â¢Ãƒâ€”Ã‚Â prefix `slh-` Ãƒâ€”Ã…Â¾Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚ÂªÃƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â.")
-        return
-    out = _run_cmd(f"docker logs {name} --tail 25 2>&1")
-    await msg.answer(f"*logs {name}:*\n```\n{out[-3500:]}\n```")
-
-
-@dp.message(Command("git"))
-async def cmd_git(msg: Message) -> None:
-    if not auth.is_authorized(msg.from_user.id):
-        await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
-        return
-    parts = (msg.text or "").split(maxsplit=1)
-    subcmd = (parts[1].strip() if len(parts) > 1 else "status").split()[0]
-    safe_subs = {"status", "log", "diff", "branch"}
-    if subcmd not in safe_subs:
-        await msg.answer(f"Ãƒâ€”Ã‚Â¤Ãƒâ€”Ã‚Â§Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã¢â‚¬Å“Ãƒâ€”Ã‚Âª git Ãƒâ€”Ã…Â¾Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚ÂªÃƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Âª Ãƒâ€”Ã¢â‚¬ËœÃƒâ€”Ã…â€œÃƒâ€”Ã¢â‚¬ËœÃƒâ€”Ã¢â‚¬Å“: {', '.join(safe_subs)}")
-        return
-    repo_hint = (parts[1].strip() if len(parts) > 1 else "")
-    # Default = website (small repo); switch to main only if user says api/main
-    if "api" in repo_hint or "main" in repo_hint:
-        repo = "/workspace"
-    else:
-        repo = "/workspace/website"
-    if subcmd == "log":
-        out = _run_cmd(f"cd {repo} && git log --oneline -10", timeout=10)
-    elif subcmd == "diff":
-        out = _run_cmd(f"cd {repo} && git diff --stat HEAD", timeout=10)
-    elif subcmd == "branch":
-        out = _run_cmd(f"cd {repo} && git branch --show-current", timeout=5)
-    else:
-        # -uno = no untracked (workspace has 100s of untracked backup files)
-        out = _run_cmd(f"cd {repo} && git status -s -uno", timeout=10)
-    repo_short = "website" if "website" in repo else "main"
-    await msg.answer(f"*git {subcmd} @ `{repo_short}`:*\n```\n{out[:3500]}\n```")
-
-
-@dp.message(Command("bots"))
-async def cmd_bots(msg: Message) -> None:
-    if not auth.is_authorized(msg.from_user.id):
-        await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
-        return
-    out = _run_cmd("docker ps --format '{{.Names}}' | grep ^slh- | sort | wc -l")
-    running = out.strip()
-    out_list = _run_cmd("docker ps --format '{{.Names}}: {{.Status}}' | grep ^slh- | sort")
-    await msg.answer(
-        f"*Bot fleet: {running} Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã‚Â¦Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â*\n```\n{out_list[:3500]}\n```"
-    )
-
-
-@dp.message(Command("ai_mode"))
-async def cmd_ai_mode(msg: Message) -> None:
-    if not auth.is_authorized(msg.from_user.id):
-        await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
-        return
-    await msg.answer(
-        f"*AI mode:* `{_AI_MODE}`\n\n"
-        f"{'ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Anthropic Claude Ãƒâ€”Ã‚Â¢Ãƒâ€”Ã‚Â tool use (Ãƒâ€”Ã‚Â¢Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã…â€œÃƒâ€”Ã¢â‚¬Â Ãƒâ€”Ã¢â‚¬ÂºÃƒâ€”Ã‚Â¡Ãƒâ€”Ã‚Â£)' if _AI_MODE == 'anthropic-tools' else 'ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ SLH multi-provider (Groq/Gemini ÃƒÂ¯Ã‚Â¿Ã‚Â½-Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â Ãƒâ€”Ã‚Â)'}"
-    )
-
-
-# Photo/screenshot handler ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â saves incoming images to /workspace/incoming_screenshots/
-# so the human operator can read them via Read tool from outside the container.
-@dp.message(F.photo)
-async def on_photo(msg: Message) -> None:
-    if not auth.is_authorized(msg.from_user.id):
-        await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
-        return
-    try:
-        from datetime import datetime
-        photo = msg.photo[-1]  # largest size
-        file = await bot.get_file(photo.file_id)
-        ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-        out_dir = "/workspace/incoming_screenshots"
-        os.makedirs(out_dir, exist_ok=True)
-        out_path = f"{out_dir}/screenshot_{ts}_{msg.from_user.id}.jpg"
-        await bot.download_file(file.file_path, out_path)
-        # Optional caption
-        cap = (msg.caption or "").strip()
-        log.info(f"saved screenshot from {msg.from_user.id} to {out_path} (caption='{cap[:60]}')")
-        await msg.answer(
-            f"ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Ãƒâ€”Ã‚Â§Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã¢â‚¬ËœÃƒâ€”Ã…â€œÃƒâ€”Ã‚ÂªÃƒâ€”Ã¢â€žÂ¢ Ãƒâ€”Ã‚ÂªÃƒâ€”Ã…Â¾Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Â Ãƒâ€”Ã¢â‚¬Â Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Â©Ãƒâ€”Ã…Â¾Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã‚ÂªÃƒâ€”Ã¢â€žÂ¢\\.\n"
-            f"ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã¢â‚¬Å¡ `screenshot_{ts}`\n"
-            f"{'ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â ' + _escape_md(cap[:200]) if cap else ''}\n\n"
-            f"Claude Ãƒâ€”Ã‚Â Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã¢â‚¬â„¢Ãƒâ€”Ã‚Â© Ãƒâ€”Ã…â€œÃƒâ€”Ã‚Â§Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã¢â‚¬ËœÃƒâ€”Ã‚Â¥ Ãƒâ€”Ã¢â‚¬ÂÃƒâ€”Ã¢â‚¬â€œÃƒâ€”Ã¢â‚¬Â Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â§Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã‚Â Ãƒâ€”Ã‚ÂÃƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚ÂªÃƒâ€”Ã¢â‚¬Â¢\\."
-        )
-    except Exception as e:
-        log.exception("photo save failed")
-        await msg.answer(f"Ãƒâ€”Ã‚Â©Ãƒâ€”Ã¢â‚¬â„¢Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚ÂÃƒâ€”Ã¢â‚¬Â Ãƒâ€”Ã¢â‚¬ËœÃƒâ€”Ã‚Â©Ãƒâ€”Ã…Â¾Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã‚Âª Ãƒâ€”Ã¢â‚¬ÂÃƒâ€”Ã‚ÂªÃƒâ€”Ã…Â¾Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Â Ãƒâ€”Ã¢â‚¬Â: `{type(e).__name__}: {e}`")
-
-
-# Filter excludes slash-commands so they fall through to Command-filtered
-# handlers registered LATER (payment_flow, admin_panel, editor_commands).
-@dp.message(F.text & ~F.text.startswith("/"))
-async def on_text(msg: Message) -> None:
-    if not auth.is_authorized(msg.from_user.id):
-        await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
-        return
-    text = msg.text or ""
-    if not text.strip():
-        return
-
-    # ==== QUOTA GATE ====
-    decision = await quota.check(msg.from_user.id)
-    if not decision.allowed:
-        await msg.answer(decision.refusal_he, parse_mode="Markdown")
-        return
-
-    # Show "typing" while we think
-    await bot.send_chat_action(msg.chat.id, "typing")
-
-    client, provider, model = _pick_ai_client(decision.use_anthropic)
-
-    try:
-        hist = await session.history(msg.chat.id)
-
-        # Try the chosen client. If Anthropic returns a credit-balance error,
-        # silently fall back to the free Groq pipeline so paid users still get
-        # value (we'll log it as 'free-fallback' so /revenue cost numbers stay
-        # honest, and prepend a one-line note so the user knows what happened).
-        try:
-            reply, new_msgs = await client.converse(hist, text)
-        except AnthropicBadRequest as e:
-            err_msg = str(e).lower()
-            balance_exhausted = (
-                provider == "anthropic"
-                and ("credit balance" in err_msg or "credit_balance" in err_msg
-                     or "insufficient" in err_msg or "billing" in err_msg)
-            )
-            if balance_exhausted:
-                log.warning(f"Anthropic balance exhausted, falling back to free: {e}")
-                client = _free_client
-                provider = "free-fallback"
-                model = "groq/llama-3.3-70b-versatile"
-                # Pass tier_mode='pro_fallback' so the system prompt knows the
-                # user paid for Pro ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â answer richly + acknowledge tool absence.
-                reply, new_msgs = await client.converse(hist, text, tier_mode="pro_fallback")
-                # Tell the user once per message ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â visible Pro-tier degradation
-                reply = ("ÃƒÂ¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â _Pro tier Ãƒâ€”Ã¢â‚¬â€œÃƒâ€”Ã…Â¾Ãƒâ€”Ã‚Â Ãƒâ€”Ã¢â€žÂ¢ Ãƒâ€”Ã‚Â¢Ãƒâ€”Ã…â€œ Groq Llama (Anthropic balance Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â§). "
-                         "Ãƒâ€”Ã‚ÂªÃƒâ€”Ã‚Â¤Ãƒâ€”Ã‚Â¢Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã…â€œÃƒâ€”Ã¢â‚¬Â Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â‚¬â„¢Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã…â€œÃƒâ€”Ã¢â‚¬Â Ãƒâ€”Ã‚ÂªÃƒÂ¯Ã‚Â¿Ã‚Â½-Ãƒâ€”Ã¢â‚¬â€œÃƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Â¨ Ãƒâ€”Ã…Â¾Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã¢â‚¬Å“ Ãƒâ€”Ã‚Â©Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚ÂªÃƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Â¡Ãƒâ€”Ã‚Â£ balance._\n\n") + reply
-            else:
-                raise
-
-        for m in new_msgs:
-            await session.append(msg.chat.id, m["role"], m["content"])
-
-        # ==== USAGE LOG ====
-        # Token counts are best-effort estimates until claude_client.converse
-        # returns real usage. char/4 is a rough heuristic.
-        tokens_in = max(1, sum(len(str(m.get("content", ""))) for m in hist) // 4)
-        tokens_out = max(1, len(reply) // 4)
-        cost_cents = 0
-        if provider == "anthropic":
-            # Anthropic Sonnet 4.5: $3/Mtok in, $15/Mtok out ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ cents
-            cost_usd = (tokens_in * 3.0 + tokens_out * 15.0) / 1_000_000
-            cost_cents = int(cost_usd * 100)
-        # provider == 'free-fallback' or 'free' ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ cost_cents stays 0
-        await quota.record(
-            user_id=msg.from_user.id,
-            chat_id=msg.chat.id,
-            tier=decision.tier,
-            provider=provider,
-            model=model,
-            tokens_in=tokens_in,
-            tokens_out=tokens_out,
-            cost_usd_cents=cost_cents,
-        )
-
-        for chunk in _chunks(reply):
-            await msg.answer(chunk)
-
-        # Low-quota nudge ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â only on transitions
-        new_remaining = decision.quota_remaining - 1
-        if 0 < new_remaining <= 3 and decision.tier == "free":
-            await msg.answer(
-                f"ÃƒÂ¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â Ãƒâ€”Ã‚Â Ãƒâ€”Ã‚Â©Ãƒâ€”Ã‚ÂÃƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â‚¬Â¢ Ãƒâ€”Ã…â€œÃƒâ€”Ã…Â¡ {new_remaining} Ãƒâ€”Ã¢â‚¬ÂÃƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã¢â‚¬Å“Ãƒâ€”Ã‚Â¢Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Âª Ãƒâ€”Ã¢â‚¬ÂÃƒÂ¯Ã‚Â¿Ã‚Â½-Ãƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã¢â‚¬Å“Ãƒâ€”Ã‚Â©. "
-                f"Ãƒâ€”Ã‚Â©Ãƒâ€”Ã¢â‚¬Å“Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â‚¬â„¢ Ãƒâ€”Ã…â€œ-Pro: `/upgrade pro`"
-            )
-    except Exception as e:
-        log.exception("converse failed")
-        err = f"Ãƒâ€”Ã‚Â©Ãƒâ€”Ã¢â‚¬â„¢Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚ÂÃƒâ€”Ã¢â‚¬Â: `{type(e).__name__}: {e}`"
-        if "ANTHROPIC_API_KEY" in str(e):
-            err += "\n\nÃƒâ€”Ã‚Â¦Ãƒâ€”Ã‚Â¨Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã…Â¡ Ãƒâ€”Ã…â€œÃƒâ€”Ã¢â‚¬ÂÃƒâ€”Ã¢â‚¬Â¢Ãƒâ€”Ã‚Â¡Ãƒâ€”Ã¢â€žÂ¢Ãƒâ€”Ã‚Â£ ANTHROPIC\\_API\\_KEY Ãƒâ€”Ã…â€œ-slh-claude-bot/.env"
-        await msg.answer(err)
-
-
-async def main() -> None:
-    await session.init_db()
-    await subscriptions.init_db()
-    # Wire monetization (must register BEFORE F.text handler runs, but since
-    # F.text now excludes slash-commands these can register at runtime safely)
-    payment_flow.register(dp, auth)
-    admin_panel.register(dp, auth)
-    # Rotation panel must register BEFORE the F.text handler in bot.py runs
-    # so its token-input filter gets first crack at user messages when a
-    # rotation flow is pending. Order matters: aiogram dispatches in
-    # registration order.
-    try:
-        import rotation_panel
-        rotation_panel.register(dp, auth)
-        log.info("rotation_panel wired in")
-    except Exception as e:
-        log.warning(f"rotation_panel not loaded: {e}")
-    try:
-        import railway_ops
-        railway_ops.register(dp, auth)
-        log.info("payment_flow + admin_panel + railway_ops wired in")
-    except Exception as e:
-        log.warning(f"railway_ops not loaded: {e}")
-        log.info("payment_flow + admin_panel wired in")
-    # Wire up editor commands (cat/ls/grep/append/replace/newpage/commit/push/sync/draft/apply/reject)
-    try:
-        import editor_commands
-        editor_commands.register(dp, auth, _chunks)
-        log.info("editor_commands wired in")
-    except Exception as e:
-        log.warning(f"editor_commands not loaded: {e}")
-    log.info(f"starting @SLH_Claude_bot Ãƒâ€šÃ‚Â· AI mode: {_AI_MODE}")
-    me = await bot.get_me()
-    log.info(f"connected as @{me.username} (id={me.id})")
-    # Announce startup to the coordination group (no-op if disabled)
-    if _coord is not None:
-        await _coord.post_event(
-            bot, "claude-bot", "ready",
-            f"@{me.username} polling Ãƒâ€šÃ‚Â· AI={_AI_MODE}"
-        )
+# ---------- main ----------
+async def main():
+    bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     await dp.start_polling(bot)
-
 
 if __name__ == "__main__":
     asyncio.run(main())
-
-
-
-# === AUTONOMOUS AGENTS ===
-@dp.message(Command("scan"))
-async def cmd_scan(msg: Message):
-    target = msg.text.replace("/scan", "").strip() or r"D:\slh-website"
-    await msg.reply("Scanning...")
-    result = run_scan(target)
-    await msg.reply(result)
-
-@dp.message(Command("plan"))
-async def cmd_plan(msg: Message):
-    goal = msg.text.replace("/plan", "").strip()
-    if not goal:
-        await msg.reply("Usage: /plan <goal in English>")
-        return
-    await msg.reply("Planning...")
-    result = run_plan(goal)
-    await msg.reply(result)
-
-@dp.message(Command("auto"))
-async def cmd_auto(msg: Message):
-    goal = msg.text.replace("/auto", "").strip()
-    if not goal:
-        await msg.reply("Usage: /auto <goal>")
-        return
-    await msg.reply("Running full auto pipeline...")
-    result = run_auto(goal)
-    await msg.reply(result[:4000])
