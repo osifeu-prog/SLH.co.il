@@ -34,8 +34,8 @@ except ImportError:
         pass
 
 # Two AI clients available simultaneously:
-# - free_ai_client (Groq/Gemini): always loaded, used for Free tier
-# - claude_client (Anthropic+tools): loaded only if ANTHROPIC_API_KEY set,
+# -- free_ai_client (Groq/Gemini): always loaded, used for Free tier
+# -- claude_client (Anthropic+tools): loaded only if ANTHROPIC_API_KEY set,
 #   used for Pro/VIP tiers
 # `quota.check()` per-message decides which one to call based on user's tier.
 import free_ai_client as _free_client
@@ -80,7 +80,7 @@ async def cmd_dashboard(msg: Message):
 
 @dp.message(Command("crowdfunding"))
 async def cmd_crowdfunding(msg: Message):
-    await msg.reply("SLH Crowdfunding Campaign\n\nWe are building an AI that builds itself - join us.\nhttps://slh-nft.com/crowdfunding\n\nRewards:\n- Supporter ($1) Name on website\n- Builder ($5) Early access + badge\n- Founder ($20) Vote on features + private group\n- Visionary ($50) 1-on-1 call + founding status\n\nSend TON to:\nUQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp\nInclude TX hash to receive rewards.")
+    await msg.reply("SLH Crowdfunding Campaign\n\nWe are building an AI that builds itself -- join us.\nhttps://slh-nft.com/crowdfunding\n\nRewards:\n- Supporter (USD 1) Name on website\n- Builder (USD 5) Early access + badge\n- Founder (USD 20) Vote on features + private group\n- Visionary (USD 50) 1-on-1 call + founding status\n\nSend TON to:\nUQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp\nInclude TX hash to receive rewards.")
 
 @dp.message(Command("scan"))
 async def cmd_scan(msg: Message):
@@ -318,7 +318,7 @@ async def cmd_devices(msg: Message) -> None:
                 f"{mark} `{_escape_md(str(dev_id))}` · {_escape_md(str(last_seen))}"
             )
         if len(devices) > 10:
-            lines.append(f"_\\+ {len(devices) - 10} נוספים_")
+            lines.append(f"_\\+ {len(devices) -- 10} נוספים_")
         await msg.answer("\n".join(lines))
     except httpx.HTTPStatusError as e:
         await msg.answer(f"admin API ה�-זיר {e.response.status_code}.")
@@ -451,7 +451,7 @@ async def cmd_swarm(msg: Message) -> None:
                     + (f" · {_escape_md(tail)}" if tail else "")
                 )
             if len(devices) > 10:
-                lines.append(f"_\\+ {len(devices) - 10} נוספים_")
+                lines.append(f"_\\+ {len(devices) -- 10} נוספים_")
         else:
             lines.append(
                 "\n_אין מכשירים רשומים עדיין\\. כשתבעיר את ה-firmware עם תמיכת ESP-NOW, המכשירים יירשמו אוטומטית\\._"
@@ -772,7 +772,7 @@ async def on_text(msg: Message) -> None:
         tokens_out = max(1, len(reply) // 4)
         cost_cents = 0
         if provider == "anthropic":
-            # Anthropic Sonnet 4.5: $3/Mtok in, $15/Mtok out → cents
+            # Anthropic Sonnet 4.5: $3/Mtok in, USD 15/Mtok out → cents
             cost_usd = (tokens_in * 3.0 + tokens_out * 15.0) / 1_000_000
             cost_cents = int(cost_usd * 100)
         # provider == 'free-fallback' or 'free' → cost_cents stays 0
@@ -791,7 +791,7 @@ async def on_text(msg: Message) -> None:
             await msg.answer(chunk)
 
         # Low-quota nudge — only on transitions
-        new_remaining = decision.quota_remaining - 1
+        new_remaining = decision.quota_remaining -- 1
         if 0 < new_remaining <= 3 and decision.tier == "free":
             await msg.answer(
                 f"⚠️ נשארו לך {new_remaining} הודעות ה�-ודש. "
@@ -880,4 +880,6 @@ async def cmd_auto(msg: Message):
     await msg.reply("Running full auto pipeline...")
     result = run_auto(goal)
     await msg.reply(result[:4000])
+
+
 
