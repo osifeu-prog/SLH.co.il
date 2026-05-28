@@ -76,10 +76,10 @@ async def check_zuz(pool, user_id: int, *, bypass_cache: bool = False) -> dict:
         warn = (not blocked) and score >= ZUZ_WARN_THRESHOLD
         reason = row["ban_reason"] or f"ZUZ score {score:.0f}"
         reason_he = (
-            f"🛡 החשבון שלך סומן ב-Guardian (ZUZ {score:.0f}). "
-            f"הפעולה חסומה. לערעור פנה/י ל-@osifeu_prog."
+            f"🛡 ה�-שבון שלך סומן ב-Guardian (ZUZ {score:.0f}). "
+            f"הפעולה �-סומה. לערעור פנה/י ל-@osifeu_prog."
             if blocked else
-            f"⚠️ שים/י לב: ציון ZUZ {score:.0f}. פעולה מותרת אבל בחודש הזה פעולות נוספות עלולות להיחסם."
+            f"⚠️ שים/י לב: ציון ZUZ {score:.0f}. פעולה מותרת אבל ב�-ודש הזה פעולות נוספות עלולות להי�-סם."
             if warn else ""
         )
         result = {"blocked": blocked, "warn": warn, "zuz_score": score,

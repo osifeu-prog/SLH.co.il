@@ -65,7 +65,7 @@ async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         "• לרשום את כתובת הארנק שלך ברשת BNB\n"
         "• לרשום כתובת TON לקבלת SLH בטון\n"
         "• לקבל קישור לאזור האישי שלך באתר\n\n"
-        "🔐 אין סיסמאות, אין התחברות – הזיהוי הוא דרך טלגרם + כתובות הארנק שלך.\n\n"
+        "🔐 אין סיסמאות, אין הת�-ברות – הזיהוי הוא דרך טלגרם + כתובות הארנק שלך.\n\n"
         "הפקודות הזמינות:\n"
         "/wallet – יצירת כרטיס משתמש וקבלת קישור אישי\n"
         "/set_bnb <כתובת> – שמירת כתובת BNB שלך\n"
@@ -115,8 +115,8 @@ async def cmd_wallet(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
         "`/set_bnb <כתובת_BNB>`\n"
         "`/set_ton <כתובת_TON>`\n\n"
         f"האזור האישי שלך באתר:\n{hub_url}\n\n"
-        "שם יוצגו כתובותיך, קישורים לחוזה SLH בביננס, ו־QR לשיתוף הכרטיס שלך.\n\n"
-        "_שימו לב: העברות SLH ו‑BNB מתבצעות בארנק החיצוני שלכם (MetaMask/Tonkeeper וכד'), "
+        "שם יוצגו כתובותיך, קישורים ל�-וזה SLH בביננס, ו־QR לשיתוף הכרטיס שלך.\n\n"
+        "_שימו לב: העברות SLH ו‑BNB מתבצעות בארנק ה�-יצוני שלכם (MetaMask/Tonkeeper וכד'), "
         "המערכת רק עוזרת לסנכרן ולשתף את הפרטים בקהילה._"
     )
 
@@ -147,7 +147,7 @@ async def cmd_set_bnb(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     finally:
         db.close()
 
-    await update.effective_chat.send_message("✅ כתובת ה‑BNB שלך נשמרה בהצלחה.")
+    await update.effective_chat.send_message("✅ כתובת ה‑BNB שלך נשמרה בהצל�-ה.")
 
 
 async def cmd_set_ton(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -171,7 +171,7 @@ async def cmd_set_ton(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     finally:
         db.close()
 
-    await update.effective_chat.send_message("✅ כתובת ה‑TON שלך נשמרה בהצלחה.")
+    await update.effective_chat.send_message("✅ כתובת ה‑TON שלך נשמרה בהצל�-ה.")
 
 
 async def cmd_help(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -180,10 +180,10 @@ async def cmd_help(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         "1️⃣ תרשום את כתובת ה‑BNB שלך עם:/set_bnb\n"
         "2️⃣ תרשום את כתובת ה‑TON שלך עם:/set_ton\n"
         "3️⃣ קבל קישור לכרטיס האישי שלך עם:/wallet\n\n"
-        "העברות SLH נעשות דרך הארנק שלך על חוזה ה‑SLH ברשת BNB:\n"
+        "העברות SLH נעשות דרך הארנק שלך על �-וזה ה‑SLH ברשת BNB:\n"
         f"`{settings.slh_token_address}`\n\n"
-        "מי שיש לו BNB יכול להחליף / לשלוח SLH בין חברי הקהילה באופן חופשי.\n"
-        "מי שאין לו – יקבל הסבר ורשימת ספקים חיצוניים לרכישת BNB/קריפטו (להוסיף בהמשך)."
+        "מי שיש לו BNB יכול לה�-ליף / לשלו�- SLH בין �-ברי הקהילה באופן �-ופשי.\n"
+        "מי שאין לו – יקבל הסבר ורשימת ספקים �-יצוניים לרכישת BNB/קריפטו (להוסיף בהמשך)."
     )
 
     await update.effective_chat.send_message(text, parse_mode="Markdown")

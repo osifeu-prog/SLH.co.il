@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python3
 # ============================================================
-# SLH SPARK � Broadcast Airdrop Script
+# SLH SPARK - Broadcast Airdrop Script
 # Runs at 19:45 daily
 # Distributes tokens to all users + sends Telegram notification
 # ============================================================
@@ -17,7 +17,7 @@ from datetime import datetime
 if sys.platform == "win32":
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-# Connect via DATABASE_URL env var. Railway proxy URL lives in .env / Railway Variables � never hardcode.
+# Connect via DATABASE_URL env var. Railway proxy URL lives in .env / Railway Variables - never hardcode.
 DATABASE_URL = os.getenv("DATABASE_URL") or os.getenv("RAILWAY_DATABASE_URL")
 if not DATABASE_URL:
     raise SystemExit("DATABASE_URL missing. Set it in .env or Railway Variables.")
@@ -40,11 +40,11 @@ AIRDROP = {
 AIRDROP_MESSAGE = (
     "?? *????? Airdrop ???? ?-SLH Spark!*\n\n"
     "?? ?????? ?????? ??????:\n"
-    "� SLH: +0.12\n"
-    "� ZVK: +8\n"
-    "� MNH: +32\n"
-    "� REP: +12\n"
-    "� ZUZ: +100\n\n"
+    "ן¿½ SLH: +0.12\n"
+    "ן¿½ ZVK: +8\n"
+    "ן¿½ MNH: +32\n"
+    "ן¿½ REP: +12\n"
+    "ן¿½ ZUZ: +100\n\n"
     "?? ?????? ????? ????????: /wallet\n"
     "?? [slh-nft.com](https://slh-nft.com)"
 )

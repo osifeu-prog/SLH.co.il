@@ -30,10 +30,10 @@ async def history_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.effective_message.reply_text("?? History (Ledger)\nNo transactions yet.")
         return
 
-    lines = ["?? History (Ledger) — last 10", ""]
+    lines = ["?? History (Ledger) - last 10", ""]
     for r in rows:
         other = f" ? {r.other_party}" if r.other_party is not None else ""
-        memo = f" — {r.memo}" if r.memo else ""
+        memo = f" - {r.memo}" if r.memo else ""
         lines.append(f"[{r.created_at}] {r.direction} {Decimal(r.amount):.4f} {r.asset} (kind={r.kind}{other}){memo}")
     await update.effective_message.reply_text("\n".join(lines))
 

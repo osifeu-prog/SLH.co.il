@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-SLH Content Marketplace — Courses + Premium Content + Creator Revenue Share
+SLH Content Marketplace - Courses + Premium Content + Creator Revenue Share
 ============================================================================
 
 A creator marketplace where:
@@ -16,22 +16,22 @@ Why this matters legally:
 
 Endpoints:
   Catalog:
-    GET    /api/courses/                       — public catalog of available items
-    GET    /api/courses/{slug}                 — public item detail
-    POST   /api/courses/                       — admin: create new item
-    PATCH  /api/courses/{id}                   — admin: edit item
+    GET    /api/courses/                       - public catalog of available items
+    GET    /api/courses/{slug}                 - public item detail
+    POST   /api/courses/                       - admin: create new item
+    PATCH  /api/courses/{id}                   - admin: edit item
 
   Creators:
-    POST   /api/courses/creators               — admin: register a creator (friend/family)
-    GET    /api/courses/creators               — list all creators
+    POST   /api/courses/creators               - admin: register a creator (friend/family)
+    GET    /api/courses/creators               - list all creators
 
   Sales:
-    POST   /api/courses/checkout               — start a checkout session (returns payment instructions)
-    POST   /api/courses/confirm-payment        — admin: confirm a payment was received ? triggers revenue split
-    GET    /api/courses/sales                  — admin: list all sales
+    POST   /api/courses/checkout               - start a checkout session (returns payment instructions)
+    POST   /api/courses/confirm-payment        - admin: confirm a payment was received ? triggers revenue split
+    GET    /api/courses/sales                  - admin: list all sales
 
   My library (per buyer):
-    GET    /api/courses/my-library             — what the buyer purchased
+    GET    /api/courses/my-library             - what the buyer purchased
 
 Author: Claude (Cowork mode, 2026-04-27)
 """
@@ -205,7 +205,7 @@ async def list_creators(x_admin_key: Optional[str] = Header(None, alias="X-Admin
 # -----------------------------------------------------------------
 @router.get("/")
 async def public_catalog(kind: Optional[str] = Query(None), language: Optional[str] = Query(None)):
-    """Public catalog — only published items. No auth required."""
+    """Public catalog - only published items. No auth required."""
     if not _pool: raise HTTPException(503, "DB pool not initialized")
     async with _pool.acquire() as conn:
         await _ensure_schema(conn)
@@ -238,7 +238,7 @@ async def item_detail(slug: str):
              WHERE i.slug = $1 AND i.published = TRUE
         """, slug)
     if not row: raise HTTPException(404, "Item not found")
-    # Don't expose content_url to public — only after purchase
+    # Don't expose content_url to public - only after purchase
     out = dict(row)
     out.pop("content_url", None)
     return out

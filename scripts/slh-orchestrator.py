@@ -273,20 +273,20 @@ def sanity_check():
     if r["status"] == 200:
         log("INFO", f"  ✓ API reachable: {r['body']}")
     else:
-        log("ERROR", f"  ✗ API unreachable: {r['status']} {r['body']}")
+        log("ERROR", f"  �- API unreachable: {r['status']} {r['body']}")
         return False
     # 2. Docker
     r = run_cmd(["docker", "--version"])
     if r["ok"]:
         log("INFO", f"  ✓ Docker: {r['stdout']}")
     else:
-        log("ERROR", f"  ✗ Docker not available: {r['stderr']}")
+        log("ERROR", f"  �- Docker not available: {r['stderr']}")
         return False
     # 3. Compose file
     if os.path.exists(COMPOSE_FILE):
         log("INFO", f"  ✓ Compose file exists: {COMPOSE_FILE}")
     else:
-        log("ERROR", f"  ✗ Compose file missing: {COMPOSE_FILE}")
+        log("ERROR", f"  �- Compose file missing: {COMPOSE_FILE}")
         return False
     # 4. Orchestrator key
     if ORCHESTRATOR_KEY:

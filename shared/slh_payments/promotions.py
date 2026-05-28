@@ -64,7 +64,7 @@ DEALS_CATALOG = [
     # 🔥 Launch deal - 30% off everything
     Deal(
         code="LAUNCH30",
-        title_he="🔥 מבצע השקה! 30% הנחה על כל הבוטים",
+        title_he="🔥 מבצע השקה! 30% הנ�-ה על כל הבוטים",
         title_en="🔥 Launch Deal! 30% off all bots",
         discount_pct=30,
         bot_names=[],  # all bots
@@ -75,7 +75,7 @@ DEALS_CATALOG = [
     # 💎 Bundle deal - all 6 bots for 199₪
     Deal(
         code="BUNDLE_ALL",
-        title_he="💎 חבילה מלאה! כל 6 הבוטים במחיר מיוחד",
+        title_he="💎 �-בילה מלאה! כל 6 הבוטים במ�-יר מיו�-ד",
         title_en="💎 Full Bundle! All 6 bots at special price",
         discount_pct=0,
         bot_names=["botshop", "wallet", "factory", "academia", "guardian", "community"],
@@ -88,7 +88,7 @@ DEALS_CATALOG = [
     # 🤝 Refer-3 deal - free Community access
     Deal(
         code="REFER3_FREE",
-        title_he="🤝 הזמן 3 חברים וקבל Community Premium בחינם!",
+        title_he="🤝 הזמן 3 �-ברים וקבל Community Premium ב�-ינם!",
         title_en="🤝 Invite 3 friends & get Community Premium free!",
         discount_pct=100,
         bot_names=["community"],
@@ -99,7 +99,7 @@ DEALS_CATALOG = [
     # 🎓 Student deal - Academia at 50% off
     Deal(
         code="STUDENT50",
-        title_he="🎓 מבצע סטודנטים! 50% הנחה על Academia",
+        title_he="🎓 מבצע סטודנטים! 50% הנ�-ה על Academia",
         title_en="🎓 Student Deal! 50% off Academia",
         discount_pct=50,
         bot_names=["academia"],
@@ -109,7 +109,7 @@ DEALS_CATALOG = [
     # 🛡️ Guardian + Wallet bundle
     Deal(
         code="SECURE_PACK",
-        title_he="🛡️ חבילת אבטחה! Guardian + Wallet במחיר מיוחד",
+        title_he="🛡️ �-בילת אבט�-ה! Guardian + Wallet במ�-יר מיו�-ד",
         title_en="🛡️ Security Pack! Guardian + Wallet special price",
         discount_pct=0,
         bot_names=["guardian", "wallet"],
@@ -155,7 +155,7 @@ class PromoEngine:
         deals = self.get_active_deals(bot_name)
         if not deals:
             if lang == "he":
-                return "אין מבצעים פעילים כרגע. עקוב אחרינו לעדכונים!"
+                return "אין מבצעים פעילים כרגע. עקוב א�-רינו לעדכונים!"
             return "No active deals right now. Follow us for updates!"
 
         if lang == "he":
@@ -163,15 +163,15 @@ class PromoEngine:
             for d in deals:
                 lines.append(f"*{d.title_he}*")
                 if d.discount_pct > 0 and not d.bundle:
-                    lines.append(f"  💰 הנחה: {d.discount_pct}%")
+                    lines.append(f"  💰 הנ�-ה: {d.discount_pct}%")
                 if d.bundle:
-                    lines.append(f"  💰 מחיר חבילה: {d.bundle_price_ils}₪ / {d.bundle_price_ton} TON")
+                    lines.append(f"  💰 מ�-יר �-בילה: {d.bundle_price_ils}₪ / {d.bundle_price_ton} TON")
                 if d.min_referrals > 0:
                     lines.append(f"  👥 דרוש: {d.min_referrals} הפניות")
                 lines.append(f"  ⏰ נותר: {d.remaining_time}")
                 lines.append(f"  🏷️ קוד: `{d.code}`")
                 lines.append("")
-            lines.append("💡 שלח /promo CODE להפעלה")
+            lines.append("💡 של�- /promo CODE להפעלה")
             return "\n".join(lines)
         else:
             lines = ["🎉 *Active Deals*\n"]

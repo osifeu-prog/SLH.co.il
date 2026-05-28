@@ -52,7 +52,7 @@ def _warn(msg: str) -> None:
 
 
 def _fail(msg: str) -> None:
-    print(f"  \033[91m✗\033[0m {msg}")
+    print(f"  \033[91m�-\033[0m {msg}")
 
 
 def _h(msg: str) -> None:
@@ -313,7 +313,7 @@ def main() -> int:
     if failed == 0:
         print("\033[92m✓ all tests passed\033[0m")
         return 0
-    print(f"\033[91m✗ {failed} test(s) failed\033[0m")
+    print(f"\033[91m�- {failed} test(s) failed\033[0m")
     return 1
 
 

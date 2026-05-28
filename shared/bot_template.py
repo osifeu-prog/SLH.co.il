@@ -62,7 +62,7 @@ async def start_cmd(m: types.Message):
         "/status   - מצב\n"
         "/help     - עזרה\n\n"
         "───────────────\n"
-        "👥 שתף והרווח 15%\n"
+        "👥 שתף והרוו�- 15%\n"
         f"{ref_link}"
     )
 
@@ -73,7 +73,7 @@ async def status_cmd(m: types.Message):
     is_paid = await pay_db.is_premium(m.from_user.id, BOT_KEY)
 
     await m.answer(
-        f"📊 מצב חשבון\n\n"
+        f"📊 מצב �-שבון\n\n"
         f"User ID: {m.from_user.id}\n"
         f"Premium: {'כן' if is_paid else 'לא'}"
     )
@@ -85,9 +85,9 @@ async def mylink_cmd(m: types.Message):
     link = referral_engine.get_link(m.from_user.id, BOT_KEY)
 
     await m.answer(
-        f"🔗 הקישור האישי שלך:\n\n"
+        f"�- הקישור האישי שלך:\n\n"
         f"{link}\n\n"
-        "📋 העתק ושתף עם חברים\n"
+        "📋 העתק ושתף עם �-ברים\n"
         "💰 15% עמלה על כל שדרוג\n\n"
         "📊 /referral"
     )
@@ -111,7 +111,7 @@ async def promo_cmd(m: types.Message):
     args = m.text.split(maxsplit=1)
 
     if len(args) < 2:
-        await m.answer("🏷️ שלח /promo CODE\nלדוגמה: /promo LAUNCH30")
+        await m.answer("🏷️ של�- /promo CODE\nלדוגמה: /promo LAUNCH30")
         return
 
     code = args[1]

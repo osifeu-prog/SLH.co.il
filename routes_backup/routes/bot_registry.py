@@ -7,9 +7,9 @@ wants to count as "live" calls POST /api/bots/heartbeat every 30s.
 The audit endpoint + dashboard then show active = (last_heartbeat_at > NOW() - 60s).
 
 Endpoints:
-  POST /api/bots/heartbeat     — bots call this periodically (secret-gated)
-  GET  /api/bots/list          — admin view of all registered bots
-  GET  /api/bots/active/count  — public count of bots alive in last 60s
+  POST /api/bots/heartbeat     - bots call this periodically (secret-gated)
+  GET  /api/bots/list          - admin view of all registered bots
+  GET  /api/bots/active/count  - public count of bots alive in last 60s
 
 Schema:
   bots (
@@ -40,14 +40,14 @@ router = APIRouter(prefix="/api/bots", tags=["Bot Registry"])
 
 _pool = None
 
-# Shared secret — bots pass this in `X-Bot-Secret` header. Defaults to BOT_SYNC_SECRET
+# Shared secret - bots pass this in `X-Bot-Secret` header. Defaults to BOT_SYNC_SECRET
 # (same env var used by the bot-sync auth flow). Falls back to a dev default.
 BOT_SECRET = os.getenv("BOT_SYNC_SECRET", "slh_bot_heartbeat_2026")
 
-# Admin keys — for /list (read all). Reuses the main API's admin keys.
+# Admin keys - for /list (read all). Reuses the main API's admin keys.
 ADMIN_KEYS_RAW = os.getenv("ADMIN_API_KEYS") or ""
 _ADMIN_KEYS = {k.strip() for k in ADMIN_KEYS_RAW.split(",") if k.strip()}
-# If ADMIN_API_KEYS env is unset, leave _ADMIN_KEYS empty — admin calls will fail 403
+# If ADMIN_API_KEYS env is unset, leave _ADMIN_KEYS empty - admin calls will fail 403
 # (safer than falling back to a public default; set ADMIN_API_KEYS on Railway for prod).
 
 
@@ -75,7 +75,7 @@ async def init_tables():
             )
             """
         )
-        # Index for the activity query — used by /active/count and /api/system/audit
+        # Index for the activity query - used by /active/count and /api/system/audit
         await conn.execute(
             "CREATE INDEX IF NOT EXISTS idx_bots_last_heartbeat ON bots(last_heartbeat_at DESC)"
         )

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Railway GraphQL client — programmatic env-var management + redeploys.
+"""Railway GraphQL client - programmatic env-var management + redeploys.
 
 Used by the rotation pipeline to push secrets and trigger redeploys without
 relying on the Railway CLI (which is not present in production containers).
@@ -10,13 +10,13 @@ Reference:
 - Auth:       Authorization: Bearer <RAILWAY_API_TOKEN> (account/workspace token)
 
 Mutations used:
-- variableUpsert(input: VariableUpsertInput!) — set env var on a service
-- deploymentRedeploy(id: String!)            — redeploy a specific deployment
+- variableUpsert(input: VariableUpsertInput!) - set env var on a service
+- deploymentRedeploy(id: String!)            - redeploy a specific deployment
 
 Queries used:
-- deployments(input: DeploymentListInput!)   — get latest deployment id
+- deployments(input: DeploymentListInput!)   - get latest deployment id
 
-The token VALUE never enters logs — every error message is sanitized via
+The token VALUE never enters logs - every error message is sanitized via
 _redact_value before being raised.
 """
 from __future__ import annotations
@@ -147,7 +147,7 @@ async def variable_upsert(
 ) -> dict:
     """Push a new value for `env_var` to its mapped Railway service.
 
-    skip_deploys=True (default) means Railway will NOT auto-redeploy on this set —
+    skip_deploys=True (default) means Railway will NOT auto-redeploy on this set -
     we trigger redeploy explicitly via service_redeploy() so the pipeline can
     sequence audit-log + healthcheck around it. Set False if you want Railway's
     built-in auto-redeploy.
@@ -210,7 +210,7 @@ async def service_redeploy(env_var: str) -> dict:
     deploy_id = await latest_deployment_id(env_var)
     if not deploy_id:
         raise RailwayError(
-            f"no deployments found for service hosting {env_var} — "
+            f"no deployments found for service hosting {env_var} - "
             "is the service freshly created?"
         )
     query = """

@@ -264,7 +264,7 @@
                                 {{ user.first_name or user.username or ("????? " ~ user.telegram_id) }}
                             </div>
                             <div class="user-details">
-                                ??? {{ user.level }} • {{ user.total_referrals }} ??????
+                                ??? {{ user.level }} ï¿½ {{ user.total_referrals }} ??????
                             </div>
                         </div>
                     </div>
@@ -289,9 +289,9 @@
                 <div>
                     <h4 style="color: #4c51bf; font-size: 1rem; margin-bottom: 10px;">?? ??????????</h4>
                     <p style="color: #718096; font-size: 0.9rem;">
-                        • ???????: {{ stats.total_users|default(0) }}<br>
-                        • ?????? ????: {{ stats.active_today|default(0) }}<br>
-                        • ?????? ??????: {{ stats.total_tokens|default(0) }}
+                        ï¿½ ???????: {{ stats.total_users|default(0) }}<br>
+                        ï¿½ ?????? ????: {{ stats.active_today|default(0) }}<br>
+                        ï¿½ ?????? ??????: {{ stats.total_tokens|default(0) }}
                     </p>
                 </div>
                 
@@ -307,9 +307,9 @@
                 <div>
                     <h4 style="color: #4c51bf; font-size: 1rem; margin-bottom: 10px;">?? ?????</h4>
                     <p style="color: #718096; font-size: 0.9rem;">
-                        • ????? ????: ******<br>
-                        • ????: 2.2.0<br>
-                        • ?????: {{ 'Production' if stats.total_users else 'Development' }}
+                        ï¿½ ????? ????: ******<br>
+                        ï¿½ ????: 2.2.0<br>
+                        ï¿½ ?????: {{ 'Production' if stats.total_users else 'Development' }}
                     </p>
                 </div>
             </div>
@@ -317,7 +317,7 @@
     </div>
     
     <div style="text-align: center; padding: 40px; color: #718096; border-top: 1px solid #e2e8f0; margin-top: 40px;">
-        <p>Crypto-Class © 2026 | ?????? ????? | ???? 2.2.0</p>
+        <p>Crypto-Class ï¿½ 2026 | ?????? ????? | ???? 2.2.0</p>
         <p style="margin-top: 10px; font-size: 0.9rem;">
             ???? ?? ???? ?????? ????? ?????
         </p>

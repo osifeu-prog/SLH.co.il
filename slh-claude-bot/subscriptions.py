@@ -274,7 +274,7 @@ async def usage_stats(window_days: int = 30) -> dict:
 
 
 async def mrr_ils() -> float:
-    """Monthly recurring revenue: sum of active paid subscriptions × tier price."""
+    """Monthly recurring revenue: sum of active paid subscriptions �- tier price."""
     async with aiosqlite.connect(DB_PATH) as db:
         cur = await db.execute(
             "SELECT tier, COUNT(*) FROM subscriptions "

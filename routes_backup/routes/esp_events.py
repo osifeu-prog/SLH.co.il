@@ -9,11 +9,11 @@ This is the missing piece from the architecture:
   ESP32 ? POST /api/esp/events ? revenue_ledger ? Distribution Engine
 
 Endpoints:
-  POST /api/esp/events            — ESP32 device posts an event (auth: X-Device-Key)
-  GET  /api/esp/events            — admin: list recent events
-  GET  /api/esp/devices           — admin: list known devices + status
-  POST /api/esp/devices/register  — admin: register a new device
-  POST /api/esp/events/{id}/promote-to-revenue — admin: convert event ? revenue line
+  POST /api/esp/events            - ESP32 device posts an event (auth: X-Device-Key)
+  GET  /api/esp/events            - admin: list recent events
+  GET  /api/esp/devices           - admin: list known devices + status
+  POST /api/esp/devices/register  - admin: register a new device
+  POST /api/esp/events/{id}/promote-to-revenue - admin: convert event ? revenue line
 
 Author: Claude (Cowork mode, 2026-04-27)
 """

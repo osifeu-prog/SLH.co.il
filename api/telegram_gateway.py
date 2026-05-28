@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Telegram Gateway Layer — Mini App initData validation + user resolution.
+"""Telegram Gateway Layer ג€” Mini App initData validation + user resolution.
 
 This is the standardized entry point for ALL Telegram-originated requests
 (bots and Mini Apps) into the SLH Core API. Bot handlers stay thin:
@@ -247,7 +247,7 @@ async def _audit(request: Request, user: TelegramUser, status: str) -> None:
     Uses shared.events.emit() so the schema stays aligned with the rest of
     the system (event_type / payload / source / created_at). Previously this
     function tried to INSERT columns that don't exist in the canonical schema
-    (telegram_id, slh_user_id) and silently failed � the try/except swallowed
+    (telegram_id, slh_user_id) and silently failed - the try/except swallowed
     every write. Now the telegram_id + slh_user_id live inside payload JSON.
     """
     db_pool = getattr(request.app.state, "db_pool", None)

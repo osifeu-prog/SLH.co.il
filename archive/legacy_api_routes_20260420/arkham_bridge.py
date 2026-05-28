@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-Threat Intelligence Bridge — REAL on-chain verification + Community Fraud Detection
+Threat Intelligence Bridge ג€” REAL on-chain verification + Community Fraud Detection
 ====================================================================================
 This router used to be a mock "Arkham Intelligence" shim that returned hash-based
 pseudo-random threat scores. It has been replaced with real, verifiable data
-sourced from free public APIs — NO fake numbers, NO hash-as-score.
+sourced from free public APIs ג€” NO fake numbers, NO hash-as-score.
 
 Real data sources (all free, keyless for baseline use):
   * GoPlus Security address-risk API  ->  actual threat flags (cybercrime,
-    sanctioned, phishing, money_laundering, honeypot_related_address, …)
+    sanctioned, phishing, money_laundering, honeypot_related_address, ג€¦)
     This is our real "Arkham" replacement.
   * BscScan module=account            ->  verified native BNB + BEP-20 balances
     on BSC (works without an API key; BSCSCAN_API_KEY env var raises the rate).
@@ -45,7 +45,7 @@ from routes.blockchain_verify import (
 
 logger = logging.getLogger(__name__)
 
-# Router — tags renamed so /docs clearly shows this is the REAL implementation
+# Router ג€” tags renamed so /docs clearly shows this is the REAL implementation
 router = APIRouter(prefix="/api/threat", tags=["threat-intelligence-real"])
 
 # Global connection pool (set by main.py)
@@ -89,7 +89,7 @@ class FraudVerificationRequest(BaseModel):
 
 async def _ensure_threat_tables(conn):
     """Create threat intel tables. PostgreSQL-compatible (indexes created separately)."""
-    # NOTE: no FK to users(id) — canonical user table is web_users(telegram_id)
+    # NOTE: no FK to users(id) ג€” canonical user table is web_users(telegram_id)
     await conn.execute("""
         CREATE TABLE IF NOT EXISTS threat_intel_arkham (
             id BIGSERIAL PRIMARY KEY,
@@ -258,7 +258,7 @@ async def check_threat_score(request: Request, x_admin_key: Optional[str] = Head
                     "updated_at": row["updated_at"].isoformat() if row["updated_at"] else None,
                 }
 
-            # Not cached — query REAL APIs (GoPlus for threat, BscScan for balance)
+            # Not cached ג€” query REAL APIs (GoPlus for threat, BscScan for balance)
             threat_result: Dict = {
                 "threat_score": 0.0,
                 "threat_category": "unknown",
@@ -278,12 +278,12 @@ async def check_threat_score(request: Request, x_admin_key: Optional[str] = Head
                         chain=chain,
                         token_contract=SLH_CONTRACT_BSC if chain in {"bsc", "bnb"} else None,
                     )
-                except Exception as e:  # noqa: BLE001 — balance is supplemental
+                except Exception as e:  # noqa: BLE001 ג€” balance is supplemental
                     logger.warning("Balance lookup failed for %s on %s: %s", wallet, chain, e)
                     balance_result = {"source": "network_error", "error": str(e)}
                 try:
                     community_reports = await threat_client.get_community_reports(wallet)
-                except Exception as e:  # noqa: BLE001 — community data is supplemental
+                except Exception as e:  # noqa: BLE001 ג€” community data is supplemental
                     logger.warning("Chainabuse lookup failed for %s: %s", wallet, e)
                     community_reports = []
 
@@ -307,7 +307,7 @@ async def check_threat_score(request: Request, x_admin_key: Optional[str] = Head
                 threat_score,
             )
 
-            # Compose the source marker — shows the user exactly where each
+            # Compose the source marker ג€” shows the user exactly where each
             # piece of data came from. "goplus+bscscan" when we have both.
             sources = []
             if threat_result.get("source"):

@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 """
-SLH Sudoku — engagement + AIC earn
+SLH Sudoku - engagement + AIC earn
 ====================================
 Play sudoku, earn AIC/REP. First solve of daily puzzle = bonus AIC.
 
 Endpoints:
-  POST /api/sudoku/start              — create session, returns puzzle (no solution)
-  POST /api/sudoku/check              — validate current board (no reward)
-  POST /api/sudoku/hint               — reveal one correct cell (costs 1 AIC)
-  POST /api/sudoku/submit             — verify solution, award AIC + REP, log tx
-  GET  /api/sudoku/daily              — today's shared puzzle (same for everyone)
-  GET  /api/sudoku/my-stats/{uid}     — user's solve stats
-  GET  /api/sudoku/leaderboard        — top solvers (weekly + all-time)
-  GET  /api/sudoku/stats              — global
+  POST /api/sudoku/start              - create session, returns puzzle (no solution)
+  POST /api/sudoku/check              - validate current board (no reward)
+  POST /api/sudoku/hint               - reveal one correct cell (costs 1 AIC)
+  POST /api/sudoku/submit             - verify solution, award AIC + REP, log tx
+  GET  /api/sudoku/daily              - today's shared puzzle (same for everyone)
+  GET  /api/sudoku/my-stats/{uid}     - user's solve stats
+  GET  /api/sudoku/leaderboard        - top solvers (weekly + all-time)
+  GET  /api/sudoku/stats              - global
 
 Pattern matches our codebase: module-level _pool, set_pool(pool) called from main.py.
-No Depends/auth — user_id passed in request body (same as community + aic_tokens).
+No Depends/auth - user_id passed in request body (same as community + aic_tokens).
 """
 
 from __future__ import annotations
@@ -161,7 +161,7 @@ async def _ensure_sudoku_tables(conn):
 
 
 async def _aic_earn(conn, user_id: int, amount: float, reason: str, meta: Optional[dict] = None):
-    """Credit AIC — idempotent at caller level. No earn cap check here (caller owns)."""
+    """Credit AIC - idempotent at caller level. No earn cap check here (caller owns)."""
     await conn.execute(
         """
         INSERT INTO aic_balances (user_id, balance, lifetime_earned)
@@ -270,7 +270,7 @@ class CheckReq(BaseModel):
 
 @router.post("/check")
 async def sudoku_check(req: CheckReq):
-    """Validate current board — count errors, do NOT reveal solution or award."""
+    """Validate current board - count errors, do NOT reveal solution or award."""
     if _pool is None:
         raise HTTPException(500, "db pool not initialized")
     async with _pool.acquire() as conn:
@@ -314,7 +314,7 @@ async def sudoku_hint(req: HintReq):
         puzzle = _str_to_grid(row["puzzle_grid"])
         solution = _str_to_grid(row["solution_grid"])
 
-        # Find empty cells from puzzle original — hint reveals one we haven't revealed before
+        # Find empty cells from puzzle original - hint reveals one we haven't revealed before
         # To track "revealed", store hints_used count and pick deterministically
         empty_cells = [(r, c) for r in range(9) for c in range(9) if puzzle[r][c] == 0]
         if not empty_cells:
@@ -459,7 +459,7 @@ async def sudoku_submit(req: SubmitReq):
         "capped": capped,
         "message": (
             "?? ????? ?????! ????? ?????."
-            if not capped else "???? — ??? ???? ?? ???? 3 ???????? ??????. ??? ???."
+            if not capped else "???? - ??? ???? ?? ???? 3 ???????? ??????. ??? ???."
         ),
     }
 

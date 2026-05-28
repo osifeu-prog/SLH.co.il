@@ -42,7 +42,7 @@ def save_json(file, data):
     with open(file, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
 
-# נתוני ברירת מחדל
+# נתוני ברירת מ�-דל
 users = load_json(USERS_FILE, {})          # user_id -> {'referrer': id, 'balance': 0, 'joined': timestamp}
 products = load_json(PRODUCTS_FILE, {      # product_id -> {'name': str, 'price': float, 'group_link': str}
     '1': {'name': 'Affiliate Link + SLH VIP Group', 'price': 5.0, 'group_link': ''},
@@ -89,7 +89,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     args = context.args
     referrer = int(args[0]) if args and args[0].isdigit() else None
 
-    # שמירת משתמש חדש
+    # שמירת משתמש �-דש
     if str(user_id) not in users:
         users[str(user_id)] = {
             'referrer': referrer,
@@ -123,7 +123,7 @@ async def my_link(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(f"Your personal referral link:\n{link}")
 
 async def vip_group(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # מחפש מוצר 1 (קבוצת VIP)
+    # מ�-פש מוצר 1 (קבוצת VIP)
     group_link = products.get('1', {}).get('group_link')
     if group_link:
         await update.message.reply_text(f"VIP Group link:\n{group_link}")
@@ -140,7 +140,7 @@ async def account(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("No recent orders.")
         return
     msg = "Your recent orders:\n"
-    for o in user_orders[-5:]:  # 5 אחרונים
+    for o in user_orders[-5:]:  # 5 א�-רונים
         product = products.get(o['product_id'], {}).get('name', 'Unknown')
         msg += f" {o['order_id']} | {product} | {o['amount']} TON\n"
     await update.message.reply_text(msg)

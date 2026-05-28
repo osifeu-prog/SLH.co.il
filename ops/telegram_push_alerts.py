@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python3
 """
-SLH Telegram Push Alerts — daily digest + threshold-based alerts.
+SLH Telegram Push Alerts - daily digest + threshold-based alerts.
 
 Polls the Railway API for:
   - /api/performance/digest  (daily snapshot)
@@ -20,8 +20,8 @@ Usage:
     python telegram_push_alerts.py --chat-id 224223270 --mode both
 
 Env vars required (read from D:/SLH_ECOSYSTEM/.env):
-    BROADCAST_BOT_TOKEN         — bot token for @SLH_AIR_bot
-    ADMIN_BROADCAST_KEY         — for authenticated endpoints (optional)
+    BROADCAST_BOT_TOKEN         - bot token for @SLH_AIR_bot
+    ADMIN_BROADCAST_KEY         - for authenticated endpoints (optional)
 
 Exit codes:
     0 = ok (message sent or nothing new)
@@ -125,7 +125,7 @@ def mode_events(bot_token: str, chat_id: int, state: dict) -> int:
     # Compact summary (< 4000 chars for Telegram)
     lines = [f"<b>SLH events update</b>  ({len(events)} new)\n"]
     for ev in events[:15]:
-        lines.append(f"• <code>{ev['type']}</code>  at {ev.get('at','?')[:19].replace('T',' ')}")
+        lines.append(f"ï¿½ <code>{ev['type']}</code>  at {ev.get('at','?')[:19].replace('T',' ')}")
 
     if len(events) > 15:
         lines.append(f"\n(+{len(events)-15} more)")
@@ -147,7 +147,7 @@ def mode_health(bot_token: str, chat_id: int) -> int:
     try:
         health = http_get_json(f"{API_BASE}/api/health")
     except Exception as e:
-        # Health failed — alert!
+        # Health failed - alert!
         tg_send(bot_token, chat_id, f"<b>?? SLH API is DOWN</b>\n\n<code>{e!r}</code>")
         return 2
 

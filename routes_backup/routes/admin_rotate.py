@@ -1,25 +1,25 @@
 # -*- coding: utf-8 -*-
 """
-Admin Key Rotation — DB-backed admin secrets + in-memory cache.
+Admin Key Rotation - DB-backed admin secrets + in-memory cache.
 
 Allows the admin to rotate their X-Admin-Key at runtime without editing
 Railway env vars or redeploying. Env keys (`ADMIN_API_KEYS`) continue to
-work as a backward-compat fallback — DB keys are additive.
+work as a backward-compat fallback - DB keys are additive.
 
 Flow:
-  1. Admin logs in with current key (env or DB — both accepted).
+  1. Admin logs in with current key (env or DB - both accepted).
   2. POST /api/admin/rotate-key with current + new key.
   3. New key hashed (SHA-256 + salt) and stored in `admin_secrets`.
   4. All previous DB keys marked inactive.
-  5. In-memory cache reloaded — new key valid immediately.
+  5. In-memory cache reloaded - new key valid immediately.
 
 Schema:
   admin_secrets (id, key_hash, salt, label, active, created_at, rotated_at, created_by)
 
 Endpoints (all admin-gated via X-Admin-Key):
-  POST  /api/admin/rotate-key      — rotate to new key
-  GET   /api/admin/key-status      — last rotation info (no keys exposed)
-  POST  /api/admin/reload-keys     — force in-memory reload (debug)
+  POST  /api/admin/rotate-key      - rotate to new key
+  GET   /api/admin/key-status      - last rotation info (no keys exposed)
+  POST  /api/admin/reload-keys     - force in-memory reload (debug)
 """
 from __future__ import annotations
 
@@ -71,7 +71,7 @@ async def reload_db_admin_keys() -> int:
     """Refresh _DB_ADMIN_KEYS from DB. Returns count loaded."""
     global _DB_ADMIN_KEYS
     if _pool is None:
-        logger.warning("[admin-rotate] reload skipped — pool not set")
+        logger.warning("[admin-rotate] reload skipped - pool not set")
         return 0
     try:
         async with _pool.acquire() as conn:
@@ -89,7 +89,7 @@ async def reload_db_admin_keys() -> int:
 async def init_admin_secrets_table():
     """Create admin_secrets table. Safe to call repeatedly."""
     if _pool is None:
-        logger.warning("[admin-rotate] init skipped — pool not set")
+        logger.warning("[admin-rotate] init skipped - pool not set")
         return
     try:
         async with _pool.acquire() as conn:
@@ -125,7 +125,7 @@ class RotateKeyRequest(BaseModel):
         v = v.strip()
         if len(v) < 12:
             raise ValueError("new_key must be at least 12 chars")
-        # Require minimum variety — at least 2 of: lower, upper, digit, symbol
+        # Require minimum variety - at least 2 of: lower, upper, digit, symbol
         has_lower = any(c.islower() for c in v)
         has_upper = any(c.isupper() for c in v)
         has_digit = any(c.isdigit() for c in v)
@@ -157,7 +157,7 @@ async def rotate_admin_key(
 ):
     """Rotate the admin key. Current key authenticates, new key replaces it.
 
-    Env keys continue to work — this only rotates DB keys. To fully retire
+    Env keys continue to work - this only rotates DB keys. To fully retire
     env keys, remove from Railway `ADMIN_API_KEYS` after rotation.
     """
     _lazy_require_admin()(authorization, x_admin_key)
@@ -189,7 +189,7 @@ async def rotate_admin_key(
                 new_hash, salt, label, "admin_ui",
             )
 
-    # Refresh in-memory cache — new key works on very next request
+    # Refresh in-memory cache - new key works on very next request
     loaded = await reload_db_admin_keys()
 
     return {

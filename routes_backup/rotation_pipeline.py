@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Token Rotation Pipeline — atomic rotate?push?redeploy?verify?audit?broadcast.
+"""Token Rotation Pipeline - atomic rotate?push?redeploy?verify?audit?broadcast.
 
 Endpoint:  POST /api/admin/rotate-bot-token-pipeline
 History:   GET  /api/admin/rotation-history
@@ -73,7 +73,7 @@ COOLDOWN_BY_TIER = {"critical": 900, "high": 300, "medium": 60, "low": 0}
 BOT_COMMANDS_PATH = Path(__file__).resolve().parent.parent / "config" / "bot_commands.json"
 
 # --- In-memory cooldown tracking -------------------------------------------
-# Per-process. Resets on restart, which is fine — DB audit log is the
+# Per-process. Resets on restart, which is fine - DB audit log is the
 # durable source of truth. Maps env_var ? unix timestamp of last successful rotation.
 _LAST_ROTATION_TS: dict[str, float] = {}
 
@@ -208,7 +208,7 @@ async def _broadcast_admins(text: str) -> None:
     """
     bot_token = os.getenv("SLH_CLAUDE_BOT_TOKEN") or os.getenv("TELEGRAM_BOT_TOKEN", "")
     if not bot_token:
-        log.warning("rotation broadcast skipped — no admin bot token in env")
+        log.warning("rotation broadcast skipped - no admin bot token in env")
         return
     admin_ids = [
         x.strip() for x in (os.getenv("ADMIN_TELEGRAM_IDS", "224223270") or "").split(",")
@@ -266,7 +266,7 @@ def _resolve_tier(env_var: str, bot_row: Optional[dict]) -> str:
 
 
 async def _audit(pool, action: str, **kwargs) -> str:
-    """Wrap audit_log_write — pulls a fresh connection. Returns entry_hash or ''."""
+    """Wrap audit_log_write - pulls a fresh connection. Returns entry_hash or ''."""
     try:
         from main import audit_log_write  # type: ignore
     except Exception:
@@ -297,9 +297,9 @@ async def rotate_pipeline(
     """Atomic rotate-push-redeploy-verify-audit-broadcast.
 
     Returns one of:
-        {ok: true, ...}                                  — success
-        {ok: false, needs_confirm: true, confirm_token}  — Critical tier, awaiting confirm
-        {ok: false, phase: "healthcheck_failed", ...}    — soft failure, recovery needed
+        {ok: true, ...}                                  - success
+        {ok: false, needs_confirm: true, confirm_token}  - Critical tier, awaiting confirm
+        {ok: false, phase: "healthcheck_failed", ...}    - soft failure, recovery needed
     Raises 4xx on user errors, 502 on Railway failures.
     """
     actor_id = _lazy_require_admin()(authorization, x_admin_key)
@@ -321,7 +321,7 @@ async def rotate_pipeline(
     last_ts = _LAST_ROTATION_TS.get(body.env_var, 0)
     if cooldown and (time.time() - last_ts) < cooldown:
         wait = int(cooldown - (time.time() - last_ts))
-        raise HTTPException(429, f"cooldown active for {body.env_var} — wait {wait}s")
+        raise HTTPException(429, f"cooldown active for {body.env_var} - wait {wait}s")
 
     # -- Phase 1: Critical tier confirm-token gate ------------------------
     if tier == "critical":

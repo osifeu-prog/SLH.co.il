@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""SLH Expense Tracker — personal cashflow management for the owner + family.
+"""SLH Expense Tracker - personal cashflow management for the owner + family.
 
 Built after Osif raised:
   '???? ???? ?? ???? ?????? ?????? ?? ????? ??????? ???? ?? ???? ????? ??? ???
@@ -14,10 +14,10 @@ Phase 1 scope (this commit):
   - Recurring detection (manual flag for now; auto-detection in Phase 2)
 
 NOT in this phase (deliberate):
-  - Auto-categorization (needs LLM call — Phase 2)
-  - OCR receipt upload (needs Tesseract/cloud OCR — Phase 2)
-  - SLH/MNH/ZVK conversion (price feed integration — Phase 2)
-  - Tax estimation for ???? ????? (needs accounting rules — Phase 2)
+  - Auto-categorization (needs LLM call - Phase 2)
+  - OCR receipt upload (needs Tesseract/cloud OCR - Phase 2)
+  - SLH/MNH/ZVK conversion (price feed integration - Phase 2)
+  - Tax estimation for ???? ????? (needs accounting rules - Phase 2)
 
 All endpoints require X-Admin-Key for now (single-user phase). Phase 2 will
 move to per-user auth via the Telegram Gateway.
@@ -153,7 +153,7 @@ def _row_to_dict(r) -> dict:
 
 @router.get("/categories")
 async def list_categories():
-    """Public — list of predefined categories. No auth needed."""
+    """Public - list of predefined categories. No auth needed."""
     return {
         "categories": [
             {"key": c, "label": _CATEGORY_LABELS.get(c, c)} for c in DEFAULT_CATEGORIES
@@ -220,7 +220,7 @@ async def create_expense(
                 body.recurring or "none", body.source or "manual",
             )
 
-    # Emit public event for activity feed (sanitized — no description)
+    # Emit public event for activity feed (sanitized - no description)
     try:
         from shared.events import emit as _emit
         await _emit(pool, "expense.recorded", {
@@ -340,7 +340,7 @@ async def expenses_summary(
 ):
     """Monthly totals + category breakdown + recurring vs ad-hoc split.
 
-    The shape is shaped for direct rendering in /miniapp/expenses.html — one
+    The shape is shaped for direct rendering in /miniapp/expenses.html - one
     fetch gives the page everything it needs.
     """
     _admin(authorization, x_admin_key)
@@ -389,7 +389,7 @@ async def expenses_summary(
             """,
             user_id,
         )
-        # Burn rate — average monthly total over last 3 months
+        # Burn rate - average monthly total over last 3 months
         burn = await conn.fetchval(
             """
             SELECT COALESCE(AVG(monthly_total), 0)::float
@@ -439,7 +439,7 @@ async def seed_initial(
     authorization: Optional[str] = Header(None),
     x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key"),
 ):
-    """One-time seed of Osif's monthly fixed costs. Idempotent — checks if any
+    """One-time seed of Osif's monthly fixed costs. Idempotent - checks if any
     expenses exist for this user this month before inserting."""
     _admin(authorization, x_admin_key)
     pool = _pool(request)

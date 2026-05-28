@@ -61,7 +61,7 @@ TASKS = [
     },
     {
         "title": "SQL review for user 8789977826 — ₪147 refund or upgrade",
-        "description": "User paid ₪49×4=196, 0 licenses. Fix pushed b4da6b1. 3 duplicate payments flagged refund_status=pending_review. Decide: refund ₪147 or upgrade to VIP for +₪353.",
+        "description": "User paid ₪49�-4=196, 0 licenses. Fix pushed b4da6b1. 3 duplicate payments flagged refund_status=pending_review. Decide: refund ₪147 or upgrade to VIP for +₪353.",
         "category": "owner", "priority": "P1", "status": "open",
         "assignee_name": "Osif", "assignee_telegram_id": 224223270,
         "source": "DROP_OSIF_OWNER #6", "estimated_minutes": 10,
@@ -140,7 +140,7 @@ TASKS = [
         "source": "KNOWN_ISSUES K-12", "estimated_minutes": 30,
     },
     {
-        "title": "14 HTML files × 27 '65% APY' leftovers from Dynamic Yield pivot",
+        "title": "14 HTML files �- 27 '65% APY' leftovers from Dynamic Yield pivot",
         "description": "JS layer fixed (commit 7ff9db1) but HTML still has hardcoded. Bulk replace '65%' → 'Dynamic'.",
         "category": "code", "priority": "P1", "status": "open",
         "source": "KNOWN_ISSUES K-13", "estimated_minutes": 20,
@@ -240,7 +240,7 @@ TASKS = [
     # ─── Strategic (Owner decisions) ─────────────────────────
     {
         "title": "Strategic decision: Legal entity for real trading",
-        "description": "Biggest single blocker to real monetization. Options: חברה בע'מ, עוסק מורשה, פטור. Requires legal consultation.",
+        "description": "Biggest single blocker to real monetization. Options: �-ברה בע'מ, עוסק מורשה, פטור. Requires legal consultation.",
         "category": "strategic", "priority": "P1", "status": "open",
         "assignee_name": "Osif", "assignee_telegram_id": 224223270,
         "source": "Roadmap 13+ H", "estimated_minutes": 480,

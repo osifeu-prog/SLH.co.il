@@ -34,11 +34,11 @@ PROMPT_PATTERNS = [
     re.compile(r"(\w*(?:SYSTEM_)?PROMPT\w*)\s*=\s*'''(.*?)'''", re.DOTALL),
 ]
 
-# Estimated daily call volumes (rough — adjust per-bot from real metrics)
+# Estimated daily call volumes (rough - adjust per-bot from real metrics)
 DAILY_CALLS = {
-    "claude_client.py":     200,   # main executor — high frequency
+    "claude_client.py":     200,   # main executor - high frequency
     "free_ai_client.py":    150,
-    "ai_chat.py":           500,   # public AI chat — highest
+    "ai_chat.py":           500,   # public AI chat - highest
     "ai_cmd.py":            80,
     "DEFAULT":              50,
 }
@@ -100,7 +100,7 @@ def main():
     # Pretty text report
     print()
     print("-" * 78)
-    print(f"  SLH Prompt Analyzer — {len(results)} prompts found")
+    print(f"  SLH Prompt Analyzer - {len(results)} prompts found")
     print("-" * 78)
     print()
 

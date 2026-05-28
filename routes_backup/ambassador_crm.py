@@ -1,27 +1,27 @@
 # -*- coding: utf-8 -*-
 """
-Ambassador CRM — Phase 0 (MVP).
+Ambassador CRM - Phase 0 (MVP).
 
 Purpose: give SLH ambassadors (users who recruit investors to the platform)
-a first-party CRM for their pipeline. Think Eliezer with 130 contacts —
+a first-party CRM for their pipeline. Think Eliezer with 130 contacts -
 he needs names, phones, notes, status, last-contact date, commitment amount.
 
 Scope: contact management only. NO money flow through SLH for now (requires
 legal entity + licensing before ambassador-mediated investments). When legal
 clears ? add deposits/commissions/payouts as a separate module.
 
-Table: ambassador_contacts — created idempotently on first API call.
+Table: ambassador_contacts - created idempotently on first API call.
 
 Auth: X-Admin-Key header (admin-only). Each ambassador is identified by
 their Telegram ID as a query/body param; admin (Osif) can query any
 ambassador's data. Future: per-ambassador JWT for self-service web dashboard.
 
 Endpoints:
-  POST   /api/ambassador/contacts             — create a single contact
-  GET    /api/ambassador/contacts             — list with filters + pagination
-  PATCH  /api/ambassador/contacts/{id}        — update fields
-  POST   /api/ambassador/contacts/import      — bulk CSV import
-  GET    /api/ambassador/stats/{amb_id}       — pipeline summary
+  POST   /api/ambassador/contacts             - create a single contact
+  GET    /api/ambassador/contacts             - list with filters + pagination
+  PATCH  /api/ambassador/contacts/{id}        - update fields
+  POST   /api/ambassador/contacts/import      - bulk CSV import
+  GET    /api/ambassador/stats/{amb_id}       - pipeline summary
 """
 from __future__ import annotations
 
@@ -306,7 +306,7 @@ async def pipeline_stats(
     ambassador_id: int,
     x_admin_key: Optional[str] = Header(None),
 ):
-    """Pipeline summary — count + total amount per status."""
+    """Pipeline summary - count + total amount per status."""
     _require_admin_key(x_admin_key)
 
     async with _pool.acquire() as conn:

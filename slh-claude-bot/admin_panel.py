@@ -45,7 +45,7 @@ def register(dp: Dispatcher, auth_module) -> None:
         ) or "  (אין מנויים)"
 
         await msg.answer(
-            f"💰 *Revenue Report — 30 ימים אחרונים*\n\n"
+            f"💰 *Revenue Report — 30 ימים א�-רונים*\n\n"
             f"*MRR:* `₪{mrr:,.2f}`\n"
             f"*Revenue 30d:* `₪{revenue_ils:,.2f}`\n"
             f"*Anthropic cost 30d:* `₪{anthropic_cost_ils:,.2f}` (${anthropic_cost_usd:,.2f})\n"
@@ -65,7 +65,7 @@ def register(dp: Dispatcher, auth_module) -> None:
         key = os.getenv("ANTHROPIC_API_KEY", "")
         if not key.startswith("sk-"):
             await msg.answer(
-                "🔴 *ANTHROPIC_API_KEY*\nלא טעון או לא מתחיל ב-sk-.\n"
+                "🔴 *ANTHROPIC_API_KEY*\nלא טעון או לא מת�-יל ב-sk-.\n"
                 "הוסף ב-`slh-claude-bot/.env` ועשה `docker compose up -d --force-recreate claude-bot`.")
             return
         # Step 1: auth check via /v1/models (free, doesn't consume credit)
@@ -95,7 +95,7 @@ def register(dp: Dispatcher, auth_module) -> None:
             err = str(e).lower()
             balance_ok = False
             if "credit balance" in err or "credit_balance" in err or "billing" in err:
-                balance_note = "$0 balance — Pro tier יחזור ל-Groq fallback אוטומטית"
+                balance_note = "$0 balance — Pro tier י�-זור ל-Groq fallback אוטומטית"
             else:
                 balance_note = f"err: {type(e).__name__}: {str(e)[:80]}"
         await msg.answer(
@@ -135,7 +135,7 @@ def register(dp: Dispatcher, auth_module) -> None:
         try:
             target_uid = int(parts[1])
         except ValueError:
-            await msg.answer("user_id חייב להיות מספר.")
+            await msg.answer("user_id �-ייב להיות מספר.")
             return
         sub = await subscriptions.get_or_create(target_uid)
         spec = pricing.TIERS.get(sub.tier, pricing.TIERS["free"])
@@ -172,7 +172,7 @@ def register(dp: Dispatcher, auth_module) -> None:
         try:
             target_uid = int(parts[1])
         except ValueError:
-            await msg.answer("user_id חייב להיות מספר.")
+            await msg.answer("user_id �-ייב להיות מספר.")
             return
         try:
             days = int(parts[2]) if len(parts) > 2 else 30
@@ -183,7 +183,7 @@ def register(dp: Dispatcher, auth_module) -> None:
             await msg.answer(f"Tier לא תקף: {tier}. אפשרי: {', '.join(pricing.TIERS.keys())}")
             return
         if days < 1 or days > 365:
-            await msg.answer("days בטווח 1-365.")
+            await msg.answer("days בטוו�- 1-365.")
             return
 
         sub = await subscriptions.upgrade(
@@ -201,8 +201,8 @@ def register(dp: Dispatcher, auth_module) -> None:
             f"מכסה: {spec.monthly_quota or 'unlimited'} הודעות\n"
             f"תקופה: {days} ימים\n"
             f"מסתיים: `{sub.current_period_end[:10]}`\n\n"
-            f"_שלח לו: יש לך עכשיו Pro חינם עד {sub.current_period_end[:10]}. "
-            f"שלח /credits לבדוק._"
+            f"_של�- לו: יש לך עכשיו Pro �-ינם עד {sub.current_period_end[:10]}. "
+            f"של�- /credits לבדוק._"
         )
 
     @dp.message(Command("set_tier"))
@@ -217,7 +217,7 @@ def register(dp: Dispatcher, auth_module) -> None:
         try:
             target_uid = int(parts[1])
         except ValueError:
-            await msg.answer("user_id חייב להיות מספר.")
+            await msg.answer("user_id �-ייב להיות מספר.")
             return
         tier = parts[2].lower()
         if tier not in pricing.TIERS:
@@ -246,7 +246,7 @@ def register(dp: Dispatcher, auth_module) -> None:
             )
             rows = await cur.fetchall()
         if not rows:
-            await msg.answer("אין שימוש בחודש האחרון.")
+            await msg.answer("אין שימוש ב�-ודש הא�-רון.")
             return
         lines = ["📊 *Top 10 משתמשים — 30 ימים*\n"]
         for i, (uid, msgs, cost_cents) in enumerate(rows, 1):

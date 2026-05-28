@@ -286,25 +286,25 @@ print(f"replaced BUY handler: {n}")
 # 5) Targeted string repairs
 # -----------------------------
 replacements = {
-    'await message.answer("�?��? ����?�.")': 'await message.answer(NO_PERMISSION)',
-    'await message.answer("���\u200d�� �\u200c� ���?: /approve <user_id>")': 'await message.answer(USAGE_APPROVE)',
-    'await message.answer("���\u200d�� �\u200c� ���?: /reject <user_id>")': 'await message.answer(USAGE_REJECT)',
-    'await message.answer("���\u200d�� �\u200c� ���?: /status <user_id>")': 'await message.answer(USAGE_STATUS)',
-    'await message.answer("�?��? ל����\u200c �����?.")': 'await message.answer(NO_AUDIT_YET)',
-    'await message.answer("��� ל��?�� ����? �?�ל��\u200c �ל� BUY.")': 'await message.answer(SEND_BUY_HINT)',
-    'await callback.answer("����? �?�ל��\u200c �\u200c��?��")': 'await callback.answer(PAYMENT_OPENED)',
-    'await message.answer("����� �ל�? ���ל�.")': 'await message.answer(ALREADY_ACTIVE)',
-    'user_text = "��?�ל��\u200c �ל�? �?���.\\n\\n����� �ל�? ���ל� ���?."': 'user_text = WELCOME_PAID',
-    'await bot.send_message(\n                target_id,\n                "����? ��?�ל��\u200c �\u200c���?�. �?��� ל�ל�� BUY �\u200d��� �ל��?�� ���� ����.\"\n            )': 'await bot.send_message(target_id, REJECTED_USER_TEXT)',
+    'await message.answer("ן¿½?ן¿½ן¿½? ן¿½ן¿½ן¿½ן¿½?ן¿½.")': 'await message.answer(NO_PERMISSION)',
+    'await message.answer("ן¿½ן¿½ן¿½\u200dן¿½ן¿½ ן¿½\u200cן¿½ ן¿½ן¿½ן¿½?: /approve <user_id>")': 'await message.answer(USAGE_APPROVE)',
+    'await message.answer("ן¿½ן¿½ן¿½\u200dן¿½ן¿½ ן¿½\u200cן¿½ ן¿½ן¿½ן¿½?: /reject <user_id>")': 'await message.answer(USAGE_REJECT)',
+    'await message.answer("ן¿½ן¿½ן¿½\u200dן¿½ן¿½ ן¿½\u200cן¿½ ן¿½ן¿½ן¿½?: /status <user_id>")': 'await message.answer(USAGE_STATUS)',
+    'await message.answer("ן¿½?ן¿½ן¿½? ׳ן¿½ן¿½ן¿½ן¿½\u200c ן¿½ן¿½ן¿½ן¿½ן¿½?.")': 'await message.answer(NO_AUDIT_YET)',
+    'await message.answer("ן¿½ן¿½ן¿½ ׳ן¿½ן¿½?ן¿½ן¿½ ן¿½ן¿½ן¿½ן¿½? ן¿½?ן¿½׳ן¿½ן¿½\u200c ן¿½׳ן¿½ BUY.")': 'await message.answer(SEND_BUY_HINT)',
+    'await callback.answer("ן¿½ן¿½ן¿½ן¿½? ן¿½?ן¿½׳ן¿½ן¿½\u200c ן¿½\u200cן¿½ן¿½?ן¿½ן¿½")': 'await callback.answer(PAYMENT_OPENED)',
+    'await message.answer("ן¿½ן¿½ן¿½ן¿½ן¿½ ן¿½׳ן¿½? ן¿½ן¿½ן¿½׳ן¿½.")': 'await message.answer(ALREADY_ACTIVE)',
+    'user_text = "ן¿½ן¿½?ן¿½׳ן¿½ן¿½\u200c ן¿½׳ן¿½? ן¿½?ן¿½ן¿½ן¿½.\\n\\nן¿½ן¿½ן¿½ן¿½ן¿½ ן¿½׳ן¿½? ן¿½ן¿½ן¿½׳ן¿½ ן¿½ן¿½ן¿½?."': 'user_text = WELCOME_PAID',
+    'await bot.send_message(\n                target_id,\n                "ן¿½ן¿½ן¿½ן¿½? ן¿½ן¿½?ן¿½׳ן¿½ן¿½\u200c ן¿½\u200cן¿½ן¿½ן¿½?ן¿½. ן¿½?ן¿½ן¿½ן¿½ ׳ן¿½׳ן¿½ן¿½ BUY ן¿½\u200dן¿½ן¿½ן¿½ ן¿½׳ן¿½ן¿½?ן¿½ן¿½ ן¿½ן¿½ן¿½ן¿½ ן¿½ן¿½ן¿½ן¿½.\"\n            )': 'await bot.send_message(target_id, REJECTED_USER_TEXT)',
 }
 
 for old, new in replacements.items():
     text = text.replace(old, new)
 
 # Safer generic cleanups
-text = text.replace('await message.answer("�?��? ����?�.")', 'await message.answer(NO_PERMISSION)')
-text = text.replace('await message.answer("�?��? ל���� �����?.")', 'await message.answer(NO_AUDIT_YET)')
-text = text.replace('await message.answer("��� ל��?�� ����? �?�ל�� �ל� BUY.")', 'await message.answer(SEND_BUY_HINT)')
+text = text.replace('await message.answer("ן¿½?ן¿½ן¿½? ן¿½ן¿½ן¿½ן¿½?ן¿½.")', 'await message.answer(NO_PERMISSION)')
+text = text.replace('await message.answer("ן¿½?ן¿½ן¿½? ׳ן¿½ן¿½ן¿½ן¿½ ן¿½ן¿½ן¿½ן¿½ן¿½?.")', 'await message.answer(NO_AUDIT_YET)')
+text = text.replace('await message.answer("ן¿½ן¿½ן¿½ ׳ן¿½ן¿½?ן¿½ן¿½ ן¿½ן¿½ן¿½ן¿½? ן¿½?ן¿½׳ן¿½ן¿½ ן¿½׳ן¿½ BUY.")', 'await message.answer(SEND_BUY_HINT)')
 
 # Normalize approval message block
 text = re.sub(

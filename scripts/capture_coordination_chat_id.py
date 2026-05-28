@@ -12,7 +12,7 @@ Workflow:
 
 Token resolution order:
   1. CAPTURE_BOT_TOKEN env var (override)
-  2. SLH_CLAUDE_BOT_TOKEN env var (default — claude-bot)
+  2. SLH_CLAUDE_BOT_TOKEN env var (default - claude-bot)
   3. Fail.
 
 Reads .env from project root and from slh-claude-bot/.env so the token can

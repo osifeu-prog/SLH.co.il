@@ -138,7 +138,7 @@ async def cmd_start(msg: Message) -> None:
     # Lazy-create subscription row + show tier
     try:
         sub = await subscriptions.get_or_create(msg.from_user.id)
-        tier_line = f"💎 Tier: {sub.tier} · {sub.messages_used_this_period} הודעות החודש\n"
+        tier_line = f"💎 Tier: {sub.tier} · {sub.messages_used_this_period} הודעות ה�-ודש\n"
     except Exception:
         tier_line = ""
     # Send as plain text (no parse_mode) to avoid backslash pollution.
@@ -148,23 +148,23 @@ async def cmd_start(msg: Message) -> None:
         f"{tier_line}\n"
         f"━━━ AI Spark ━━━\n"
         f"/upgrade   — שדרוג ל-Pro/VIP\n"
-        f"/credits   — מכסה זמינה החודש\n"
-        f"/pricing   — השוואת חבילות\n\n"
+        f"/credits   — מכסה זמינה ה�-ודש\n"
+        f"/pricing   — השוואת �-בילות\n\n"
         f"━━━ הכי שימושי ━━━\n"
-        f"/control   — סיכום מערכת בשורה אחת\n"
+        f"/control   — סיכום מערכת בשורה א�-ת\n"
         f"/health    — בריאות API + DB\n"
         f"/swarm     — 4 המכשירים שלך\n"
-        f"/devices   — רשימת ESP מחוברים\n"
-        f"/price     — מחירי SLH/MNH/ZVK\n\n"
+        f"/devices   — רשימת ESP מ�-וברים\n"
+        f"/price     — מ�-ירי SLH/MNH/ZVK\n\n"
         f"━━━ Admin ━━━\n"
-        f"/revenue        — MRR + רווח 30 יום\n"
+        f"/revenue        — MRR + רוו�- 30 יום\n"
         f"/anthropic_spend — עלות AI\n"
         f"/top_users      — Top 10 לפי שימוש\n"
         f"/quota_user <id> — בדיקה למשתמש ספציפי\n\n"
         f"━━━ Ops ━━━\n"
         f"/ps  /bots  /logs <X>  /git  /task <X>\n\n"
-        f"━━━ שיחה חופשית ━━━\n"
-        f"כל טקסט אחר → AI לפי ה-tier שלך\n\n"
+        f"━━━ שי�-ה �-ופשית ━━━\n"
+        f"כל טקסט א�-ר → AI לפי ה-tier שלך\n\n"
         f"עזרה מלאה: /help",
         parse_mode=None,
     )
@@ -184,8 +184,8 @@ async def cmd_help(msg: Message) -> None:
         "`/commit` `/push` `/sync`\n"
         "`/draft` `/apply` `/reject`\n"
         "פירוט מלא: `/editor`\n\n"
-        f"*🧠 שיחה חופשית \\(AI: {_AI_MODE}\\):*\n"
-        "כל טקסט אחר נענה דרך Groq חינם\\.\n\n"
+        f"*🧠 שי�-ה �-ופשית \\(AI: {_AI_MODE}\\):*\n"
+        "כל טקסט א�-ר נענה דרך Groq �-ינם\\.\n\n"
         "*דוגמאות:*\n"
         "• `/ls website`\n"
         "• `/cat website/voice\\.html`\n"
@@ -228,7 +228,7 @@ async def cmd_health(msg: Message) -> None:
         api_ok = h.get("status") == "ok" or h.get("api") == "ok"
         db = h.get("db") or (h.get("checks") or {}).get("db") or "unknown"
         lines = [
-            f"*API:* {'חי ✓' if api_ok else 'כבוי ✗'}",
+            f"*API:* {'�-י ✓' if api_ok else 'כבוי �-'}",
             f"*DB:* `{_escape_md(db)}`",
         ]
         if "version" in h:
@@ -237,7 +237,7 @@ async def cmd_health(msg: Message) -> None:
             lines.append(f"*בדוק ב:* `{_escape_md(h['timestamp'])}`")
         await msg.answer("\n".join(lines))
     except httpx.HTTPStatusError as e:
-        await msg.answer(f"ה-API החזיר {e.response.status_code}. כנראה down.")
+        await msg.answer(f"ה-API ה�-זיר {e.response.status_code}. כנראה down.")
     except Exception as e:
         log.exception("/health failed")
         await msg.answer(f"שגיאה: `{_escape_md(type(e).__name__)}: {_escape_md(str(e))}`")
@@ -252,9 +252,9 @@ async def cmd_price(msg: Message) -> None:
         p = await _http_get_json("/api/prices")
         prices = p.get("prices") or p
         if not isinstance(prices, dict) or not prices:
-            await msg.answer("אין נתוני מחיר כרגע.")
+            await msg.answer("אין נתוני מ�-יר כרגע.")
             return
-        lines = ["*מחירים \\(₪\\):*"]
+        lines = ["*מ�-ירים \\(₪\\):*"]
         for token, value in prices.items():
             # /api/prices returns {ils, usd} objects; fall back to scalar if not
             if isinstance(value, dict):
@@ -278,7 +278,7 @@ async def cmd_devices(msg: Message) -> None:
         await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
         return
     if not ADMIN_KEY:
-        await msg.answer("חסר `ADMIN_API_KEY` ב-.env של הבוט.")
+        await msg.answer("�-סר `ADMIN_API_KEY` ב-.env של הבוט.")
         return
     try:
         d = await _http_get_json(
@@ -301,7 +301,7 @@ async def cmd_devices(msg: Message) -> None:
             lines.append(f"_\\+ {len(devices) - 10} נוספים_")
         await msg.answer("\n".join(lines))
     except httpx.HTTPStatusError as e:
-        await msg.answer(f"admin API החזיר {e.response.status_code}.")
+        await msg.answer(f"admin API ה�-זיר {e.response.status_code}.")
     except Exception as e:
         log.exception("/devices failed")
         await msg.answer(f"שגיאה: `{_escape_md(str(e))}`")
@@ -338,7 +338,7 @@ async def cmd_control(msg: Message) -> None:
     try:
         g = await _http_get_json("/api/miniapp/health")
         if g.get("gateway_loaded"):
-            tok = "✓" if g.get("primary_bot_token_set") else "⚠ TELEGRAM_BOT_TOKEN חסר"
+            tok = "✓" if g.get("primary_bot_token_set") else "⚠ TELEGRAM_BOT_TOKEN �-סר"
             sections.append(f"🟢 Gateway: loaded · admins:{g.get('admin_ids_count')} · bot_token:{tok}")
         else:
             sections.append(f"🔴 Gateway: not loaded")
@@ -379,7 +379,7 @@ async def cmd_control(msg: Message) -> None:
     queue_items = []
     if 'g' in locals() and not g.get("primary_bot_token_set"):
         queue_items.append("• הגדר TELEGRAM_BOT_TOKEN ב-Railway")
-    queue_items.append("• פייר ESP — שלח /devices לבדיקה")
+    queue_items.append("• פייר ESP — של�- /devices לבדיקה")
     queue_items.append("• הגדר SMS_PROVIDER ב-Railway (Inforu)")
     queue_items.append("• BotFather: הגדר Mini App URL")
 
@@ -496,7 +496,7 @@ async def cmd_clear(msg: Message) -> None:
         await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
         return
     n = await session.clear(msg.chat.id)
-    await msg.answer(f"נוקה. נמחקו {n} הודעות.")
+    await msg.answer(f"נוקה. נמ�-קו {n} הודעות.")
 
 
 # ---------- Direct executor commands (no AI, no cost) ----------
@@ -575,12 +575,12 @@ async def cmd_ps(msg: Message) -> None:
                     "🐳 docker לא מותקן בסביבה הזו של הבוט.\n\n"
                     f"שירותים שמוגדרים ב-docker-compose.yml ({len(services)}):\n"
                     f"{services_str}\n\n"
-                    "להפעלת הסטטוס בפועל הרץ במחשב המארח: `docker compose ps`",
+                    "להפעלת הסטטוס בפועל הרץ במ�-שב המאר�-: `docker compose ps`",
                     parse_mode=None,
                 )
                 return
             except Exception as e:
-                await msg.answer(f"docker חסר ולא הצלחתי לקרוא compose: {e}")
+                await msg.answer(f"docker �-סר ולא הצל�-תי לקרוא compose: {e}")
                 return
         await msg.answer("🐳 docker לא מותקן + docker-compose.yml לא נמצא.", parse_mode=None)
         return
@@ -656,7 +656,7 @@ async def cmd_ai_mode(msg: Message) -> None:
         return
     await msg.answer(
         f"*AI mode:* `{_AI_MODE}`\n\n"
-        f"{'✅ Anthropic Claude עם tool use (עולה כסף)' if _AI_MODE == 'anthropic-tools' else '✅ SLH multi-provider (Groq/Gemini חינם)'}"
+        f"{'✅ Anthropic Claude עם tool use (עולה כסף)' if _AI_MODE == 'anthropic-tools' else '✅ SLH multi-provider (Groq/Gemini �-ינם)'}"
     )
 
 
@@ -738,7 +738,7 @@ async def on_text(msg: Message) -> None:
                 reply, new_msgs = await client.converse(hist, text, tier_mode="pro_fallback")
                 # Tell the user once per message — visible Pro-tier degradation
                 reply = ("⚠️ _Pro tier זמני על Groq Llama (Anthropic balance ריק). "
-                         "תפעולה רגילה תחזור מיד שיתווסף balance._\n\n") + reply
+                         "תפעולה רגילה ת�-זור מיד שיתווסף balance._\n\n") + reply
             else:
                 raise
 
@@ -774,7 +774,7 @@ async def on_text(msg: Message) -> None:
         new_remaining = decision.quota_remaining - 1
         if 0 < new_remaining <= 3 and decision.tier == "free":
             await msg.answer(
-                f"⚠️ נשארו לך {new_remaining} הודעות החודש. "
+                f"⚠️ נשארו לך {new_remaining} הודעות ה�-ודש. "
                 f"שדרג ל-Pro: `/upgrade pro`"
             )
     except Exception as e:

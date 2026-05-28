@@ -43,7 +43,7 @@ except Exception as _gw_err:  # pragma: no cover
     require_admin = None  # type: ignore
     GatewayError = None  # type: ignore
 
-# SLH Swarm � independent device mesh router (Phase 1 of SWARM_V1_BLUEPRINT).
+# SLH Swarm - independent device mesh router (Phase 1 of SWARM_V1_BLUEPRINT).
 # Same fail-safe pattern as the gateway: missing module can't block API boot.
 try:
     from api import swarm as _swarm
@@ -54,7 +54,7 @@ except Exception as _sw_err:  # pragma: no cover
     _SWARM_AVAILABLE = False
     _swarm = None  # type: ignore
 
-# Bot catalog � DB-backed list of all 31 Telegram bots in the fleet.
+# Bot catalog - DB-backed list of all 31 Telegram bots in the fleet.
 # Used by /admin/tokens.html + /admin/rotate-token.html instead of hardcoded JS arrays.
 try:
     from api import admin_bots_catalog as _bots_catalog
@@ -65,7 +65,7 @@ except Exception as _bc_err:  # pragma: no cover
     _BOTS_CATALOG_AVAILABLE = False
     _bots_catalog = None  # type: ignore
 
-# Personal expense tracker � Phase 1 of cashflow management feature.
+# Personal expense tracker - Phase 1 of cashflow management feature.
 # Per-user expenses table + monthly summary + recurring detection.
 try:
     from api import expenses as _expenses_router
@@ -76,7 +76,7 @@ except Exception as _exp_err:  # pragma: no cover
     _EXPENSES_AVAILABLE = False
     _expenses_router = None  # type: ignore
 
-# Secrets vault � unified inventory of all credentials (bot tokens, API keys,
+# Secrets vault - unified inventory of all credentials (bot tokens, API keys,
 # DB creds, AI providers). Stores metadata only, never secret values.
 try:
     from api import admin_secrets_catalog as _secrets_vault
@@ -87,7 +87,7 @@ except Exception as _sv_err:  # pragma: no cover
     _SECRETS_VAULT_AVAILABLE = False
     _secrets_vault = None  # type: ignore
 
-# Secrets vault Phase 2 � scheduled health sweep + Telegram alerts + daily digest.
+# Secrets vault Phase 2 - scheduled health sweep + Telegram alerts + daily digest.
 # Sits on top of admin_secrets_catalog (reuses _run_probe + _ensure_schema).
 try:
     from api import admin_secret_alerts as _secret_alerts
@@ -98,7 +98,7 @@ except Exception as _sa_err:  # pragma: no cover
     _SECRET_ALERTS_AVAILABLE = False
     _secret_alerts = None  # type: ignore
 
-# Public security beacon � sanitized aggregate counts for /my.html and any
+# Public security beacon - sanitized aggregate counts for /my.html and any
 # other personal page. No auth, no key names, no per-secret detail.
 try:
     from api import public_security_status as _public_security
@@ -151,7 +151,7 @@ from wellness_scheduler import init_wellness_scheduler, get_wellness_scheduler
 # === CONFIG ===
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:slh_secure_2026@localhost:5432/slh_main")
 BOT_TOKEN = os.getenv("EXPERTNET_BOT_TOKEN", "")
-# Broadcast bot — @SLH_AIR_bot is the main user-facing bot
+# Broadcast bot ג€” @SLH_AIR_bot is the main user-facing bot
 BROADCAST_BOT_TOKEN = os.getenv("SLH_AIR_TOKEN") or os.getenv("CORE_BOT_TOKEN") or os.getenv("AIRDROP_BOT_TOKEN", "")
 JWT_SECRET = os.getenv("JWT_SECRET", "")
 JWT_ALGORITHM = "HS256"
@@ -229,9 +229,9 @@ async def rate_limit_middleware(request: Request, call_next):
     return await call_next(request)
 
 
-# Admin keys � env-sourced only (no public-source default).
+# Admin keys - env-sourced only (no public-source default).
 # Set ADMIN_API_KEYS on Railway (comma-separated). If unset, admin calls fail 403.
-# For runtime rotation without touching env, use POST /api/admin/rotate-key �
+# For runtime rotation without touching env, use POST /api/admin/rotate-key -
 # rotated keys live in the admin_secrets DB table and are additive to env keys.
 ADMIN_API_KEYS = set(
     (os.getenv("ADMIN_API_KEYS") or "").split(",")
@@ -251,7 +251,7 @@ def _require_admin(authorization: Optional[str] = None, admin_key_header: Option
     if admin_key_header and admin_key_header in ADMIN_API_KEYS:
         return ADMIN_USER_ID
 
-    # Try DB-backed rotated keys (in-memory cached � no DB hit per request)
+    # Try DB-backed rotated keys (in-memory cached - no DB hit per request)
     if admin_key_header and _check_db_admin_key(admin_key_header):
         return ADMIN_USER_ID
 
@@ -343,7 +343,7 @@ app.include_router(therapists_router)
 app.include_router(device_inventory_router)
 app.include_router(tasks_router)
 
-# Swarm router � devices mesh API (gated; OK if module is missing).
+# Swarm router - devices mesh API (gated; OK if module is missing).
 if _SWARM_AVAILABLE and _swarm is not None:
     app.include_router(_swarm.router)
 
@@ -365,7 +365,7 @@ if _PUBLIC_SECURITY_AVAILABLE and _public_security is not None:
 
 # === DATABASE ===
 pool: Optional[asyncpg.Pool] = None
-_db_init_failed: bool = False  # True when shared_db_core pool init fails � /api/health returns 503
+_db_init_failed: bool = False  # True when shared_db_core pool init fails - /api/health returns 503
 
 @app.on_event("startup")
 async def startup():
@@ -373,15 +373,15 @@ async def startup():
     # SECURITY CHECK (C-3): warn if any default credentials are still in use
     _security_warnings = []
     if DATABASE_URL == "postgresql://postgres:slh_secure_2026@localhost:5432/slh_main":
-        _security_warnings.append("DATABASE_URL using default — set on Railway")
+        _security_warnings.append("DATABASE_URL using default ג€” set on Railway")
     if os.getenv("ADMIN_API_KEY", "slh_admin_2026") == "slh_admin_2026":
-        _security_warnings.append("ADMIN_API_KEY is default — set on Railway")
+        _security_warnings.append("ADMIN_API_KEY is default ג€” set on Railway")
     if os.getenv("ENCRYPTION_KEY", "slh_dev_key_CHANGE_ME_IN_PRODUCTION_2026") == "slh_dev_key_CHANGE_ME_IN_PRODUCTION_2026":
-        _security_warnings.append("ENCRYPTION_KEY is default — CRITICAL: set on Railway before storing real CEX keys!")
+        _security_warnings.append("ENCRYPTION_KEY is default ג€” CRITICAL: set on Railway before storing real CEX keys!")
     if os.getenv("ADMIN_BROADCAST_KEY", "slh-broadcast-2026-change-me") == "slh-broadcast-2026-change-me":
-        _security_warnings.append("ADMIN_BROADCAST_KEY is default — set on Railway")
+        _security_warnings.append("ADMIN_BROADCAST_KEY is default ג€” set on Railway")
     if not os.getenv("JWT_SECRET"):
-        _security_warnings.append("JWT_SECRET not set — JWT auth will be unreliable")
+        _security_warnings.append("JWT_SECRET not set ג€” JWT auth will be unreliable")
     for w in _security_warnings:
         print(f"[SECURITY WARNING] {w}")
     if _security_warnings:
@@ -399,7 +399,7 @@ async def startup():
         _db_init_failed = False
         print("[Startup] DB pool created via shared_db_core")
     except Exception as e:
-        print(f"[Startup][CRITICAL] DB pool init failed: {e!r} � /api/health will return 503")
+        print(f"[Startup][CRITICAL] DB pool init failed: {e!r} - /api/health will return 503")
         pool = None
         _db_init_failed = True
 
@@ -421,7 +421,7 @@ async def startup():
             except Exception as e:
                 print(f"[Startup][WARN] set_pool on {setter.__name__} failed: {e!r}")
 
-        # Each init isolated � one failure doesn't block the others or healthcheck
+        # Each init isolated - one failure doesn't block the others or healthcheck
         for init_name, init_coro in (("wellness", _init_wellness), ("threat", _init_threat), ("whatsapp", _init_whatsapp), ("agent_hub", _init_agent_hub), ("academia_ugc", _init_academia_ugc), ("bot_registry", _init_bot_registry), ("admin_rotate", _init_admin_rotate)):
             try:
                 await asyncio.wait_for(init_coro(), timeout=15.0)
@@ -429,14 +429,14 @@ async def startup():
             except Exception as e:
                 print(f"[Startup][WARN] init_{init_name} failed: {e!r}")
 
-    # Initialize wellness scheduler (APScheduler) � non-blocking
+    # Initialize wellness scheduler (APScheduler) - non-blocking
     try:
         await asyncio.wait_for(init_wellness_scheduler(DATABASE_URL), timeout=10.0)
         print("[Wellness] Scheduler initialized successfully")
     except Exception as e:
         print(f"[WARNING] Wellness scheduler initialization failed: {e!r}")
 
-    # STARTUP HARDENING: if pool creation failed, skip table creation � let uvicorn
+    # STARTUP HARDENING: if pool creation failed, skip table creation - let uvicorn
     # start serving so /api/health returns 200 and Railway healthcheck passes.
     if pool is None:
         print("[Startup] pool unavailable, skipping CREATE TABLE block; endpoints will degrade gracefully")
@@ -893,7 +893,7 @@ class EnsureUserRequest(BaseModel):
 async def ensure_user(req: EnsureUserRequest):
     """Idempotent user creation/update from a Telegram ID.
 
-    Used by the website's "manual login" flow — when a user types their
+    Used by the website's "manual login" flow ג€” when a user types their
     Telegram ID directly (without the Telegram Login Widget), we still need
     to persist them in web_users so they don't "disappear" on refresh.
 
@@ -904,7 +904,7 @@ async def ensure_user(req: EnsureUserRequest):
     - Rate limits and validation prevent abuse
     """
     tg_id = req.telegram_id
-    # Basic validation — must be a real Telegram user range
+    # Basic validation ג€” must be a real Telegram user range
     if tg_id < 100000 or tg_id > 9999999999:
         raise HTTPException(400, "Invalid Telegram ID")
 
@@ -1008,7 +1008,7 @@ class RegistrationApproveRequest(BaseModel):
 
 @app.post("/api/registration/initiate")
 async def registration_initiate(req: RegistrationInitRequest, authorization: Optional[str] = Header(None)):
-    """Start registration — create pending payment record."""
+    """Start registration ג€” create pending payment record."""
     user_id = get_current_user_id(authorization)
 
     async with pool.acquire() as conn:
@@ -1103,14 +1103,14 @@ async def registration_approve(
     try:
         _require_admin(authorization, x_admin_key)
     except HTTPException:
-        # Fallback: body field admin_key (deprecated � logs warning + only accepts env-matched value, not defaults)
+        # Fallback: body field admin_key (deprecated - logs warning + only accepts env-matched value, not defaults)
         env_keys = {k for k in os.getenv("ADMIN_API_KEYS", "").split(",") if k.strip()}
         legacy_key = os.getenv("ADMIN_API_KEY", "")
         if legacy_key:
             env_keys.add(legacy_key)
         if not (req.admin_key and req.admin_key in env_keys and req.admin_key != "slh_admin_2026"):
             raise HTTPException(403, "Admin authentication required (use X-Admin-Key header)")
-        print(f"[SECURITY][DEPRECATED] /api/registration/approve called with body admin_key � migrate to X-Admin-Key header")
+        print(f"[SECURITY][DEPRECATED] /api/registration/approve called with body admin_key - migrate to X-Admin-Key header")
 
     async with pool.acquire() as conn:
         # Verify pending registration exists
@@ -1168,7 +1168,7 @@ async def registration_approve(
     }
 
 
-# === SIMPLIFIED UNLOCK ENDPOINT (no JWT needed — works with ?uid= flow) ===
+# === SIMPLIFIED UNLOCK ENDPOINT (no JWT needed ג€” works with ?uid= flow) ===
 class UnlockRequest(BaseModel):
     user_id: int
     method: str = "payment_proof"  # payment_proof | coupon | admin
@@ -1186,9 +1186,9 @@ async def registration_unlock(
 ):
     """Unlock a user's full access via one of 3 methods:
 
-    1. payment_proof � user submits TX hash, goes to pending_review
-    2. coupon � user enters beta code, instantly unlocked if code valid + available
-    3. admin � admin key bypasses everything, instant unlock
+    1. payment_proof - user submits TX hash, goes to pending_review
+    2. coupon - user enters beta code, instantly unlocked if code valid + available
+    3. admin - admin key bypasses everything, instant unlock
          (auth via X-Admin-Key header preferred; body field deprecated)
 
     This is the NEW flow that doesn't require JWT, so it works with the
@@ -1224,7 +1224,7 @@ async def registration_unlock(
         if req.method == "admin":
             # Security: prefer header auth. Body field admin_key still accepted
             # as deprecated fallback (logs warning). Default "slh_admin_2026"
-            # is NEVER a valid key � admins must rotate.
+            # is NEVER a valid key - admins must rotate.
             try:
                 _require_admin(authorization, x_admin_key)
             except HTTPException:
@@ -1234,7 +1234,7 @@ async def registration_unlock(
                     env_keys.add(legacy_key)
                 if not (req.admin_key and req.admin_key in env_keys and req.admin_key != "slh_admin_2026"):
                     raise HTTPException(403, "Admin authentication required (use X-Admin-Key header)")
-                print(f"[SECURITY][DEPRECATED] /api/registration/unlock method=admin called with body admin_key � migrate to X-Admin-Key header")
+                print(f"[SECURITY][DEPRECATED] /api/registration/unlock method=admin called with body admin_key - migrate to X-Admin-Key header")
             async with conn.transaction():
                 await conn.execute("""
                     UPDATE web_users SET is_registered = TRUE, registered_at = CURRENT_TIMESTAMP
@@ -1262,10 +1262,10 @@ async def registration_unlock(
                 "method": "admin",
                 "user_id": req.user_id,
                 "slh_credited": REGISTRATION_SLH_AMOUNT,
-                "message": "Admin override — user is now fully registered"
+                "message": "Admin override ג€” user is now fully registered"
             }
 
-        # ─── Method 2: Beta coupon ───
+        # ג”€ג”€ג”€ Method 2: Beta coupon ג”€ג”€ג”€
         if req.method == "coupon":
             code = (req.coupon_code or "").strip().upper()
             if not code:
@@ -1291,7 +1291,7 @@ async def registration_unlock(
                     "ok": True,
                     "status": "already_redeemed",
                     "nft_number": already,
-                    "message": f"You already redeemed coupon — you are Genesis Member #{already}"
+                    "message": f"You already redeemed coupon ג€” you are Genesis Member #{already}"
                 }
 
             async with conn.transaction():
@@ -1324,9 +1324,9 @@ async def registration_unlock(
                 """, req.user_id)
 
                 # Credit coupon bonus in ZVK (cheap reward token, NOT SLH which is scarce premium)
-                # 1 SLH = 444 ILS, so to give ~44 ILS worth = 10 ZVK (1 ZVK ≈ 4.4 ILS)
+                # 1 SLH = 444 ILS, so to give ~44 ILS worth = 10 ZVK (1 ZVK ג‰ˆ 4.4 ILS)
                 # Post-distribution gift = 100 ZVK (~444 ILS) handled by cashback engine
-                # SLH stays scarce — encourages users to BUY SLH from existing holders
+                # SLH stays scarce ג€” encourages users to BUY SLH from existing holders
                 slh_bonus_legacy = float(coupon["slh_bonus"] or 0.1)
                 zvk_amount = 10.0  # ~44 ILS distribution token (10 ZVK)
                 await conn.execute("""
@@ -1337,9 +1337,9 @@ async def registration_unlock(
                 await conn.execute("""
                     INSERT INTO token_transfers (from_user_id, to_user_id, token, amount, memo, tx_type)
                     VALUES ($1, $1, 'ZVK', $2, $3, 'beta_coupon')
-                """, req.user_id, zvk_amount, f'Beta coupon {code} — Genesis #{nft_number} (ZVK distribution token)')
+                """, req.user_id, zvk_amount, f'Beta coupon {code} ג€” Genesis #{nft_number} (ZVK distribution token)')
 
-            print(f"[Unlock] Coupon '{code}' redeemed by user {req.user_id} — Genesis #{nft_number} ({zvk_amount} ZVK)")
+            print(f"[Unlock] Coupon '{code}' redeemed by user {req.user_id} ג€” Genesis #{nft_number} ({zvk_amount} ZVK)")
             return {
                 "ok": True,
                 "status": "approved",
@@ -1349,13 +1349,13 @@ async def registration_unlock(
                 "nft_number": nft_number,
                 "nft_name": f"{coupon['nft_reward']}{nft_number}",
                 "zvk_credited": zvk_amount,
-                "slh_credited": 0,  # SLH NOT given — must be earned via cashback or purchased
+                "slh_credited": 0,  # SLH NOT given ג€” must be earned via cashback or purchased
                 "post_distribution_gift_zvk": 100,  # promised after first share
                 "remaining_slots": int(coupon["max_uses"]) - nft_number,
-                "message": f"🎉 ברוכים הבאים Genesis Member #{nft_number}! קיבלת 10 ZVK + NFT. אחרי ההפצה הראשונה — עוד 100 ZVK מתנה!"
+                "message": f"נ‰ ׳‘׳¨׳•׳›׳™׳ ׳”׳‘׳-׳™׳ Genesis Member #{nft_number}! ׳§׳™׳‘׳׳× 10 ZVK + NFT. ׳-ן¿½-׳¨׳™ ׳”׳”׳₪׳¦׳” ׳”׳¨׳-׳©׳•׳ ׳” ג€” ׳¢׳•׳“ 100 ZVK ׳׳×׳ ׳”!"
             }
 
-        # ─── Method 3: Payment proof (same as submit-proof but no JWT) ───
+        # ג”€ג”€ג”€ Method 3: Payment proof (same as submit-proof but no JWT) ג”€ג”€ג”€
         if req.method == "payment_proof":
             tx_hash = (req.tx_hash or "").strip()
             async with conn.transaction():
@@ -1376,7 +1376,7 @@ async def registration_unlock(
                 "method": "payment_proof",
                 "user_id": req.user_id,
                 "tx_hash": tx_hash,
-                "message": "Payment proof received — waiting for admin approval (up to 24 hours)"
+                "message": "Payment proof received ג€” waiting for admin approval (up to 24 hours)"
             }
 
         raise HTTPException(400, f"Unknown method: {req.method}")
@@ -1405,12 +1405,12 @@ async def beta_status():
 
 
 # ============================================================
-# CASHBACK ENGINE — distribution rewards for Genesis users
+# CASHBACK ENGINE ג€” distribution rewards for Genesis users
 # ============================================================
 # Each user accumulates "distributions" (verified referrals).
 # When they hit a tier, they automatically receive a SLH bonus.
 #
-# Tiers (referrals → SLH bonus):
+# Tiers (referrals ג†’ SLH bonus):
 #   First successful share = +1 SLH (auto-credited as "post-distribution gift")
 #   5  shares = 0.5 SLH cashback
 #   10 shares = 1.5 SLH cashback (cumulative includes prior tiers)
@@ -1419,21 +1419,21 @@ async def beta_status():
 #   100 shares = 30 SLH cashback
 
 # All amounts in ZVK (NOT SLH - SLH stays scarce, only purchased or earned via tasks)
-# 10 ZVK ≈ 44 ILS (matches Genesis distribution amount, 1 ZVK ≈ 4.4 ILS)
+# 10 ZVK ג‰ˆ 44 ILS (matches Genesis distribution amount, 1 ZVK ג‰ˆ 4.4 ILS)
 # Math: 1 SLH equivalent value = 100 ZVK
 CASHBACK_TIERS = [
-    (1,    100,  "post_distribution_gift"),  # 100 ZVK (~444 ILS) — first share gift
+    (1,    100,  "post_distribution_gift"),  # 100 ZVK (~444 ILS) ג€” first share gift
     (5,     50,  "tier_bronze"),              # 50 ZVK (~222 ILS)
     (10,   150,  "tier_silver"),              # 150 ZVK (~666 ILS)
     (25,   500,  "tier_gold"),                # 500 ZVK (~2,220 ILS)
     (50,  1200,  "tier_platinum"),            # 1,200 ZVK (~5,328 ILS)
     (100, 3000,  "tier_diamond"),             # 3,000 ZVK (~13,320 ILS)
 ]
-CASHBACK_TOKEN = "ZVK"  # NEVER SLH — SLH is the scarce premium token
+CASHBACK_TOKEN = "ZVK"  # NEVER SLH ג€” SLH is the scarce premium token
 
 
 async def _ensure_cashback_table(conn):
-    """Idempotent — creates the distribution + cashback tables if missing."""
+    """Idempotent ג€” creates the distribution + cashback tables if missing."""
     await conn.execute("""
         CREATE TABLE IF NOT EXISTS user_distributions (
             user_id BIGINT NOT NULL,
@@ -1492,7 +1492,7 @@ async def get_cashback_status(user_id: int):
 @app.post("/api/cashback/process/{user_id}")
 async def process_cashback(user_id: int):
     """Recompute cashback tiers for a user based on their verified distributions.
-    Credits in ZVK (NOT SLH). Idempotent — already-credited tiers won't be paid twice.
+    Credits in ZVK (NOT SLH). Idempotent ג€” already-credited tiers won't be paid twice.
     """
     async with pool.acquire() as conn:
         await _ensure_cashback_table(conn)
@@ -1502,7 +1502,7 @@ async def process_cashback(user_id: int):
         newly_credited = []
         for threshold, amount, key in CASHBACK_TIERS:
             if verified_count >= threshold:
-                # Try to insert — UNIQUE constraint prevents double-pay
+                # Try to insert ג€” UNIQUE constraint prevents double-pay
                 inserted = await conn.fetchval("""
                     INSERT INTO user_cashback (user_id, tier_key, tier_threshold, slh_amount)
                     VALUES ($1, $2, $3, $4)
@@ -1510,7 +1510,7 @@ async def process_cashback(user_id: int):
                     RETURNING id
                 """, user_id, key, threshold, amount)
                 if inserted:
-                    # Credit ZVK balance (NOT SLH — SLH stays scarce)
+                    # Credit ZVK balance (NOT SLH ג€” SLH stays scarce)
                     await conn.execute("""
                         INSERT INTO token_balances (user_id, token, balance)
                         VALUES ($1, $2, $3)
@@ -1528,7 +1528,7 @@ async def process_cashback(user_id: int):
 
 
 # ============================================================
-# EXTERNAL WALLETS — Bybit, Binance, custom TON addresses
+# EXTERNAL WALLETS ג€” Bybit, Binance, custom TON addresses
 # ============================================================
 # Users can register multiple external wallet addresses (TON, BSC, ETH, BTC)
 # from exchanges (Bybit, Binance, Bitget, OKX) or self-custody.
@@ -1697,14 +1697,14 @@ async def refresh_all_external_wallets(user_id: int):
 
 
 # ============================================================
-# IMMUTABLE AUDIT LOG — Institutional / Regulator-Grade
+# IMMUTABLE AUDIT LOG ג€” Institutional / Regulator-Grade
 # ============================================================
 # Every sensitive action is written to an append-only log with a
 # SHA-256 hash chain. Each entry includes the hash of the previous
 # entry, making tampering detectable: any modification breaks the chain.
 #
 # This is the table regulators ask to see first. We never DELETE or
-# UPDATE rows — only INSERT.
+# UPDATE rows ג€” only INSERT.
 
 async def _ensure_institutional_audit_table(conn):
     await conn.execute("""
@@ -1909,7 +1909,7 @@ async def audit_recent(limit: int = 100, action_filter: Optional[str] = None, us
 
 
 # ============================================================
-# CEX INTEGRATIONS — Bybit + Binance (READ-ONLY)
+# CEX INTEGRATIONS ג€” Bybit + Binance (READ-ONLY)
 # ============================================================
 # Each user can link their own Bybit/Binance API keys (READ-ONLY scope).
 # Keys are encrypted at rest, never logged. We only call GET endpoints.
@@ -1960,7 +1960,7 @@ async def _ensure_cex_keys_table(conn):
 
 def _get_encryption_key() -> bytes:
     """Derive a 32-byte AES-GCM key from ENCRYPTION_KEY env var via SHA-256.
-    Accepts any length input — hashes to produce a stable 256-bit key.
+    Accepts any length input ג€” hashes to produce a stable 256-bit key.
     """
     raw = os.getenv("ENCRYPTION_KEY", "slh_dev_key_CHANGE_ME_IN_PRODUCTION_2026")
     return hashlib.sha256(raw.encode("utf-8")).digest()
@@ -1976,7 +1976,7 @@ def _encrypt_secret(secret: str) -> str:
     try:
         from cryptography.hazmat.primitives.ciphers.aead import AESGCM
     except ImportError:
-        # Fallback if cryptography lib not installed — this should never happen
+        # Fallback if cryptography lib not installed ג€” this should never happen
         # in production. Force AES-GCM via requirements.txt.
         return _encrypt_secret_xor(secret)
 
@@ -2010,7 +2010,7 @@ def _decrypt_secret(blob: str) -> str:
 
 
 def _encrypt_secret_xor(secret: str) -> str:
-    """LEGACY v1 XOR encryption — kept only for backwards compat / fallback."""
+    """LEGACY v1 XOR encryption ג€” kept only for backwards compat / fallback."""
     key = os.getenv("ENCRYPTION_KEY", "slh_dev_key_CHANGE_ME_IN_PRODUCTION_2026")
     result = []
     for i, c in enumerate(secret):
@@ -2019,7 +2019,7 @@ def _encrypt_secret_xor(secret: str) -> str:
 
 
 def _decrypt_secret_xor(hex_str: str) -> str:
-    """LEGACY v1 XOR decryption — called automatically by _decrypt_secret for old data."""
+    """LEGACY v1 XOR decryption ג€” called automatically by _decrypt_secret for old data."""
     try:
         encrypted = bytes.fromhex(hex_str).decode("latin-1")
         key = os.getenv("ENCRYPTION_KEY", "slh_dev_key_CHANGE_ME_IN_PRODUCTION_2026")
@@ -2282,7 +2282,7 @@ async def cex_portfolio(user_id: int):
 
 
 # ============================================================
-# BSC HOLDERS — via Etherscan V2 Multichain API (chainid=56)
+# BSC HOLDERS ג€” via Etherscan V2 Multichain API (chainid=56)
 # ============================================================
 # Etherscan's V2 API works across all supported chains including BSC.
 # Uses BSCSCAN_API_KEY env var (fallback to ETHERSCAN_API_KEY).
@@ -2366,9 +2366,9 @@ async def get_slh_holders(limit: int = 100, force_refresh: bool = False):
     """Fetch SLH token holders from BSC.
 
     Tries multiple free providers in order:
-    1. BitQuery GraphQL (free 10k/month) — BITQUERY_API_KEY env var
-    2. Etherscan V2 Multichain (PRO only for BSC) — BSCSCAN_API_KEY
-    3. NodeReal (free 100k/day) — NODEREAL_API_KEY
+    1. BitQuery GraphQL (free 10k/month) ג€” BITQUERY_API_KEY env var
+    2. Etherscan V2 Multichain (PRO only for BSC) ג€” BSCSCAN_API_KEY
+    3. NodeReal (free 100k/day) ג€” NODEREAL_API_KEY
 
     Cached for 5 minutes.
     """
@@ -2402,7 +2402,7 @@ async def get_slh_holders(limit: int = 100, force_refresh: bool = False):
             "total_holders": 0,
         }
 
-    # Etherscan V2 Multichain API — chainid=56 is BSC
+    # Etherscan V2 Multichain API ג€” chainid=56 is BSC
     # tokenholderlist is a PRO-tier endpoint in V2, but tokentx works on free tier
     # We'll use tokensupply + tokenbalance for the contract to get top holders
     url = (
@@ -2529,7 +2529,7 @@ async def beta_create_coupon(
             env_keys.add(legacy_key)
         if not (admin_key and admin_key in env_keys and admin_key != "slh_admin_2026"):
             raise HTTPException(403, "Admin authentication required (use X-Admin-Key header)")
-        print(f"[SECURITY][DEPRECATED] /api/beta/create-coupon called with query admin_key � migrate to X-Admin-Key header")
+        print(f"[SECURITY][DEPRECATED] /api/beta/create-coupon called with query admin_key - migrate to X-Admin-Key header")
     code = code.strip().upper()
     if not code or len(code) < 4:
         raise HTTPException(400, "Code must be at least 4 characters")
@@ -2595,7 +2595,7 @@ async def link_wallet(req: LinkWalletRequest):
     """Link a Web3 (BSC/ETH) wallet address to a web_users row.
 
     Validates the address format (0x + 40 hex chars) and stores it lowercase.
-    Signature verification is optional — if present, we verify personal_sign.
+    Signature verification is optional ג€” if present, we verify personal_sign.
     """
     addr = (req.address or "").strip().lower()
     if not addr.startswith("0x") or len(addr) != 42:
@@ -2603,7 +2603,7 @@ async def link_wallet(req: LinkWalletRequest):
     try:
         int(addr[2:], 16)  # ensure hex
     except ValueError:
-        raise HTTPException(400, "Invalid Ethereum address — not hex")
+        raise HTTPException(400, "Invalid Ethereum address ג€” not hex")
 
     if not req.user_id:
         raise HTTPException(400, "user_id required")
@@ -2612,7 +2612,7 @@ async def link_wallet(req: LinkWalletRequest):
         # Ensure user exists
         exists = await conn.fetchval("SELECT 1 FROM web_users WHERE telegram_id=$1", req.user_id)
         if not exists:
-            raise HTTPException(404, "User not found — please login first")
+            raise HTTPException(404, "User not found ג€” please login first")
 
         # Check for collision: this wallet already linked to a different user
         other = await conn.fetchval(
@@ -2677,7 +2677,7 @@ async def update_user_profile(req: ProfileUpdateRequest):
     """Update user's custom profile fields (display_name, bio, language).
 
     These fields are SET BY THE USER and persist across Telegram re-authentication.
-    Only non-None fields are updated — pass partial objects to avoid wiping.
+    Only non-None fields are updated ג€” pass partial objects to avoid wiping.
     Validation:
       - display_name: 2-32 chars, stripped
       - bio: up to 200 chars
@@ -2718,7 +2718,7 @@ async def update_user_profile(req: ProfileUpdateRequest):
         raise HTTPException(400, "No fields to update")
 
     params.append(req.user_id)
-    # SECURITY: whitelisted � 'updates' entries built only from hardcoded column literals (display_name, display_name_set_at, bio, language_pref); all user values are parameterized via $idx
+    # SECURITY: whitelisted - 'updates' entries built only from hardcoded column literals (display_name, display_name_set_at, bio, language_pref); all user values are parameterized via $idx
     sql = f"UPDATE web_users SET {', '.join(updates)} WHERE telegram_id = ${idx} RETURNING display_name, bio, language_pref, first_name, username"
 
     async with pool.acquire() as conn:
@@ -2897,7 +2897,7 @@ async def create_stake(req: StakeRequest, x_admin_override_zuz: Optional[str] = 
     if req.amount < min_amount:
         raise HTTPException(400, f"Minimum deposit is {min_amount} {currency}")
 
-    # ZUZ Guardian gate � stakes concentrate capital; a banned user should not lock more.
+    # ZUZ Guardian gate - stakes concentrate capital; a banned user should not lock more.
     try:
         from shared.guardian_gate import require_clean_zuz as _zuz_gate
         await _zuz_gate(pool, req.user_id, admin_override_header=x_admin_override_zuz)
@@ -3005,7 +3005,7 @@ async def approve_stake(
             if not pos:
                 raise HTTPException(404, "Position not found")
 
-            # Safely read status � default to 'active' if column missing
+            # Safely read status - default to 'active' if column missing
             pos_dict = dict(pos)
             current_status = pos_dict.get("status", "active")
 
@@ -3051,7 +3051,7 @@ async def approve_stake(
                     "UPDATE staking_positions SET status='active' WHERE id=$1", position_id
                 )
             except Exception:
-                pass  # status column missing � position is treated as active
+                pass  # status column missing - position is treated as active
 
             # Distribute referral commissions
             try:
@@ -3093,7 +3093,7 @@ _price_cache = {"data": None, "ts": 0}
 
 @app.get("/api/prices")
 async def get_prices():
-    """Proxy for CoinGecko prices — cached 60s, 10s timeout, 2 retries"""
+    """Proxy for CoinGecko prices ג€” cached 60s, 10s timeout, 2 retries"""
     import aiohttp, time as _time
     now = _time.time()
     # Return cached data if fresh (< 60s)
@@ -3149,7 +3149,7 @@ async def get_stats():
 # === HEALTH ===
 @app.get("/api/health")
 async def health():
-    """Health check � returns 503 when DB pool is unavailable (Phase 0: no silent lies)."""
+    """Health check - returns 503 when DB pool is unavailable (Phase 0: no silent lies)."""
     if pool is None or _db_init_failed:
         return JSONResponse(
             {"status": "error", "db": "pool_unavailable", "version": "1.1.0"},
@@ -3193,7 +3193,7 @@ if _GATEWAY_AVAILABLE:
 
     @app.get("/api/miniapp/health")
     async def miniapp_health():
-        """Unauthenticated probe for dashboards � proves the gateway module loaded."""
+        """Unauthenticated probe for dashboards - proves the gateway module loaded."""
         import os as _os
         return {
             "gateway_loaded": True,
@@ -3214,7 +3214,7 @@ else:
 
 
 # ============================================================================
-# AI Spark � Subscription mirror endpoints (Phase B)
+# AI Spark - Subscription mirror endpoints (Phase B)
 # slh-claude-bot is the canonical source (SQLite). It pushes state here so the
 # Mini App widget can show live tier + quota without bouncing through the bot.
 # Dual-write architecture: bot writes SQLite first (always succeeds), then
@@ -3267,7 +3267,7 @@ async def ai_spark_sync(req: AISparkSyncReq, request: Request):
     if pool is None:
         raise HTTPException(503, "db pool not ready")
 
-    # asyncpg requires datetime instances for TIMESTAMP columns � strings raise
+    # asyncpg requires datetime instances for TIMESTAMP columns - strings raise
     # DataError even with explicit ::timestamp cast. Parse defensively here so
     # the bot can keep sending ISO-8601 strings.
     def _parse_dt(value):
@@ -3316,7 +3316,7 @@ async def ai_spark_sync(req: AISparkSyncReq, request: Request):
 async def ai_spark_credits(user_id: int):
     """Public read: returns subscription state for Mini App widget.
 
-    Currently no auth � returns minimal safe info. If we ever store secrets
+    Currently no auth - returns minimal safe info. If we ever store secrets
     here (we shouldn't), gate with verify_miniapp_request. For now: tier +
     quota are not sensitive (the bot already shows them via /credits).
     """
@@ -3403,9 +3403,9 @@ async def transfer_tokens(req: TransferRequest):
 # === TWO-TIER AFFILIATE PROGRAM ===
 # Per 2026-04-20 Dynamic Yield pivot: reduced from 10-gen to 2-tier to comply with
 # securities regulation (MLM/Ponzi-adjacent structure removed).
-# See ops/DYNAMIC_YIELD_SPEC_20260420.md �7 and COPY_OVERHAUL_URGENT_20260420.md.
+# See ops/DYNAMIC_YIELD_SPEC_20260420.md ן¿½7 and COPY_OVERHAUL_URGENT_20260420.md.
 # Payouts funded from separate referral budget carved out of real system revenue
-# (course sales, marketplace fees, SaaS subs) � NOT from other users' deposits.
+# (course sales, marketplace fees, SaaS subs) - NOT from other users' deposits.
 REFERRAL_RATES = {
     1: 0.20,   # Tier 1 (direct referral): 20% of their purchase
     2: 0.05,   # Tier 2 (referral's referral): 5% of their purchase
@@ -3644,7 +3644,7 @@ async def get_activity(user_id: int, limit: int = Query(30, le=100)):
             )
             for r in rows:
                 activities.append({
-                    "type": "staking", "icon": "💎",
+                    "type": "staking", "icon": "נ’",
                     "title": f"Staked {float(r['amount'])} TON ({r['plan']})",
                     "status": r["status"], "timestamp": r["ts"].isoformat() if r["ts"] else None,
                 })
@@ -3659,7 +3659,7 @@ async def get_activity(user_id: int, limit: int = Query(30, le=100)):
             )
             for r in rows:
                 activities.append({
-                    "type": "deposit", "icon": "📥",
+                    "type": "deposit", "icon": "נ“¥",
                     "title": f"Deposited {float(r['amount'])} {r['currency'] or 'TON'} ({r['plan_key']})",
                     "status": r["status"], "timestamp": r["ts"].isoformat() if r["ts"] else None,
                 })
@@ -3674,7 +3674,7 @@ async def get_activity(user_id: int, limit: int = Query(30, le=100)):
             )
             for r in rows:
                 activities.append({
-                    "type": "transfer_out", "icon": "📤",
+                    "type": "transfer_out", "icon": "נ“₪",
                     "title": f"Sent {float(r['amount'])} {r['token']} to {r['to_user_id']}",
                     "status": "completed", "timestamp": r["ts"].isoformat() if r["ts"] else None,
                 })
@@ -3689,7 +3689,7 @@ async def get_activity(user_id: int, limit: int = Query(30, le=100)):
             )
             for r in rows:
                 activities.append({
-                    "type": "transfer_in", "icon": "📥",
+                    "type": "transfer_in", "icon": "נ“¥",
                     "title": f"Received {float(r['amount'])} {r['token']} from {r['from_user_id']}",
                     "status": "completed", "timestamp": r["ts"].isoformat() if r["ts"] else None,
                 })
@@ -3704,7 +3704,7 @@ async def get_activity(user_id: int, limit: int = Query(30, le=100)):
             )
             for r in rows:
                 activities.append({
-                    "type": "referral_earning", "icon": "🤝",
+                    "type": "referral_earning", "icon": "נ₪",
                     "title": f"Earned {float(r['commission_amount'])} {r['token']} from Gen {r['generation']} referral",
                     "status": "completed", "timestamp": r["ts"].isoformat() if r["ts"] else None,
                 })
@@ -3719,7 +3719,7 @@ async def get_activity(user_id: int, limit: int = Query(30, le=100)):
             )
             for r in rows:
                 activities.append({
-                    "type": "daily_claim", "icon": "🎁",
+                    "type": "daily_claim", "icon": "נ",
                     "title": f"Daily claim: {float(r['amount'])} tokens (streak {r['streak']})",
                     "status": "completed", "timestamp": r["ts"].isoformat() if r["ts"] else None,
                 })
@@ -3768,9 +3768,9 @@ async def global_leaderboard(category: str = Query("xp", enum=["xp", "balance", 
     Filters out test/seed user IDs (100001-299999) and negative IDs (group chats)
     so the leaderboard shows only real Telegram users.
     """
-    # Test/seed IDs to exclude — keep real Telegram users only
+    # Test/seed IDs to exclude ג€” keep real Telegram users only
     # Real Telegram user IDs are ALWAYS positive and typically > 1M
-    # SECURITY: whitelisted � EXCLUDE_RANGE is a hardcoded constant, not user input; category param is constrained by FastAPI enum
+    # SECURITY: whitelisted - EXCLUDE_RANGE is a hardcoded constant, not user input; category param is constrained by FastAPI enum
     EXCLUDE_RANGE = "user_id >= 1000000 AND user_id > 0"
     async with pool.acquire() as conn:
         rows = []
@@ -3888,7 +3888,7 @@ async def _extended_startup():
         print(f"[community] init warning: {e}")
     try:
         _payments_monitor_start()
-        print("[payments-monitor] started � polling BSC Genesis wallet")
+        print("[payments-monitor] started ן¿½ polling BSC Genesis wallet")
     except Exception as e:
         print(f"[payments-monitor] start warning: {e}")
 app.router.on_startup.clear()
@@ -3912,7 +3912,7 @@ class CommunityCommentCreate(BaseModel):
 
 @app.get("/api/community/rss")
 async def community_rss():
-    """RSS 2.0 feed of recent community posts � for IFTTT/Zapier/Buffer auto-share.
+    """RSS 2.0 feed of recent community posts - for IFTTT/Zapier/Buffer auto-share.
 
     Usage:
       1. Register at ifttt.com (free, 2 applets)
@@ -3945,7 +3945,7 @@ async def community_rss():
     rss = (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<rss version="2.0">\n<channel>\n'
-        '<title>SLH Spark � ?????</title>\n'
+        '<title>SLH Spark - ?????</title>\n'
         '<link>https://slh-nft.com/community.html</link>\n'
         '<description>Official feed of SLH Spark community updates, product launches, and ecosystem news.</description>\n'
         '<language>he</language>\n'
@@ -3999,7 +3999,7 @@ async def community_create_post(body: CommunityPostCreate):
     if image_data:
         if not image_data.startswith("data:image/"):
             image_data = None  # silently drop if not a proper data URL
-        elif len(image_data) > 3_500_000:  # 2MB base64 ≈ 2.7MB encoded, +safety
+        elif len(image_data) > 3_500_000:  # 2MB base64 ג‰ˆ 2.7MB encoded, +safety
             raise HTTPException(413, "Image too large (max 2MB)")
 
     async with pool.acquire() as conn:
@@ -4254,7 +4254,7 @@ async def record_deposit(req: DepositRequest, x_admin_override_zuz: Optional[str
     if not req.tx_hash.strip():
         raise HTTPException(400, "tx_hash is required")
 
-    # ZUZ Guardian gate � deposit credits an on-chain tx to an internal balance.
+    # ZUZ Guardian gate - deposit credits an on-chain tx to an internal balance.
     # Block if recipient account is banned (even if the on-chain tx is real).
     try:
         from shared.guardian_gate import require_clean_zuz as _zuz_gate
@@ -4368,7 +4368,7 @@ async def wallet_send(
     if not _check_wallet_send_rate(user_id, cooldown_seconds=5):
         raise HTTPException(429, "Too many requests, wait a few seconds")
 
-    # ZUZ Guardian gate � block senders with ZUZ >= 100 or active ban
+    # ZUZ Guardian gate - block senders with ZUZ >= 100 or active ban
     try:
         from shared.guardian_gate import require_clean_zuz as _zuz_gate
         await _zuz_gate(pool, user_id, admin_override_header=x_admin_override_zuz)
@@ -4491,7 +4491,7 @@ async def admin_dashboard(
     authorization: Optional[str] = Header(None),
     x_admin_key: Optional[str] = Header(None),
 ):
-    """Aggregated admin dashboard data — all stats in one call.
+    """Aggregated admin dashboard data ג€” all stats in one call.
 
     SECURITY FIX (H-1): Now requires admin authentication via JWT or X-Admin-Key header.
     """
@@ -4516,7 +4516,7 @@ async def admin_dashboard(
         total_events = await safe(conn, "SELECT COUNT(*) FROM analytics_events")
         total_visitors = await safe(conn, "SELECT COUNT(DISTINCT visitor_id) FROM analytics_events WHERE visitor_id != ''")
 
-        # Recent signups — real Telegram IDs only
+        # Recent signups ג€” real Telegram IDs only
         today_signups = await safe(conn, "SELECT COUNT(*) FROM web_users WHERE last_login >= $1 AND telegram_id >= 1000000", today_start)
 
         # Referral stats
@@ -4543,7 +4543,7 @@ async def admin_dashboard(
         except Exception:
             top_pages = []
 
-        # Recent users — REAL users only (filter test IDs + group chats)
+        # Recent users ג€” REAL users only (filter test IDs + group chats)
         try:
             recent = await conn.fetch(
                 "SELECT telegram_id, username, first_name, last_login FROM web_users "
@@ -4596,7 +4596,7 @@ async def auth_bot_sync(req: BotSyncRequest):
     Creates / updates the user in web_users so they can log into the
     website / mini-app using the same Telegram ID WITHOUT going through
     @userinfobot or the Telegram Login Widget. This is the core of the
-    seamless registration UX: open bot → press /start → you're in.
+    seamless registration UX: open bot ג†’ press /start ג†’ you're in.
 
     The bot passes a shared secret so random clients can't create users.
     Returns a short-lived JWT so the bot can generate a "login link" that
@@ -4642,14 +4642,14 @@ async def auth_bot_sync(req: BotSyncRequest):
     except Exception as e:
         print(f"[bot-sync] jwt creation failed (JWT_SECRET missing?): {e}")
 
-    # Always return a login URL — even without JWT, the dashboard accepts ?uid=
+    # Always return a login URL ג€” even without JWT, the dashboard accepts ?uid=
     login_url = (
         f"https://slh-nft.com/dashboard.html?uid={req.telegram_id}&jwt={token}"
         if token else
         f"https://slh-nft.com/dashboard.html?uid={req.telegram_id}"
     )
 
-    print(f"[bot-sync] Synced user {req.telegram_id} (@{req.username}) — registered={is_registered}")
+    print(f"[bot-sync] Synced user {req.telegram_id} (@{req.username}) ג€” registered={is_registered}")
     return {
         "ok": True,
         "telegram_id": req.telegram_id,
@@ -4904,7 +4904,7 @@ async def marketplace_list_item(req: MarketplaceListRequest):
     async with pool.acquire() as conn:
         exists = await conn.fetchval("SELECT 1 FROM web_users WHERE telegram_id=$1", req.seller_id)
         if not exists:
-            raise HTTPException(404, "Seller not found — please login first")
+            raise HTTPException(404, "Seller not found ג€” please login first")
 
         # Admin listings are auto-approved
         initial_status = "approved" if req.seller_id == ADMIN_USER_ID else "pending"
@@ -4923,7 +4923,7 @@ async def marketplace_list_item(req: MarketplaceListRequest):
         "item_id": row["id"],
         "status": row["status"],
         "created_at": row["created_at"].isoformat() if row["created_at"] else None,
-        "message": "פריט הועלה לאישור" if initial_status == "pending" else "פריט פורסם בהצלחה"
+        "message": "׳₪׳¨׳™׳˜ ׳”׳•׳¢׳׳” ׳׳-׳™׳©׳•׳¨" if initial_status == "pending" else "׳₪׳¨׳™׳˜ ׳₪׳•׳¨׳¡׳ ׳‘׳”׳¦׳ן¿½-׳”"
     }
 
 
@@ -5037,7 +5037,7 @@ async def marketplace_buy(req: MarketplaceBuyRequest):
         async with conn.transaction():
             buyer = await conn.fetchval("SELECT 1 FROM web_users WHERE telegram_id=$1", req.buyer_id)
             if not buyer:
-                raise HTTPException(404, "Buyer not found — please login first")
+                raise HTTPException(404, "Buyer not found ג€” please login first")
 
             item = await conn.fetchrow("""
                 SELECT id, seller_id, title, price, currency, stock, status
@@ -5082,7 +5082,7 @@ async def marketplace_buy(req: MarketplaceBuyRequest):
         "currency": item["currency"],
         "status": "pending",
         "created_at": order["created_at"].isoformat() if order["created_at"] else None,
-        "message": "הזמנה נוצרה — ממתין לתשלום",
+        "message": "׳”׳–׳׳ ׳” ׳ ׳•׳¦׳¨׳” ג€” ׳׳׳×׳™׳ ׳׳×׳©׳׳•׳",
     }
 
 
@@ -5257,7 +5257,7 @@ async def admin_activity(
                 name = r["username"] or r["first_name"] or str(r["telegram_id"])
                 activities.append({
                     "type": "login",
-                    "icon": "👤",
+                    "icon": "נ‘₪",
                     "text": f"User @{name} logged in",
                     "time": r["last_login"].isoformat() if r["last_login"] else ""
                 })
@@ -5274,7 +5274,7 @@ async def admin_activity(
                 status = "approved" if r["payment_status"] == "approved" else "pending"
                 activities.append({
                     "type": "payment",
-                    "icon": "💰",
+                    "icon": "נ’°",
                     "text": f"Premium payment ({status}): {r['amount']} from user #{r['user_id']}",
                     "time": r["created_at"].isoformat() if r["created_at"] else ""
                 })
@@ -5287,15 +5287,15 @@ async def admin_activity(
 
 
 # ============================================================
-# TOKENOMICS — SLH/MNH/ZVK dual-track economy
+# TOKENOMICS ג€” SLH/MNH/ZVK dual-track economy
 # ============================================================
 # SLH = Premium/Governance (high value, scarce, deflationary)
 # MNH = ILS-pegged stablecoin (free internal transfers)
 # ZVK = Activity rewards (low value, high volume)
 #
-# Revenue → 50% → Buyback SLH from DEX → Burn → deflationary pressure
-# Staking SLH → earns ZVK+MNH yield → locks supply
-# Internal MNH transfers → FREE (internal ledger, no blockchain)
+# Revenue ג†’ 50% ג†’ Buyback SLH from DEX ג†’ Burn ג†’ deflationary pressure
+# Staking SLH ג†’ earns ZVK+MNH yield ג†’ locks supply
+# Internal MNH transfers ג†’ FREE (internal ledger, no blockchain)
 
 async def _ensure_tokenomics_tables(conn):
     await conn.execute("""
@@ -5395,12 +5395,12 @@ async def tokenomics_stats():
             "conversion_to_slh": "100 ZVK = 1 SLH",
         },
         "zuz": {
-            "description": "Guardian anti-fraud token — Mark of Cain (אות קין)",
+            "description": "Guardian anti-fraud token ג€” Mark of Cain (׳-׳•׳× ׳§׳™׳)",
             "purpose": "Negative reputation marker for scammers, bots, and fraudsters",
             "mechanism": "Assigned by Guardian bot reports. Higher ZUZ = more suspicious",
             "auto_ban_threshold": ZUZ_AUTO_BAN_THRESHOLD,
             "severity_levels": ZUZ_SEVERITY,
-            "cross_group": "Shared across all SLH ecosystem groups — one report affects all",
+            "cross_group": "Shared across all SLH ecosystem groups ג€” one report affects all",
         },
         "reserves": [
             {
@@ -5435,8 +5435,8 @@ class InternalTransferRequest(BaseModel):
 @app.post("/api/tokenomics/internal-transfer")
 async def internal_transfer(req: InternalTransferRequest, authorization: Optional[str] = Header(None)):
     """FREE internal transfer between users. Works for MNH/ZVK/SLH.
-    Uses the internal ledger — no blockchain fees. Instant.
-    SECURITY: Requires JWT auth — sender must be the from_user_id."""
+    Uses the internal ledger ג€” no blockchain fees. Instant.
+    SECURITY: Requires JWT auth ג€” sender must be the from_user_id."""
     # Verify caller is the sender (or admin)
     try:
         caller_id = get_current_user_id(authorization)
@@ -5463,7 +5463,7 @@ async def internal_transfer(req: InternalTransferRequest, authorization: Optiona
         if float(balance) < req.amount:
             raise HTTPException(400, f"Insufficient {req.token} balance: {balance}")
 
-        # Transaction — debit sender, credit recipient
+        # Transaction ג€” debit sender, credit recipient
         async with conn.transaction():
             await conn.execute("""
                 UPDATE token_balances SET balance = balance - $1, updated_at = CURRENT_TIMESTAMP
@@ -5566,7 +5566,7 @@ async def add_reserve(req: ReserveRequest, authorization: Optional[str] = Header
 
 
 # ============================================================
-# STRATEGY ENGINE — Backtested investment strategies
+# STRATEGY ENGINE ג€” Backtested investment strategies
 # ============================================================
 # 3 strategies with historical backtest data.
 # Each strategy has expected annual yield + max drawdown.
@@ -5642,7 +5642,7 @@ async def get_strategy(strategy_id: str):
 
 
 # ============================================================
-# BROADCAST — Send Telegram messages to registered users
+# BROADCAST ג€” Send Telegram messages to registered users
 # ============================================================
 # Uses @SLH_AIR_bot to DM every registered user. Ideal for
 # presale announcements, Genesis 49 updates, system alerts.
@@ -5717,7 +5717,7 @@ async def send_broadcast(req: BroadcastRequest):
     (slh2026admin, slh_admin_2026, slh-spark-admin, slh-institutional).
     """
     if req.admin_key != ADMIN_BROADCAST_KEY and req.admin_key not in ADMIN_API_KEYS:
-        raise HTTPException(403, "Invalid admin key — use your admin panel password")
+        raise HTTPException(403, "Invalid admin key ג€” use your admin panel password")
     if not req.message or len(req.message) < 5:
         raise HTTPException(400, "Message too short")
     if len(req.message) > 4000:
@@ -5827,7 +5827,7 @@ async def send_broadcast(req: BroadcastRequest):
 
 
 # ============================================================
-# GENESIS LAUNCH — Ultra Micro Pool ($33) with Tzvika as co-founder
+# GENESIS LAUNCH ג€” Ultra Micro Pool ($33) with Tzvika as co-founder
 # ============================================================
 # Tracks contributions to the initial PancakeSwap SLH/BNB pool.
 # Model: Partner sends BNB to company wallet, pool is created with
@@ -5836,7 +5836,7 @@ async def send_broadcast(req: BroadcastRequest):
 COMPANY_BSC_WALLET = "0xd061de73B06d5E91bfA46b35EfB7B08b16903da4"  # Osif's Web3 wallet
 LAUNCH_TARGET_BNB = 0.05  # Ultra Micro: 0.05 BNB + 50 SLH
 LAUNCH_TARGET_SLH = 50
-LAUNCH_NAME = "Genesis Launch — Ultra Micro Pool"
+LAUNCH_NAME = "Genesis Launch ג€” Ultra Micro Pool"
 
 
 async def _ensure_launch_tables(conn):
@@ -5882,7 +5882,7 @@ async def launch_contribute(req: LaunchContributionRequest):
     if not req.partner_name:
         raise HTTPException(400, "Partner name required")
 
-    # Estimate USD value (rough, BNB = $608 hardcoded — can replace with live price)
+    # Estimate USD value (rough, BNB = $608 hardcoded ג€” can replace with live price)
     amount_usd = round(req.amount_bnb * 608, 2)
 
     async with pool.acquire() as conn:
@@ -5966,7 +5966,7 @@ async def launch_verify_contribution(contribution_id: int, admin_key: str):
             compliance_flags=["GENESIS_LAUNCH", "VERIFIED"],
         )
 
-        # ── Auto-reward: credit ZVK + REP to contributor ──
+        # ג”€ג”€ Auto-reward: credit ZVK + REP to contributor ג”€ג”€
         contributor_name = row["partner_name"]
         contributor_handle = row.get("partner_handle", "") or ""
         rewards_issued = False
@@ -6251,9 +6251,9 @@ async def admin_manual_credit(
 
 
 # ============================================================
-# GUARDIAN SYSTEM — ZUZ Token + Anti-Fraud Intelligence
+# GUARDIAN SYSTEM ג€” ZUZ Token + Anti-Fraud Intelligence
 # ============================================================
-# ZUZ = "אות קין" (Mark of Cain) — negative reputation token
+# ZUZ = "׳-׳•׳× ׳§׳™׳" (Mark of Cain) ג€” negative reputation token
 # Assigned by Guardian bot to mark scammers, bots, fraudsters.
 # Higher ZUZ = more suspicious. Used for cross-group intelligence.
 
@@ -6504,7 +6504,7 @@ async def guardian_scan_message(
     # Suspicious keywords (EN + HE)
     scam_words = ["guaranteed profit", "invest now", "double your money", "free crypto",
                   "send me", "click here", "limited time", "act now", "whatsapp me",
-                  "רווח מובטח", "השקעה בטוחה", "הכנסה פסיבית", "שלח לי",
+                  "׳¨׳•׳•ן¿½- ׳׳•׳‘׳˜ן¿½-", "׳”׳©׳§׳¢׳” ׳‘׳˜׳•ן¿½-׳”", "׳”׳›׳ ׳¡׳” ׳₪׳¡׳™׳‘׳™׳×", "׳©׳ן¿½- ׳׳™",
                   "earn daily", "100% safe", "no risk"]
     for w in scam_words:
         if w in text_lower:
@@ -6599,7 +6599,7 @@ async def guardian_stats():
 
 
 # ============================================================
-# DYNAMIC OG IMAGE GENERATOR — per-page social share visuals
+# DYNAMIC OG IMAGE GENERATOR ג€” per-page social share visuals
 # ============================================================
 # Generates 1200x630 PNG images on-the-fly with PIL.
 # Each page can point its og:image to /api/og/{slug}.png for a
@@ -6753,7 +6753,7 @@ def _generate_og_image(slug: str) -> bytes:
     try:
         draw.text((text_cx, title_y), title, font=title_font, fill=(240, 240, 248, 255), anchor="mm")
     except Exception:
-        # Hebrew or special chars unsupported by font — fall back
+        # Hebrew or special chars unsupported by font ג€” fall back
         fallback_title = slug.replace("-", " ").upper()
         try:
             draw.text((text_cx, title_y), fallback_title, font=title_font, fill=(240, 240, 248, 255), anchor="mm")
@@ -6805,7 +6805,7 @@ async def og_image(slug: str):
 
 
 # ============================================================
-# SHARE TRACKING — count how often pages are shared
+# SHARE TRACKING ג€” count how often pages are shared
 # ============================================================
 
 class ShareEvent(BaseModel):
@@ -6950,12 +6950,12 @@ async def broadcast_personal_cards(admin_key: str):
         image_url = f"https://slh-api-production.up.railway.app/api/member-card/image/{uid}"
 
         msg = (
-            f"🎴 שלום {name}!\n\n"
-            f"הכרטיס האישי שלך ב-SLH Spark מוכן:\n\n"
-            f"🔗 הכרטיס שלך:\n{card_url}\n\n"
-            f"🖼 תמונה לשיתוף:\n{image_url}\n\n"
-            f"שתפ/י את הכרטיס עם חברים ומשפחה — כל חבר שמצטרף מקבל כרטיס ייחודי משלו! 🌸\n\n"
-            f"— Team SLH Spark"
+            f"נ´ ׳©׳׳•׳ {name}!\n\n"
+            f"׳”׳›׳¨׳˜׳™׳¡ ׳”׳-׳™׳©׳™ ׳©׳׳ ׳‘-SLH Spark ׳׳•׳›׳:\n\n"
+            f"ן¿½- ׳”׳›׳¨׳˜׳™׳¡ ׳©׳׳:\n{card_url}\n\n"
+            f"נ–¼ ׳×׳׳•׳ ׳” ׳׳©׳™׳×׳•׳£:\n{image_url}\n\n"
+            f"׳©׳×׳₪/׳™ ׳-׳× ׳”׳›׳¨׳˜׳™׳¡ ׳¢׳ ן¿½-׳‘׳¨׳™׳ ׳•׳׳©׳₪ן¿½-׳” ג€” ׳›׳ ן¿½-׳‘׳¨ ׳©׳׳¦׳˜׳¨׳£ ׳׳§׳‘׳ ׳›׳¨׳˜׳™׳¡ ׳™׳™ן¿½-׳•׳“׳™ ׳׳©׳׳•! נ¸\n\n"
+            f"ג€” Team SLH Spark"
         )
 
         result = await _tg_send_message(BROADCAST_BOT_TOKEN, uid, msg)
@@ -7013,7 +7013,7 @@ async def broadcast_history(limit: int = 20):
 async def backtest_strategy(strategy_id: str, months: int = 12):
     """Return simulated monthly returns for a strategy backtest.
 
-    This is SIMULATED data based on the strategy's risk profile — for visualization.
+    This is SIMULATED data based on the strategy's risk profile ג€” for visualization.
     Live trading requires full implementation + exchange API access.
     """
     strategy = None
@@ -7059,7 +7059,7 @@ async def backtest_strategy(strategy_id: str, months: int = 12):
 
 
 # ============================================================
-# REP SYSTEM — Personal Reputation Score per Member
+# REP SYSTEM ג€” Personal Reputation Score per Member
 # ============================================================
 
 async def _ensure_rep_tables(conn):
@@ -7660,12 +7660,12 @@ async def list_all_member_cards(limit: int = Query(default=50, ge=1, le=500)):
     return {"ok": True, "cards": cards, "total": len(cards)}
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-
 # P2P ORDER BOOK
 # Table: p2p_orders
 #   (id, seller_id, token, amount, price_per_unit, currency, payment_method,
 #    status, created_at)
-# ═══════════════════════════════════════════════════════════════════════════════
+# ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-
 
 P2P_VALID_TOKENS = {"SLH", "ZVK", "MNH"}
 P2P_VALID_CURRENCIES = {"ILS", "USD"}
@@ -7704,7 +7704,7 @@ class P2PFillOrder(BaseModel):
     buyer_id: int
 
 
-# ── POST /api/p2p/create-order ──────────────────────────────────────────────
+# ג”€ג”€ POST /api/p2p/create-order ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
 @app.post("/api/p2p/create-order")
 async def p2p_create_order(body: P2PCreateOrder):
     """Create a new P2P sell order."""
@@ -7758,7 +7758,7 @@ async def p2p_create_order(body: P2PCreateOrder):
     }
 
 
-# ── GET /api/p2p/orders ─────────────────────────────────────────────────────
+# ג”€ג”€ GET /api/p2p/orders ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
 @app.get("/api/p2p/orders")
 async def p2p_list_orders(
     token: Optional[str] = Query(None, description="Filter by token: SLH, ZVK, MNH"),
@@ -7832,7 +7832,7 @@ async def p2p_list_orders(
     return {"ok": True, "orders": orders, "total": total, "limit": limit, "offset": offset}
 
 
-# ── POST /api/p2p/fill-order ────────────────────────────────────────────────
+# ג”€ג”€ POST /api/p2p/fill-order ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
 @app.post("/api/p2p/fill-order")
 async def p2p_fill_order(body: P2PFillOrder):
     """Mark an active P2P order as filled by a buyer."""
@@ -7874,7 +7874,7 @@ async def p2p_fill_order(body: P2PFillOrder):
     return {"ok": True, "message": "Order filled successfully", "order_id": body.order_id}
 
 
-# ── DELETE /api/p2p/cancel-order/{id} ────────────────────────────────────────
+# ג”€ג”€ DELETE /api/p2p/cancel-order/{id} ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
 @app.delete("/api/p2p/cancel-order/{order_id}")
 async def p2p_cancel_order(order_id: int, seller_id: int = Query(..., description="Seller's telegram ID")):
     """Cancel an active P2P order. Only the seller can cancel their own order."""
@@ -7914,7 +7914,7 @@ async def p2p_cancel_order(order_id: int, seller_id: int = Query(..., descriptio
 
 
 # ============================================================
-# P2P ORDER BOOK — JWT-Authenticated Endpoints (v2)
+# P2P ORDER BOOK ג€” JWT-Authenticated Endpoints (v2)
 # ============================================================
 # These endpoints use JWT bearer tokens to identify the caller.
 # The seller/buyer is derived from the JWT, not from the request body.
@@ -7931,7 +7931,7 @@ class P2PFillOrderAuth(BaseModel):
     order_id: int
 
 
-# ── POST /api/p2p/v2/create-order (JWT auth — seller = caller) ──────────────
+# ג”€ג”€ POST /api/p2p/v2/create-order (JWT auth ג€” seller = caller) ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
 @app.post("/api/p2p/v2/create-order")
 async def p2p_create_order_auth(
     body: P2PCreateOrderAuth,
@@ -7998,7 +7998,7 @@ async def p2p_create_order_auth(
     }
 
 
-# ── GET /api/p2p/v2/orders (public — same as v1, no auth needed) ────────────
+# ג”€ג”€ GET /api/p2p/v2/orders (public ג€” same as v1, no auth needed) ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
 @app.get("/api/p2p/v2/orders")
 async def p2p_list_orders_v2(
     token: Optional[str] = Query(None, description="Filter by token: SLH, ZVK, MNH"),
@@ -8072,7 +8072,7 @@ async def p2p_list_orders_v2(
     return {"ok": True, "orders": orders, "total": total, "limit": limit, "offset": offset}
 
 
-# ── POST /api/p2p/v2/fill-order (JWT auth — buyer = caller) ─────────────────
+# ג”€ג”€ POST /api/p2p/v2/fill-order (JWT auth ג€” buyer = caller) ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
 @app.post("/api/p2p/v2/fill-order")
 async def p2p_fill_order_auth(
     body: P2PFillOrderAuth,
@@ -8145,7 +8145,7 @@ async def p2p_fill_order_auth(
     return {"ok": True, "message": "Order filled successfully", "order_id": body.order_id}
 
 
-# ── DELETE /api/p2p/v2/cancel-order/{id} (JWT auth — seller = caller) ────────
+# ג”€ג”€ DELETE /api/p2p/v2/cancel-order/{id} (JWT auth ג€” seller = caller) ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
 @app.delete("/api/p2p/v2/cancel-order/{order_id}")
 async def p2p_cancel_order_auth(
     order_id: int,
@@ -8297,10 +8297,10 @@ async def submit_bank_transfer(req: BankTransferSubmit):
     import re
     # Validate Israeli TZ
     if not validate_israeli_tz(req.id_number):
-        raise HTTPException(400, "????? ???? ?? ????? � ???? ?? ??????")
+        raise HTTPException(400, "????? ???? ?? ????? - ???? ?? ??????")
     # Validate phone
     if not re.match(r'^0[2-9]\d{7,8}$', req.phone):
-        raise HTTPException(400, "???? ????? ?? ???? � ?????: 0584203384")
+        raise HTTPException(400, "???? ????? ?? ???? - ?????: 0584203384")
     # Validate amount
     if req.amount_ils <= 0 or req.amount_ils > 1000000:
         raise HTTPException(400, "???? ???? ????? ??? 1 ?-1,000,000 ?")
@@ -8308,7 +8308,7 @@ async def submit_bank_transfer(req: BankTransferSubmit):
     try:
         tx_date = datetime.strptime(req.transaction_date, "%Y-%m-%d").date()
     except ValueError:
-        raise HTTPException(400, "????? ?? ???? � ?????: YYYY-MM-DD")
+        raise HTTPException(400, "????? ?? ???? - ?????: YYYY-MM-DD")
     # Validate non-empty fields
     if not req.customer_name.strip():
         raise HTTPException(400, "?? ????? ????")
@@ -8462,7 +8462,7 @@ class AdminCreateRequest(BaseModel):
 
 @app.post("/api/admin/auth/login")
 async def admin_login(req: AdminLoginRequest):
-    """Admin login � returns JWT with role."""
+    """Admin login - returns JWT with role."""
     async with pool.acquire() as conn:
         # Seed default admins on first call if table empty
         count = await conn.fetchval("SELECT COUNT(*) FROM admin_users")
@@ -8663,7 +8663,7 @@ class CampaignClickReq(BaseModel):
 
 @app.post("/api/campaign/click")
 async def campaign_click(req: CampaignClickReq, user_agent: Optional[str] = Header(None)):
-    """Anonymous click tracking � no auth required."""
+    """Anonymous click tracking - no auth required."""
     try:
         async with pool.acquire() as conn:
             await _ensure_campaign_tables(conn)
@@ -8746,7 +8746,7 @@ async def campaign_register(req: CampaignRegisterReq):
 
 @app.get("/api/campaign/affiliate/{code}")
 async def campaign_affiliate_validate(code: str):
-    """Public validation of affiliate code � returns only if it exists."""
+    """Public validation of affiliate code - returns only if it exists."""
     async with pool.acquire() as conn:
         await _ensure_campaign_tables(conn)
         row = await conn.fetchrow("""
@@ -8766,7 +8766,7 @@ async def campaign_affiliate_validate(code: str):
 
 @app.get("/api/campaign/affiliate-stats/{code}")
 async def campaign_affiliate_stats(code: str):
-    """Stats for a specific affiliate � for partner dashboard."""
+    """Stats for a specific affiliate - for partner dashboard."""
     async with pool.acquire() as conn:
         await _ensure_campaign_tables(conn)
         owner = await conn.fetchrow(
@@ -8931,9 +8931,9 @@ async def campaign_attribute_purchase(
                 "SELECT user_id FROM campaign_registrations WHERE affiliate_code=$1",
                 reg["ref_code"])
             if referrer and referrer["user_id"]:
-                # ZVK � 4.4 ILS ? 20% of 99 = 19.8 ILS = 4.5 ZVK � 100 precision = 450 internal
+                # ZVK ן¿½ 4.4 ILS ? 20% of 99 = 19.8 ILS = 4.5 ZVK ן¿½ 100 precision = 450 internal
                 zvk_reward = int((amount * 0.20 / 4.4) * 100) // 100  # rounded
-                # SLH � 444 ILS ? 10% of 99 = 9.9 ILS = 0.0223 SLH
+                # SLH ן¿½ 444 ILS ? 10% of 99 = 9.9 ILS = 0.0223 SLH
                 slh_reward = round((amount * 0.10 / 444.0), 6)
                 await conn.execute("""
                     INSERT INTO campaign_affiliate_earnings
@@ -8955,7 +8955,7 @@ class MassGiftReq(BaseModel):
     reason: str = "campaign_gift"
     note: Optional[str] = None
     only_active_days: Optional[int] = None  # if set, only users seen in last N days
-    dry_run: bool = True  # default safe � return preview without crediting
+    dry_run: bool = True  # default safe - return preview without crediting
 
 
 @app.post("/api/admin/mass-gift")
@@ -9017,7 +9017,7 @@ async def admin_mass_gift(
                 "next_step": "Call again with dry_run=false to actually credit"
             }
 
-        # ACTUAL CREDIT � wrapped in transaction
+        # ACTUAL CREDIT - wrapped in transaction
         credited = []
         failed = []
         async with conn.transaction():
@@ -9186,7 +9186,7 @@ class ExpertCreateReq(BaseModel):
     languages: List[str] = ["he"]
     user_id: Optional[int] = None
     avatar_url: Optional[str] = None
-    # Proof-of-expertise (new 2026-04-17) � at least one is required for submission
+    # Proof-of-expertise (new 2026-04-17) - at least one is required for submission
     linkedin_url: Optional[str] = None
     website_url: Optional[str] = None
     youtube_url: Optional[str] = None
@@ -9197,7 +9197,7 @@ class ExpertCreateReq(BaseModel):
 
 @app.post("/api/experts/register")
 async def experts_register(req: ExpertCreateReq):
-    """Register as expert � requires at least one proof link. Enters pending_verification.
+    """Register as expert - requires at least one proof link. Enters pending_verification.
     Verified only after admin approval via /api/admin/experts/approve.
     Auto-credits 100 ZVK signup bonus."""
 
@@ -9457,7 +9457,7 @@ async def _credit_expert_reward(conn, expert_id: int, event_type: str, note_extr
             INSERT INTO expert_rewards (expert_id, event_type, zvk_amount, rep_amount, note)
             VALUES ($1, $2, $3, $4, $5)
         """, expert_id, event_type, rule["zvk"], rule["rep"],
-            f"{rule['note']}{(' � ' + note_extra) if note_extra else ''}")
+            f"{rule['note']}{(' ן¿½ ' + note_extra) if note_extra else ''}")
 
         # Credit ZVK to user
         if rule["zvk"] > 0:
@@ -9616,7 +9616,7 @@ async def experts_domains_vote(req: DomainVoteReq):
                 raise HTTPException(409, "Already voted on this proposal")
             raise
         # Update counter
-        # SECURITY: whitelisted � 'col' is chosen between two hardcoded literals ('votes_for' / 'votes_against') via req.vote which is validated at line 9127
+        # SECURITY: whitelisted - 'col' is chosen between two hardcoded literals ('votes_for' / 'votes_against') via req.vote which is validated at line 9127
         col = "votes_for" if req.vote == "for" else "votes_against"
         await conn.execute(f"UPDATE expert_domains SET {col} = {col} + 1 WHERE id=$1", req.domain_id)
         # Check if auto-approve (for adds: 10+ for-votes, 2x against threshold)
@@ -9742,7 +9742,7 @@ class BugReportReq(BaseModel):
 
 @app.post("/api/bugs/report")
 async def bugs_report(req: BugReportReq, user_agent: Optional[str] = Header(None)):
-    """Anyone can report a bug � anonymous or with details."""
+    """Anyone can report a bug - anonymous or with details."""
     if not req.title or not req.description:
         raise HTTPException(400, "title and description required")
     severity = req.severity if req.severity in ("low", "medium", "high", "critical") else "medium"
@@ -9756,13 +9756,13 @@ async def bugs_report(req: BugReportReq, user_agent: Optional[str] = Header(None
         """, req.reporter_user_id, req.reporter_name, req.reporter_email, req.page_url,
             req.ai_session_id, severity, req.category, req.title, req.description,
             req.steps_to_reproduce, req.screenshot_url, (user_agent or "")[:200])
-    # Telegram alert to admin � rate-limited + kill-switch
+    # Telegram alert to admin - rate-limited + kill-switch
     # SILENT_MODE=1 on Railway ? no alerts at all
     # Otherwise: max 1 alert per 5 min for non-critical; critical always sent
     try:
         import time as _t
         _silent = os.getenv("SILENT_MODE", "").strip() == "1"
-        _is_auto = req.title.startswith("[AUTO]")  # auto-captured � never alert, just log
+        _is_auto = req.title.startswith("[AUTO]")  # auto-captured - never alert, just log
         _now = _t.time()
         _last_key = "_last_bug_alert_ts"
         _last = getattr(app.state, _last_key, 0) if hasattr(app, "state") else 0
@@ -9772,7 +9772,7 @@ async def bugs_report(req: BugReportReq, user_agent: Optional[str] = Header(None
             sev_emoji = {"critical": "??", "high": "??", "medium": "??", "low": "??"}.get(severity, "??")
             cat = req.category or "????"
             reporter = req.reporter_name or (f"ID {req.reporter_user_id}" if req.reporter_user_id else "???????")
-            page = req.page_url or "�"
+            page = req.page_url or "-"
             alert_text = (
                 f"{sev_emoji} <b>??? ??? #{row['id']}</b>\n"
                 f"<b>?????:</b> {severity} | <b>???????:</b> {cat}\n"
@@ -9896,9 +9896,9 @@ async def bugs_ai_analyze(
     """Request AI analysis of a bug. Stores the suggestion in bug_reports.ai_analysis.
 
     Three agents supported:
-    - 'claude_code' � for executor agents with git/docker access (returns structured TODO)
-    - 'advisor'     � for chat-only AIs (returns diagnostic steps)
-    - 'human_only'  � no AI; just marks the bug as 'human_only' triage
+    - 'claude_code' - for executor agents with git/docker access (returns structured TODO)
+    - 'advisor'     - for chat-only AIs (returns diagnostic steps)
+    - 'human_only'  - no AI; just marks the bug as 'human_only' triage
 
     The actual AI call uses the internal /api/ai/chat endpoint chain (groq/gemini/openai).
     """
@@ -9941,10 +9941,10 @@ async def bugs_ai_analyze(
             f"BUG #{bug['id']}\n"
             f"Title: {bug['title']}\n"
             f"Severity: {bug['severity']}\n"
-            f"Category: {bug.get('category') or '�'}\n"
-            f"Page: {bug.get('page_url') or '�'}\n"
+            f"Category: {bug.get('category') or '-'}\n"
+            f"Page: {bug.get('page_url') or '-'}\n"
             f"Description:\n{bug['description']}\n"
-            f"Steps to reproduce:\n{bug.get('steps_to_reproduce') or '�'}\n"
+            f"Steps to reproduce:\n{bug.get('steps_to_reproduce') or '-'}\n"
         )
         if req.context_hint:
             bug_context += f"\nAdditional context: {req.context_hint}"
@@ -10020,11 +10020,11 @@ async def guardian_audit(limit: int = 100, authorization: Optional[str] = Header
 
 # ============================================================
 # BROKER ACCOUNTS + DEPOSITS + EXPENSES + ESP PREORDERS
-# Critical financial infrastructure � April 15, 2026
+# Critical financial infrastructure - April 15, 2026
 # ============================================================
 
 async def _ensure_financial_tables(conn):
-    # Broker accounts � Tzvika, Elazar + future brokers with LIMITED admin access
+    # Broker accounts - Tzvika, Elazar + future brokers with LIMITED admin access
     await conn.execute("""
         CREATE TABLE IF NOT EXISTS broker_accounts (
             id SERIAL PRIMARY KEY,
@@ -10046,7 +10046,7 @@ async def _ensure_financial_tables(conn):
         )
     """)
 
-    # ESP preorders � auto-gift 2 SLH from Tzvika's wallet
+    # ESP preorders - auto-gift 2 SLH from Tzvika's wallet
     await conn.execute("""
         CREATE TABLE IF NOT EXISTS esp_preorders (
             id SERIAL PRIMARY KEY,
@@ -10067,7 +10067,7 @@ async def _ensure_financial_tables(conn):
         )
     """)
 
-    # Deposits � with compound interest tracking
+    # Deposits - with compound interest tracking
     await conn.execute("""
         CREATE TABLE IF NOT EXISTS deposits (
             id SERIAL PRIMARY KEY,
@@ -10116,7 +10116,7 @@ async def _ensure_financial_tables(conn):
         )
     """)
 
-    # Credit card transactions � for ?888 kosher wallet + future
+    # Credit card transactions - for ?888 kosher wallet + future
     await conn.execute("""
         CREATE TABLE IF NOT EXISTS credit_card_payments (
             id SERIAL PRIMARY KEY,
@@ -10209,14 +10209,14 @@ async def brokers_list(
 
 @app.get("/api/brokers/{broker_id}/dashboard")
 async def brokers_dashboard(broker_id: int, user_id: Optional[int] = None):
-    """Broker's own dashboard � limited data only they can see."""
+    """Broker's own dashboard - limited data only they can see."""
     async with pool.acquire() as conn:
         await _ensure_financial_tables(conn)
         broker = await conn.fetchrow("SELECT * FROM broker_accounts WHERE id=$1", broker_id)
         if not broker:
             raise HTTPException(404, "Broker not found")
 
-        # Visibility check � only self, admin, or approved viewers
+        # Visibility check - only self, admin, or approved viewers
         if user_id and user_id != broker["user_id"] and user_id not in (broker["owner_visible_to"] or []):
             if user_id != ADMIN_USER_ID:
                 raise HTTPException(403, "Not authorized")
@@ -10386,7 +10386,7 @@ async def deposits_user_list(user_id: int):
                 result.append({**dict(d), **calc, "deposited_at": deposited.isoformat()})
             return {"user_id": user_id, "deposits": result}
         else:
-            # Legacy schema � map to compatible shape with zero interest
+            # Legacy schema - map to compatible shape with zero interest
             rows = await conn.fetch(
                 "SELECT id, amount, currency, tx_hash, status, created_at FROM deposits WHERE user_id=$1 ORDER BY id DESC",
                 user_id
@@ -10757,7 +10757,7 @@ async def device_register(req: DeviceRegisterReq, request: Request):
     if not tg_sent:
         try:
             # On Railway: sms_provider.py is at /app/sms_provider.py (api/ is the build root)
-            # On local dev: file is at api/sms_provider.py � fall back if Railway-style fails
+            # On local dev: file is at api/sms_provider.py - fall back if Railway-style fails
             try:
                 from sms_provider import send_otp as _send_otp
             except ImportError:
@@ -10773,7 +10773,7 @@ async def device_register(req: DeviceRegisterReq, request: Request):
 
     # Expose the dev code in the web response ONLY when no real delivery channel
     # is configured. If an admin wired a real SMS provider and it fails, we
-    # don't fall through � we surface the error instead (forces admin to fix).
+    # don't fall through - we surface the error instead (forces admin to fix).
     # stub/disabled/none = nothing real is configured, so it's safe to expose.
     expose_dev_code = (
         (not tg_sent)
@@ -10789,7 +10789,7 @@ async def device_register(req: DeviceRegisterReq, request: Request):
         "message": (
             "??? ????? ???? ?????? ???" if tg_sent
             else f"??? ????? ???? ?-SMS ({sms_provider})" if sms_sent
-            else "SMS ????? ?? ????? � ???? ???? ??????"
+            else "SMS ????? ?? ????? - ???? ???? ??????"
         ),
         "sms_error": sms_error if not sms_sent else None,
         "_dev_code": code if expose_dev_code else None,
@@ -10877,12 +10877,12 @@ class EspHeartbeatReq(BaseModel):
 async def device_claim(device_id: str, request: Request):
     """Device-side companion to web pairing. Once the web page calls /api/device/verify
     for this device_id, the token is in devices table. This endpoint lets the device
-    fetch its signing_token by polling � single-use, device clears local pending-pair
+    fetch its signing_token by polling - single-use, device clears local pending-pair
     state after success.
 
     Response shapes:
-      { "paired": false }                                       � not paired yet
-      { "paired": true, "user_id": int, "signing_token": str }  � paired, consume it
+      { "paired": false }                                       - not paired yet
+      { "paired": true, "user_id": int, "signing_token": str }  - paired, consume it
     """
     if not device_id or len(device_id) > 64:
         raise HTTPException(400, "device_id required")
@@ -10944,7 +10944,7 @@ async def esp_heartbeat(
 ):
     """ESP32/CYD heartbeat. Requires `Authorization: Bearer <signing_token>` from device verify.
     Updates devices.last_seen + appends to device_heartbeats audit log.
-    Emits `device.heartbeat` event (throttled � first of day + every 100 heartbeats per device)."""
+    Emits `device.heartbeat` event (throttled - first of day + every 100 heartbeats per device)."""
     if not authorization or not authorization.lower().startswith("bearer "):
         raise HTTPException(401, "missing bearer signing_token")
     token = authorization[7:].strip()
@@ -11104,7 +11104,7 @@ async def admin_events_list(
     """Admin: read event_log (ring buffer for chain-status page + debugging).
 
     Returns newest events first by default. Use after_id=<n> for a cursor-style
-    read (events with id > n, oldest first � good for tailing).
+    read (events with id > n, oldest first - good for tailing).
 
     Types can filter to a subset: e.g. `types=payment.cleared,stake.opened`.
     """
@@ -11263,7 +11263,7 @@ async def devices_list_admin(
 
 
 
-# ===== OPS REALITY ENDPOINT � auth via ADMIN_BROADCAST_KEY =====
+# ===== OPS REALITY ENDPOINT - auth via ADMIN_BROADCAST_KEY =====
 # Osif's "single source of truth" admin snapshot. Accepts ADMIN_BROADCAST_KEY
 # (default: slh-broadcast-2026-change-me) because ADMIN_API_KEYS is often
 # empty on Railway (chicken-and-egg with rotation). Read-only; no mutations.
@@ -11756,8 +11756,8 @@ async def performance_digest():
     ]
     for i, t in enumerate(top, 1):
         lines.append(
-            f"  {i}. <code>{t['symbol']}</code>  �  "
-            f"${t['price']:.4f}  �  Vol {_fmt_usd(t['vol'])}  �  Liq {_fmt_usd(t['liq'])}"
+            f"  {i}. <code>{t['symbol']}</code>  ן¿½  "
+            f"${t['price']:.4f}  ן¿½  Vol {_fmt_usd(t['vol'])}  ן¿½  Liq {_fmt_usd(t['liq'])}"
         )
     lines += [
         "",

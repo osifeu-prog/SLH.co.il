@@ -73,18 +73,18 @@ async def admin_dedupe_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     lines = []
     lines.append("?? Dedupe Status (telegram_updates)")
-    lines.append(f"� rows: {count_rows}")
+    lines.append(f"ן¿½ rows: {count_rows}")
 
     if last_row:
         update_id, received_at, chat_id, user_id, kind = last_row
-        lines.append("� last:")
+        lines.append("ן¿½ last:")
         lines.append(f"  - update_id: {update_id}")
         lines.append(f"  - received_at: {received_at}")
         lines.append(f"  - chat_id: {chat_id}")
         lines.append(f"  - user_id: {user_id}")
         lines.append(f"  - kind: {kind}")
     else:
-        lines.append("� last: (empty)")
+        lines.append("ן¿½ last: (empty)")
 
     await update.effective_message.reply_text("\n".join(lines))
 

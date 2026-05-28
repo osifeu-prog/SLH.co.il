@@ -58,7 +58,7 @@ async def ai_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     text = (resp.choices[0].message.content or "").strip() or "(empty response)"
     if len(text) > 3500:
-        text = text[:3500] + "\n�(truncated)"
+        text = text[:3500] + "\nן¿½(truncated)"
 
     await update.effective_message.reply_text(text)
 

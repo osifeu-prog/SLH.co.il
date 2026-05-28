@@ -215,7 +215,7 @@ async def _cmd_append(msg: Message, parts: list[str]) -> None:
         return
     args = parts[1].strip().split(maxsplit=1)
     if len(args) < 2:
-        await msg.answer("חסר טקסט להוספה")
+        await msg.answer("�-סר טקסט להוספה")
         return
     p = _safe_path(args[0])
     if not p or not p.is_file():
@@ -237,7 +237,7 @@ async def _cmd_replace(msg: Message, parts: list[str]) -> None:
         return
     chunks = parts[1].split("::")
     if len(chunks) < 3:
-        await msg.answer("חסר :: \\(צריך שני\\)")
+        await msg.answer("�-סר :: \\(צריך שני\\)")
         return
     file_part = chunks[0].strip()
     old = chunks[1].strip()
@@ -257,7 +257,7 @@ async def _cmd_replace(msg: Message, parts: list[str]) -> None:
     except Exception as e:
         await msg.answer(f"שגיאה: `{_md_escape(str(e))}`")
         return
-    await msg.answer(f"✅ הוחלף ב\\-`{_md_escape(file_part)}`: {count} מופעים")
+    await msg.answer(f"✅ הו�-לף ב\\-`{_md_escape(file_part)}`: {count} מופעים")
 
 
 async def _cmd_newpage(msg: Message, parts: list[str]) -> None:
@@ -267,7 +267,7 @@ async def _cmd_newpage(msg: Message, parts: list[str]) -> None:
     name = parts[1].strip().split()[0]
     name = re.sub(r"[^a-z0-9_-]", "", name.lower())
     if not name:
-        await msg.answer("שם לא חוקי \\(אנגלית בלבד\\)")
+        await msg.answer("שם לא �-וקי \\(אנגלית בלבד\\)")
         return
     target = WEBSITE_DIR / f"{name}.html"
     if target.exists():
@@ -293,7 +293,7 @@ async def _cmd_newpage(msg: Message, parts: list[str]) -> None:
 
 <main class="wrap">
   <h1>{name.title()}</h1>
-  <p>תוכן חדש — נוצר דרך @SLH_Claude_bot</p>
+  <p>תוכן �-דש — נוצר דרך @SLH_Claude_bot</p>
 </main>
 
 <div id="bottomnav-root"></div>
@@ -314,7 +314,7 @@ async def _cmd_newpage(msg: Message, parts: list[str]) -> None:
         f"✅ נוצר `website/{name}.html` \\({len(template)} chars\\)\n\n"
         f"לראות: `/cat website/{name}.html`\n"
         f"להוסיף לגיט: `/sync \"feat: add {name} page\"`\n"
-        f"אחרי push יראה ב\\-https://slh\\-nft\\.com/{name}\\.html"
+        f"א�-רי push יראה ב\\-https://slh\\-nft\\.com/{name}\\.html"
     )
 
 
@@ -348,7 +348,7 @@ async def _cmd_commit(msg: Message, parts: list[str]) -> None:
 
     rc4, sha_line = _run(["git", "log", "-1", "--oneline"], cwd=cwd, timeout=5)
     await msg.answer(
-        f"✅ commit הוצלח ב\\-`{cwd.name}`\n"
+        f"✅ commit הוצל�- ב\\-`{cwd.name}`\n"
         f"```\n{sha_line.strip()[:300]}\n```\n"
         f"להעלות לגיט\\-האב: `/push`"
     )
@@ -360,7 +360,7 @@ async def _cmd_push(msg: Message, parts: list[str]) -> None:
     if rc != 0:
         await msg.answer(f"push נכשל:\n```\n{_md_escape(out[-2000:])}\n```")
         return
-    await msg.answer(f"✅ push הוצלח \\(`{cwd.name}`\\)\nGitHub Pages יעדכן בעוד 30\\-60 שניות.")
+    await msg.answer(f"✅ push הוצל�- \\(`{cwd.name}`\\)\nGitHub Pages יעדכן בעוד 30\\-60 שניות.")
 
 
 async def _cmd_sync(msg: Message, parts: list[str]) -> None:
@@ -389,7 +389,7 @@ async def _cmd_draft(msg: Message, parts: list[str]) -> None:
         return
     args = parts[1].strip().split(maxsplit=1)
     if len(args) < 2:
-        await msg.answer("חסרה הוראה")
+        await msg.answer("�-סרה הוראה")
         return
     file_arg, instruction = args
     p = _safe_path(file_arg)
@@ -400,7 +400,7 @@ async def _cmd_draft(msg: Message, parts: list[str]) -> None:
     content = p.read_text(encoding="utf-8", errors="replace")
     if len(content) > 8000:
         await msg.answer(
-            f"⚠️ הקובץ גדול \\({len(content)} chars\\) \\— תאר בדיוק *איזה חלק* לשנות, "
+            f"⚠️ הקובץ גדול \\({len(content)} chars\\) \\— תאר בדיוק *איזה �-לק* לשנות, "
             "או השתמש ב\\-`/replace` לשינוי מדויק במקום AI draft\\."
         )
         return
@@ -409,7 +409,7 @@ async def _cmd_draft(msg: Message, parts: list[str]) -> None:
 
     prompt = (
         "אתה עוזר עריכה לאתר. תקבל קובץ HTML/JS/CSS וההוראה לשינוי. "
-        "תחזיר בדיוק את הזוג: OLD: (טקסט קיים מהקובץ) ו-NEW: (החלפה). "
+        "ת�-זיר בדיוק את הזוג: OLD: (טקסט קיים מהקובץ) ו-NEW: (ה�-לפה). "
         "ללא הסברים מסביב. ללא תגיות markdown. רק 2 בלוקים: OLD: ... NEW: ...\n\n"
         f"--- INSTRUCTION ---\n{instruction}\n\n"
         f"--- FILE: {file_arg} ---\n{content}\n--- END FILE ---"
@@ -431,7 +431,7 @@ async def _cmd_draft(msg: Message, parts: list[str]) -> None:
     new_match = re.search(r"NEW:\s*(.+?)$", reply, re.DOTALL)
     if not old_match or not new_match:
         await msg.answer(
-            f"AI לא החזיר OLD:/NEW: בפורמט תקין:\n```\n{reply[:800]}\n```\n"
+            f"AI לא ה�-זיר OLD:/NEW: בפורמט תקין:\n```\n{reply[:800]}\n```\n"
             "נסה הוראה ספציפית יותר."
         )
         return
@@ -468,7 +468,7 @@ async def _cmd_draft(msg: Message, parts: list[str]) -> None:
 async def _cmd_apply(msg: Message, parts: list[str]) -> None:
     draft = _DRAFTS.get(msg.chat.id)
     if not draft:
-        await msg.answer("אין draft פתוח. הרץ `/draft` קודם.")
+        await msg.answer("אין draft פתו�-. הרץ `/draft` קודם.")
         return
     if time.time() - draft["ts"] > 600:
         await msg.answer("Draft פג תוקף \\(>10 דק'\\). הרץ `/draft` שוב.")
@@ -491,7 +491,7 @@ async def _cmd_apply(msg: Message, parts: list[str]) -> None:
     p.write_text(new_content, encoding="utf-8")
     _DRAFTS.pop(msg.chat.id, None)
 
-    await msg.answer(f"✅ הוחל\\. עכשיו commit\\+push:")
+    await msg.answer(f"✅ הו�-ל\\. עכשיו commit\\+push:")
     # Auto commit + push
     fake_parts = ["/sync", f"edit({draft['file']}): {draft['instruction'][:60]}"]
     await _cmd_sync(msg, fake_parts)
@@ -500,7 +500,7 @@ async def _cmd_apply(msg: Message, parts: list[str]) -> None:
 async def _cmd_reject(msg: Message, parts: list[str]) -> None:
     draft = _DRAFTS.pop(msg.chat.id, None)
     if not draft:
-        await msg.answer("אין draft פתוח\\.")
+        await msg.answer("אין draft פתו�-\\.")
         return
     await msg.answer(f"❌ Draft ל\\-`{_md_escape(draft['file'])}` בוטל\\.")
 
@@ -512,16 +512,16 @@ EDITOR_HELP = (
     "*Inspection:*\n"
     "`/cat <file>` \\- קרא קובץ\n"
     "`/ls [dir]` \\- רשימת תיקייה\n"
-    "`/grep <pat> [target]` \\- חיפוש בתוכן\n"
-    "`/find <pat> [dir]` \\- חיפוש שמות קבצים\n\n"
+    "`/grep <pat> [target]` \\- �-יפוש בתוכן\n"
+    "`/find <pat> [dir]` \\- �-יפוש שמות קבצים\n\n"
     "*Edit:*\n"
     "`/append <file> <text>` \\- הוסף שורה\n"
-    "`/replace <file> :: <old> :: <new>` \\- החלף\n"
-    "`/newpage <name>` \\- צור דף חדש\n\n"
+    "`/replace <file> :: <old> :: <new>` \\- ה�-לף\n"
+    "`/newpage <name>` \\- צור דף �-דש\n\n"
     "*Git:*\n"
     "`/commit <msg>` \\- commit שינויים\n"
     "`/push` \\- push לגיט\\-האב\n"
-    "`/sync <msg>` \\- commit \\+ push בבת אחת\n\n"
+    "`/sync <msg>` \\- commit \\+ push בבת א�-ת\n\n"
     "*AI\\-assisted:*\n"
     "`/draft <file> <instruction>` \\- AI מציע שינוי\n"
     "`/apply` \\- אשר \\+ commit \\+ push\n"

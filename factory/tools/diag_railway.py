@@ -32,7 +32,7 @@ for f in sorted(files)[-10:]:
 print("\n== alembic.ini script_location (RAW, no interpolation) ==")
 try:
     import configparser
-    cp = configparser.RawConfigParser()  # <— disables %(here)s interpolation entirely
+    cp = configparser.RawConfigParser()  # <- disables %(here)s interpolation entirely
     cp.read("alembic.ini")
     print("script_location:", cp.get("alembic", "script_location", fallback=None))
 except Exception as e:

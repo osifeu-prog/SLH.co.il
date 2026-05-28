@@ -87,19 +87,19 @@ def _quota_exhausted_message(tier: str, used: int, cap: int) -> str:
     spec = pricing.TIERS.get(tier, pricing.TIERS["free"])
     if tier == "free":
         return (
-            f"📊 *מכסת חודש נגמרה* — השתמשת ב-{used}/{cap} הודעות.\n\n"
-            f"שדרוג ל-Pro: 100 הודעות/חודש + Claude Sonnet 4.5 + tools.\n"
-            f"💎 *Pro — ₪29/חודש* (500 ⭐)\n\n"
-            f"שלח: `/upgrade pro`"
+            f"📊 *מכסת �-ודש נגמרה* — השתמשת ב-{used}/{cap} הודעות.\n\n"
+            f"שדרוג ל-Pro: 100 הודעות/�-ודש + Claude Sonnet 4.5 + tools.\n"
+            f"💎 *Pro — ₪29/�-ודש* (500 ⭐)\n\n"
+            f"של�-: `/upgrade pro`"
         )
     if tier == "vip":
         return (
-            f"⚠️ הגעת ל-fair-use cap של {cap} הודעות החודש (VIP unlimited).\n"
+            f"⚠️ הגעת ל-fair-use cap של {cap} הודעות ה�-ודש (VIP unlimited).\n"
             f"זה מקרה נדיר — צור קשר עם @osifeu_prog להעלאה."
         )
     return (
         f"📊 מכסת ה-{spec.name_he} שלך נגמרה ({used}/{cap}).\n"
-        f"מתחדש ב-1 לחודש הבא, או שדרג עם `/upgrade vip`."
+        f"מת�-דש ב-1 ל�-ודש הבא, או שדרג עם `/upgrade vip`."
     )
 
 
@@ -119,6 +119,6 @@ async def quota_status_he(user_id: int) -> str:
         f"`{bar}`\n"
         f"השתמשת ב-{used}/{cap} ({pct:.0f}%)\n"
         f"נותרו: *{remaining}* הודעות\n\n"
-        f"מתחדש: `{sub.current_period_end[:10]}`"
+        f"מת�-דש: `{sub.current_period_end[:10]}`"
     )
 

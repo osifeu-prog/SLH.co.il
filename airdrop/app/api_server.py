@@ -167,7 +167,7 @@ async def admin_dashboard(admin_key: str = None):
         </div>
         
         <div style="text-align: center; color: white; margin-top: 40px; padding: 20px;">
-            <p>� 2026 SLH Airdrop System | ???? ?? ??? Osif Ungar | ?????: @Osif83</p>
+            <p>ן¿½ 2026 SLH Airdrop System | ???? ?? ??? Osif Ungar | ?????: @Osif83</p>
             <p>????: 3.0.0 | ??? ?????: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}</p>
         </div>
     </div>

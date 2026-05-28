@@ -1,22 +1,22 @@
 # -*- coding: utf-8 -*-
 """
-SLH Command Center — System Status Router
+SLH Command Center - System Status Router
 ==========================================
 Unified status + control endpoints for the Command Center UI.
 
 Endpoints:
-  GET  /api/system/status              — overall ecosystem health snapshot
-  GET  /api/system/bots                — live bot status (heartbeats from DB)
-  GET  /api/system/stats               — aggregated KPIs for the dashboard
-  POST /api/system/bots/heartbeat      — bots call this every 30s to register liveness
-  POST /api/system/bots/restart        — admin-only: signal a bot to restart (writes intent to DB)
-  POST /api/system/bots/stop           — admin-only: signal a bot to stop
-  POST /api/system/bots/logs           — admin-only: returns last N log lines (placeholder)
-  POST /api/system/emergency-pause     — admin-only: signal ALL bots to pause
+  GET  /api/system/status              - overall ecosystem health snapshot
+  GET  /api/system/bots                - live bot status (heartbeats from DB)
+  GET  /api/system/stats               - aggregated KPIs for the dashboard
+  POST /api/system/bots/heartbeat      - bots call this every 30s to register liveness
+  POST /api/system/bots/restart        - admin-only: signal a bot to restart (writes intent to DB)
+  POST /api/system/bots/stop           - admin-only: signal a bot to stop
+  POST /api/system/bots/logs           - admin-only: returns last N log lines (placeholder)
+  POST /api/system/emergency-pause     - admin-only: signal ALL bots to pause
 
 Architecture:
   This router is the **glue** between Command Center UI and the rest of the system.
-  It does NOT directly run/stop containers — instead it writes intents to a DB table
+  It does NOT directly run/stop containers - instead it writes intents to a DB table
   (`bot_control_intents`) which the orchestrator script polls and executes locally.
   This keeps the API stateless and the orchestrator simple.
 
@@ -58,7 +58,7 @@ EXPECTED_BOTS = [
 ]
 
 # -----------------------------------------------------------------
-# DB schema (idempotent — safe to call repeatedly)
+# DB schema (idempotent - safe to call repeatedly)
 # -----------------------------------------------------------------
 _SCHEMA_INITIALIZED = False
 async def _ensure_schema(conn):
@@ -100,7 +100,7 @@ def _verify_admin(x_admin_key: Optional[str]) -> bool:
         return False
     env_keys_str = os.getenv("ADMIN_API_KEYS", "")
     env_keys = [k.strip() for k in env_keys_str.split(",") if k.strip()]
-    # Reject the legacy default — security
+    # Reject the legacy default - security
     if x_admin_key == "slh_admin_2026":
         return False
     return x_admin_key in env_keys
@@ -111,7 +111,7 @@ def _require_admin(x_admin_key: Optional[str]):
 
 
 # -----------------------------------------------------------------
-# READ ENDPOINTS (no auth — public health/status)
+# READ ENDPOINTS (no auth - public health/status)
 # -----------------------------------------------------------------
 
 @router.get("/status")
@@ -205,7 +205,7 @@ async def system_stats():
     out: Dict[str, Any] = {}
     async with _pool.acquire() as conn:
         await _ensure_schema(conn)
-        # Try each — failures are non-fatal
+        # Try each - failures are non-fatal
         try:
             out["users_total"] = await conn.fetchval("SELECT COUNT(*) FROM web_users")
         except Exception:
@@ -244,7 +244,7 @@ async def system_stats():
 
 
 # -----------------------------------------------------------------
-# HEARTBEAT (called by bots themselves — auth via shared secret)
+# HEARTBEAT (called by bots themselves - auth via shared secret)
 # -----------------------------------------------------------------
 
 class HeartbeatRequest(BaseModel):
@@ -270,7 +270,7 @@ async def bot_heartbeat(
     if not _pool:
         raise HTTPException(503, "DB pool not initialized")
     if req.bot_name not in EXPECTED_BOTS:
-        # Don't reject — just log the unexpected bot. Useful for new bots.
+        # Don't reject - just log the unexpected bot. Useful for new bots.
         print(f"[system_status] Heartbeat from unexpected bot: {req.bot_name}")
     async with _pool.acquire() as conn:
         await _ensure_schema(conn)
@@ -335,7 +335,7 @@ async def bot_logs(
     req: BotControlRequest,
     x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key"),
 ):
-    """Request the last N log lines from a bot. Currently a stub — orchestrator picks this up."""
+    """Request the last N log lines from a bot. Currently a stub - orchestrator picks this up."""
     _require_admin(x_admin_key)
     intent_id = await _enqueue_intent(req.bot, "logs", req.payload or {"lines": 100})
     return {"ok": True, "intent_id": intent_id, "message": f"Logs request queued for {req.bot}"}

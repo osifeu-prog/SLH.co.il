@@ -120,7 +120,7 @@ def _kb_main() -> InlineKeyboardMarkup:
 
 def _kb_back_home() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="⬅ חזרה לתפריט", callback_data="adm:home")],
+        [InlineKeyboardButton(text="⬅ �-זרה לתפריט", callback_data="adm:home")],
     ])
 
 
@@ -128,7 +128,7 @@ def _kb_bot_detail(bot: dict) -> InlineKeyboardMarkup:
     bot_id = bot["id"]
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="🔄 סובב טוקן", callback_data=f"adm:rot:{bot_id}")],
-        [InlineKeyboardButton(text="🔁 Swap mode (טוקן של בוט אחר)", callback_data=f"adm:swap:{bot_id}")],
+        [InlineKeyboardButton(text="🔁 Swap mode (טוקן של בוט א�-ר)", callback_data=f"adm:swap:{bot_id}")],
         [InlineKeyboardButton(text="⬅ לרשימת בוטים", callback_data="adm:tokens:0"),
          InlineKeyboardButton(text="🏠 תפריט", callback_data="adm:home")],
     ])
@@ -189,7 +189,7 @@ def register(dp: Dispatcher, auth_module) -> None:
             await msg.answer(auth_module.unauthorized_reply_he(msg.from_user.id))
             return
         await msg.answer(
-            "🎛 *פאנל אדמין SLH Spark*\n_בחר אזור:_",
+            "🎛 *פאנל אדמין SLH Spark*\n_ב�-ר אזור:_",
             reply_markup=_kb_main(),
         )
 
@@ -199,10 +199,10 @@ def register(dp: Dispatcher, auth_module) -> None:
             await cb.answer("Unauthorized", show_alert=True)
             return
         try:
-            await cb.message.edit_text("🎛 *פאנל אדמין SLH Spark*\n_בחר אזור:_",
+            await cb.message.edit_text("🎛 *פאנל אדמין SLH Spark*\n_ב�-ר אזור:_",
                                        reply_markup=_kb_main())
         except Exception:
-            await cb.message.answer("🎛 *פאנל אדמין SLH Spark*\n_בחר אזור:_",
+            await cb.message.answer("🎛 *פאנל אדמין SLH Spark*\n_ב�-ר אזור:_",
                                     reply_markup=_kb_main())
         await cb.answer()
 
@@ -300,10 +300,10 @@ def register(dp: Dispatcher, auth_module) -> None:
         }
         prompt = (
             f"📨 *סיבוב {bot['handle']}*\n\n"
-            f"שלח את *הטוקן החדש מ-BotFather* בהודעה הבאה.\n"
-            f"⚠️ ההודעה שלך תימחק אוטומטית מיד אחרי קבלה (אבטחה).\n"
+            f"של�- את *הטוקן ה�-דש מ-BotFather* בהודעה הבאה.\n"
+            f"⚠️ ההודעה שלך תימ�-ק אוטומטית מיד א�-רי קבלה (אבט�-ה).\n"
             f"⏱ יש לך {PENDING_TTL_SECONDS // 60} דקות.\n"
-            + ("\n🔁 *Swap mode:* הטוקן יכול להיות של בוט אחר — השירות יעבור אליו." if swap else "")
+            + ("\n🔁 *Swap mode:* הטוקן יכול להיות של בוט א�-ר — השירות יעבור אליו." if swap else "")
         )
         try:
             await cb.message.edit_text(prompt, reply_markup=_kb_cancel())
@@ -332,7 +332,7 @@ def register(dp: Dispatcher, auth_module) -> None:
             return
         _PENDING.pop(cb.from_user.id, None)
         try:
-            await cb.message.edit_text("❌ בוטל. חוזר לתפריט.", reply_markup=_kb_main())
+            await cb.message.edit_text("❌ בוטל. �-וזר לתפריט.", reply_markup=_kb_main())
         except Exception:
             await cb.message.answer("❌ בוטל.", reply_markup=_kb_main())
         await cb.answer("בוטל")
@@ -398,7 +398,7 @@ def register(dp: Dispatcher, auth_module) -> None:
         if not events:
             text = "📜 *Audit log*\n_עדיין אין סיבובים מתועדים._"
         else:
-            lines = ["📜 *10 אירועים אחרונים:*"]
+            lines = ["📜 *10 אירועים א�-רונים:*"]
             for ev in events:
                 t = (ev.get("created_at") or "")[:19].replace("T", " ")
                 action = (ev.get("action") or "").replace("secret.rotate.", "")
@@ -463,7 +463,7 @@ def register(dp: Dispatcher, auth_module) -> None:
             # rather than silently swallowing or forwarding to the AI handler.
             await msg.answer(
                 "⚠️ זה לא נראה כמו טוקן BotFather (פורמט: `<digits>:<hash>`).\n"
-                "שלח את הטוקן שוב, או לחץ ❌ בטל בתפריט."
+                "של�- את הטוקן שוב, או ל�-ץ ❌ בטל בתפריט."
             )
             return
 
@@ -488,7 +488,7 @@ async def _execute_pipeline(host_msg: Message, user_id: int, state: dict) -> Non
 
     # Status message — start fresh, edit as we go
     progress = await host_msg.answer(
-        f"⏳ {('מאשר ו' if confirm else '')}שולח את הטוקן ל-pipeline…",
+        f"⏳ {('מאשר ו' if confirm else '')}שול�- את הטוקן ל-pipeline…",
         reply_markup=_kb_cancel(),
     )
 
@@ -515,7 +515,7 @@ async def _execute_pipeline(host_msg: Message, user_id: int, state: dict) -> Non
         await _edit(
             f"🔐 *Critical tier — אישור נדרש*\n\n"
             f"`{bot['handle']}` הוא tier=*critical*. "
-            f"לחץ על הכפתור תוך {j.get('expires_in_seconds', 60)} שניות לאישור הסיבוב.",
+            f"ל�-ץ על הכפתור תוך {j.get('expires_in_seconds', 60)} שניות לאישור הסיבוב.",
             _kb_confirm_critical(bot["id"]),
         )
         return
@@ -554,7 +554,7 @@ async def _execute_pipeline(host_msg: Message, user_id: int, state: dict) -> Non
             f"✓ Redeploy הופעל\n"
             f"✓ Healthcheck עבר\n"
             f"✓ setMyCommands סונכרן\n"
-            f"✓ Broadcast לאדמינים נשלח"
+            f"✓ Broadcast לאדמינים נשל�-"
         )
         return
 

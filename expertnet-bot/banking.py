@@ -20,7 +20,7 @@ async def pool():
     global _pool
     if _pool is None:
         # Phase 0B (2026-04-21): unified fail-fast pool via shared_db_core.
-        # max_size standardized 5?4 per plan. Revenue-adjacent module —
+        # max_size standardized 5?4 per plan. Revenue-adjacent module -
         # fail-fast is especially important: better a crash than silent
         # double-counting if DB is flaky.
         _pool = await _shared_init_db_pool(

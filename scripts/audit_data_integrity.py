@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Data Integrity Audit — scan SLH codebase for fake/mock/fallback patterns
+Data Integrity Audit - scan SLH codebase for fake/mock/fallback patterns
 that violate CLAUDE.md's "never fake data in production" rule.
 
 Usage:
@@ -58,13 +58,13 @@ class Finding:
     note: str
 
     def __repr__(self):
-        return f"[{self.severity}] {self.file}:{self.line} — {self.note}"
+        return f"[{self.severity}] {self.file}:{self.line} - {self.note}"
 
 
 FINDINGS: list[Finding] = []
 
 # -- Rule 1: `|| <digits>` in JS / HTML -----------------------------
-# High-risk fallback — JS coerces 0/"" to falsy ? fallback fires when real data is 0.
+# High-risk fallback - JS coerces 0/"" to falsy ? fallback fires when real data is 0.
 RE_JS_FALLBACK = re.compile(
     r'\b(\w+(?:\.\w+)*|\w+\[[^\]]+\])\s*\|\|\s*(\d{1,5})(?![\d.])'
 )
@@ -122,20 +122,20 @@ def scan_file(path: Path) -> None:
             if any(kw in lower_line for kw in ("limit", "offset", "timeout", "delay", "margin", "padding", "width", "height", "fontsize", "zindex", "opacity", "retries", "maxretries")):
                 continue
             # Severity heuristic:
-            #   `|| 0` or `|| 0.0` — honest (shows 0 when unknown)
-            #   `|| <nonzero>` + display hint — HIGH (phantom number)
-            #   `|| <nonzero>` elsewhere — MED
+            #   `|| 0` or `|| 0.0` - honest (shows 0 when unknown)
+            #   `|| <nonzero>` + display hint - HIGH (phantom number)
+            #   `|| <nonzero>` elsewhere - MED
             num_int = int(num)
             has_hint = bool(DISPLAY_HINT_RE.search(stripped))
             if num_int == 0:
                 sev = "LOW"
-                note = f"`{var} || 0` — benign; displays 0 when data missing (matches 0 truthfully)"
+                note = f"`{var} || 0` - benign; displays 0 when data missing (matches 0 truthfully)"
             elif has_hint:
                 sev = "HIGH"
-                note = f"`{var} || {num}` — PHANTOM FALLBACK. When real value is 0, renders {num} as if truth."
+                note = f"`{var} || {num}` - PHANTOM FALLBACK. When real value is 0, renders {num} as if truth."
             else:
                 sev = "MED"
-                note = f"`{var} || {num}` — non-zero fallback; verify not user-visible"
+                note = f"`{var} || {num}` - non-zero fallback; verify not user-visible"
             FINDINGS.append(Finding(
                 severity=sev, category="JS_FALLBACK",
                 file=rel, line=lineno,
@@ -153,10 +153,10 @@ def scan_file(path: Path) -> None:
                     severity="HIGH", category="HTML_HARDCODED_STAT",
                     file=rel, line=lineno,
                     snippet=stripped[:160],
-                    note=f"<{_tag} id=\"{elem_id}\"> contains hardcoded {num} — should start as '--' or '0'",
+                    note=f"<{_tag} id=\"{elem_id}\"> contains hardcoded {num} - should start as '--' or '0'",
                 ))
 
-        # Rule 3: mock markers (context-aware — skip in tests + comments with 'not mock')
+        # Rule 3: mock markers (context-aware - skip in tests + comments with 'not mock')
         if RE_MOCK.search(stripped) and not any(kw in stripped.lower() for kw in ("not mock", "no mock", "remove mock", "kill mock", "test_", "test.py")):
             if "// " not in stripped and "# " not in stripped:  # not a comment saying "avoid mock"
                 # actual mock usage
@@ -164,7 +164,7 @@ def scan_file(path: Path) -> None:
                     severity="MED", category="MOCK_REFERENCE",
                     file=rel, line=lineno,
                     snippet=stripped[:160],
-                    note="contains mock/fake/dummy marker — verify not in production path",
+                    note="contains mock/fake/dummy marker - verify not in production path",
                 ))
 
         # Rule 4: TODO/FIXME around real-data wiring
@@ -173,7 +173,7 @@ def scan_file(path: Path) -> None:
                 severity="LOW", category="TODO_REAL_DATA",
                 file=rel, line=lineno,
                 snippet=stripped[:160],
-                note="TODO/FIXME mentions real/api/endpoint — incomplete wiring",
+                note="TODO/FIXME mentions real/api/endpoint - incomplete wiring",
             ))
 
 

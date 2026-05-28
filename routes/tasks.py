@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Mission Control — Tasks + Events.
+Mission Control - Tasks + Events.
 
 Purpose: central task tracking for the SLH ecosystem. Every open item
 (KNOWN_ISSUES, DROP_OFF handoffs, manual adds) lives in one table and
@@ -9,20 +9,20 @@ can be filtered / edited / assigned / commented from /admin/mission-control.html
 Replaces: scattered markdown files in ops/TEAM_HANDOFF_*, OPEN_TASKS_MASTER_*.
 Those stay as human-readable exports; this API is the source of truth.
 
-Table: tasks + task_events — created idempotently on first API call.
+Table: tasks + task_events - created idempotently on first API call.
 
 Auth: X-Admin-Key header (ADMIN_API_KEYS env var). Same pattern as
 ambassador_crm.py and the rest of the admin routes.
 
 Endpoints:
-  GET    /api/admin/tasks                 — list with filters + pagination
-  POST   /api/admin/tasks                 — create single task
-  PATCH  /api/admin/tasks/{id}            — update fields + log event
-  DELETE /api/admin/tasks/{id}            — soft delete
-  GET    /api/admin/tasks/{id}/events     — audit log for one task
-  POST   /api/admin/tasks/{id}/events     — add comment / custom event
-  POST   /api/admin/tasks/bulk-import     — seed/migration endpoint
-  GET    /api/admin/overview              — aggregated dashboard stats
+  GET    /api/admin/tasks                 - list with filters + pagination
+  POST   /api/admin/tasks                 - create single task
+  PATCH  /api/admin/tasks/{id}            - update fields + log event
+  DELETE /api/admin/tasks/{id}            - soft delete
+  GET    /api/admin/tasks/{id}/events     - audit log for one task
+  POST   /api/admin/tasks/{id}/events     - add comment / custom event
+  POST   /api/admin/tasks/bulk-import     - seed/migration endpoint
+  GET    /api/admin/overview              - aggregated dashboard stats
 """
 from __future__ import annotations
 

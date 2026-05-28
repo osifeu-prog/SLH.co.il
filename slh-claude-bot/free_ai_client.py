@@ -31,14 +31,14 @@ _SYSTEM_PROMPT_FREE = (
     "**אל תציג את עצמך בכל תשובה.** ענה ישר לשאלה. עברית, קצר.\n"
     "אם נשאלת על פעולות מערכת (docker/git/קבצים) — הציע slash commands: "
     "/ps /logs <bot> /git /health /price /devices /credits.\n"
-    "לא חורג מנושאי SLH אלא אם ברור. רקע: website (slh-nft.com), "
+    "לא �-ורג מנושאי SLH אלא אם ברור. רקע: website (slh-nft.com), "
     "API (Railway), 25 Telegram bots, SLH token (BSC), Phase 2 (Voice/Swarm)."
 )
 
 _SYSTEM_PROMPT_PRO_FALLBACK = (
     "אתה SLH Claude (Pro mode · fallback). "
     "**אל תציג את עצמך בכל תשובה.** ענה ישירות, בעברית, קצר ופרקטי.\n"
-    "המשתמש שילם על חבילת Pro עם Claude + tools, אבל כעת Anthropic balance ריק "
+    "המשתמש שילם על �-בילת Pro עם Claude + tools, אבל כעת Anthropic balance ריק "
     "ואתה רץ דרך Groq Llama 3.3 70B ללא יכולת לבצע tools. "
     "אם נשאלת לבצע פעולה (קריאת קובץ, git, deploy) — הסבר שזה ידרוש את ה-Anthropic "
     "balance ושפעולות ידניות אפשריות עם slash commands: /ps /logs <bot> /git /health "
@@ -86,8 +86,8 @@ async def converse(history: List[dict], user_text: str,
     else:
         composed = _SYSTEM_PROMPT_FREE
     if context_block:
-        composed += "\n\n--- שיחה קודמת ---\n" + context_block
-    composed += f"\n\n--- הודעה נוכחית ---\n{user_text}"
+        composed += "\n\n--- שי�-ה קודמת ---\n" + context_block
+    composed += f"\n\n--- הודעה נוכ�-ית ---\n{user_text}"
 
     payload = {
         "message": composed,
@@ -105,7 +105,7 @@ async def converse(history: List[dict], user_text: str,
         reply = "⏱ ה-AI השתהה (timeout). נסה שוב או פצל לשאלה קצרה יותר."
     except httpx.HTTPStatusError as e:
         log.error(f"AI endpoint returned {e.response.status_code}: {e.response.text[:200]}")
-        reply = f"⚠️ ה-AI endpoint החזיר {e.response.status_code}. נסה שוב בעוד רגע."
+        reply = f"⚠️ ה-AI endpoint ה�-זיר {e.response.status_code}. נסה שוב בעוד רגע."
     except Exception as e:
         log.exception("AI call failed")
         reply = f"⚠️ שגיאה: {type(e).__name__}: {str(e)[:120]}"

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-SLH Investor Engine — Legitimate Revenue-Based Distribution
+SLH Investor Engine - Legitimate Revenue-Based Distribution
 ============================================================
 
 Implements the model:
     Revenue (real, documented) - Expenses = Net Profit
-    Net Profit × (Investor.share / Total.shares) = Investor.payout
+    Net Profit ï¿½ (Investor.share / Total.shares) = Investor.payout
 
 Hard rules enforced in code:
   1. Payouts can ONLY be calculated from Net Profit (revenues - expenses = 0).
@@ -17,40 +17,40 @@ Hard rules enforced in code:
 
 Endpoints (all admin-only via X-Admin-Key, except investor self-view):
   Investors:
-    POST   /api/investor/                       — add investor
-    GET    /api/investor/                       — list all
-    GET    /api/investor/{id}                   — full investor profile + history
-    PATCH  /api/investor/{id}                   — update investor info
-    GET    /api/investor/me                     — investor self-view (JWT auth)
+    POST   /api/investor/                       - add investor
+    GET    /api/investor/                       - list all
+    GET    /api/investor/{id}                   - full investor profile + history
+    PATCH  /api/investor/{id}                   - update investor info
+    GET    /api/investor/me                     - investor self-view (JWT auth)
 
   Investments (capital received):
-    POST   /api/investor/investments            — record an investment received
-    GET    /api/investor/investments            — list all
-    DELETE /api/investor/investments/{id}       — void (with reason, audit-trailed)
+    POST   /api/investor/investments            - record an investment received
+    GET    /api/investor/investments            - list all
+    DELETE /api/investor/investments/{id}       - void (with reason, audit-trailed)
 
   Revenues (real income):
-    POST   /api/investor/revenues               — log a revenue line item
-    GET    /api/investor/revenues               — list (filter by period)
-    POST   /api/investor/revenues/import-csv    — bulk import from Excel/CSV
+    POST   /api/investor/revenues               - log a revenue line item
+    GET    /api/investor/revenues               - list (filter by period)
+    POST   /api/investor/revenues/import-csv    - bulk import from Excel/CSV
 
   Expenses (real costs):
-    POST   /api/investor/expenses               — log an expense line item
-    GET    /api/investor/expenses               — list (filter by period)
-    POST   /api/investor/expenses/import-csv    — bulk import
+    POST   /api/investor/expenses               - log an expense line item
+    GET    /api/investor/expenses               - list (filter by period)
+    POST   /api/investor/expenses/import-csv    - bulk import
 
   Distribution Engine:
-    POST   /api/investor/distribution/preview   — calculate but DON'T execute
-    POST   /api/investor/distribution/approve   — actually create payouts (irreversible)
-    GET    /api/investor/payouts                — list all payouts
-    GET    /api/investor/payouts/{id}           — payout detail
+    POST   /api/investor/distribution/preview   - calculate but DON'T execute
+    POST   /api/investor/distribution/approve   - actually create payouts (irreversible)
+    GET    /api/investor/payouts                - list all payouts
+    GET    /api/investor/payouts/{id}           - payout detail
 
   Reporting:
-    GET    /api/investor/reports/summary        — overall financial summary
-    GET    /api/investor/reports/period/{ym}    — full report for period (e.g. "2026-04")
+    GET    /api/investor/reports/summary        - overall financial summary
+    GET    /api/investor/reports/period/{ym}    - full report for period (e.g. "2026-04")
 
 Author: Claude (Cowork mode, 2026-04-27)
 
-?? LEGAL NOTICE — READ BEFORE USE
+?? LEGAL NOTICE - READ BEFORE USE
 This module provides accounting + distribution INFRASTRUCTURE only. Before accepting
 real money from real investors:
   - Form a legal entity (Israeli LTD or Limited Partnership)
@@ -172,7 +172,7 @@ async def _ensure_schema(conn):
             total_revenue   NUMERIC(18, 2) NOT NULL,
             total_expenses  NUMERIC(18, 2) NOT NULL,
             net_profit      NUMERIC(18, 2) NOT NULL,
-            distributable   NUMERIC(18, 2) NOT NULL,       -- net_profit × distribution_pct
+            distributable   NUMERIC(18, 2) NOT NULL,       -- net_profit ï¿½ distribution_pct
             distribution_pct NUMERIC(5, 4) NOT NULL DEFAULT 0.5,  -- 0.5 = 50% to investors, rest reinvested
             status          TEXT NOT NULL DEFAULT 'previewed' CHECK (status IN ('previewed','approved','paid','cancelled')),
             previewed_by    TEXT NOT NULL,
@@ -323,7 +323,7 @@ async def add_investment(req: InvestmentCreate, x_admin_key: Optional[str] = Hea
         prof = await conn.fetchrow("SELECT id, kyc_verified, active FROM investor_profiles WHERE id=$1", req.investor_id)
         if not prof: raise HTTPException(404, "Investor not found")
         if not prof["active"]: raise HTTPException(400, "Investor inactive")
-        # Soft warning if KYC not done — don't block but flag
+        # Soft warning if KYC not done - don't block but flag
         warning = None if prof["kyc_verified"] else "KYC not yet verified for this investor"
         row_id = await conn.fetchval("""
             INSERT INTO investor_capital_in (investor_id, amount_ils, currency, payment_method, tx_reference, notes, created_by)
@@ -462,7 +462,7 @@ async def import_expenses_csv(period_ym: str = Query(..., pattern=r"^\d{4}-\d{2}
     return {"ok": True, "inserted": inserted, "errors": errors}
 
 # -----------------------------------------------------------------
-# DISTRIBUTION ENGINE — the heart of the system
+# DISTRIBUTION ENGINE - the heart of the system
 # -----------------------------------------------------------------
 @router.post("/distribution/preview")
 async def distribution_preview(req: DistributionPreview,
@@ -473,7 +473,7 @@ async def distribution_preview(req: DistributionPreview,
       - total revenue
       - total expenses
       - net profit
-      - distributable amount (net × distribution_pct)
+      - distributable amount (net ï¿½ distribution_pct)
       - per-investor breakdown
     """
     actor = _require_admin(x_admin_key)
@@ -500,7 +500,7 @@ async def distribution_preview(req: DistributionPreview,
                 "net_profit": net_profit,
                 "distributable": 0,
                 "per_investor": [],
-                "message": "Net profit is zero or negative — no distribution this period. Period.",
+                "message": "Net profit is zero or negative - no distribution this period. Period.",
                 "distribution_id": None,
             }
 
@@ -518,7 +518,7 @@ async def distribution_preview(req: DistributionPreview,
         """)
         total_invested = sum(float(r["invested"]) for r in rows)
         if total_invested <= 0:
-            raise HTTPException(400, "No active investors with capital — nothing to distribute")
+            raise HTTPException(400, "No active investors with capital - nothing to distribute")
 
         per_investor = []
         for r in rows:
@@ -563,7 +563,7 @@ async def distribution_preview(req: DistributionPreview,
         "reinvested": net_profit - distributable,
         "per_investor": per_investor,
         "investor_count": len(per_investor),
-        "message": "Preview only — call /distribution/approve to execute (irreversible).",
+        "message": "Preview only - call /distribution/approve to execute (irreversible).",
     }
 
 @router.post("/distribution/approve")
@@ -571,7 +571,7 @@ async def distribution_approve(req: DistributionApprove,
                                  x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key")):
     """Execute the approved distribution. Creates payout records (status='pending').
 
-    This is IRREVERSIBLE. Payouts are created but not yet paid — actual money transfer
+    This is IRREVERSIBLE. Payouts are created but not yet paid - actual money transfer
     is done OUTSIDE the system (bank transfer / crypto), then mark each payout as paid.
     """
     actor = _require_admin(x_admin_key)
@@ -583,7 +583,7 @@ async def distribution_approve(req: DistributionApprove,
         if run["status"] != "previewed":
             raise HTTPException(400, f"Can only approve a 'previewed' run; current status: {run['status']}")
         if float(run["distributable"]) <= 0:
-            raise HTTPException(400, "Distributable is zero or negative — nothing to approve")
+            raise HTTPException(400, "Distributable is zero or negative - nothing to approve")
 
         # Re-calculate to ensure consistency
         rows = await conn.fetch("""
@@ -687,14 +687,14 @@ async def reports_period(period_ym: str, x_admin_key: Optional[str] = Header(Non
     }
 
 # -----------------------------------------------------------------
-# Investor self-view (no admin key — uses telegram_id from JWT)
+# Investor self-view (no admin key - uses telegram_id from JWT)
 # -----------------------------------------------------------------
 @router.get("/me/summary")
 async def investor_self_summary(telegram_id: int = Query(..., gt=0)):
-    """Public investor self-view — uses telegram_id directly.
+    """Public investor self-view - uses telegram_id directly.
 
     NOTE: For production, replace with JWT auth via Depends(get_current_user_id).
-    This is intentionally simple for the MVP — the investor_id is looked up by telegram_id.
+    This is intentionally simple for the MVP - the investor_id is looked up by telegram_id.
     """
     if not _pool: raise HTTPException(503, "DB pool not initialized")
     async with _pool.acquire() as conn:

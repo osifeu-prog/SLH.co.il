@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 """
-SLH Sudoku — engagement + AIC earn
+SLH Sudoku ג€” engagement + AIC earn
 ====================================
 Play sudoku, earn AIC/REP. First solve of daily puzzle = bonus AIC.
 
 Endpoints:
-  POST /api/sudoku/start              — create session, returns puzzle (no solution)
-  POST /api/sudoku/check              — validate current board (no reward)
-  POST /api/sudoku/hint               — reveal one correct cell (costs 1 AIC)
-  POST /api/sudoku/submit             — verify solution, award AIC + REP, log tx
-  GET  /api/sudoku/daily              — today's shared puzzle (same for everyone)
-  GET  /api/sudoku/my-stats/{uid}     — user's solve stats
-  GET  /api/sudoku/leaderboard        — top solvers (weekly + all-time)
-  GET  /api/sudoku/stats              — global
+  POST /api/sudoku/start              ג€” create session, returns puzzle (no solution)
+  POST /api/sudoku/check              ג€” validate current board (no reward)
+  POST /api/sudoku/hint               ג€” reveal one correct cell (costs 1 AIC)
+  POST /api/sudoku/submit             ג€” verify solution, award AIC + REP, log tx
+  GET  /api/sudoku/daily              ג€” today's shared puzzle (same for everyone)
+  GET  /api/sudoku/my-stats/{uid}     ג€” user's solve stats
+  GET  /api/sudoku/leaderboard        ג€” top solvers (weekly + all-time)
+  GET  /api/sudoku/stats              ג€” global
 
 Pattern matches our codebase: module-level _pool, set_pool(pool) called from main.py.
-No Depends/auth — user_id passed in request body (same as community + aic_tokens).
+No Depends/auth ג€” user_id passed in request body (same as community + aic_tokens).
 """
 
 from __future__ import annotations
@@ -38,7 +38,7 @@ def set_pool(pool):
     _pool = pool
 
 
-# ══════════════════ Sudoku engine (self-contained, no pypi dep) ══════════════════
+# ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•- Sudoku engine (self-contained, no pypi dep) ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-
 
 def _is_valid(grid: List[List[int]], row: int, col: int, val: int) -> bool:
     for i in range(9):
@@ -93,7 +93,7 @@ def _str_to_grid(s: str) -> List[List[int]]:
     return [[int(s[i * 9 + j]) for j in range(9)] for i in range(9)]
 
 
-# ══════════════════ DB + reward rules ══════════════════
+# ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•- DB + reward rules ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-
 
 REWARDS = {
     "easy":   {"aic": 1.0, "rep": 2,  "fast_bonus": 0.5},
@@ -161,7 +161,7 @@ async def _ensure_sudoku_tables(conn):
 
 
 async def _aic_earn(conn, user_id: int, amount: float, reason: str, meta: Optional[dict] = None):
-    """Credit AIC — idempotent at caller level. No earn cap check here (caller owns)."""
+    """Credit AIC ג€” idempotent at caller level. No earn cap check here (caller owns)."""
     await conn.execute(
         """
         INSERT INTO aic_balances (user_id, balance, lifetime_earned)
@@ -206,7 +206,7 @@ async def _aic_spend(conn, user_id: int, amount: float, reason: str, meta: Optio
     )
 
 
-# ══════════════════ Endpoints ══════════════════
+# ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•- Endpoints ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-ג•-
 
 class StartReq(BaseModel):
     user_id: int
@@ -270,7 +270,7 @@ class CheckReq(BaseModel):
 
 @router.post("/check")
 async def sudoku_check(req: CheckReq):
-    """Validate current board — count errors, do NOT reveal solution or award."""
+    """Validate current board ג€” count errors, do NOT reveal solution or award."""
     if _pool is None:
         raise HTTPException(500, "db pool not initialized")
     async with _pool.acquire() as conn:
@@ -314,7 +314,7 @@ async def sudoku_hint(req: HintReq):
         puzzle = _str_to_grid(row["puzzle_grid"])
         solution = _str_to_grid(row["solution_grid"])
 
-        # Find empty cells from puzzle original — hint reveals one we haven't revealed before
+        # Find empty cells from puzzle original ג€” hint reveals one we haven't revealed before
         # To track "revealed", store hints_used count and pick deterministically
         empty_cells = [(r, c) for r in range(9) for c in range(9) if puzzle[r][c] == 0]
         if not empty_cells:
@@ -380,7 +380,7 @@ async def sudoku_submit(req: SubmitReq):
                     return {
                         "solved": False,
                         "errors_at": [i, j],
-                        "message": "הלוח לא נכון. המשך לפתור.",
+                        "message": "׳”׳׳•ן¿½- ׳׳- ׳ ׳›׳•׳. ׳”׳׳©׳ ׳׳₪׳×׳•׳¨.",
                     }
 
         # Already solved? return previous award
@@ -390,7 +390,7 @@ async def sudoku_submit(req: SubmitReq):
                 "already_awarded": True,
                 "aic_earned": float(row["aic_awarded"]),
                 "rep_earned": row["rep_awarded"],
-                "message": "כבר קיבלת תגמול על הלוח הזה.",
+                "message": "׳›׳‘׳¨ ׳§׳™׳‘׳׳× ׳×׳’׳׳•׳ ׳¢׳ ׳”׳׳•ן¿½- ׳”׳–׳”.",
             }
 
         # Calculate reward
@@ -458,8 +458,8 @@ async def sudoku_submit(req: SubmitReq):
         "daily_first_bonus": daily_first,
         "capped": capped,
         "message": (
-            "🎉 פתרון מעולה! תגמול הוענק."
-            if not capped else "פתרת — אבל עברת את מכסת 3 הפתרונות היומית. נסה מחר."
+            "נ‰ ׳₪׳×׳¨׳•׳ ׳׳¢׳•׳׳”! ׳×׳’׳׳•׳ ׳”׳•׳¢׳ ׳§."
+            if not capped else "׳₪׳×׳¨׳× ג€” ׳-׳‘׳ ׳¢׳‘׳¨׳× ׳-׳× ׳׳›׳¡׳× 3 ׳”׳₪׳×׳¨׳•׳ ׳•׳× ׳”׳™׳•׳׳™׳×. ׳ ׳¡׳” ׳ן¿½-׳¨."
         ),
     }
 

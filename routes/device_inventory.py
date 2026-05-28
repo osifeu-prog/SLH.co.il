@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Device Inventory — catalog of all SLH ESP32 devices (manufacturing ? sale ? activation).
+Device Inventory - catalog of all SLH ESP32 devices (manufacturing ? sale ? activation).
 
 Distinct from `/api/admin/devices/list` which shows ONLY devices that have
 already called `/api/device/register`. This module tracks the full lifecycle:
@@ -10,10 +10,10 @@ Table: device_inventory (created idempotently).
 Auth: X-Admin-Key (admin-only, no public access).
 
 Endpoints:
-  POST   /api/admin/devices/inventory          — add new device(s) to catalog
-  GET    /api/admin/devices/inventory          — list with filters (status, buyer)
-  PATCH  /api/admin/devices/inventory/{id}     — update status / buyer / notes
-  GET    /api/admin/devices/inventory/stats    — counts by status
+  POST   /api/admin/devices/inventory          - add new device(s) to catalog
+  GET    /api/admin/devices/inventory          - list with filters (status, buyer)
+  PATCH  /api/admin/devices/inventory/{id}     - update status / buyer / notes
+  GET    /api/admin/devices/inventory/stats    - counts by status
 """
 from __future__ import annotations
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # ============================================================
-# SLH Spark — Project Status API Endpoints
+# SLH Spark - Project Status API Endpoints
 # Provides real-time data for project-map dashboard
 # ============================================================
 
@@ -12,7 +12,7 @@ import json
 router = APIRouter(prefix="/api/project", tags=["project"])
 
 # ============================================================
-# GET ENDPOINTS — Read-only data for dashboard
+# GET ENDPOINTS - Read-only data for dashboard
 # ============================================================
 
 @router.get("/status")
@@ -104,7 +104,7 @@ async def get_achievements():
 
 
 # ============================================================
-# POST ENDPOINTS — Log task completions from admin
+# POST ENDPOINTS - Log task completions from admin
 # ============================================================
 
 @router.post("/task-complete")
@@ -232,7 +232,7 @@ async def update_system_status(system_data: dict):
 
 
 # ============================================================
-# WebSocket — Real-time updates
+# WebSocket - Real-time updates
 # ============================================================
 
 from fastapi import WebSocket
@@ -289,28 +289,28 @@ async def get_pending_tasks():
         "pending": [
             {
                 "id": "admin-payment",
-                "title": "admin.html — Add payment tracking",
+                "title": "admin.html - Add payment tracking",
                 "priority": "HIGH",
                 "estimate": "3-4 hours",
                 "assignedTo": "Osif"
             },
             {
                 "id": "pay-fixes",
-                "title": "pay.html — Fix 3 bugs",
+                "title": "pay.html - Fix 3 bugs",
                 "priority": "HIGH",
                 "estimate": "1 hour",
                 "assignedTo": "Osif"
             },
             {
                 "id": "project-map",
-                "title": "project-map.html — Update metrics",
+                "title": "project-map.html - Update metrics",
                 "priority": "HIGH",
                 "estimate": "2 hours",
                 "assignedTo": "Osif"
             },
             {
                 "id": "community-dm",
-                "title": "community.html — Add DM feature",
+                "title": "community.html - Add DM feature",
                 "priority": "MEDIUM",
                 "estimate": "6 hours",
                 "assignedTo": "Team"

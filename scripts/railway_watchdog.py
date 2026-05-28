@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Railway Deploy Watchdog — runs a tight health check and alerts if the Railway
+Railway Deploy Watchdog - runs a tight health check and alerts if the Railway
 API version is stuck (i.e. commits accumulate on master but the live API
 doesn't update for N minutes).
 
@@ -10,9 +10,9 @@ Alert channel: sends a Telegram DM to Osif via /api/broadcast/send
   (target=custom, custom_ids=[224223270]).
 
 Exit codes:
-  0 — healthy (version updated recently or within grace period)
-  1 — stuck (new commits on master but API version unchanged for > threshold)
-  2 — unreachable (health endpoint down)
+  0 - healthy (version updated recently or within grace period)
+  1 - stuck (new commits on master but API version unchanged for > threshold)
+  2 - unreachable (health endpoint down)
 
 Usage:
     python scripts/railway_watchdog.py               # one-shot check
@@ -125,7 +125,7 @@ def main() -> int:
         msg = f"?? SLH Railway Watchdog\n\nAPI /api/health unreachable at {now.isoformat()[:19]}Z"
         log(msg, args.verbose)
         if not args.no_alert:
-            # Don't try to alert via the same API that's down — log and exit
+            # Don't try to alert via the same API that's down - log and exit
             print(msg, file=sys.stderr)
         return 2
 
@@ -174,7 +174,7 @@ def main() -> int:
     if first_stuck_seen is None:
         state["first_stuck_seen"] = now.isoformat()
 
-    # Don't spam alerts — only every GRACE_PERIOD_MINUTES
+    # Don't spam alerts - only every GRACE_PERIOD_MINUTES
     if last_alert_at:
         last_alert_dt = datetime.fromisoformat(last_alert_at.replace("Z", "+00:00") if "Z" in last_alert_at else last_alert_at)
         mins_since_alert = (now - last_alert_dt).total_seconds() / 60

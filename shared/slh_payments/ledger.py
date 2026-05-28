@@ -64,7 +64,7 @@ async def transfer(from_uid: int, to_uid: int, token: str, amount: float,
     Returns: (success, message, new_from_balance, new_to_balance)
     """
     if amount <= 0:
-        return False, "סכום חייב להיות חיובי", 0, 0
+        return False, "סכום �-ייב להיות �-יובי", 0, 0
     if from_uid == to_uid:
         return False, "לא ניתן להעביר לעצמך", 0, 0
 

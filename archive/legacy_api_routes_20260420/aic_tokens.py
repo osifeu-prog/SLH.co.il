@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 """
-SLH AIC · AI Credits — 6th internal token
+SLH AIC ֲ· AI Credits ג€” 6th internal token
 ==========================================
-Bridges user activity → AI API costs → system value.
+Bridges user activity ג†’ AI API costs ג†’ system value.
 See ops/AIC_TOKEN_DESIGN.md for full design.
 
 Phase 1 MVP endpoints (read + earn/spend flows):
-  GET  /api/aic/balance/{user_id}     — current balance + lifetime stats
-  GET  /api/aic/transactions/{user_id} — tx history
-  POST /api/aic/earn                  — add AIC (auto-triggered by system events)
-  POST /api/aic/spend                 — deduct AIC for AI call
-  GET  /api/aic/stats                 — global: supply, daily flow, top holders
-  POST /api/admin/aic/mint            — admin: create AIC against reserve
-  GET  /api/admin/aic/reserve         — reserve status
+  GET  /api/aic/balance/{user_id}     ג€” current balance + lifetime stats
+  GET  /api/aic/transactions/{user_id} ג€” tx history
+  POST /api/aic/earn                  ג€” add AIC (auto-triggered by system events)
+  POST /api/aic/spend                 ג€” deduct AIC for AI call
+  GET  /api/aic/stats                 ג€” global: supply, daily flow, top holders
+  POST /api/admin/aic/mint            ג€” admin: create AIC against reserve
+  GET  /api/admin/aic/reserve         ג€” reserve status
 
 Added 2026-04-17.
 """
@@ -146,7 +146,7 @@ async def _upsert_balance(conn, user_id: int, delta: Decimal, kind: str, reason:
     }
 
 
-# ═══════ Public endpoints ═══════
+# ג•-ג•-ג•-ג•-ג•-ג•-ג•- Public endpoints ג•-ג•-ג•-ג•-ג•-ג•-ג•-
 
 @router.get("/balance/{user_id}")
 async def get_balance(user_id: int):
@@ -316,7 +316,7 @@ async def aic_stats():
     }
 
 
-# ═══════ Admin endpoints ═══════
+# ג•-ג•-ג•-ג•-ג•-ג•-ג•- Admin endpoints ג•-ג•-ג•-ג•-ג•-ג•-ג•-
 
 def _check_admin(x_admin_key: Optional[str]):
     admin_keys = [k.strip() for k in os.getenv("ADMIN_API_KEYS", "").split(",") if k.strip()]

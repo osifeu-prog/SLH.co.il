@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Therapists Network — Phase 2 (registration + admin approval).
+Therapists Network - Phase 2 (registration + admin approval).
 
 Purpose: receive applications from /for-therapists.html, store them in a
 dedicated `therapists` table (replacing the community_posts workaround),
@@ -11,14 +11,14 @@ Phase 2 scope: register + list + approve + reject. Per-therapist self-service
 endpoints (/me, /availability) and Telegram link land in Phase 3 + Phase 4.
 
 Tables created idempotently on first call:
-  - therapists                  — applications + approved profiles
-  - users.is_therapist column   — additive, NOT NULL DEFAULT FALSE
+  - therapists                  - applications + approved profiles
+  - users.is_therapist column   - additive, NOT NULL DEFAULT FALSE
 
 Auth:
-  - POST   /register                  — public, rate-limited (3/hour per email + IP)
-  - GET    /applications              — admin (X-Admin-Key)
-  - PATCH  /applications/{id}/approve — admin
-  - PATCH  /applications/{id}/reject  — admin
+  - POST   /register                  - public, rate-limited (3/hour per email + IP)
+  - GET    /applications              - admin (X-Admin-Key)
+  - PATCH  /applications/{id}/approve - admin
+  - PATCH  /applications/{id}/reject  - admin
 
 Pattern: mirrors routes/ambassador_crm.py (set_pool, _ensure_table, header auth).
 """
@@ -111,7 +111,7 @@ async def _ensure_table(conn) -> None:
         "CREATE UNIQUE INDEX IF NOT EXISTS uq_therapists_email_active "
         "ON therapists (LOWER(email)) WHERE deleted_at IS NULL"
     )
-    # additive column on users — main.py:7265 reads this via try/except
+    # additive column on users - main.py:7265 reads this via try/except
     await conn.execute(
         "ALTER TABLE users "
         "ADD COLUMN IF NOT EXISTS is_therapist BOOLEAN NOT NULL DEFAULT FALSE"
@@ -174,7 +174,7 @@ async def register_therapist(
     request: Request,
 ):
     """
-    Public registration endpoint. Idempotent on email — second submission with
+    Public registration endpoint. Idempotent on email - second submission with
     same email and `status='pending'` returns the existing application_id
     instead of creating a duplicate.
 
@@ -207,7 +207,7 @@ async def register_therapist(
                 "idempotent": True,
             }
         if existing:
-            # already approved/rejected — surface that, do NOT create a second row
+            # already approved/rejected - surface that, do NOT create a second row
             return {
                 "ok": True,
                 "application_id": existing["id"],
@@ -329,7 +329,7 @@ async def approve_application(
 
             # Flip users.is_therapist if we have a user link.
             # Upsert tolerated: if the user row doesn't exist yet (e.g. they
-            # haven't logged in to the website), do nothing — the flag will
+            # haven't logged in to the website), do nothing - the flag will
             # appear on first login when the row is created.
             if updated and updated["user_id"]:
                 await conn.execute(
@@ -371,7 +371,7 @@ async def reject_application(
 
 # -- public directory (no auth) --
 def _serialize_public(row) -> dict:
-    """Public-safe projection — no email/phone/handle exposed."""
+    """Public-safe projection - no email/phone/handle exposed."""
     return {
         "id":              row["id"],
         "name":            row["name"],
@@ -467,7 +467,7 @@ def _resolve_user_id(authorization: Optional[str], uid: Optional[int]) -> int:
     """Resolve user_id from Bearer JWT (if JWT_SECRET set) or ?uid= fallback."""
     if uid is not None and uid > 0:
         return uid
-    # JWT path — best-effort decode without forcing a hard secret dependency.
+    # JWT path - best-effort decode without forcing a hard secret dependency.
     if authorization and authorization.lower().startswith("bearer "):
         token = authorization[7:].strip()
         secret = os.getenv("JWT_SECRET", "").strip()
@@ -572,7 +572,7 @@ async def get_availability(
     if not row:
         raise HTTPException(404, "not a therapist or not approved")
     avail = row["availability"]
-    # asyncpg returns JSONB as str sometimes — normalize to dict
+    # asyncpg returns JSONB as str sometimes - normalize to dict
     if isinstance(avail, str):
         import json as _json
         try:

@@ -73,7 +73,7 @@ def classify(name: str) -> str:
                 "referral-card.html", "onboarding.html"}:
         return "👤 PARTNER/MEMBER ZONE"
     if "test" in n or "demo" in n or "old" in n or "legacy" in n:
-        return "🗑 CANDIDATE FOR DELETION (test/demo/legacy)"
+        return "�-� CANDIDATE FOR DELETION (test/demo/legacy)"
     if "promo" in n or "campaign" in n or "shekel" in n:
         return "📢 PUBLIC · MARKETING/CAMPAIGN"
     return "❓ UNCLASSIFIED — review needed"
@@ -136,7 +136,7 @@ order = [
     "🐛 PUBLIC · UTILITY (bug report)",
     "🛠 INTERNAL/DEV (hide from customers)",
     "🔒 ADMIN ONLY (hide from customers)",
-    "🗑 CANDIDATE FOR DELETION (test/demo/legacy)",
+    "�-� CANDIDATE FOR DELETION (test/demo/legacy)",
     "❓ UNCLASSIFIED — review needed",
 ]
 

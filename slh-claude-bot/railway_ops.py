@@ -60,8 +60,8 @@ def _run_railway(args: list[str], timeout: int = 30) -> str:
     if not _has_token():
         return (
             "🔴 RAILWAY_TOKEN לא מוגדר ב-.env של הבוט.\n\n"
-            "להפעלה (חד-פעמית):\n"
-            "1. פתח https://railway.com/account/tokens\n"
+            "להפעלה (�-ד-פעמית):\n"
+            "1. פת�- https://railway.com/account/tokens\n"
             "2. New Token → תן שם 'slh-claude-bot' → Create\n"
             "3. העתק (אל תכתוב בצ'אט!)\n"
             "4. הוסף ל-`D:\\SLH_ECOSYSTEM\\slh-claude-bot\\.env`:\n"
@@ -204,7 +204,7 @@ def register(dp: Dispatcher, auth_module) -> None:
                     names.append(key)
         if not names:
             await msg.answer(
-                f"⚠️ לא הצלחתי לקבל variables של `{service}`.\nגולמי:\n```\n{_redact_secret_values(out)[:1500]}\n```"
+                f"⚠️ לא הצל�-תי לקבל variables של `{service}`.\nגולמי:\n```\n{_redact_secret_values(out)[:1500]}\n```"
             )
             return
         names_str = "\n".join(f"  • `{n}`" for n in sorted(set(names)))

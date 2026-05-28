@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
-"""SLH Secrets Vault — Phase 2 alerts + scheduled sweep.
+"""SLH Secrets Vault - Phase 2 alerts + scheduled sweep.
 
 Sits on top of api/admin_secrets_catalog.py:
-  - /sweep            — iterate every row in secrets_catalog, call _run_probe per
+  - /sweep            - iterate every row in secrets_catalog, call _run_probe per
                         key_name, detect status transitions (ok/unknown ? bad_key/
                         missing) and overdue-rotation, fire Telegram alert
                         (with cooldown), record in secret_alerts table, emit
                         audit event.
-  - /alerts/recent    — list last N hours of secret_alerts (read-only, audit).
-  - /alerts/test      — fire a single test Telegram message, end-to-end smoke
+  - /alerts/recent    - list last N hours of secret_alerts (read-only, audit).
+  - /alerts/test      - fire a single test Telegram message, end-to-end smoke
                         check the BROADCAST_BOT_TOKEN pipe works.
-  - /digest/send      — compose a single Hebrew Telegram digest (last 24h
+  - /digest/send      - compose a single Hebrew Telegram digest (last 24h
                         transitions + currently overdue list) and send.
 
 All endpoints under /api/admin/secrets, X-Admin-Key gated. Designed to be
@@ -63,7 +63,7 @@ def _pool(request: Request):
     return pool
 
 
-# --- Telegram pipe (sync, urllib — matches ops/telegram_push_alerts.py) ----
+# --- Telegram pipe (sync, urllib - matches ops/telegram_push_alerts.py) ----
 
 
 # Osif's tg_id from CLAUDE.md / MEMORY. Hardcoded so a stranger can't redirect
@@ -119,14 +119,14 @@ def _is_overdue(last_rotated_at, cadence_days: int) -> bool:
 def _format_alert(row, alert_type: str, prev: Optional[str], new: Optional[str], detail: Optional[str]) -> str:
     """Hebrew Telegram alert body. No secret value, only metadata."""
     icon = {"bad_key": "??", "missing": "??", "service_error": "??", "overdue": "?"}.get(alert_type, "??")
-    head = f"{icon} <b>SLH Secrets Vault — ?????</b>"
+    head = f"{icon} <b>SLH Secrets Vault - ?????</b>"
     body = (
         f"\n\n<b>{row['display_name']}</b>"
         f"\n<code>{row['key_name']}</code>"
         f"\n\n??? ?????: <b>{alert_type}</b>"
     )
     if prev or new:
-        body += f"\n????: <code>{prev or '—'}</code> ? <code>{new or '—'}</code>"
+        body += f"\n????: <code>{prev or '-'}</code> ? <code>{new or '-'}</code>"
     if detail:
         body += f"\n???: <code>{str(detail)[:200]}</code>"
     if row.get("rotation_url"):
@@ -154,7 +154,7 @@ async def sweep(
     `alert_cooldown_hours` hours. Designed to be called every ~6h by Task
     Scheduler. Safe to call manually.
 
-    Returns aggregate counts only — never key names or values.
+    Returns aggregate counts only - never key names or values.
     """
     _admin(authorization, x_admin_key)
     pool = _pool(request)
@@ -259,7 +259,7 @@ async def sweep(
                 except Exception:
                     pass
 
-        # Fire overdue alert (separate cooldown — once per cycle is enough)
+        # Fire overdue alert (separate cooldown - once per cycle is enough)
         if overdue and not is_transition:
             cooldown_h = int(row["alert_cooldown_hours"] or 24)
             last_alert = row["last_alert_at"]
@@ -389,7 +389,7 @@ async def alerts_test(
 ):
     """Smoke-test the Telegram pipe. Sends a single throwaway message."""
     _admin(authorization, x_admin_key)
-    text = (body and body.text) or "?? SLH Secrets Vault — alert pipe test (you can ignore this)"
+    text = (body and body.text) or "?? SLH Secrets Vault - alert pipe test (you can ignore this)"
     ok, detail = _tg_send(text)
     return {"ok": ok, "detail": detail}
 
@@ -463,10 +463,10 @@ async def digest_send(
         )
 
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    lines = [f"?? <b>SLH Secrets — ????? ???? {today}</b>", ""]
+    lines = [f"?? <b>SLH Secrets - ????? ???? {today}</b>", ""]
     lines.append(
-        f"???? secrets: <b>{stats['total']}</b> · "
-        f"??????: <b>{stats['broken']}</b> · "
+        f"???? secrets: <b>{stats['total']}</b> ×ŸÂ¿Â½ "
+        f"??????: <b>{stats['broken']}</b> ×ŸÂ¿Â½ "
         f"??????: <b>{stats['overdue']}</b>"
     )
 
@@ -474,14 +474,14 @@ async def digest_send(
         lines.append("")
         lines.append("?? <b>?????? 24?</b>")
         for r in recent_alerts:
-            lines.append(f"  • <code>{r['alert_type']}</code>: {r['n']}")
+            lines.append(f"  ×ŸÂ¿Â½ <code>{r['alert_type']}</code>: {r['n']}")
 
     if broken_rows:
         lines.append("")
         lines.append("? <b>????? ??????</b>")
         for r in broken_rows:
             lines.append(
-                f"  • {r['display_name']} (<code>{r['key_name']}</code>) — {r['last_health_result']}"
+                f"  ×ŸÂ¿Â½ {r['display_name']} (<code>{r['key_name']}</code>) - {r['last_health_result']}"
             )
 
     if overdue_rows:
@@ -490,7 +490,7 @@ async def digest_send(
         for r in overdue_rows:
             age = int(r["age_days"] or 0)
             lines.append(
-                f"  • {r['display_name']} — {age}d (cadence {r['rotation_cadence_days']}d)"
+                f"  ×ŸÂ¿Â½ {r['display_name']} - {age}d (cadence {r['rotation_cadence_days']}d)"
             )
 
     if not (broken_rows or overdue_rows or recent_alerts):

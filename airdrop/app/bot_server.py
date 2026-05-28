@@ -4,20 +4,20 @@ SLH Investment House + HUB BOT
 Full-featured investment house with HUB economic engine.
 
 Features:
-- �Y"S Live prices (12 coins)
-- �Y'� Investment plans (4 tiers, 4%-5.4% monthly)
-- �Y'� Wallet (TON/BNB/SLH/ZVK)
-- �YZ� Bonuses & games (slots, dice, basketball, darts)
-- �Y>� Risk management
-- �Y"� Swap/DEX
-- �Y�� AI analysis
-- �Y"S Dashboard
-- �Y'� Referrals (15% commission in SLH points)
-- �Y�T Buy SLH (444�,� per coin)
-- �Y'' VIP membership
-- �YZ� Airdrop
-- �Y'� Earn (daily tasks)
-- �Y"� Deals & promotions
+- ן¿½Y"S Live prices (12 coins)
+- ן¿½Y'ן¿½ Investment plans (4 tiers, 4%-5.4% monthly)
+- ן¿½Y'ן¿½ Wallet (TON/BNB/SLH/ZVK)
+- ן¿½YZן¿½ Bonuses & games (slots, dice, basketball, darts)
+- ן¿½Y>ן¿½ Risk management
+- ן¿½Y"ן¿½ Swap/DEX
+- ן¿½Yן¿½ן¿½ AI analysis
+- ן¿½Y"S Dashboard
+- ן¿½Y'ן¿½ Referrals (15% commission in SLH points)
+- ן¿½Yן¿½T Buy SLH (444ן¿½,ן¿½ per coin)
+- ן¿½Y'' VIP membership
+- ן¿½YZן¿½ Airdrop
+- ן¿½Y'ן¿½ Earn (daily tasks)
+- ן¿½Y"ן¿½ Deals & promotions
 """
 import os
 import sys
@@ -32,7 +32,7 @@ import threading
 from datetime import datetime, timedelta
 from pathlib import Path
 
-# �"?�"? Add shared module to path �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?
+# ן¿½"?ן¿½"? Add shared module to path ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?
 _SHARED_DIR = Path(__file__).resolve().parent.parent.parent / "shared"
 if str(_SHARED_DIR) not in sys.path:
     sys.path.insert(0, str(_SHARED_DIR))
@@ -48,19 +48,19 @@ SLH_PRICE_ILS = 444
 LETSEXCHANGE_REF = os.getenv("LETSEXCHANGE_REF", "SLH_SWAP")
 DATABASE_URL = os.getenv("DATABASE_URL", "")
 
-# �"?�"? Price API �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?
+# ן¿½"?ן¿½"? Price API ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?
 COINS = {
-    "BTC": {"symbol": "bitcoin", "emoji": "�YY�", "name": "BTC"},
-    "ETH": {"symbol": "ethereum", "emoji": "�Y"�", "name": "ETH"},
-    "TON": {"symbol": "the-open-network", "emoji": "�Y'�", "name": "TON"},
-    "BNB": {"symbol": "binancecoin", "emoji": "�YY�", "name": "BNB"},
-    "SOL": {"symbol": "solana", "emoji": "�YY�", "name": "SOL"},
-    "DOGE": {"symbol": "dogecoin", "emoji": "�Y��", "name": "DOGE"},
-    "XRP": {"symbol": "ripple", "emoji": "�s�", "name": "XRP"},
-    "ADA": {"symbol": "cardano", "emoji": "�Y"�", "name": "ADA"},
-    "DOT": {"symbol": "polkadot", "emoji": "�YY�", "name": "DOT"},
-    "AVAX": {"symbol": "avalanche-2", "emoji": "❤️", "name": "AVAX"},
-    "LINK": {"symbol": "chainlink", "emoji": "�Y"-", "name": "LINK"},
+    "BTC": {"symbol": "bitcoin", "emoji": "ן¿½YYן¿½", "name": "BTC"},
+    "ETH": {"symbol": "ethereum", "emoji": "ן¿½Y"ן¿½", "name": "ETH"},
+    "TON": {"symbol": "the-open-network", "emoji": "ן¿½Y'ן¿½", "name": "TON"},
+    "BNB": {"symbol": "binancecoin", "emoji": "ן¿½YYן¿½", "name": "BNB"},
+    "SOL": {"symbol": "solana", "emoji": "ן¿½YYן¿½", "name": "SOL"},
+    "DOGE": {"symbol": "dogecoin", "emoji": "ן¿½Yן¿½ן¿½", "name": "DOGE"},
+    "XRP": {"symbol": "ripple", "emoji": "ן¿½sן¿½", "name": "XRP"},
+    "ADA": {"symbol": "cardano", "emoji": "ן¿½Y"ן¿½", "name": "ADA"},
+    "DOT": {"symbol": "polkadot", "emoji": "ן¿½YYן¿½", "name": "DOT"},
+    "AVAX": {"symbol": "avalanche-2", "emoji": "ג₪ן¸", "name": "AVAX"},
+    "LINK": {"symbol": "chainlink", "emoji": "ן¿½Y"-", "name": "LINK"},
 }
 ILS_RATE = 3.13  # USD to ILS approximate
 
@@ -92,21 +92,21 @@ def fetch_prices():
     return _price_cache["prices"]
 
 
-# �"?�"? In-memory user state �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?
+# ן¿½"?ן¿½"? In-memory user state ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?
 _user_data = {}
 
 # Investment plans
 INVESTMENT_PLANS = [
-    {"name": "�YO� פק�"�.�Y �-�.�"ש�T", "rate": 4, "annual": 48, "min_ton": 1, "days": 30},
-    {"name": "�Y"^ פק�"�.�Y ר�'ע�.נ�T", "rate": 4.5, "annual": 55, "min_ton": 5, "days": 90},
-    {"name": "�Y'Z פק�"�.�Y �-צ�T-שנת�T", "rate": 5, "annual": 60, "min_ton": 10, "days": 180},
-    {"name": "�Y'' פק�"�.�Y שנת�T", "rate": 5.4, "annual": 65, "min_ton": 25, "days": 365},
+    {"name": "ן¿½YOן¿½ ׳₪׳§ן¿½"ן¿½.ן¿½Y ן¿½-ן¿½.ן¿½"׳©ן¿½T", "rate": 4, "annual": 48, "min_ton": 1, "days": 30},
+    {"name": "ן¿½Y"^ ׳₪׳§ן¿½"ן¿½.ן¿½Y ׳¨ן¿½'׳¢ן¿½.׳ ן¿½T", "rate": 4.5, "annual": 55, "min_ton": 5, "days": 90},
+    {"name": "ן¿½Y'Z ׳₪׳§ן¿½"ן¿½.ן¿½Y ן¿½-׳¦ן¿½T-׳©׳ ׳×ן¿½T", "rate": 5, "annual": 60, "min_ton": 10, "days": 180},
+    {"name": "ן¿½Y'' ׳₪׳§ן¿½"ן¿½.ן¿½Y ׳©׳ ׳×ן¿½T", "rate": 5.4, "annual": 65, "min_ton": 25, "days": 365},
 ]
 
 VIP_PLANS = {
-    "basic": {"name": "VIP Basic", "price_ils": 41, "features": ["�"תרא�.ת �z�-�Tר�Tם", "�'�Tש�" �oער�.ץ VIP", "5 �zש�T�z�.ת נ�.ספ�.ת �'�T�.ם"]},
-    "pro": {"name": "VIP Pro", "price_ils": 99, "features": ["�"�>�o �'-Basic", "ס�T�'נ�o�Tם �o�zס�-ר", "�'�Tש�" �o-1-on-1", "ע�z�oת רפר�o �>פ�.�o�" (30%)"]},
-    "elite": {"name": "VIP Elite", "price_ils": 199, "features": ["�"�>�o �'-Pro", "ק�'�.צת �.�.�Tס�~ �'�oע�"�Tת", "NFT �-�Tנם �>�o �-�.�"ש", "�'�Tש�" �z�.ק�"�zת �o�>�o �z�.צר �-�"ש"]},
+    "basic": {"name": "VIP Basic", "price_ils": 41, "features": ["ן¿½"׳×׳¨׳-ן¿½.׳× ן¿½zן¿½-ן¿½T׳¨ן¿½T׳", "ן¿½'ן¿½T׳©ן¿½" ן¿½o׳¢׳¨ן¿½.׳¥ VIP", "5 ן¿½z׳©ן¿½Tן¿½zן¿½.׳× ׳ ן¿½.׳¡׳₪ן¿½.׳× ן¿½'ן¿½Tן¿½.׳"]},
+    "pro": {"name": "VIP Pro", "price_ils": 99, "features": ["ן¿½"ן¿½>ן¿½o ן¿½'-Basic", "׳¡ן¿½Tן¿½'׳ ן¿½oן¿½T׳ ן¿½oן¿½z׳¡ן¿½-׳¨", "ן¿½'ן¿½T׳©ן¿½" ן¿½o-1-on-1", "׳¢ן¿½zן¿½o׳× ׳¨׳₪׳¨ן¿½o ן¿½>׳₪ן¿½.ן¿½oן¿½" (30%)"]},
+    "elite": {"name": "VIP Elite", "price_ils": 199, "features": ["ן¿½"ן¿½>ן¿½o ן¿½'-Pro", "׳§ן¿½'ן¿½.׳¦׳× ן¿½.ן¿½.ן¿½T׳¡ן¿½~ ן¿½'ן¿½o׳¢ן¿½"ן¿½T׳×", "NFT ן¿½-ן¿½T׳ ׳ ן¿½>ן¿½o ן¿½-ן¿½.ן¿½"׳©", "ן¿½'ן¿½T׳©ן¿½" ן¿½zן¿½.׳§ן¿½"ן¿½z׳× ן¿½oן¿½>ן¿½o ן¿½zן¿½.׳¦׳¨ ן¿½-ן¿½"׳©"]},
 }
 
 SLH_BUY_TIERS = [
@@ -118,11 +118,11 @@ SLH_BUY_TIERS = [
 ]
 
 _daily_tasks = [
-    {"id": "join_channel", "title": "�Y"� �"צ�~רף �oער�.ץ @SLH_Community", "reward": 50},
-    {"id": "share_bot", "title": "�Y"� שתף את �"�'�.�~ עם �-�'ר", "reward": 100},
-    {"id": "visit_site", "title": "�YO� �'קר �'אתר slh-nft.com", "reward": 30},
-    {"id": "follow_fb", "title": "�Y'� עק�.�' א�-ר�T Facebook SLH", "reward": 40},
-    {"id": "daily_login", "title": "�o. �>נ�Tס�" �T�.�z�Tת", "reward": 10},
+    {"id": "join_channel", "title": "ן¿½Y"ן¿½ ן¿½"׳¦ן¿½~׳¨׳£ ן¿½o׳¢׳¨ן¿½.׳¥ @SLH_Community", "reward": 50},
+    {"id": "share_bot", "title": "ן¿½Y"ן¿½ ׳©׳×׳£ ׳-׳× ן¿½"ן¿½'ן¿½.ן¿½~ ׳¢׳ ן¿½-ן¿½'׳¨", "reward": 100},
+    {"id": "visit_site", "title": "ן¿½YOן¿½ ן¿½'׳§׳¨ ן¿½'׳-׳×׳¨ slh-nft.com", "reward": 30},
+    {"id": "follow_fb", "title": "ן¿½Y'ן¿½ ׳¢׳§ן¿½.ן¿½' ׳-ן¿½-׳¨ן¿½T Facebook SLH", "reward": 40},
+    {"id": "daily_login", "title": "ן¿½o. ן¿½>׳ ן¿½T׳¡ן¿½" ן¿½Tן¿½.ן¿½zן¿½T׳×", "reward": 10},
 ]
 
 
@@ -153,12 +153,12 @@ class SLHInvestmentBot:
         self.session = requests.Session()
         self.session.timeout = 30
 
-        # �"?�"? Async event loop in background thread (for WalletEngine) �"?�"?
+        # ן¿½"?ן¿½"? Async event loop in background thread (for WalletEngine) ן¿½"?ן¿½"?
         self._loop = asyncio.new_event_loop()
         self._loop_thread = threading.Thread(target=self._loop.run_forever, daemon=True)
         self._loop_thread.start()
 
-        # �"?�"? WalletEngine (blockchain wallets) �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?
+        # ן¿½"?ן¿½"? WalletEngine (blockchain wallets) ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?
         self.wallet = None
         self._wallet_ready = False
         self._pending_send = {}  # chat_id -> {step, token, to_user}
@@ -169,18 +169,18 @@ class SLHInvestmentBot:
             future = asyncio.run_coroutine_threadsafe(self.wallet.init(), self._loop)
             future.result(timeout=15)
             self._wallet_ready = True
-            logger.info("�o. WalletEngine connected �?" DB + Redis + BSC + TON")
+            logger.info("ן¿½o. WalletEngine connected ן¿½?" DB + Redis + BSC + TON")
         except Exception as e:
-            logger.warning(f"�s�️ WalletEngine init failed (falling back to mock): {e}")
+            logger.warning(f"ן¿½sן¿½ן¸ WalletEngine init failed (falling back to mock): {e}")
 
-        logger.info("�Ys? SLH Investment House + HUB initialized")
+        logger.info("ן¿½Ys? SLH Investment House + HUB initialized")
 
     def _run_async(self, coro, timeout=10):
         """Run an async coroutine from synchronous code via the background loop."""
         future = asyncio.run_coroutine_threadsafe(coro, self._loop)
         return future.result(timeout=timeout)
 
-    # �"?�"? Telegram API �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?
+    # ן¿½"?ן¿½"? Telegram API ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?
     def api(self, method, data=None):
         url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/{method}"
         try:
@@ -204,71 +204,71 @@ class SLHInvestmentBot:
             data["reply_markup"] = json.dumps(keyboard)
         return self.api("editMessageText", data)
 
-    # �"?�"? Reply keyboard (main menu buttons at bottom) �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?
+    # ן¿½"?ן¿½"? Reply keyboard (main menu buttons at bottom) ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?
     def main_reply_keyboard(self):
         return {"keyboard": [
-            [{"text": "�Y"S �"ש�.ק ע�>ש�T�."}, {"text": "�Y'� �"שקע�.ת"}],
-            [{"text": "�Y'� ארנק"}, {"text": "�Y"" P2P �zס�-ר"}],
-            [{"text": "�YZ� �'�.נ�.ס�Tם"}, {"text": "�Y'� �"�-�z�Y"}],
-            [{"text": "�Y"S �"ש�'�.ר�""}, {"text": "�Y�T ר�>�Tשת SLH"}],
-            [{"text": "�Y'� �"פע�o�""}, {"text": "�Y"� ש�Tת�.ף"}],
-            [{"text": "�Y"s �z�"ר�T�>�Tם"}, {"text": "�Y"� �z�'צע�Tם"}],
+            [{"text": "ן¿½Y"S ן¿½"׳©ן¿½.׳§ ׳¢ן¿½>׳©ן¿½Tן¿½."}, {"text": "ן¿½Y'ן¿½ ן¿½"׳©׳§׳¢ן¿½.׳×"}],
+            [{"text": "ן¿½Y'ן¿½ ׳-׳¨׳ ׳§"}, {"text": "ן¿½Y"" P2P ן¿½z׳¡ן¿½-׳¨"}],
+            [{"text": "ן¿½YZן¿½ ן¿½'ן¿½.׳ ן¿½.׳¡ן¿½T׳"}, {"text": "ן¿½Y'ן¿½ ן¿½"ן¿½-ן¿½zן¿½Y"}],
+            [{"text": "ן¿½Y"S ן¿½"׳©ן¿½'ן¿½.׳¨ן¿½""}, {"text": "ן¿½Yן¿½T ׳¨ן¿½>ן¿½T׳©׳× SLH"}],
+            [{"text": "ן¿½Y'ן¿½ ן¿½"׳₪׳¢ן¿½oן¿½""}, {"text": "ן¿½Y"ן¿½ ׳©ן¿½T׳×ן¿½.׳£"}],
+            [{"text": "ן¿½Y"s ן¿½zן¿½"׳¨ן¿½Tן¿½>ן¿½T׳"}, {"text": "ן¿½Y"ן¿½ ן¿½zן¿½'׳¦׳¢ן¿½T׳"}],
         ], "resize_keyboard": True, "one_time_keyboard": False}
 
-    # �"?�"? Inline keyboards �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?
+    # ן¿½"?ן¿½"? Inline keyboards ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?
     def hub_inline_keyboard(self):
         return {"inline_keyboard": [
-            [{"text": "�Y'� Earn", "callback_data": "menu_earn"}, {"text": "�Y"" Swap", "callback_data": "menu_swap"}],
-            [{"text": "�Y'' VIP", "callback_data": "menu_vip"}, {"text": "�YZ� Airdrop", "callback_data": "menu_airdrop"}],
-            [{"text": "�Y�T Buy SLH", "callback_data": "menu_buy_slh"}],
-            [{"text": "�Y'� �"פנ�T�.ת ש�o�T", "callback_data": "menu_referral"}, {"text": "�Y"S �"ת�Tק ש�o�T", "callback_data": "menu_portfolio"}],
-            [{"text": "�Y"� �z�'צע�Tם", "callback_data": "menu_deals"}, {"text": "�" ע�-ר�"", "callback_data": "menu_help"}],
+            [{"text": "ן¿½Y'ן¿½ Earn", "callback_data": "menu_earn"}, {"text": "ן¿½Y"" Swap", "callback_data": "menu_swap"}],
+            [{"text": "ן¿½Y'' VIP", "callback_data": "menu_vip"}, {"text": "ן¿½YZן¿½ Airdrop", "callback_data": "menu_airdrop"}],
+            [{"text": "ן¿½Yן¿½T Buy SLH", "callback_data": "menu_buy_slh"}],
+            [{"text": "ן¿½Y'ן¿½ ן¿½"׳₪׳ ן¿½Tן¿½.׳× ׳©ן¿½oן¿½T", "callback_data": "menu_referral"}, {"text": "ן¿½Y"S ן¿½"׳×ן¿½T׳§ ׳©ן¿½oן¿½T", "callback_data": "menu_portfolio"}],
+            [{"text": "ן¿½Y"ן¿½ ן¿½zן¿½'׳¦׳¢ן¿½T׳", "callback_data": "menu_deals"}, {"text": "ן¿½" ׳¢ן¿½-׳¨ן¿½"", "callback_data": "menu_help"}],
         ]}
 
     def back_keyboard(self):
-        return {"inline_keyboard": [[{"text": "�Y"T �-�-ר�" �oתפר�T�~", "callback_data": "menu_main"}]]}
+        return {"inline_keyboard": [[{"text": "ן¿½Y"T ן¿½-ן¿½-׳¨ן¿½" ן¿½o׳×׳₪׳¨ן¿½Tן¿½~", "callback_data": "menu_main"}]]}
 
     def earn_keyboard(self):
         rows = []
         for t in _daily_tasks:
             rows.append([{"text": f"{t['title']} (+{t['reward']})", "callback_data": f"task_{t['id']}"}])
-        rows.append([{"text": "�Y"T �-�-ר�" �oתפר�T�~", "callback_data": "menu_main"}])
+        rows.append([{"text": "ן¿½Y"T ן¿½-ן¿½-׳¨ן¿½" ן¿½o׳×׳₪׳¨ן¿½Tן¿½~", "callback_data": "menu_main"}])
         return {"inline_keyboard": rows}
 
     def vip_keyboard(self):
         return {"inline_keyboard": [
-            [{"text": f"⭐ Basic �?" {VIP_PLANS['basic']['price_ils']}�,�", "callback_data": "vip_basic"}],
-            [{"text": f"�Y'Z Pro �?" {VIP_PLANS['pro']['price_ils']}�,�", "callback_data": "vip_pro"}],
-            [{"text": f"�Y'' Elite �?" {VIP_PLANS['elite']['price_ils']}�,�", "callback_data": "vip_elite"}],
-            [{"text": "�Y"T �-�-ר�" �oתפר�T�~", "callback_data": "menu_main"}],
+            [{"text": f"ג­- Basic ן¿½?" {VIP_PLANS['basic']['price_ils']}ן¿½,ן¿½", "callback_data": "vip_basic"}],
+            [{"text": f"ן¿½Y'Z Pro ן¿½?" {VIP_PLANS['pro']['price_ils']}ן¿½,ן¿½", "callback_data": "vip_pro"}],
+            [{"text": f"ן¿½Y'' Elite ן¿½?" {VIP_PLANS['elite']['price_ils']}ן¿½,ן¿½", "callback_data": "vip_elite"}],
+            [{"text": "ן¿½Y"T ן¿½-ן¿½-׳¨ן¿½" ן¿½o׳×׳₪׳¨ן¿½Tן¿½~", "callback_data": "menu_main"}],
         ]}
 
     def buy_slh_keyboard(self):
         rows = []
         for tier in SLH_BUY_TIERS:
-            rows.append([{"text": f"�Y�T {tier['amount']} SLH = {tier['price']}�,�", "callback_data": f"buy_slh_{tier['amount']}"}])
-        rows.append([{"text": "�o�️ ס�>�.ם �z�.תאם א�Tש�Tת", "callback_data": "buy_slh_custom"}])
-        rows.append([{"text": "�Y"T �-�-ר�" �oתפר�T�~", "callback_data": "menu_main"}])
+            rows.append([{"text": f"ן¿½Yן¿½T {tier['amount']} SLH = {tier['price']}ן¿½,ן¿½", "callback_data": f"buy_slh_{tier['amount']}"}])
+        rows.append([{"text": "ן¿½oן¿½ן¸ ׳¡ן¿½>ן¿½.׳ ן¿½zן¿½.׳×׳-׳ ׳-ן¿½T׳©ן¿½T׳×", "callback_data": "buy_slh_custom"}])
+        rows.append([{"text": "ן¿½Y"T ן¿½-ן¿½-׳¨ן¿½" ן¿½o׳×׳₪׳¨ן¿½Tן¿½~", "callback_data": "menu_main"}])
         return {"inline_keyboard": rows}
 
     def invest_keyboard(self):
         rows = []
         for i, plan in enumerate(INVESTMENT_PLANS):
             rows.append([{"text": f"{plan['name']} | {plan['rate']}% | {plan['min_ton']} TON", "callback_data": f"invest_{i}"}])
-        rows.append([{"text": "�Y"T �-�-ר�"", "callback_data": "menu_main"}])
+        rows.append([{"text": "ן¿½Y"T ן¿½-ן¿½-׳¨ן¿½"", "callback_data": "menu_main"}])
         return {"inline_keyboard": rows}
 
     def games_keyboard(self):
         return {"inline_keyboard": [
-            [{"text": "�YZ� ס�o�.�~�Tם", "callback_data": "game_slots"}, {"text": "�YZ� ק�.�'�T�.ת", "callback_data": "game_dice"}],
-            [{"text": "�Y�? �>�"�.רס�o", "callback_data": "game_basketball"}, {"text": "�YZ� �-צ�Tם", "callback_data": "game_darts"}],
-            [{"text": "�Y'� �"�zר ZVK �?' TON", "callback_data": "game_convert"}],
-            [{"text": "�Y"T �-�-ר�"", "callback_data": "menu_main"}],
+            [{"text": "ן¿½YZן¿½ ׳¡ן¿½oן¿½.ן¿½~ן¿½T׳", "callback_data": "game_slots"}, {"text": "ן¿½YZן¿½ ׳§ן¿½.ן¿½'ן¿½Tן¿½.׳×", "callback_data": "game_dice"}],
+            [{"text": "ן¿½Yן¿½? ן¿½>ן¿½"ן¿½.׳¨׳¡ן¿½o", "callback_data": "game_basketball"}, {"text": "ן¿½YZן¿½ ן¿½-׳¦ן¿½T׳", "callback_data": "game_darts"}],
+            [{"text": "ן¿½Y'ן¿½ ן¿½"ן¿½z׳¨ ZVK ן¿½?' TON", "callback_data": "game_convert"}],
+            [{"text": "ן¿½Y"T ן¿½-ן¿½-׳¨ן¿½"", "callback_data": "menu_main"}],
         ]}
 
-    # �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
+    # ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½
     # INVESTMENT HOUSE HANDLERS (original reply-keyboard buttons)
-    # �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
+    # ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½
 
     def handle_start(self, chat_id, first_name, username, start_param=""):
         user = _get_user(chat_id)
@@ -286,7 +286,7 @@ class SLHInvestmentBot:
                     ref_user["referral_count"] += 1
                     ref_user["hub_points"] += 50
                     ref_user["total_earned"] += 50
-                    self.send(referrer_id, f"�YZ? <b>�"פנ�T�" �-�"ש�"!</b>\n\n@{username or first_name} �"צ�~רף �"ר�>�s!\n+50 נק�.�"�.ת SLH �YZ�")
+                    self.send(referrer_id, f"ן¿½YZ? <b>ן¿½"׳₪׳ ן¿½Tן¿½" ן¿½-ן¿½"׳©ן¿½"!</b>\n\n@{username or first_name} ן¿½"׳¦ן¿½~׳¨׳£ ן¿½"׳¨ן¿½>ן¿½s!\n+50 ׳ ׳§ן¿½.ן¿½"ן¿½.׳× SLH ן¿½YZן¿½")
             except:
                 referrer_id = None
 
@@ -309,7 +309,7 @@ class SLHInvestmentBot:
                 user["web_synced"] = True
                 user["web_is_registered"] = sync_data.get("is_registered", False)
                 user["web_login_url"] = sync_data.get("login_url")
-                logger.info(f"[bot-sync] �o. Synced {chat_id} (@{username}) to website �?" registered={sync_data.get('is_registered')}")
+                logger.info(f"[bot-sync] ן¿½o. Synced {chat_id} (@{username}) to website ן¿½?" registered={sync_data.get('is_registered')}")
             else:
                 logger.warning(f"[bot-sync] HTTP {sync_resp.status_code}: {sync_resp.text[:200]}")
         except Exception as e:
@@ -327,63 +327,63 @@ class SLHInvestmentBot:
                 user["rep_balance"] = int(bal_data.get("REP", user.get("rep_balance", 0)))
                 user["zuz_balance"] = int(bal_data.get("ZUZ", user.get("zuz_balance", 0)))
                 user["balances_loaded"] = True
-                logger.info(f"[bal-sync] �o. {chat_id}: SLH={user['slh_balance']}, ZVK={user['zvk_balance']}")
+                logger.info(f"[bal-sync] ן¿½o. {chat_id}: SLH={user['slh_balance']}, ZVK={user['zvk_balance']}")
         except Exception as e:
             logger.warning(f"[bal-sync] failed for {chat_id}: {e}")
 
         invested = user["ton_locked"]
         profit = user["ton_locked"] * 0.04 if user["ton_locked"] > 0 else 0
-        status = "�o. �zשק�Tע פע�T�o" if user["activated"] else "⏳ �z�zת�T�Y �o�"פע�o�""
+        status = "ן¿½o. ן¿½z׳©׳§ן¿½T׳¢ ׳₪׳¢ן¿½Tן¿½o" if user["activated"] else "ג³ ן¿½zן¿½z׳×ן¿½Tן¿½Y ן¿½oן¿½"׳₪׳¢ן¿½oן¿½""
 
         # Personal login link for the website (comes from auto-sync)
         login_url = user.get("web_login_url") or f"https://slh-nft.com/dashboard.html?uid={chat_id}"
 
-        # Professional ASCII branding �?" clean, monospace-safe, SLH colors
+        # Professional ASCII branding ן¿½?" clean, monospace-safe, SLH colors
         text = (
-            f"<b>�o� SLH SPARK �o�</b>\n"
+            f"<b>ן¿½oן¿½ SLH SPARK ן¿½oן¿½</b>\n"
             f"<i>Digital Investment House</i>\n"
-            f"<code>�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�</code>\n"
-            f"        �Y'Z  S L H\n"
+            f"<code>ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½</code>\n"
+            f"        ן¿½Y'Z  S L H\n"
             f"   Investment Ecosystem\n"
             f"      by SPARK IND\n"
-            f"<code>�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�</code>\n\n"
-            f"ש�o�.ם <b>{first_name}</b>! �Y'<\n"
-            f"�Y?" <b>�"�z�-�"�" ש�o�s:</b> <code>{chat_id}</code>\n"
-            f"�Y'� <b>Username:</b> @{username or '�oא �"�.�'�"ר'}\n\n"
-            f"�YO� <b><a href=\"{login_url}\">�"�T�>נס �oאתר �"א�Tש�T ש�o�s �?�</a></b>\n"
-            f"   <i>(�o�-�Tצ�" א�-ת · �o�oא ס�Tס�z�")</i>\n\n"
-            f"<code>�"��"� �"ס�~�~�.ס ש�o�s �"��"�</code>\n"
-            f"�Y'� {status}\n"
-            f"�Y'� �z�.שקע: <b>{invested:.2f} TON</b>\n"
-            f"�Y"^ ר�.�.�-: <b>+{profit:.4f} TON</b>\n"
-            f"�Y'Z SLH: <b>{user['slh_balance']:,.2f}</b>\n"
-            f"�YZ� ZVK: <b>{user['zvk_balance']}</b>\n\n"
-            f"<code>�"��"� �z�" תרצ�" �oעש�.ת? �"��"�</code>\n"
-            f"�Y"S <b>�"ש�.ק ע�>ש�T�.</b> �?" �z�-�Tר�Tם, �z�'�z�.ת, ס�T�'נ�o�Tם\n"
-            f"�Y'� <b>�"שקע�.ת</b> �?" 4 ת�.�>נ�T�.ת, 4%-5.4% �-�.�"ש�T\n"
-            f"�Y'� <b>ארנק</b> �?" TON/BNB/SLH + �"ע�'ר�.ת\n"
-            f"�Y>� <b>ס�T�>�.�Y</b> �?" �"�'�"ר�.ת ס�T�>�.�Y א�Tש�T�.ת\n"
-            f"�YZ� <b>�'�.נ�.ס�Tם</b> �?" �zש�-ק�Tם + ZVK\n"
-            f"�Y'� <b>�"�-�z�Y</b> �?" +5 ZVK + ע�z�o�.ת 10 �"�.ר�.ת\n"
-            f"�Y�� <b>�-נ�.ת ק�"�T�oת�Tת</b> �?" �z�>�.ר/קנ�" �'�zער�>ת\n"
-            f"�Y"� <b>�'�o�.�' �T�.�z�T</b> �?" �z�" �-�"ש �"�T�.ם\n"
-            f"�YZ" <b>אק�"�z�T�"</b> �?" �z�"ר�T�>�Tם �.ק�.רס�Tם\n\n"
-            f"<code>�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�</code>\n"
-            f"�Y'� <b>SLH Investment House</b>\n"
-            f"�s� <i>Powered by SPARK IND</i>\n"
-            f"�Y?��Y?� <i>Built in Israel · 2026</i>"
+            f"<code>ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½</code>\n\n"
+            f"׳©ן¿½oן¿½.׳ <b>{first_name}</b>! ן¿½Y'<\n"
+            f"ן¿½Y?" <b>ן¿½"ן¿½zן¿½-ן¿½"ן¿½" ׳©ן¿½oן¿½s:</b> <code>{chat_id}</code>\n"
+            f"ן¿½Y'ן¿½ <b>Username:</b> @{username or 'ן¿½o׳- ן¿½"ן¿½.ן¿½'ן¿½"׳¨'}\n\n"
+            f"ן¿½YOן¿½ <b><a href=\"{login_url}\">ן¿½"ן¿½Tן¿½>׳ ׳¡ ן¿½o׳-׳×׳¨ ן¿½"׳-ן¿½T׳©ן¿½T ׳©ן¿½oן¿½s ן¿½?ן¿½</a></b>\n"
+            f"   <i>(ן¿½oן¿½-ן¿½T׳¦ן¿½" ׳-ן¿½-׳× ֲ· ן¿½oן¿½o׳- ׳¡ן¿½T׳¡ן¿½zן¿½")</i>\n\n"
+            f"<code>ן¿½"ן¿½ן¿½"ן¿½ ן¿½"׳¡ן¿½~ן¿½~ן¿½.׳¡ ׳©ן¿½oן¿½s ן¿½"ן¿½ן¿½"ן¿½</code>\n"
+            f"ן¿½Y'ן¿½ {status}\n"
+            f"ן¿½Y'ן¿½ ן¿½zן¿½.׳©׳§׳¢: <b>{invested:.2f} TON</b>\n"
+            f"ן¿½Y"^ ׳¨ן¿½.ן¿½.ן¿½-: <b>+{profit:.4f} TON</b>\n"
+            f"ן¿½Y'Z SLH: <b>{user['slh_balance']:,.2f}</b>\n"
+            f"ן¿½YZן¿½ ZVK: <b>{user['zvk_balance']}</b>\n\n"
+            f"<code>ן¿½"ן¿½ן¿½"ן¿½ ן¿½zן¿½" ׳×׳¨׳¦ן¿½" ן¿½o׳¢׳©ן¿½.׳×? ן¿½"ן¿½ן¿½"ן¿½</code>\n"
+            f"ן¿½Y"S <b>ן¿½"׳©ן¿½.׳§ ׳¢ן¿½>׳©ן¿½Tן¿½.</b> ן¿½?" ן¿½zן¿½-ן¿½T׳¨ן¿½T׳, ן¿½zן¿½'ן¿½zן¿½.׳×, ׳¡ן¿½Tן¿½'׳ ן¿½oן¿½T׳\n"
+            f"ן¿½Y'ן¿½ <b>ן¿½"׳©׳§׳¢ן¿½.׳×</b> ן¿½?" 4 ׳×ן¿½.ן¿½>׳ ן¿½Tן¿½.׳×, 4%-5.4% ן¿½-ן¿½.ן¿½"׳©ן¿½T\n"
+            f"ן¿½Y'ן¿½ <b>׳-׳¨׳ ׳§</b> ן¿½?" TON/BNB/SLH + ן¿½"׳¢ן¿½'׳¨ן¿½.׳×\n"
+            f"ן¿½Y>ן¿½ <b>׳¡ן¿½Tן¿½>ן¿½.ן¿½Y</b> ן¿½?" ן¿½"ן¿½'ן¿½"׳¨ן¿½.׳× ׳¡ן¿½Tן¿½>ן¿½.ן¿½Y ׳-ן¿½T׳©ן¿½Tן¿½.׳×\n"
+            f"ן¿½YZן¿½ <b>ן¿½'ן¿½.׳ ן¿½.׳¡ן¿½T׳</b> ן¿½?" ן¿½z׳©ן¿½-׳§ן¿½T׳ + ZVK\n"
+            f"ן¿½Y'ן¿½ <b>ן¿½"ן¿½-ן¿½zן¿½Y</b> ן¿½?" +5 ZVK + ׳¢ן¿½zן¿½oן¿½.׳× 10 ן¿½"ן¿½.׳¨ן¿½.׳×\n"
+            f"ן¿½Yן¿½ן¿½ <b>ן¿½-׳ ן¿½.׳× ׳§ן¿½"ן¿½Tן¿½o׳×ן¿½T׳×</b> ן¿½?" ן¿½zן¿½>ן¿½.׳¨/׳§׳ ן¿½" ן¿½'ן¿½z׳¢׳¨ן¿½>׳×\n"
+            f"ן¿½Y"ן¿½ <b>ן¿½'ן¿½oן¿½.ן¿½' ן¿½Tן¿½.ן¿½zן¿½T</b> ן¿½?" ן¿½zן¿½" ן¿½-ן¿½"׳© ן¿½"ן¿½Tן¿½.׳\n"
+            f"ן¿½YZ" <b>׳-׳§ן¿½"ן¿½zן¿½Tן¿½"</b> ן¿½?" ן¿½zן¿½"׳¨ן¿½Tן¿½>ן¿½T׳ ן¿½.׳§ן¿½.׳¨׳¡ן¿½T׳\n\n"
+            f"<code>ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½</code>\n"
+            f"ן¿½Y'ן¿½ <b>SLH Investment House</b>\n"
+            f"ן¿½sן¿½ <i>Powered by SPARK IND</i>\n"
+            f"ן¿½Y?ן¿½ן¿½Y?ן¿½ <i>Built in Israel ֲ· 2026</i>"
         )
         # Inline keyboard with direct website button
         inline_kb = {
             "inline_keyboard": [
-                [{"text": "�YO� �"�T�>נס �oאתר �"א�Tש�T", "url": login_url}],
+                [{"text": "ן¿½YOן¿½ ן¿½"ן¿½Tן¿½>׳ ׳¡ ן¿½o׳-׳×׳¨ ן¿½"׳-ן¿½T׳©ן¿½T", "url": login_url}],
                 [
-                    {"text": "�Y�� �-נ�.ת", "url": "https://slh-nft.com/community.html"},
-                    {"text": "�Y"� �'�o�.�'", "url": "https://slh-nft.com/daily-blog.html"},
+                    {"text": "ן¿½Yן¿½ן¿½ ן¿½-׳ ן¿½.׳×", "url": "https://slh-nft.com/community.html"},
+                    {"text": "ן¿½Y"ן¿½ ן¿½'ן¿½oן¿½.ן¿½'", "url": "https://slh-nft.com/daily-blog.html"},
                 ],
                 [
-                    {"text": "�YZ� �"�-�z�Y �-�'ר�Tם", "url": "https://slh-nft.com/invite.html"},
-                    {"text": "�Y"- �z�"ר�T�>�Tם", "url": "https://slh-nft.com/guides.html"},
+                    {"text": "ן¿½YZן¿½ ן¿½"ן¿½-ן¿½zן¿½Y ן¿½-ן¿½'׳¨ן¿½T׳", "url": "https://slh-nft.com/invite.html"},
+                    {"text": "ן¿½Y"- ן¿½zן¿½"׳¨ן¿½Tן¿½>ן¿½T׳", "url": "https://slh-nft.com/guides.html"},
                 ],
             ]
         }
@@ -405,7 +405,7 @@ class SLHInvestmentBot:
             self.send(chat_id, text, self.main_reply_keyboard())
             return
         # Also show the persistent reply keyboard separately so bot menu stays visible
-        self.send(chat_id, "�Y'? <i>תפר�T�~ �z�"�Tר:</i>", self.main_reply_keyboard())
+        self.send(chat_id, "ן¿½Y'? <i>׳×׳₪׳¨ן¿½Tן¿½~ ן¿½zן¿½"ן¿½T׳¨:</i>", self.main_reply_keyboard())
 
     def handle_prices(self, chat_id):
         prices = fetch_prices()
@@ -413,39 +413,39 @@ class SLHInvestmentBot:
         ts = now.strftime("%H:%M %d/%m/%Y")
 
         if not prices:
-            self.send(chat_id, "�Y"S <b>�z�-�Tר�Tם �-�T�Tם</b>\n�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?\n\n⏳ �~�.ע�Y �z�-�Tר�Tם...\nנס�" ש�.�' �'ע�.�" ר�'ע.",
+            self.send(chat_id, "ן¿½Y"S <b>ן¿½zן¿½-ן¿½T׳¨ן¿½T׳ ן¿½-ן¿½Tן¿½T׳</b>\nן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?\n\nג³ ן¿½~ן¿½.׳¢ן¿½Y ן¿½zן¿½-ן¿½T׳¨ן¿½T׳...\n׳ ׳¡ן¿½" ׳©ן¿½.ן¿½' ן¿½'׳¢ן¿½.ן¿½" ׳¨ן¿½'׳¢.",
                       self.main_reply_keyboard())
             return
 
         top = ["BTC", "ETH", "TON", "BNB", "SOL"]
         alts = ["DOGE", "XRP", "ADA", "DOT", "AVAX", "LINK"]
 
-        text = "�Y"S <b>�z�-�Tר�Tם �-�T�Tם</b>\n�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?\n\n�Y'' <b>�z�~�'ע�.ת �z�.�'�T�o�.ת:</b>\n"
+        text = "ן¿½Y"S <b>ן¿½zן¿½-ן¿½T׳¨ן¿½T׳ ן¿½-ן¿½Tן¿½T׳</b>\nן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?\n\nן¿½Y'' <b>ן¿½zן¿½~ן¿½'׳¢ן¿½.׳× ן¿½zן¿½.ן¿½'ן¿½Tן¿½oן¿½.׳×:</b>\n"
         for coin in top:
             if coin in prices:
                 p = prices[coin]
                 info = COINS[coin]
-                text += f"  {info['emoji']} {coin}: ${p['usd']:,.2f} | {p['ils']:,.1f}�,�\n"
+                text += f"  {info['emoji']} {coin}: ${p['usd']:,.2f} | {p['ils']:,.1f}ן¿½,ן¿½\n"
 
-        text += "\n�Y'� <b>Altcoins:</b>\n"
+        text += "\nן¿½Y'ן¿½ <b>Altcoins:</b>\n"
         for coin in alts:
             if coin in prices:
                 p = prices[coin]
                 info = COINS[coin]
-                text += f"  {info['emoji']} {coin}: ${p['usd']:.4f} | {p['ils']:.2f}�,�\n"
+                text += f"  {info['emoji']} {coin}: ${p['usd']:.4f} | {p['ils']:.2f}ן¿½,ן¿½\n"
 
         ton_price = prices.get("TON", {})
         if ton_price:
-            text += f"\n�Y'� 1 TON = {ton_price['ils']}�,� | ${ton_price['usd']}\n"
+            text += f"\nן¿½Y'ן¿½ 1 TON = {ton_price['ils']}ן¿½,ן¿½ | ${ton_price['usd']}\n"
 
-        text += f"\n⏰ {ts}\n\n�Y'� SLH Investment House"
+        text += f"\nג° {ts}\n\nן¿½Y'ן¿½ SLH Investment House"
         self.send(chat_id, text, self.main_reply_keyboard())
 
     def wallet_inline_keyboard(self):
         return {"inline_keyboard": [
-            [{"text": "�Y"� �"פק�"�"", "callback_data": "wallet_deposit"}, {"text": "�Y"� ש�o�-", "callback_data": "wallet_send"}],
-            [{"text": "�Y"o �"�Tס�~�.ר�T�"", "callback_data": "wallet_history"}, {"text": "�Y"" רענ�Y", "callback_data": "wallet_refresh"}],
-            [{"text": "�Y"T �-�-ר�" �oתפר�T�~", "callback_data": "menu_main"}],
+            [{"text": "ן¿½Y"ן¿½ ן¿½"׳₪׳§ן¿½"ן¿½"", "callback_data": "wallet_deposit"}, {"text": "ן¿½Y"ן¿½ ׳©ן¿½oן¿½-", "callback_data": "wallet_send"}],
+            [{"text": "ן¿½Y"o ן¿½"ן¿½T׳¡ן¿½~ן¿½.׳¨ן¿½Tן¿½"", "callback_data": "wallet_history"}, {"text": "ן¿½Y"" ׳¨׳¢׳ ן¿½Y", "callback_data": "wallet_refresh"}],
+            [{"text": "ן¿½Y"T ן¿½-ן¿½-׳¨ן¿½" ן¿½o׳×׳₪׳¨ן¿½Tן¿½~", "callback_data": "menu_main"}],
         ]}
 
     def _refresh_balances(self, chat_id: int):
@@ -470,7 +470,7 @@ class SLHInvestmentBot:
         # Always pull fresh balances from DB before displaying wallet
         self._refresh_balances(chat_id)
 
-        # �"?�"? Try real blockchain wallet �"?�"?
+        # ן¿½"?ן¿½"? Try real blockchain wallet ן¿½"?ן¿½"?
         if self._wallet_ready and self.wallet:
             try:
                 portfolio = self._run_async(self.wallet.get_user_portfolio(chat_id), timeout=12)
@@ -478,28 +478,28 @@ class SLHInvestmentBot:
                     bal = portfolio["balances"]
                     usd = portfolio["usd_values"]
                     prices = portfolio.get("prices", {})
-                    bsc_addr = portfolio.get("bsc_address", "�?"")
+                    bsc_addr = portfolio.get("bsc_address", "ן¿½?"")
 
                     text = (
-                        f"�Y'� <b>ארנק SLH</b>\n"
-                        f"�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�\n\n"
-                        f"�Y'Z <b>SLH:</b> {bal['SLH']}\n"
-                        f"�YY� <b>BNB:</b> {bal['BNB']}\n"
-                        f"�Y'� <b>TON:</b> {bal['TON']}\n"
-                        f"�YZ� <b>ZVK:</b> {bal['ZVK']}\n\n"
-                        f"�Y'� <b>ש�.�.�T �'�"�.�oר:</b>\n"
+                        f"ן¿½Y'ן¿½ <b>׳-׳¨׳ ׳§ SLH</b>\n"
+                        f"ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½\n\n"
+                        f"ן¿½Y'Z <b>SLH:</b> {bal['SLH']}\n"
+                        f"ן¿½YYן¿½ <b>BNB:</b> {bal['BNB']}\n"
+                        f"ן¿½Y'ן¿½ <b>TON:</b> {bal['TON']}\n"
+                        f"ן¿½YZן¿½ <b>ZVK:</b> {bal['ZVK']}\n\n"
+                        f"ן¿½Y'ן¿½ <b>׳©ן¿½.ן¿½.ן¿½T ן¿½'ן¿½"ן¿½.ן¿½o׳¨:</b>\n"
                         f"  SLH: ${usd.get('SLH', 0):,.2f}\n"
                         f"  BNB: ${usd.get('BNB', 0):,.2f}\n"
                         f"  TON: ${usd.get('TON', 0):,.2f}\n"
-                        f"  �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?\n"
-                        f"  �Y'� ס�"\"�>: <b>${usd.get('total', 0):,.2f}</b>\n\n"
-                        f"�Y"- <b>�>ת�.�'ת BSC:</b>\n<code>{bsc_addr}</code>\n\n"
-                        f"�Y'� <b>פק�.�"�.ת:</b>\n"
-                        f"/deposit_address �?" �>ת�.�'ת �"פק�"�"\n"
-                        f"/send_slh USER_ID AMOUNT �?" ש�o�- SLH\n"
-                        f"/send_ton USER_ID AMOUNT �?" ש�o�- TON\n"
-                        f"/tx_history �?" �"�Tס�~�.ר�T�Tת עסקא�.ת\n"
-                        f"/verify TX_HASH CHAIN �?" א�zת �"פק�"�""
+                        f"  ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?\n"
+                        f"  ן¿½Y'ן¿½ ׳¡ן¿½"\"ן¿½>: <b>${usd.get('total', 0):,.2f}</b>\n\n"
+                        f"ן¿½Y"- <b>ן¿½>׳×ן¿½.ן¿½'׳× BSC:</b>\n<code>{bsc_addr}</code>\n\n"
+                        f"ן¿½Y'ן¿½ <b>׳₪׳§ן¿½.ן¿½"ן¿½.׳×:</b>\n"
+                        f"/deposit_address ן¿½?" ן¿½>׳×ן¿½.ן¿½'׳× ן¿½"׳₪׳§ן¿½"ן¿½"\n"
+                        f"/send_slh USER_ID AMOUNT ן¿½?" ׳©ן¿½oן¿½- SLH\n"
+                        f"/send_ton USER_ID AMOUNT ן¿½?" ׳©ן¿½oן¿½- TON\n"
+                        f"/tx_history ן¿½?" ן¿½"ן¿½T׳¡ן¿½~ן¿½.׳¨ן¿½Tן¿½T׳× ׳¢׳¡׳§׳-ן¿½.׳×\n"
+                        f"/verify TX_HASH CHAIN ן¿½?" ׳-ן¿½z׳× ן¿½"׳₪׳§ן¿½"ן¿½""
                     )
                     if message_id:
                         self.edit_message(chat_id, message_id, text, self.wallet_inline_keyboard())
@@ -509,125 +509,125 @@ class SLHInvestmentBot:
             except Exception as e:
                 logger.warning(f"Wallet fetch failed for {chat_id}: {e}")
 
-        # �"?�"? Fallback to in-memory �"?�"?
+        # ן¿½"?ן¿½"? Fallback to in-memory ן¿½"?ן¿½"?
         ton_total = user["ton_available"] + user["ton_locked"]
         text = (
-            f"�Y'� <b>ארנק</b>\n"
-            f"�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?\n\n"
-            f"�Y'Z SLH: {user['slh_balance']:.4f}\n"
-            f"�YZ� ZVK: {user['zvk_balance']}\n\n"
-            f"�Y�� <b>�-ש�'�.�Y �'נק:</b>\n"
-            f"  �Y'� �-�z�T�Y: {user['ton_available']:.4f} TON\n"
-            f"  �Y"' נע�.�o: {user['ton_locked']:.4f} TON\n"
-            f"  �Y'� ס�"\"�>: {ton_total:.4f} TON\n\n"
-            f"�s�️ <i>ארנק blockchain �zת�-�'ר... נס�" ש�.�' �'ע�.�" ר�'ע</i>\n\n"
-            f"�Y'� <b>פק�.�"�.ת:</b>\n"
-            f"/deposit - �"פק�"�" �-�"ש�"\n"
-            f"/send_slh USER_ID AMOUNT �?" ש�o�- SLH\n"
-            f"/tx_history �?" �"�Tס�~�.ר�T�Tת עסקא�.ת"
+            f"ן¿½Y'ן¿½ <b>׳-׳¨׳ ׳§</b>\n"
+            f"ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?\n\n"
+            f"ן¿½Y'Z SLH: {user['slh_balance']:.4f}\n"
+            f"ן¿½YZן¿½ ZVK: {user['zvk_balance']}\n\n"
+            f"ן¿½Yן¿½ן¿½ <b>ן¿½-׳©ן¿½'ן¿½.ן¿½Y ן¿½'׳ ׳§:</b>\n"
+            f"  ן¿½Y'ן¿½ ן¿½-ן¿½zן¿½Tן¿½Y: {user['ton_available']:.4f} TON\n"
+            f"  ן¿½Y"' ׳ ׳¢ן¿½.ן¿½o: {user['ton_locked']:.4f} TON\n"
+            f"  ן¿½Y'ן¿½ ׳¡ן¿½"\"ן¿½>: {ton_total:.4f} TON\n\n"
+            f"ן¿½sן¿½ן¸ <i>׳-׳¨׳ ׳§ blockchain ן¿½z׳×ן¿½-ן¿½'׳¨... ׳ ׳¡ן¿½" ׳©ן¿½.ן¿½' ן¿½'׳¢ן¿½.ן¿½" ׳¨ן¿½'׳¢</i>\n\n"
+            f"ן¿½Y'ן¿½ <b>׳₪׳§ן¿½.ן¿½"ן¿½.׳×:</b>\n"
+            f"/deposit - ן¿½"׳₪׳§ן¿½"ן¿½" ן¿½-ן¿½"׳©ן¿½"\n"
+            f"/send_slh USER_ID AMOUNT ן¿½?" ׳©ן¿½oן¿½- SLH\n"
+            f"/tx_history ן¿½?" ן¿½"ן¿½T׳¡ן¿½~ן¿½.׳¨ן¿½Tן¿½T׳× ׳¢׳¡׳§׳-ן¿½.׳×"
         )
         if message_id:
             self.edit_message(chat_id, message_id, text, self.wallet_inline_keyboard())
         else:
             self.send(chat_id, text, self.wallet_inline_keyboard())
 
-    # �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
+    # ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½
     # BLOCKCHAIN WALLET HANDLERS (wallet_engine integration)
-    # �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
+    # ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½
 
     def handle_deposit_address(self, chat_id):
         """Generate and show deposit addresses for BSC + TON."""
         if not self._wallet_ready:
-            self.send(chat_id, "�s�️ �zער�>ת �"ארנק�Tם �zת�-�'רת... נס�" ש�.�' �'ע�.�" ר�'ע.", self.main_reply_keyboard())
+            self.send(chat_id, "ן¿½sן¿½ן¸ ן¿½z׳¢׳¨ן¿½>׳× ן¿½"׳-׳¨׳ ׳§ן¿½T׳ ן¿½z׳×ן¿½-ן¿½'׳¨׳×... ׳ ׳¡ן¿½" ׳©ן¿½.ן¿½' ן¿½'׳¢ן¿½.ן¿½" ׳¨ן¿½'׳¢.", self.main_reply_keyboard())
             return
         try:
             addrs = self._run_async(self.wallet.generate_deposit_address(chat_id))
             text = (
-                f"�Y"� <b>�>ת�.�'�.ת �"פק�"�"</b>\n"
-                f"�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�\n\n"
-                f"�YY� <b>BSC (BNB / SLH Token):</b>\n"
+                f"ן¿½Y"ן¿½ <b>ן¿½>׳×ן¿½.ן¿½'ן¿½.׳× ן¿½"׳₪׳§ן¿½"ן¿½"</b>\n"
+                f"ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½\n\n"
+                f"ן¿½YYן¿½ <b>BSC (BNB / SLH Token):</b>\n"
                 f"<code>{addrs['bsc_address']}</code>\n\n"
-                f"�Y'� <b>TON:</b>\n"
+                f"ן¿½Y'ן¿½ <b>TON:</b>\n"
                 f"<code>{addrs['ton_address']}</code>\n"
-                f"�Y"� <b>Memo:</b> <code>{addrs['memo']}</code>\n\n"
-                f"�s�️ <b>�-ש�.�':</b>\n"
-                f"�?� BSC �?" ש�o�- BNB א�. SLH Token �o�>ת�.�'ת �o�zע�o�"\n"
-                f"�?� TON �?" ש�o�- TON �o�>ת�.�'ת + �"�.סף את �"-Memo\n"
-                f"�?� א�-ר�T �"ש�o�T�-�": /verify TX_HASH bsc (א�. ton)\n\n"
-                f"�Y'� <i>�"�"פק�"�" ת�T�-קף א�.�~�.�z�~�Tת א�-ר�T א�T�z�.ת</i>"
+                f"ן¿½Y"ן¿½ <b>Memo:</b> <code>{addrs['memo']}</code>\n\n"
+                f"ן¿½sן¿½ן¸ <b>ן¿½-׳©ן¿½.ן¿½':</b>\n"
+                f"ן¿½?ן¿½ BSC ן¿½?" ׳©ן¿½oן¿½- BNB ׳-ן¿½. SLH Token ן¿½oן¿½>׳×ן¿½.ן¿½'׳× ן¿½oן¿½z׳¢ן¿½oן¿½"\n"
+                f"ן¿½?ן¿½ TON ן¿½?" ׳©ן¿½oן¿½- TON ן¿½oן¿½>׳×ן¿½.ן¿½'׳× + ן¿½"ן¿½.׳¡׳£ ׳-׳× ן¿½"-Memo\n"
+                f"ן¿½?ן¿½ ׳-ן¿½-׳¨ן¿½T ן¿½"׳©ן¿½oן¿½Tן¿½-ן¿½": /verify TX_HASH bsc (׳-ן¿½. ton)\n\n"
+                f"ן¿½Y'ן¿½ <i>ן¿½"ן¿½"׳₪׳§ן¿½"ן¿½" ׳×ן¿½Tן¿½-׳§׳£ ׳-ן¿½.ן¿½~ן¿½.ן¿½zן¿½~ן¿½T׳× ׳-ן¿½-׳¨ן¿½T ׳-ן¿½Tן¿½zן¿½.׳×</i>"
             )
             self.send(chat_id, text, self.wallet_inline_keyboard())
         except Exception as e:
             logger.error(f"Deposit address error: {e}")
-            self.send(chat_id, "�O ש�'�Tא�" �'�Tצ�Tרת �>ת�.�'ת. נס�" ש�.�'.", self.main_reply_keyboard())
+            self.send(chat_id, "ן¿½O ׳©ן¿½'ן¿½T׳-ן¿½" ן¿½'ן¿½T׳¦ן¿½T׳¨׳× ן¿½>׳×ן¿½.ן¿½'׳×. ׳ ׳¡ן¿½" ׳©ן¿½.ן¿½'.", self.main_reply_keyboard())
 
     def handle_verify_deposit(self, chat_id, args):
         """Verify a deposit tx on-chain: /verify TX_HASH bsc|ton"""
         if not self._wallet_ready:
-            self.send(chat_id, "�s�️ �zער�>ת �"ארנק�Tם �zת�-�'רת...", self.main_reply_keyboard())
+            self.send(chat_id, "ן¿½sן¿½ן¸ ן¿½z׳¢׳¨ן¿½>׳× ן¿½"׳-׳¨׳ ׳§ן¿½T׳ ן¿½z׳×ן¿½-ן¿½'׳¨׳×...", self.main_reply_keyboard())
             return
         parts = args.strip().split()
         if len(parts) < 2:
             self.send(chat_id,
-                "�Y"< <b>א�T�z�.ת �"פק�"�"</b>\n\n"
-                "ש�T�z�.ש: /verify TX_HASH CHAIN\n\n"
-                "�"�.�'�z�" BSC:\n<code>/verify 0xabc123... bsc</code>\n\n"
-                "�"�.�'�z�" TON:\n<code>/verify abc123... ton</code>",
+                "ן¿½Y"< <b>׳-ן¿½Tן¿½zן¿½.׳× ן¿½"׳₪׳§ן¿½"ן¿½"</b>\n\n"
+                "׳©ן¿½Tן¿½zן¿½.׳©: /verify TX_HASH CHAIN\n\n"
+                "ן¿½"ן¿½.ן¿½'ן¿½zן¿½" BSC:\n<code>/verify 0xabc123... bsc</code>\n\n"
+                "ן¿½"ן¿½.ן¿½'ן¿½zן¿½" TON:\n<code>/verify abc123... ton</code>",
                 self.main_reply_keyboard())
             return
 
         tx_hash = parts[0]
         chain = parts[1].lower()
         if chain not in ("bsc", "ton"):
-            self.send(chat_id, "�O Chain �-�T�T�' �o�"�T�.ת bsc א�. ton", self.main_reply_keyboard())
+            self.send(chat_id, "ן¿½O Chain ן¿½-ן¿½Tן¿½Tן¿½' ן¿½oן¿½"ן¿½Tן¿½.׳× bsc ׳-ן¿½. ton", self.main_reply_keyboard())
             return
 
-        self.send(chat_id, f"⏳ �zא�zת עסק�" ע�o {chain.upper()}...", self.main_reply_keyboard())
+        self.send(chat_id, f"ג³ ן¿½z׳-ן¿½z׳× ׳¢׳¡׳§ן¿½" ׳¢ן¿½o {chain.upper()}...", self.main_reply_keyboard())
         try:
             result = self._run_async(self.wallet.process_deposit(chat_id, tx_hash, chain), timeout=20)
             if "error" in result:
-                self.send(chat_id, f"�O {result['error']}", self.wallet_inline_keyboard())
+                self.send(chat_id, f"ן¿½O {result['error']}", self.wallet_inline_keyboard())
             else:
                 self.send(chat_id,
-                    f"�o. <b>�"פק�"�" א�.�zת�"!</b>\n\n"
-                    f"�Y'� ס�>�.ם: <b>{result['amount']} {result['token']}</b>\n"
-                    f"�Y"- Chain: {result['chain'].upper()}\n"
-                    f"�Y"� ID: #{result['deposit_id']}\n\n"
-                    f"�"�Tתר�" ע�.�"�>נ�". /wallet �oצפ�T�T�"",
+                    f"ן¿½o. <b>ן¿½"׳₪׳§ן¿½"ן¿½" ׳-ן¿½.ן¿½z׳×ן¿½"!</b>\n\n"
+                    f"ן¿½Y'ן¿½ ׳¡ן¿½>ן¿½.׳: <b>{result['amount']} {result['token']}</b>\n"
+                    f"ן¿½Y"- Chain: {result['chain'].upper()}\n"
+                    f"ן¿½Y"ן¿½ ID: #{result['deposit_id']}\n\n"
+                    f"ן¿½"ן¿½T׳×׳¨ן¿½" ׳¢ן¿½.ן¿½"ן¿½>׳ ן¿½". /wallet ן¿½o׳¦׳₪ן¿½Tן¿½Tן¿½"",
                     self.wallet_inline_keyboard())
                 # Notify admin
                 if str(chat_id) != ADMIN_ID:
                     user = _get_user(chat_id)
                     self.send(int(ADMIN_ID),
-                        f"�Y'� <b>�"פק�"�" �-�"ש�"!</b>\n"
-                        f"�Y'� @{user['username']} ({chat_id})\n"
-                        f"�Y'� {result['amount']} {result['token']} ({chain.upper()})\n"
-                        f"�Y"- TX: <code>{tx_hash[:30]}...</code>")
+                        f"ן¿½Y'ן¿½ <b>ן¿½"׳₪׳§ן¿½"ן¿½" ן¿½-ן¿½"׳©ן¿½"!</b>\n"
+                        f"ן¿½Y'ן¿½ @{user['username']} ({chat_id})\n"
+                        f"ן¿½Y'ן¿½ {result['amount']} {result['token']} ({chain.upper()})\n"
+                        f"ן¿½Y"- TX: <code>{tx_hash[:30]}...</code>")
         except Exception as e:
             logger.error(f"Verify deposit error: {e}")
-            self.send(chat_id, "�O ש�'�Tא�" �'א�T�z�.ת. נס�" ש�.�'.", self.main_reply_keyboard())
+            self.send(chat_id, "ן¿½O ׳©ן¿½'ן¿½T׳-ן¿½" ן¿½'׳-ן¿½Tן¿½zן¿½.׳×. ׳ ׳¡ן¿½" ׳©ן¿½.ן¿½'.", self.main_reply_keyboard())
 
     def handle_send_internal(self, chat_id, args, token="SLH"):
-        """Internal transfer: /send_slh USER_ID AMOUNT �?" uses bot-transfer API directly."""
+        """Internal transfer: /send_slh USER_ID AMOUNT ן¿½?" uses bot-transfer API directly."""
         parts = args.strip().split()
         if len(parts) < 2:
             self.send(chat_id,
-                f"�Y"� <b>�"ע�'רת {token}</b>\n\n"
-                f"ש�T�z�.ש: /send_{token.lower()} USER_ID AMOUNT\n\n"
-                f"�"�.�'�z�":\n<code>/send_{token.lower()} 123456789 10</code>\n\n"
-                f"�Y'� �"-USER_ID ש�o �"נ�zע�Y: �'קש �z�zנ�. �oש�o�.�- /myid\n"
-                f"�Y'� א�. �"שת�zש �'תפר�T�~: �Y"" P2P �zס�-ר",
+                f"ן¿½Y"ן¿½ <b>ן¿½"׳¢ן¿½'׳¨׳× {token}</b>\n\n"
+                f"׳©ן¿½Tן¿½zן¿½.׳©: /send_{token.lower()} USER_ID AMOUNT\n\n"
+                f"ן¿½"ן¿½.ן¿½'ן¿½zן¿½":\n<code>/send_{token.lower()} 123456789 10</code>\n\n"
+                f"ן¿½Y'ן¿½ ן¿½"-USER_ID ׳©ן¿½o ן¿½"׳ ן¿½z׳¢ן¿½Y: ן¿½'׳§׳© ן¿½zן¿½z׳ ן¿½. ן¿½o׳©ן¿½oן¿½.ן¿½- /myid\n"
+                f"ן¿½Y'ן¿½ ׳-ן¿½. ן¿½"׳©׳×ן¿½z׳© ן¿½'׳×׳₪׳¨ן¿½Tן¿½~: ן¿½Y"" P2P ן¿½z׳¡ן¿½-׳¨",
                 self.main_reply_keyboard())
             return
         try:
             to_user = int(parts[0])
             amount  = float(parts[1])
         except (ValueError, IndexError):
-            self.send(chat_id, "�O פ�.ר�z�~ ש�'�.�T. ש�o�- USER_ID �.א�- ס�>�.ם.", self.main_reply_keyboard())
+            self.send(chat_id, "ן¿½O ׳₪ן¿½.׳¨ן¿½zן¿½~ ׳©ן¿½'ן¿½.ן¿½T. ׳©ן¿½oן¿½- USER_ID ן¿½.׳-ן¿½- ׳¡ן¿½>ן¿½.׳.", self.main_reply_keyboard())
             return
 
         if to_user == chat_id:
-            self.send(chat_id, "�O א�T אפשר �oש�o�.�- �oעצ�z�s", self.main_reply_keyboard())
+            self.send(chat_id, "ן¿½O ׳-ן¿½T ׳-׳₪׳©׳¨ ן¿½o׳©ן¿½oן¿½.ן¿½- ן¿½o׳¢׳¦ן¿½zן¿½s", self.main_reply_keyboard())
             return
 
         # Use bot-transfer API (no JWT needed)
@@ -636,73 +636,73 @@ class SLHInvestmentBot:
     def handle_tx_history(self, chat_id):
         """Show transaction history from DB."""
         if not self._wallet_ready:
-            self.send(chat_id, "�s�️ �zער�>ת �"ארנק�Tם �zת�-�'רת...", self.main_reply_keyboard())
+            self.send(chat_id, "ן¿½sן¿½ן¸ ן¿½z׳¢׳¨ן¿½>׳× ן¿½"׳-׳¨׳ ׳§ן¿½T׳ ן¿½z׳×ן¿½-ן¿½'׳¨׳×...", self.main_reply_keyboard())
             return
         try:
             history = self._run_async(self.wallet.get_transaction_history(chat_id, limit=10))
             if not history:
-                self.send(chat_id, "�Y"o <b>�"�Tס�~�.ר�T�Tת עסקא�.ת</b>\n\nא�T�Y עסקא�.ת ע�"�T�T�Y.", self.wallet_inline_keyboard())
+                self.send(chat_id, "ן¿½Y"o <b>ן¿½"ן¿½T׳¡ן¿½~ן¿½.׳¨ן¿½Tן¿½T׳× ׳¢׳¡׳§׳-ן¿½.׳×</b>\n\n׳-ן¿½Tן¿½Y ׳¢׳¡׳§׳-ן¿½.׳× ׳¢ן¿½"ן¿½Tן¿½Tן¿½Y.", self.wallet_inline_keyboard())
                 return
-            text = "�Y"o <b>�"�Tס�~�.ר�T�Tת עסקא�.ת (10 א�-ר�.נ�.ת)</b>\n�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�\n\n"
+            text = "ן¿½Y"o <b>ן¿½"ן¿½T׳¡ן¿½~ן¿½.׳¨ן¿½Tן¿½T׳× ׳¢׳¡׳§׳-ן¿½.׳× (10 ׳-ן¿½-׳¨ן¿½.׳ ן¿½.׳×)</b>\nן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½\n\n"
             for tx in history:
-                direction = "�Y"�" if tx["from_user_id"] == chat_id else "�Y"�"
+                direction = "ן¿½Y"ן¿½" if tx["from_user_id"] == chat_id else "ן¿½Y"ן¿½"
                 other = tx["to_user_id"] if tx["from_user_id"] == chat_id else tx["from_user_id"]
-                dt = tx["created_at"][:16].replace("T", " ") if tx["created_at"] else "�?""
+                dt = tx["created_at"][:16].replace("T", " ") if tx["created_at"] else "ן¿½?""
                 text += (
                     f"{direction} <b>{tx['amount']} {tx['token']}</b> "
-                    f"{'�?'' if direction == '�Y"�' else '�?�'} {other or 'system'} "
+                    f"{'ן¿½?'' if direction == 'ן¿½Y"ן¿½' else 'ן¿½?ן¿½'} {other or 'system'} "
                     f"| {tx['type']} | {dt}\n"
                 )
             self.send(chat_id, text, self.wallet_inline_keyboard())
         except Exception as e:
             logger.error(f"TX history error: {e}")
-            self.send(chat_id, "�O ש�'�Tא�" �'�~ע�Tנת �"�Tס�~�.ר�T�".", self.main_reply_keyboard())
+            self.send(chat_id, "ן¿½O ׳©ן¿½'ן¿½T׳-ן¿½" ן¿½'ן¿½~׳¢ן¿½T׳ ׳× ן¿½"ן¿½T׳¡ן¿½~ן¿½.׳¨ן¿½Tן¿½".", self.main_reply_keyboard())
 
     def handle_onchain_balance(self, chat_id):
         """Read on-chain balance for the ecosystem master wallets."""
         if not self._wallet_ready:
-            self.send(chat_id, "�s�️ �zער�>ת �"ארנק�Tם �zת�-�'רת...", self.main_reply_keyboard())
+            self.send(chat_id, "ן¿½sן¿½ן¸ ן¿½z׳¢׳¨ן¿½>׳× ן¿½"׳-׳¨׳ ׳§ן¿½T׳ ן¿½z׳×ן¿½-ן¿½'׳¨׳×...", self.main_reply_keyboard())
             return
         try:
-            self.send(chat_id, "⏳ ק�.רא �Tתר�.ת �z�"-blockchain...", self.main_reply_keyboard())
+            self.send(chat_id, "ג³ ׳§ן¿½.׳¨׳- ן¿½T׳×׳¨ן¿½.׳× ן¿½zן¿½"-blockchain...", self.main_reply_keyboard())
             slh_bal = self._run_async(self.wallet.get_slh_balance(BSC_CONTRACT), timeout=15)
             ton_bal = self._run_async(self.wallet.get_ton_balance(TON_WALLET), timeout=15)
             prices = self._run_async(self.wallet.get_live_prices())
             text = (
-                f"�Y"- <b>�Tתר�.ת On-Chain</b>\n"
-                f"�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�\n\n"
-                f"�Y'Z <b>SLH Token (BSC):</b>\n"
+                f"ן¿½Y"- <b>ן¿½T׳×׳¨ן¿½.׳× On-Chain</b>\n"
+                f"ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½\n\n"
+                f"ן¿½Y'Z <b>SLH Token (BSC):</b>\n"
                 f"  Contract: <code>{BSC_CONTRACT[:20]}...</code>\n"
-                f"  �Tתר�": {slh_bal}\n\n"
-                f"�Y'� <b>TON Wallet:</b>\n"
-                f"  �>ת�.�'ת: <code>{TON_WALLET[:20]}...</code>\n"
-                f"  �Tתר�": {ton_bal} TON\n\n"
-                f"�Y"S <b>�z�-�Tר�Tם:</b>\n"
+                f"  ן¿½T׳×׳¨ן¿½": {slh_bal}\n\n"
+                f"ן¿½Y'ן¿½ <b>TON Wallet:</b>\n"
+                f"  ן¿½>׳×ן¿½.ן¿½'׳×: <code>{TON_WALLET[:20]}...</code>\n"
+                f"  ן¿½T׳×׳¨ן¿½": {ton_bal} TON\n\n"
+                f"ן¿½Y"S <b>ן¿½zן¿½-ן¿½T׳¨ן¿½T׳:</b>\n"
                 f"  BTC: ${prices.get('btc_usd', 0):,.0f}\n"
                 f"  ETH: ${prices.get('eth_usd', 0):,.0f}\n"
                 f"  TON: ${prices.get('ton_usd', 0):.2f}\n"
                 f"  BNB: ${prices.get('bnb_usd', 0):,.0f}\n"
-                f"  SLH: {prices.get('slh_ils', 444)}�,� (${prices.get('slh_usd', 0):.2f})"
+                f"  SLH: {prices.get('slh_ils', 444)}ן¿½,ן¿½ (${prices.get('slh_usd', 0):.2f})"
             )
             self.send(chat_id, text, self.wallet_inline_keyboard())
         except Exception as e:
             logger.error(f"On-chain balance error: {e}")
-            self.send(chat_id, "�O ש�'�Tא�" �'קר�Tא�" �z�"-blockchain.", self.main_reply_keyboard())
+            self.send(chat_id, "ן¿½O ׳©ן¿½'ן¿½T׳-ן¿½" ן¿½'׳§׳¨ן¿½T׳-ן¿½" ן¿½zן¿½"-blockchain.", self.main_reply_keyboard())
 
     def handle_investments(self, chat_id, message_id=None):
-        text = "�Y'� <b>ת�.�>נ�T�.ת �"שקע�"</b>\n�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?\n\n"
+        text = "ן¿½Y'ן¿½ <b>׳×ן¿½.ן¿½>׳ ן¿½Tן¿½.׳× ן¿½"׳©׳§׳¢ן¿½"</b>\nן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?\n\n"
         for plan in INVESTMENT_PLANS:
             text += (
                 f"{plan['name']}\n"
-                f"  �Y'� {plan['rate']}% �-�.�"ש�T | {plan['annual']}% שנת�T\n"
-                f"  �z�Tנ�T�z�.ם {plan['min_ton']} TON | {plan['days']} �T�.ם\n\n"
+                f"  ן¿½Y'ן¿½ {plan['rate']}% ן¿½-ן¿½.ן¿½"׳©ן¿½T | {plan['annual']}% ׳©׳ ׳×ן¿½T\n"
+                f"  ן¿½zן¿½T׳ ן¿½Tן¿½zן¿½.׳ {plan['min_ton']} TON | {plan['days']} ן¿½Tן¿½.׳\n\n"
             )
         text += (
-            "�Y'� <b>א�T�s �o�"פק�T�":</b>\n"
-            "1. �'�-ר ת�.�>נ�Tת\n"
-            "2. ש�o�- TON �z-@wallet\n"
-            "3. ש�o�- צ�T�o�.ם �zס�s\n"
-            "4. �"פק�"�.�Y נפת�-!"
+            "ן¿½Y'ן¿½ <b>׳-ן¿½Tן¿½s ן¿½oן¿½"׳₪׳§ן¿½Tן¿½":</b>\n"
+            "1. ן¿½'ן¿½-׳¨ ׳×ן¿½.ן¿½>׳ ן¿½T׳×\n"
+            "2. ׳©ן¿½oן¿½- TON ן¿½z-@wallet\n"
+            "3. ׳©ן¿½oן¿½- ׳¦ן¿½Tן¿½oן¿½.׳ ן¿½z׳¡ן¿½s\n"
+            "4. ן¿½"׳₪׳§ן¿½"ן¿½.ן¿½Y ׳ ׳₪׳×ן¿½-!"
         )
         if message_id:
             self.edit_message(chat_id, message_id, text, self.invest_keyboard())
@@ -712,18 +712,18 @@ class SLHInvestmentBot:
     def handle_risk(self, chat_id):
         user = _get_user(chat_id)
         text = (
-            f"�Y>� <b>ס�T�>�.�Y �.�'קר�"</b>\n"
-            f"�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?\n\n"
-            f"�Y'� <b>�"�'�"ר�.ת �"ס�T�>�.�Y ש�o�s:</b>\n\n"
-            f"�Ys� �"פס�" �T�.�z�T: {user['risk_daily_loss']}%\n"
-            f"�Y"S פ�.�-�Tצ�T�" �zקס�T�z�o�Tת: {user['risk_max_position']}%\n"
-            f"�Y>' Stop Loss: {'�o. פע�T�o' if user['risk_stop_loss'] else '�O �>�'�.�T'}\n\n"
-            f"�Y"� <b>עקר�.נ�.ת:</b>\n"
-            f"�?� �oא �o�"שק�Tע �T�.תר �z�z�" ש�z�.�>נ�Tם �o�"פס�T�"\n"
-            f"�?� �o�"פר�T�" �'�T�Y �zספר ת�.�>נ�T�.ת\n"
-            f"�?� �oא �oש�Tם �"�>�o ע�o ק�oף א�-�"\n"
-            f"�?� �o�"שא�Tר נ�-�T�o�.ת �o�zקר�" �-�Tר�.ם\n\n"
-            f"�Y>� <b>�"�zער�>ת ש�.�zרת ע�o�T�s!</b>"
+            f"ן¿½Y>ן¿½ <b>׳¡ן¿½Tן¿½>ן¿½.ן¿½Y ן¿½.ן¿½'׳§׳¨ן¿½"</b>\n"
+            f"ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?\n\n"
+            f"ן¿½Y'ן¿½ <b>ן¿½"ן¿½'ן¿½"׳¨ן¿½.׳× ן¿½"׳¡ן¿½Tן¿½>ן¿½.ן¿½Y ׳©ן¿½oן¿½s:</b>\n\n"
+            f"ן¿½Ysן¿½ ן¿½"׳₪׳¡ן¿½" ן¿½Tן¿½.ן¿½zן¿½T: {user['risk_daily_loss']}%\n"
+            f"ן¿½Y"S ׳₪ן¿½.ן¿½-ן¿½T׳¦ן¿½Tן¿½" ן¿½z׳§׳¡ן¿½Tן¿½zן¿½oן¿½T׳×: {user['risk_max_position']}%\n"
+            f"ן¿½Y>' Stop Loss: {'ן¿½o. ׳₪׳¢ן¿½Tן¿½o' if user['risk_stop_loss'] else 'ן¿½O ן¿½>ן¿½'ן¿½.ן¿½T'}\n\n"
+            f"ן¿½Y"ן¿½ <b>׳¢׳§׳¨ן¿½.׳ ן¿½.׳×:</b>\n"
+            f"ן¿½?ן¿½ ן¿½o׳- ן¿½oן¿½"׳©׳§ן¿½T׳¢ ן¿½Tן¿½.׳×׳¨ ן¿½zן¿½zן¿½" ׳©ן¿½zן¿½.ן¿½>׳ ן¿½T׳ ן¿½oן¿½"׳₪׳¡ן¿½Tן¿½"\n"
+            f"ן¿½?ן¿½ ן¿½oן¿½"׳₪׳¨ן¿½Tן¿½" ן¿½'ן¿½Tן¿½Y ן¿½z׳¡׳₪׳¨ ׳×ן¿½.ן¿½>׳ ן¿½Tן¿½.׳×\n"
+            f"ן¿½?ן¿½ ן¿½o׳- ן¿½o׳©ן¿½T׳ ן¿½"ן¿½>ן¿½o ׳¢ן¿½o ׳§ן¿½o׳£ ׳-ן¿½-ן¿½"\n"
+            f"ן¿½?ן¿½ ן¿½oן¿½"׳©׳-ן¿½T׳¨ ׳ ן¿½-ן¿½Tן¿½oן¿½.׳× ן¿½oן¿½z׳§׳¨ן¿½" ן¿½-ן¿½T׳¨ן¿½.׳\n\n"
+            f"ן¿½Y>ן¿½ <b>ן¿½"ן¿½z׳¢׳¨ן¿½>׳× ׳©ן¿½.ן¿½z׳¨׳× ׳¢ן¿½oן¿½Tן¿½s!</b>"
         )
         self.send(chat_id, text, self.main_reply_keyboard())
 
@@ -731,61 +731,61 @@ class SLHInvestmentBot:
         user = _get_user(chat_id)
         ref_link = f"https://t.me/SLH_AIR_bot?start=ref_{chat_id}"
         text = (
-            f"�Y'� <b>�"�-�z�Y �-�'ר�Tם</b>\n\n"
-            f"�Y"- <code>{ref_link}</code>\n\n"
-            f"�"�-�zנ�.ת: {user['referral_count']} | +5 ZVK �o�>�o �-�'ר"
+            f"ן¿½Y'ן¿½ <b>ן¿½"ן¿½-ן¿½zן¿½Y ן¿½-ן¿½'׳¨ן¿½T׳</b>\n\n"
+            f"ן¿½Y"- <code>{ref_link}</code>\n\n"
+            f"ן¿½"ן¿½-ן¿½z׳ ן¿½.׳×: {user['referral_count']} | +5 ZVK ן¿½oן¿½>ן¿½o ן¿½-ן¿½'׳¨"
         )
         self.send(chat_id, text, self.main_reply_keyboard())
 
     def handle_activate(self, chat_id):
         user = _get_user(chat_id)
         user["activated"] = True
-        self.send(chat_id, "�o. �z�.פע�o!", self.main_reply_keyboard())
+        self.send(chat_id, "ן¿½o. ן¿½zן¿½.׳₪׳¢ן¿½o!", self.main_reply_keyboard())
 
     def handle_share(self, chat_id):
         user = _get_user(chat_id)
         ref_link = f"https://t.me/SLH_AIR_bot?start=ref_{chat_id}"
         text = (
-            f"�Y'Z SLH - �'�Tת �"שקע�.ת �"�T�'�T�~�o�T\n\n"
-            f"�o. תש�.א�" 4% �-�.�"ש�T / 65% שנת�T\n"
-            f"�o. ארנק �z�oא (TON/BNB/SLH)\n"
-            f"�o. �"ע�'ר�.ת �z�T�T�"�T�.ת + blockchain\n"
-            f"�o. נ�Tת�.�- ש�.ק + ס�T�'נ�o�Tם\n"
-            f"�YZ� +100 ZVK �zתנ�"!\n\n"
-            f"�Y'� 22.221�,� �'�o�'�"!\n"
-            f"�Y'? {ref_link}\n\n"
-            f"�Y'� SPARK IND | SLH Ecosystem"
+            f"ן¿½Y'Z SLH - ן¿½'ן¿½T׳× ן¿½"׳©׳§׳¢ן¿½.׳× ן¿½"ן¿½Tן¿½'ן¿½Tן¿½~ן¿½oן¿½T\n\n"
+            f"ן¿½o. ׳×׳©ן¿½.׳-ן¿½" 4% ן¿½-ן¿½.ן¿½"׳©ן¿½T / 65% ׳©׳ ׳×ן¿½T\n"
+            f"ן¿½o. ׳-׳¨׳ ׳§ ן¿½zן¿½o׳- (TON/BNB/SLH)\n"
+            f"ן¿½o. ן¿½"׳¢ן¿½'׳¨ן¿½.׳× ן¿½zן¿½Tן¿½Tן¿½"ן¿½Tן¿½.׳× + blockchain\n"
+            f"ן¿½o. ׳ ן¿½T׳×ן¿½.ן¿½- ׳©ן¿½.׳§ + ׳¡ן¿½Tן¿½'׳ ן¿½oן¿½T׳\n"
+            f"ן¿½YZן¿½ +100 ZVK ן¿½z׳×׳ ן¿½"!\n\n"
+            f"ן¿½Y'ן¿½ 22.221ן¿½,ן¿½ ן¿½'ן¿½oן¿½'ן¿½"!\n"
+            f"ן¿½Y'? {ref_link}\n\n"
+            f"ן¿½Y'ן¿½ SPARK IND | SLH Ecosystem"
         )
         self.send(chat_id, text, self.main_reply_keyboard())
 
     def handle_guides(self, chat_id):
         text = (
-            "�Y"s <b>�z�"ר�T�>�Tם</b>\n"
-            "�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?\n\n"
-            "�Y"- <b>�z�"ר�T�>�T SLH:</b>\n"
-            "�?� <a href='https://slh-nft.com/guides.html'>�z�"ר�T�s �z�oא �'אתר</a>\n\n"
-            "�Y"< <b>נ�.שא�Tם:</b>\n"
-            "1️�f� א�T�s �o�"ת�-�T�o עם SLH\n"
-            "2️�f� א�T�s �oפת�.�- ארנק TON\n"
-            "3️�f� א�T�s �o�"פק�T�" �.�o�"שק�Tע\n"
-            "4️�f� א�T�s �o�"שת�zש �'ס�.�.אפ\n"
-            "5️�f� �z�"ר�T�s א�'�~�-�"\n"
-            "6️�f� שא�o�.ת נפ�.צ�.ת\n\n"
-            "�Y'� �o�>�o שא�o�": /support"
+            "ן¿½Y"s <b>ן¿½zן¿½"׳¨ן¿½Tן¿½>ן¿½T׳</b>\n"
+            "ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?\n\n"
+            "ן¿½Y"- <b>ן¿½zן¿½"׳¨ן¿½Tן¿½>ן¿½T SLH:</b>\n"
+            "ן¿½?ן¿½ <a href='https://slh-nft.com/guides.html'>ן¿½zן¿½"׳¨ן¿½Tן¿½s ן¿½zן¿½o׳- ן¿½'׳-׳×׳¨</a>\n\n"
+            "ן¿½Y"< <b>׳ ן¿½.׳©׳-ן¿½T׳:</b>\n"
+            "1ן¸ן¿½fן¿½ ׳-ן¿½Tן¿½s ן¿½oן¿½"׳×ן¿½-ן¿½Tן¿½o ׳¢׳ SLH\n"
+            "2ן¸ן¿½fן¿½ ׳-ן¿½Tן¿½s ן¿½o׳₪׳×ן¿½.ן¿½- ׳-׳¨׳ ׳§ TON\n"
+            "3ן¸ן¿½fן¿½ ׳-ן¿½Tן¿½s ן¿½oן¿½"׳₪׳§ן¿½Tן¿½" ן¿½.ן¿½oן¿½"׳©׳§ן¿½T׳¢\n"
+            "4ן¸ן¿½fן¿½ ׳-ן¿½Tן¿½s ן¿½oן¿½"׳©׳×ן¿½z׳© ן¿½'׳¡ן¿½.ן¿½.׳-׳₪\n"
+            "5ן¸ן¿½fן¿½ ן¿½zן¿½"׳¨ן¿½Tן¿½s ׳-ן¿½'ן¿½~ן¿½-ן¿½"\n"
+            "6ן¸ן¿½fן¿½ ׳©׳-ן¿½oן¿½.׳× ׳ ׳₪ן¿½.׳¦ן¿½.׳×\n\n"
+            "ן¿½Y'ן¿½ ן¿½oן¿½>ן¿½o ׳©׳-ן¿½oן¿½": /support"
         )
         self.send(chat_id, text, self.main_reply_keyboard())
 
     def handle_bonuses(self, chat_id, message_id=None):
         user = _get_user(chat_id)
         text = (
-            f"�YZ� <b>�'�.נ�.ס�Tם</b> | ZVK: {user['zvk_balance']}\n"
-            f"�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?\n\n"
-            f"�>�o �zש�-ק = 1 ZVK\n"
-            f"�YZ� ס�o�.�~�Tם: פרס �'�"�.�o ע�" 25 ZVK!\n"
-            f"�YZ� ק�.�'�T�.ת: 6=5 ZVK, 4-5=2 ZVK\n"
-            f"�Y�? �>�"�.רס�o: 4+=3 ZVK\n"
-            f"�YZ� �-צ�Tם: 6=5 ZVK, 4-5=2 ZVK\n\n"
-            f"�Y'� 10 ZVK = 1 TON | 50 = 4 | 100 = 7"
+            f"ן¿½YZן¿½ <b>ן¿½'ן¿½.׳ ן¿½.׳¡ן¿½T׳</b> | ZVK: {user['zvk_balance']}\n"
+            f"ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?\n\n"
+            f"ן¿½>ן¿½o ן¿½z׳©ן¿½-׳§ = 1 ZVK\n"
+            f"ן¿½YZן¿½ ׳¡ן¿½oן¿½.ן¿½~ן¿½T׳: ׳₪׳¨׳¡ ן¿½'ן¿½"ן¿½.ן¿½o ׳¢ן¿½" 25 ZVK!\n"
+            f"ן¿½YZן¿½ ׳§ן¿½.ן¿½'ן¿½Tן¿½.׳×: 6=5 ZVK, 4-5=2 ZVK\n"
+            f"ן¿½Yן¿½? ן¿½>ן¿½"ן¿½.׳¨׳¡ן¿½o: 4+=3 ZVK\n"
+            f"ן¿½YZן¿½ ן¿½-׳¦ן¿½T׳: 6=5 ZVK, 4-5=2 ZVK\n\n"
+            f"ן¿½Y'ן¿½ 10 ZVK = 1 TON | 50 = 4 | 100 = 7"
         )
         if message_id:
             self.edit_message(chat_id, message_id, text, self.games_keyboard())
@@ -795,73 +795,73 @@ class SLHInvestmentBot:
     def handle_game(self, chat_id, game_type, callback_id, message_id):
         user = _get_user(chat_id)
         if user["zvk_balance"] < 1:
-            self.answer_callback(callback_id, "�O א�T�Y �zספ�Tק ZVK!", True)
+            self.answer_callback(callback_id, "ן¿½O ׳-ן¿½Tן¿½Y ן¿½z׳¡׳₪ן¿½T׳§ ZVK!", True)
             return
 
         user["zvk_balance"] -= 1
         user["games_played"] += 1
 
         if game_type == "slots":
-            symbols = ["�Y�'", "�Y�<", "�Y�S", "�Y'Z", "7️�f�", "�Y"""]
+            symbols = ["ן¿½Yן¿½'", "ן¿½Yן¿½<", "ן¿½Yן¿½S", "ן¿½Y'Z", "7ן¸ן¿½fן¿½", "ן¿½Y"""]
             s1, s2, s3 = random.choice(symbols), random.choice(symbols), random.choice(symbols)
             if s1 == s2 == s3:
-                win = 25 if s1 == "�Y'Z" else 15
+                win = 25 if s1 == "ן¿½Y'Z" else 15
                 user["zvk_balance"] += win
                 user["games_won"] += 1
-                result = f"�YZ� {s1}{s2}{s3}\n\n�YZ? �''קפ�.�~! +{win} ZVK!"
+                result = f"ן¿½YZן¿½ {s1}{s2}{s3}\n\nן¿½YZ? ן¿½''׳§׳₪ן¿½.ן¿½~! +{win} ZVK!"
             elif s1 == s2 or s2 == s3:
                 win = 3
                 user["zvk_balance"] += win
                 user["games_won"] += 1
-                result = f"�YZ� {s1}{s2}{s3}\n\n�YZ? נ�Tצ�-ת! +{win} ZVK!"
+                result = f"ן¿½YZן¿½ {s1}{s2}{s3}\n\nן¿½YZ? ׳ ן¿½T׳¦ן¿½-׳×! +{win} ZVK!"
             else:
-                result = f"�YZ� {s1}{s2}{s3}\n\n�O �oא �"פעם"
+                result = f"ן¿½YZן¿½ {s1}{s2}{s3}\n\nן¿½O ן¿½o׳- ן¿½"׳₪׳¢׳"
         elif game_type == "dice":
             roll = random.randint(1, 6)
             if roll == 6:
                 user["zvk_balance"] += 5
                 user["games_won"] += 1
-                result = f"�YZ� {roll}\n\n�YZ? �z�.ש�oם! +5 ZVK!"
+                result = f"ן¿½YZן¿½ {roll}\n\nן¿½YZ? ן¿½zן¿½.׳©ן¿½o׳! +5 ZVK!"
             elif roll >= 4:
                 user["zvk_balance"] += 2
                 user["games_won"] += 1
-                result = f"�YZ� {roll}\n\n�YZ? נ�Tצ�-ת! +2 ZVK!"
+                result = f"ן¿½YZן¿½ {roll}\n\nן¿½YZ? ׳ ן¿½T׳¦ן¿½-׳×! +2 ZVK!"
             else:
-                result = f"�YZ� {roll}\n\n�O �oא �"פעם"
+                result = f"ן¿½YZן¿½ {roll}\n\nן¿½O ן¿½o׳- ן¿½"׳₪׳¢׳"
         elif game_type == "basketball":
             score = random.randint(1, 6)
             if score >= 4:
                 user["zvk_balance"] += 3
                 user["games_won"] += 1
-                result = f"�Y�? {score} נק�.�"�.ת!\n\n�YZ? נ�Tצ�-ת! +3 ZVK!"
+                result = f"ן¿½Yן¿½? {score} ׳ ׳§ן¿½.ן¿½"ן¿½.׳×!\n\nן¿½YZ? ׳ ן¿½T׳¦ן¿½-׳×! +3 ZVK!"
             else:
-                result = f"�Y�? {score} נק�.�"�.ת\n\n�O �oא �"פעם"
+                result = f"ן¿½Yן¿½? {score} ׳ ׳§ן¿½.ן¿½"ן¿½.׳×\n\nן¿½O ן¿½o׳- ן¿½"׳₪׳¢׳"
         elif game_type == "darts":
             score = random.randint(1, 6)
             if score == 6:
                 user["zvk_balance"] += 5
                 user["games_won"] += 1
-                result = f"�YZ� �zר�>�-! {score}\n\n�YZ? נ�Tצ�-ת! +5 ZVK!"
+                result = f"ן¿½YZן¿½ ן¿½z׳¨ן¿½>ן¿½-! {score}\n\nן¿½YZ? ׳ ן¿½T׳¦ן¿½-׳×! +5 ZVK!"
             elif score >= 4:
                 user["zvk_balance"] += 2
                 user["games_won"] += 1
-                result = f"�YZ� {score}\n\n�YZ? נ�Tצ�-ת! +2 ZVK!"
+                result = f"ן¿½YZן¿½ {score}\n\nן¿½YZ? ׳ ן¿½T׳¦ן¿½-׳×! +2 ZVK!"
             else:
-                result = f"�YZ� {score}\n\n�O �oא �"פעם"
+                result = f"ן¿½YZן¿½ {score}\n\nן¿½O ן¿½o׳- ן¿½"׳₪׳¢׳"
         else:
-            result = "�""
+            result = "ן¿½""
 
-        result += f"\n�YZ� ZVK: {user['zvk_balance']}"
+        result += f"\nן¿½YZן¿½ ZVK: {user['zvk_balance']}"
         self.edit_message(chat_id, message_id, result, self.games_keyboard())
         self.answer_callback(callback_id)
 
     def handle_game_convert(self, chat_id, callback_id, message_id):
         text = (
-            "�Y'� <b>�"�zרת ZVK �?' TON</b>\n\n"
+            "ן¿½Y'ן¿½ <b>ן¿½"ן¿½z׳¨׳× ZVK ן¿½?' TON</b>\n\n"
             "10 ZVK = 1 TON\n"
             "50 ZVK = 4 TON\n"
             "100 ZVK = 7 TON\n\n"
-            f"ש�o�- �o:\n<code>{TON_WALLET}</code>"
+            f"׳©ן¿½oן¿½- ן¿½o:\n<code>{TON_WALLET}</code>"
         )
         self.edit_message(chat_id, message_id, text, self.games_keyboard())
         self.answer_callback(callback_id)
@@ -878,38 +878,38 @@ class SLHInvestmentBot:
         win_rate = round(user["games_won"] / user["games_played"] * 100) if user["games_played"] > 0 else 0
 
         text = (
-            f"�Y"S <b>�"ש�'�.ר�"</b>\n"
-            f"�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?\n\n"
-            f"�Y�� <b>�-ש�'�.�Y �'נק:</b>\n"
-            f"  �Y'� �-�z�T�Y: {user['ton_available']:.4f} TON\n"
-            f"  �Y"' נע�.�o: {user['ton_locked']:.4f} TON\n"
-            f"  �Y'� ס�"\"�>: {ton_total:.4f} TON\n\n"
-            f"�Y'� �"שקע�.ת פע�T�o�.ת: {active_deposits}\n"
-            f"⏳ �z�zת�Tנ�.ת �oא�Tש�.ר: {pending_deposits}\n"
-            f"�Y'� �z�.שקע: {invested:.2f} TON\n"
-            f"�Y"^ ר�.�.�-: +{profit:.4f} TON\n\n"
-            f"�YZ� ZVK: {user['zvk_balance']} | �zש�-ק�Tם: {user['games_played']} ({win_rate}%)\n"
-            f"�Y'� �"�-�zנ�.ת: {user['referral_count']}\n\n"
+            f"ן¿½Y"S <b>ן¿½"׳©ן¿½'ן¿½.׳¨ן¿½"</b>\n"
+            f"ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?\n\n"
+            f"ן¿½Yן¿½ן¿½ <b>ן¿½-׳©ן¿½'ן¿½.ן¿½Y ן¿½'׳ ׳§:</b>\n"
+            f"  ן¿½Y'ן¿½ ן¿½-ן¿½zן¿½Tן¿½Y: {user['ton_available']:.4f} TON\n"
+            f"  ן¿½Y"' ׳ ׳¢ן¿½.ן¿½o: {user['ton_locked']:.4f} TON\n"
+            f"  ן¿½Y'ן¿½ ׳¡ן¿½"\"ן¿½>: {ton_total:.4f} TON\n\n"
+            f"ן¿½Y'ן¿½ ן¿½"׳©׳§׳¢ן¿½.׳× ׳₪׳¢ן¿½Tן¿½oן¿½.׳×: {active_deposits}\n"
+            f"ג³ ן¿½zן¿½z׳×ן¿½T׳ ן¿½.׳× ן¿½o׳-ן¿½T׳©ן¿½.׳¨: {pending_deposits}\n"
+            f"ן¿½Y'ן¿½ ן¿½zן¿½.׳©׳§׳¢: {invested:.2f} TON\n"
+            f"ן¿½Y"^ ׳¨ן¿½.ן¿½.ן¿½-: +{profit:.4f} TON\n\n"
+            f"ן¿½YZן¿½ ZVK: {user['zvk_balance']} | ן¿½z׳©ן¿½-׳§ן¿½T׳: {user['games_played']} ({win_rate}%)\n"
+            f"ן¿½Y'ן¿½ ן¿½"ן¿½-ן¿½z׳ ן¿½.׳×: {user['referral_count']}\n\n"
             f"SLH Investment House"
         )
         self.send(chat_id, text, self.main_reply_keyboard())
 
     def handle_swap_text(self, chat_id):
         text = (
-            "�Y"" <b>SLH Swap �?" �"�zרת �z�~�'ע�.ת</b>\n\n"
-            "�"�z�Tר�. �'�T�Y 4,500+ �z�~�'ע�.ת קר�Tפ�~�. �'ק�o�.ת!\n\n"
-            "�Y'� <b>�Tתר�.נ�.ת:</b>\n"
-            "�?� �o�oא �"רש�z�"\n"
-            "�?� ע�z�o�.ת נ�z�.�>�.ת\n"
-            "�?� �"�zר�" �Tש�Tר�" �zארנק �oארנק\n"
-            "�?� ת�z�T�>�" �'-TON, BTC, ETH, BNB �.ע�.�"\n\n"
-            "�Y"� <b>�z�'צע:</b> Cashback 0.5% ע�o �>�o עסק�"!\n\n"
-            "�Y'? �o�-ץ �o�"ת�-�o�":"
+            "ן¿½Y"" <b>SLH Swap ן¿½?" ן¿½"ן¿½z׳¨׳× ן¿½zן¿½~ן¿½'׳¢ן¿½.׳×</b>\n\n"
+            "ן¿½"ן¿½zן¿½T׳¨ן¿½. ן¿½'ן¿½Tן¿½Y 4,500+ ן¿½zן¿½~ן¿½'׳¢ן¿½.׳× ׳§׳¨ן¿½T׳₪ן¿½~ן¿½. ן¿½'׳§ן¿½oן¿½.׳×!\n\n"
+            "ן¿½Y'ן¿½ <b>ן¿½T׳×׳¨ן¿½.׳ ן¿½.׳×:</b>\n"
+            "ן¿½?ן¿½ ן¿½oן¿½o׳- ן¿½"׳¨׳©ן¿½zן¿½"\n"
+            "ן¿½?ן¿½ ׳¢ן¿½zן¿½oן¿½.׳× ׳ ן¿½zן¿½.ן¿½>ן¿½.׳×\n"
+            "ן¿½?ן¿½ ן¿½"ן¿½z׳¨ן¿½" ן¿½T׳©ן¿½T׳¨ן¿½" ן¿½z׳-׳¨׳ ׳§ ן¿½o׳-׳¨׳ ׳§\n"
+            "ן¿½?ן¿½ ׳×ן¿½zן¿½Tן¿½>ן¿½" ן¿½'-TON, BTC, ETH, BNB ן¿½.׳¢ן¿½.ן¿½"\n\n"
+            "ן¿½Y"ן¿½ <b>ן¿½zן¿½'׳¦׳¢:</b> Cashback 0.5% ׳¢ן¿½o ן¿½>ן¿½o ׳¢׳¡׳§ן¿½"!\n\n"
+            "ן¿½Y'? ן¿½oן¿½-׳¥ ן¿½oן¿½"׳×ן¿½-ן¿½oן¿½":"
         )
         kb = {"inline_keyboard": [
-            [{"text": "�Y"" �"�zר ע�>ש�T�.", "url": f"https://letsexchange.io/?ref={LETSEXCHANGE_REF}"}],
-            [{"text": "�Y'� TON �?' USDT", "url": f"https://letsexchange.io/?from=TON&to=USDT&ref={LETSEXCHANGE_REF}"}],
-            [{"text": "�Y'� BTC �?' TON", "url": f"https://letsexchange.io/?from=BTC&to=TON&ref={LETSEXCHANGE_REF}"}],
+            [{"text": "ן¿½Y"" ן¿½"ן¿½z׳¨ ׳¢ן¿½>׳©ן¿½Tן¿½.", "url": f"https://letsexchange.io/?ref={LETSEXCHANGE_REF}"}],
+            [{"text": "ן¿½Y'ן¿½ TON ן¿½?' USDT", "url": f"https://letsexchange.io/?from=TON&to=USDT&ref={LETSEXCHANGE_REF}"}],
+            [{"text": "ן¿½Y'ן¿½ BTC ן¿½?' TON", "url": f"https://letsexchange.io/?from=BTC&to=TON&ref={LETSEXCHANGE_REF}"}],
         ]}
         self.send(chat_id, text, kb)
 
@@ -917,70 +917,70 @@ class SLHInvestmentBot:
         prices = fetch_prices()
         btc = prices.get("BTC", {}).get("usd", 67000)
         text = (
-            f"�Y�� <b>נ�Tת�.�- AI</b>\n"
-            f"�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?\n\n"
-            f"�Y"^ <b>תר�-�Tש ש�.ר�T:</b> אם BTC ש�.�'ר ${int(btc/1000)*1000+3000:,}, צפ�.�T �z�"�o�s �o-${int(btc/1000)*1000+8000:,}\n\n"
-            f"�Y"� <b>תר�-�Tש �"�.�'�T:</b> אם BTC ש�.�'ר ${int(btc/1000)*1000-2000:,}, אפשר�T נפ�T�o�" �o-${int(btc/1000)*1000-7000:,}\n\n"
-            f"�YY� <b>תר�-�Tש נ�T�T�~ר�o�T:</b> צפ�.�T �"�-�Tס�" צ�"�"�Tת\n\n"
-            f"�s�️ �-�" �oא �T�Tע�.ץ �"שקע�"."
+            f"ן¿½Yן¿½ן¿½ <b>׳ ן¿½T׳×ן¿½.ן¿½- AI</b>\n"
+            f"ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?\n\n"
+            f"ן¿½Y"^ <b>׳×׳¨ן¿½-ן¿½T׳© ׳©ן¿½.׳¨ן¿½T:</b> ׳-׳ BTC ׳©ן¿½.ן¿½'׳¨ ${int(btc/1000)*1000+3000:,}, ׳¦׳₪ן¿½.ן¿½T ן¿½zן¿½"ן¿½oן¿½s ן¿½o-${int(btc/1000)*1000+8000:,}\n\n"
+            f"ן¿½Y"ן¿½ <b>׳×׳¨ן¿½-ן¿½T׳© ן¿½"ן¿½.ן¿½'ן¿½T:</b> ׳-׳ BTC ׳©ן¿½.ן¿½'׳¨ ${int(btc/1000)*1000-2000:,}, ׳-׳₪׳©׳¨ן¿½T ׳ ׳₪ן¿½Tן¿½oן¿½" ן¿½o-${int(btc/1000)*1000-7000:,}\n\n"
+            f"ן¿½YYן¿½ <b>׳×׳¨ן¿½-ן¿½T׳© ׳ ן¿½Tן¿½Tן¿½~׳¨ן¿½oן¿½T:</b> ׳¦׳₪ן¿½.ן¿½T ן¿½"ן¿½-ן¿½T׳¡ן¿½" ׳¦ן¿½"ן¿½"ן¿½T׳×\n\n"
+            f"ן¿½sן¿½ן¸ ן¿½-ן¿½" ן¿½o׳- ן¿½Tן¿½T׳¢ן¿½.׳¥ ן¿½"׳©׳§׳¢ן¿½"."
         )
         self.send(chat_id, text, self.main_reply_keyboard())
 
     def handle_alerts(self, chat_id):
         text = (
-            "�Y"" <b>�"תרא�.ת �z�-�Tר</b>\n"
-            "�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?\n\n"
-            "�'קר�.�'! ת�.�>�o �o�"�'�"�Tר �"תרא�.ת ע�o:\n"
-            "�?� �z�-�Tר שע�.�'ר ר�z�"\n"
-            "�?� נפ�- �-ר�T�'\n"
-            "�?� �-�"ש�.ת ש�.ק\n"
-            "�?� ש�Tנ�.�T �'ת�Tק"
+            "ן¿½Y"" <b>ן¿½"׳×׳¨׳-ן¿½.׳× ן¿½zן¿½-ן¿½T׳¨</b>\n"
+            "ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?\n\n"
+            "ן¿½'׳§׳¨ן¿½.ן¿½'! ׳×ן¿½.ן¿½>ן¿½o ן¿½oן¿½"ן¿½'ן¿½"ן¿½T׳¨ ן¿½"׳×׳¨׳-ן¿½.׳× ׳¢ן¿½o:\n"
+            "ן¿½?ן¿½ ן¿½zן¿½-ן¿½T׳¨ ׳©׳¢ן¿½.ן¿½'׳¨ ׳¨ן¿½zן¿½"\n"
+            "ן¿½?ן¿½ ׳ ׳₪ן¿½- ן¿½-׳¨ן¿½Tן¿½'\n"
+            "ן¿½?ן¿½ ן¿½-ן¿½"׳©ן¿½.׳× ׳©ן¿½.׳§\n"
+            "ן¿½?ן¿½ ׳©ן¿½T׳ ן¿½.ן¿½T ן¿½'׳×ן¿½T׳§"
         )
         self.send(chat_id, text, self.main_reply_keyboard())
 
     def handle_deals_text(self, chat_id):
         text = (
-            "�Y"� <b>�z�'צע�Tם פע�T�o�Tם</b>\n\n"
-            "�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�\n\n"
-            "�Y"� <b>�z�'צע �"שק�" �?" 30% �"נ�-�"!</b>\n"
-            "  �Y'� �>�o �"�'�.�~�Tם �'-30% �"נ�-�"\n"
-            "  �Y��️ ק�.�": <code>LAUNCH30</code>\n"
-            "  ⏰ �-�z�Y �z�.�'�'�o\n\n"
-            "�Y'Z <b>�-�'�T�o�" �z�oא�" �?" 6 �'�.�~�Tם</b>\n"
-            "  �Y'� �z�-�Tר: <b>199�,�</b>\n"
-            "  �Y"� �>�o 6 �'�.�~�T �"פר�T�z�T�.ם\n\n"
-            "�Y�� <b>�"�-�z�Y 3 = פר�T�z�T�.ם �-�Tנם!</b>\n"
-            "  �Y'� �"�-�z�Y 3 �-�'ר�Tם\n"
-            "  �YZ� ק�'�o Community Premium �'�-�Tנם\n\n"
-            "�Y>�️ <b>�-�'�T�oת א�'�~�-�"</b>\n"
-            "  �Y'� Guardian + Wallet = <b>99�,�</b>\n\n"
-            "�YZ" <b>�z�'צע ס�~�.�"נ�~�Tם</b>\n"
-            "  �Y'� 50% �"נ�-�" ע�o Academia\n"
-            "  �Y��️ ק�.�": <code>STUDENT50</code>\n"
-            "�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�"
+            "ן¿½Y"ן¿½ <b>ן¿½zן¿½'׳¦׳¢ן¿½T׳ ׳₪׳¢ן¿½Tן¿½oן¿½T׳</b>\n\n"
+            "ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½\n\n"
+            "ן¿½Y"ן¿½ <b>ן¿½zן¿½'׳¦׳¢ ן¿½"׳©׳§ן¿½" ן¿½?" 30% ן¿½"׳ ן¿½-ן¿½"!</b>\n"
+            "  ן¿½Y'ן¿½ ן¿½>ן¿½o ן¿½"ן¿½'ן¿½.ן¿½~ן¿½T׳ ן¿½'-30% ן¿½"׳ ן¿½-ן¿½"\n"
+            "  ן¿½Yן¿½ן¿½ן¸ ׳§ן¿½.ן¿½": <code>LAUNCH30</code>\n"
+            "  ג° ן¿½-ן¿½zן¿½Y ן¿½zן¿½.ן¿½'ן¿½'ן¿½o\n\n"
+            "ן¿½Y'Z <b>ן¿½-ן¿½'ן¿½Tן¿½oן¿½" ן¿½zן¿½o׳-ן¿½" ן¿½?" 6 ן¿½'ן¿½.ן¿½~ן¿½T׳</b>\n"
+            "  ן¿½Y'ן¿½ ן¿½zן¿½-ן¿½T׳¨: <b>199ן¿½,ן¿½</b>\n"
+            "  ן¿½Y"ן¿½ ן¿½>ן¿½o 6 ן¿½'ן¿½.ן¿½~ן¿½T ן¿½"׳₪׳¨ן¿½Tן¿½zן¿½Tן¿½.׳\n\n"
+            "ן¿½Yן¿½ן¿½ <b>ן¿½"ן¿½-ן¿½zן¿½Y 3 = ׳₪׳¨ן¿½Tן¿½zן¿½Tן¿½.׳ ן¿½-ן¿½T׳ ׳!</b>\n"
+            "  ן¿½Y'ן¿½ ן¿½"ן¿½-ן¿½zן¿½Y 3 ן¿½-ן¿½'׳¨ן¿½T׳\n"
+            "  ן¿½YZן¿½ ׳§ן¿½'ן¿½o Community Premium ן¿½'ן¿½-ן¿½T׳ ׳\n\n"
+            "ן¿½Y>ן¿½ן¸ <b>ן¿½-ן¿½'ן¿½Tן¿½o׳× ׳-ן¿½'ן¿½~ן¿½-ן¿½"</b>\n"
+            "  ן¿½Y'ן¿½ Guardian + Wallet = <b>99ן¿½,ן¿½</b>\n\n"
+            "ן¿½YZ" <b>ן¿½zן¿½'׳¦׳¢ ׳¡ן¿½~ן¿½.ן¿½"׳ ן¿½~ן¿½T׳</b>\n"
+            "  ן¿½Y'ן¿½ 50% ן¿½"׳ ן¿½-ן¿½" ׳¢ן¿½o Academia\n"
+            "  ן¿½Yן¿½ן¿½ן¸ ׳§ן¿½.ן¿½": <code>STUDENT50</code>\n"
+            "ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½"
         )
         self.send(chat_id, text, self.main_reply_keyboard())
 
     def handle_buy_slh_text(self, chat_id):
         text = (
-            f"�Y�T <b>ר�>�Tשת SLH Coin</b>\n\n"
-            f"�Y'� <b>�z�-�Tר:</b> 1 SLH = {SLH_PRICE_ILS}�,�\n"
-            f"�Y"� �z�Tנ�T�z�.ם: 0.00004 SLH (0.018�,�)\n\n"
-            f"�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�\n"
-            f"�Y"S <b>�z�"ר�'�.ת �z�-�Tר:</b>\n\n"
+            f"ן¿½Yן¿½T <b>׳¨ן¿½>ן¿½T׳©׳× SLH Coin</b>\n\n"
+            f"ן¿½Y'ן¿½ <b>ן¿½zן¿½-ן¿½T׳¨:</b> 1 SLH = {SLH_PRICE_ILS}ן¿½,ן¿½\n"
+            f"ן¿½Y"ן¿½ ן¿½zן¿½T׳ ן¿½Tן¿½zן¿½.׳: 0.00004 SLH (0.018ן¿½,ן¿½)\n\n"
+            f"ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½\n"
+            f"ן¿½Y"S <b>ן¿½zן¿½"׳¨ן¿½'ן¿½.׳× ן¿½zן¿½-ן¿½T׳¨:</b>\n\n"
         )
         for tier in SLH_BUY_TIERS:
-            text += f"  �Y�T {tier['amount']} SLH = {tier['price']}�,�\n"
+            text += f"  ן¿½Yן¿½T {tier['amount']} SLH = {tier['price']}ן¿½,ן¿½\n"
         text += (
-            f"\n�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�\n"
-            f"�Y'� <b>ארנק TON:</b>\n<code>{TON_WALLET}</code>\n\n"
-            f"�Y"- <b>BSC Contract:</b>\n<code>{BSC_CONTRACT}</code>\n\n"
-            f"�Y"� ש�o�- צ�T�o�.ם �zס�s א�. Transaction Hash\n"
-            f"א�. צ�.ר קשר עם @Osif83"
+            f"\nן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½\n"
+            f"ן¿½Y'ן¿½ <b>׳-׳¨׳ ׳§ TON:</b>\n<code>{TON_WALLET}</code>\n\n"
+            f"ן¿½Y"- <b>BSC Contract:</b>\n<code>{BSC_CONTRACT}</code>\n\n"
+            f"ן¿½Y"ן¿½ ׳©ן¿½oן¿½- ׳¦ן¿½Tן¿½oן¿½.׳ ן¿½z׳¡ן¿½s ׳-ן¿½. Transaction Hash\n"
+            f"׳-ן¿½. ׳¦ן¿½.׳¨ ׳§׳©׳¨ ׳¢׳ @Osif83"
         )
         self.send(chat_id, text, self.buy_slh_keyboard())
 
-    # �"?�"? Banking commands �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?
+    # ן¿½"?ן¿½"? Banking commands ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?
     def handle_deposit(self, chat_id, args=""):
         user = _get_user(chat_id)
         if not args:
@@ -1012,113 +1012,113 @@ class SLHInvestmentBot:
         user["deposits"].append(deposit)
 
         text = (
-            f"�o. <b>�"פק�"�" #{deposit_id} נ�.צר�"!</b>\n"
-            f"�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?\n\n"
+            f"ן¿½o. <b>ן¿½"׳₪׳§ן¿½"ן¿½" #{deposit_id} ׳ ן¿½.׳¦׳¨ן¿½"!</b>\n"
+            f"ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?\n\n"
             f"{plan['name']} | {amount} TON\n"
-            f"תש�.א�" �-�.�"ש�Tת: ~{monthly_return} TON\n"
-            f"נע�.�o ע�": {unlock_date}\n\n"
-            f"�Y'� ש�o�- {amount} TON �o:\n"
+            f"׳×׳©ן¿½.׳-ן¿½" ן¿½-ן¿½.ן¿½"׳©ן¿½T׳×: ~{monthly_return} TON\n"
+            f"׳ ׳¢ן¿½.ן¿½o ׳¢ן¿½": {unlock_date}\n\n"
+            f"ן¿½Y'ן¿½ ׳©ן¿½oן¿½- {amount} TON ן¿½o:\n"
             f"<code>{TON_WALLET}</code>\n\n"
-            f"�.ש�o�- צ�T�o�.ם �zס�s �oא�Tש�.ר."
+            f"ן¿½.׳©ן¿½oן¿½- ׳¦ן¿½Tן¿½oן¿½.׳ ן¿½z׳¡ן¿½s ן¿½o׳-ן¿½T׳©ן¿½.׳¨."
         )
         self.send(chat_id, text, self.main_reply_keyboard())
 
         # Notify admin
         if str(chat_id) != ADMIN_ID:
             admin_text = (
-                f"�Y'� <b>�"פק�"�" �-�"ש�" #{deposit_id}</b>\n"
-                f"�Y'� @{user['username']} ({chat_id})\n"
-                f"�Y'� {plan['name']} | {amount} TON\n"
-                f"�Y'� {plan['rate']}% �-�.�"ש�T | {plan['days']} �T�z�Tם"
+                f"ן¿½Y'ן¿½ <b>ן¿½"׳₪׳§ן¿½"ן¿½" ן¿½-ן¿½"׳©ן¿½" #{deposit_id}</b>\n"
+                f"ן¿½Y'ן¿½ @{user['username']} ({chat_id})\n"
+                f"ן¿½Y'ן¿½ {plan['name']} | {amount} TON\n"
+                f"ן¿½Y'ן¿½ {plan['rate']}% ן¿½-ן¿½.ן¿½"׳©ן¿½T | {plan['days']} ן¿½Tן¿½zן¿½T׳"
             )
             kb = {"inline_keyboard": [
-                [{"text": "�o. אשר", "callback_data": f"admin_approve_{chat_id}_{deposit_id}"},
-                 {"text": "�O �"�-�"", "callback_data": f"admin_reject_{chat_id}_{deposit_id}"}],
+                [{"text": "ן¿½o. ׳-׳©׳¨", "callback_data": f"admin_approve_{chat_id}_{deposit_id}"},
+                 {"text": "ן¿½O ן¿½"ן¿½-ן¿½"", "callback_data": f"admin_reject_{chat_id}_{deposit_id}"}],
             ]}
             self.send(int(ADMIN_ID), admin_text, kb)
 
     def handle_mydeposits(self, chat_id):
         user = _get_user(chat_id)
         if not user["deposits"]:
-            self.send(chat_id, "�Y"< א�T�Y �"פק�"�.ת פע�T�o�.ת.\n\n�o�"פק�"�" �-�"ש�": /deposit", self.main_reply_keyboard())
+            self.send(chat_id, "ן¿½Y"< ׳-ן¿½Tן¿½Y ן¿½"׳₪׳§ן¿½"ן¿½.׳× ׳₪׳¢ן¿½Tן¿½oן¿½.׳×.\n\nן¿½oן¿½"׳₪׳§ן¿½"ן¿½" ן¿½-ן¿½"׳©ן¿½": /deposit", self.main_reply_keyboard())
             return
 
-        text = "�Y"< <b>�"�"פק�"�.ת ש�o�T</b>\n�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?\n\n"
+        text = "ן¿½Y"< <b>ן¿½"ן¿½"׳₪׳§ן¿½"ן¿½.׳× ׳©ן¿½oן¿½T</b>\nן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?\n\n"
         for d in user["deposits"]:
-            status = "�o." if d["status"] == "active" else "⏳" if d["status"] == "pending" else "�O"
+            status = "ן¿½o." if d["status"] == "active" else "ג³" if d["status"] == "pending" else "ן¿½O"
             text += f"{status} #{d['id']} | {d['plan']} | {d['amount']} TON | {d['rate']}%\n"
         self.send(chat_id, text, self.main_reply_keyboard())
 
     def handle_withdraw(self, chat_id, args=""):
         if not args:
             self.send(chat_id,
-                "�Y'� <b>�zש�T�>�"</b>\n\nש�T�z�.ש: /withdraw <�zספר �"פק�"�"> <�>ת�.�'ת TON>\n\n�"�.�'�z�": /withdraw 1 UQDhfy...\n\n�oרש�T�z�": /mydeposits",
+                "ן¿½Y'ן¿½ <b>ן¿½z׳©ן¿½Tן¿½>ן¿½"</b>\n\n׳©ן¿½Tן¿½zן¿½.׳©: /withdraw <ן¿½z׳¡׳₪׳¨ ן¿½"׳₪׳§ן¿½"ן¿½"> <ן¿½>׳×ן¿½.ן¿½'׳× TON>\n\nן¿½"ן¿½.ן¿½'ן¿½zן¿½": /withdraw 1 UQDhfy...\n\nן¿½o׳¨׳©ן¿½Tן¿½zן¿½": /mydeposits",
                 self.main_reply_keyboard())
             return
-        self.send(chat_id, "�Y"� �'קשת �"�zש�T�>�" נש�o�-�" �oא�Tש�.ר. נע�"�>�Y �'�"ק�"ם.", self.main_reply_keyboard())
+        self.send(chat_id, "ן¿½Y"ן¿½ ן¿½'׳§׳©׳× ן¿½"ן¿½z׳©ן¿½Tן¿½>ן¿½" ׳ ׳©ן¿½oן¿½-ן¿½" ן¿½o׳-ן¿½T׳©ן¿½.׳¨. ׳ ׳¢ן¿½"ן¿½>ן¿½Y ן¿½'ן¿½"׳§ן¿½"׳.", self.main_reply_keyboard())
         if str(chat_id) != ADMIN_ID:
             user = _get_user(chat_id)
-            self.send(int(ADMIN_ID), f"�Y'� <b>�'קשת �zש�T�>�"!</b>\nUser: @{user['username']} ({chat_id})\nArgs: {args}")
+            self.send(int(ADMIN_ID), f"ן¿½Y'ן¿½ <b>ן¿½'׳§׳©׳× ן¿½z׳©ן¿½Tן¿½>ן¿½"!</b>\nUser: @{user['username']} ({chat_id})\nArgs: {args}")
 
     def handle_statement(self, chat_id):
         user = _get_user(chat_id)
         ton_total = user["ton_available"] + user["ton_locked"]
         text = (
-            f"�Y"< <b>�"ף �-ש�'�.�Y (30 �T�.ם)</b>\n"
-            f"�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?\n\n"
-            f"�Y'� �-�z�T�Y: {user['ton_available']:.4f} TON\n"
-            f"�Y"' נע�.�o: {user['ton_locked']:.4f} TON\n"
-            f"�Y'� ס�"\"�>: {ton_total:.4f} TON\n\n"
-            f"�Y"^ �"פק�"�.ת: {len(user['deposits'])}\n"
-            f"�Y'� �zש�T�>�.ת: {user['withdrawals']}\n"
-            f"�Y"� תנ�.ע�.ת: {user['transactions']}\n\n"
+            f"ן¿½Y"< <b>ן¿½"׳£ ן¿½-׳©ן¿½'ן¿½.ן¿½Y (30 ן¿½Tן¿½.׳)</b>\n"
+            f"ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?\n\n"
+            f"ן¿½Y'ן¿½ ן¿½-ן¿½zן¿½Tן¿½Y: {user['ton_available']:.4f} TON\n"
+            f"ן¿½Y"' ׳ ׳¢ן¿½.ן¿½o: {user['ton_locked']:.4f} TON\n"
+            f"ן¿½Y'ן¿½ ׳¡ן¿½"\"ן¿½>: {ton_total:.4f} TON\n\n"
+            f"ן¿½Y"^ ן¿½"׳₪׳§ן¿½"ן¿½.׳×: {len(user['deposits'])}\n"
+            f"ן¿½Y'ן¿½ ן¿½z׳©ן¿½Tן¿½>ן¿½.׳×: {user['withdrawals']}\n"
+            f"ן¿½Y"ן¿½ ׳×׳ ן¿½.׳¢ן¿½.׳×: {user['transactions']}\n\n"
             f"SLH Investment House"
         )
         self.send(chat_id, text, self.main_reply_keyboard())
 
     def handle_kyc(self, chat_id, args=""):
         if args:
-            self.send(chat_id, f"�o. ש�o�' 1 �"�.ש�oם: {args}\n\nש�o�- צ�T�o�.ם ת.�-. (�>ת�z�.נ�")", self.main_reply_keyboard())
+            self.send(chat_id, f"ן¿½o. ׳©ן¿½oן¿½' 1 ן¿½"ן¿½.׳©ן¿½o׳: {args}\n\n׳©ן¿½oן¿½- ׳¦ן¿½Tן¿½oן¿½.׳ ׳×.ן¿½-. (ן¿½>׳×ן¿½zן¿½.׳ ן¿½")", self.main_reply_keyboard())
         else:
             text = (
-                "�Y"< <b>KYC - �-�T�"�.�T</b>\n�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?\n\n"
-                "ש�o�' 1: /kyc <שם �z�oא>\n"
-                "ש�o�' 2: ש�o�- צ�T�o�.ם ת.�-. (�>ת�z�.נ�")\n"
-                "ש�o�' 3: �"�zת�Y �oא�Tש�.ר"
+                "ן¿½Y"< <b>KYC - ן¿½-ן¿½Tן¿½"ן¿½.ן¿½T</b>\nן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?\n\n"
+                "׳©ן¿½oן¿½' 1: /kyc <׳©׳ ן¿½zן¿½o׳->\n"
+                "׳©ן¿½oן¿½' 2: ׳©ן¿½oן¿½- ׳¦ן¿½Tן¿½oן¿½.׳ ׳×.ן¿½-. (ן¿½>׳×ן¿½zן¿½.׳ ן¿½")\n"
+                "׳©ן¿½oן¿½' 3: ן¿½"ן¿½z׳×ן¿½Y ן¿½o׳-ן¿½T׳©ן¿½.׳¨"
             )
             self.send(chat_id, text, self.main_reply_keyboard())
 
     def handle_faq(self, chat_id):
         text = (
-            "�" <b>FAQ</b>\n\n"
-            "Q: �>�z�" ע�.�o�"?\nA: 22.221�,� �-�" פע�z�T\n\n"
-            "Q: א�T�s �zש�o�z�Tם?\nA: @wallet �?' Buy TON �?' Send\n\n"
-            "Q: �'�~�.�-?\nA: �zפת�-�.ת פר�~�T�Tם �oא נש�zר�Tם\n\n"
-            "Q: ת�z�T�>�"?\nA: /support"
+            "ן¿½" <b>FAQ</b>\n\n"
+            "Q: ן¿½>ן¿½zן¿½" ׳¢ן¿½.ן¿½oן¿½"?\nA: 22.221ן¿½,ן¿½ ן¿½-ן¿½" ׳₪׳¢ן¿½zן¿½T\n\n"
+            "Q: ׳-ן¿½Tן¿½s ן¿½z׳©ן¿½oן¿½zן¿½T׳?\nA: @wallet ן¿½?' Buy TON ן¿½?' Send\n\n"
+            "Q: ן¿½'ן¿½~ן¿½.ן¿½-?\nA: ן¿½z׳₪׳×ן¿½-ן¿½.׳× ׳₪׳¨ן¿½~ן¿½Tן¿½T׳ ן¿½o׳- ׳ ׳©ן¿½z׳¨ן¿½T׳\n\n"
+            "Q: ׳×ן¿½zן¿½Tן¿½>ן¿½"?\nA: /support"
         )
         self.send(chat_id, text, self.main_reply_keyboard())
 
     def handle_help(self, chat_id, message_id=None):
         ref_link = f"https://t.me/SLH_AIR_bot?start=ref_{chat_id}"
         text = (
-            "�" <b>SLH Investment House</b>\n"
-            "�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?\n\n"
-            "�Y"S <b>�"ש�.ק</b> - 12 �z�~�'ע�.ת, ס�.�.אפ, �"תרא�.ת\n"
-            "�Y'� <b>�"שקע�.ת</b> - 4 פק�"�.נ�.ת, 4%-65%\n"
-            "�Y'� <b>ארנק</b> - TON/BNB/SLH + �"ע�'ר�.ת\n"
-            "�Y"� <b>�zס�-ר</b> - ס�.�.אפ, Limit, �"תרא�.ת\n\n"
-            "�Y'� <b>�'נק:</b>\n"
+            "ן¿½" <b>SLH Investment House</b>\n"
+            "ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?\n\n"
+            "ן¿½Y"S <b>ן¿½"׳©ן¿½.׳§</b> - 12 ן¿½zן¿½~ן¿½'׳¢ן¿½.׳×, ׳¡ן¿½.ן¿½.׳-׳₪, ן¿½"׳×׳¨׳-ן¿½.׳×\n"
+            "ן¿½Y'ן¿½ <b>ן¿½"׳©׳§׳¢ן¿½.׳×</b> - 4 ׳₪׳§ן¿½"ן¿½.׳ ן¿½.׳×, 4%-65%\n"
+            "ן¿½Y'ן¿½ <b>׳-׳¨׳ ׳§</b> - TON/BNB/SLH + ן¿½"׳¢ן¿½'׳¨ן¿½.׳×\n"
+            "ן¿½Y"ן¿½ <b>ן¿½z׳¡ן¿½-׳¨</b> - ׳¡ן¿½.ן¿½.׳-׳₪, Limit, ן¿½"׳×׳¨׳-ן¿½.׳×\n\n"
+            "ן¿½Y'ן¿½ <b>ן¿½'׳ ׳§:</b>\n"
             "/deposit /mydeposits /withdraw /statement\n\n"
-            "�Y'� <b>�zס�-ר:</b>\n"
+            "ן¿½Y'ן¿½ <b>ן¿½z׳¡ן¿½-׳¨:</b>\n"
             "/prices /swap /limit /orders /alert /portfolio\n\n"
-            "�Y'� <b>ארנק:</b>\n"
+            "ן¿½Y'ן¿½ <b>׳-׳¨׳ ׳§:</b>\n"
             "/pay /send /mybalance /myid /gas\n\n"
-            "�Y�T <b>SLH Coin:</b>\n"
-            "/buyslh - ר�>�Tשת �z�~�'ע SLH\n\n"
-            "�Y"s <b>ע�.�":</b>\n"
+            "ן¿½Yן¿½T <b>SLH Coin:</b>\n"
+            "/buyslh - ׳¨ן¿½>ן¿½T׳©׳× ן¿½zן¿½~ן¿½'׳¢ SLH\n\n"
+            "ן¿½Y"s <b>׳¢ן¿½.ן¿½":</b>\n"
             "/share /faq /support /kyc /help\n\n"
-            f"�Y'� <b>שתף �.�"ר�.�.�T�- 15% �'נק�.�"�.ת SLH!</b>\n"
-            f"�Y"- <code>{ref_link}</code>\n\n"
+            f"ן¿½Y'ן¿½ <b>׳©׳×׳£ ן¿½.ן¿½"׳¨ן¿½.ן¿½.ן¿½Tן¿½- 15% ן¿½'׳ ׳§ן¿½.ן¿½"ן¿½.׳× SLH!</b>\n"
+            f"ן¿½Y"- <code>{ref_link}</code>\n\n"
             "SLH Investment House | SPARK IND"
         )
         if message_id:
@@ -1127,18 +1127,18 @@ class SLHInvestmentBot:
             self.send(chat_id, text, self.main_reply_keyboard())
 
     def _format_invest_plans(self):
-        text = "�Y'� <b>ת�.�>נ�T�.ת �"שקע�"</b>\n�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?\n\n"
+        text = "ן¿½Y'ן¿½ <b>׳×ן¿½.ן¿½>׳ ן¿½Tן¿½.׳× ן¿½"׳©׳§׳¢ן¿½"</b>\nן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?\n\n"
         for i, plan in enumerate(INVESTMENT_PLANS, 1):
             text += (
                 f"{plan['name']}\n"
-                f"  �Y'� {plan['rate']}% �-�.�"ש�T | {plan['annual']}% שנת�T\n"
-                f"  �z�Tנ�T�z�.ם {plan['min_ton']} TON | {plan['days']} �T�.ם\n\n"
+                f"  ן¿½Y'ן¿½ {plan['rate']}% ן¿½-ן¿½.ן¿½"׳©ן¿½T | {plan['annual']}% ׳©׳ ׳×ן¿½T\n"
+                f"  ן¿½zן¿½T׳ ן¿½Tן¿½zן¿½.׳ {plan['min_ton']} TON | {plan['days']} ן¿½Tן¿½.׳\n\n"
             )
         return text
 
-    # �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
+    # ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½
     # HUB HANDLERS (inline keyboard callbacks)
-    # �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
+    # ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½
 
     def handle_earn(self, chat_id, message_id=None):
         user = _get_user(chat_id)
@@ -1147,11 +1147,11 @@ class SLHInvestmentBot:
         total_reward = sum(t["reward"] for t in _daily_tasks)
         done_reward = sum(t["reward"] for t in _daily_tasks if t["id"] in user["tasks_done"])
         text = (
-            f"�Y'� <b>�"ר�.�.�T�- נק�.�"�.ת SLH</b>\n\n"
-            f"�Y"S �"תק�"�z�.ת: {done}/{total} �zש�T�z�.ת\n"
-            f"�Y'Z שנצ�'ר �"�T�.ם: {done_reward}/{total_reward} נק�.�"�.ת\n"
-            f"�Y'� �Tתר�": {user['hub_points']} נק�.�"�.ת\n\n"
-            f"�Y'? <b>�zש�T�z�.ת �-�z�Tנ�.ת:</b>"
+            f"ן¿½Y'ן¿½ <b>ן¿½"׳¨ן¿½.ן¿½.ן¿½Tן¿½- ׳ ׳§ן¿½.ן¿½"ן¿½.׳× SLH</b>\n\n"
+            f"ן¿½Y"S ן¿½"׳×׳§ן¿½"ן¿½zן¿½.׳×: {done}/{total} ן¿½z׳©ן¿½Tן¿½zן¿½.׳×\n"
+            f"ן¿½Y'Z ׳©׳ ׳¦ן¿½'׳¨ ן¿½"ן¿½Tן¿½.׳: {done_reward}/{total_reward} ׳ ׳§ן¿½.ן¿½"ן¿½.׳×\n"
+            f"ן¿½Y'ן¿½ ן¿½T׳×׳¨ן¿½": {user['hub_points']} ׳ ׳§ן¿½.ן¿½"ן¿½.׳×\n\n"
+            f"ן¿½Y'? <b>ן¿½z׳©ן¿½Tן¿½zן¿½.׳× ן¿½-ן¿½zן¿½T׳ ן¿½.׳×:</b>"
         )
         if message_id:
             self.edit_message(chat_id, message_id, text, self.earn_keyboard())
@@ -1162,32 +1162,32 @@ class SLHInvestmentBot:
         user = _get_user(chat_id)
         task = next((t for t in _daily_tasks if t["id"] == task_id), None)
         if not task:
-            self.answer_callback(callback_id, "�O �zש�T�z�" �oא נ�zצא�"")
+            self.answer_callback(callback_id, "ן¿½O ן¿½z׳©ן¿½Tן¿½zן¿½" ן¿½o׳- ׳ ן¿½z׳¦׳-ן¿½"")
             return
         if task_id in user["tasks_done"]:
-            self.answer_callback(callback_id, "�o. �>�'ר �'�Tצעת �zש�T�z�" �-�. �"�T�.ם!", True)
+            self.answer_callback(callback_id, "ן¿½o. ן¿½>ן¿½'׳¨ ן¿½'ן¿½T׳¦׳¢׳× ן¿½z׳©ן¿½Tן¿½zן¿½" ן¿½-ן¿½. ן¿½"ן¿½Tן¿½.׳!", True)
             return
         user["tasks_done"].append(task_id)
         user["hub_points"] += task["reward"]
         user["total_earned"] += task["reward"]
-        self.answer_callback(callback_id, f"�o. +{task['reward']} נק�.�"�.ת!", True)
+        self.answer_callback(callback_id, f"ן¿½o. +{task['reward']} ׳ ׳§ן¿½.ן¿½"ן¿½.׳×!", True)
         self.handle_earn(chat_id, message_id)
 
     def handle_swap_inline(self, chat_id, message_id=None):
         text = (
-            "�Y"" <b>SLH Swap �?" �"�zרת �z�~�'ע�.ת</b>\n\n"
-            "�"�z�Tר�. �'�T�Y 4,500+ �z�~�'ע�.ת קר�Tפ�~�. �'ק�o�.ת!\n\n"
-            "�Y'� <b>�Tתר�.נ�.ת:</b>\n"
-            "�?� �o�oא �"רש�z�"\n�?� ע�z�o�.ת נ�z�.�>�.ת\n"
-            "�?� �"�zר�" �Tש�Tר�" �zארנק �oארנק\n"
-            "�?� ת�z�T�>�" �'-TON, BTC, ETH, BNB �.ע�.�"\n\n"
-            "�Y"� <b>�z�'צע:</b> Cashback 0.5% ע�o �>�o עסק�"!"
+            "ן¿½Y"" <b>SLH Swap ן¿½?" ן¿½"ן¿½z׳¨׳× ן¿½zן¿½~ן¿½'׳¢ן¿½.׳×</b>\n\n"
+            "ן¿½"ן¿½zן¿½T׳¨ן¿½. ן¿½'ן¿½Tן¿½Y 4,500+ ן¿½zן¿½~ן¿½'׳¢ן¿½.׳× ׳§׳¨ן¿½T׳₪ן¿½~ן¿½. ן¿½'׳§ן¿½oן¿½.׳×!\n\n"
+            "ן¿½Y'ן¿½ <b>ן¿½T׳×׳¨ן¿½.׳ ן¿½.׳×:</b>\n"
+            "ן¿½?ן¿½ ן¿½oן¿½o׳- ן¿½"׳¨׳©ן¿½zן¿½"\nן¿½?ן¿½ ׳¢ן¿½zן¿½oן¿½.׳× ׳ ן¿½zן¿½.ן¿½>ן¿½.׳×\n"
+            "ן¿½?ן¿½ ן¿½"ן¿½z׳¨ן¿½" ן¿½T׳©ן¿½T׳¨ן¿½" ן¿½z׳-׳¨׳ ׳§ ן¿½o׳-׳¨׳ ׳§\n"
+            "ן¿½?ן¿½ ׳×ן¿½zן¿½Tן¿½>ן¿½" ן¿½'-TON, BTC, ETH, BNB ן¿½.׳¢ן¿½.ן¿½"\n\n"
+            "ן¿½Y"ן¿½ <b>ן¿½zן¿½'׳¦׳¢:</b> Cashback 0.5% ׳¢ן¿½o ן¿½>ן¿½o ׳¢׳¡׳§ן¿½"!"
         )
         kb = {"inline_keyboard": [
-            [{"text": "�Y"" �"�zר ע�>ש�T�.", "url": f"https://letsexchange.io/?ref={LETSEXCHANGE_REF}"}],
-            [{"text": "�Y'� TON �?' USDT", "url": f"https://letsexchange.io/?from=TON&to=USDT&ref={LETSEXCHANGE_REF}"}],
-            [{"text": "�Y'� BTC �?' TON", "url": f"https://letsexchange.io/?from=BTC&to=TON&ref={LETSEXCHANGE_REF}"}],
-            [{"text": "�Y"T �-�-ר�" �oתפר�T�~", "callback_data": "menu_main"}],
+            [{"text": "ן¿½Y"" ן¿½"ן¿½z׳¨ ׳¢ן¿½>׳©ן¿½Tן¿½.", "url": f"https://letsexchange.io/?ref={LETSEXCHANGE_REF}"}],
+            [{"text": "ן¿½Y'ן¿½ TON ן¿½?' USDT", "url": f"https://letsexchange.io/?from=TON&to=USDT&ref={LETSEXCHANGE_REF}"}],
+            [{"text": "ן¿½Y'ן¿½ BTC ן¿½?' TON", "url": f"https://letsexchange.io/?from=BTC&to=TON&ref={LETSEXCHANGE_REF}"}],
+            [{"text": "ן¿½Y"T ן¿½-ן¿½-׳¨ן¿½" ן¿½o׳×׳₪׳¨ן¿½Tן¿½~", "callback_data": "menu_main"}],
         ]}
         if message_id:
             self.edit_message(chat_id, message_id, text, kb)
@@ -1197,14 +1197,14 @@ class SLHInvestmentBot:
     def handle_vip(self, chat_id, message_id=None):
         user = _get_user(chat_id)
         current = user["vip"]
-        status = f"�o. {VIP_PLANS[current]['name']}" if current else "�Y?" �-�Tנם"
-        text = f"�Y'' <b>VIP Membership</b>\n\nס�~�~�.ס: <b>{status}</b>\n\n�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�\n"
+        status = f"ן¿½o. {VIP_PLANS[current]['name']}" if current else "ן¿½Y?" ן¿½-ן¿½T׳ ׳"
+        text = f"ן¿½Y'' <b>VIP Membership</b>\n\n׳¡ן¿½~ן¿½~ן¿½.׳¡: <b>{status}</b>\n\nן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½\n"
         for key, plan in VIP_PLANS.items():
-            marker = "�o." if current == key else "⭐"
-            text += f"\n{marker} <b>{plan['name']}</b> �?" {plan['price_ils']}�,�\n"
+            marker = "ן¿½o." if current == key else "ג­-"
+            text += f"\n{marker} <b>{plan['name']}</b> ן¿½?" {plan['price_ils']}ן¿½,ן¿½\n"
             for f in plan["features"]:
-                text += f"  �?� {f}\n"
-        text += f"\n�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�\n�Y'� <b>תש�o�.ם:</b> �"ע�'ר �oארנק + צ�T�o�.ם �zס�s\n�Y"� <b>�-�'�T�o�" �z�oא�":</b> �>�o �"-VIP + 6 �'�.�~�Tם = 199�,� �'�o�'�"!"
+                text += f"  ן¿½?ן¿½ {f}\n"
+        text += f"\nן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½\nן¿½Y'ן¿½ <b>׳×׳©ן¿½oן¿½.׳:</b> ן¿½"׳¢ן¿½'׳¨ ן¿½o׳-׳¨׳ ׳§ + ׳¦ן¿½Tן¿½oן¿½.׳ ן¿½z׳¡ן¿½s\nן¿½Y"ן¿½ <b>ן¿½-ן¿½'ן¿½Tן¿½oן¿½" ן¿½zן¿½o׳-ן¿½":</b> ן¿½>ן¿½o ן¿½"-VIP + 6 ן¿½'ן¿½.ן¿½~ן¿½T׳ = 199ן¿½,ן¿½ ן¿½'ן¿½oן¿½'ן¿½"!"
         if message_id:
             self.edit_message(chat_id, message_id, text, self.vip_keyboard())
         else:
@@ -1213,39 +1213,39 @@ class SLHInvestmentBot:
     def handle_vip_select(self, chat_id, plan_key, callback_id, message_id):
         plan = VIP_PLANS.get(plan_key)
         if not plan:
-            self.answer_callback(callback_id, "�O")
+            self.answer_callback(callback_id, "ן¿½O")
             return
         text = (
-            f"�Y'' <b>{plan['name']}</b>\n\n"
-            f"�Y'� <b>�z�-�Tר:</b> {plan['price_ils']}�,�\n\n"
-            f"<b>פ�Tצ'ר�Tם:</b>\n" +
-            "\n".join(f"  �o. {f}" for f in plan["features"]) +
-            f"\n\n�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�\n"
-            f"�Y'� <b>ש�o�- {plan['price_ils']}�,� �oארנק TON:</b>\n\n"
-            f"<code>{TON_WALLET}</code>\n\nא�. צ�.ר קשר עם @Osif83\n\n"
-            f"�Y"� ש�o�- צ�T�o�.ם �zס�s ש�o �"עסק�" �>א�Y\n�o. תק�'�o �'�Tש�" ת�.�s �"ק�.ת"
+            f"ן¿½Y'' <b>{plan['name']}</b>\n\n"
+            f"ן¿½Y'ן¿½ <b>ן¿½zן¿½-ן¿½T׳¨:</b> {plan['price_ils']}ן¿½,ן¿½\n\n"
+            f"<b>׳₪ן¿½T׳¦'׳¨ן¿½T׳:</b>\n" +
+            "\n".join(f"  ן¿½o. {f}" for f in plan["features"]) +
+            f"\n\nן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½\n"
+            f"ן¿½Y'ן¿½ <b>׳©ן¿½oן¿½- {plan['price_ils']}ן¿½,ן¿½ ן¿½o׳-׳¨׳ ׳§ TON:</b>\n\n"
+            f"<code>{TON_WALLET}</code>\n\n׳-ן¿½. ׳¦ן¿½.׳¨ ׳§׳©׳¨ ׳¢׳ @Osif83\n\n"
+            f"ן¿½Y"ן¿½ ׳©ן¿½oן¿½- ׳¦ן¿½Tן¿½oן¿½.׳ ן¿½z׳¡ן¿½s ׳©ן¿½o ן¿½"׳¢׳¡׳§ן¿½" ן¿½>׳-ן¿½Y\nן¿½o. ׳×׳§ן¿½'ן¿½o ן¿½'ן¿½T׳©ן¿½" ׳×ן¿½.ן¿½s ן¿½"׳§ן¿½.׳×"
         )
         kb = {"inline_keyboard": [
-            [{"text": "�Y'� �"עתק �>ת�.�'ת ארנק", "callback_data": f"copy_wallet_{plan_key}"}],
-            [{"text": "�Y"T �-�-ר�" �o-VIP", "callback_data": "menu_vip"}],
+            [{"text": "ן¿½Y'ן¿½ ן¿½"׳¢׳×׳§ ן¿½>׳×ן¿½.ן¿½'׳× ׳-׳¨׳ ׳§", "callback_data": f"copy_wallet_{plan_key}"}],
+            [{"text": "ן¿½Y"T ן¿½-ן¿½-׳¨ן¿½" ן¿½o-VIP", "callback_data": "menu_vip"}],
         ]}
         self.edit_message(chat_id, message_id, text, kb)
         self.answer_callback(callback_id)
 
     def handle_airdrop(self, chat_id, message_id=None):
         text = (
-            "�YZ� <b>SLH Airdrop</b>\n\n"
-            f"�Y'� <b>�z�'צע �"שק�":</b>\n1,000 �~�.קנ�T SLH = <b>444,000�,�</b>\n\n"
-            f"�Y"S <b>ס�~�~�.ס:</b>\n�Y'� �zשת�zש�Tם: 38\n�Y'� עסקא�.ת: 22\n�YZ� �zק�.�z�.ת פנ�.�T�Tם: 978/1,000\n\n"
-            f"�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�\n"
-            f"�Y'� <b>�oר�>�Tש�" ש�o�- �oארנק TON:</b>\n<code>{TON_WALLET}</code>\n\n"
-            f"�Y"- <b>BSC Contract:</b>\n<code>{BSC_CONTRACT}</code>\n\n"
-            "�Y"� ש�o�- צ�T�o�.ם �zס�s / Transaction Hash\n�o. ק�'�o�" ת�.�s 24 שע�.ת"
+            "ן¿½YZן¿½ <b>SLH Airdrop</b>\n\n"
+            f"ן¿½Y'ן¿½ <b>ן¿½zן¿½'׳¦׳¢ ן¿½"׳©׳§ן¿½":</b>\n1,000 ן¿½~ן¿½.׳§׳ ן¿½T SLH = <b>444,000ן¿½,ן¿½</b>\n\n"
+            f"ן¿½Y"S <b>׳¡ן¿½~ן¿½~ן¿½.׳¡:</b>\nן¿½Y'ן¿½ ן¿½z׳©׳×ן¿½z׳©ן¿½T׳: 38\nן¿½Y'ן¿½ ׳¢׳¡׳§׳-ן¿½.׳×: 22\nן¿½YZן¿½ ן¿½z׳§ן¿½.ן¿½zן¿½.׳× ׳₪׳ ן¿½.ן¿½Tן¿½T׳: 978/1,000\n\n"
+            f"ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½\n"
+            f"ן¿½Y'ן¿½ <b>ן¿½o׳¨ן¿½>ן¿½T׳©ן¿½" ׳©ן¿½oן¿½- ן¿½o׳-׳¨׳ ׳§ TON:</b>\n<code>{TON_WALLET}</code>\n\n"
+            f"ן¿½Y"- <b>BSC Contract:</b>\n<code>{BSC_CONTRACT}</code>\n\n"
+            "ן¿½Y"ן¿½ ׳©ן¿½oן¿½- ׳¦ן¿½Tן¿½oן¿½.׳ ן¿½z׳¡ן¿½s / Transaction Hash\nן¿½o. ׳§ן¿½'ן¿½oן¿½" ׳×ן¿½.ן¿½s 24 ׳©׳¢ן¿½.׳×"
         )
         kb = {"inline_keyboard": [
-            [{"text": "�Y'� ש�o�- תש�o�.ם", "callback_data": "airdrop_pay"}],
-            [{"text": "�Y"S ס�~�~�.ס ש�o�T", "callback_data": "airdrop_status"}],
-            [{"text": "�Y"T �-�-ר�" �oתפר�T�~", "callback_data": "menu_main"}],
+            [{"text": "ן¿½Y'ן¿½ ׳©ן¿½oן¿½- ׳×׳©ן¿½oן¿½.׳", "callback_data": "airdrop_pay"}],
+            [{"text": "ן¿½Y"S ׳¡ן¿½~ן¿½~ן¿½.׳¡ ׳©ן¿½oן¿½T", "callback_data": "airdrop_status"}],
+            [{"text": "ן¿½Y"T ן¿½-ן¿½-׳¨ן¿½" ן¿½o׳×׳₪׳¨ן¿½Tן¿½~", "callback_data": "menu_main"}],
         ]}
         if message_id:
             self.edit_message(chat_id, message_id, text, kb)
@@ -1256,30 +1256,30 @@ class SLHInvestmentBot:
         user = _get_user(chat_id)
         ref_link = f"https://t.me/SLH_AIR_bot?start=ref_{chat_id}"
         text = (
-            f"�Y'� <b>�"�"פנ�T�.ת ש�o�s</b>\n\n"
-            f"�Y"- <b>�"ק�Tש�.ר �"א�Tש�T ש�o�s:</b>\n<code>{ref_link}</code>\n\n"
-            f"�Y"S <b>ס�~�~�Tס�~�Tק�":</b>\n"
-            f"�Y'� �"פנ�T�.ת: <b>{user['referral_count']}</b>\n"
-            f"�Y'� נצ�'ר �z�"פנ�T�.ת: <b>{user['referral_count'] * 50}</b> נק�.�"�.ת SLH\n\n"
-            f"�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�\n"
-            f"�Y'� <b>א�T�s �o�"ר�.�.�T�-?</b>\n"
-            f"1️�f� שתף את �"ק�Tש�.ר ש�o�s\n"
-            f"2️�f� �-�'ר�Tם נרש�z�Tם �"ר�>�s\n"
-            f"3️�f� �zק�'�o <b>50 נק�.�"�.ת SLH</b> + <b>15% ע�z�o�" �'נק�.�"�.ת SLH</b> �z�>�o ר�>�Tש�"\n\n"
-            f"�YZ� �"�-�z�Y 3 �-�'ר�Tם = <b>Community Premium �'�-�Tנם!</b>\n\n"
-            f"�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�\n"
-            f"�Y"- <b>ק�Tש�.ר�Tם �o�>�o �"�'�.�~�Tם:</b>\n"
-            f"�?� �YZ� Airdrop: <code>https://t.me/SLH_AIR_bot?start=ref_{chat_id}</code>\n"
-            f"�?� �Y>�️ Guardian: <code>https://t.me/Grdian_bot?start=ref_{chat_id}</code>\n"
-            f"�?� �Y>' BotShop: <code>https://t.me/BotShop_bot?start=ref_{chat_id}</code>\n"
-            f"�?� �Y'� Wallet: <code>https://t.me/SLH_Wallet_bot?start=ref_{chat_id}</code>\n"
-            f"�?� �YZ" Academia: <code>https://t.me/SLH_Academia_bot?start=ref_{chat_id}</code>\n"
-            f"�?� �Y'� Community: <code>https://t.me/SLH_community_bot?start=ref_{chat_id}</code>"
+            f"ן¿½Y'ן¿½ <b>ן¿½"ן¿½"׳₪׳ ן¿½Tן¿½.׳× ׳©ן¿½oן¿½s</b>\n\n"
+            f"ן¿½Y"- <b>ן¿½"׳§ן¿½T׳©ן¿½.׳¨ ן¿½"׳-ן¿½T׳©ן¿½T ׳©ן¿½oן¿½s:</b>\n<code>{ref_link}</code>\n\n"
+            f"ן¿½Y"S <b>׳¡ן¿½~ן¿½~ן¿½T׳¡ן¿½~ן¿½T׳§ן¿½":</b>\n"
+            f"ן¿½Y'ן¿½ ן¿½"׳₪׳ ן¿½Tן¿½.׳×: <b>{user['referral_count']}</b>\n"
+            f"ן¿½Y'ן¿½ ׳ ׳¦ן¿½'׳¨ ן¿½zן¿½"׳₪׳ ן¿½Tן¿½.׳×: <b>{user['referral_count'] * 50}</b> ׳ ׳§ן¿½.ן¿½"ן¿½.׳× SLH\n\n"
+            f"ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½\n"
+            f"ן¿½Y'ן¿½ <b>׳-ן¿½Tן¿½s ן¿½oן¿½"׳¨ן¿½.ן¿½.ן¿½Tן¿½-?</b>\n"
+            f"1ן¸ן¿½fן¿½ ׳©׳×׳£ ׳-׳× ן¿½"׳§ן¿½T׳©ן¿½.׳¨ ׳©ן¿½oן¿½s\n"
+            f"2ן¸ן¿½fן¿½ ן¿½-ן¿½'׳¨ן¿½T׳ ׳ ׳¨׳©ן¿½zן¿½T׳ ן¿½"׳¨ן¿½>ן¿½s\n"
+            f"3ן¸ן¿½fן¿½ ן¿½z׳§ן¿½'ן¿½o <b>50 ׳ ׳§ן¿½.ן¿½"ן¿½.׳× SLH</b> + <b>15% ׳¢ן¿½zן¿½oן¿½" ן¿½'׳ ׳§ן¿½.ן¿½"ן¿½.׳× SLH</b> ן¿½zן¿½>ן¿½o ׳¨ן¿½>ן¿½T׳©ן¿½"\n\n"
+            f"ן¿½YZן¿½ ן¿½"ן¿½-ן¿½zן¿½Y 3 ן¿½-ן¿½'׳¨ן¿½T׳ = <b>Community Premium ן¿½'ן¿½-ן¿½T׳ ׳!</b>\n\n"
+            f"ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½\n"
+            f"ן¿½Y"- <b>׳§ן¿½T׳©ן¿½.׳¨ן¿½T׳ ן¿½oן¿½>ן¿½o ן¿½"ן¿½'ן¿½.ן¿½~ן¿½T׳:</b>\n"
+            f"ן¿½?ן¿½ ן¿½YZן¿½ Airdrop: <code>https://t.me/SLH_AIR_bot?start=ref_{chat_id}</code>\n"
+            f"ן¿½?ן¿½ ן¿½Y>ן¿½ן¸ Guardian: <code>https://t.me/Grdian_bot?start=ref_{chat_id}</code>\n"
+            f"ן¿½?ן¿½ ן¿½Y>' BotShop: <code>https://t.me/BotShop_bot?start=ref_{chat_id}</code>\n"
+            f"ן¿½?ן¿½ ן¿½Y'ן¿½ Wallet: <code>https://t.me/SLH_Wallet_bot?start=ref_{chat_id}</code>\n"
+            f"ן¿½?ן¿½ ן¿½YZ" Academia: <code>https://t.me/SLH_Academia_bot?start=ref_{chat_id}</code>\n"
+            f"ן¿½?ן¿½ ן¿½Y'ן¿½ Community: <code>https://t.me/SLH_community_bot?start=ref_{chat_id}</code>"
         )
         kb = {"inline_keyboard": [
-            [{"text": "�Y"< �"עתק ק�Tש�.ר �"פנ�T�"", "callback_data": "copy_ref"}],
-            [{"text": "�Y"� שתף עם �-�'ר", "url": f"https://t.me/share/url?url={ref_link}&text=�Ys? �"צ�~רפ�. �o-SLH - �'�Tת �"שקע�.ת �"�T�'�T�~�o�T!"}],
-            [{"text": "�Y"T �-�-ר�" �oתפר�T�~", "callback_data": "menu_main"}],
+            [{"text": "ן¿½Y"< ן¿½"׳¢׳×׳§ ׳§ן¿½T׳©ן¿½.׳¨ ן¿½"׳₪׳ ן¿½Tן¿½"", "callback_data": "copy_ref"}],
+            [{"text": "ן¿½Y"ן¿½ ׳©׳×׳£ ׳¢׳ ן¿½-ן¿½'׳¨", "url": f"https://t.me/share/url?url={ref_link}&text=ן¿½Ys? ן¿½"׳¦ן¿½~׳¨׳₪ן¿½. ן¿½o-SLH - ן¿½'ן¿½T׳× ן¿½"׳©׳§׳¢ן¿½.׳× ן¿½"ן¿½Tן¿½'ן¿½Tן¿½~ן¿½oן¿½T!"}],
+            [{"text": "ן¿½Y"T ן¿½-ן¿½-׳¨ן¿½" ן¿½o׳×׳₪׳¨ן¿½Tן¿½~", "callback_data": "menu_main"}],
         ]}
         if message_id:
             self.edit_message(chat_id, message_id, text, kb)
@@ -1288,24 +1288,24 @@ class SLHInvestmentBot:
 
     def handle_portfolio(self, chat_id, message_id=None):
         user = _get_user(chat_id)
-        vip_str = VIP_PLANS[user["vip"]]["name"] if user["vip"] else "�Y?" Free"
+        vip_str = VIP_PLANS[user["vip"]]["name"] if user["vip"] else "ן¿½Y?" Free"
         text = (
-            f"�Y"S <b>�"ת�Tק ש�o�T</b>\n\n"
-            f"�Y'Z SLH: {user['slh_balance']:.2f}\n"
-            f"�YZ� ZVK: {user['zvk_balance']}\n"
-            f"�Y'� Hub נק�.�"�.ת: {user['hub_points']}\n"
-            f"�Y'' ס�~�~�.ס: {vip_str}\n"
-            f"�Y'� �"פנ�T�.ת: {user['referral_count']}\n"
-            f"�o. �zש�T�z�.ת ש�'�.צע�.: {len(user['tasks_done'])}\n"
-            f"�Y". �"צ�~רף: {user['joined'][:10]}\n\n"
-            f"�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�\n"
-            f"�Y'� <b>�"�zרת נק�.�"�.ת:</b>\n"
-            f"1,000 נק�.�"�.ת = 1 SLH Token\n"
-            f"5,000 נק�.�"�.ת = 1 �-�.�"ש VIP Basic"
+            f"ן¿½Y"S <b>ן¿½"׳×ן¿½T׳§ ׳©ן¿½oן¿½T</b>\n\n"
+            f"ן¿½Y'Z SLH: {user['slh_balance']:.2f}\n"
+            f"ן¿½YZן¿½ ZVK: {user['zvk_balance']}\n"
+            f"ן¿½Y'ן¿½ Hub ׳ ׳§ן¿½.ן¿½"ן¿½.׳×: {user['hub_points']}\n"
+            f"ן¿½Y'' ׳¡ן¿½~ן¿½~ן¿½.׳¡: {vip_str}\n"
+            f"ן¿½Y'ן¿½ ן¿½"׳₪׳ ן¿½Tן¿½.׳×: {user['referral_count']}\n"
+            f"ן¿½o. ן¿½z׳©ן¿½Tן¿½zן¿½.׳× ׳©ן¿½'ן¿½.׳¦׳¢ן¿½.: {len(user['tasks_done'])}\n"
+            f"ן¿½Y". ן¿½"׳¦ן¿½~׳¨׳£: {user['joined'][:10]}\n\n"
+            f"ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½\n"
+            f"ן¿½Y'ן¿½ <b>ן¿½"ן¿½z׳¨׳× ׳ ׳§ן¿½.ן¿½"ן¿½.׳×:</b>\n"
+            f"1,000 ׳ ׳§ן¿½.ן¿½"ן¿½.׳× = 1 SLH Token\n"
+            f"5,000 ׳ ׳§ן¿½.ן¿½"ן¿½.׳× = 1 ן¿½-ן¿½.ן¿½"׳© VIP Basic"
         )
         kb = {"inline_keyboard": [
-            [{"text": "�Y'� �"ר�.�.�T�- ע�.�"", "callback_data": "menu_earn"}, {"text": "�Y'' ש�"ר�' VIP", "callback_data": "menu_vip"}],
-            [{"text": "�Y"T �-�-ר�" �oתפר�T�~", "callback_data": "menu_main"}],
+            [{"text": "ן¿½Y'ן¿½ ן¿½"׳¨ן¿½.ן¿½.ן¿½Tן¿½- ׳¢ן¿½.ן¿½"", "callback_data": "menu_earn"}, {"text": "ן¿½Y'' ׳©ן¿½"׳¨ן¿½' VIP", "callback_data": "menu_vip"}],
+            [{"text": "ן¿½Y"T ן¿½-ן¿½-׳¨ן¿½" ן¿½o׳×׳₪׳¨ן¿½Tן¿½~", "callback_data": "menu_main"}],
         ]}
         if message_id:
             self.edit_message(chat_id, message_id, text, kb)
@@ -1314,18 +1314,18 @@ class SLHInvestmentBot:
 
     def handle_deals_inline(self, chat_id, message_id=None):
         text = (
-            "�Y"� <b>�z�'צע�Tם פע�T�o�Tם</b>\n\n�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�\n\n"
-            "�Y"� <b>�z�'צע �"שק�" �?" 30% �"נ�-�"!</b>\n  �Y'� �>�o �"�'�.�~�Tם �'-30% �"נ�-�"\n  �Y��️ ק�.�": <code>LAUNCH30</code>\n  ⏰ �-�z�Y �z�.�'�'�o\n\n"
-            "�Y'Z <b>�-�'�T�o�" �z�oא�" �?" 6 �'�.�~�Tם</b>\n  �Y'� �z�-�Tר: <b>199�,�</b>\n\n"
-            "�Y�� <b>�"�-�z�Y 3 = פר�T�z�T�.ם �-�Tנם!</b>\n\n"
-            "�Y>�️ <b>�-�'�T�oת א�'�~�-�"</b>\n  �Y'� Guardian + Wallet = <b>99�,�</b>\n\n"
-            "�YZ" <b>�z�'צע ס�~�.�"נ�~�Tם</b>\n  �Y'� 50% �"נ�-�" �?" ק�.�": <code>STUDENT50</code>\n�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�"
+            "ן¿½Y"ן¿½ <b>ן¿½zן¿½'׳¦׳¢ן¿½T׳ ׳₪׳¢ן¿½Tן¿½oן¿½T׳</b>\n\nן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½\n\n"
+            "ן¿½Y"ן¿½ <b>ן¿½zן¿½'׳¦׳¢ ן¿½"׳©׳§ן¿½" ן¿½?" 30% ן¿½"׳ ן¿½-ן¿½"!</b>\n  ן¿½Y'ן¿½ ן¿½>ן¿½o ן¿½"ן¿½'ן¿½.ן¿½~ן¿½T׳ ן¿½'-30% ן¿½"׳ ן¿½-ן¿½"\n  ן¿½Yן¿½ן¿½ן¸ ׳§ן¿½.ן¿½": <code>LAUNCH30</code>\n  ג° ן¿½-ן¿½zן¿½Y ן¿½zן¿½.ן¿½'ן¿½'ן¿½o\n\n"
+            "ן¿½Y'Z <b>ן¿½-ן¿½'ן¿½Tן¿½oן¿½" ן¿½zן¿½o׳-ן¿½" ן¿½?" 6 ן¿½'ן¿½.ן¿½~ן¿½T׳</b>\n  ן¿½Y'ן¿½ ן¿½zן¿½-ן¿½T׳¨: <b>199ן¿½,ן¿½</b>\n\n"
+            "ן¿½Yן¿½ן¿½ <b>ן¿½"ן¿½-ן¿½zן¿½Y 3 = ׳₪׳¨ן¿½Tן¿½zן¿½Tן¿½.׳ ן¿½-ן¿½T׳ ׳!</b>\n\n"
+            "ן¿½Y>ן¿½ן¸ <b>ן¿½-ן¿½'ן¿½Tן¿½o׳× ׳-ן¿½'ן¿½~ן¿½-ן¿½"</b>\n  ן¿½Y'ן¿½ Guardian + Wallet = <b>99ן¿½,ן¿½</b>\n\n"
+            "ן¿½YZ" <b>ן¿½zן¿½'׳¦׳¢ ׳¡ן¿½~ן¿½.ן¿½"׳ ן¿½~ן¿½T׳</b>\n  ן¿½Y'ן¿½ 50% ן¿½"׳ ן¿½-ן¿½" ן¿½?" ׳§ן¿½.ן¿½": <code>STUDENT50</code>\nן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½"
         )
         kb = {"inline_keyboard": [
-            [{"text": "�Y'Z ר�>�.ש �-�'�T�o�" �z�oא�"", "callback_data": "vip_elite"}],
-            [{"text": "�Y>�️ �-�'�T�oת א�'�~�-�"", "callback_data": "vip_basic"}],
-            [{"text": "�Y'� �"�-�z�Y �-�'ר�Tם", "callback_data": "menu_referral"}],
-            [{"text": "�Y"T �-�-ר�" �oתפר�T�~", "callback_data": "menu_main"}],
+            [{"text": "ן¿½Y'Z ׳¨ן¿½>ן¿½.׳© ן¿½-ן¿½'ן¿½Tן¿½oן¿½" ן¿½zן¿½o׳-ן¿½"", "callback_data": "vip_elite"}],
+            [{"text": "ן¿½Y>ן¿½ן¸ ן¿½-ן¿½'ן¿½Tן¿½o׳× ׳-ן¿½'ן¿½~ן¿½-ן¿½"", "callback_data": "vip_basic"}],
+            [{"text": "ן¿½Y'ן¿½ ן¿½"ן¿½-ן¿½zן¿½Y ן¿½-ן¿½'׳¨ן¿½T׳", "callback_data": "menu_referral"}],
+            [{"text": "ן¿½Y"T ן¿½-ן¿½-׳¨ן¿½" ן¿½o׳×׳₪׳¨ן¿½Tן¿½~", "callback_data": "menu_main"}],
         ]}
         if message_id:
             self.edit_message(chat_id, message_id, text, kb)
@@ -1334,17 +1334,17 @@ class SLHInvestmentBot:
 
     def handle_buy_slh_inline(self, chat_id, message_id=None):
         text = (
-            f"�Y�T <b>ר�>�Tשת SLH Coin</b>\n\n"
-            f"�Y'� <b>�z�-�Tר:</b> 1 SLH = {SLH_PRICE_ILS}�,�\n"
-            f"�Y"� �z�Tנ�T�z�.ם: 0.00004 SLH (0.018�,�)\n\n�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�\n�Y"S <b>�z�"ר�'�.ת �z�-�Tר:</b>\n\n"
+            f"ן¿½Yן¿½T <b>׳¨ן¿½>ן¿½T׳©׳× SLH Coin</b>\n\n"
+            f"ן¿½Y'ן¿½ <b>ן¿½zן¿½-ן¿½T׳¨:</b> 1 SLH = {SLH_PRICE_ILS}ן¿½,ן¿½\n"
+            f"ן¿½Y"ן¿½ ן¿½zן¿½T׳ ן¿½Tן¿½zן¿½.׳: 0.00004 SLH (0.018ן¿½,ן¿½)\n\nן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½\nן¿½Y"S <b>ן¿½zן¿½"׳¨ן¿½'ן¿½.׳× ן¿½zן¿½-ן¿½T׳¨:</b>\n\n"
         )
         for tier in SLH_BUY_TIERS:
-            text += f"  �Y�T {tier['amount']} SLH = {tier['price']}�,�\n"
+            text += f"  ן¿½Yן¿½T {tier['amount']} SLH = {tier['price']}ן¿½,ן¿½\n"
         text += (
-            f"\n�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�\n"
-            f"�Y'� <b>ארנק TON:</b>\n<code>{TON_WALLET}</code>\n\n"
-            f"�Y"- <b>BSC Contract:</b>\n<code>{BSC_CONTRACT}</code>\n\n"
-            "�Y"� ש�o�- צ�T�o�.ם �zס�s א�. Transaction Hash\nא�. צ�.ר קשר עם @Osif83"
+            f"\nן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½\n"
+            f"ן¿½Y'ן¿½ <b>׳-׳¨׳ ׳§ TON:</b>\n<code>{TON_WALLET}</code>\n\n"
+            f"ן¿½Y"- <b>BSC Contract:</b>\n<code>{BSC_CONTRACT}</code>\n\n"
+            "ן¿½Y"ן¿½ ׳©ן¿½oן¿½- ׳¦ן¿½Tן¿½oן¿½.׳ ן¿½z׳¡ן¿½s ׳-ן¿½. Transaction Hash\n׳-ן¿½. ׳¦ן¿½.׳¨ ׳§׳©׳¨ ׳¢׳ @Osif83"
         )
         if message_id:
             self.edit_message(chat_id, message_id, text, self.buy_slh_keyboard())
@@ -1354,12 +1354,12 @@ class SLHInvestmentBot:
     def handle_buy_slh_select(self, chat_id, amount_str, callback_id, message_id):
         if amount_str == "custom":
             text = (
-                f"�o�️ <b>ס�>�.ם �z�.תאם א�Tש�Tת</b>\n\n"
-                f"�Y'� �z�-�Tר: 1 SLH = {SLH_PRICE_ILS}�,�\n"
-                f"�Y"� �z�Tנ�T�z�.ם: 0.00004 SLH (0.018�,�)\n\n"
-                "ש�o�- את �"ס�>�.ם שתרצ�" �oר�>�.ש (�'SLH).\n�o�"�.�'�z�": <code>0.005</code>\n\n"
-                f"�Y'� <b>ארנק TON:</b>\n<code>{TON_WALLET}</code>\n\n"
-                f"�Y"- <b>BSC Contract:</b>\n<code>{BSC_CONTRACT}</code>\n\nא�. צ�.ר קשר עם @Osif83"
+                f"ן¿½oן¿½ן¸ <b>׳¡ן¿½>ן¿½.׳ ן¿½zן¿½.׳×׳-׳ ׳-ן¿½T׳©ן¿½T׳×</b>\n\n"
+                f"ן¿½Y'ן¿½ ן¿½zן¿½-ן¿½T׳¨: 1 SLH = {SLH_PRICE_ILS}ן¿½,ן¿½\n"
+                f"ן¿½Y"ן¿½ ן¿½zן¿½T׳ ן¿½Tן¿½zן¿½.׳: 0.00004 SLH (0.018ן¿½,ן¿½)\n\n"
+                "׳©ן¿½oן¿½- ׳-׳× ן¿½"׳¡ן¿½>ן¿½.׳ ׳©׳×׳¨׳¦ן¿½" ן¿½o׳¨ן¿½>ן¿½.׳© (ן¿½'SLH).\nן¿½oן¿½"ן¿½.ן¿½'ן¿½zן¿½": <code>0.005</code>\n\n"
+                f"ן¿½Y'ן¿½ <b>׳-׳¨׳ ׳§ TON:</b>\n<code>{TON_WALLET}</code>\n\n"
+                f"ן¿½Y"- <b>BSC Contract:</b>\n<code>{BSC_CONTRACT}</code>\n\n׳-ן¿½. ׳¦ן¿½.׳¨ ׳§׳©׳¨ ׳¢׳ @Osif83"
             )
             self.edit_message(chat_id, message_id, text, self.back_keyboard())
             self.answer_callback(callback_id)
@@ -1367,18 +1367,18 @@ class SLHInvestmentBot:
         try:
             amount = float(amount_str)
         except ValueError:
-            self.answer_callback(callback_id, "�O ש�'�Tא�"")
+            self.answer_callback(callback_id, "ן¿½O ׳©ן¿½'ן¿½T׳-ן¿½"")
             return
         price = round(amount * SLH_PRICE_ILS, 3)
         text = (
-            f"�Y�T <b>ר�>�Tשת {amount} SLH</b>\n\n�Y'� <b>�z�-�Tר:</b> {price}�,�\n\n�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�\n"
-            f"�Y'� <b>ש�o�- {price}�,� �oארנק TON:</b>\n\n<code>{TON_WALLET}</code>\n\n"
-            f"�Y"- <b>BSC Contract:</b>\n<code>{BSC_CONTRACT}</code>\n\n"
-            f"�Y"� ש�o�- צ�T�o�.ם �zס�s א�. Transaction Hash\nא�. צ�.ר קשר עם @Osif83\n\n�o. תק�'�o {amount} SLH ת�.�s 24 שע�.ת"
+            f"ן¿½Yן¿½T <b>׳¨ן¿½>ן¿½T׳©׳× {amount} SLH</b>\n\nן¿½Y'ן¿½ <b>ן¿½zן¿½-ן¿½T׳¨:</b> {price}ן¿½,ן¿½\n\nן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½\n"
+            f"ן¿½Y'ן¿½ <b>׳©ן¿½oן¿½- {price}ן¿½,ן¿½ ן¿½o׳-׳¨׳ ׳§ TON:</b>\n\n<code>{TON_WALLET}</code>\n\n"
+            f"ן¿½Y"- <b>BSC Contract:</b>\n<code>{BSC_CONTRACT}</code>\n\n"
+            f"ן¿½Y"ן¿½ ׳©ן¿½oן¿½- ׳¦ן¿½Tן¿½oן¿½.׳ ן¿½z׳¡ן¿½s ׳-ן¿½. Transaction Hash\n׳-ן¿½. ׳¦ן¿½.׳¨ ׳§׳©׳¨ ׳¢׳ @Osif83\n\nן¿½o. ׳×׳§ן¿½'ן¿½o {amount} SLH ׳×ן¿½.ן¿½s 24 ׳©׳¢ן¿½.׳×"
         )
         kb = {"inline_keyboard": [
-            [{"text": "�Y'� �"עתק �>ת�.�'ת ארנק", "callback_data": "copy_wallet_slh"}],
-            [{"text": "�Y"T �-�-ר�" �oר�>�Tש�"", "callback_data": "menu_buy_slh"}],
+            [{"text": "ן¿½Y'ן¿½ ן¿½"׳¢׳×׳§ ן¿½>׳×ן¿½.ן¿½'׳× ׳-׳¨׳ ׳§", "callback_data": "copy_wallet_slh"}],
+            [{"text": "ן¿½Y"T ן¿½-ן¿½-׳¨ן¿½" ן¿½o׳¨ן¿½>ן¿½T׳©ן¿½"", "callback_data": "menu_buy_slh"}],
         ]}
         self.edit_message(chat_id, message_id, text, kb)
         self.answer_callback(callback_id)
@@ -1386,21 +1386,21 @@ class SLHInvestmentBot:
     def handle_help_inline(self, chat_id, message_id=None):
         ref_link = f"https://t.me/SLH_AIR_bot?start=ref_{chat_id}"
         text = (
-            "�" <b>SLH HUB �?" ע�-ר�"</b>\n\n"
-            "<b>פק�.�"�.ת:</b>\n"
-            "/start �?" תפר�T�~ ראש�T\n/earn �?" �zש�T�z�.ת �.�"ר�.�.�-�"\n/swap �?" �"�zרת �z�~�'ע�.ת\n/vip �?" �zנ�.�T פר�T�z�T�.ם\n"
-            "/airdrop �?" ר�>�Tשת �~�.קנ�Tם\n/buyslh �?" �Y�T ר�>�Tשת SLH Coin\n/referral �?" ק�Tש�.ר �"פנ�T�"\n"
-            "/deals �?" �z�'צע�Tם\n/portfolio �?" �"ת�Tק ש�o�T\n/help �?" ע�-ר�"\n\n"
-            "<b>ת�z�T�>�":</b> @Osif83\n<b>אתר:</b> slh-nft.com\n\n"
-            f"�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�\n�Y'� <b>שתף �.�"ר�.�.�T�- 15% �'נק�.�"�.ת SLH!</b>\n�Y"- <code>{ref_link}</code>"
+            "ן¿½" <b>SLH HUB ן¿½?" ׳¢ן¿½-׳¨ן¿½"</b>\n\n"
+            "<b>׳₪׳§ן¿½.ן¿½"ן¿½.׳×:</b>\n"
+            "/start ן¿½?" ׳×׳₪׳¨ן¿½Tן¿½~ ׳¨׳-׳©ן¿½T\n/earn ן¿½?" ן¿½z׳©ן¿½Tן¿½zן¿½.׳× ן¿½.ן¿½"׳¨ן¿½.ן¿½.ן¿½-ן¿½"\n/swap ן¿½?" ן¿½"ן¿½z׳¨׳× ן¿½zן¿½~ן¿½'׳¢ן¿½.׳×\n/vip ן¿½?" ן¿½z׳ ן¿½.ן¿½T ׳₪׳¨ן¿½Tן¿½zן¿½Tן¿½.׳\n"
+            "/airdrop ן¿½?" ׳¨ן¿½>ן¿½T׳©׳× ן¿½~ן¿½.׳§׳ ן¿½T׳\n/buyslh ן¿½?" ן¿½Yן¿½T ׳¨ן¿½>ן¿½T׳©׳× SLH Coin\n/referral ן¿½?" ׳§ן¿½T׳©ן¿½.׳¨ ן¿½"׳₪׳ ן¿½Tן¿½"\n"
+            "/deals ן¿½?" ן¿½zן¿½'׳¦׳¢ן¿½T׳\n/portfolio ן¿½?" ן¿½"׳×ן¿½T׳§ ׳©ן¿½oן¿½T\n/help ן¿½?" ׳¢ן¿½-׳¨ן¿½"\n\n"
+            "<b>׳×ן¿½zן¿½Tן¿½>ן¿½":</b> @Osif83\n<b>׳-׳×׳¨:</b> slh-nft.com\n\n"
+            f"ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½ן¿½"ן¿½\nן¿½Y'ן¿½ <b>׳©׳×׳£ ן¿½.ן¿½"׳¨ן¿½.ן¿½.ן¿½Tן¿½- 15% ן¿½'׳ ׳§ן¿½.ן¿½"ן¿½.׳× SLH!</b>\nן¿½Y"- <code>{ref_link}</code>"
         )
-        kb = {"inline_keyboard": [[{"text": "�Y"T �-�-ר�" �oתפר�T�~", "callback_data": "menu_main"}]]}
+        kb = {"inline_keyboard": [[{"text": "ן¿½Y"T ן¿½-ן¿½-׳¨ן¿½" ן¿½o׳×׳₪׳¨ן¿½Tן¿½~", "callback_data": "menu_main"}]]}
         if message_id:
             self.edit_message(chat_id, message_id, text, kb)
         else:
             self.send(chat_id, text, kb)
 
-    # �"?�"? Admin �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?
+    # ן¿½"?ן¿½"? Admin ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?
     def handle_admin(self, chat_id):
         if str(chat_id) != ADMIN_ID:
             return
@@ -1409,11 +1409,11 @@ class SLHInvestmentBot:
         total_points = sum(u.get("hub_points", 0) for u in _user_data.values())
         total_refs = sum(u["referral_count"] for u in _user_data.values())
         text = (
-            f"�Y>� <b>ADMIN PANEL</b>\n\n"
-            f"�Y'� �zשת�zש�Tם: <b>{total_users}</b>\n�Y'' VIP: <b>{total_vip}</b>\n"
-            f"�Y'� נק�.�"�.ת ש�-�.�oק�.: <b>{total_points}</b>\n�Y'� �"פנ�T�.ת: <b>{total_refs}</b>\n\n"
-            f"<b>פק�.�"�.ת:</b>\n/stats �?" ס�~�~�Tס�~�Tק�.ת\n/broadcast TEXT �?" ש�o�- �"�.�"ע�" �o�>�.�oם\n"
-            f"/approve USER_ID PLAN �?" אשר VIP\n/admin �?" פאנ�o �-�""
+            f"ן¿½Y>ן¿½ <b>ADMIN PANEL</b>\n\n"
+            f"ן¿½Y'ן¿½ ן¿½z׳©׳×ן¿½z׳©ן¿½T׳: <b>{total_users}</b>\nן¿½Y'' VIP: <b>{total_vip}</b>\n"
+            f"ן¿½Y'ן¿½ ׳ ׳§ן¿½.ן¿½"ן¿½.׳× ׳©ן¿½-ן¿½.ן¿½o׳§ן¿½.: <b>{total_points}</b>\nן¿½Y'ן¿½ ן¿½"׳₪׳ ן¿½Tן¿½.׳×: <b>{total_refs}</b>\n\n"
+            f"<b>׳₪׳§ן¿½.ן¿½"ן¿½.׳×:</b>\n/stats ן¿½?" ׳¡ן¿½~ן¿½~ן¿½T׳¡ן¿½~ן¿½T׳§ן¿½.׳×\n/broadcast TEXT ן¿½?" ׳©ן¿½oן¿½- ן¿½"ן¿½.ן¿½"׳¢ן¿½" ן¿½oן¿½>ן¿½.ן¿½o׳\n"
+            f"/approve USER_ID PLAN ן¿½?" ׳-׳©׳¨ VIP\n/admin ן¿½?" ׳₪׳-׳ ן¿½o ן¿½-ן¿½""
         )
         self.send(chat_id, text)
 
@@ -1422,16 +1422,16 @@ class SLHInvestmentBot:
             return
         sent = 0
         for uid in _user_data:
-            if self.send(uid, f"�Y"� <b>�"�.�"ע�" �z�"�zער�>ת:</b>\n\n{text}"):
+            if self.send(uid, f"ן¿½Y"ן¿½ <b>ן¿½"ן¿½.ן¿½"׳¢ן¿½" ן¿½zן¿½"ן¿½z׳¢׳¨ן¿½>׳×:</b>\n\n{text}"):
                 sent += 1
-        self.send(chat_id, f"�o. נש�o�- �o-{sent} �zשת�zש�Tם")
+        self.send(chat_id, f"ן¿½o. ׳ ׳©ן¿½oן¿½- ן¿½o-{sent} ן¿½z׳©׳×ן¿½z׳©ן¿½T׳")
 
     def handle_approve(self, chat_id, args):
         if str(chat_id) != ADMIN_ID:
             return
         parts = args.split()
         if len(parts) < 2:
-            self.send(chat_id, "ש�T�z�.ש: /approve USER_ID PLAN\n�o�"�.�'�z�": /approve 123456 pro")
+            self.send(chat_id, "׳©ן¿½Tן¿½zן¿½.׳©: /approve USER_ID PLAN\nן¿½oן¿½"ן¿½.ן¿½'ן¿½zן¿½": /approve 123456 pro")
             return
         try:
             uid = int(parts[0])
@@ -1439,14 +1439,14 @@ class SLHInvestmentBot:
             if plan in VIP_PLANS:
                 user = _get_user(uid)
                 user["vip"] = plan
-                self.send(chat_id, f"�o. א�.שר VIP {VIP_PLANS[plan]['name']} �o�zשת�zש {uid}")
-                self.send(uid, f"�YZ? <b>VIP �"�.פע�o!</b>\n\nש�"ר�'ת �o-{VIP_PLANS[plan]['name']}! �Y''")
+                self.send(chat_id, f"ן¿½o. ׳-ן¿½.׳©׳¨ VIP {VIP_PLANS[plan]['name']} ן¿½oן¿½z׳©׳×ן¿½z׳© {uid}")
+                self.send(uid, f"ן¿½YZ? <b>VIP ן¿½"ן¿½.׳₪׳¢ן¿½o!</b>\n\n׳©ן¿½"׳¨ן¿½'׳× ן¿½o-{VIP_PLANS[plan]['name']}! ן¿½Y''")
             else:
-                self.send(chat_id, f"�O ת�.�>נ�Tת �oא ק�T�T�zת. אפשר�.�T�.ת: {', '.join(VIP_PLANS.keys())}")
+                self.send(chat_id, f"ן¿½O ׳×ן¿½.ן¿½>׳ ן¿½T׳× ן¿½o׳- ׳§ן¿½Tן¿½Tן¿½z׳×. ׳-׳₪׳©׳¨ן¿½.ן¿½Tן¿½.׳×: {', '.join(VIP_PLANS.keys())}")
         except:
-            self.send(chat_id, "�O ש�'�Tא�". ש�T�z�.ש: /approve USER_ID PLAN")
+            self.send(chat_id, "ן¿½O ׳©ן¿½'ן¿½T׳-ן¿½". ׳©ן¿½Tן¿½zן¿½.׳©: /approve USER_ID PLAN")
 
-    # �"?�"? Callback handler �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?
+    # ן¿½"?ן¿½"? Callback handler ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?
     def handle_callback(self, callback):
         data = callback.get("data", "")
         chat_id = callback["message"]["chat"]["id"]
@@ -1454,7 +1454,7 @@ class SLHInvestmentBot:
         callback_id = callback["id"]
         first_name = callback["from"].get("first_name", "")
 
-        # �"?�"? P2P callbacks (delegate to handle_p2p_callback) �"?�"?�"?�"?�"?�"?�"?�"?�"?
+        # ן¿½"?ן¿½"? P2P callbacks (delegate to handle_p2p_callback) ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?
         if (data.startswith("p2p_") or data.startswith("send_tok_") or
                 data.startswith("sell_tok_") or data.startswith("pay_")):
             self.handle_p2p_callback(chat_id, data, callback_id, message_id)
@@ -1462,13 +1462,13 @@ class SLHInvestmentBot:
 
         if data == "menu_main":
             user = _get_user(chat_id)
-            vip_badge = "�Y'' VIP" if user["vip"] else "�Y?" Free"
+            vip_badge = "ן¿½Y'' VIP" if user["vip"] else "ן¿½Y?" Free"
             self.edit_message(chat_id, message_id,
-                f"�Ys? <b>SLH HUB SYSTEM</b>\n\n"
-                f"�Y'� <b>{first_name}</b> | {vip_badge}\n"
-                f"�Y'� �Tתר�": <b>{user['hub_points']}</b> נק�.�"�.ת\n"
-                f"�Y'Z SLH: <b>{user['slh_balance']:.2f}</b>\n"
-                f"�Y'� �"פנ�T�.ת: <b>{user['referral_count']}</b>\n\n�Y'? �'�-ר פע�.�o�":",
+                f"ן¿½Ys? <b>SLH HUB SYSTEM</b>\n\n"
+                f"ן¿½Y'ן¿½ <b>{first_name}</b> | {vip_badge}\n"
+                f"ן¿½Y'ן¿½ ן¿½T׳×׳¨ן¿½": <b>{user['hub_points']}</b> ׳ ׳§ן¿½.ן¿½"ן¿½.׳×\n"
+                f"ן¿½Y'Z SLH: <b>{user['slh_balance']:.2f}</b>\n"
+                f"ן¿½Y'ן¿½ ן¿½"׳₪׳ ן¿½Tן¿½.׳×: <b>{user['referral_count']}</b>\n\nן¿½Y'? ן¿½'ן¿½-׳¨ ׳₪׳¢ן¿½.ן¿½oן¿½":",
                 self.hub_inline_keyboard()
             )
             self.answer_callback(callback_id)
@@ -1502,25 +1502,25 @@ class SLHInvestmentBot:
         elif data.startswith("buy_slh_"):
             self.handle_buy_slh_select(chat_id, data[8:], callback_id, message_id)
         elif data == "copy_wallet_slh":
-            self.answer_callback(callback_id, f"�Y'� {TON_WALLET}", True)
+            self.answer_callback(callback_id, f"ן¿½Y'ן¿½ {TON_WALLET}", True)
         elif data.startswith("task_"):
             self.handle_task(chat_id, data[5:], callback_id, message_id)
         elif data.startswith("vip_"):
             self.handle_vip_select(chat_id, data[4:], callback_id, message_id)
         elif data == "airdrop_pay":
             self.send(chat_id,
-                f"�Y'� <b>ש�o�- תש�o�.ם �oארנק TON:</b>\n\n<code>{TON_WALLET}</code>\n\n"
-                f"�Y"- <b>BSC Contract:</b>\n<code>{BSC_CONTRACT}</code>\n\n"
-                "�Y"� א�-ר�T �"תש�o�.ם, ש�o�- �>א�Y:\n�?� צ�T�o�.ם �zס�s, א�.\n�?� Transaction Hash",
+                f"ן¿½Y'ן¿½ <b>׳©ן¿½oן¿½- ׳×׳©ן¿½oן¿½.׳ ן¿½o׳-׳¨׳ ׳§ TON:</b>\n\n<code>{TON_WALLET}</code>\n\n"
+                f"ן¿½Y"- <b>BSC Contract:</b>\n<code>{BSC_CONTRACT}</code>\n\n"
+                "ן¿½Y"ן¿½ ׳-ן¿½-׳¨ן¿½T ן¿½"׳×׳©ן¿½oן¿½.׳, ׳©ן¿½oן¿½- ן¿½>׳-ן¿½Y:\nן¿½?ן¿½ ׳¦ן¿½Tן¿½oן¿½.׳ ן¿½z׳¡ן¿½s, ׳-ן¿½.\nן¿½?ן¿½ Transaction Hash",
                 self.back_keyboard())
             self.answer_callback(callback_id)
         elif data == "airdrop_status":
             user = _get_user(chat_id)
-            self.answer_callback(callback_id, f"�Y'� �Tתר�": {user['hub_points']} נק�.�"�.ת | VIP: {'�>�Y' if user['vip'] else '�oא'}", True)
+            self.answer_callback(callback_id, f"ן¿½Y'ן¿½ ן¿½T׳×׳¨ן¿½": {user['hub_points']} ׳ ׳§ן¿½.ן¿½"ן¿½.׳× | VIP: {'ן¿½>ן¿½Y' if user['vip'] else 'ן¿½o׳-'}", True)
         elif data == "copy_ref":
-            self.answer_callback(callback_id, f"�Y"- https://t.me/SLH_AIR_bot?start=ref_{chat_id}", True)
+            self.answer_callback(callback_id, f"ן¿½Y"- https://t.me/SLH_AIR_bot?start=ref_{chat_id}", True)
         elif data.startswith("copy_wallet_"):
-            self.answer_callback(callback_id, f"�Y'� {TON_WALLET}", True)
+            self.answer_callback(callback_id, f"ן¿½Y'ן¿½ {TON_WALLET}", True)
         elif data.startswith("invest_"):
             try:
                 idx = int(data[7:])
@@ -1540,12 +1540,12 @@ class SLHInvestmentBot:
             self.answer_callback(callback_id)
         elif data == "wallet_send":
             self.send(chat_id,
-                "�Y"� <b>ש�o�T�-ת �z�~�'ע�.ת</b>\n\n"
-                "�Y'Z SLH: <code>/send_slh USER_ID AMOUNT</code>\n"
-                "�Y'� TON: <code>/send_ton USER_ID AMOUNT</code>\n"
-                "�YY� BNB: <code>/send_bnb USER_ID AMOUNT</code>\n"
-                "�YZ� ZVK: <code>/send_zvk USER_ID AMOUNT</code>\n\n"
-                "�Y'� ק�'�o את �"-USER_ID ש�o �"נ�zע�Y: �'קש �z�zנ�. /myid",
+                "ן¿½Y"ן¿½ <b>׳©ן¿½oן¿½Tן¿½-׳× ן¿½zן¿½~ן¿½'׳¢ן¿½.׳×</b>\n\n"
+                "ן¿½Y'Z SLH: <code>/send_slh USER_ID AMOUNT</code>\n"
+                "ן¿½Y'ן¿½ TON: <code>/send_ton USER_ID AMOUNT</code>\n"
+                "ן¿½YYן¿½ BNB: <code>/send_bnb USER_ID AMOUNT</code>\n"
+                "ן¿½YZן¿½ ZVK: <code>/send_zvk USER_ID AMOUNT</code>\n\n"
+                "ן¿½Y'ן¿½ ׳§ן¿½'ן¿½o ׳-׳× ן¿½"-USER_ID ׳©ן¿½o ן¿½"׳ ן¿½z׳¢ן¿½Y: ן¿½'׳§׳© ן¿½zן¿½z׳ ן¿½. /myid",
                 self.wallet_inline_keyboard())
             self.answer_callback(callback_id)
         elif data == "wallet_history":
@@ -1553,7 +1553,7 @@ class SLHInvestmentBot:
             self.answer_callback(callback_id)
         elif data == "wallet_refresh":
             self.handle_wallet(chat_id, message_id)
-            self.answer_callback(callback_id, "�Y"" �zרענ�Y...")
+            self.answer_callback(callback_id, "ן¿½Y"" ן¿½z׳¨׳¢׳ ן¿½Y...")
         elif data.startswith("admin_approve_"):
             if str(chat_id) == ADMIN_ID:
                 parts = data.split("_")
@@ -1565,8 +1565,8 @@ class SLHInvestmentBot:
                         d["status"] = "active"
                         user["ton_locked"] += d["amount"]
                         break
-                self.send(uid, f"�o. �"פק�"�" #{dep_id} א�.שר�"! �"פק�"�.�Y פע�T�o.")
-                self.answer_callback(callback_id, "�o. א�.שר!", True)
+                self.send(uid, f"ן¿½o. ן¿½"׳₪׳§ן¿½"ן¿½" #{dep_id} ׳-ן¿½.׳©׳¨ן¿½"! ן¿½"׳₪׳§ן¿½"ן¿½.ן¿½Y ׳₪׳¢ן¿½Tן¿½o.")
+                self.answer_callback(callback_id, "ן¿½o. ׳-ן¿½.׳©׳¨!", True)
         elif data.startswith("admin_reject_"):
             if str(chat_id) == ADMIN_ID:
                 parts = data.split("_")
@@ -1577,62 +1577,62 @@ class SLHInvestmentBot:
                     if d["id"] == dep_id:
                         d["status"] = "rejected"
                         break
-                self.send(uid, f"�O �"פק�"�" #{dep_id} נ�"�-ת�".\nנס�" ש�.�' א�. פנ�" �oת�z�T�>�".")
-                self.answer_callback(callback_id, "�O נ�"�-�"", True)
+                self.send(uid, f"ן¿½O ן¿½"׳₪׳§ן¿½"ן¿½" #{dep_id} ׳ ן¿½"ן¿½-׳×ן¿½".\n׳ ׳¡ן¿½" ׳©ן¿½.ן¿½' ׳-ן¿½. ׳₪׳ ן¿½" ן¿½o׳×ן¿½zן¿½Tן¿½>ן¿½".")
+                self.answer_callback(callback_id, "ן¿½O ׳ ן¿½"ן¿½-ן¿½"", True)
         else:
             self.answer_callback(callback_id)
 
-    # �"?�"? Text message handler �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?
-    # �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
+    # ן¿½"?ן¿½"? Text message handler ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?
+    # ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½
     # P2P TRADING MODULE
-    # �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
+    # ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½
     API_BASE = "https://slh-api-production.up.railway.app"
 
     def _p2p_keyboard(self):
         return {"inline_keyboard": [
-            [{"text": "�Y"� ש�o�- �~�.ק�Y", "callback_data": "p2p_send"},
-             {"text": "�Y>' �o�.�- �z�>�Tר�.ת", "callback_data": "p2p_browse"}],
-            [{"text": "�Y'� פרסם �z�>�Tר�"", "callback_data": "p2p_sell"},
-             {"text": "�Y"< �"�"�-�zנ�.ת ש�o�T", "callback_data": "p2p_myorders"}],
-            [{"text": "�Y"T תפר�T�~ ראש�T", "callback_data": "menu_main"}],
+            [{"text": "ן¿½Y"ן¿½ ׳©ן¿½oן¿½- ן¿½~ן¿½.׳§ן¿½Y", "callback_data": "p2p_send"},
+             {"text": "ן¿½Y>' ן¿½oן¿½.ן¿½- ן¿½zן¿½>ן¿½T׳¨ן¿½.׳×", "callback_data": "p2p_browse"}],
+            [{"text": "ן¿½Y'ן¿½ ׳₪׳¨׳¡׳ ן¿½zן¿½>ן¿½T׳¨ן¿½"", "callback_data": "p2p_sell"},
+             {"text": "ן¿½Y"< ן¿½"ן¿½"ן¿½-ן¿½z׳ ן¿½.׳× ׳©ן¿½oן¿½T", "callback_data": "p2p_myorders"}],
+            [{"text": "ן¿½Y"T ׳×׳₪׳¨ן¿½Tן¿½~ ׳¨׳-׳©ן¿½T", "callback_data": "menu_main"}],
         ]}
 
     def _token_keyboard(self, prefix):
         return {"inline_keyboard": [
-            [{"text": "�Y'Z SLH", "callback_data": f"{prefix}_SLH"},
-             {"text": "�YZ� ZVK", "callback_data": f"{prefix}_ZVK"},
-             {"text": "�Y'� MNH", "callback_data": f"{prefix}_MNH"}],
-            [{"text": "�O �'�T�~�.�o", "callback_data": "p2p_cancel"}],
+            [{"text": "ן¿½Y'Z SLH", "callback_data": f"{prefix}_SLH"},
+             {"text": "ן¿½YZן¿½ ZVK", "callback_data": f"{prefix}_ZVK"},
+             {"text": "ן¿½Y'ן¿½ MNH", "callback_data": f"{prefix}_MNH"}],
+            [{"text": "ן¿½O ן¿½'ן¿½Tן¿½~ן¿½.ן¿½o", "callback_data": "p2p_cancel"}],
         ]}
 
     def _payment_keyboard(self):
         return {"inline_keyboard": [
-            [{"text": "�Y"� Bit", "callback_data": "pay_Bit"},
-             {"text": "�Y"� PayBox", "callback_data": "pay_PayBox"}],
-            [{"text": "�Y�� Bank", "callback_data": "pay_Bank"},
-             {"text": "�Y'� MNH", "callback_data": "pay_MNH"}],
-            [{"text": "�O �'�T�~�.�o", "callback_data": "p2p_cancel"}],
+            [{"text": "ן¿½Y"ן¿½ Bit", "callback_data": "pay_Bit"},
+             {"text": "ן¿½Y"ן¿½ PayBox", "callback_data": "pay_PayBox"}],
+            [{"text": "ן¿½Yן¿½ן¿½ Bank", "callback_data": "pay_Bank"},
+             {"text": "ן¿½Y'ן¿½ MNH", "callback_data": "pay_MNH"}],
+            [{"text": "ן¿½O ן¿½'ן¿½Tן¿½~ן¿½.ן¿½o", "callback_data": "p2p_cancel"}],
         ]}
 
     def handle_p2p_menu(self, chat_id):
         self._refresh_balances(chat_id)
         user = _get_user(chat_id)
         self.send(chat_id,
-            f"�Y"" <b>P2P �zס�-ר �?" SLH Spark</b>\n"
-            f"�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�\n\n"
-            f"�Y'Z SLH: <b>{user['slh_balance']:,.4f}</b>\n"
-            f"�YZ� ZVK: <b>{user['zvk_balance']}</b>\n"
-            f"�Y'� MNH: <b>{user.get('mnh_balance', 0):.2f}</b>\n\n"
-            f"�Y"� <b>ש�o�- �~�.ק�Y</b> �?" �"ע�'ר�" �Tש�Tר�" �o�zשת�zש\n"
-            f"�Y>' <b>�o�.�- �z�>�Tר�.ת</b> �?" קנ�" �z�"ק�"�T�o�"\n"
-            f"�Y'� <b>פרסם �z�>�Tר�"</b> �?" �z�>�.ר את �"�~�.קנ�Tם ש�o�s\n"
-            f"�Y"< <b>�"�"�-�zנ�.ת ש�o�T</b> �?" נ�T�"�.�o �"�-�zנ�.ת פת�.�-�.ת",
+            f"ן¿½Y"" <b>P2P ן¿½z׳¡ן¿½-׳¨ ן¿½?" SLH Spark</b>\n"
+            f"ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½\n\n"
+            f"ן¿½Y'Z SLH: <b>{user['slh_balance']:,.4f}</b>\n"
+            f"ן¿½YZן¿½ ZVK: <b>{user['zvk_balance']}</b>\n"
+            f"ן¿½Y'ן¿½ MNH: <b>{user.get('mnh_balance', 0):.2f}</b>\n\n"
+            f"ן¿½Y"ן¿½ <b>׳©ן¿½oן¿½- ן¿½~ן¿½.׳§ן¿½Y</b> ן¿½?" ן¿½"׳¢ן¿½'׳¨ן¿½" ן¿½T׳©ן¿½T׳¨ן¿½" ן¿½oן¿½z׳©׳×ן¿½z׳©\n"
+            f"ן¿½Y>' <b>ן¿½oן¿½.ן¿½- ן¿½zן¿½>ן¿½T׳¨ן¿½.׳×</b> ן¿½?" ׳§׳ ן¿½" ן¿½zן¿½"׳§ן¿½"ן¿½Tן¿½oן¿½"\n"
+            f"ן¿½Y'ן¿½ <b>׳₪׳¨׳¡׳ ן¿½zן¿½>ן¿½T׳¨ן¿½"</b> ן¿½?" ן¿½zן¿½>ן¿½.׳¨ ׳-׳× ן¿½"ן¿½~ן¿½.׳§׳ ן¿½T׳ ׳©ן¿½oן¿½s\n"
+            f"ן¿½Y"< <b>ן¿½"ן¿½"ן¿½-ן¿½z׳ ן¿½.׳× ׳©ן¿½oן¿½T</b> ן¿½?" ׳ ן¿½Tן¿½"ן¿½.ן¿½o ן¿½"ן¿½-ן¿½z׳ ן¿½.׳× ׳₪׳×ן¿½.ן¿½-ן¿½.׳×",
             self._p2p_keyboard())
 
-    # �"?�"? SEND FLOW �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?
+    # ן¿½"?ן¿½"? SEND FLOW ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?
     def p2p_start_send(self, chat_id):
         self._pending_p2p[chat_id] = {"flow": "send", "step": "choose_token", "data": {}}
-        self.send(chat_id, "�Y"� <b>ש�o�- �~�.ק�Y</b>\n\n�'�-ר א�T�-�" �~�.ק�Y �oש�o�.�-:", self._token_keyboard("send_tok"))
+        self.send(chat_id, "ן¿½Y"ן¿½ <b>׳©ן¿½oן¿½- ן¿½~ן¿½.׳§ן¿½Y</b>\n\nן¿½'ן¿½-׳¨ ׳-ן¿½Tן¿½-ן¿½" ן¿½~ן¿½.׳§ן¿½Y ן¿½o׳©ן¿½oן¿½.ן¿½-:", self._token_keyboard("send_tok"))
 
     def p2p_send_step(self, chat_id, text):
         state = self._pending_p2p.get(chat_id, {})
@@ -1645,16 +1645,16 @@ class SLHInvestmentBot:
             try:
                 to_user = int(text.strip())
                 if to_user == chat_id:
-                    self.send(chat_id, "�O א�T אפשר �oש�o�.�- �oעצ�z�s.")
+                    self.send(chat_id, "ן¿½O ׳-ן¿½T ׳-׳₪׳©׳¨ ן¿½o׳©ן¿½oן¿½.ן¿½- ן¿½o׳¢׳¦ן¿½zן¿½s.")
                     return True
                 data["to_user"] = to_user
                 state["step"] = "enter_amount"
                 self.send(chat_id,
-                    f"�Y'� <b>�>�z�" {data['token']} �oש�o�.�-?</b>\n"
-                    f"�"�Tתר�" ש�o�s: {self._get_balance_for(chat_id, data['token']):.4f}\n\n"
-                    f"�"�>נס ס�>�.ם (�zספר �'�o�'�"):")
+                    f"ן¿½Y'ן¿½ <b>ן¿½>ן¿½zן¿½" {data['token']} ן¿½o׳©ן¿½oן¿½.ן¿½-?</b>\n"
+                    f"ן¿½"ן¿½T׳×׳¨ן¿½" ׳©ן¿½oן¿½s: {self._get_balance_for(chat_id, data['token']):.4f}\n\n"
+                    f"ן¿½"ן¿½>׳ ׳¡ ׳¡ן¿½>ן¿½.׳ (ן¿½z׳¡׳₪׳¨ ן¿½'ן¿½oן¿½'ן¿½"):")
             except ValueError:
-                self.send(chat_id, "�O User ID �oא תק�T�Y. �"�>נס �zספר �'�o�'�" (�o�"�.�'�z�": 224223270)")
+                self.send(chat_id, "ן¿½O User ID ן¿½o׳- ׳×׳§ן¿½Tן¿½Y. ן¿½"ן¿½>׳ ׳¡ ן¿½z׳¡׳₪׳¨ ן¿½'ן¿½oן¿½'ן¿½" (ן¿½oן¿½"ן¿½.ן¿½'ן¿½zן¿½": 224223270)")
             return True
 
         if step == "enter_amount":
@@ -1664,25 +1664,25 @@ class SLHInvestmentBot:
                     raise ValueError
                 bal = self._get_balance_for(chat_id, data["token"])
                 if amount > bal:
-                    self.send(chat_id, f"�O �Tתר�" �oא �zספ�Tק�". �Tש �o�s {bal:.4f} {data['token']}")
+                    self.send(chat_id, f"ן¿½O ן¿½T׳×׳¨ן¿½" ן¿½o׳- ן¿½z׳¡׳₪ן¿½T׳§ן¿½". ן¿½T׳© ן¿½oן¿½s {bal:.4f} {data['token']}")
                     return True
                 data["amount"] = amount
                 state["step"] = "confirm"
                 self.send(chat_id,
-                    f"�o. <b>א�Tש�.ר �"ע�'ר�"</b>\n\n"
-                    f"�Y"� ש�.�o�-: <b>{amount} {data['token']}</b>\n"
-                    f"�Y'� �o�zשת�zש ID: <code>{data['to_user']}</code>\n\n"
-                    f"ש�o�- <b>�>�Y</b> �oא�Tש�.ר א�. <b>�oא</b> �o�'�T�~�.�o:")
+                    f"ן¿½o. <b>׳-ן¿½T׳©ן¿½.׳¨ ן¿½"׳¢ן¿½'׳¨ן¿½"</b>\n\n"
+                    f"ן¿½Y"ן¿½ ׳©ן¿½.ן¿½oן¿½-: <b>{amount} {data['token']}</b>\n"
+                    f"ן¿½Y'ן¿½ ן¿½oן¿½z׳©׳×ן¿½z׳© ID: <code>{data['to_user']}</code>\n\n"
+                    f"׳©ן¿½oן¿½- <b>ן¿½>ן¿½Y</b> ן¿½o׳-ן¿½T׳©ן¿½.׳¨ ׳-ן¿½. <b>ן¿½o׳-</b> ן¿½oן¿½'ן¿½Tן¿½~ן¿½.ן¿½o:")
             except ValueError:
-                self.send(chat_id, "�O ס�>�.ם �oא תק�T�Y. �"�>נס �zספר (�o�"�.�'�z�": 10.5)")
+                self.send(chat_id, "ן¿½O ׳¡ן¿½>ן¿½.׳ ן¿½o׳- ׳×׳§ן¿½Tן¿½Y. ן¿½"ן¿½>׳ ׳¡ ן¿½z׳¡׳₪׳¨ (ן¿½oן¿½"ן¿½.ן¿½'ן¿½zן¿½": 10.5)")
             return True
 
         if step == "confirm":
-            if text.strip().lower() in ("�>�Y", "yes", "א�Tש�.ר", "�o."):
+            if text.strip().lower() in ("ן¿½>ן¿½Y", "yes", "׳-ן¿½T׳©ן¿½.׳¨", "ן¿½o."):
                 self._p2p_execute_send(chat_id, data)
             else:
                 del self._pending_p2p[chat_id]
-                self.send(chat_id, "�O �"ע�'ר�" �'�.�~�o�".", self.main_reply_keyboard())
+                self.send(chat_id, "ן¿½O ן¿½"׳¢ן¿½'׳¨ן¿½" ן¿½'ן¿½.ן¿½~ן¿½oן¿½".", self.main_reply_keyboard())
             return True
 
         return False
@@ -1715,33 +1715,33 @@ class SLHInvestmentBot:
                     user["mnh_balance"] = max(0, user.get("mnh_balance", 0) - data["amount"])
 
                 self.send(chat_id,
-                    f"�o. <b>נש�o�- �'�"צ�o�-�"!</b>\n\n"
-                    f"�Y'� <b>{data['amount']} {data['token']}</b> �?' �zשת�zש <code>{data['to_user']}</code>\n"
-                    f"�Y�� TX: #{result.get('transfer_id', '�?"')}\n\n"
-                    f"�Y'� /wallet �oצפ�T�T�" �'�Tתר�"", self.main_reply_keyboard())
+                    f"ן¿½o. <b>׳ ׳©ן¿½oן¿½- ן¿½'ן¿½"׳¦ן¿½oן¿½-ן¿½"!</b>\n\n"
+                    f"ן¿½Y'ן¿½ <b>{data['amount']} {data['token']}</b> ן¿½?' ן¿½z׳©׳×ן¿½z׳© <code>{data['to_user']}</code>\n"
+                    f"ן¿½Yן¿½ן¿½ TX: #{result.get('transfer_id', 'ן¿½?"')}\n\n"
+                    f"ן¿½Y'ן¿½ /wallet ן¿½o׳¦׳₪ן¿½Tן¿½Tן¿½" ן¿½'ן¿½T׳×׳¨ן¿½"", self.main_reply_keyboard())
                 # Notify receiver
                 self.send(data["to_user"],
-                    f"�Y'� <b>ק�T�'�oת {data['amount']} {data['token']}!</b>\n\n"
-                    f"�Y'� �z: �zשת�zש {chat_id}\n"
-                    f"�Y'� /wallet �oצפ�T�T�" �'�Tתר�"")
+                    f"ן¿½Y'ן¿½ <b>׳§ן¿½Tן¿½'ן¿½o׳× {data['amount']} {data['token']}!</b>\n\n"
+                    f"ן¿½Y'ן¿½ ן¿½z: ן¿½z׳©׳×ן¿½z׳© {chat_id}\n"
+                    f"ן¿½Y'ן¿½ /wallet ן¿½o׳¦׳₪ן¿½Tן¿½Tן¿½" ן¿½'ן¿½T׳×׳¨ן¿½"")
             else:
-                err = result.get("detail", result.get("error", "ש�'�Tא�" �oא �T�"�.ע�""))
-                self.send(chat_id, f"�O {err}", self.main_reply_keyboard())
+                err = result.get("detail", result.get("error", "׳©ן¿½'ן¿½T׳-ן¿½" ן¿½o׳- ן¿½Tן¿½"ן¿½.׳¢ן¿½""))
+                self.send(chat_id, f"ן¿½O {err}", self.main_reply_keyboard())
         except Exception as e:
             logger.error(f"P2P send error: {e}")
-            self.send(chat_id, "�O ש�'�Tא�" �'ש�o�T�-�". נס�" ש�.�'.", self.main_reply_keyboard())
+            self.send(chat_id, "ן¿½O ׳©ן¿½'ן¿½T׳-ן¿½" ן¿½'׳©ן¿½oן¿½Tן¿½-ן¿½". ׳ ׳¡ן¿½" ׳©ן¿½.ן¿½'.", self.main_reply_keyboard())
         finally:
             self._pending_p2p.pop(chat_id, None)
 
-    # �"?�"? SELL FLOW �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?
+    # ן¿½"?ן¿½"? SELL FLOW ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?
     def p2p_start_sell(self, chat_id):
         self._refresh_balances(chat_id)
         user = _get_user(chat_id)
         if user["slh_balance"] <= 0 and user["zvk_balance"] <= 0 and user.get("mnh_balance", 0) <= 0:
-            self.send(chat_id, "�O א�T�Y �o�s �~�.קנ�Tם �o�z�>�Tר�".", self.main_reply_keyboard())
+            self.send(chat_id, "ן¿½O ׳-ן¿½Tן¿½Y ן¿½oן¿½s ן¿½~ן¿½.׳§׳ ן¿½T׳ ן¿½oן¿½zן¿½>ן¿½T׳¨ן¿½".", self.main_reply_keyboard())
             return
         self._pending_p2p[chat_id] = {"flow": "sell", "step": "choose_token", "data": {}}
-        self.send(chat_id, "�Y'� <b>פרסם �z�>�Tר�"</b>\n\n�'�-ר א�T�-�" �~�.ק�Y �o�z�>�.ר:", self._token_keyboard("sell_tok"))
+        self.send(chat_id, "ן¿½Y'ן¿½ <b>׳₪׳¨׳¡׳ ן¿½zן¿½>ן¿½T׳¨ן¿½"</b>\n\nן¿½'ן¿½-׳¨ ׳-ן¿½Tן¿½-ן¿½" ן¿½~ן¿½.׳§ן¿½Y ן¿½oן¿½zן¿½>ן¿½.׳¨:", self._token_keyboard("sell_tok"))
 
     def p2p_sell_step(self, chat_id, text):
         state = self._pending_p2p.get(chat_id, {})
@@ -1757,16 +1757,16 @@ class SLHInvestmentBot:
                     raise ValueError
                 bal = self._get_balance_for(chat_id, data["token"])
                 if amount > bal:
-                    self.send(chat_id, f"�O �Tתר�" �oא �zספ�Tק�". �Tש �o�s {bal:.4f} {data['token']}")
+                    self.send(chat_id, f"ן¿½O ן¿½T׳×׳¨ן¿½" ן¿½o׳- ן¿½z׳¡׳₪ן¿½T׳§ן¿½". ן¿½T׳© ן¿½oן¿½s {bal:.4f} {data['token']}")
                     return True
                 data["amount"] = amount
                 state["step"] = "enter_price"
                 self.send(chat_id,
-                    f"�Y'� <b>�z�-�Tר �o�>�o {data['token']} (�'שק�o�Tם �,�)</b>\n\n"
-                    f"�o�"�.�'�z�": אם SLH = 444�,�, �"�>נס <b>444</b>\n"
-                    f"�"�>נס �z�-�Tר:")
+                    f"ן¿½Y'ן¿½ <b>ן¿½zן¿½-ן¿½T׳¨ ן¿½oן¿½>ן¿½o {data['token']} (ן¿½'׳©׳§ן¿½oן¿½T׳ ן¿½,ן¿½)</b>\n\n"
+                    f"ן¿½oן¿½"ן¿½.ן¿½'ן¿½zן¿½": ׳-׳ SLH = 444ן¿½,ן¿½, ן¿½"ן¿½>׳ ׳¡ <b>444</b>\n"
+                    f"ן¿½"ן¿½>׳ ׳¡ ן¿½zן¿½-ן¿½T׳¨:")
             except ValueError:
-                self.send(chat_id, "�O ס�>�.ם �oא תק�T�Y.")
+                self.send(chat_id, "ן¿½O ׳¡ן¿½>ן¿½.׳ ן¿½o׳- ׳×׳§ן¿½Tן¿½Y.")
             return True
 
         if step == "enter_price":
@@ -1778,19 +1778,19 @@ class SLHInvestmentBot:
                 state["step"] = "choose_payment"
                 total = data["amount"] * price
                 self.send(chat_id,
-                    f"�Y'� <b>ש�T�~ת תש�o�.ם �z�.ע�"פת</b>\n\n"
-                    f"תק�'�o: <b>{total:.2f} �,�</b> ע�'�.ר {data['amount']} {data['token']}\n\n"
-                    f"�'�-ר א�T�s �oק�'�o תש�o�.ם:", self._payment_keyboard())
+                    f"ן¿½Y'ן¿½ <b>׳©ן¿½Tן¿½~׳× ׳×׳©ן¿½oן¿½.׳ ן¿½zן¿½.׳¢ן¿½"׳₪׳×</b>\n\n"
+                    f"׳×׳§ן¿½'ן¿½o: <b>{total:.2f} ן¿½,ן¿½</b> ׳¢ן¿½'ן¿½.׳¨ {data['amount']} {data['token']}\n\n"
+                    f"ן¿½'ן¿½-׳¨ ׳-ן¿½Tן¿½s ן¿½o׳§ן¿½'ן¿½o ׳×׳©ן¿½oן¿½.׳:", self._payment_keyboard())
             except ValueError:
-                self.send(chat_id, "�O �z�-�Tר �oא תק�T�Y.")
+                self.send(chat_id, "ן¿½O ן¿½zן¿½-ן¿½T׳¨ ן¿½o׳- ׳×׳§ן¿½Tן¿½Y.")
             return True
 
         if step == "confirm":
-            if text.strip().lower() in ("�>�Y", "yes", "א�Tש�.ר", "�o."):
+            if text.strip().lower() in ("ן¿½>ן¿½Y", "yes", "׳-ן¿½T׳©ן¿½.׳¨", "ן¿½o."):
                 self._p2p_execute_sell(chat_id, data)
             else:
                 del self._pending_p2p[chat_id]
-                self.send(chat_id, "�O �z�>�Tר�" �'�.�~�o�".", self.main_reply_keyboard())
+                self.send(chat_id, "ן¿½O ן¿½zן¿½>ן¿½T׳¨ן¿½" ן¿½'ן¿½.ן¿½~ן¿½oן¿½".", self.main_reply_keyboard())
             return True
 
         return False
@@ -1808,26 +1808,26 @@ class SLHInvestmentBot:
             if resp.status_code == 200 and result.get("ok"):
                 order = result["order"]
                 self.send(chat_id,
-                    f"�o. <b>�"�-�zנת �z�>�Tר�" נ�.צר�"!</b>\n\n"
-                    f"�Y?" �"�-�zנ�": <b>#{order['id']}</b>\n"
-                    f"�Y'� �z�.�>ר: <b>{order['amount']} {order['token']}</b>\n"
-                    f"�Y'� �z�-�Tר: <b>{order['price_per_unit']} �,�</b> �o�T�-�T�"�"\n"
-                    f"�Y"S ס�"\"�>: <b>{order['amount'] * order['price_per_unit']:.2f} �,�</b>\n"
-                    f"�Y'� תש�o�.ם: <b>{order['payment_method']}</b>\n\n"
-                    f"�Y"' �"�~�.קנ�Tם ננע�o�. �'-escrow �?" �T�.ע�'ר�. �oק�.נ�" א�.�~�.�z�~�Tת.\n"
-                    f"�o�'�T�~�.�o: �Y"< �"�"�-�zנ�.ת ש�o�T", self.main_reply_keyboard())
+                    f"ן¿½o. <b>ן¿½"ן¿½-ן¿½z׳ ׳× ן¿½zן¿½>ן¿½T׳¨ן¿½" ׳ ן¿½.׳¦׳¨ן¿½"!</b>\n\n"
+                    f"ן¿½Y?" ן¿½"ן¿½-ן¿½z׳ ן¿½": <b>#{order['id']}</b>\n"
+                    f"ן¿½Y'ן¿½ ן¿½zן¿½.ן¿½>׳¨: <b>{order['amount']} {order['token']}</b>\n"
+                    f"ן¿½Y'ן¿½ ן¿½zן¿½-ן¿½T׳¨: <b>{order['price_per_unit']} ן¿½,ן¿½</b> ן¿½oן¿½Tן¿½-ן¿½Tן¿½"ן¿½"\n"
+                    f"ן¿½Y"S ׳¡ן¿½"\"ן¿½>: <b>{order['amount'] * order['price_per_unit']:.2f} ן¿½,ן¿½</b>\n"
+                    f"ן¿½Y'ן¿½ ׳×׳©ן¿½oן¿½.׳: <b>{order['payment_method']}</b>\n\n"
+                    f"ן¿½Y"' ן¿½"ן¿½~ן¿½.׳§׳ ן¿½T׳ ׳ ׳ ׳¢ן¿½oן¿½. ן¿½'-escrow ן¿½?" ן¿½Tן¿½.׳¢ן¿½'׳¨ן¿½. ן¿½o׳§ן¿½.׳ ן¿½" ׳-ן¿½.ן¿½~ן¿½.ן¿½zן¿½~ן¿½T׳×.\n"
+                    f"ן¿½oן¿½'ן¿½Tן¿½~ן¿½.ן¿½o: ן¿½Y"< ן¿½"ן¿½"ן¿½-ן¿½z׳ ן¿½.׳× ׳©ן¿½oן¿½T", self.main_reply_keyboard())
                 # Refresh balance (tokens were escrowed)
                 self._refresh_balances(chat_id)
             else:
-                err = result.get("detail", "ש�'�Tא�" �oא �T�"�.ע�"")
-                self.send(chat_id, f"�O {err}", self.main_reply_keyboard())
+                err = result.get("detail", "׳©ן¿½'ן¿½T׳-ן¿½" ן¿½o׳- ן¿½Tן¿½"ן¿½.׳¢ן¿½"")
+                self.send(chat_id, f"ן¿½O {err}", self.main_reply_keyboard())
         except Exception as e:
             logger.error(f"P2P sell error: {e}")
-            self.send(chat_id, "�O ש�'�Tא�" �'�Tצ�Tרת �"�-�zנ�".", self.main_reply_keyboard())
+            self.send(chat_id, "ן¿½O ׳©ן¿½'ן¿½T׳-ן¿½" ן¿½'ן¿½T׳¦ן¿½T׳¨׳× ן¿½"ן¿½-ן¿½z׳ ן¿½".", self.main_reply_keyboard())
         finally:
             self._pending_p2p.pop(chat_id, None)
 
-    # �"?�"? BROWSE + BUY �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?
+    # ן¿½"?ן¿½"? BROWSE + BUY ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?
     def p2p_browse(self, chat_id, token_filter=None):
         try:
             params = {"status": "active", "limit": 10}
@@ -1838,29 +1838,29 @@ class SLHInvestmentBot:
             orders = data.get("orders", [])
             if not orders:
                 self.send(chat_id,
-                    "�Y>' <b>�o�.�- �z�>�Tר�.ת</b>\n\nא�T�Y �"�-�zנ�.ת פת�.�-�.ת �>ר�'ע.\n"
-                    "�"�T�" �"ראש�.�Y �oפרסם! �?' �Y'� פרסם �z�>�Tר�"", self.main_reply_keyboard())
+                    "ן¿½Y>' <b>ן¿½oן¿½.ן¿½- ן¿½zן¿½>ן¿½T׳¨ן¿½.׳×</b>\n\n׳-ן¿½Tן¿½Y ן¿½"ן¿½-ן¿½z׳ ן¿½.׳× ׳₪׳×ן¿½.ן¿½-ן¿½.׳× ן¿½>׳¨ן¿½'׳¢.\n"
+                    "ן¿½"ן¿½Tן¿½" ן¿½"׳¨׳-׳©ן¿½.ן¿½Y ן¿½o׳₪׳¨׳¡׳! ן¿½?' ן¿½Y'ן¿½ ׳₪׳¨׳¡׳ ן¿½zן¿½>ן¿½T׳¨ן¿½"", self.main_reply_keyboard())
                 return
 
-            text = "�Y>' <b>�o�.�- �z�>�Tר�.ת �?" �"�-�zנ�.ת פת�.�-�.ת</b>\n�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�\n\n"
+            text = "ן¿½Y>' <b>ן¿½oן¿½.ן¿½- ן¿½zן¿½>ן¿½T׳¨ן¿½.׳× ן¿½?" ן¿½"ן¿½-ן¿½z׳ ן¿½.׳× ׳₪׳×ן¿½.ן¿½-ן¿½.׳×</b>\nן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½\n\n"
             buttons = []
             for o in orders[:8]:
                 total = o["amount"] * o["price_per_unit"]
                 text += (
-                    f"�Y"- <b>#{o['id']}</b> | {o['token']} | {o['amount']:.4f} �T�-�T�"�.ת\n"
-                    f"   �Y'� {o['price_per_unit']} �,�/�T�-�T�"�" | ס�"\"�>: <b>{total:.2f} �,�</b>\n"
-                    f"   �Y'� {o['payment_method']} | �Y'� �z�.�>ר: {o['seller_id']}\n\n"
+                    f"ן¿½Y"- <b>#{o['id']}</b> | {o['token']} | {o['amount']:.4f} ן¿½Tן¿½-ן¿½Tן¿½"ן¿½.׳×\n"
+                    f"   ן¿½Y'ן¿½ {o['price_per_unit']} ן¿½,ן¿½/ן¿½Tן¿½-ן¿½Tן¿½"ן¿½" | ׳¡ן¿½"\"ן¿½>: <b>{total:.2f} ן¿½,ן¿½</b>\n"
+                    f"   ן¿½Y'ן¿½ {o['payment_method']} | ן¿½Y'ן¿½ ן¿½zן¿½.ן¿½>׳¨: {o['seller_id']}\n\n"
                 )
                 if o["seller_id"] != chat_id:
-                    buttons.append([{"text": f"�Y>' קנ�" #{o['id']} ({o['amount']:.2f} {o['token']})",
+                    buttons.append([{"text": f"ן¿½Y>' ׳§׳ ן¿½" #{o['id']} ({o['amount']:.2f} {o['token']})",
                                      "callback_data": f"p2p_buy_{o['id']}"}])
 
-            buttons.append([{"text": "�Y'� פרסם �z�>�Tר�"", "callback_data": "p2p_sell"},
-                             {"text": "�Y"T P2P", "callback_data": "p2p_menu"}])
+            buttons.append([{"text": "ן¿½Y'ן¿½ ׳₪׳¨׳¡׳ ן¿½zן¿½>ן¿½T׳¨ן¿½"", "callback_data": "p2p_sell"},
+                             {"text": "ן¿½Y"T P2P", "callback_data": "p2p_menu"}])
             self.send(chat_id, text, {"inline_keyboard": buttons})
         except Exception as e:
             logger.error(f"P2P browse error: {e}")
-            self.send(chat_id, "�O ש�'�Tא�" �'�~ע�Tנת �o�.�- �z�>�Tר�.ת.", self.main_reply_keyboard())
+            self.send(chat_id, "ן¿½O ׳©ן¿½'ן¿½T׳-ן¿½" ן¿½'ן¿½~׳¢ן¿½T׳ ׳× ן¿½oן¿½.ן¿½- ן¿½zן¿½>ן¿½T׳¨ן¿½.׳×.", self.main_reply_keyboard())
 
     def p2p_buy(self, chat_id, order_id):
         """Fill an order (buy from seller)."""
@@ -1871,7 +1871,7 @@ class SLHInvestmentBot:
             orders = {o["id"]: o for o in resp.json().get("orders", [])}
             order = orders.get(order_id)
             if not order:
-                self.send(chat_id, "�O �"�-�zנ�" �oא נ�zצא�" א�. �>�'ר נס�'ר�".", self.main_reply_keyboard())
+                self.send(chat_id, "ן¿½O ן¿½"ן¿½-ן¿½z׳ ן¿½" ן¿½o׳- ׳ ן¿½z׳¦׳-ן¿½" ׳-ן¿½. ן¿½>ן¿½'׳¨ ׳ ׳¡ן¿½'׳¨ן¿½".", self.main_reply_keyboard())
                 return
 
             total = order["amount"] * order["price_per_unit"]
@@ -1884,31 +1884,31 @@ class SLHInvestmentBot:
             result = fill_resp.json()
             if fill_resp.status_code == 200 and result.get("ok"):
                 self.send(chat_id,
-                    f"�o. <b>ר�>�Tש�" �"�.ש�o�z�"!</b>\n\n"
-                    f"�Y'� ק�T�'�oת: <b>{order['amount']:.4f} {order['token']}</b>\n"
-                    f"�Y'� �oש�oם: <b>{total:.2f} �,�</b>\n"
-                    f"�Y'� ש�T�~�": <b>{order['payment_method']}</b>\n"
-                    f"�Y'� �z�.�>ר ID: <code>{order['seller_id']}</code>\n\n"
-                    f"�s�️ <b>ש�oם �o�z�.�>ר �Tש�Tר�.ת!</b>\n"
-                    f"ש�o�- �o�. �"�.�"ע�" �'-Telegram עם ID: <code>{order['seller_id']}</code>\n"
-                    f"�"�~�.קנ�Tם �>�'ר �-�.�>�. �o�-ש�'�.נ�s �?" /wallet �oצפ�T�T�".",
+                    f"ן¿½o. <b>׳¨ן¿½>ן¿½T׳©ן¿½" ן¿½"ן¿½.׳©ן¿½oן¿½zן¿½"!</b>\n\n"
+                    f"ן¿½Y'ן¿½ ׳§ן¿½Tן¿½'ן¿½o׳×: <b>{order['amount']:.4f} {order['token']}</b>\n"
+                    f"ן¿½Y'ן¿½ ן¿½o׳©ן¿½o׳: <b>{total:.2f} ן¿½,ן¿½</b>\n"
+                    f"ן¿½Y'ן¿½ ׳©ן¿½Tן¿½~ן¿½": <b>{order['payment_method']}</b>\n"
+                    f"ן¿½Y'ן¿½ ן¿½zן¿½.ן¿½>׳¨ ID: <code>{order['seller_id']}</code>\n\n"
+                    f"ן¿½sן¿½ן¸ <b>׳©ן¿½o׳ ן¿½oן¿½zן¿½.ן¿½>׳¨ ן¿½T׳©ן¿½T׳¨ן¿½.׳×!</b>\n"
+                    f"׳©ן¿½oן¿½- ן¿½oן¿½. ן¿½"ן¿½.ן¿½"׳¢ן¿½" ן¿½'-Telegram ׳¢׳ ID: <code>{order['seller_id']}</code>\n"
+                    f"ן¿½"ן¿½~ן¿½.׳§׳ ן¿½T׳ ן¿½>ן¿½'׳¨ ן¿½-ן¿½.ן¿½>ן¿½. ן¿½oן¿½-׳©ן¿½'ן¿½.׳ ן¿½s ן¿½?" /wallet ן¿½o׳¦׳₪ן¿½Tן¿½Tן¿½".",
                     self.main_reply_keyboard())
                 # Notify seller
                 self.send(order["seller_id"],
-                    f"�YZ? <b>�"�-�zנ�" #{order_id} נ�z�>ר�"!</b>\n\n"
-                    f"�Y'� {order['amount']:.4f} {order['token']}\n"
-                    f"�Y'� �oק�'�o: <b>{total:.2f} �,�</b> �z-{order['payment_method']}\n"
-                    f"�Y'� ק�.נ�" ID: <code>{chat_id}</code>\n\n"
-                    f"�z�zת�T�Y �oתש�o�.ם �z�zנ�.!")
+                    f"ן¿½YZ? <b>ן¿½"ן¿½-ן¿½z׳ ן¿½" #{order_id} ׳ ן¿½zן¿½>׳¨ן¿½"!</b>\n\n"
+                    f"ן¿½Y'ן¿½ {order['amount']:.4f} {order['token']}\n"
+                    f"ן¿½Y'ן¿½ ן¿½o׳§ן¿½'ן¿½o: <b>{total:.2f} ן¿½,ן¿½</b> ן¿½z-{order['payment_method']}\n"
+                    f"ן¿½Y'ן¿½ ׳§ן¿½.׳ ן¿½" ID: <code>{chat_id}</code>\n\n"
+                    f"ן¿½zן¿½z׳×ן¿½Tן¿½Y ן¿½o׳×׳©ן¿½oן¿½.׳ ן¿½zן¿½z׳ ן¿½.!")
                 self._refresh_balances(chat_id)
             else:
-                err = result.get("detail", "ש�'�Tא�" �oא �T�"�.ע�"")
-                self.send(chat_id, f"�O {err}", self.main_reply_keyboard())
+                err = result.get("detail", "׳©ן¿½'ן¿½T׳-ן¿½" ן¿½o׳- ן¿½Tן¿½"ן¿½.׳¢ן¿½"")
+                self.send(chat_id, f"ן¿½O {err}", self.main_reply_keyboard())
         except Exception as e:
             logger.error(f"P2P buy error: {e}")
-            self.send(chat_id, "�O ש�'�Tא�" �'ר�>�Tש�".", self.main_reply_keyboard())
+            self.send(chat_id, "ן¿½O ׳©ן¿½'ן¿½T׳-ן¿½" ן¿½'׳¨ן¿½>ן¿½T׳©ן¿½".", self.main_reply_keyboard())
 
-    # �"?�"? MY ORDERS �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?
+    # ן¿½"?ן¿½"? MY ORDERS ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?
     def p2p_my_orders(self, chat_id):
         try:
             resp = self.session.get(f"{self.API_BASE}/api/p2p/orders",
@@ -1918,27 +1918,27 @@ class SLHInvestmentBot:
 
             if not mine:
                 self.send(chat_id,
-                    "�Y"< <b>�"�"�-�zנ�.ת ש�o�T</b>\n\nא�T�Y �o�s �"�-�zנ�.ת פת�.�-�.ת.\n�Y'� ר�.צ�" �o�z�>�.ר? �?' פרסם �z�>�Tר�"",
+                    "ן¿½Y"< <b>ן¿½"ן¿½"ן¿½-ן¿½z׳ ן¿½.׳× ׳©ן¿½oן¿½T</b>\n\n׳-ן¿½Tן¿½Y ן¿½oן¿½s ן¿½"ן¿½-ן¿½z׳ ן¿½.׳× ׳₪׳×ן¿½.ן¿½-ן¿½.׳×.\nן¿½Y'ן¿½ ׳¨ן¿½.׳¦ן¿½" ן¿½oן¿½zן¿½>ן¿½.׳¨? ן¿½?' ׳₪׳¨׳¡׳ ן¿½zן¿½>ן¿½T׳¨ן¿½"",
                     self._p2p_keyboard())
                 return
 
-            text = "�Y"< <b>�"�"�-�zנ�.ת ש�o�T</b>\n�.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�\n\n"
+            text = "ן¿½Y"< <b>ן¿½"ן¿½"ן¿½-ן¿½z׳ ן¿½.׳× ׳©ן¿½oן¿½T</b>\nן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½\n\n"
             buttons = []
             for o in mine:
                 total = o["amount"] * o["price_per_unit"]
                 text += (
-                    f"�Y"- <b>#{o['id']}</b> | {o['token']}\n"
-                    f"   �Y'� {o['amount']:.4f} | {o['price_per_unit']} �,�/�T�-' | ס�"\"�> {total:.2f} �,�\n"
-                    f"   �Y'� {o['payment_method']}\n\n"
+                    f"ן¿½Y"- <b>#{o['id']}</b> | {o['token']}\n"
+                    f"   ן¿½Y'ן¿½ {o['amount']:.4f} | {o['price_per_unit']} ן¿½,ן¿½/ן¿½Tן¿½-' | ׳¡ן¿½"\"ן¿½> {total:.2f} ן¿½,ן¿½\n"
+                    f"   ן¿½Y'ן¿½ {o['payment_method']}\n\n"
                 )
-                buttons.append([{"text": f"�O �'�~�o �"�-�zנ�" #{o['id']}",
+                buttons.append([{"text": f"ן¿½O ן¿½'ן¿½~ן¿½o ן¿½"ן¿½-ן¿½z׳ ן¿½" #{o['id']}",
                                   "callback_data": f"p2p_cancel_order_{o['id']}"}])
 
-            buttons.append([{"text": "�Y"T P2P", "callback_data": "p2p_menu"}])
+            buttons.append([{"text": "ן¿½Y"T P2P", "callback_data": "p2p_menu"}])
             self.send(chat_id, text, {"inline_keyboard": buttons})
         except Exception as e:
             logger.error(f"P2P my_orders error: {e}")
-            self.send(chat_id, "�O ש�'�Tא�" �'�~ע�Tנת �"�-�zנ�.ת.", self.main_reply_keyboard())
+            self.send(chat_id, "ן¿½O ׳©ן¿½'ן¿½T׳-ן¿½" ן¿½'ן¿½~׳¢ן¿½T׳ ׳× ן¿½"ן¿½-ן¿½z׳ ן¿½.׳×.", self.main_reply_keyboard())
 
     def p2p_cancel_order(self, chat_id, order_id):
         try:
@@ -1949,18 +1949,18 @@ class SLHInvestmentBot:
             result = resp.json()
             if resp.status_code == 200 and result.get("ok"):
                 self.send(chat_id,
-                    f"�o. <b>�"�-�zנ�" #{order_id} �'�.�~�o�"</b>\n\n"
-                    f"�Y"" �"�.�-�-ר: <b>{result['refunded_amount']} {result['refunded_token']}</b>\n"
-                    f"�Y'� /wallet �oצפ�T�T�" �'�Tתר�"", self.main_reply_keyboard())
+                    f"ן¿½o. <b>ן¿½"ן¿½-ן¿½z׳ ן¿½" #{order_id} ן¿½'ן¿½.ן¿½~ן¿½oן¿½"</b>\n\n"
+                    f"ן¿½Y"" ן¿½"ן¿½.ן¿½-ן¿½-׳¨: <b>{result['refunded_amount']} {result['refunded_token']}</b>\n"
+                    f"ן¿½Y'ן¿½ /wallet ן¿½o׳¦׳₪ן¿½Tן¿½Tן¿½" ן¿½'ן¿½T׳×׳¨ן¿½"", self.main_reply_keyboard())
                 self._refresh_balances(chat_id)
             else:
-                err = result.get("detail", "ש�'�Tא�"")
-                self.send(chat_id, f"�O {err}", self.main_reply_keyboard())
+                err = result.get("detail", "׳©ן¿½'ן¿½T׳-ן¿½"")
+                self.send(chat_id, f"ן¿½O {err}", self.main_reply_keyboard())
         except Exception as e:
             logger.error(f"P2P cancel order error: {e}")
-            self.send(chat_id, "�O ש�'�Tא�" �'�'�T�~�.�o.", self.main_reply_keyboard())
+            self.send(chat_id, "ן¿½O ׳©ן¿½'ן¿½T׳-ן¿½" ן¿½'ן¿½'ן¿½Tן¿½~ן¿½.ן¿½o.", self.main_reply_keyboard())
 
-    # �"?�"? P2P CALLBACK DISPATCHER �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?
+    # ן¿½"?ן¿½"? P2P CALLBACK DISPATCHER ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?
     def handle_p2p_callback(self, chat_id, data, callback_id, message_id):
         self.answer_callback(callback_id)
 
@@ -1976,7 +1976,7 @@ class SLHInvestmentBot:
             self.p2p_my_orders(chat_id)
         elif data == "p2p_cancel":
             self._pending_p2p.pop(chat_id, None)
-            self.send(chat_id, "�O �'�.�~�o.", self.main_reply_keyboard())
+            self.send(chat_id, "ן¿½O ן¿½'ן¿½.ן¿½~ן¿½o.", self.main_reply_keyboard())
 
         # Token selection for send
         elif data.startswith("send_tok_"):
@@ -1986,9 +1986,9 @@ class SLHInvestmentBot:
                 state["data"]["token"] = token
                 state["step"] = "enter_recipient"
                 self.send(chat_id,
-                    f"�Y"� <b>ש�o�- {token}</b>\n\n"
-                    f"�"�>נס את �"-Telegram User ID ש�o �"נ�zע�Y:\n"
-                    f"(�"נ�zע�Y �T�>�.�o �oש�o�.�- /myid �>�"�T �o�"עת את �"-ID ש�o�.)")
+                    f"ן¿½Y"ן¿½ <b>׳©ן¿½oן¿½- {token}</b>\n\n"
+                    f"ן¿½"ן¿½>׳ ׳¡ ׳-׳× ן¿½"-Telegram User ID ׳©ן¿½o ן¿½"׳ ן¿½z׳¢ן¿½Y:\n"
+                    f"(ן¿½"׳ ן¿½z׳¢ן¿½Y ן¿½Tן¿½>ן¿½.ן¿½o ן¿½o׳©ן¿½oן¿½.ן¿½- /myid ן¿½>ן¿½"ן¿½T ן¿½oן¿½"׳¢׳× ׳-׳× ן¿½"-ID ׳©ן¿½oן¿½.)")
 
         # Token selection for sell
         elif data.startswith("sell_tok_"):
@@ -1997,14 +1997,14 @@ class SLHInvestmentBot:
             if state.get("flow") == "sell":
                 bal = self._get_balance_for(chat_id, token)
                 if bal <= 0:
-                    self.send(chat_id, f"�O א�T�Y �o�s {token} �o�z�>�Tר�".")
+                    self.send(chat_id, f"ן¿½O ׳-ן¿½Tן¿½Y ן¿½oן¿½s {token} ן¿½oן¿½zן¿½>ן¿½T׳¨ן¿½".")
                     return
                 state["data"]["token"] = token
                 state["step"] = "enter_amount"
                 self.send(chat_id,
-                    f"�Y'� <b>�>�z�" {token} �o�z�>�.ר?</b>\n"
-                    f"�"�Tתר�" ש�o�s: <b>{bal:.4f}</b>\n\n"
-                    f"�"�>נס �>�z�.ת:")
+                    f"ן¿½Y'ן¿½ <b>ן¿½>ן¿½zן¿½" {token} ן¿½oן¿½zן¿½>ן¿½.׳¨?</b>\n"
+                    f"ן¿½"ן¿½T׳×׳¨ן¿½" ׳©ן¿½oן¿½s: <b>{bal:.4f}</b>\n\n"
+                    f"ן¿½"ן¿½>׳ ׳¡ ן¿½>ן¿½zן¿½.׳×:")
 
         # Payment method selection
         elif data.startswith("pay_"):
@@ -2016,13 +2016,13 @@ class SLHInvestmentBot:
                 d = state["data"]
                 total = d["amount"] * d["price"]
                 self.send(chat_id,
-                    f"�o. <b>א�Tש�.ר פרס�.ם �z�>�Tר�"</b>\n\n"
-                    f"�Y'� �z�.�>ר: <b>{d['amount']} {d['token']}</b>\n"
-                    f"�Y'� �z�-�Tר: <b>{d['price']} �,�</b> �o�T�-�T�"�"\n"
-                    f"�Y"S ס�"\"�>: <b>{total:.2f} �,�</b>\n"
-                    f"�Y'� תש�o�.ם: <b>{method}</b>\n\n"
-                    f"�Y"' �"�~�.קנ�Tם �Tנע�o�. �'-escrow ע�" �o�z�>�Tר�".\n\n"
-                    f"ש�o�- <b>�>�Y</b> �oא�Tש�.ר א�. <b>�oא</b> �o�'�T�~�.�o:")
+                    f"ן¿½o. <b>׳-ן¿½T׳©ן¿½.׳¨ ׳₪׳¨׳¡ן¿½.׳ ן¿½zן¿½>ן¿½T׳¨ן¿½"</b>\n\n"
+                    f"ן¿½Y'ן¿½ ן¿½zן¿½.ן¿½>׳¨: <b>{d['amount']} {d['token']}</b>\n"
+                    f"ן¿½Y'ן¿½ ן¿½zן¿½-ן¿½T׳¨: <b>{d['price']} ן¿½,ן¿½</b> ן¿½oן¿½Tן¿½-ן¿½Tן¿½"ן¿½"\n"
+                    f"ן¿½Y"S ׳¡ן¿½"\"ן¿½>: <b>{total:.2f} ן¿½,ן¿½</b>\n"
+                    f"ן¿½Y'ן¿½ ׳×׳©ן¿½oן¿½.׳: <b>{method}</b>\n\n"
+                    f"ן¿½Y"' ן¿½"ן¿½~ן¿½.׳§׳ ן¿½T׳ ן¿½T׳ ׳¢ן¿½oן¿½. ן¿½'-escrow ׳¢ן¿½" ן¿½oן¿½zן¿½>ן¿½T׳¨ן¿½".\n\n"
+                    f"׳©ן¿½oן¿½- <b>ן¿½>ן¿½Y</b> ן¿½o׳-ן¿½T׳©ן¿½.׳¨ ׳-ן¿½. <b>ן¿½o׳-</b> ן¿½oן¿½'ן¿½Tן¿½~ן¿½.ן¿½o:")
 
         # Buy order
         elif data.startswith("p2p_buy_"):
@@ -2034,16 +2034,16 @@ class SLHInvestmentBot:
             order_id = int(data.split("_")[-1])
             self.p2p_cancel_order(chat_id, order_id)
 
-    # �.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.��.�
+    # ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½ן¿½.ן¿½
 
     def handle_text(self, chat_id, text, first_name, username):
         """Handle non-command text and legacy reply keyboard buttons.
 
-        STRICT rules �?" no more 'any text = payment':
-        - Valid username: 3�?"32 chars of [A-Za-z0-9_], and user is in username-collection state
+        STRICT rules ן¿½?" no more 'any text = payment':
+        - Valid username: 3ן¿½?"32 chars of [A-Za-z0-9_], and user is in username-collection state
         - Valid BSC/ETH TX hash: '0x' + exactly 64 hex chars (66 total)
         - Valid TON TX hash: 44 base64 chars OR 64 hex chars
-        - Anything else �?' polite fallback (no false "payment received")
+        - Anything else ן¿½?' polite fallback (no false "payment received")
         """
         text = (text or "").strip()
 
@@ -2069,12 +2069,12 @@ class SLHInvestmentBot:
             user["state"] = "awaiting_payment"
             # state persists via in-memory _user_data reference
             self.send(chat_id,
-                f"�o. <b>נרש�zת!</b> @{text}\n\n"
-                f"�Y'� �oר�>�Tש�" ש�o�- �oארנק TON:\n<code>{TON_WALLET}</code>\n\n"
-                "�Y"� ש�o�- צ�T�o�.ם �zס�s א�. Transaction Hash",
+                f"ן¿½o. <b>׳ ׳¨׳©ן¿½z׳×!</b> @{text}\n\n"
+                f"ן¿½Y'ן¿½ ן¿½o׳¨ן¿½>ן¿½T׳©ן¿½" ׳©ן¿½oן¿½- ן¿½o׳-׳¨׳ ׳§ TON:\n<code>{TON_WALLET}</code>\n\n"
+                "ן¿½Y"ן¿½ ׳©ן¿½oן¿½- ׳¦ן¿½Tן¿½oן¿½.׳ ן¿½z׳¡ן¿½s ׳-ן¿½. Transaction Hash",
                 self.back_keyboard())
             if str(chat_id) != ADMIN_ID:
-                self.send(int(ADMIN_ID), f"�Y'� <b>�zשת�zש �-�"ש:</b> @{text} ({chat_id})")
+                self.send(int(ADMIN_ID), f"ן¿½Y'ן¿½ <b>ן¿½z׳©׳×ן¿½z׳© ן¿½-ן¿½"׳©:</b> @{text} ({chat_id})")
             return
 
         # --- 2) TX hash detection (strict format, only when awaiting payment) ---
@@ -2094,53 +2094,53 @@ class SLHInvestmentBot:
                 "created_at": int(time.time()),
             })
             self.send(chat_id,
-                "�Y"� <b>תש�o�.ם �"תק�'�o �o�'�"�Tק�"!</b>\n\n"
-                "�Y"- Hash: <code>" + text[:20] + "...</code>\n"
-                "⏳ ס�~�~�.ס: <b>�z�zת�T�Y �oא�Tש�.ר א�"�z�T�Y</b>\n\n"
-                "תק�'�o �"תרא�" �'ר�'ע ש�"תש�o�.ם �Tא�.�zת (ע�" 24 שע�.ת).\n"
-                "�Y'� �'�Tנת�T�Tם, �"צ�~רף: @SLH_Community",
+                "ן¿½Y"ן¿½ <b>׳×׳©ן¿½oן¿½.׳ ן¿½"׳×׳§ן¿½'ן¿½o ן¿½oן¿½'ן¿½"ן¿½T׳§ן¿½"!</b>\n\n"
+                "ן¿½Y"- Hash: <code>" + text[:20] + "...</code>\n"
+                "ג³ ׳¡ן¿½~ן¿½~ן¿½.׳¡: <b>ן¿½zן¿½z׳×ן¿½Tן¿½Y ן¿½o׳-ן¿½T׳©ן¿½.׳¨ ׳-ן¿½"ן¿½zן¿½Tן¿½Y</b>\n\n"
+                "׳×׳§ן¿½'ן¿½o ן¿½"׳×׳¨׳-ן¿½" ן¿½'׳¨ן¿½'׳¢ ׳©ן¿½"׳×׳©ן¿½oן¿½.׳ ן¿½T׳-ן¿½.ן¿½z׳× (׳¢ן¿½" 24 ׳©׳¢ן¿½.׳×).\n"
+                "ן¿½Y'ן¿½ ן¿½'ן¿½T׳ ׳×ן¿½Tן¿½T׳, ן¿½"׳¦ן¿½~׳¨׳£: @SLH_Community",
                 self.back_keyboard())
             if str(chat_id) != ADMIN_ID:
                 self.send(int(ADMIN_ID),
-                    f"�Y'� <b>עסק�" �-�"ש�" �oא�Tש�.ר!</b>\n"
+                    f"ן¿½Y'ן¿½ <b>׳¢׳¡׳§ן¿½" ן¿½-ן¿½"׳©ן¿½" ן¿½o׳-ן¿½T׳©ן¿½.׳¨!</b>\n"
                     f"User: {chat_id} (@{user.get('username','?')})\n"
                     f"Hash: <code>{text}</code>\n"
-                    f"/approve_{chat_id} א�. /reject_{chat_id}")
+                    f"/approve_{chat_id} ׳-ן¿½. /reject_{chat_id}")
             return
 
-        # --- 3) TX hash received OUT OF state �?' tell user to start flow ---
+        # --- 3) TX hash received OUT OF state ן¿½?' tell user to start flow ---
         if is_tx_hash and state != "awaiting_payment":
             self.send(chat_id,
-                "�s�️ ק�T�'�oת�T Hash א�'�o א�T�Y �'קשת תש�o�.ם פת�.�-�".\n\n"
-                "�oתש�o�.ם �-�"ש, �o�-ץ /start �?' �Y'� �"פע�o�"",
+                "ן¿½sן¿½ן¸ ׳§ן¿½Tן¿½'ן¿½o׳×ן¿½T Hash ׳-ן¿½'ן¿½o ׳-ן¿½Tן¿½Y ן¿½'׳§׳©׳× ׳×׳©ן¿½oן¿½.׳ ׳₪׳×ן¿½.ן¿½-ן¿½".\n\n"
+                "ן¿½o׳×׳©ן¿½oן¿½.׳ ן¿½-ן¿½"׳©, ן¿½oן¿½-׳¥ /start ן¿½?' ן¿½Y'ן¿½ ן¿½"׳₪׳¢ן¿½oן¿½"",
                 self.main_reply_keyboard())
             return
 
         # --- 4) Wallet address (informational only, no payment assumed) ---
         if re.match(r'^(0x[0-9a-fA-F]{40}|[UE]Q[A-Za-z0-9_-]{46})$', text):
             self.send(chat_id,
-                "�Y"< ק�T�'�oת�T �>ת�.�'ת ארנק. �oש�o�.�- �>סף א�o �>ת�.�'ת �-�.? �o�-ץ /start �?' �Y'� ארנק\n\n"
-                "�s�️ ש�Tם �o�': ש�o�T�-ת �>ת�.�'ת �o�'�" �oא פ�.ת�-ת תש�o�.ם.",
+                "ן¿½Y"< ׳§ן¿½Tן¿½'ן¿½o׳×ן¿½T ן¿½>׳×ן¿½.ן¿½'׳× ׳-׳¨׳ ׳§. ן¿½o׳©ן¿½oן¿½.ן¿½- ן¿½>׳¡׳£ ׳-ן¿½o ן¿½>׳×ן¿½.ן¿½'׳× ן¿½-ן¿½.? ן¿½oן¿½-׳¥ /start ן¿½?' ן¿½Y'ן¿½ ׳-׳¨׳ ׳§\n\n"
+                "ן¿½sן¿½ן¸ ׳©ן¿½T׳ ן¿½oן¿½': ׳©ן¿½oן¿½Tן¿½-׳× ן¿½>׳×ן¿½.ן¿½'׳× ן¿½oן¿½'ן¿½" ן¿½o׳- ׳₪ן¿½.׳×ן¿½-׳× ׳×׳©ן¿½oן¿½.׳.",
                 self.main_reply_keyboard())
             return
 
         # --- 5) Fallback (no more false payment confirmations) ---
-        # If user is in payment state but didn't send TX hash or photo �?" remind them
+        # If user is in payment state but didn't send TX hash or photo ן¿½?" remind them
         if state == "awaiting_payment":
             self.send(chat_id,
-                "�s�️ <b>ש�o�' �"תש�o�.ם פת�.�-!</b>\n\n"
-                "�>�"�T �o�"ש�o�Tם:\n"
-                "1️�f� �"ע�'ר TON �o�>ת�.�'ת:\n<code>" + TON_WALLET + "</code>\n\n"
-                "2️�f� ש�o�- �o�T <b>צ�T�o�.ם �zס�s</b> ש�o �"�"ע�'ר�"\n"
-                "   א�. <b>Transaction Hash</b>\n\n"
-                "�Y"� אפשר �oש�o�.�- ת�z�.נ�" �Tש�Tר�.ת �oצ'א�~ �"�-�"!\n\n"
-                "�" צר�T�s ע�-ר�"? צ�.ר קשר: @osifeu_prog",
+                "ן¿½sן¿½ן¸ <b>׳©ן¿½oן¿½' ן¿½"׳×׳©ן¿½oן¿½.׳ ׳₪׳×ן¿½.ן¿½-!</b>\n\n"
+                "ן¿½>ן¿½"ן¿½T ן¿½oן¿½"׳©ן¿½oן¿½T׳:\n"
+                "1ן¸ן¿½fן¿½ ן¿½"׳¢ן¿½'׳¨ TON ן¿½oן¿½>׳×ן¿½.ן¿½'׳×:\n<code>" + TON_WALLET + "</code>\n\n"
+                "2ן¸ן¿½fן¿½ ׳©ן¿½oן¿½- ן¿½oן¿½T <b>׳¦ן¿½Tן¿½oן¿½.׳ ן¿½z׳¡ן¿½s</b> ׳©ן¿½o ן¿½"ן¿½"׳¢ן¿½'׳¨ן¿½"\n"
+                "   ׳-ן¿½. <b>Transaction Hash</b>\n\n"
+                "ן¿½Y"ן¿½ ׳-׳₪׳©׳¨ ן¿½o׳©ן¿½oן¿½.ן¿½- ׳×ן¿½zן¿½.׳ ן¿½" ן¿½T׳©ן¿½T׳¨ן¿½.׳× ן¿½o׳¦'׳-ן¿½~ ן¿½"ן¿½-ן¿½"!\n\n"
+                "ן¿½" ׳¦׳¨ן¿½Tן¿½s ׳¢ן¿½-׳¨ן¿½"? ׳¦ן¿½.׳¨ ׳§׳©׳¨: @osifeu_prog",
                 self.back_keyboard())
             return
 
-        self.send(chat_id, "�Y�- �oא �"�'נת�T. �o�-ץ /start �oתפר�T�~ �"ראש�T", self.main_reply_keyboard())
+        self.send(chat_id, "ן¿½Yן¿½- ן¿½o׳- ן¿½"ן¿½'׳ ׳×ן¿½T. ן¿½oן¿½-׳¥ /start ן¿½o׳×׳₪׳¨ן¿½Tן¿½~ ן¿½"׳¨׳-׳©ן¿½T", self.main_reply_keyboard())
 
-    # �"?�"? Main loop �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?
+    # ן¿½"?ן¿½"? Main loop ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?
     def process_updates(self):
         url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/getUpdates"
         params = {"offset": self.offset, "timeout": 30}
@@ -2174,14 +2174,14 @@ class SLHInvestmentBot:
 
                 if not text:
                     if msg.get("photo"):
-                        self.send(chat_id, "�Y"� ק�'�oנ�.! נ�'�"�.ק �.נע�"�>�Y �'�"ק�"ם.", self.back_keyboard())
+                        self.send(chat_id, "ן¿½Y"ן¿½ ׳§ן¿½'ן¿½o׳ ן¿½.! ׳ ן¿½'ן¿½"ן¿½.׳§ ן¿½.׳ ׳¢ן¿½"ן¿½>ן¿½Y ן¿½'ן¿½"׳§ן¿½"׳.", self.back_keyboard())
                         if str(chat_id) != ADMIN_ID:
-                            self.send(int(ADMIN_ID), f"�Y"� <b>�"�.�>�-ת תש�o�.ם!</b>\nUser: {chat_id} (@{username})")
+                            self.send(int(ADMIN_ID), f"ן¿½Y"ן¿½ <b>ן¿½"ן¿½.ן¿½>ן¿½-׳× ׳×׳©ן¿½oן¿½.׳!</b>\nUser: {chat_id} (@{username})")
                     continue
 
-                logger.info(f"�Y"� {first_name}: {text}")
+                logger.info(f"ן¿½Y"ן¿½ {first_name}: {text}")
 
-                # �"?�"? Slash commands �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?
+                # ן¿½"?ן¿½"? Slash commands ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?
                 if text == "/start" or text.startswith("/start "):
                     start_param = text.split(" ", 1)[1] if " " in text else ""
                     self.handle_start(chat_id, first_name, username, start_param)
@@ -2234,7 +2234,7 @@ class SLHInvestmentBot:
                         tok = parts[1].upper()
                         self.handle_send_internal(chat_id, f"{parts[2]} {parts[3]}", tok)
                     else:
-                        self.send(chat_id, "ש�T�z�.ש: /send TOKEN USER_ID AMOUNT\n�"�.�'�z�": /send ZVK 123456789 50")
+                        self.send(chat_id, "׳©ן¿½Tן¿½zן¿½.׳©: /send TOKEN USER_ID AMOUNT\nן¿½"ן¿½.ן¿½'ן¿½zן¿½": /send ZVK 123456789 50")
                 elif text in ("/referral", "/mylink"):
                     self.handle_referral(chat_id)
                 elif text == "/deals":
@@ -2257,97 +2257,97 @@ class SLHInvestmentBot:
                 elif text.startswith("/approve "):
                     self.handle_approve(chat_id, text[9:])
                 elif text == "/support":
-                    self.send(chat_id, "�Y"z <b>ת�z�T�>�"</b>\n\nפנ�" �o-@Osif83 �o�>�o שא�o�".", self.main_reply_keyboard())
+                    self.send(chat_id, "ן¿½Y"z <b>׳×ן¿½zן¿½Tן¿½>ן¿½"</b>\n\n׳₪׳ ן¿½" ן¿½o-@Osif83 ן¿½oן¿½>ן¿½o ׳©׳-ן¿½oן¿½".", self.main_reply_keyboard())
                 elif text == "/myid":
-                    self.send(chat_id, f"�Y?" <b>�"�z�-�"�" ש�o�s:</b> <code>{chat_id}</code>", self.main_reply_keyboard())
+                    self.send(chat_id, f"ן¿½Y?" <b>ן¿½"ן¿½zן¿½-ן¿½"ן¿½" ׳©ן¿½oן¿½s:</b> <code>{chat_id}</code>", self.main_reply_keyboard())
                 elif text == "/hub":
                     user = _get_user(chat_id)
-                    vip_badge = "�Y'' VIP" if user["vip"] else "�Y?" Free"
+                    vip_badge = "ן¿½Y'' VIP" if user["vip"] else "ן¿½Y?" Free"
                     self.send(chat_id,
-                        f"�Ys? <b>SLH HUB SYSTEM</b>\n\n"
-                        f"�Y'� <b>{first_name}</b> | {vip_badge}\n"
-                        f"�Y'� �Tתר�": <b>{user['hub_points']}</b> נק�.�"�.ת\n"
-                        f"�Y'Z SLH: <b>{user['slh_balance']:.2f}</b>\n"
-                        f"�Y'� �"פנ�T�.ת: <b>{user['referral_count']}</b>\n\n�Y'? �'�-ר פע�.�o�":",
+                        f"ן¿½Ys? <b>SLH HUB SYSTEM</b>\n\n"
+                        f"ן¿½Y'ן¿½ <b>{first_name}</b> | {vip_badge}\n"
+                        f"ן¿½Y'ן¿½ ן¿½T׳×׳¨ן¿½": <b>{user['hub_points']}</b> ׳ ׳§ן¿½.ן¿½"ן¿½.׳×\n"
+                        f"ן¿½Y'Z SLH: <b>{user['slh_balance']:.2f}</b>\n"
+                        f"ן¿½Y'ן¿½ ן¿½"׳₪׳ ן¿½Tן¿½.׳×: <b>{user['referral_count']}</b>\n\nן¿½Y'? ן¿½'ן¿½-׳¨ ׳₪׳¢ן¿½.ן¿½oן¿½":",
                         self.hub_inline_keyboard())
 
-                # �"?�"? Reply keyboard buttons (text buttons at bottom) �"?�"?
-                elif text == "�Y"S �"ש�.ק ע�>ש�T�.":
+                # ן¿½"?ן¿½"? Reply keyboard buttons (text buttons at bottom) ן¿½"?ן¿½"?
+                elif text == "ן¿½Y"S ן¿½"׳©ן¿½.׳§ ׳¢ן¿½>׳©ן¿½Tן¿½.":
                     self.handle_prices(chat_id)
-                elif text == "�Y'� �"שקע�.ת":
+                elif text == "ן¿½Y'ן¿½ ן¿½"׳©׳§׳¢ן¿½.׳×":
                     self.handle_investments(chat_id)
-                elif text == "�Y'� ארנק":
+                elif text == "ן¿½Y'ן¿½ ׳-׳¨׳ ׳§":
                     self.handle_wallet(chat_id)
-                elif text == "�Y"" P2P �zס�-ר":
+                elif text == "ן¿½Y"" P2P ן¿½z׳¡ן¿½-׳¨":
                     self.handle_p2p_menu(chat_id)
-                elif text == "�Y"- On-Chain":
+                elif text == "ן¿½Y"- On-Chain":
                     self.handle_onchain_balance(chat_id)
-                elif text == "�Y>� ס�T�>�.�Y �.�'קר�"":
+                elif text == "ן¿½Y>ן¿½ ׳¡ן¿½Tן¿½>ן¿½.ן¿½Y ן¿½.ן¿½'׳§׳¨ן¿½"":
                     self.handle_risk(chat_id)
-                elif text == "�YZ� �'�.נ�.ס�Tם":
+                elif text == "ן¿½YZן¿½ ן¿½'ן¿½.׳ ן¿½.׳¡ן¿½T׳":
                     self.handle_bonuses(chat_id)
-                elif text == "�Y'� �"�-�z�Y":
+                elif text == "ן¿½Y'ן¿½ ן¿½"ן¿½-ן¿½zן¿½Y":
                     self.handle_invite(chat_id)
-                elif text == "�Y"S �"ש�'�.ר�"":
+                elif text == "ן¿½Y"S ן¿½"׳©ן¿½'ן¿½.׳¨ן¿½"":
                     self.handle_dashboard(chat_id)
-                elif text == "�Y'� �"פע�o�"":
+                elif text == "ן¿½Y'ן¿½ ן¿½"׳₪׳¢ן¿½oן¿½"":
                     self.handle_activate(chat_id)
-                elif text == "�Y"� ש�Tת�.ף":
+                elif text == "ן¿½Y"ן¿½ ׳©ן¿½T׳×ן¿½.׳£":
                     self.handle_share(chat_id)
-                elif text == "�Y"s �z�"ר�T�>�Tם":
+                elif text == "ן¿½Y"s ן¿½zן¿½"׳¨ן¿½Tן¿½>ן¿½T׳":
                     self.handle_guides(chat_id)
-                elif text == "�Y"� �z�'צע�Tם":
+                elif text == "ן¿½Y"ן¿½ ן¿½zן¿½'׳¦׳¢ן¿½T׳":
                     self.handle_deals_text(chat_id)
-                elif text == "�Y�T ר�>�Tשת SLH":
+                elif text == "ן¿½Yן¿½T ׳¨ן¿½>ן¿½T׳©׳× SLH":
                     self.handle_buy_slh_text(chat_id)
 
-                # �"?�"? Swap commands �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?
+                # ן¿½"?ן¿½"? Swap commands ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?ן¿½"?
                 elif text.startswith("/swap "):
                     self.handle_swap_text(chat_id)
                 elif text.startswith("/limit "):
-                    self.send(chat_id, "�Y"� פק�.�"ת Limit נרש�z�". תק�'�o �"תרא�" �>ש�"�z�-�Tר �T�'�Tע �o�Tע�".", self.main_reply_keyboard())
+                    self.send(chat_id, "ן¿½Y"ן¿½ ׳₪׳§ן¿½.ן¿½"׳× Limit ׳ ׳¨׳©ן¿½zן¿½". ׳×׳§ן¿½'ן¿½o ן¿½"׳×׳¨׳-ן¿½" ן¿½>׳©ן¿½"ן¿½zן¿½-ן¿½T׳¨ ן¿½Tן¿½'ן¿½T׳¢ ן¿½oן¿½T׳¢ן¿½".", self.main_reply_keyboard())
                 elif text.startswith("/alert "):
                     self.handle_alerts(chat_id)
                 elif text == "/orders":
-                    self.send(chat_id, "�Y"< <b>פק�.�"�.ת פת�.�-�.ת:</b>\n\nא�T�Y פק�.�"�.ת פת�.�-�.ת.", self.main_reply_keyboard())
-                elif text == "/ai" or text == "�Y�� נ�Tת�.�- AI":
+                    self.send(chat_id, "ן¿½Y"< <b>׳₪׳§ן¿½.ן¿½"ן¿½.׳× ׳₪׳×ן¿½.ן¿½-ן¿½.׳×:</b>\n\n׳-ן¿½Tן¿½Y ׳₪׳§ן¿½.ן¿½"ן¿½.׳× ׳₪׳×ן¿½.ן¿½-ן¿½.׳×.", self.main_reply_keyboard())
+                elif text == "/ai" or text == "ן¿½Yן¿½ן¿½ ׳ ן¿½T׳×ן¿½.ן¿½- AI":
                     self.handle_ai_analysis(chat_id)
 
                 elif not text.startswith("/"):
                     self.handle_text(chat_id, text, first_name, username)
                 else:
-                    self.send(chat_id, "�Y�- פק�.�"�" �oא �z�.�>רת. �o�-ץ /start", self.main_reply_keyboard())
+                    self.send(chat_id, "ן¿½Yן¿½- ׳₪׳§ן¿½.ן¿½"ן¿½" ן¿½o׳- ן¿½zן¿½.ן¿½>׳¨׳×. ן¿½oן¿½-׳¥ /start", self.main_reply_keyboard())
 
         except Exception as e:
             logger.error(f"Update error: {e}")
 
     def run(self):
         logger.info("=" * 50)
-        logger.info("�Ys? SLH Investment House + HUB BOT �?" Starting...")
+        logger.info("ן¿½Ys? SLH Investment House + HUB BOT ן¿½?" Starting...")
         logger.info("=" * 50)
 
         try:
             r = requests.get(f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/getMe", timeout=10)
             if r.status_code == 200 and r.json().get("ok"):
-                logger.info(f"�o. Bot: @{r.json()['result']['username']}")
+                logger.info(f"ן¿½o. Bot: @{r.json()['result']['username']}")
             else:
-                logger.error("�O Bot connection failed")
+                logger.error("ן¿½O Bot connection failed")
                 return
         except Exception as e:
-            logger.error(f"�O Bot test error: {e}")
+            logger.error(f"ן¿½O Bot test error: {e}")
             return
 
-        logger.info("�Y"" Running �?" Investment House + HUB + Buy SLH")
+        logger.info("ן¿½Y"" Running ן¿½?" Investment House + HUB + Buy SLH")
 
         while True:
             try:
                 self.process_updates()
                 time.sleep(0.5)
             except KeyboardInterrupt:
-                logger.info("�Y>' Bot stopped")
+                logger.info("ן¿½Y>' Bot stopped")
                 break
             except Exception as e:
-                logger.error(f"�O Main loop error: {e}")
+                logger.error(f"ן¿½O Main loop error: {e}")
                 time.sleep(5)
 
 

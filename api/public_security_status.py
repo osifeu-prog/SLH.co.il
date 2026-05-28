@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""SLH public security beacon — sanitized aggregate status, no auth.
+"""SLH public security beacon - sanitized aggregate status, no auth.
 
 Used by /my.html and any other personal/public page that wants to surface a
 "is anything broken right now" signal without requiring an admin key.
@@ -39,15 +39,15 @@ async def summary(request: Request):
     """Sanitized aggregate of secrets_catalog + secret_alerts.
 
     No auth required. Response shape (all integers / ISO8601):
-        total                — count of all tracked secrets
-        configured           — count where status='configured'
-        missing_or_default   — count where status in ('missing','default')
-        overdue              — count where last_rotated_at + cadence < NOW()
-        last_sweep_at        — ISO8601 of last sweep heartbeat (or null)
-        alerts_24h           — count of alerts fired in last 24h
-        any_broken           — bool — true if missing_or_default > 0
-        any_overdue          — bool — true if overdue > 0
-        ok                   — bool — true if no broken AND no overdue
+        total                - count of all tracked secrets
+        configured           - count where status='configured'
+        missing_or_default   - count where status in ('missing','default')
+        overdue              - count where last_rotated_at + cadence < NOW()
+        last_sweep_at        - ISO8601 of last sweep heartbeat (or null)
+        alerts_24h           - count of alerts fired in last 24h
+        any_broken           - bool - true if missing_or_default > 0
+        any_overdue          - bool - true if overdue > 0
+        ok                   - bool - true if no broken AND no overdue
 
     On DB error / table missing: returns 200 with all zeros and `unavailable: true`.
     Frontend should render that gracefully.
@@ -59,7 +59,7 @@ async def summary(request: Request):
 
     try:
         async with pool.acquire() as conn:
-            # Catalog stats — defensive: if table doesn't exist yet, all zero
+            # Catalog stats - defensive: if table doesn't exist yet, all zero
             try:
                 stats = await conn.fetchrow(
                     """
@@ -78,7 +78,7 @@ async def summary(request: Request):
                 log.info("secrets_catalog not ready: %s", e)
                 return _empty(unavailable=True, reason="catalog not initialized")
 
-            # Last sweep heartbeat — best effort from event_log
+            # Last sweep heartbeat - best effort from event_log
             last_sweep = None
             try:
                 last_sweep = await conn.fetchval(

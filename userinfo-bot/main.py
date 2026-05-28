@@ -63,12 +63,12 @@ T = {
             "{bot_icon} <b>בוט:</b> {is_bot}\n"
             "{calendar} <b>תאריך:</b> {date}\n\n"
             "{link} <b>קישור לדאשבורד:</b>\n"
-            "<a href=\"{dashboard}?uid={uid}\">{arrow} פתח דאשבורד SLH</a>\n\n"
+            "<a href=\"{dashboard}?uid={uid}\">{arrow} פת�- דאשבורד SLH</a>\n\n"
             "{ref} <b>קישור הפניה:</b>\n"
             "<code>https://t.me/SLH_AIR_bot?start=ref_{uid}</code>\n\n"
             "{hint} <i>העבר הודעה מכל משתמש כדי לראות את המידע שלו</i>"
         ),
-        "quick_id": "{id_} <b>המזהה שלך:</b> <code>{uid}</code>\n\n{hint} לחץ להעתקה",
+        "quick_id": "{id_} <b>המזהה שלך:</b> <code>{uid}</code>\n\n{hint} ל�-ץ להעתקה",
         "forward_info": (
             "{detective} <b>מידע על המשתמש</b>\n\n"
             "{id_} <b>מזהה:</b> <code>{uid}</code>\n"
@@ -83,16 +83,16 @@ T = {
             "{id_} <b>מזהה:</b> <code>{cid}</code>\n"
             "{name_icon} <b>שם:</b> {title}\n"
             "{type_icon} <b>סוג:</b> {chat_type}\n"
-            "{members} <b>חברים:</b> {count}\n"
+            "{members} <b>�-ברים:</b> {count}\n"
             "{at} <b>שם משתמש:</b> {username}"
         ),
         "not_group": "{warning} פקודה זו עובדת רק בקבוצות.",
         "bots_title": "{phoenix} <b>בוטי אקוסיסטם SLH</b>\n\n",
         "json_title": "{code} <b>נתוני JSON גולמיים</b>\n\n<pre>{data}</pre>",
         "lang_set": "{check} השפה שונתה ל: <b>{lang_name}</b>",
-        "choose_lang": "{globe} בחר שפה:",
+        "choose_lang": "{globe} ב�-ר שפה:",
         "copy_id": "העתק ID",
-        "open_dashboard": "פתח דאשבורד",
+        "open_dashboard": "פת�- דאשבורד",
         "share_id": "שתף ID",
         "help": (
             "{book} <b>פקודות זמינות:</b>\n\n"
@@ -100,12 +100,12 @@ T = {
             "/id - מזהה מהיר להעתקה\n"
             "/group - מידע על קבוצה (בקבוצות בלבד)\n"
             "/qr - קישור הפניה שלך\n"
-            "/dashboard - פתח דאשבורד SLH\n"
+            "/dashboard - פת�- דאשבורד SLH\n"
             "/bots - כל בוטי האקוסיסטם\n"
             "/lang - שנה שפה\n"
             "/json - נתוני JSON גולמיים\n"
             "/help - תפריט עזרה\n\n"
-            "{hint} <i>העבר הודעה כדי לקבל מידע על השולח</i>"
+            "{hint} <i>העבר הודעה כדי לקבל מידע על השול�-</i>"
         ),
     },
     "en": {

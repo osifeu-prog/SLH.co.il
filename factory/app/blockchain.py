@@ -19,7 +19,7 @@ def _get_w3() -> Optional[Web3]:
         return _w3
 
     if not settings.BSC_RPC_URL:
-        logger.warning("BSC_RPC_URL is not configured � on-chain balances disabled")
+        logger.warning("BSC_RPC_URL is not configured ן¿½ on-chain balances disabled")
         return None
 
     try:

@@ -5,7 +5,7 @@ import logging
 import os
 
 # ----------------------------
-# Logging מתקדם
+# Logging ׳׳×׳§׳“׳
 # ----------------------------
 log_folder = os.path.join(os.getcwd(), 'logs')
 os.makedirs(log_folder, exist_ok=True)
@@ -16,7 +16,7 @@ logging.basicConfig(
 )
 
 # ----------------------------
-# מודל Pydantic ל-POST JSON
+# ׳׳•׳“׳ Pydantic ׳-POST JSON
 # ----------------------------
 class AirdropRequest(BaseModel):
     user_id: str
@@ -31,24 +31,24 @@ def ping():
 @router.post('/airdrop')
 def send_airdrop(request: AirdropRequest):
     '''
-    פונקציה ניסיונית לשליחת איירדרופ
-    - request.user_id: מזהה המשתמש
-    - request.amount: כמות tokens לשליחה
+    ׳₪׳•׳ ׳§׳¦׳™׳” ׳ ׳™׳¡׳™׳•׳ ׳™׳× ׳׳©׳׳™ן¿½-׳× ׳-׳™׳™׳¨׳“׳¨׳•׳₪
+    - request.user_id: ׳׳–׳”׳” ׳”׳׳©׳×׳׳©
+    - request.amount: ׳›׳׳•׳× tokens ׳׳©׳׳™ן¿½-׳”
     '''
     if request.amount <= 0:
         raise HTTPException(status_code=400, detail='Amount must be positive')
 
-    # לוג למסוף וקובץ
+    # ׳׳•׳’ ׳׳׳¡׳•׳£ ׳•׳§׳•׳‘׳¥
     message = f"[AIRDROP] Sending {request.amount} tokens to {request.user_id}"
     print(message)
     logging.info(message)
 
-    # כאן ניתן להוסיף שליחה אמיתית בעתיד (DB / Blockchain / Telegram)
+    # ׳›׳-׳ ׳ ׳™׳×׳ ׳׳”׳•׳¡׳™׳£ ׳©׳׳™ן¿½-׳” ׳-׳׳™׳×׳™׳× ׳‘׳¢׳×׳™׳“ (DB / Blockchain / Telegram)
     return {
         'user_id': request.user_id,
         'amount': request.amount,
         'status': 'success',
-        'note': 'mock send - ניסוי'
+        'note': 'mock send - ׳ ׳™׳¡׳•׳™'
     }
 
 

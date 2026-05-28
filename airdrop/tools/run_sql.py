@@ -13,7 +13,7 @@ def main():
     try:
         cur = conn.cursor()
         cur.execute(sql)
-        # אם ה-SQL מחזיר SELECT בסוף, יש תוצאה
+        # ׳-׳ ׳”-SQL ׳ן¿½-׳–׳™׳¨ SELECT ׳‘׳¡׳•׳£, ׳™׳© ׳×׳•׳¦׳-׳”
         rows = cur.fetchall() if cur.description else []
         conn.commit()
         print(rows)

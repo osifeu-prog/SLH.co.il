@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""SLH Bot Catalog — persistent management of the 25+ Telegram bots in the fleet.
+"""SLH Bot Catalog - persistent management of the 25+ Telegram bots in the fleet.
 
 Replaces the hardcoded `BOTS = [...]` array previously duplicated in
 website/admin/tokens.html and website/admin/rotate-token.html with a real DB
@@ -76,7 +76,7 @@ def _admin(authorization: Optional[str], x_admin_key: Optional[str]) -> int:
 _SCHEMA_READY = False
 
 
-# Initial catalog — mirrors the hardcoded list previously embedded in HTML.
+# Initial catalog - mirrors the hardcoded list previously embedded in HTML.
 # Used ONLY on first run when the table is empty. After that the DB is canonical.
 _INITIAL_SEED = [
     {"name": "SLH Core Bot",       "handle": "@SLH_Spark_bot",       "env_var": "CORE_BOT_TOKEN",       "service": "slh-core-bot"},
@@ -108,7 +108,7 @@ _INITIAL_SEED = [
     {"name": "Wellness",           "handle": "@SLH_Wellness_bot",    "env_var": "WELLNESS_BOT_TOKEN",   "service": "slh-wellness", "status": "swap-target"},
     {"name": "User Info",          "handle": "@SLH_UserInfo_bot",    "env_var": "USERINFO_BOT_TOKEN",   "service": "slh-userinfo", "status": "swap-target"},
     {"name": "Claude Executor",    "handle": "@SLH_Claude_bot",      "env_var": "SLH_CLAUDE_BOT_TOKEN", "service": "slh-claude-bot"},
-    {"name": "G4me Bot",           "handle": "@G4meb0t_bot",         "env_var": "G4ME_BOT_TOKEN",       "service": "slh-g4me", "notes": "DATING bot — separate group"},
+    {"name": "G4me Bot",           "handle": "@G4meb0t_bot",         "env_var": "G4ME_BOT_TOKEN",       "service": "slh-g4me", "notes": "DATING bot - separate group"},
     {"name": "Macro (SLH.co.il)",  "handle": "@SLH_macro_bot",       "env_var": "TELEGRAM_BOT_TOKEN",   "service": "n/a", "status": "deprecated", "notes": "Separate project D:\\SLH.co.il"},
 ]
 
@@ -163,7 +163,7 @@ async def _ensure_schema(pool) -> None:
         await conn.execute(
             "CREATE INDEX IF NOT EXISTS ix_bot_catalog_tier ON bot_catalog (tier)"
         )
-        # Tier seeds — idempotent: only annotates rows whose tier is still the
+        # Tier seeds - idempotent: only annotates rows whose tier is still the
         # default 'medium', so manual edits via PATCH are preserved.
         await conn.execute(
             """
@@ -187,7 +187,7 @@ async def _ensure_schema(pool) -> None:
                 (handle = '@SLH_Test_bot' OR status = 'swap-target')
             """
         )
-        # Seed if empty — preserves the existing fleet definition without
+        # Seed if empty - preserves the existing fleet definition without
         # forcing the operator to re-enter 31 rows.
         existing = await conn.fetchval("SELECT COUNT(*) FROM bot_catalog")
         if (existing or 0) == 0:
@@ -264,7 +264,7 @@ async def add_bot(
     authorization: Optional[str] = Header(None),
     x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key"),
 ):
-    """Add a new bot to the catalog. Token is NOT stored — only metadata."""
+    """Add a new bot to the catalog. Token is NOT stored - only metadata."""
     _admin(authorization, x_admin_key)
     pool = _pool(request)
     await _ensure_schema(pool)

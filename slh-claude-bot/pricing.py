@@ -65,13 +65,13 @@ class TierSpec:
 TIERS: dict[Tier, TierSpec] = {
     "free": TierSpec(
         name="free",
-        name_he="חינם",
+        name_he="�-ינם",
         price_ils=0,
         price_stars=0,
         monthly_quota=10,
         fair_use_cap=10,
         ai_provider="free",  # Groq/Gemini via free_ai_client
-        description_he="10 הודעות/חודש · AI חינם (Groq/Gemini) · ללא tools",
+        description_he="10 הודעות/�-ודש · AI �-ינם (Groq/Gemini) · ללא tools",
     ),
     "pro": TierSpec(
         name="pro",
@@ -81,7 +81,7 @@ TIERS: dict[Tier, TierSpec] = {
         monthly_quota=70,           # tuned 2026-04-25: 100 → 70 to keep ~50% margin
         fair_use_cap=70,
         ai_provider="anthropic",
-        description_he="70 הודעות/חודש · Claude Sonnet 4.5 + tools · עדיפות בתור",
+        description_he="70 הודעות/�-ודש · Claude Sonnet 4.5 + tools · עדיפות בתור",
     ),
     "vip": TierSpec(
         name="vip",
@@ -136,19 +136,19 @@ def margin_pct(tier: Tier, telegram_realization: float = 0.70) -> float:
 def tier_summary_he(tier: Tier) -> str:
     spec = TIERS[tier]
     if tier == "free":
-        return f"🆓 *{spec.name_he}* — חינם · {spec.description_he}"
+        return f"🆓 *{spec.name_he}* — �-ינם · {spec.description_he}"
     if tier == "zvk":
         return f"🪙 *{spec.name_he}* — utility · {spec.description_he}"
     margin = expected_margin_ils(tier)
     return (
-        f"💎 *{spec.name_he}* — ₪{spec.price_ils}/חודש ({spec.price_stars} ⭐)\n"
+        f"💎 *{spec.name_he}* — ₪{spec.price_ils}/�-ודש ({spec.price_stars} ⭐)\n"
         f"   {spec.description_he}\n"
-        f"   _Margin צפוי: ₪{margin:.0f}/לקוח/חודש_"
+        f"   _Margin צפוי: ₪{margin:.0f}/לקו�-/�-ודש_"
     )
 
 
 def all_tiers_summary_he() -> str:
-    lines = ["*SLH AI Spark — חבילות:*\n"]
+    lines = ["*SLH AI Spark — �-בילות:*\n"]
     for tier in ("free", "pro", "vip", "zvk"):
         lines.append(tier_summary_he(tier))
         lines.append("")

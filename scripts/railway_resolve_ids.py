@@ -10,7 +10,7 @@ What it does:
     2. For each entry in config/railway_services.json with empty IDs,
        matches by `project` (project name) + `service` (service name) +
        `environment` (env name) and fills the IDs.
-    3. Reports unresolved entries — these need manual fix (typically a
+    3. Reports unresolved entries - these need manual fix (typically a
        project/service rename mismatch between the JSON and Railway).
 
 Token required: RAILWAY_API_TOKEN with read scope on the workspace.
@@ -183,7 +183,7 @@ async def main():
     print()
     print(f"Resolved: {changed_count} entries")
     if unresolved:
-        print(f"Unresolved: {len(unresolved)} entries — fix project/service names in JSON:")
+        print(f"Unresolved: {len(unresolved)} entries - fix project/service names in JSON:")
         for env_var, msg in unresolved:
             print(f"  ? {env_var:<28} {msg}")
 

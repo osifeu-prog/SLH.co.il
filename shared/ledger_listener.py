@@ -113,7 +113,7 @@ async def _handle_stake(bot, pool, evt: dict) -> None:
     amt = p.get("amount")
     cur = p.get("currency", "TON")
     plan = p.get("plan", "?")
-    verb = "נפתחה" if tag == "opened" else "שוחררה"
+    verb = "נפת�-ה" if tag == "opened" else "שו�-ררה"
     icon = "🔒" if tag == "opened" else "🔓"
     workers_msg = (
         f"{icon} הפקדה {verb}\n"
@@ -136,13 +136,13 @@ async def _handle_device_registered(bot, pool, evt: dict) -> None:
     device_id = p.get("device_id", "?")
     if WORKERS_CHAT_ID:
         await _safe_dm(bot, int(WORKERS_CHAT_ID),
-                       f"📟 מכשיר חדש נרשם\nUser: {user_id}\nDevice: {device_id}")
+                       f"📟 מכשיר �-דש נרשם\nUser: {user_id}\nDevice: {device_id}")
     if user_id:
         tg = await _lookup_tg_id(pool, user_id)
         if tg:
             await _safe_dm(bot, tg,
-                           f"📟 מכשיר נקשר בהצלחה\nDevice ID: {device_id}\n"
-                           f"אם לא אתה קישרת, שלח /revoke מיידית.")
+                           f"📟 מכשיר נקשר בהצל�-ה\nDevice ID: {device_id}\n"
+                           f"אם לא אתה קישרת, של�- /revoke מיידית.")
 
 
 async def _handle_payout_made(bot, pool, evt: dict) -> None:

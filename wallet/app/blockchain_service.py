@@ -62,7 +62,7 @@ class BlockchainService:
         return 0.0
 
     async def get_balances(self, bnb_address: str, slh_address: str) -> Dict[str, float]:
-        """מחזיר את כל היתרות"""
+        """מ�-זיר את כל היתרות"""
         bnb_balance = await self.get_bnb_balance(bnb_address)
         slh_balance = await self.get_slh_balance(slh_address or bnb_address)
         

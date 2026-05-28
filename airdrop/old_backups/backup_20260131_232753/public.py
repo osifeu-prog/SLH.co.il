@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 import logging, os
 
-# Logging מתקדם
+# Logging ׳׳×׳§׳“׳
 log_folder = os.path.join(os.getcwd(), 'logs')
 os.makedirs(log_folder, exist_ok=True)
 logging.basicConfig(
@@ -35,7 +35,7 @@ def send_airdrop(request: AirdropRequest):
         'user_id': request.user_id,
         'amount': request.amount,
         'status': 'success',
-        'note': 'mock send - ניסוי'
+        'note': 'mock send - ׳ ׳™׳¡׳•׳™'
     }
 
 

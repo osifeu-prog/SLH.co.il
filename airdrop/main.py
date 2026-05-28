@@ -51,24 +51,24 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
             kb = InlineKeyboardMarkup([
                 [
-                    InlineKeyboardButton("✅ אשר", callback_data=f"approve:{user.id}"),
-                    InlineKeyboardButton("❌ דחה", callback_data=f"reject:{user.id}")
+                    InlineKeyboardButton("ג… ׳-׳©׳¨", callback_data=f"approve:{user.id}"),
+                    InlineKeyboardButton("ג ׳“ן¿½-׳”", callback_data=f"reject:{user.id}")
                 ]
             ])
 
             await context.bot.send_message(
                 chat_id=inviter_id,
-                text=f"🔔 בקשת הצטרפות\n@{user.username}",
+                text=f"נ”” ׳‘׳§׳©׳× ׳”׳¦׳˜׳¨׳₪׳•׳×\n@{user.username}",
                 reply_markup=kb
             )
 
             await update.message.reply_text(
-                "👋 בקשת הצטרפות נשלחה\n⏳ ממתין לאישור"
+                "נ‘‹ ׳‘׳§׳©׳× ׳”׳¦׳˜׳¨׳₪׳•׳× ׳ ׳©׳ן¿½-׳”\nג³ ׳׳׳×׳™׳ ׳׳-׳™׳©׳•׳¨"
             )
 
     save(USERS_FILE, users)
 
-# ===== אישור =====
+# ===== ׳-׳™׳©׳•׳¨ =====
 async def approval(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
@@ -89,21 +89,21 @@ async def approval(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         await context.bot.send_message(
             chat_id=uid,
-            text="🎉 אושרת!\n🎁 קיבלת איירדרופ ראשון\n\nכתוב /invite להזמין חבר"
+            text="נ‰ ׳-׳•׳©׳¨׳×!\nנ ׳§׳™׳‘׳׳× ׳-׳™׳™׳¨׳“׳¨׳•׳₪ ׳¨׳-׳©׳•׳\n\n׳›׳×׳•׳‘ /invite ׳׳”׳–׳׳™׳ ן¿½-׳‘׳¨"
         )
 
-        await query.edit_message_text("✅ המשתמש אושר")
+        await query.edit_message_text("ג… ׳”׳׳©׳×׳׳© ׳-׳•׳©׳¨")
 
     save(USERS_FILE, users)
     save(AIRDROP_FILE, airdrops)
 
-# ===== הזמנה =====
+# ===== ׳”׳–׳׳ ׳” =====
 async def invite(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     users = load(USERS_FILE, {})
 
     if not users.get(user.id, {}).get("approved"):
-        await update.message.reply_text("⛔ אין לך הרשאה להזמין")
+        await update.message.reply_text("ג›” ׳-׳™׳ ׳׳ ׳”׳¨׳©׳-׳” ׳׳”׳–׳׳™׳")
         return
 
     code = str(uuid.uuid4())[:8]
@@ -114,7 +114,7 @@ async def invite(update: Update, context: ContextTypes.DEFAULT_TYPE):
     link = f"https://t.me/{context.bot.username}?start=invite_{code}"
 
     await update.message.reply_text(
-        f"🔗 לינק הזמנה:\n{link}"
+        f"ן¿½- ׳׳™׳ ׳§ ׳”׳–׳׳ ׳”:\n{link}"
     )
 
 # ===== main =====
@@ -123,7 +123,7 @@ app.add_handler(CommandHandler("start", start))
 app.add_handler(CommandHandler("invite", invite))
 app.add_handler(CallbackQueryHandler(approval))
 
-print("🤖 Bot running...")
+print("נ₪– Bot running...")
 app.run_polling()
 =======
 from .app.main import app  # noqa: F401

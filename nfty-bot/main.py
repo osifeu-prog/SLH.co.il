@@ -1097,7 +1097,7 @@ async def cmd_breathe(msg: Message):
         [InlineKeyboardButton(text="?? 4-7-8 ???????? (60 ?????)", callback_data="breath_478_60")]
     ])
     await msg.answer(
-        "??? <b>?????? ????? — CBT</b>\n\n"
+        "??? <b>?????? ????? - CBT</b>\n\n"
         "???? ?????. ????? ????? ???? ???? ????? ?????? ???? ???!\n\n"
         "?? <i>???: ????? ???? ???? ?????, ????? ???, ????? XP</i>",
         reply_markup=kb, parse_mode="HTML"
@@ -1170,7 +1170,7 @@ async def cb_breathing(cb: CallbackQuery):
     ex = exercises.get(exercise_type, exercises["calm"])
 
     await cb.message.edit_text(
-        f"??? <b>{ex['name']}</b> — ???????!\n\n"
+        f"??? <b>{ex['name']}</b> - ???????!\n\n"
         f"? {duration} ????? | {ex['rounds']} ???????\n"
         "--------------",
         parse_mode="HTML"
@@ -1181,7 +1181,7 @@ async def cb_breathing(cb: CallbackQuery):
             await asyncio.sleep(wait_sec)
             try:
                 await cb.message.edit_text(
-                    f"??? <b>{ex['name']}</b> — ????? {round_num}/{ex['rounds']}\n\n"
+                    f"??? <b>{ex['name']}</b> - ????? {round_num}/{ex['rounds']}\n\n"
                     f"{step_text}\n"
                     "--------------",
                     parse_mode="HTML"
@@ -1223,7 +1223,7 @@ async def cb_breathing(cb: CallbackQuery):
 
     bonus_text = " | ".join(f"+{v} {k}" for k, v in ex["pet_bonus"].items())
     await cb.message.edit_text(
-        f"? <b>{ex['name']} — ?????!</b>\n\n"
+        f"? <b>{ex['name']} - ?????!</b>\n\n"
         f"?? ?????! ?????? {ex['rounds']} ???????\n"
         f"?? ????? ????? ?????: {bonus_text}\n"
         f"?? ??\"? ??????? ???????: {total}\n\n"
@@ -1353,7 +1353,7 @@ async def cmd_quests(msg: Message):
             completed += 1
         else:
             lines.append(f"  ? {q['quest_title']}")
-            lines.append(f"     <i>{q['quest_desc']}</i> — {q['xp_reward']} XP")
+            lines.append(f"     <i>{q['quest_desc']}</i> - {q['xp_reward']} XP")
 
     lines.append(f"\n?? ??????: {completed}/{len(quests)}")
     if completed == len(quests):
@@ -1380,9 +1380,9 @@ async def cmd_achievements(msg: Message):
     lines = ["?? <b>??????</b>\n"]
     for key, ach in ACHIEVEMENTS.items():
         if key in unlocked_keys:
-            lines.append(f"  ? {ach['title']} — {ach['desc']} (+{ach['xp']} XP)")
+            lines.append(f"  ? {ach['title']} - {ach['desc']} (+{ach['xp']} XP)")
         else:
-            lines.append(f"  ?? {ach['title']} — {ach['desc']}")
+            lines.append(f"  ?? {ach['title']} - {ach['desc']}")
 
     lines.append(f"\n?? ?????: {len(unlocked_keys)}/{len(ACHIEVEMENTS)}")
     await msg.answer("\n".join(lines), parse_mode="HTML")

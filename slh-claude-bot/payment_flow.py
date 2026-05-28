@@ -80,17 +80,17 @@ def register(dp: Dispatcher, auth_module) -> None:
             # No tier specified — show menu with buttons
             kb = InlineKeyboardMarkup(inline_keyboard=[
                 [InlineKeyboardButton(
-                    text=f"💎 Pro — ₪{pricing.TIERS['pro'].price_ils}/חודש",
+                    text=f"💎 Pro — ₪{pricing.TIERS['pro'].price_ils}/�-ודש",
                     callback_data="upgrade:pro",
                 )],
                 [InlineKeyboardButton(
-                    text=f"👑 VIP — ₪{pricing.TIERS['vip'].price_ils}/חודש",
+                    text=f"👑 VIP — ₪{pricing.TIERS['vip'].price_ils}/�-ודש",
                     callback_data="upgrade:vip",
                 )],
-                [InlineKeyboardButton(text="📊 השוואת חבילות", callback_data="show_pricing")],
+                [InlineKeyboardButton(text="📊 השוואת �-בילות", callback_data="show_pricing")],
             ])
             await msg.answer(
-                "*בחר חבילה לשדרוג:*\n\n"
+                "*ב�-ר �-בילה לשדרוג:*\n\n"
                 + pricing.tier_summary_he("pro") + "\n\n"
                 + pricing.tier_summary_he("vip"),
                 reply_markup=kb,
@@ -106,7 +106,7 @@ def register(dp: Dispatcher, auth_module) -> None:
             return
         tier = cb.data.split(":", 1)[1]
         if tier not in ("pro", "vip"):
-            await cb.answer("חבילה לא קיימת", show_alert=True)
+            await cb.answer("�-בילה לא קיימת", show_alert=True)
             return
         await cb.answer()
         await _send_invoice(bot, cb.message.chat.id, cb.from_user.id, tier)
@@ -123,13 +123,13 @@ def register(dp: Dispatcher, auth_module) -> None:
         if tier is None or uid != query.from_user.id:
             await bot.answer_pre_checkout_query(
                 query.id, ok=False,
-                error_message="חבילה לא תקפה. נסה שוב מ-/upgrade.",
+                error_message="�-בילה לא תקפה. נסה שוב מ-/upgrade.",
             )
             return
         if tier not in pricing.TIERS or pricing.TIERS[tier].price_stars == 0:
             await bot.answer_pre_checkout_query(
                 query.id, ok=False,
-                error_message="חבילה לא קיימת.",
+                error_message="�-בילה לא קיימת.",
             )
             return
         await bot.answer_pre_checkout_query(query.id, ok=True)
@@ -174,10 +174,10 @@ def register(dp: Dispatcher, auth_module) -> None:
         spec = pricing.TIERS[tier]
         await msg.answer(
             f"✅ *תשלום אושר!*\n\n"
-            f"שודרגת ל-*{spec.name_he}* — ₪{spec.price_ils}/חודש.\n"
+            f"שודרגת ל-*{spec.name_he}* — ₪{spec.price_ils}/�-ודש.\n"
             f"מכסה: {spec.monthly_quota or 'unlimited (fair-use ' + str(spec.fair_use_cap) + ')'} הודעות\n"
             f"AI: Claude Sonnet 4.5 + tools\n\n"
-            f"שלח /credits לראות מצב, או פשוט שלח שאלה."
+            f"של�- /credits לראות מצב, או פשוט של�- שאלה."
         )
 
     log.info("payment_flow handlers registered")
@@ -186,7 +186,7 @@ def register(dp: Dispatcher, auth_module) -> None:
 async def _send_invoice(bot: Bot, chat_id: int, user_id: int, tier: str) -> None:
     spec = pricing.TIERS[tier]
     if spec.price_stars == 0:
-        await bot.send_message(chat_id, f"חבילת {spec.name_he} לא ניתנת לרכישה ישירה.")
+        await bot.send_message(chat_id, f"�-בילת {spec.name_he} לא ניתנת לרכישה ישירה.")
         return
     await bot.send_invoice(
         chat_id=chat_id,
@@ -194,7 +194,7 @@ async def _send_invoice(bot: Bot, chat_id: int, user_id: int, tier: str) -> None
         description=spec.description_he,
         payload=_payload_for_tier(tier, user_id),
         currency=STARS_CURRENCY,
-        prices=[LabeledPrice(label=f"{spec.name_he} ×30 ימים", amount=spec.price_stars)],
+        prices=[LabeledPrice(label=f"{spec.name_he} �-30 ימים", amount=spec.price_stars)],
         # provider_token left empty — Telegram Stars don't need a provider
     )
 

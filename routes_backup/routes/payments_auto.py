@@ -6,13 +6,13 @@ On-chain verification for TON + BSC transfers.
 Replaces the manual 24h approve flow with sub-60s automatic verification.
 
 Endpoints:
-  POST /api/payment/ton/auto-verify     — verify TON tx, grant premium
-  POST /api/payment/bsc/auto-verify     — verify BSC/BNB tx, grant premium
-  GET  /api/payment/status/{user_id}    — check user premium + last deposit
-  GET  /api/payment/config              — public config (addresses, min amounts)
-  POST /api/payment/external/record     — record a 3rd-party fiat payment (Stripe/PayBox/Bit)
-  POST /api/payment/receipt              — issue a SLH digital receipt
-  GET  /api/payment/geography/summary   — dashboard: payments by country/currency
+  POST /api/payment/ton/auto-verify     - verify TON tx, grant premium
+  POST /api/payment/bsc/auto-verify     - verify BSC/BNB tx, grant premium
+  GET  /api/payment/status/{user_id}    - check user premium + last deposit
+  GET  /api/payment/config              - public config (addresses, min amounts)
+  POST /api/payment/external/record     - record a 3rd-party fiat payment (Stripe/PayBox/Bit)
+  POST /api/payment/receipt              - issue a SLH digital receipt
+  GET  /api/payment/geography/summary   - dashboard: payments by country/currency
 
 Added 2026-04-17 morning (ship-all session).
 """
@@ -28,7 +28,7 @@ import aiohttp
 from fastapi import APIRouter, HTTPException, Header, Request
 from pydantic import BaseModel
 
-# Sibling import — revenue recording helper. Same module, no new deps.
+# Sibling import - revenue recording helper. Same module, no new deps.
 from routes.treasury import record_revenue_internal as _record_revenue
 
 router = APIRouter(prefix="/api/payment", tags=["Payments"])
@@ -41,18 +41,18 @@ BSCSCAN_API_KEY = os.getenv("BSCSCAN_API_KEY", "").strip()
 TONCENTER_API_KEY = os.getenv("TONCENTER_API_KEY", "").strip()
 PREMIUM_MIN_BNB = float(os.getenv("PREMIUM_MIN_BNB", "0.0005"))  # ~$0.30 at BNB=$633
 PREMIUM_MIN_TON = float(os.getenv("PREMIUM_MIN_TON", "0.01"))    # ~$0.014 at TON=$1.41
-PREMIUM_MIN_ILS = float(os.getenv("PREMIUM_MIN_ILS", "1"))       # for testing — 1 ILS = symbolic
+PREMIUM_MIN_ILS = float(os.getenv("PREMIUM_MIN_ILS", "1"))       # for testing - 1 ILS = symbolic
 
-# Testnet mode — set PAYMENT_MODE=testnet in Railway to switch to TON Testnet + BSC Chapel.
-# Default is "mainnet" — real money. Testnet = fake money, safe for QA/tutorials.
+# Testnet mode - set PAYMENT_MODE=testnet in Railway to switch to TON Testnet + BSC Chapel.
+# Default is "mainnet" - real money. Testnet = fake money, safe for QA/tutorials.
 PAYMENT_MODE = os.getenv("PAYMENT_MODE", "mainnet").lower().strip()
 IS_TESTNET = PAYMENT_MODE == "testnet"
 
 if IS_TESTNET:
-    # BSC Testnet (Chapel) — public RPCs, free tBNB from https://testnet.binance.org/faucet-smart
+    # BSC Testnet (Chapel) - public RPCs, free tBNB from https://testnet.binance.org/faucet-smart
     BSC_GENESIS_ADDRESS = os.getenv("BSC_TESTNET_ADDRESS", BSC_GENESIS_ADDRESS).lower()
-    # TON Testnet — https://testnet.toncenter.com
-    # (TON_PAY_ADDRESS on testnet is a separate wallet — user sets via env)
+    # TON Testnet - https://testnet.toncenter.com
+    # (TON_PAY_ADDRESS on testnet is a separate wallet - user sets via env)
 
 
 # Pool is injected by main.py via set_pool()
@@ -306,14 +306,14 @@ async def bsc_auto_verify(req: BscVerifyReq, request: Request):
     expected_min = req.expected_min_bnb or PREMIUM_MIN_BNB
     # BSC public RPC (free, no key needed).
     if IS_TESTNET:
-        # BSC Testnet (Chapel) — free tBNB at https://testnet.binance.org/faucet-smart
+        # BSC Testnet (Chapel) - free tBNB at https://testnet.binance.org/faucet-smart
         bsc_rpcs = [
             "https://data-seed-prebsc-1-s1.binance.org:8545",
             "https://data-seed-prebsc-2-s1.binance.org:8545",
             "https://bsc-testnet.public.blastapi.io",
         ]
     else:
-        # Mainnet — Binance dataseed + fallbacks
+        # Mainnet - Binance dataseed + fallbacks
         bsc_rpcs = [
             "https://bsc-dataseed.binance.org",
             "https://bsc-dataseed1.ninicoin.io",
@@ -394,7 +394,7 @@ async def bsc_auto_verify(req: BscVerifyReq, request: Request):
 
 # ============================================================
 # External providers (Stripe, PayBox, Bit, PayPal, GrowClub, ICount)
-# Record-only — the actual card processing happens on the provider side,
+# Record-only - the actual card processing happens on the provider side,
 # we just ingest the confirmed webhook/return and grant premium + issue receipt.
 # ============================================================
 
@@ -495,7 +495,7 @@ async def payment_status(user_id: int, bot_name: str = "ecosystem"):
         # NOTE: deposits schema uses `token` (not currency) and `confirmed_at` (not created_at).
         # Aliased here so the response shape stays the same for bot clients
         # (academia-bot _check_status, etc.). Bug fix 2026-04-21: endpoint was 500ing on every
-        # call because of column mismatch — which killed the ACAD payment verification flow
+        # call because of column mismatch - which killed the ACAD payment verification flow
         # for user 8789977826 (4x ILS 49 paid, 0 licenses granted).
         last_dep = await conn.fetchrow(
             "SELECT id, amount, token AS currency, tx_hash, status, confirmed_at AS created_at "
@@ -539,7 +539,7 @@ async def payment_config():
         # Estimated gas + micro-transaction info (for UI to show "total cost")
         "gas_estimate": {
             "ton_network_fee": 0.005,  # typical TON transfer fee
-            "bsc_network_fee_bnb": 0.0003,  # ~21000 gas × 5 gwei
+            "bsc_network_fee_bnb": 0.0003,  # ~21000 gas ï¿½ 5 gwei
             "bsc_usd_equivalent": 0.20,  # rough
         },
         "test_tx_note": (

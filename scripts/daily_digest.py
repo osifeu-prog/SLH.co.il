@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Daily Digest — every ~21:00 Israel time, compile a summary of what
+Daily Digest - every ~21:00 Israel time, compile a summary of what
 happened today and DM it to Osif.
 
 Sources:
@@ -79,33 +79,33 @@ def build_digest(target_date: _date) -> str:
     until_iso = until.isoformat()
 
     lines = []
-    lines.append(f"?? *SLH Daily Digest · {target_date.isoformat()}*")
+    lines.append(f"?? *SLH Daily Digest ï¿½ {target_date.isoformat()}*")
     lines.append("")
 
     # Commits
     api_commits = git_commits_today(API_REPO, since_iso, until_iso)
     web_commits = git_commits_today(WEB_REPO, since_iso, until_iso) if WEB_REPO.exists() else []
 
-    lines.append(f"?? *Commits* — api: {len(api_commits)} · website: {len(web_commits)}")
+    lines.append(f"?? *Commits* - api: {len(api_commits)} ï¿½ website: {len(web_commits)}")
     if api_commits:
         lines.append("")
         lines.append("_API repo:_")
         for c in api_commits[:8]:
-            lines.append(f"  • {c}")
+            lines.append(f"  ï¿½ {c}")
         if len(api_commits) > 8:
-            lines.append(f"  • ...+{len(api_commits)-8} more")
+            lines.append(f"  ï¿½ ...+{len(api_commits)-8} more")
     if web_commits:
         lines.append("")
         lines.append("_Website repo:_")
         for c in web_commits[:5]:
-            lines.append(f"  • {c}")
+            lines.append(f"  ï¿½ {c}")
 
     lines.append("")
 
     # API health
     health = api_get("/api/health")
     if health:
-        lines.append(f"??  *API health:* {health.get('status')} · v{health.get('version')} · db={health.get('db')}")
+        lines.append(f"??  *API health:* {health.get('status')} ï¿½ v{health.get('version')} ï¿½ db={health.get('db')}")
     else:
         lines.append("??  *API health:* ? UNREACHABLE")
     lines.append("")
@@ -117,7 +117,7 @@ def build_digest(target_date: _date) -> str:
         founders = len(users.get("founders", []) or [])
         community = len(users.get("community", []) or [])
         total = founders + community
-        lines.append(f"?? *Users:* {total} total · founders={founders} · community={community}")
+        lines.append(f"?? *Users:* {total} total ï¿½ founders={founders} ï¿½ community={community}")
 
         bc = reality.get("recent_broadcasts") or []
         today_bc = 0
@@ -132,8 +132,8 @@ def build_digest(target_date: _date) -> str:
     stats = api_get("/api/community/stats")
     if stats:
         lines.append(
-            f"?? *Community:* posts_today={stats.get('posts_today',0)} · "
-            f"active_today={stats.get('active_today',0)} · "
+            f"?? *Community:* posts_today={stats.get('posts_today',0)} ï¿½ "
+            f"active_today={stats.get('active_today',0)} ï¿½ "
             f"total_posts={stats.get('total_posts',0)}"
         )
     lines.append("")
@@ -146,7 +146,7 @@ def build_digest(target_date: _date) -> str:
         elif high == 1:
             lines.append("?? *Data integrity:* 1 HIGH finding (legitimate library default)")
         else:
-            lines.append(f"?? *Data integrity:* {high} HIGH findings — run `python scripts/audit_data_integrity.py --severity HIGH`")
+            lines.append(f"?? *Data integrity:* {high} HIGH findings - run `python scripts/audit_data_integrity.py --severity HIGH`")
     lines.append("")
 
     # End
@@ -172,7 +172,7 @@ def send_to_osif(message: str) -> bool:
         )
         with urllib.request.urlopen(req, timeout=30) as r:
             body = r.read().decode("utf-8")
-            print(f"[OK] HTTP {r.status} — {body[:200]}")
+            print(f"[OK] HTTP {r.status} - {body[:200]}")
             return True
     except Exception as e:
         print(f"[ERR] {e}", file=sys.stderr)

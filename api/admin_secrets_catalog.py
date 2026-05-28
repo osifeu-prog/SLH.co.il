@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""SLH Secrets Vault — unified inventory of every credential the system uses.
+"""SLH Secrets Vault - unified inventory of every credential the system uses.
 
 The system has 12+ different secret types scattered across:
   - Railway env vars (ADMIN_API_KEYS, JWT_SECRET, ENCRYPTION_KEY, AI provider keys, etc.)
@@ -7,22 +7,22 @@ The system has 12+ different secret types scattered across:
   - localStorage (admin login cache)
   - External dashboards (BotFather, Anthropic console, BSCScan, Inforu)
 
-This module provides a single source of truth for METADATA only — names, where
+This module provides a single source of truth for METADATA only - names, where
 they live, rotation URLs, last-rotated timestamps, status. The actual secret
 values NEVER touch this DB or this API. We only know about them, not their
 contents.
 
-Design mirrors api/admin_bots_catalog.py — same fail-safe import pattern,
+Design mirrors api/admin_bots_catalog.py - same fail-safe import pattern,
 same CRUD shape, same X-Admin-Key gating.
 
 Endpoints (all under /api/admin/secrets, X-Admin-Key gated):
-    GET    /api/admin/secrets                — list (filter by category/status)
-    POST   /api/admin/secrets                — add new entry to vault
-    PATCH  /api/admin/secrets/{id}           — edit
-    DELETE /api/admin/secrets/{id}           — remove
-    POST   /api/admin/secrets/{id}/mark-rotated  — record rotation timestamp
-    POST   /api/admin/secrets/{id}/check-health  — best-effort probe (where possible)
-    GET    /api/admin/secrets/stats          — counts by category + staleness
+    GET    /api/admin/secrets                - list (filter by category/status)
+    POST   /api/admin/secrets                - add new entry to vault
+    PATCH  /api/admin/secrets/{id}           - edit
+    DELETE /api/admin/secrets/{id}           - remove
+    POST   /api/admin/secrets/{id}/mark-rotated  - record rotation timestamp
+    POST   /api/admin/secrets/{id}/check-health  - best-effort probe (where possible)
+    GET    /api/admin/secrets/stats          - counts by category + staleness
 """
 from __future__ import annotations
 
@@ -87,7 +87,7 @@ def _admin(authorization: Optional[str], x_admin_key: Optional[str]) -> int:
 _SCHEMA_READY = False
 
 
-# Initial seed — the 12 secret types we know about as of 2026-04-25.
+# Initial seed - the 12 secret types we know about as of 2026-04-25.
 # Status is computed at runtime by inspecting the actual env: configured (set),
 # default (matches a known placeholder), missing (env var empty), unknown
 # (we can't determine without more context).
@@ -110,7 +110,7 @@ _INITIAL_SEED = [
         "rotation_url": "https://railway.com/project/slh-api/service/api?settings=variables",
         "description": "Separate auth for /api/broadcast/send and /api/ops/* endpoints.",
         "rotation_cadence_days": 90,
-        "notes": "If still 'slh-broadcast-2026-change-me' — that's the default placeholder. Rotate it.",
+        "notes": "If still 'slh-broadcast-2026-change-me' - that's the default placeholder. Rotate it.",
     },
     {
         "key_name": "JWT_SECRET",
@@ -129,7 +129,7 @@ _INITIAL_SEED = [
         "rotation_url": "https://railway.com/project/slh-api/service/api?settings=variables",
         "description": "AES-GCM key for encrypting CEX API keys at rest. Rotation requires re-encrypting existing rows.",
         "rotation_cadence_days": 365,
-        "notes": "CRITICAL — losing this key locks out access to encrypted CEX keys.",
+        "notes": "CRITICAL - losing this key locks out access to encrypted CEX keys.",
     },
 
     # --- AI providers ---
@@ -166,7 +166,7 @@ _INITIAL_SEED = [
         "category": "ai_provider",
         "storage_location": "railway_env",
         "rotation_url": "https://console.groq.com/keys",
-        "description": "Free fallback for /api/ai/chat — Llama 3.3 70B at ~500 tokens/sec.",
+        "description": "Free fallback for /api/ai/chat - Llama 3.3 70B at ~500 tokens/sec.",
         "rotation_cadence_days": 180,
     },
 
@@ -195,7 +195,7 @@ _INITIAL_SEED = [
         "category": "external",
         "storage_location": "railway_env",
         "rotation_url": "https://console.twilio.com/account/keys-credentials",
-        "description": "Alternative SMS provider — global, more expensive. Pair with TWILIO_ACCOUNT_SID + TWILIO_FROM.",
+        "description": "Alternative SMS provider - global, more expensive. Pair with TWILIO_ACCOUNT_SID + TWILIO_FROM.",
         "rotation_cadence_days": 365,
         "status": "missing",  # we know Twilio is not configured today
     },
@@ -217,7 +217,7 @@ def _detect_status(key_name: str, declared_status: Optional[str]) -> str:
     """Best-effort status detection from local env. Runs only on seed/refresh.
 
     Note: we only see Railway env vars if THIS process IS running on Railway.
-    From a local machine the seed will mostly say 'unknown'. That's intentional —
+    From a local machine the seed will mostly say 'unknown'. That's intentional -
     the secrets vault is informational, not authoritative.
     """
     if declared_status and declared_status != "unknown":
@@ -372,7 +372,7 @@ async def list_secrets(
     async with pool.acquire() as conn:
         # Refresh status for entries we can detect (run-time check on Railway)
         rows = await conn.fetch("SELECT * FROM secrets_catalog ORDER BY category, display_name")
-        # Refresh status of each row (best-effort) — only if status is 'unknown' or stale
+        # Refresh status of each row (best-effort) - only if status is 'unknown' or stale
         for r in rows:
             current_status = _detect_status(r["key_name"], None)
             if current_status != r["status"] and current_status != "unknown":
@@ -535,16 +535,16 @@ async def _run_probe(key_name: str) -> tuple[str, Optional[str]]:
     tuple. The secret value itself never leaves this process.
 
     Result codes (small closed set so callers can branch reliably):
-        ok            — provider accepted the key
-        bad_key       — provider rejected the key (401/403)
-        missing       — env var is not set on this process
-        service_error — provider returned 5xx
-        unknown       — provider returned something we couldn't classify
-        skipped       — no probe implemented for this key_name
-        error         — exception while probing (network etc)
+        ok            - provider accepted the key
+        bad_key       - provider rejected the key (401/403)
+        missing       - env var is not set on this process
+        service_error - provider returned 5xx
+        unknown       - provider returned something we couldn't classify
+        skipped       - no probe implemented for this key_name
+        error         - exception while probing (network etc)
 
     Reused by /check-health (single-secret) and /sweep (batch). Pure HTTP,
-    no DB access — sweep handles persistence + alerts on top.
+    no DB access - sweep handles persistence + alerts on top.
     """
     result: str = "skipped"
     detail: Optional[str] = None
@@ -626,7 +626,7 @@ async def _run_probe(key_name: str) -> tuple[str, Optional[str]]:
                 else:
                     result, detail = "unknown", str(j)[:100]
         else:
-            # No probe defined for this secret type — that's fine, mark skipped.
+            # No probe defined for this secret type - that's fine, mark skipped.
             result, detail = "skipped", "no probe implemented"
     except Exception as e:
         result, detail = "error", f"{type(e).__name__}: {e}"
@@ -641,7 +641,7 @@ async def check_health(
     authorization: Optional[str] = Header(None),
     x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key"),
 ):
-    """Best-effort health probe — try to actually use the secret to verify it works.
+    """Best-effort health probe - try to actually use the secret to verify it works.
 
     For each provider we know, attempts a no-op API call (free / lightweight)
     and reports whether the credential is currently accepted. The ACTUAL secret

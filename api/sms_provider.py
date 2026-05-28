@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
-"""SLH SMS provider — pluggable OTP/verification code sender.
+"""SLH SMS provider - pluggable OTP/verification code sender.
 
 One public async function: `send_otp(phone, code, purpose)`.
 Behavior selected by env var `SMS_PROVIDER`:
 
-    twilio       — Twilio REST API. Needs TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM
-    inforu       — Israeli Inforu (infobip-like) REST API. Needs INFORU_USERNAME, INFORU_API_TOKEN, INFORU_SENDER
-    sms019       — 019 Mobile (Israeli). Needs SMS019_USERNAME, SMS019_PASSWORD, SMS019_SENDER
-    infinireach  — InfiniReach Multi-Platform Gateway (sends through your own Android phone via SIM).
+    twilio       - Twilio REST API. Needs TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM
+    inforu       - Israeli Inforu (infobip-like) REST API. Needs INFORU_USERNAME, INFORU_API_TOKEN, INFORU_SENDER
+    sms019       - 019 Mobile (Israeli). Needs SMS019_USERNAME, SMS019_PASSWORD, SMS019_SENDER
+    infinireach  - InfiniReach Multi-Platform Gateway (sends through your own Android phone via SIM).
                    Needs INFINIREACH_API_KEY, INFINIREACH_FROM (e164 phone of your registered device)
-    stub         — no-op, returns success=True with note. Used in dev.
-    disabled     — explicit refusal, returns success=False. For prod when not yet wired.
+    stub         - no-op, returns success=True with note. Used in dev.
+    disabled     - explicit refusal, returns success=False. For prod when not yet wired.
 
 If SMS_PROVIDER is unset we default to `stub` in development and `disabled` in production
 (detected by presence of RAILWAY_ENVIRONMENT env var).
@@ -48,7 +48,7 @@ def _resolved_provider() -> str:
     explicit = (os.getenv("SMS_PROVIDER") or "").strip().lower()
     if explicit:
         return explicit
-    # No provider chosen — pick a safe default.
+    # No provider chosen - pick a safe default.
     # On Railway (prod), refuse rather than silently fake-send.
     if os.getenv("RAILWAY_ENVIRONMENT"):
         return "disabled"
@@ -87,7 +87,7 @@ async def _send_twilio(phone: str, body: str) -> SmsResult:
 
 
 async def _send_inforu(phone: str, body: str) -> SmsResult:
-    """Inforu (inforu.co.il) — Israel. POST JSON to their REST endpoint."""
+    """Inforu (inforu.co.il) - Israel. POST JSON to their REST endpoint."""
     user = os.getenv("INFORU_USERNAME")
     tok = os.getenv("INFORU_API_TOKEN")
     sender = os.getenv("INFORU_SENDER", "SLH")
@@ -128,7 +128,7 @@ async def _send_inforu(phone: str, body: str) -> SmsResult:
 
 
 async def _send_sms019(phone: str, body: str) -> SmsResult:
-    """019 Mobile — Israel. SOAP-ish form POST."""
+    """019 Mobile - Israel. SOAP-ish form POST."""
     user = os.getenv("SMS019_USERNAME")
     pw = os.getenv("SMS019_PASSWORD")
     sender = os.getenv("SMS019_SENDER", "SLH")
@@ -154,7 +154,7 @@ async def _send_sms019(phone: str, body: str) -> SmsResult:
 
 
 async def _send_infinireach(phone: str, body: str) -> SmsResult:
-    """InfiniReach (api.infinireach.io) — sends through Osif's Android phone via SIM.
+    """InfiniReach (api.infinireach.io) - sends through Osif's Android phone via SIM.
     Free tier: 1 device, unlimited SMS via your own carrier plan.
     """
     key = os.getenv("INFINIREACH_API_KEY")
@@ -170,7 +170,7 @@ async def _send_infinireach(phone: str, body: str) -> SmsResult:
         "to": phone,
         "message": body,
     }
-    # Cloudflare-friendly UA — empty/Python UA gets blocked with code 1010
+    # Cloudflare-friendly UA - empty/Python UA gets blocked with code 1010
     headers = {
         "X-API-Key": key,
         "Content-Type": "application/json",
