@@ -1,4 +1,4 @@
-"""@SLH_Claude_bot - aiogram entrypoint.
+"""@SLH_Claude_bot â€” aiogram entrypoint.
 
 Routes every text message from Osif to Claude with workspace tools.
 Guards with Telegram ID allowlist. Persists conversation per chat.
@@ -26,7 +26,7 @@ import subscriptions
 import payment_flow
 import admin_panel
 
-# Defensive import - anthropic may not be installed in all environments.
+# Defensive import â€” anthropic may not be installed in all environments.
 try:
     from anthropic import BadRequestError as AnthropicBadRequest
 except ImportError:
@@ -81,27 +81,27 @@ except ImportError:
 
 @dp.message(Command("dashboard"))
 async def cmd_dashboard(msg: Message):
-    await msg.reply("SLH Dashboard\nFastAPI: ONLINE\nBot: ONLINE\nhttp://localhost:9000")
+    await msg.reply("SLH Dashboard\nFastAPI: ONLINE\nBot: ONLINE\nhttp://localhost:9000", parse_mode=None)
 
 @dp.message(Command("crowdfunding"))
 async def cmd_crowdfunding(msg: Message):
-    await msg.reply("SLH Crowdfunding\nhttps://slh-nft.com/campaign.html\nTON: UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp")
+    await msg.reply("SLH Crowdfunding\nhttps://slh-nft.com/campaign.html\nTON: UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp", parse_mode=None)
 
 @dp.message(Command("points"))
 async def cmd_points(msg: Message):
     if points_system:
         user = points_system.get_user(str(msg.from_user.id))
-        await msg.reply(f"Points: {user['points']}\nTier: {user['tier'].upper()}")
+        await msg.reply(f"Points: {user['points']}\nTier: {user['tier'].upper()}", parse_mode=None)
     else:
-        await msg.reply("Points system in progress")
+        await msg.reply("Points system in progress", parse_mode=None)
 
 @dp.message(Command("daily"))
 async def cmd_daily(msg: Message):
-    await msg.reply("Daily missions:\n/checkin - +5 points")
+    await msg.reply("Daily missions:\n/checkin - +5 points", parse_mode=None)
 
 @dp.message(Command("help"))
 async def cmd_help(msg: Message):
-    await msg.reply("Commands:\n/dashboard\n/crowdfunding\n/points\n/daily\n/help")
+    await msg.reply("Commands:\n/dashboard\n/crowdfunding\n/points\n/daily\n/help", parse_mode=None)
 
 
 # ---------- Cross-bot coordination (shared agents group) ----------
@@ -173,23 +173,23 @@ async def cmd_start(msg: Message) -> None:
     # Send as plain text (no parse_mode) to avoid backslash pollution.
     await msg.answer(
         f"×©×œ×•× ××•×¡×™×£ ðŸ‘‹\n"
-        f"×× ×™ SLH Claude - ×ž×¦×‘: {_AI_MODE}\n"
+        f"×× ×™ SLH Claude â€” ×ž×¦×‘: {_AI_MODE}\n"
         f"{tier_line}\n"
         f"â”â”â” AI Spark â”â”â”\n"
-        f"/upgrade   - ×©×“×¨×•×’ ×œ-Pro/VIP\n"
-        f"/credits   - ×ž×›×¡×” ×–×ž×™× ×” ×”ï¿½-×•×“×©\n"
-        f"/pricing   - ×”×©×•×•××ª ï¿½-×‘×™×œ×•×ª\n\n"
+        f"/upgrade   â€” ×©×“×¨×•×’ ×œ-Pro/VIP\n"
+        f"/credits   â€” ×ž×›×¡×” ×–×ž×™× ×” ×”ï¿½-×•×“×©\n"
+        f"/pricing   â€” ×”×©×•×•××ª ï¿½-×‘×™×œ×•×ª\n\n"
         f"â”â”â” ×”×›×™ ×©×™×ž×•×©×™ â”â”â”\n"
-        f"/control   - ×¡×™×›×•× ×ž×¢×¨×›×ª ×‘×©×•×¨×” ×ï¿½-×ª\n"
-        f"/health    - ×‘×¨×™××•×ª API + DB\n"
-        f"/swarm     - 4 ×”×ž×›×©×™×¨×™× ×©×œ×š\n"
-        f"/devices   - ×¨×©×™×ž×ª ESP ×žï¿½-×•×‘×¨×™×\n"
-        f"/price     - ×žï¿½-×™×¨×™ SLH/MNH/ZVK\n\n"
+        f"/control   â€” ×¡×™×›×•× ×ž×¢×¨×›×ª ×‘×©×•×¨×” ×ï¿½-×ª\n"
+        f"/health    â€” ×‘×¨×™××•×ª API + DB\n"
+        f"/swarm     â€” 4 ×”×ž×›×©×™×¨×™× ×©×œ×š\n"
+        f"/devices   â€” ×¨×©×™×ž×ª ESP ×žï¿½-×•×‘×¨×™×\n"
+        f"/price     â€” ×žï¿½-×™×¨×™ SLH/MNH/ZVK\n\n"
         f"â”â”â” Admin â”â”â”\n"
-        f"/revenue        - MRR + ×¨×•×•ï¿½- 30 ×™×•×\n"
-        f"/anthropic_spend - ×¢×œ×•×ª AI\n"
-        f"/top_users      - Top 10 ×œ×¤×™ ×©×™×ž×•×©\n"
-        f"/quota_user <id> - ×‘×“×™×§×” ×œ×ž×©×ª×ž×© ×¡×¤×¦×™×¤×™\n\n"
+        f"/revenue        â€” MRR + ×¨×•×•ï¿½- 30 ×™×•×\n"
+        f"/anthropic_spend â€” ×¢×œ×•×ª AI\n"
+        f"/top_users      â€” Top 10 ×œ×¤×™ ×©×™×ž×•×©\n"
+        f"/quota_user <id> â€” ×‘×“×™×§×” ×œ×ž×©×ª×ž×© ×¡×¤×¦×™×¤×™\n\n"
         f"â”â”â” Ops â”â”â”\n"
         f"/ps  /bots  /logs <X>  /git  /task <X>\n\n"
         f"â”â”â” ×©×™ï¿½-×” ï¿½-×•×¤×©×™×ª â”â”â”\n"
@@ -238,7 +238,7 @@ def _escape_md(text: str) -> str:
     """Escape MarkdownV1 special chars inside values."""
     if not isinstance(text, str):
         text = str(text)
-    # aiogram default is MARKDOWN (v1) - escape only `_*`[
+    # aiogram default is MARKDOWN (v1) â€” escape only `_*`[
     return (
         text.replace("_", "\\_")
         .replace("*", "\\*")
@@ -408,7 +408,7 @@ async def cmd_control(msg: Message) -> None:
     queue_items = []
     if 'g' in locals() and not g.get("primary_bot_token_set"):
         queue_items.append("â€¢ ×”×’×“×¨ TELEGRAM_BOT_TOKEN ×‘-Railway")
-    queue_items.append("â€¢ ×¤×™×™×¨ ESP - ×©×œï¿½- /devices ×œ×‘×“×™×§×”")
+    queue_items.append("â€¢ ×¤×™×™×¨ ESP â€” ×©×œï¿½- /devices ×œ×‘×“×™×§×”")
     queue_items.append("â€¢ ×”×’×“×¨ SMS_PROVIDER ×‘-Railway (Inforu)")
     queue_items.append("â€¢ BotFather: ×”×’×“×¨ Mini App URL")
 
@@ -424,7 +424,7 @@ async def cmd_control(msg: Message) -> None:
 
 @dp.message(Command("swarm"))
 async def cmd_swarm(msg: Message) -> None:
-    """Show SLH Swarm mesh status - total/online/events/pending + per-device list."""
+    """Show SLH Swarm mesh status â€” total/online/events/pending + per-device list."""
     if not auth.is_authorized(msg.from_user.id):
         await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
         return
@@ -563,7 +563,7 @@ def _run_cmd(cmd: str, timeout: int = 15) -> str:
     except subprocess.TimeoutExpired:
         return f"â± command timed out after {timeout}s"
     except FileNotFoundError as e:
-        # Docker / git not in PATH - friendly message
+        # Docker / git not in PATH â€” friendly message
         return f"âš ï¸ command not found: {e}"
     except Exception as e:
         return f"âš ï¸ {type(e).__name__}: {e}"
@@ -689,7 +689,7 @@ async def cmd_ai_mode(msg: Message) -> None:
     )
 
 
-# Photo/screenshot handler - saves incoming images to /workspace/incoming_screenshots/
+# Photo/screenshot handler â€” saves incoming images to /workspace/incoming_screenshots/
 # so the human operator can read them via Read tool from outside the container.
 @dp.message(F.photo)
 async def on_photo(msg: Message) -> None:
@@ -763,9 +763,9 @@ async def on_text(msg: Message) -> None:
                 provider = "free-fallback"
                 model = "groq/llama-3.3-70b-versatile"
                 # Pass tier_mode='pro_fallback' so the system prompt knows the
-                # user paid for Pro - answer richly + acknowledge tool absence.
+                # user paid for Pro â€” answer richly + acknowledge tool absence.
                 reply, new_msgs = await client.converse(hist, text, tier_mode="pro_fallback")
-                # Tell the user once per message - visible Pro-tier degradation
+                # Tell the user once per message â€” visible Pro-tier degradation
                 reply = ("âš ï¸ _Pro tier ×–×ž× ×™ ×¢×œ Groq Llama (Anthropic balance ×¨×™×§). "
                          "×ª×¤×¢×•×œ×” ×¨×’×™×œ×” ×ªï¿½-×–×•×¨ ×ž×™×“ ×©×™×ª×•×•×¡×£ balance._\n\n") + reply
             else:
@@ -799,7 +799,7 @@ async def on_text(msg: Message) -> None:
         for chunk in _chunks(reply):
             await msg.answer(chunk)
 
-        # Low-quota nudge - only on transitions
+        # Low-quota nudge â€” only on transitions
         new_remaining = decision.quota_remaining - 1
         if 0 < new_remaining <= 3 and decision.tier == "free":
             await msg.answer(
