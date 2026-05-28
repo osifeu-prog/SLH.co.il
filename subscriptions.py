@@ -120,7 +120,7 @@ async def get_or_create(user_id: int) -> SubscriptionRow:
             now = _now_iso()
             end = _period_end(now, 30)
             await db.execute(
-                "INSERT INTO subscriptions "
+                "INSERT OR IGNORE INTO subscriptions "
                 "(user_id, tier, current_period_start, current_period_end) "
                 "VALUES (?, 'free', ?, ?)",
                 (user_id, now, end),
@@ -331,4 +331,5 @@ CREATE TABLE IF NOT EXISTS payments (
 CREATE INDEX IF NOT EXISTS idx_payments_user ON payments(user_id, created_at);
 CREATE INDEX IF NOT EXISTS idx_payments_status ON payments(status);
 """
+
 
