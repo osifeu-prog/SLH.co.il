@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 SLH Ecosystem API - FastAPI Backend
 Deployed on Railway | Connected to PostgreSQL
@@ -124,7 +124,7 @@ async def economy_status():
 
         "investor_engine": {
             "active_investors": active_investors,
-            "payout_model": "Net Profit � (Investor Share / Total Shares)",
+            "payout_model": "Net Profit ? (Investor Share / Total Shares)",
             "next_payout": "Requires admin two-step approval"
         },
 
@@ -233,15 +233,3 @@ async def command_center():
 @app.get('/pay', response_class=HTMLResponse)
 async def pay_page():
     return open('pay.html', encoding='utf-8').read()
-
-
-# Safe bot launchers (added automatically)
-from safe_bot import launch_safely
-from love_bot import build_app as build_love
-launch_safely("love_bot", "LOVE_BOT_TOKEN", build_love)
-from love_bot_female import build_app as build_love_female
-launch_safely("love_bot_female", "LOVE_BOT_TOKEN_FEMALE", build_love_female)
-from slh_claude_bot import build_app as build_claude
-launch_safely("claude_bot", "SLH_CLAUDE_BOT_TOKEN", build_claude)
-
-
