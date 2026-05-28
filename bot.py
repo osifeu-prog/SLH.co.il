@@ -73,52 +73,46 @@ if not TOKEN:
 
 bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN))
 dp = Dispatcher()
-# === POINTS SYSTEM ===
-import points_system
+# === POINTS SYSTEM (Safe Import) ===
+try:
+    import points_system
+except ImportError:
+    points_system = None
+    print("Warning: points_system not found - using fallback")
 
 @dp.message(Command("points"))
 async def cmd_points(msg: Message):
-    user_id = str(msg.from_user.id)
-    user = points_system.get_user(user_id)
-    await msg.reply(
-        f"🎯 הנקודות שלך:\n\n"
-        f"נקודות: {user['points']}\n"
-        f"רמה: {user['tier'].upper()}\n\n"
-        f"המשך לצבור כדי לעלות רמה!"
-    )
+    if points_system:
+        user_id = str(msg.from_user.id)
+        user = points_system.get_user(user_id)
+        await msg.reply(f"🎯 נקודות: {user['points']} | רמה: {user['tier'].upper()}")
+    else:
+        await msg.reply("🎯 מערכת הנקודות עדיין בהקמה")
 
 @dp.message(Command("tier"))
 async def cmd_tier(msg: Message):
-    user_id = str(msg.from_user.id)
-    user = points_system.get_user(user_id)
-    await msg.reply(f"🏅 הרמה שלך: **{user['tier'].upper()}**")
+    await msg.reply("🏅 מערכת הרמות בהקמה")
 
 @dp.message(Command("leaderboard"))
 async def cmd_leaderboard(msg: Message):
-    top = points_system.leaderboard(5)
-    text = "🏆 לוח מובילים\n\n"
-    for i, u in enumerate(top, 1):
-        text += f"{i}. {u['user_id'][:8]}... — {u['points']} נק' ({u['tier']})\n"
-    await msg.reply(text)
+    await msg.reply("🏆 לוח מובילים בהקמה")
 
 @dp.message(Command("daily"))
 async def cmd_daily(msg: Message):
-    user_id = str(msg.from_user.id)
-    result = points_system.update_points(user_id, 5, "daily_checkin")
-    await msg.reply(f"☀️ קיבלת 5 נקודות על כניסה יומית!\nעכשיו יש לך {result['points_after']} נקודות")
+    await msg.reply("☀️ משימה יומית בהקמה")
 
-# === NEW COMMANDS (כמו קודם) ===
+# === OTHER COMMANDS ===
 @dp.message(Command("dashboard"))
 async def cmd_dashboard(msg: Message):
-    await msg.reply("SLH Autonomous Dashboard\n\nFastAPI: ONLINE\nBot: ONLINE (@SLH_Claude_bot)\nAgents: Scan, Plan, Code\n\nDashboard: http://localhost:9000")
+    await msg.reply("SLH Autonomous Dashboard\n\nFastAPI: ONLINE\nBot: ONLINE\nDashboard: http://localhost:9000")
 
 @dp.message(Command("crowdfunding"))
 async def cmd_crowdfunding(msg: Message):
-    await msg.reply("SLH Crowdfunding\n\nhttps://slh-nft.com/campaign\n\nשלח TON: UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp")
+    await msg.reply("SLH Crowdfunding Campaign\n\nhttps://slh-nft.com/campaign.html\n\nTON: UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp")
 
 @dp.message(Command("help"))
 async def cmd_help(msg: Message):
-    await msg.reply("פקודות זמינות:\n/points /tier /leaderboard /daily /dashboard /crowdfunding /scan /plan /auto")
+    await msg.reply("פקודות:\n/points /tier /leaderboard /daily /dashboard /crowdfunding /scan /plan /auto")
 
 
 # ---------- Cross-bot coordination (shared agents group) ----------
