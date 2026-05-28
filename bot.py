@@ -860,3 +860,4 @@ async def cmd_auto(msg: Message):
     await msg.reply("Running full auto pipeline...")
     result = run_auto(goal)
     await msg.reply(result[:4000])
+
