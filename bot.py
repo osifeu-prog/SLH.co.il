@@ -1,4 +1,4 @@
-﻿"""@SLH_Claude_bot - aiogram entrypoint.
+"""@SLH_Claude_bot - aiogram entrypoint.
 
 Routes every text message from Osif to Claude with workspace tools.
 Guards with Telegram ID allowlist. Persists conversation per chat.
@@ -73,7 +73,7 @@ if not TOKEN:
 
 bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN))
 dp = Dispatcher()
-# === SAFE POINTS + DAILY ===
+# === SAFE COMMANDS ===
 try:
     import points_system
 except ImportError:
@@ -82,11 +82,11 @@ except ImportError:
 
 @dp.message(Command("dashboard"))
 async def cmd_dashboard(msg: Message):
-    await msg.reply("📊 SLH Autonomous Dashboard\n\nFastAPI: ONLINE\nBot: ONLINE\nDashboard: http://localhost:9000")
+    await msg.reply("📊 SLH Dashboard\nFastAPI: ONLINE\nBot: ONLINE\nhttp://localhost:9000")
 
 @dp.message(Command("crowdfunding"))
 async def cmd_crowdfunding(msg: Message):
-    await msg.reply("🚀 SLH Crowdfunding\n\nhttps://slh-nft.com/campaign.html\n\nTON: UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp")
+    await msg.reply("🚀 SLH Crowdfunding\nhttps://slh-nft.com/campaign.html\nTON: UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp")
 
 @dp.message(Command("points"))
 async def cmd_points(msg: Message):
@@ -98,7 +98,7 @@ async def cmd_points(msg: Message):
 
 @dp.message(Command("daily"))
 async def cmd_daily(msg: Message):
-    await msg.reply("📅 משימות יומיות:\n/checkin - כניסה יומית (+5)")
+    await msg.reply("📅 משימות יומיות:\n/checkin - +5 נקודות")
 
 @dp.message(Command("help"))
 async def cmd_help(msg: Message):
@@ -890,4 +890,3 @@ async def cmd_auto(msg: Message):
     await msg.reply("Running full auto pipeline...")
     result = run_auto(goal)
     await msg.reply(result[:4000])
-
