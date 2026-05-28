@@ -1,4 +1,4 @@
-׳³ֲײ²ֲ»ײ²ֲ¿# New commands for bot  English only to avoid encoding issues
+﻿×³Â³Ö²ÂŸ×²Â²Ö²Â»×²Â²Ö²Â¿# New commands for bot  English only to avoid encoding issues
 from aiogram import Router, F
 from aiogram.filters import Command
 from aiogram.types import Message
@@ -8,25 +8,25 @@ router = Router()
 @router.message(Command("dashboard"))
 async def cmd_dashboard(msg: Message):
     await msg.reply(
-        "׳³ֲ ײ²ֲ׳’ג‚¬ֲײ²ֲ SLH Autonomous Dashboard\n\n"
-        "׳³ג€™ײ²ֲ׳’ג‚¬ֲ¦ FastAPI: ONLINE\n"
-        "׳³ג€™ײ²ֲ׳’ג‚¬ֲ¦ Bot: ONLINE (@SLH_Claude_bot)\n"
-        "׳³ג€™ײ²ֲ׳’ג‚¬ֲ¦ Agents: Scan, Plan, Code\n"
-        "׳³ג€™ײ²ֲ׳’ג‚¬ֲ¦ Docker: postgres + redis + admin-bot\n\n"
+        "×³Â³Ö²Â ×²Â²Ö²ÂŸ×³â€™×’â€šÂ¬Ö²Âœ×²Â²Ö²ÂŠ SLH Autonomous Dashboard\n\n"
+        "×³Â³×’â‚¬â„¢×²Â²Ö²Âœ×³â€™×’â€šÂ¬Ö²Â¦ FastAPI: ONLINE\n"
+        "×³Â³×’â‚¬â„¢×²Â²Ö²Âœ×³â€™×’â€šÂ¬Ö²Â¦ Bot: ONLINE (@SLH_Claude_bot)\n"
+        "×³Â³×’â‚¬â„¢×²Â²Ö²Âœ×³â€™×’â€šÂ¬Ö²Â¦ Agents: Scan, Plan, Code\n"
+        "×³Â³×’â‚¬â„¢×²Â²Ö²Âœ×³â€™×’â€šÂ¬Ö²Â¦ Docker: postgres + redis + admin-bot\n\n"
         "Commands: /scan /plan /auto /dashboard"
     )
 
 @router.message(Command("crowdfunding"))
 async def cmd_crowdfunding(msg: Message):
     await msg.reply(
-        "׳³ֲ ײ²ֲ׳’ג‚¬ג„¢ײ²ֲ° SLH Crowdfunding Campaign\n\n"
+        "×³Â³Ö²Â ×²Â²Ö²ÂŸ×³â€™×’â€šÂ¬×’â€žÂ¢×²Â²Ö²Â° SLH Crowdfunding Campaign\n\n"
         "We're building an AI that builds itself  and you can be part of it.\n"
         "https://slh-nft.com/crowdfunding\n\n"
-        "׳³ֲ ײ²ֲײ²ֲײ²ֲ Rewards:\n"
-        "׳³ג€™׳’ג€ֲ¬ײ²ֲ¢ Supporter ()  Name on website\n"
-        "׳³ג€™׳’ג€ֲ¬ײ²ֲ¢ Builder ()  Early access + badge\n"
-        "׳³ג€™׳’ג€ֲ¬ײ²ֲ¢ Founder ()  Vote on features + private Telegram group\n"
-        "׳³ג€™׳’ג€ֲ¬ײ²ֲ¢ Visionary ()  1-on-1 call + founding member status\n\n"
+        "×³Â³Ö²Â ×²Â²Ö²ÂŸ×²Â²Ö²ÂŽ×²Â²Ö²Â Rewards:\n"
+        "×³Â³×’â‚¬â„¢×³â€™×’â‚¬ÂšÖ²Â¬×²Â²Ö²Â¢ Supporter ()  Name on website\n"
+        "×³Â³×’â‚¬â„¢×³â€™×’â‚¬ÂšÖ²Â¬×²Â²Ö²Â¢ Builder ()  Early access + badge\n"
+        "×³Â³×’â‚¬â„¢×³â€™×’â‚¬ÂšÖ²Â¬×²Â²Ö²Â¢ Founder ()  Vote on features + private Telegram group\n"
+        "×³Â³×’â‚¬â„¢×³â€™×’â‚¬ÂšÖ²Â¬×²Â²Ö²Â¢ Visionary ()  1-on-1 call + founding member status\n\n"
         "Send TON to:\n"
         "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp\n"
         "Include TX hash via bot to receive rewards."

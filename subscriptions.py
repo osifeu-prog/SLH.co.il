@@ -1,5 +1,5 @@
-"""
-SLH AI Spark ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ Subscription DB layer.
+﻿"""
+SLH AI Spark ×³Â³×’â‚¬â„¢×³â€™×’â‚¬ÂšÖ²Â¬×³â€™×’â€šÂ¬Ö²Â Subscription DB layer.
 
 Sits on the same SQLite file as `session.py` (sessions.db). Why same DB:
 - Single file to back up / migrate
@@ -29,7 +29,7 @@ import httpx
 
 import pricing
 
-# Phase B mirror ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ bot pushes state to slh-api Postgres so the Mini App
+# Phase B mirror ×³Â³×’â‚¬â„¢×³â€™×’â‚¬ÂšÖ²Â¬×³â€™×’â€šÂ¬Ö²Â bot pushes state to slh-api Postgres so the Mini App
 # widget can show live tier+quota. Best-effort: never raises.
 SLH_API_BASE = os.getenv("SLH_API_BASE", "https://slh-api-production.up.railway.app")
 ADMIN_API_KEY = os.getenv("ADMIN_API_KEY", "")
@@ -55,7 +55,7 @@ async def init_db() -> None:
     """Apply schema migrations. Idempotent."""
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
     if not os.path.exists(MIGRATION_FILE):
-        # Embedded fallback ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ keeps the bot bootable even if file is missing
+        # Embedded fallback ×³Â³×’â‚¬â„¢×³â€™×’â‚¬ÂšÖ²Â¬×³â€™×’â€šÂ¬Ö²Â keeps the bot bootable even if file is missing
         sql = _EMBEDDED_SCHEMA
     else:
         with open(MIGRATION_FILE, "r", encoding="utf-8") as f:
@@ -77,7 +77,7 @@ def _period_end(start_iso: str, days: int = 30) -> str:
 async def _mirror_to_pg(sub: SubscriptionRow) -> None:
     """Best-effort: push subscription state to Railway Postgres via API.
 
-    Never raises ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ SQLite stays canonical for quota.check (latency-sensitive).
+    Never raises ×³Â³×’â‚¬â„¢×³â€™×’â‚¬ÂšÖ²Â¬×³â€™×’â€šÂ¬Ö²Â SQLite stays canonical for quota.check (latency-sensitive).
     Logged failures are observable via /anthropic_status / docker logs.
     """
     if not ADMIN_API_KEY:
@@ -274,7 +274,7 @@ async def usage_stats(window_days: int = 30) -> dict:
 
 
 async def mrr_ils() -> float:
-    """Monthly recurring revenue: sum of active paid subscriptions ׳³ֲײ²ֲ¿ײ²ֲ½- tier price."""
+    """Monthly recurring revenue: sum of active paid subscriptions ×³Â³Ö²ÂŸ×²Â²Ö²Â¿×²Â²Ö²Â½- tier price."""
     async with aiosqlite.connect(DB_PATH) as db:
         cur = await db.execute(
             "SELECT tier, COUNT(*) FROM subscriptions "

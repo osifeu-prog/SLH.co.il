@@ -1,12 +1,12 @@
-"""
-SLH AI Spark ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ Telegram Stars payment flow.
+﻿"""
+SLH AI Spark ×³Â³×’â‚¬â„¢×³â€™×’â‚¬ÂšÖ²Â¬×³â€™×’â€šÂ¬Ö²Â Telegram Stars payment flow.
 
 Handlers:
-- /upgrade [tier]  ׳³ג€™׳’ג‚¬ֲ ׳’ג‚¬ג„¢ show prices or send invoice for the chosen tier
-- /credits         ׳³ג€™׳’ג‚¬ֲ ׳’ג‚¬ג„¢ show remaining quota
-- /pricing         ׳³ג€™׳’ג‚¬ֲ ׳’ג‚¬ג„¢ show full price table
-- pre_checkout_query handler ׳³ג€™׳’ג‚¬ֲ ׳’ג‚¬ג„¢ approve all (or refuse with reason)
-- successful_payment handler ׳³ג€™׳’ג‚¬ֲ ׳’ג‚¬ג„¢ activate subscription + log
+- /upgrade [tier]  ×³Â³×’â‚¬â„¢×³â€™×’â€šÂ¬Ö²Â ×³â€™×’â€šÂ¬×’â€žÂ¢ show prices or send invoice for the chosen tier
+- /credits         ×³Â³×’â‚¬â„¢×³â€™×’â€šÂ¬Ö²Â ×³â€™×’â€šÂ¬×’â€žÂ¢ show remaining quota
+- /pricing         ×³Â³×’â‚¬â„¢×³â€™×’â€šÂ¬Ö²Â ×³â€™×’â€šÂ¬×’â€žÂ¢ show full price table
+- pre_checkout_query handler ×³Â³×’â‚¬â„¢×³â€™×’â€šÂ¬Ö²Â ×³â€™×’â€šÂ¬×’â€žÂ¢ approve all (or refuse with reason)
+- successful_payment handler ×³Â³×’â‚¬â„¢×³â€™×’â€šÂ¬Ö²Â ×³â€™×’â€šÂ¬×’â€žÂ¢ activate subscription + log
 
 Wired into bot.py via `payment_flow.register(dp, auth)`.
 """
@@ -59,12 +59,12 @@ def register(dp: Dispatcher, auth_module) -> None:
             await msg.answer(auth_module.unauthorized_reply_he(msg.from_user.id))
             return
         await msg.answer(
-            pricing.all_tiers_summary_he() + "\n\n׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ©׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ²ֲ¨׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ג„¢: `/upgrade pro` ׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֲ¢ `/upgrade vip`"
+            pricing.all_tiers_summary_he() + "\n\n×³Â³Ö²Â³×²Â²Ö²Âœ×³Â³Ö²Â³×²Â²Ö²Â©×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Âœ×³Â³Ö²Â³×²Â²Ö²Â¨×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Â¢×³Â³Ö²Â³×³â€™×’â€šÂ¬×’â€žÂ¢: `/upgrade pro` ×³Â³Ö²Â³×²Â²Ö²Â×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Â¢ `/upgrade vip`"
         )
 
     @dp.message(Command("credits"))
     async def cmd_credits(msg: Message) -> None:
-        # Anyone can check their own credits ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ no auth gate (helpful for support)
+        # Anyone can check their own credits ×³Â³×’â‚¬â„¢×³â€™×’â‚¬ÂšÖ²Â¬×³â€™×’â€šÂ¬Ö²Â no auth gate (helpful for support)
         text = await quota.quota_status_he(msg.from_user.id)
         await msg.answer(text)
 
@@ -77,20 +77,20 @@ def register(dp: Dispatcher, auth_module) -> None:
         tier_arg = parts[1].strip().lower() if len(parts) > 1 else ""
 
         if tier_arg not in ("pro", "vip"):
-            # No tier specified ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ show menu with buttons
+            # No tier specified ×³Â³×’â‚¬â„¢×³â€™×’â‚¬ÂšÖ²Â¬×³â€™×’â€šÂ¬Ö²Â show menu with buttons
             kb = InlineKeyboardMarkup(inline_keyboard=[
                 [InlineKeyboardButton(
-                    text=f"׳³ֲ ײ²ֲ׳’ג‚¬ג„¢ײ²ֲ Pro ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ ׳³ג€™׳’ג‚¬ֲײ³ג€”{pricing.TIERS['pro'].price_ils}/׳³ֲײ²ֲ¿ײ²ֲ½-׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ²ֲ©",
+                    text=f"×³Â³Ö²Â ×²Â²Ö²ÂŸ×³â€™×’â€šÂ¬×’â€žÂ¢×²Â²Ö²ÂŽ Pro ×³Â³×’â‚¬â„¢×³â€™×’â‚¬ÂšÖ²Â¬×³â€™×’â€šÂ¬Ö²Â ×³Â³×’â‚¬â„¢×³â€™×’â€šÂ¬Ö²Âš×²Â³×’â‚¬â€{pricing.TIERS['pro'].price_ils}/×³Â³Ö²ÂŸ×²Â²Ö²Â¿×²Â²Ö²Â½-×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Â¢×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Âœ×³Â³Ö²Â³×²Â²Ö²Â©",
                     callback_data="upgrade:pro",
                 )],
                 [InlineKeyboardButton(
-                    text=f"׳³ֲ ײ²ֲ׳’ג‚¬ֻ׳’ג‚¬ֻ VIP ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ ׳³ג€™׳’ג‚¬ֲײ³ג€”{pricing.TIERS['vip'].price_ils}/׳³ֲײ²ֲ¿ײ²ֲ½-׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ²ֲ©",
+                    text=f"×³Â³Ö²Â ×²Â²Ö²ÂŸ×³â€™×’â€šÂ¬Ö»Âœ×³â€™×’â€šÂ¬Ö»Âœ VIP ×³Â³×’â‚¬â„¢×³â€™×’â‚¬ÂšÖ²Â¬×³â€™×’â€šÂ¬Ö²Â ×³Â³×’â‚¬â„¢×³â€™×’â€šÂ¬Ö²Âš×²Â³×’â‚¬â€{pricing.TIERS['vip'].price_ils}/×³Â³Ö²ÂŸ×²Â²Ö²Â¿×²Â²Ö²Â½-×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Â¢×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Âœ×³Â³Ö²Â³×²Â²Ö²Â©",
                     callback_data="upgrade:vip",
                 )],
-                [InlineKeyboardButton(text="׳³ֲ ײ²ֲ׳’ג‚¬ֲײ²ֲ ׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ²ֲ©׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ׳³ֲ³ײ³ג€” ׳³ֲײ²ֲ¿ײ²ֲ½-׳³ֲ³׳’ג‚¬ֻ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ³ג€”", callback_data="show_pricing")],
+                [InlineKeyboardButton(text="×³Â³Ö²Â ×²Â²Ö²ÂŸ×³â€™×’â€šÂ¬Ö²Âœ×²Â²Ö²ÂŠ ×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Â×³Â³Ö²Â³×²Â²Ö²Â©×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Â¢×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Â¢×³Â³Ö²Â³×²Â²Ö²Â×³Â³Ö²Â³×²Â³×’â‚¬â€ ×³Â³Ö²ÂŸ×²Â²Ö²Â¿×²Â²Ö²Â½-×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö»Âœ×³Â³Ö²Â³×³â€™×’â‚¬ÂžÖ²Â¢×³Â³Ö²Â³×²Â²Ö²Âœ×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Â¢×³Â³Ö²Â³×²Â³×’â‚¬â€", callback_data="show_pricing")],
             ])
             await msg.answer(
-                "*׳³ֲ³׳’ג‚¬ֻ׳³ֲײ²ֲ¿ײ²ֲ½-׳³ֲ³ײ²ֲ¨ ׳³ֲײ²ֲ¿ײ²ֲ½-׳³ֲ³׳’ג‚¬ֻ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֲ ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ©׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ²ֲ¨׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ג„¢:*\n\n"
+                "*×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö»Âœ×³Â³Ö²ÂŸ×²Â²Ö²Â¿×²Â²Ö²Â½-×³Â³Ö²Â³×²Â²Ö²Â¨ ×³Â³Ö²ÂŸ×²Â²Ö²Â¿×²Â²Ö²Â½-×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö»Âœ×³Â³Ö²Â³×³â€™×’â‚¬ÂžÖ²Â¢×³Â³Ö²Â³×²Â²Ö²Âœ×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Â ×³Â³Ö²Â³×²Â²Ö²Âœ×³Â³Ö²Â³×²Â²Ö²Â©×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Âœ×³Â³Ö²Â³×²Â²Ö²Â¨×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Â¢×³Â³Ö²Â³×³â€™×’â€šÂ¬×’â€žÂ¢:*\n\n"
                 + pricing.tier_summary_he("pro") + "\n\n"
                 + pricing.tier_summary_he("vip"),
                 reply_markup=kb,
@@ -102,11 +102,11 @@ def register(dp: Dispatcher, auth_module) -> None:
     @dp.callback_query(F.data.startswith("upgrade:"))
     async def cb_upgrade(cb, bot: Bot):
         if not auth_module.is_authorized(cb.from_user.id):
-            await cb.answer("׳³ֲ³ײ²ֲ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ ׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ²ֲ¨׳³ֲ³ײ²ֲ©׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֲ", show_alert=True)
+            await cb.answer("×³Â³Ö²Â³×²Â²Ö²Â×³Â³Ö²Â³×³â€™×’â‚¬ÂžÖ²Â¢×³Â³Ö²Â³×²Â²Ö²ÂŸ ×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Â×³Â³Ö²Â³×²Â²Ö²Â¨×³Â³Ö²Â³×²Â²Ö²Â©×³Â³Ö²Â³×²Â²Ö²Â×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Â", show_alert=True)
             return
         tier = cb.data.split(":", 1)[1]
         if tier not in ("pro", "vip"):
-            await cb.answer("׳³ֲײ²ֲ¿ײ²ֲ½-׳³ֲ³׳’ג‚¬ֻ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֲ ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ§׳³ֲ³׳’ג€ֲ¢׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ׳³ֲ³ײ³ג€”", show_alert=True)
+            await cb.answer("×³Â³Ö²ÂŸ×²Â²Ö²Â¿×²Â²Ö²Â½-×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö»Âœ×³Â³Ö²Â³×³â€™×’â‚¬ÂžÖ²Â¢×³Â³Ö²Â³×²Â²Ö²Âœ×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Â ×³Â³Ö²Â³×²Â²Ö²Âœ×³Â³Ö²Â³×²Â²Ö²Â ×³Â³Ö²Â³×²Â²Ö²Â§×³Â³Ö²Â³×³â€™×’â‚¬ÂžÖ²Â¢×³Â³Ö²Â³×³â€™×’â‚¬ÂžÖ²Â¢×³Â³Ö²Â³×²Â²Ö²Âž×³Â³Ö²Â³×²Â³×’â‚¬â€", show_alert=True)
             return
         await cb.answer()
         await _send_invoice(bot, cb.message.chat.id, cb.from_user.id, tier)
@@ -123,13 +123,13 @@ def register(dp: Dispatcher, auth_module) -> None:
         if tier is None or uid != query.from_user.id:
             await bot.answer_pre_checkout_query(
                 query.id, ok=False,
-                error_message="׳³ֲײ²ֲ¿ײ²ֲ½-׳³ֲ³׳’ג‚¬ֻ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֲ ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ ׳³ֲ³ײ³ג€”׳³ֲ³ײ²ֲ§׳³ֲ³׳’ג€ֳ-׳³ֲ³׳’ג‚¬ֲ. ׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ¡׳³ֲ³׳’ג‚¬ֲ ׳³ֲ³ײ²ֲ©׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ֻ ׳³ֲ³ײ²ֲ-/upgrade.",
+                error_message="×³Â³Ö²ÂŸ×²Â²Ö²Â¿×²Â²Ö²Â½-×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö»Âœ×³Â³Ö²Â³×³â€™×’â‚¬ÂžÖ²Â¢×³Â³Ö²Â³×²Â²Ö²Âœ×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Â ×³Â³Ö²Â³×²Â²Ö²Âœ×³Â³Ö²Â³×²Â²Ö²Â ×³Â³Ö²Â³×²Â³×’â‚¬â€×³Â³Ö²Â³×²Â²Ö²Â§×³Â³Ö²Â³×³â€™×’â‚¬ÂšÖ³-×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Â. ×³Â³Ö²Â³×²Â²Ö²Â ×³Â³Ö²Â³×²Â²Ö²Â¡×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Â ×³Â³Ö²Â³×²Â²Ö²Â©×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Â¢×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö»Âœ ×³Â³Ö²Â³×²Â²Ö²Âž-/upgrade.",
             )
             return
         if tier not in pricing.TIERS or pricing.TIERS[tier].price_stars == 0:
             await bot.answer_pre_checkout_query(
                 query.id, ok=False,
-                error_message="׳³ֲײ²ֲ¿ײ²ֲ½-׳³ֲ³׳’ג‚¬ֻ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֲ ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ§׳³ֲ³׳’ג€ֲ¢׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ׳³ֲ³ײ³ג€”.",
+                error_message="×³Â³Ö²ÂŸ×²Â²Ö²Â¿×²Â²Ö²Â½-×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö»Âœ×³Â³Ö²Â³×³â€™×’â‚¬ÂžÖ²Â¢×³Â³Ö²Â³×²Â²Ö²Âœ×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Â ×³Â³Ö²Â³×²Â²Ö²Âœ×³Â³Ö²Â³×²Â²Ö²Â ×³Â³Ö²Â³×²Â²Ö²Â§×³Â³Ö²Â³×³â€™×’â‚¬ÂžÖ²Â¢×³Â³Ö²Â³×³â€™×’â‚¬ÂžÖ²Â¢×³Â³Ö²Â³×²Â²Ö²Âž×³Â³Ö²Â³×²Â³×’â‚¬â€.",
             )
             return
         await bot.answer_pre_checkout_query(query.id, ok=True)
@@ -143,7 +143,7 @@ def register(dp: Dispatcher, auth_module) -> None:
             log.error(f"payment payload mismatch: {sp.invoice_payload}")
             return
 
-        # ILS conversion (stars ׳³ג€™׳’ג‚¬ֲ ׳’ג‚¬ג„¢ ils): use the tier's nominal ILS price as "received"
+        # ILS conversion (stars ×³Â³×’â‚¬â„¢×³â€™×’â€šÂ¬Ö²Â ×³â€™×’â€šÂ¬×’â€žÂ¢ ils): use the tier's nominal ILS price as "received"
         # Real settlement happens on Telegram's side; we're tracking nominal here.
         ils_cents = pricing.TIERS[tier].price_ils * 100
 
@@ -173,11 +173,11 @@ def register(dp: Dispatcher, auth_module) -> None:
 
         spec = pricing.TIERS[tier]
         await msg.answer(
-            f"׳³ג€™ײ²ֲ׳’ג‚¬ֲ¦ *׳³ֲ³ײ³ג€”׳³ֲ³ײ²ֲ©׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ©׳³ֲ³ײ²ֲ¨!*\n\n"
-            f"׳³ֲ³ײ²ֲ©׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ²ֲ¨׳³ֲ³׳’ג‚¬ג„¢׳³ֲ³ײ³ג€” ׳³ֲ³ײ²ֲ-*{spec.name_he}* ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ ׳³ג€™׳’ג‚¬ֲײ³ג€”{spec.price_ils}/׳³ֲײ²ֲ¿ײ²ֲ½-׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ²ֲ©.\n"
-            f"׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֳ·׳³ֲ³ײ²ֲ¡׳³ֲ³׳’ג‚¬ֲ: {spec.monthly_quota or 'unlimited (fair-use ' + str(spec.fair_use_cap) + ')'} ׳³ֲ³׳’ג‚¬ֲ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ²ֲ¢׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ³ג€”\n"
+            f"×³Â³×’â‚¬â„¢×²Â²Ö²Âœ×³â€™×’â€šÂ¬Ö²Â¦ *×³Â³Ö²Â³×²Â³×’â‚¬â€×³Â³Ö²Â³×²Â²Ö²Â©×³Â³Ö²Â³×²Â²Ö²Âœ×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Â¢×³Â³Ö²Â³×²Â²Ö²Â ×³Â³Ö²Â³×²Â²Ö²Â×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Â¢×³Â³Ö²Â³×²Â²Ö²Â©×³Â³Ö²Â³×²Â²Ö²Â¨!*\n\n"
+            f"×³Â³Ö²Â³×²Â²Ö²Â©×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Â¢×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Âœ×³Â³Ö²Â³×²Â²Ö²Â¨×³Â³Ö²Â³×³â€™×’â€šÂ¬×’â€žÂ¢×³Â³Ö²Â³×²Â³×’â‚¬â€ ×³Â³Ö²Â³×²Â²Ö²Âœ-*{spec.name_he}* ×³Â³×’â‚¬â„¢×³â€™×’â‚¬ÂšÖ²Â¬×³â€™×’â€šÂ¬Ö²Â ×³Â³×’â‚¬â„¢×³â€™×’â€šÂ¬Ö²Âš×²Â³×’â‚¬â€{spec.price_ils}/×³Â³Ö²ÂŸ×²Â²Ö²Â¿×²Â²Ö²Â½-×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Â¢×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Âœ×³Â³Ö²Â³×²Â²Ö²Â©.\n"
+            f"×³Â³Ö²Â³×²Â²Ö²Âž×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö³Â·×³Â³Ö²Â³×²Â²Ö²Â¡×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Â: {spec.monthly_quota or 'unlimited (fair-use ' + str(spec.fair_use_cap) + ')'} ×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Â×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Â¢×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Âœ×³Â³Ö²Â³×²Â²Ö²Â¢×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Â¢×³Â³Ö²Â³×²Â³×’â‚¬â€\n"
             f"AI: Claude Sonnet 4.5 + tools\n\n"
-            f"׳³ֲ³ײ²ֲ©׳³ֲ³ײ²ֲ׳³ֲײ²ֲ¿ײ²ֲ½- /credits ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ¨׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ³ג€” ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ¦׳³ֲ³׳’ג‚¬ֻ, ׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֲ¢ ׳³ֲ³׳’ג€ֳ-׳³ֲ³ײ²ֲ©׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ»ֲ ׳³ֲ³ײ²ֲ©׳³ֲ³ײ²ֲ׳³ֲײ²ֲ¿ײ²ֲ½- ׳³ֲ³ײ²ֲ©׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֲ."
+            f"×³Â³Ö²Â³×²Â²Ö²Â©×³Â³Ö²Â³×²Â²Ö²Âœ×³Â³Ö²ÂŸ×²Â²Ö²Â¿×²Â²Ö²Â½- /credits ×³Â³Ö²Â³×²Â²Ö²Âœ×³Â³Ö²Â³×²Â²Ö²Â¨×³Â³Ö²Â³×²Â²Ö²Â×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Â¢×³Â³Ö²Â³×²Â³×’â‚¬â€ ×³Â³Ö²Â³×²Â²Ö²Âž×³Â³Ö²Â³×²Â²Ö²Â¦×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö»Âœ, ×³Â³Ö²Â³×²Â²Ö²Â×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Â¢ ×³Â³Ö²Â³×³â€™×’â‚¬ÂšÖ³-×³Â³Ö²Â³×²Â²Ö²Â©×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Â¢×³Â³Ö²Â³×²Â»Ö²Âœ ×³Â³Ö²Â³×²Â²Ö²Â©×³Â³Ö²Â³×²Â²Ö²Âœ×³Â³Ö²ÂŸ×²Â²Ö²Â¿×²Â²Ö²Â½- ×³Â³Ö²Â³×²Â²Ö²Â©×³Â³Ö²Â³×²Â²Ö²Â×³Â³Ö²Â³×²Â²Ö²Âœ×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Â."
         )
 
     log.info("payment_flow handlers registered")
@@ -186,15 +186,15 @@ def register(dp: Dispatcher, auth_module) -> None:
 async def _send_invoice(bot: Bot, chat_id: int, user_id: int, tier: str) -> None:
     spec = pricing.TIERS[tier]
     if spec.price_stars == 0:
-        await bot.send_message(chat_id, f"׳³ֲײ²ֲ¿ײ²ֲ½-׳³ֲ³׳’ג‚¬ֻ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ׳³ֲ³ײ³ג€” {spec.name_he} ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ³ג€”׳³ֲ³ײ²ֲ ׳³ֲ³ײ³ג€” ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ¨׳³ֲ³׳’ג‚¬ֳ·׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ©׳³ֲ³׳’ג‚¬ֲ ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ©׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ¨׳³ֲ³׳’ג‚¬ֲ.")
+        await bot.send_message(chat_id, f"×³Â³Ö²ÂŸ×²Â²Ö²Â¿×²Â²Ö²Â½-×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö»Âœ×³Â³Ö²Â³×³â€™×’â‚¬ÂžÖ²Â¢×³Â³Ö²Â³×²Â²Ö²Âœ×³Â³Ö²Â³×²Â³×’â‚¬â€ {spec.name_he} ×³Â³Ö²Â³×²Â²Ö²Âœ×³Â³Ö²Â³×²Â²Ö²Â ×³Â³Ö²Â³×²Â²Ö²Â ×³Â³Ö²Â³×³â€™×’â‚¬ÂžÖ²Â¢×³Â³Ö²Â³×²Â³×’â‚¬â€×³Â³Ö²Â³×²Â²Ö²Â ×³Â³Ö²Â³×²Â³×’â‚¬â€ ×³Â³Ö²Â³×²Â²Ö²Âœ×³Â³Ö²Â³×²Â²Ö²Â¨×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö³Â·×³Â³Ö²Â³×³â€™×’â‚¬ÂžÖ²Â¢×³Â³Ö²Â³×²Â²Ö²Â©×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Â ×³Â³Ö²Â³×³â€™×’â‚¬ÂžÖ²Â¢×³Â³Ö²Â³×²Â²Ö²Â©×³Â³Ö²Â³×³â€™×’â‚¬ÂžÖ²Â¢×³Â³Ö²Â³×²Â²Ö²Â¨×³Â³Ö²Â³×³â€™×’â€šÂ¬Ö²Â.")
         return
     await bot.send_invoice(
         chat_id=chat_id,
-        title=f"SLH AI Spark ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ {spec.name_he}",
+        title=f"SLH AI Spark ×³Â³×’â‚¬â„¢×³â€™×’â‚¬ÂšÖ²Â¬×³â€™×’â€šÂ¬Ö²Â {spec.name_he}",
         description=spec.description_he,
         payload=_payload_for_tier(tier, user_id),
         currency=STARS_CURRENCY,
-        prices=[LabeledPrice(label=f"{spec.name_he} ׳³ֲײ²ֲ¿ײ²ֲ½-30 ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ", amount=spec.price_stars)],
-        # provider_token left empty ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ Telegram Stars don't need a provider
+        prices=[LabeledPrice(label=f"{spec.name_he} ×³Â³Ö²ÂŸ×²Â²Ö²Â¿×²Â²Ö²Â½-30 ×³Â³Ö²Â³×³â€™×’â‚¬ÂžÖ²Â¢×³Â³Ö²Â³×²Â²Ö²Âž×³Â³Ö²Â³×³â€™×’â‚¬ÂžÖ²Â¢×³Â³Ö²Â³×²Â²Ö²Â", amount=spec.price_stars)],
+        # provider_token left empty ×³Â³×’â‚¬â„¢×³â€™×’â‚¬ÂšÖ²Â¬×³â€™×’â€šÂ¬Ö²Â Telegram Stars don't need a provider
     )
 

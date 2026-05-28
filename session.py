@@ -1,4 +1,4 @@
-"""SQLite-backed conversation memory. One row per message, per Telegram chat."""
+﻿"""SQLite-backed conversation memory. One row per message, per Telegram chat."""
 import aiosqlite
 import json
 import os

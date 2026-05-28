@@ -1,4 +1,4 @@
-ן»¿import requests
+﻿×ŸÂ»Â¿import requests
 MANAGER_URL = "http://localhost:9000"
 
 def send_to_manager(endpoint, params=None):

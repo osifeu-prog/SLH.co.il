@@ -1,4 +1,4 @@
-׳³ֲײ²ֲ»ײ²ֲ¿"""
+﻿×³Â³Ö²ÂŸ×²Â²Ö²Â»×²Â²Ö²Â¿"""
 Bridge between Telegram bot and Autonomous Agents
 Commands: /scan, /plan, /auto
 """
