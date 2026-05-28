@@ -79,6 +79,35 @@ try:
 except ImportError:
     points_system = None
 
+# --- Backup & Restore ---
+import backup
+import os
+from aiogram.types import ContentType
+
+@dp.message(Command("backup"))
+async def cmd_backup(msg: Message):
+    try:
+        path = backup.create_backup()
+        await msg.reply(f"✅ Backup created:\n{path}", parse_mode=None)
+    except Exception as e:
+        await msg.reply(f"❌ Backup failed: {e}", parse_mode=None)
+
+@dp.message(Command("restore"))
+async def cmd_restore(msg: Message):
+    await msg.reply("Please send the backup ZIP file to restore.", parse_mode=None)
+
+@dp.message(F.content_type == ContentType.DOCUMENT)
+async def handle_restore_file(msg: Message):
+    if msg.document.file_name.endswith(".zip"):
+        file_path = await msg.document.download()
+        try:
+            backup.restore_backup(file_path)
+            await msg.reply("✅ Restored successfully. Restarting bot...", parse_mode=None)
+            os._exit(0)
+        except Exception as e:
+            await msg.reply(f"❌ Restore failed: {e}", parse_mode=None)
+
+# --- Points & Daily ---
 @dp.message(Command("dashboard"))
 async def cmd_dashboard(msg: Message):
     await msg.reply("SLH Dashboard\nFastAPI: ONLINE\nBot: ONLINE\nhttp://localhost:9000", parse_mode=None)
@@ -101,7 +130,7 @@ async def cmd_daily(msg: Message):
 
 @dp.message(Command("help"))
 async def cmd_help(msg: Message):
-    await msg.reply("Commands:\n/dashboard\n/crowdfunding\n/points\n/daily\n/help", parse_mode=None)
+    await msg.reply("Commands:\n/dashboard\n/crowdfunding\n/points\n/daily\n/backup\n/help", parse_mode=None)
 
 
 # ---------- Cross-bot coordination (shared agents group) ----------
