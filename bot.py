@@ -152,41 +152,28 @@ def _chunks(text: str, size: int = 4000) -> list[str]:
 
 @dp.message(Command("start"))
 async def cmd_start(msg: Message) -> None:
-    if not auth.is_authorized(msg.from_user.id):
-        await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
-        return
-    # Lazy-create subscription row + show tier
-    try:
-        sub = await subscriptions.get_or_create(msg.from_user.id)
-        tier_line = f"💎 Tier: {sub.tier} · {sub.messages_used_this_period} הודעות ה�-ודש\n"
-    except Exception:
-        tier_line = ""
-    # Send as plain text (no parse_mode) to avoid backslash pollution.
-    await msg.answer(
-        f"שלום אוסיף 👋\n"
-        f"אני SLH Claude — מצב: {_AI_MODE}\n"
-        f"{tier_line}\n"
-        f"━━━ AI Spark ━━━\n"
-        f"/upgrade   — שדרוג ל-Pro/VIP\n"
-        f"/credits   — מכסה זמינה ה�-ודש\n"
-        f"/pricing   — השוואת �-בילות\n\n"
-        f"━━━ הכי שימושי ━━━\n"
-        f"/control   — סיכום מערכת בשורה א�-ת\n"
-        f"/health    — בריאות API + DB\n"
-        f"/swarm     — 4 המכשירים שלך\n"
-        f"/devices   — רשימת ESP מ�-וברים\n"
-        f"/price     — מ�-ירי SLH/MNH/ZVK\n\n"
-        f"━━━ Admin ━━━\n"
-        f"/revenue        — MRR + רוו�- 30 יום\n"
-        f"/anthropic_spend — עלות AI\n"
-        f"/top_users      — Top 10 לפי שימוש\n"
-        f"/quota_user <id> — בדיקה למשתמש ספציפי\n\n"
-        f"━━━ Ops ━━━\n"
-        f"/ps  /bots  /logs <X>  /git  /task <X>\n\n"
-        f"━━━ שי�-ה �-ופשית ━━━\n"
-        f"כל טקסט א�-ר → AI לפי ה-tier שלך\n\n"
-        f"עזרה מלאה: /help",
-        parse_mode=None,
+async def cmd_start(msg: Message):
+    await msg.reply(
+        "Welcome Osif ??\n"
+        "SLH Claude  free-only mode (Groq/Gemini)\n\n"
+        "=== AI Spark ===\n"
+        "/upgrade  Upgrade to Pro/VIP\n"
+        "/credits  Monthly quota\n"
+        "/pricing  Plan comparison\n\n"
+        "=== Top Commands ===\n"
+        "/control  System summary\n"
+        "/health  API + DB health\n"
+        "/devices  ESP devices\n\n"
+        "=== Autonomous ===\n"
+        "/dashboard  System dashboard\n"
+        "/crowdfunding  Support the project\n"
+        "/scan  Scan project\n"
+        "/plan <goal>  Plan tasks\n"
+        "/auto <goal>  Full auto pipeline\n\n"
+        "=== Ops ===\n"
+        "/ps /bots /logs /git /task\n\n"
+        "Free chat: any other text ? AI (Groq)\n"
+        "/help for full command list"
     )
 
 
