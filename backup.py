@@ -1,4 +1,4 @@
-﻿import os, zipfile, datetime, shutil
+﻿import os, zipfile, datetime
 
 BACKUP_DIR = os.path.join(os.path.dirname(__file__), "backups")
 
@@ -11,7 +11,7 @@ def create_backup():
     with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
         for root, _, files in os.walk("."):
             for file in files:
-                if file.endswith(".py") or file.endswith(".json") or file.endswith(".html") or file.endswith(".env"):
+                if file.endswith((".py", ".json", ".html", ".env")):
                     full = os.path.join(root, file)
                     zf.write(full, os.path.relpath(full, "."))
     return zip_path
