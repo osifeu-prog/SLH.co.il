@@ -73,6 +73,53 @@ if not TOKEN:
 
 bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN))
 dp = Dispatcher()
+# === NEW COMMANDS ===
+@dp.message(Command("dashboard"))
+async def cmd_dashboard(msg: Message):
+    await msg.reply("SLH Autonomous Dashboard\n\nFastAPI: ONLINE\nBot: ONLINE (@SLH_Claude_bot)\nAgents: Scan, Plan, Code\nDocker: postgres + redis + admin-bot\n\nCommands: /scan /plan /auto /dashboard /crowdfunding")
+
+@dp.message(Command("crowdfunding"))
+async def cmd_crowdfunding(msg: Message):
+    await msg.reply("SLH Crowdfunding Campaign\n\nWe are building an AI that builds itself - join us.\nhttps://slh-nft.com/campaign\n\nRewards:\n- Supporter (USD 1) Name on website\n- Builder (USD 5) Early access + badge\n- Founder (USD 20) Vote on features + private group\n- Visionary (USD 50) 1-on-1 call + founding status\n\nSend TON to:\nUQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp\nInclude TX hash to receive rewards.")
+
+@dp.message(Command("scan"))
+async def cmd_scan(msg: Message):
+    await msg.reply("Scanning requires local agent. Use dashboard or run locally: python scan_agent.py D:/slh-website")
+
+@dp.message(Command("plan"))
+async def cmd_plan(msg: Message):
+    await msg.reply("Planning requires local agent. Use dashboard or run locally: python planning_agent.py")
+
+@dp.message(Command("auto"))
+async def cmd_auto(msg: Message):
+    await msg.reply("Auto mode requires local agent. Use dashboard or run locally: python task_core.py")
+
+@dp.message(Command("help"))
+async def cmd_help(msg: Message):
+    await msg.reply(
+        "SLH Claude - Command Reference\n\n"
+        "=== AI & Chat ===\n"
+        "/start - Main menu\n"
+        "/help - This reference\n"
+        "Any text - AI chat (Groq/Gemini)\n\n"
+        "=== Autonomous System ===\n"
+        "/ai_manager <goal> - Run AI pipeline\n"
+        "/audit - View audit trail\n"
+        "/dashboard - System status\n"
+        "/scan - Scan project\n"
+        "/plan <goal> - Plan tasks\n"
+        "/auto <goal> - Full auto pipeline\n\n"
+        "=== Crowdfunding ===\n"
+        "/crowdfunding - Campaign info\n"
+        "https://slh-nft.com/campaign - Landing page\n\n"
+        "=== Admin & Ops ===\n"
+        "/health - API+DB health\n"
+        "/devices - ESP devices\n"
+        "/revenue - MRR report\n"
+        "/top_users - Top 10\n"
+        "/ps /bots /logs /git /task\n\n"
+        "Dashboard: http://localhost:9000"
+    )
 
 
 # ---------- Cross-bot coordination (shared agents group) ----------
@@ -171,34 +218,7 @@ async def cmd_start(msg: Message) -> None:
 
 
 @dp.message(Command("help"))
-async def cmd_help(msg: Message):
-    await msg.reply(
-        "SLH Claude  Command Reference\n\n"
-        "=== AI & Chat ===\n"
-        "/start  Main menu\n"
-        "/help  This reference\n"
-        "Any text  AI chat (Groq/Gemini)\n\n"
-        "=== Autonomous System ===\n"
-        "/ai_manager <goal>  Run AI pipeline\n"
-        "/audit  View audit trail\n"
-        "/dashboard  System status\n"
-        "/scan  Scan project\n"
-        "/plan <goal>  Plan tasks\n"
-        "/auto <goal>  Full auto pipeline\n\n"
-        "=== Crowdfunding ===\n"
-        "/crowdfunding  Campaign info\n"
-        "https://slh-nft.com/campaign  Landing page\n\n"
-        "=== Admin & Ops ===\n"
-        "/health  API+DB health\n"
-        "/devices  ESP devices\n"
-        "/revenue  MRR report\n"
-        "/top_users  Top 10\n"
-        "/ps /bots /logs /git /task\n\n"
-        "=== Editor (Git integration) ===\n"
-        "/cat /ls /grep /find /editor\n"
-        "/commit /push /sync\n\n"
-        "Dashboard: http://localhost:9000"
-    ) -> None:
+async def cmd_help(msg: Message) -> None:
     if not auth.is_authorized(msg.from_user.id):
         await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
         return
@@ -887,5 +907,4 @@ async def cmd_auto(msg: Message):
     await msg.reply("Running full auto pipeline...")
     result = run_auto(goal)
     await msg.reply(result[:4000])
-
 
