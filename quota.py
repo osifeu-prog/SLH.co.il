@@ -1,5 +1,5 @@
 """
-SLH AI Spark ג€” Quota middleware.
+SLH AI Spark ׳’ג‚¬ג€ Quota middleware.
 
 Sits between the Telegram message handler and the AI client. Decides:
 1. Does this user have quota left this month?
@@ -29,7 +29,7 @@ import subscriptions
 class QuotaDecision:
     allowed: bool
     tier: str                       # 'free' | 'pro' | 'vip' | 'zvk'
-    use_anthropic: bool             # True ג†’ claude_client, False ג†’ free_ai_client
+    use_anthropic: bool             # True ׳’ג€ ג€™ claude_client, False ׳’ג€ ג€™ free_ai_client
     refusal_he: Optional[str]       # message to send the user if not allowed
     quota_remaining: int            # informational; for /credits command
     quota_total: int
@@ -87,24 +87,24 @@ def _quota_exhausted_message(tier: str, used: int, cap: int) -> str:
     spec = pricing.TIERS.get(tier, pricing.TIERS["free"])
     if tier == "free":
         return (
-            f"נ“ *׳׳›׳¡׳× ן¿½-׳•׳“׳© ׳ ׳’׳׳¨׳”* ג€” ׳”׳©׳×׳׳©׳× ׳‘-{used}/{cap} ׳”׳•׳“׳¢׳•׳×.\n\n"
-            f"׳©׳“׳¨׳•׳’ ׳-Pro: 100 ׳”׳•׳“׳¢׳•׳×/ן¿½-׳•׳“׳© + Claude Sonnet 4.5 + tools.\n"
-            f"נ’ *Pro ג€” ג‚×29/ן¿½-׳•׳“׳©* (500 ג­)\n\n"
-            f"׳©׳ן¿½-: `/upgrade pro`"
+            f"׳ ֲג€ֲ *׳³ֲ׳³ג€÷׳³ֲ¡׳³ֳ— ׳ֲ¿ֲ½-׳³ג€¢׳³ג€׳³ֲ© ׳³ֲ ׳³ג€™׳³ֲ׳³ֲ¨׳³ג€* ׳’ג‚¬ג€ ׳³ג€׳³ֲ©׳³ֳ—׳³ֲ׳³ֲ©׳³ֳ— ׳³ג€˜-{used}/{cap} ׳³ג€׳³ג€¢׳³ג€׳³ֲ¢׳³ג€¢׳³ֳ—.\n\n"
+            f"׳³ֲ©׳³ג€׳³ֲ¨׳³ג€¢׳³ג€™ ׳³ֲ-Pro: 100 ׳³ג€׳³ג€¢׳³ג€׳³ֲ¢׳³ג€¢׳³ֳ—/׳ֲ¿ֲ½-׳³ג€¢׳³ג€׳³ֲ© + Claude Sonnet 4.5 + tools.\n"
+            f"׳ ֲג€™ֲ *Pro ׳’ג‚¬ג€ ׳’ג€ֳ—29/׳ֲ¿ֲ½-׳³ג€¢׳³ג€׳³ֲ©* (500 ׳’ֲ­ֲ)\n\n"
+            f"׳³ֲ©׳³ֲ׳ֲ¿ֲ½-: `/upgrade pro`"
         )
     if tier == "vip":
         return (
-            f"ג ן¸ ׳”׳’׳¢׳× ׳-fair-use cap ׳©׳ {cap} ׳”׳•׳“׳¢׳•׳× ׳”ן¿½-׳•׳“׳© (VIP unlimited).\n"
-            f"׳–׳” ׳׳§׳¨׳” ׳ ׳“׳™׳¨ ג€” ׳¦׳•׳¨ ׳§׳©׳¨ ׳¢׳ @osifeu_prog ׳׳”׳¢׳׳׳”."
+            f"׳’ֲֲ ׳ֲ¸ֲ ׳³ג€׳³ג€™׳³ֲ¢׳³ֳ— ׳³ֲ-fair-use cap ׳³ֲ©׳³ֲ {cap} ׳³ג€׳³ג€¢׳³ג€׳³ֲ¢׳³ג€¢׳³ֳ— ׳³ג€׳ֲ¿ֲ½-׳³ג€¢׳³ג€׳³ֲ© (VIP unlimited).\n"
+            f"׳³ג€“׳³ג€ ׳³ֲ׳³ֲ§׳³ֲ¨׳³ג€ ׳³ֲ ׳³ג€׳³ג„¢׳³ֲ¨ ׳’ג‚¬ג€ ׳³ֲ¦׳³ג€¢׳³ֲ¨ ׳³ֲ§׳³ֲ©׳³ֲ¨ ׳³ֲ¢׳³ֲ @osifeu_prog ׳³ֲ׳³ג€׳³ֲ¢׳³ֲ׳³ֲ׳³ג€."
         )
     return (
-        f"נ“ ׳׳›׳¡׳× ׳”-{spec.name_he} ׳©׳׳ ׳ ׳’׳׳¨׳” ({used}/{cap}).\n"
-        f"׳׳×ן¿½-׳“׳© ׳‘-1 ׳ן¿½-׳•׳“׳© ׳”׳‘׳, ׳׳• ׳©׳“׳¨׳’ ׳¢׳ `/upgrade vip`."
+        f"׳ ֲג€ֲ ׳³ֲ׳³ג€÷׳³ֲ¡׳³ֳ— ׳³ג€-{spec.name_he} ׳³ֲ©׳³ֲ׳³ֲ ׳³ֲ ׳³ג€™׳³ֲ׳³ֲ¨׳³ג€ ({used}/{cap}).\n"
+        f"׳³ֲ׳³ֳ—׳ֲ¿ֲ½-׳³ג€׳³ֲ© ׳³ג€˜-1 ׳³ֲ׳ֲ¿ֲ½-׳³ג€¢׳³ג€׳³ֲ© ׳³ג€׳³ג€˜׳³ֲ, ׳³ֲ׳³ג€¢ ׳³ֲ©׳³ג€׳³ֲ¨׳³ג€™ ׳³ֲ¢׳³ֲ `/upgrade vip`."
     )
 
 
 async def quota_status_he(user_id: int) -> str:
-    """For /credits command ג€” show remaining quota."""
+    """For /credits command ׳’ג‚¬ג€ show remaining quota."""
     sub = await subscriptions.get_or_create(user_id)
     spec = pricing.TIERS.get(sub.tier, pricing.TIERS["free"])
     cap = spec.monthly_quota if spec.monthly_quota > 0 else spec.fair_use_cap
@@ -113,12 +113,12 @@ async def quota_status_he(user_id: int) -> str:
     pct = (used / cap * 100) if cap else 0
     bar_len = 20
     filled = int(used / cap * bar_len) if cap else 0
-    bar = "ג–ˆ" * filled + "ג–‘" * (bar_len - filled)
+    bar = "׳’ג€“ֻ†" * filled + "׳’ג€“ג€˜" * (bar_len - filled)
     return (
-        f"נ“ *Tier: {spec.name_he}*\n\n"
+        f"׳ ֲג€ֲ *Tier: {spec.name_he}*\n\n"
         f"`{bar}`\n"
-        f"׳”׳©׳×׳׳©׳× ׳‘-{used}/{cap} ({pct:.0f}%)\n"
-        f"׳ ׳•׳×׳¨׳•: *{remaining}* ׳”׳•׳“׳¢׳•׳×\n\n"
-        f"׳׳×ן¿½-׳“׳©: `{sub.current_period_end[:10]}`"
+        f"׳³ג€׳³ֲ©׳³ֳ—׳³ֲ׳³ֲ©׳³ֳ— ׳³ג€˜-{used}/{cap} ({pct:.0f}%)\n"
+        f"׳³ֲ ׳³ג€¢׳³ֳ—׳³ֲ¨׳³ג€¢: *{remaining}* ׳³ג€׳³ג€¢׳³ג€׳³ֲ¢׳³ג€¢׳³ֳ—\n\n"
+        f"׳³ֲ׳³ֳ—׳ֲ¿ֲ½-׳³ג€׳³ֲ©: `{sub.current_period_end[:10]}`"
     )
 

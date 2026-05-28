@@ -1,8 +1,8 @@
-"""Free AI client ג€” drop-in replacement for claude_client.
+"""Free AI client ׳’ג‚¬ג€ drop-in replacement for claude_client.
 
 Instead of calling Anthropic directly (paid), this routes through the SLH API's
 `/api/ai/chat` endpoint which has a multi-provider fallback chain:
-  groq (free Llama 3.3 70B) ג†’ gemini ג†’ together ג†’ openai
+  groq (free Llama 3.3 70B) ׳’ג€ ג€™ gemini ׳’ג€ ג€™ together ׳’ג€ ג€™ openai
 
 This means @SLH_Claude_bot works at zero cost per message.
 
@@ -27,24 +27,24 @@ DEFAULT_LANG = os.getenv("SLH_AI_LANG", "he")
 TIMEOUT = float(os.getenv("SLH_AI_TIMEOUT", "45"))
 
 _SYSTEM_PROMPT_FREE = (
-    "׳׳×׳” SLH Claude ג€” ׳¢׳•׳–׳¨ ׳׳™׳©׳™ ׳©׳ ׳׳•׳¡׳™׳£ ׳•׳׳©׳×׳׳©׳™ SLH Spark. "
-    "**׳׳ ׳×׳¦׳™׳’ ׳׳× ׳¢׳¦׳׳ ׳‘׳›׳ ׳×׳©׳•׳‘׳”.** ׳¢׳ ׳” ׳™׳©׳¨ ׳׳©׳׳׳”. ׳¢׳‘׳¨׳™׳×, ׳§׳¦׳¨.\n"
-    "׳׳ ׳ ׳©׳׳׳× ׳¢׳ ׳₪׳¢׳•׳׳•׳× ׳׳¢׳¨׳›׳× (docker/git/׳§׳‘׳¦׳™׳) ג€” ׳”׳¦׳™׳¢ slash commands: "
+    "׳³ֲ׳³ֳ—׳³ג€ SLH Claude ׳’ג‚¬ג€ ׳³ֲ¢׳³ג€¢׳³ג€“׳³ֲ¨ ׳³ֲ׳³ג„¢׳³ֲ©׳³ג„¢ ׳³ֲ©׳³ֲ ׳³ֲ׳³ג€¢׳³ֲ¡׳³ג„¢׳³ֲ£ ׳³ג€¢׳³ֲ׳³ֲ©׳³ֳ—׳³ֲ׳³ֲ©׳³ג„¢ SLH Spark. "
+    "**׳³ֲ׳³ֲ ׳³ֳ—׳³ֲ¦׳³ג„¢׳³ג€™ ׳³ֲ׳³ֳ— ׳³ֲ¢׳³ֲ¦׳³ֲ׳³ֲ ׳³ג€˜׳³ג€÷׳³ֲ ׳³ֳ—׳³ֲ©׳³ג€¢׳³ג€˜׳³ג€.** ׳³ֲ¢׳³ֲ ׳³ג€ ׳³ג„¢׳³ֲ©׳³ֲ¨ ׳³ֲ׳³ֲ©׳³ֲ׳³ֲ׳³ג€. ׳³ֲ¢׳³ג€˜׳³ֲ¨׳³ג„¢׳³ֳ—, ׳³ֲ§׳³ֲ¦׳³ֲ¨.\n"
+    "׳³ֲ׳³ֲ ׳³ֲ ׳³ֲ©׳³ֲ׳³ֲ׳³ֳ— ׳³ֲ¢׳³ֲ ׳³ג‚×׳³ֲ¢׳³ג€¢׳³ֲ׳³ג€¢׳³ֳ— ׳³ֲ׳³ֲ¢׳³ֲ¨׳³ג€÷׳³ֳ— (docker/git/׳³ֲ§׳³ג€˜׳³ֲ¦׳³ג„¢׳³ֲ) ׳’ג‚¬ג€ ׳³ג€׳³ֲ¦׳³ג„¢׳³ֲ¢ slash commands: "
     "/ps /logs <bot> /git /health /price /devices /credits.\n"
-    "׳׳ ן¿½-׳•׳¨׳’ ׳׳ ׳•׳©׳׳™ SLH ׳׳׳ ׳׳ ׳‘׳¨׳•׳¨. ׳¨׳§׳¢: website (slh-nft.com), "
+    "׳³ֲ׳³ֲ ׳ֲ¿ֲ½-׳³ג€¢׳³ֲ¨׳³ג€™ ׳³ֲ׳³ֲ ׳³ג€¢׳³ֲ©׳³ֲ׳³ג„¢ SLH ׳³ֲ׳³ֲ׳³ֲ ׳³ֲ׳³ֲ ׳³ג€˜׳³ֲ¨׳³ג€¢׳³ֲ¨. ׳³ֲ¨׳³ֲ§׳³ֲ¢: website (slh-nft.com), "
     "API (Railway), 25 Telegram bots, SLH token (BSC), Phase 2 (Voice/Swarm)."
 )
 
 _SYSTEM_PROMPT_PRO_FALLBACK = (
-    "׳׳×׳” SLH Claude (Pro mode ֲ· fallback). "
-    "**׳׳ ׳×׳¦׳™׳’ ׳׳× ׳¢׳¦׳׳ ׳‘׳›׳ ׳×׳©׳•׳‘׳”.** ׳¢׳ ׳” ׳™׳©׳™׳¨׳•׳×, ׳‘׳¢׳‘׳¨׳™׳×, ׳§׳¦׳¨ ׳•׳₪׳¨׳§׳˜׳™.\n"
-    "׳”׳׳©׳×׳׳© ׳©׳™׳׳ ׳¢׳ ן¿½-׳‘׳™׳׳× Pro ׳¢׳ Claude + tools, ׳׳‘׳ ׳›׳¢׳× Anthropic balance ׳¨׳™׳§ "
-    "׳•׳׳×׳” ׳¨׳¥ ׳“׳¨׳ Groq Llama 3.3 70B ׳׳׳ ׳™׳›׳•׳׳× ׳׳‘׳¦׳¢ tools. "
-    "׳׳ ׳ ׳©׳׳׳× ׳׳‘׳¦׳¢ ׳₪׳¢׳•׳׳” (׳§׳¨׳™׳׳× ׳§׳•׳‘׳¥, git, deploy) ג€” ׳”׳¡׳‘׳¨ ׳©׳–׳” ׳™׳“׳¨׳•׳© ׳׳× ׳”-Anthropic "
-    "balance ׳•׳©׳₪׳¢׳•׳׳•׳× ׳™׳“׳ ׳™׳•׳× ׳׳₪׳©׳¨׳™׳•׳× ׳¢׳ slash commands: /ps /logs <bot> /git /health "
+    "׳³ֲ׳³ֳ—׳³ג€ SLH Claude (Pro mode ײ²ֲ· fallback). "
+    "**׳³ֲ׳³ֲ ׳³ֳ—׳³ֲ¦׳³ג„¢׳³ג€™ ׳³ֲ׳³ֳ— ׳³ֲ¢׳³ֲ¦׳³ֲ׳³ֲ ׳³ג€˜׳³ג€÷׳³ֲ ׳³ֳ—׳³ֲ©׳³ג€¢׳³ג€˜׳³ג€.** ׳³ֲ¢׳³ֲ ׳³ג€ ׳³ג„¢׳³ֲ©׳³ג„¢׳³ֲ¨׳³ג€¢׳³ֳ—, ׳³ג€˜׳³ֲ¢׳³ג€˜׳³ֲ¨׳³ג„¢׳³ֳ—, ׳³ֲ§׳³ֲ¦׳³ֲ¨ ׳³ג€¢׳³ג‚×׳³ֲ¨׳³ֲ§׳³ֻ׳³ג„¢.\n"
+    "׳³ג€׳³ֲ׳³ֲ©׳³ֳ—׳³ֲ׳³ֲ© ׳³ֲ©׳³ג„¢׳³ֲ׳³ֲ ׳³ֲ¢׳³ֲ ׳ֲ¿ֲ½-׳³ג€˜׳³ג„¢׳³ֲ׳³ֳ— Pro ׳³ֲ¢׳³ֲ Claude + tools, ׳³ֲ׳³ג€˜׳³ֲ ׳³ג€÷׳³ֲ¢׳³ֳ— Anthropic balance ׳³ֲ¨׳³ג„¢׳³ֲ§ "
+    "׳³ג€¢׳³ֲ׳³ֳ—׳³ג€ ׳³ֲ¨׳³ֲ¥ ׳³ג€׳³ֲ¨׳³ֲ Groq Llama 3.3 70B ׳³ֲ׳³ֲ׳³ֲ ׳³ג„¢׳³ג€÷׳³ג€¢׳³ֲ׳³ֳ— ׳³ֲ׳³ג€˜׳³ֲ¦׳³ֲ¢ tools. "
+    "׳³ֲ׳³ֲ ׳³ֲ ׳³ֲ©׳³ֲ׳³ֲ׳³ֳ— ׳³ֲ׳³ג€˜׳³ֲ¦׳³ֲ¢ ׳³ג‚×׳³ֲ¢׳³ג€¢׳³ֲ׳³ג€ (׳³ֲ§׳³ֲ¨׳³ג„¢׳³ֲ׳³ֳ— ׳³ֲ§׳³ג€¢׳³ג€˜׳³ֲ¥, git, deploy) ׳’ג‚¬ג€ ׳³ג€׳³ֲ¡׳³ג€˜׳³ֲ¨ ׳³ֲ©׳³ג€“׳³ג€ ׳³ג„¢׳³ג€׳³ֲ¨׳³ג€¢׳³ֲ© ׳³ֲ׳³ֳ— ׳³ג€-Anthropic "
+    "balance ׳³ג€¢׳³ֲ©׳³ג‚×׳³ֲ¢׳³ג€¢׳³ֲ׳³ג€¢׳³ֳ— ׳³ג„¢׳³ג€׳³ֲ ׳³ג„¢׳³ג€¢׳³ֳ— ׳³ֲ׳³ג‚×׳³ֲ©׳³ֲ¨׳³ג„¢׳³ג€¢׳³ֳ— ׳³ֲ¢׳³ֲ slash commands: /ps /logs <bot> /git /health "
     "/devices /control /swarm /credits /upgrade.\n"
-    "׳׳¢׳•׳׳× ׳–׳׳×, ׳׳×׳” ׳›׳ ׳™׳›׳•׳: ׳׳×׳× ׳™׳™׳¢׳•׳¥, ׳׳›׳×׳•׳‘ ׳˜׳§׳¡׳˜׳™׳, ׳׳¢׳©׳•׳× research, ׳׳¡׳›׳, ׳׳×׳¨׳’׳, "
-    "׳׳×׳›׳ ׳ ׳׳¨׳›׳™׳˜׳§׳˜׳•׳¨׳”, ׳׳¢׳–׳•׳¨ ׳¢׳ debug ׳”׳™׳₪׳•׳×׳˜׳™. ׳”׳¦׳¢ ׳¢׳¨׳ ׳’׳ ׳‘׳׳™ tools."
+    "׳³ֲ׳³ֲ¢׳³ג€¢׳³ֲ׳³ֳ— ׳³ג€“׳³ֲ׳³ֳ—, ׳³ֲ׳³ֳ—׳³ג€ ׳³ג€÷׳³ֲ ׳³ג„¢׳³ג€÷׳³ג€¢׳³ֲ: ׳³ֲ׳³ֳ—׳³ֳ— ׳³ג„¢׳³ג„¢׳³ֲ¢׳³ג€¢׳³ֲ¥, ׳³ֲ׳³ג€÷׳³ֳ—׳³ג€¢׳³ג€˜ ׳³ֻ׳³ֲ§׳³ֲ¡׳³ֻ׳³ג„¢׳³ֲ, ׳³ֲ׳³ֲ¢׳³ֲ©׳³ג€¢׳³ֳ— research, ׳³ֲ׳³ֲ¡׳³ג€÷׳³ֲ, ׳³ֲ׳³ֳ—׳³ֲ¨׳³ג€™׳³ֲ, "
+    "׳³ֲ׳³ֳ—׳³ג€÷׳³ֲ ׳³ֲ ׳³ֲ׳³ֲ¨׳³ג€÷׳³ג„¢׳³ֻ׳³ֲ§׳³ֻ׳³ג€¢׳³ֲ¨׳³ג€, ׳³ֲ׳³ֲ¢׳³ג€“׳³ג€¢׳³ֲ¨ ׳³ֲ¢׳³ֲ debug ׳³ג€׳³ג„¢׳³ג‚×׳³ג€¢׳³ֳ—׳³ֻ׳³ג„¢. ׳³ג€׳³ֲ¦׳³ֲ¢ ׳³ֲ¢׳³ֲ¨׳³ֲ ׳³ג€™׳³ֲ ׳³ג€˜׳³ֲ׳³ג„¢ tools."
 )
 
 # Backwards compat default
@@ -60,7 +60,7 @@ async def converse(history: List[dict], user_text: str,
     Args:
         history: list of {"role": "user"|"assistant", "content": str}
         user_text: the new user message
-        tier_mode: 'free' or 'pro_fallback' ג€” selects appropriate system prompt
+        tier_mode: 'free' or 'pro_fallback' ׳’ג‚¬ג€ selects appropriate system prompt
                    so Pro users in fallback get a more capable / honest persona.
 
     Returns:
@@ -73,7 +73,7 @@ async def converse(history: List[dict], user_text: str,
         role = m.get("role", "user")
         content = m.get("content", "")
         if isinstance(content, list):
-            # Legacy anthropic format ג€” extract text
+            # Legacy anthropic format ׳’ג‚¬ג€ extract text
             content = " ".join(
                 block.get("text", "") if isinstance(block, dict) else str(block)
                 for block in content
@@ -86,8 +86,8 @@ async def converse(history: List[dict], user_text: str,
     else:
         composed = _SYSTEM_PROMPT_FREE
     if context_block:
-        composed += "\n\n--- ׳©׳™ן¿½-׳” ׳§׳•׳“׳׳× ---\n" + context_block
-    composed += f"\n\n--- ׳”׳•׳“׳¢׳” ׳ ׳•׳›ן¿½-׳™׳× ---\n{user_text}"
+        composed += "\n\n--- ׳³ֲ©׳³ג„¢׳ֲ¿ֲ½-׳³ג€ ׳³ֲ§׳³ג€¢׳³ג€׳³ֲ׳³ֳ— ---\n" + context_block
+    composed += f"\n\n--- ׳³ג€׳³ג€¢׳³ג€׳³ֲ¢׳³ג€ ׳³ֲ ׳³ג€¢׳³ג€÷׳ֲ¿ֲ½-׳³ג„¢׳³ֳ— ---\n{user_text}"
 
     payload = {
         "message": composed,
@@ -102,15 +102,15 @@ async def converse(history: List[dict], user_text: str,
             resp.raise_for_status()
             data = resp.json()
     except httpx.TimeoutException:
-        reply = "ג± ׳”-AI ׳”׳©׳×׳”׳” (timeout). ׳ ׳¡׳” ׳©׳•׳‘ ׳׳• ׳₪׳¦׳ ׳׳©׳׳׳” ׳§׳¦׳¨׳” ׳™׳•׳×׳¨."
+        reply = "׳’ֲֲ± ׳³ג€-AI ׳³ג€׳³ֲ©׳³ֳ—׳³ג€׳³ג€ (timeout). ׳³ֲ ׳³ֲ¡׳³ג€ ׳³ֲ©׳³ג€¢׳³ג€˜ ׳³ֲ׳³ג€¢ ׳³ג‚×׳³ֲ¦׳³ֲ ׳³ֲ׳³ֲ©׳³ֲ׳³ֲ׳³ג€ ׳³ֲ§׳³ֲ¦׳³ֲ¨׳³ג€ ׳³ג„¢׳³ג€¢׳³ֳ—׳³ֲ¨."
     except httpx.HTTPStatusError as e:
         log.error(f"AI endpoint returned {e.response.status_code}: {e.response.text[:200]}")
-        reply = f"ג ן¸ ׳”-AI endpoint ׳”ן¿½-׳–׳™׳¨ {e.response.status_code}. ׳ ׳¡׳” ׳©׳•׳‘ ׳‘׳¢׳•׳“ ׳¨׳’׳¢."
+        reply = f"׳’ֲֲ ׳ֲ¸ֲ ׳³ג€-AI endpoint ׳³ג€׳ֲ¿ֲ½-׳³ג€“׳³ג„¢׳³ֲ¨ {e.response.status_code}. ׳³ֲ ׳³ֲ¡׳³ג€ ׳³ֲ©׳³ג€¢׳³ג€˜ ׳³ג€˜׳³ֲ¢׳³ג€¢׳³ג€ ׳³ֲ¨׳³ג€™׳³ֲ¢."
     except Exception as e:
         log.exception("AI call failed")
-        reply = f"ג ן¸ ׳©׳’׳™׳׳”: {type(e).__name__}: {str(e)[:120]}"
+        reply = f"׳’ֲֲ ׳ֲ¸ֲ ׳³ֲ©׳³ג€™׳³ג„¢׳³ֲ׳³ג€: {type(e).__name__}: {str(e)[:120]}"
     else:
-        reply = data.get("reply") or data.get("detail") or "(׳”׳×׳’׳•׳‘׳” ׳”׳™׳™׳×׳” ׳¨׳™׳§׳”)"
+        reply = data.get("reply") or data.get("detail") or "(׳³ג€׳³ֳ—׳³ג€™׳³ג€¢׳³ג€˜׳³ג€ ׳³ג€׳³ג„¢׳³ג„¢׳³ֳ—׳³ג€ ׳³ֲ¨׳³ג„¢׳³ֲ§׳³ג€)"
         model = data.get("model", "unknown")
         # Append provider tag for transparency
         if model and model != "unknown":

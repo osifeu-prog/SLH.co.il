@@ -1,19 +1,19 @@
 """
-SLH AI Spark ג€” Railway operations from Telegram DM.
+SLH AI Spark ׳’ג‚¬ג€ Railway operations from Telegram DM.
 
 Commands (admin-only):
-- /railway_status            ג†’ list projects + current linked service
-- /railway_logs <service> [n] ג†’ tail N lines of service logs
-- /railway_redeploy <service> ג†’ redeploy service (no env changes)
-- /railway_vars <service>     ג†’ list var NAMES only (values redacted by us)
-- /railway_set <service> <KEY> <VALUE>  ג†’ set env var, with value passed
+- /railway_status            ׳’ג€ ג€™ list projects + current linked service
+- /railway_logs <service> [n] ׳’ג€ ג€™ tail N lines of service logs
+- /railway_redeploy <service> ׳’ג€ ג€™ redeploy service (no env changes)
+- /railway_vars <service>     ׳’ג€ ג€™ list var NAMES only (values redacted by us)
+- /railway_set <service> <KEY> <VALUE>  ׳’ג€ ג€™ set env var, with value passed
                                           via reply-to-message (NOT in cmd line)
 
 Auth: RAILWAY_TOKEN must be set in /workspace/slh-claude-bot/.env (token from
 https://railway.com/account/tokens). Without it, all commands return guidance.
 
 Security: subcommands run via subprocess with timeout + arg whitelist. The
-entire module is gated by auth.is_authorized ג€” only Osif's two telegram IDs
+entire module is gated by auth.is_authorized ׳’ג‚¬ג€ only Osif's two telegram IDs
 reach it.
 """
 from __future__ import annotations
@@ -54,18 +54,18 @@ def _run_railway(args: list[str], timeout: int = 30) -> str:
     """Run railway CLI with token + capture output. Token NEVER printed."""
     if not _RAILWAY:
         return (
-            "נ”´ Railway CLI ׳׳ ׳׳•׳×׳§׳ ׳‘׳§׳•׳ ׳˜׳™׳™׳ ׳¨.\n"
-            "׳×׳§׳: rebuild ׳”Dockerfile (`docker compose build --no-cache claude-bot`)."
+            "׳ ֲג€ֲ´ Railway CLI ׳³ֲ׳³ֲ ׳³ֲ׳³ג€¢׳³ֳ—׳³ֲ§׳³ֲ ׳³ג€˜׳³ֲ§׳³ג€¢׳³ֲ ׳³ֻ׳³ג„¢׳³ג„¢׳³ֲ ׳³ֲ¨.\n"
+            "׳³ֳ—׳³ֲ§׳³ֲ: rebuild ׳³ג€Dockerfile (`docker compose build --no-cache claude-bot`)."
         )
     if not _has_token():
         return (
-            "נ”´ RAILWAY_TOKEN ׳׳ ׳׳•׳’׳“׳¨ ׳‘-.env ׳©׳ ׳”׳‘׳•׳˜.\n\n"
-            "׳׳”׳₪׳¢׳׳” (ן¿½-׳“-׳₪׳¢׳׳™׳×):\n"
-            "1. ׳₪׳×ן¿½- https://railway.com/account/tokens\n"
-            "2. New Token ג†’ ׳×׳ ׳©׳ 'slh-claude-bot' ג†’ Create\n"
-            "3. ׳”׳¢׳×׳§ (׳׳ ׳×׳›׳×׳•׳‘ ׳‘׳¦'׳׳˜!)\n"
-            "4. ׳”׳•׳¡׳£ ׳-`D:\\SLH_ECOSYSTEM\\slh-claude-bot\\.env`:\n"
-            "   `RAILWAY_TOKEN=<׳”׳¢׳¨׳>`\n"
+            "׳ ֲג€ֲ´ RAILWAY_TOKEN ׳³ֲ׳³ֲ ׳³ֲ׳³ג€¢׳³ג€™׳³ג€׳³ֲ¨ ׳³ג€˜-.env ׳³ֲ©׳³ֲ ׳³ג€׳³ג€˜׳³ג€¢׳³ֻ.\n\n"
+            "׳³ֲ׳³ג€׳³ג‚×׳³ֲ¢׳³ֲ׳³ג€ (׳ֲ¿ֲ½-׳³ג€-׳³ג‚×׳³ֲ¢׳³ֲ׳³ג„¢׳³ֳ—):\n"
+            "1. ׳³ג‚×׳³ֳ—׳ֲ¿ֲ½- https://railway.com/account/tokens\n"
+            "2. New Token ׳’ג€ ג€™ ׳³ֳ—׳³ֲ ׳³ֲ©׳³ֲ 'slh-claude-bot' ׳’ג€ ג€™ Create\n"
+            "3. ׳³ג€׳³ֲ¢׳³ֳ—׳³ֲ§ (׳³ֲ׳³ֲ ׳³ֳ—׳³ג€÷׳³ֳ—׳³ג€¢׳³ג€˜ ׳³ג€˜׳³ֲ¦'׳³ֲ׳³ֻ!)\n"
+            "4. ׳³ג€׳³ג€¢׳³ֲ¡׳³ֲ£ ׳³ֲ-`D:\\SLH_ECOSYSTEM\\slh-claude-bot\\.env`:\n"
+            "   `RAILWAY_TOKEN=<׳³ג€׳³ֲ¢׳³ֲ¨׳³ֲ>`\n"
             "5. `docker compose up -d --force-recreate claude-bot`"
         )
     env = os.environ.copy()
@@ -81,17 +81,17 @@ def _run_railway(args: list[str], timeout: int = 30) -> str:
         out = (r.stdout or "") + (("\n" + r.stderr) if r.stderr else "")
         return out[:3500] or "(no output)"
     except subprocess.TimeoutExpired:
-        return f"ג± railway {' '.join(args[:2])} timed out"
+        return f"׳’ֲֲ± railway {' '.join(args[:2])} timed out"
     except Exception as e:
-        return f"ג ן¸ {type(e).__name__}: {str(e)[:200]}"
+        return f"׳’ֲֲ ׳ֲ¸ֲ {type(e).__name__}: {str(e)[:200]}"
 
 
 # Whitelist of exact argv prefixes that we'll execute. Anything else rejected.
 _SAFE_SUBCOMMANDS = {
-    "list",         # railway list ג€” projects
-    "status",       # railway status ג€” current project/service
-    "domain",       # railway domain ג€” list domains
-    "service",      # railway service ג€” list services
+    "list",         # railway list ׳’ג‚¬ג€ projects
+    "status",       # railway status ׳’ג‚¬ג€ current project/service
+    "domain",       # railway domain ׳’ג‚¬ג€ list domains
+    "service",      # railway service ׳’ג‚¬ג€ list services
     "whoami",       # railway whoami
     "variables",    # railway variables (list); writes use --set / different path
     "logs",         # railway logs --service X
@@ -108,7 +108,7 @@ def _redact_secret_values(text: str) -> str:
         (r"\b\d{8,12}:[A-Za-z0-9_\-]{30,}", "***BOT_TOKEN_REDACTED***"),
         (r"postgresql://[^@]+@[^/]+/\S+", "postgresql://***REDACTED***"),
         (r"eyJ[A-Za-z0-9_\-]+\.[A-Za-z0-9_\-]+\.[A-Za-z0-9_\-]+", "***JWT_REDACTED***"),
-        # Any line with KEY=VAL where VAL is long ג†’ redact VAL
+        # Any line with KEY=VAL where VAL is long ׳’ג€ ג€™ redact VAL
         (r"([A-Z_][A-Z0-9_]{4,}=)\S{20,}", r"\1***"),
     ]
     for pat, repl in patterns:
@@ -125,7 +125,7 @@ def register(dp: Dispatcher, auth_module) -> None:
             return
         out = _run_railway(["status"])
         out = _redact_secret_values(out)
-        await msg.answer(f"נ‚ *Railway status:*\n```\n{out[:3500]}\n```")
+        await msg.answer(f"׳ ֲֲג€ *Railway status:*\n```\n{out[:3500]}\n```")
 
     @dp.message(Command("railway_list"))
     async def cmd_list(msg: Message):
@@ -134,7 +134,7 @@ def register(dp: Dispatcher, auth_module) -> None:
             return
         out = _run_railway(["list"])
         out = _redact_secret_values(out)
-        await msg.answer(f"נ‚ *Railway projects:*\n```\n{out[:3500]}\n```")
+        await msg.answer(f"׳ ֲֲג€ *Railway projects:*\n```\n{out[:3500]}\n```")
 
     @dp.message(Command("railway_logs"))
     async def cmd_logs(msg: Message):
@@ -144,21 +144,21 @@ def register(dp: Dispatcher, auth_module) -> None:
         parts = (msg.text or "").split(maxsplit=2)
         if len(parts) < 2:
             await msg.answer(
-                "׳©׳™׳׳•׳©: `/railway_logs <service-name> [lines]`\n"
-                "׳“׳•׳’׳׳”: `/railway_logs monitor.slh 30`"
+                "׳³ֲ©׳³ג„¢׳³ֲ׳³ג€¢׳³ֲ©: `/railway_logs <service-name> [lines]`\n"
+                "׳³ג€׳³ג€¢׳³ג€™׳³ֲ׳³ג€: `/railway_logs monitor.slh 30`"
             )
             return
         service = parts[1]
-        # Sanitize service name ג€” only allow safe chars
+        # Sanitize service name ׳’ג‚¬ג€ only allow safe chars
         if not re.match(r"^[a-zA-Z0-9_.\-]+$", service):
-            await msg.answer("׳©׳ service ׳׳ ׳×׳§׳£.")
+            await msg.answer("׳³ֲ©׳³ֲ service ׳³ֲ׳³ֲ ׳³ֳ—׳³ֲ§׳³ֲ£.")
             return
         lines = parts[2] if len(parts) > 2 else "20"
         if not lines.isdigit() or int(lines) > 100:
             lines = "20"
         out = _run_railway(["logs", "--service", service, "--tail", lines], timeout=20)
         out = _redact_secret_values(out)
-        await msg.answer(f"נ“ *logs {service}* (last {lines}):\n```\n{out[-3400:]}\n```")
+        await msg.answer(f"׳ ֲג€ֲ *logs {service}* (last {lines}):\n```\n{out[-3400:]}\n```")
 
     @dp.message(Command("railway_redeploy"))
     async def cmd_redeploy(msg: Message):
@@ -167,32 +167,32 @@ def register(dp: Dispatcher, auth_module) -> None:
             return
         parts = (msg.text or "").split(maxsplit=1)
         if len(parts) < 2:
-            await msg.answer("׳©׳™׳׳•׳©: `/railway_redeploy <service-name>`")
+            await msg.answer("׳³ֲ©׳³ג„¢׳³ֲ׳³ג€¢׳³ֲ©: `/railway_redeploy <service-name>`")
             return
         service = parts[1].strip()
         if not re.match(r"^[a-zA-Z0-9_.\-]+$", service):
-            await msg.answer("׳©׳ service ׳׳ ׳×׳§׳£.")
+            await msg.answer("׳³ֲ©׳³ֲ service ׳³ֲ׳³ֲ ׳³ֳ—׳³ֲ§׳³ֲ£.")
             return
-        await msg.answer(f"נ‚ ׳׳₪׳¢׳™׳ redeploy ׳©׳ `{service}`...")
+        await msg.answer(f"׳ ֲֲג€ ׳³ֲ׳³ג‚×׳³ֲ¢׳³ג„¢׳³ֲ redeploy ׳³ֲ©׳³ֲ `{service}`...")
         out = _run_railway(["redeploy", "--service", service, "--yes"], timeout=60)
         out = _redact_secret_values(out)
         await msg.answer(f"```\n{out[:3000]}\n```")
 
     @dp.message(Command("railway_vars"))
     async def cmd_vars(msg: Message):
-        """List variable NAMES only ג€” values redacted automatically."""
+        """List variable NAMES only ׳’ג‚¬ג€ values redacted automatically."""
         if not auth_module.is_authorized(msg.from_user.id):
             await msg.answer(auth_module.unauthorized_reply_he(msg.from_user.id))
             return
         parts = (msg.text or "").split(maxsplit=1)
         if len(parts) < 2:
-            await msg.answer("׳©׳™׳׳•׳©: `/railway_vars <service-name>`")
+            await msg.answer("׳³ֲ©׳³ג„¢׳³ֲ׳³ג€¢׳³ֲ©: `/railway_vars <service-name>`")
             return
         service = parts[1].strip()
         if not re.match(r"^[a-zA-Z0-9_.\-]+$", service):
-            await msg.answer("׳©׳ service ׳׳ ׳×׳§׳£.")
+            await msg.answer("׳³ֲ©׳³ֲ service ׳³ֲ׳³ֲ ׳³ֳ—׳³ֲ§׳³ֲ£.")
             return
-        # railway variables --service X --kv ג†’ outputs KEY=VALUE pairs; we extract names
+        # railway variables --service X --kv ׳’ג€ ג€™ outputs KEY=VALUE pairs; we extract names
         out = _run_railway(["variables", "--service", service, "--kv"], timeout=15)
         # Extract just the KEY part of each line, drop values
         names = []
@@ -204,13 +204,13 @@ def register(dp: Dispatcher, auth_module) -> None:
                     names.append(key)
         if not names:
             await msg.answer(
-                f"ג ן¸ ׳׳ ׳”׳¦׳ן¿½-׳×׳™ ׳׳§׳‘׳ variables ׳©׳ `{service}`.\n׳’׳•׳׳׳™:\n```\n{_redact_secret_values(out)[:1500]}\n```"
+                f"׳’ֲֲ ׳ֲ¸ֲ ׳³ֲ׳³ֲ ׳³ג€׳³ֲ¦׳³ֲ׳ֲ¿ֲ½-׳³ֳ—׳³ג„¢ ׳³ֲ׳³ֲ§׳³ג€˜׳³ֲ variables ׳³ֲ©׳³ֲ `{service}`.\n׳³ג€™׳³ג€¢׳³ֲ׳³ֲ׳³ג„¢:\n```\n{_redact_secret_values(out)[:1500]}\n```"
             )
             return
-        names_str = "\n".join(f"  ג€¢ `{n}`" for n in sorted(set(names)))
+        names_str = "\n".join(f"  ׳’ג‚¬ֲ¢ `{n}`" for n in sorted(set(names)))
         await msg.answer(
-            f"נ”‘ *Variables in `{service}` ({len(set(names))} keys):*\n{names_str}\n\n"
-            "_׳¢׳¨׳›׳™׳ ׳׳ ׳׳•׳¦׳’׳™׳ ג€” ׳׳”׳’׳“׳¨׳” ׳”׳©׳×׳׳© ׳‘-`/railway_set`._"
+            f"׳ ֲג€ג€˜ *Variables in `{service}` ({len(set(names))} keys):*\n{names_str}\n\n"
+            "_׳³ֲ¢׳³ֲ¨׳³ג€÷׳³ג„¢׳³ֲ ׳³ֲ׳³ֲ ׳³ֲ׳³ג€¢׳³ֲ¦׳³ג€™׳³ג„¢׳³ֲ ׳’ג‚¬ג€ ׳³ֲ׳³ג€׳³ג€™׳³ג€׳³ֲ¨׳³ג€ ׳³ג€׳³ֲ©׳³ֳ—׳³ֲ׳³ֲ© ׳³ג€˜-`/railway_set`._"
         )
 
     log.info("railway_ops handlers registered")

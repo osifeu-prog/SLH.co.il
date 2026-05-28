@@ -25,8 +25,8 @@ def is_authorized(telegram_id: int) -> bool:
 def unauthorized_reply_he(telegram_id: int) -> str:
     allowed = ", ".join(str(i) for i in sorted(ADMIN_IDS))
     return (
-        "׳׳™׳ ׳׳ ׳”׳¨׳©׳׳” ׳׳”׳₪׳¢׳™׳ ׳׳× ׳”׳‘׳•׳˜ ׳”׳–׳”.\n"
-        f"׳”׳‘׳•׳˜ ׳׳•׳’׳“׳¨ ׳¢׳‘׳•׳¨: {allowed}\n"
-        f"׳”-ID ׳©׳׳: {telegram_id}"
+        "׳³ֲ׳³ג„¢׳³ֲ ׳³ֲ׳³ֲ ׳³ג€׳³ֲ¨׳³ֲ©׳³ֲ׳³ג€ ׳³ֲ׳³ג€׳³ג‚×׳³ֲ¢׳³ג„¢׳³ֲ ׳³ֲ׳³ֳ— ׳³ג€׳³ג€˜׳³ג€¢׳³ֻ ׳³ג€׳³ג€“׳³ג€.\n"
+        f"׳³ג€׳³ג€˜׳³ג€¢׳³ֻ ׳³ֲ׳³ג€¢׳³ג€™׳³ג€׳³ֲ¨ ׳³ֲ¢׳³ג€˜׳³ג€¢׳³ֲ¨: {allowed}\n"
+        f"׳³ג€-ID ׳³ֲ©׳³ֲ׳³ֲ: {telegram_id}"
     )
 
