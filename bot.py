@@ -1,4 +1,4 @@
-"""@SLH_Claude_bot — aiogram entrypoint.
+﻿"""@SLH_Claude_bot - aiogram entrypoint.
 
 Routes every text message from Osif to Claude with workspace tools.
 Guards with Telegram ID allowlist. Persists conversation per chat.
@@ -26,7 +26,7 @@ import subscriptions
 import payment_flow
 import admin_panel
 
-# Defensive import — anthropic may not be installed in all environments.
+# Defensive import - anthropic may not be installed in all environments.
 try:
     from anthropic import BadRequestError as AnthropicBadRequest
 except ImportError:
@@ -73,6 +73,36 @@ if not TOKEN:
 
 bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN))
 dp = Dispatcher()
+# === SAFE POINTS + DAILY ===
+try:
+    import points_system
+except ImportError:
+    points_system = None
+    print("Warning: points_system not available")
+
+@dp.message(Command("dashboard"))
+async def cmd_dashboard(msg: Message):
+    await msg.reply("📊 SLH Autonomous Dashboard\n\nFastAPI: ONLINE\nBot: ONLINE\nDashboard: http://localhost:9000")
+
+@dp.message(Command("crowdfunding"))
+async def cmd_crowdfunding(msg: Message):
+    await msg.reply("🚀 SLH Crowdfunding\n\nhttps://slh-nft.com/campaign.html\n\nTON: UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp")
+
+@dp.message(Command("points"))
+async def cmd_points(msg: Message):
+    if points_system:
+        user = points_system.get_user(str(msg.from_user.id))
+        await msg.reply(f"🎯 נקודות: {user['points']}\n🏅 רמה: {user['tier'].upper()}")
+    else:
+        await msg.reply("🎯 מערכת הנקודות בהקמה")
+
+@dp.message(Command("daily"))
+async def cmd_daily(msg: Message):
+    await msg.reply("📅 משימות יומיות:\n/checkin - כניסה יומית (+5)")
+
+@dp.message(Command("help"))
+async def cmd_help(msg: Message):
+    await msg.reply("פקודות:\n/dashboard\n/crowdfunding\n/points\n/daily\n/help")
 
 
 # ---------- Cross-bot coordination (shared agents group) ----------
@@ -102,7 +132,7 @@ async def _coord_health_handler(msg) -> None:
     try:
         h = await _http_get_json("/api/health")
         await msg.reply(
-            f"[OK] API: {h.get('status','?')} · DB: {h.get('db','?')} · v{h.get('version','?')}"
+            f"[OK] API: {h.get('status','?')} Â· DB: {h.get('db','?')} Â· v{h.get('version','?')}"
         )
     except Exception as e:
         await msg.reply(f"[X!] {type(e).__name__}: {e}")
@@ -110,7 +140,7 @@ async def _coord_health_handler(msg) -> None:
 
 async def _coord_who_handler(msg) -> None:
     me = await bot.get_me()
-    await msg.reply(f"[i] @{me.username} (claude-bot) · AI={_AI_MODE}")
+    await msg.reply(f"[i] @{me.username} (claude-bot) Â· AI={_AI_MODE}")
 
 
 if _coord is not None:
@@ -138,34 +168,34 @@ async def cmd_start(msg: Message) -> None:
     # Lazy-create subscription row + show tier
     try:
         sub = await subscriptions.get_or_create(msg.from_user.id)
-        tier_line = f"💎 Tier: {sub.tier} · {sub.messages_used_this_period} הודעות ה�-ודש\n"
+        tier_line = f"ðŸ’Ž Tier: {sub.tier} Â· {sub.messages_used_this_period} ×”×•×“×¢×•×ª ×”ï¿½-×•×“×©\n"
     except Exception:
         tier_line = ""
     # Send as plain text (no parse_mode) to avoid backslash pollution.
     await msg.answer(
-        f"שלום אוסיף 👋\n"
-        f"אני SLH Claude — מצב: {_AI_MODE}\n"
+        f"×©×œ×•× ××•×¡×™×£ ðŸ‘‹\n"
+        f"×× ×™ SLH Claude - ×ž×¦×‘: {_AI_MODE}\n"
         f"{tier_line}\n"
-        f"━━━ AI Spark ━━━\n"
-        f"/upgrade   — שדרוג ל-Pro/VIP\n"
-        f"/credits   — מכסה זמינה ה�-ודש\n"
-        f"/pricing   — השוואת �-בילות\n\n"
-        f"━━━ הכי שימושי ━━━\n"
-        f"/control   — סיכום מערכת בשורה א�-ת\n"
-        f"/health    — בריאות API + DB\n"
-        f"/swarm     — 4 המכשירים שלך\n"
-        f"/devices   — רשימת ESP מ�-וברים\n"
-        f"/price     — מ�-ירי SLH/MNH/ZVK\n\n"
-        f"━━━ Admin ━━━\n"
-        f"/revenue        — MRR + רוו�- 30 יום\n"
-        f"/anthropic_spend — עלות AI\n"
-        f"/top_users      — Top 10 לפי שימוש\n"
-        f"/quota_user <id> — בדיקה למשתמש ספציפי\n\n"
-        f"━━━ Ops ━━━\n"
+        f"â”â”â” AI Spark â”â”â”\n"
+        f"/upgrade   - ×©×“×¨×•×’ ×œ-Pro/VIP\n"
+        f"/credits   - ×ž×›×¡×” ×–×ž×™× ×” ×”ï¿½-×•×“×©\n"
+        f"/pricing   - ×”×©×•×•××ª ï¿½-×‘×™×œ×•×ª\n\n"
+        f"â”â”â” ×”×›×™ ×©×™×ž×•×©×™ â”â”â”\n"
+        f"/control   - ×¡×™×›×•× ×ž×¢×¨×›×ª ×‘×©×•×¨×” ×ï¿½-×ª\n"
+        f"/health    - ×‘×¨×™××•×ª API + DB\n"
+        f"/swarm     - 4 ×”×ž×›×©×™×¨×™× ×©×œ×š\n"
+        f"/devices   - ×¨×©×™×ž×ª ESP ×žï¿½-×•×‘×¨×™×\n"
+        f"/price     - ×žï¿½-×™×¨×™ SLH/MNH/ZVK\n\n"
+        f"â”â”â” Admin â”â”â”\n"
+        f"/revenue        - MRR + ×¨×•×•ï¿½- 30 ×™×•×\n"
+        f"/anthropic_spend - ×¢×œ×•×ª AI\n"
+        f"/top_users      - Top 10 ×œ×¤×™ ×©×™×ž×•×©\n"
+        f"/quota_user <id> - ×‘×“×™×§×” ×œ×ž×©×ª×ž×© ×¡×¤×¦×™×¤×™\n\n"
+        f"â”â”â” Ops â”â”â”\n"
         f"/ps  /bots  /logs <X>  /git  /task <X>\n\n"
-        f"━━━ שי�-ה �-ופשית ━━━\n"
-        f"כל טקסט א�-ר → AI לפי ה-tier שלך\n\n"
-        f"עזרה מלאה: /help",
+        f"â”â”â” ×©×™ï¿½-×” ï¿½-×•×¤×©×™×ª â”â”â”\n"
+        f"×›×œ ×˜×§×¡×˜ ×ï¿½-×¨ â†’ AI ×œ×¤×™ ×”-tier ×©×œ×š\n\n"
+        f"×¢×–×¨×” ×ž×œ××”: /help",
         parse_mode=None,
     )
 
@@ -176,21 +206,21 @@ async def cmd_help(msg: Message) -> None:
         await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
         return
     await msg.answer(
-        "*🤖 פקודות Ops \\(מיידי, ללא AI\\):*\n"
+        "*ðŸ¤– ×¤×§×•×“×•×ª Ops \\(×ž×™×™×“×™, ×œ×œ× AI\\):*\n"
         "`/ps` `/bots` `/logs <name>` `/git` `/health` `/price` `/devices` `/task` `/ai_mode`\n\n"
-        "*🛠 פקודות עורך \\(שליטה באתר\\):*\n"
+        "*ðŸ›  ×¤×§×•×“×•×ª ×¢×•×¨×š \\(×©×œ×™×˜×” ×‘××ª×¨\\):*\n"
         "`/cat` `/ls` `/grep` `/find`\n"
         "`/append` `/replace` `/newpage`\n"
         "`/commit` `/push` `/sync`\n"
         "`/draft` `/apply` `/reject`\n"
-        "פירוט מלא: `/editor`\n\n"
-        f"*🧠 שי�-ה �-ופשית \\(AI: {_AI_MODE}\\):*\n"
-        "כל טקסט א�-ר נענה דרך Groq �-ינם\\.\n\n"
-        "*דוגמאות:*\n"
-        "• `/ls website`\n"
-        "• `/cat website/voice\\.html`\n"
-        "• `/draft website/index\\.html שנה את הכותרת`\n"
-        "• `/sync \"feat: my edit\"`"
+        "×¤×™×¨×•×˜ ×ž×œ×: `/editor`\n\n"
+        f"*ðŸ§  ×©×™ï¿½-×” ï¿½-×•×¤×©×™×ª \\(AI: {_AI_MODE}\\):*\n"
+        "×›×œ ×˜×§×¡×˜ ×ï¿½-×¨ × ×¢× ×” ×“×¨×š Groq ï¿½-×™× ×\\.\n\n"
+        "*×“×•×’×ž××•×ª:*\n"
+        "â€¢ `/ls website`\n"
+        "â€¢ `/cat website/voice\\.html`\n"
+        "â€¢ `/draft website/index\\.html ×©× ×” ××ª ×”×›×•×ª×¨×ª`\n"
+        "â€¢ `/sync \"feat: my edit\"`"
     )
 
 
@@ -209,7 +239,7 @@ def _escape_md(text: str) -> str:
     """Escape MarkdownV1 special chars inside values."""
     if not isinstance(text, str):
         text = str(text)
-    # aiogram default is MARKDOWN (v1) — escape only `_*`[
+    # aiogram default is MARKDOWN (v1) - escape only `_*`[
     return (
         text.replace("_", "\\_")
         .replace("*", "\\*")
@@ -228,19 +258,19 @@ async def cmd_health(msg: Message) -> None:
         api_ok = h.get("status") == "ok" or h.get("api") == "ok"
         db = h.get("db") or (h.get("checks") or {}).get("db") or "unknown"
         lines = [
-            f"*API:* {'�-י ✓' if api_ok else 'כבוי �-'}",
+            f"*API:* {'ï¿½-×™ âœ“' if api_ok else '×›×‘×•×™ ï¿½-'}",
             f"*DB:* `{_escape_md(db)}`",
         ]
         if "version" in h:
-            lines.append(f"*גרסה:* `{_escape_md(h['version'])}`")
+            lines.append(f"*×’×¨×¡×”:* `{_escape_md(h['version'])}`")
         if "timestamp" in h:
-            lines.append(f"*בדוק ב:* `{_escape_md(h['timestamp'])}`")
+            lines.append(f"*×‘×“×•×§ ×‘:* `{_escape_md(h['timestamp'])}`")
         await msg.answer("\n".join(lines))
     except httpx.HTTPStatusError as e:
-        await msg.answer(f"ה-API ה�-זיר {e.response.status_code}. כנראה down.")
+        await msg.answer(f"×”-API ×”ï¿½-×–×™×¨ {e.response.status_code}. ×›× ×¨××” down.")
     except Exception as e:
         log.exception("/health failed")
-        await msg.answer(f"שגיאה: `{_escape_md(type(e).__name__)}: {_escape_md(str(e))}`")
+        await msg.answer(f"×©×’×™××”: `{_escape_md(type(e).__name__)}: {_escape_md(str(e))}`")
 
 
 @dp.message(Command("price"))
@@ -252,9 +282,9 @@ async def cmd_price(msg: Message) -> None:
         p = await _http_get_json("/api/prices")
         prices = p.get("prices") or p
         if not isinstance(prices, dict) or not prices:
-            await msg.answer("אין נתוני מ�-יר כרגע.")
+            await msg.answer("××™×Ÿ × ×ª×•× ×™ ×žï¿½-×™×¨ ×›×¨×’×¢.")
             return
-        lines = ["*מ�-ירים \\(₪\\):*"]
+        lines = ["*×žï¿½-×™×¨×™× \\(â‚ª\\):*"]
         for token, value in prices.items():
             # /api/prices returns {ils, usd} objects; fall back to scalar if not
             if isinstance(value, dict):
@@ -265,11 +295,11 @@ async def cmd_price(msg: Message) -> None:
                 fmt = f"{float(ils):,.2f}"
             except (TypeError, ValueError):
                 fmt = str(ils)
-            lines.append(f"• *{_escape_md(token)}:* `{fmt}`")
+            lines.append(f"â€¢ *{_escape_md(token)}:* `{fmt}`")
         await msg.answer("\n".join(lines))
     except Exception as e:
         log.exception("/price failed")
-        await msg.answer(f"שגיאה: `{_escape_md(str(e))}`")
+        await msg.answer(f"×©×’×™××”: `{_escape_md(str(e))}`")
 
 
 @dp.message(Command("devices"))
@@ -278,7 +308,7 @@ async def cmd_devices(msg: Message) -> None:
         await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
         return
     if not ADMIN_KEY:
-        await msg.answer("�-סר `ADMIN_API_KEY` ב-.env של הבוט.")
+        await msg.answer("ï¿½-×¡×¨ `ADMIN_API_KEY` ×‘-.env ×©×œ ×”×‘×•×˜.")
         return
     try:
         d = await _http_get_json(
@@ -286,25 +316,25 @@ async def cmd_devices(msg: Message) -> None:
         )
         devices = d.get("devices") or d if isinstance(d, (list, dict)) else []
         if not devices:
-            await msg.answer("אין מכשירים רשומים.")
+            await msg.answer("××™×Ÿ ×ž×›×©×™×¨×™× ×¨×©×•×ž×™×.")
             return
-        lines = [f"*מכשירים \\({len(devices)}\\):*"]
+        lines = [f"*×ž×›×©×™×¨×™× \\({len(devices)}\\):*"]
         for dev in devices[:10]:
             dev_id = dev.get("device_id") or dev.get("id") or "?"
             last_seen = dev.get("last_seen_at") or dev.get("last_heartbeat") or "--"
             online = dev.get("online") or dev.get("is_online")
-            mark = "🟢" if online else "⚫"
+            mark = "ðŸŸ¢" if online else "âš«"
             lines.append(
-                f"{mark} `{_escape_md(str(dev_id))}` · {_escape_md(str(last_seen))}"
+                f"{mark} `{_escape_md(str(dev_id))}` Â· {_escape_md(str(last_seen))}"
             )
         if len(devices) > 10:
-            lines.append(f"_\\+ {len(devices) - 10} נוספים_")
+            lines.append(f"_\\+ {len(devices) - 10} × ×•×¡×¤×™×_")
         await msg.answer("\n".join(lines))
     except httpx.HTTPStatusError as e:
-        await msg.answer(f"admin API ה�-זיר {e.response.status_code}.")
+        await msg.answer(f"admin API ×”ï¿½-×–×™×¨ {e.response.status_code}.")
     except Exception as e:
         log.exception("/devices failed")
-        await msg.answer(f"שגיאה: `{_escape_md(str(e))}`")
+        await msg.answer(f"×©×’×™××”: `{_escape_md(str(e))}`")
 
 
 @dp.message(Command("control"))
@@ -327,41 +357,41 @@ async def cmd_control(msg: Message) -> None:
         api_ok = h.get("status") == "ok"
         db_ok = h.get("db") == "connected"
         sections.append(
-            f"🟢 API: ok · DB: {h.get('db','?')} · v{h.get('version','?')}"
+            f"ðŸŸ¢ API: ok Â· DB: {h.get('db','?')} Â· v{h.get('version','?')}"
             if api_ok and db_ok
-            else f"🔴 API: {h}"
+            else f"ðŸ”´ API: {h}"
         )
     except Exception as e:
-        sections.append(f"🔴 API: unreachable ({type(e).__name__})")
+        sections.append(f"ðŸ”´ API: unreachable ({type(e).__name__})")
 
     # 2. Gateway
     try:
         g = await _http_get_json("/api/miniapp/health")
         if g.get("gateway_loaded"):
-            tok = "✓" if g.get("primary_bot_token_set") else "⚠ TELEGRAM_BOT_TOKEN �-סר"
-            sections.append(f"🟢 Gateway: loaded · admins:{g.get('admin_ids_count')} · bot_token:{tok}")
+            tok = "âœ“" if g.get("primary_bot_token_set") else "âš  TELEGRAM_BOT_TOKEN ï¿½-×¡×¨"
+            sections.append(f"ðŸŸ¢ Gateway: loaded Â· admins:{g.get('admin_ids_count')} Â· bot_token:{tok}")
         else:
-            sections.append(f"🔴 Gateway: not loaded")
+            sections.append(f"ðŸ”´ Gateway: not loaded")
     except Exception as e:
-        sections.append(f"⚪ Gateway: skip ({type(e).__name__})")
+        sections.append(f"âšª Gateway: skip ({type(e).__name__})")
 
     # 3. Swarm
     try:
         s = await _http_get_json("/api/swarm/stats")
         sections.append(
-            f"🐝 Swarm: {s.get('online',0)}/{s.get('total_devices',0)} online · "
-            f"{s.get('events_24h',0)} events 24h · {s.get('pending_commands',0)} cmds pending"
+            f"ðŸ Swarm: {s.get('online',0)}/{s.get('total_devices',0)} online Â· "
+            f"{s.get('events_24h',0)} events 24h Â· {s.get('pending_commands',0)} cmds pending"
         )
     except Exception as e:
-        sections.append(f"⚪ Swarm: skip ({type(e).__name__})")
+        sections.append(f"âšª Swarm: skip ({type(e).__name__})")
 
     # 4. Marketplace
     try:
         m = await _http_get_json("/api/marketplace/items?limit=100")
         items = [i for i in (m.get("items") or []) if i.get("status") == "approved"]
-        sections.append(f"🛒 Marketplace: {len(items)} פריטים approved")
+        sections.append(f"ðŸ›’ Marketplace: {len(items)} ×¤×¨×™×˜×™× approved")
     except Exception as e:
-        sections.append(f"⚪ Marketplace: skip")
+        sections.append(f"âšª Marketplace: skip")
 
     # 5. Recent events
     try:
@@ -369,33 +399,33 @@ async def cmd_control(msg: Message) -> None:
         evts = e.get("events") or []
         if evts:
             recent = ", ".join(set(ev.get("type") or ev.get("event_type", "?") for ev in evts[:5]))
-            sections.append(f"📡 Events 5 last: {recent}")
+            sections.append(f"ðŸ“¡ Events 5 last: {recent}")
         else:
-            sections.append("📡 Events: 0 (פיד פעילות ריק)")
+            sections.append("ðŸ“¡ Events: 0 (×¤×™×“ ×¤×¢×™×œ×•×ª ×¨×™×§)")
     except Exception:
-        sections.append(f"⚪ Events: skip")
+        sections.append(f"âšª Events: skip")
 
     # 6. Your queue (4 user-action blockers)
     queue_items = []
     if 'g' in locals() and not g.get("primary_bot_token_set"):
-        queue_items.append("• הגדר TELEGRAM_BOT_TOKEN ב-Railway")
-    queue_items.append("• פייר ESP — של�- /devices לבדיקה")
-    queue_items.append("• הגדר SMS_PROVIDER ב-Railway (Inforu)")
-    queue_items.append("• BotFather: הגדר Mini App URL")
+        queue_items.append("â€¢ ×”×’×“×¨ TELEGRAM_BOT_TOKEN ×‘-Railway")
+    queue_items.append("â€¢ ×¤×™×™×¨ ESP - ×©×œï¿½- /devices ×œ×‘×“×™×§×”")
+    queue_items.append("â€¢ ×”×’×“×¨ SMS_PROVIDER ×‘-Railway (Inforu)")
+    queue_items.append("â€¢ BotFather: ×”×’×“×¨ Mini App URL")
 
     sections.append("")
-    sections.append("📋 התור שלך:")
+    sections.append("ðŸ“‹ ×”×ª×•×¨ ×©×œ×š:")
     sections.extend(queue_items)
     sections.append("")
-    sections.append(f"🏠 הבית: https://slh-nft.com/my.html")
-    sections.append(f"⏱ נבדק: {timestamp}")
+    sections.append(f"ðŸ  ×”×‘×™×ª: https://slh-nft.com/my.html")
+    sections.append(f"â± × ×‘×“×§: {timestamp}")
 
     await msg.answer("\n".join(sections), parse_mode=None)
 
 
 @dp.message(Command("swarm"))
 async def cmd_swarm(msg: Message) -> None:
-    """Show SLH Swarm mesh status — total/online/events/pending + per-device list."""
+    """Show SLH Swarm mesh status - total/online/events/pending + per-device list."""
     if not auth.is_authorized(msg.from_user.id):
         await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
         return
@@ -405,19 +435,19 @@ async def cmd_swarm(msg: Message) -> None:
         devices = devices_resp.get("devices", [])
 
         lines = [
-            "*🐝 רשת Swarm:*",
-            f"• *סה״כ:* `{stats.get('total_devices', 0)}` · "
+            "*ðŸ ×¨×©×ª Swarm:*",
+            f"â€¢ *×¡×”×´×›:* `{stats.get('total_devices', 0)}` Â· "
             f"*online:* `{stats.get('online', 0)}`",
-            f"• *events 24h:* `{stats.get('events_24h', 0)}` · "
-            f"*commands ממתינות:* `{stats.get('pending_commands', 0)}`",
+            f"â€¢ *events 24h:* `{stats.get('events_24h', 0)}` Â· "
+            f"*commands ×ž×ž×ª×™× ×•×ª:* `{stats.get('pending_commands', 0)}`",
         ]
 
         if devices:
-            lines.append("\n*מכשירים:*")
+            lines.append("\n*×ž×›×©×™×¨×™×:*")
             for d in devices[:10]:
                 dev_id = d.get("device_id", "?")
                 online = d.get("online", False)
-                mark = "🟢" if online else "⚫"
+                mark = "ðŸŸ¢" if online else "âš«"
                 rssi = d.get("last_rssi")
                 bat = d.get("last_battery_pct")
                 tail_bits = []
@@ -425,22 +455,22 @@ async def cmd_swarm(msg: Message) -> None:
                     tail_bits.append(f"RSSI {rssi}dBm")
                 if bat is not None:
                     tail_bits.append(f"{bat}%")
-                tail = " · ".join(tail_bits)
+                tail = " Â· ".join(tail_bits)
                 lines.append(
                     f"{mark} `{_escape_md(str(dev_id))}`"
-                    + (f" · {_escape_md(tail)}" if tail else "")
+                    + (f" Â· {_escape_md(tail)}" if tail else "")
                 )
             if len(devices) > 10:
-                lines.append(f"_\\+ {len(devices) - 10} נוספים_")
+                lines.append(f"_\\+ {len(devices) - 10} × ×•×¡×¤×™×_")
         else:
             lines.append(
-                "\n_אין מכשירים רשומים עדיין\\. כשתבעיר את ה-firmware עם תמיכת ESP-NOW, המכשירים יירשמו אוטומטית\\._"
+                "\n_××™×Ÿ ×ž×›×©×™×¨×™× ×¨×©×•×ž×™× ×¢×“×™×™×Ÿ\\. ×›×©×ª×‘×¢×™×¨ ××ª ×”-firmware ×¢× ×ª×ž×™×›×ª ESP-NOW, ×”×ž×›×©×™×¨×™× ×™×™×¨×©×ž×• ××•×˜×•×ž×˜×™×ª\\._"
             )
 
         await msg.answer("\n".join(lines))
     except Exception as e:
         log.exception("/swarm failed")
-        await msg.answer(f"שגיאה: `{_escape_md(str(e))}`")
+        await msg.answer(f"×©×’×™××”: `{_escape_md(str(e))}`")
 
 
 @dp.message(Command("task"))
@@ -451,7 +481,7 @@ async def cmd_task(msg: Message) -> None:
     # Everything after the /task command word
     text = (msg.text or "").split(maxsplit=1)
     if len(text) < 2 or not text[1].strip():
-        await msg.answer("שימוש: `/task \\<תיאור המשימה\\>`")
+        await msg.answer("×©×™×ž×•×©: `/task \\<×ª×™××•×¨ ×”×ž×©×™×ž×”\\>`")
         return
     task_text = text[1].strip()
     try:
@@ -463,11 +493,11 @@ async def cmd_task(msg: Message) -> None:
         with open(TASK_BOARD_PATH, "a", encoding="utf-8") as f:
             f.write(line)
         await msg.answer(
-            f"נוסף ל\\-TASK\\_BOARD\\.md:\n`{_escape_md(task_text)}`"
+            f"× ×•×¡×£ ×œ\\-TASK\\_BOARD\\.md:\n`{_escape_md(task_text)}`"
         )
     except Exception as e:
         log.exception("/task failed")
-        await msg.answer(f"שגיאה: `{_escape_md(str(e))}`")
+        await msg.answer(f"×©×’×™××”: `{_escape_md(str(e))}`")
 
 
 @dp.message(Command("status"))
@@ -475,11 +505,11 @@ async def cmd_status(msg: Message) -> None:
     if not auth.is_authorized(msg.from_user.id):
         await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
         return
-    await msg.answer("מבצע בדיקת מצב מהירה...")
+    await msg.answer("×ž×‘×¦×¢ ×‘×“×™×§×ª ×ž×¦×‘ ×ž×”×™×¨×”...")
     try:
         reply, new_msgs = await ai_client.converse(
             history=[],
-            user_text="בצע בדיקה מהירה: 1) curl ל-/api/health של Railway, 2) git status בשני ה-repos (D:\\SLH_ECOSYSTEM ו-D:\\SLH_ECOSYSTEM\\website), 3) docker ps. תן סיכום של 3-5 שורות בעברית.",
+            user_text="×‘×¦×¢ ×‘×“×™×§×” ×ž×”×™×¨×”: 1) curl ×œ-/api/health ×©×œ Railway, 2) git status ×‘×©× ×™ ×”-repos (D:\\SLH_ECOSYSTEM ×•-D:\\SLH_ECOSYSTEM\\website), 3) docker ps. ×ª×Ÿ ×¡×™×›×•× ×©×œ 3-5 ×©×•×¨×•×ª ×‘×¢×‘×¨×™×ª.",
         )
         for msg_part in new_msgs:
             await session.append(msg.chat.id, msg_part["role"], msg_part["content"])
@@ -487,7 +517,7 @@ async def cmd_status(msg: Message) -> None:
             await msg.answer(chunk)
     except Exception as e:
         log.exception("status failed")
-        await msg.answer(f"שגיאה: `{type(e).__name__}: {e}`")
+        await msg.answer(f"×©×’×™××”: `{type(e).__name__}: {e}`")
 
 
 @dp.message(Command("clear"))
@@ -496,7 +526,7 @@ async def cmd_clear(msg: Message) -> None:
         await msg.answer(auth.unauthorized_reply_he(msg.from_user.id))
         return
     n = await session.clear(msg.chat.id)
-    await msg.answer(f"נוקה. נמ�-קו {n} הודעות.")
+    await msg.answer(f"× ×•×§×”. × ×žï¿½-×§×• {n} ×”×•×“×¢×•×ª.")
 
 
 # ---------- Direct executor commands (no AI, no cost) ----------
@@ -532,12 +562,12 @@ def _run_cmd(cmd: str, timeout: int = 15) -> str:
         out = (result.stdout or "") + (result.stderr or "")
         return out[:3500] or "(no output)"
     except subprocess.TimeoutExpired:
-        return f"⏱ command timed out after {timeout}s"
+        return f"â± command timed out after {timeout}s"
     except FileNotFoundError as e:
-        # Docker / git not in PATH — friendly message
-        return f"⚠️ command not found: {e}"
+        # Docker / git not in PATH - friendly message
+        return f"âš ï¸ command not found: {e}"
     except Exception as e:
-        return f"⚠️ {type(e).__name__}: {e}"
+        return f"âš ï¸ {type(e).__name__}: {e}"
 
 
 def _has_binary(name: str) -> bool:
@@ -570,19 +600,19 @@ async def cmd_ps(msg: Message) -> None:
                         # Service names are 2-space indented and end with ':'
                         if line.startswith("  ") and not line.startswith("    ") and line.rstrip().endswith(":"):
                             services.append(line.strip().rstrip(":"))
-                services_str = "\n".join(f"• {s}" for s in services[:40])
+                services_str = "\n".join(f"â€¢ {s}" for s in services[:40])
                 await msg.answer(
-                    "🐳 docker לא מותקן בסביבה הזו של הבוט.\n\n"
-                    f"שירותים שמוגדרים ב-docker-compose.yml ({len(services)}):\n"
+                    "ðŸ³ docker ×œ× ×ž×•×ª×§×Ÿ ×‘×¡×‘×™×‘×” ×”×–×• ×©×œ ×”×‘×•×˜.\n\n"
+                    f"×©×™×¨×•×ª×™× ×©×ž×•×’×“×¨×™× ×‘-docker-compose.yml ({len(services)}):\n"
                     f"{services_str}\n\n"
-                    "להפעלת הסטטוס בפועל הרץ במ�-שב המאר�-: `docker compose ps`",
+                    "×œ×”×¤×¢×œ×ª ×”×¡×˜×˜×•×¡ ×‘×¤×•×¢×œ ×”×¨×¥ ×‘×žï¿½-×©×‘ ×”×ž××¨ï¿½-: `docker compose ps`",
                     parse_mode=None,
                 )
                 return
             except Exception as e:
-                await msg.answer(f"docker �-סר ולא הצל�-תי לקרוא compose: {e}")
+                await msg.answer(f"docker ï¿½-×¡×¨ ×•×œ× ×”×¦×œï¿½-×ª×™ ×œ×§×¨×•× compose: {e}")
                 return
-        await msg.answer("🐳 docker לא מותקן + docker-compose.yml לא נמצא.", parse_mode=None)
+        await msg.answer("ðŸ³ docker ×œ× ×ž×•×ª×§×Ÿ + docker-compose.yml ×œ× × ×ž×¦×.", parse_mode=None)
         return
     out = _run_cmd("docker ps --format 'table {{.Names}}\\t{{.Status}}'")
     await msg.answer(f"```\n{out}\n```")
@@ -595,12 +625,12 @@ async def cmd_logs(msg: Message) -> None:
         return
     parts = (msg.text or "").split(maxsplit=1)
     if len(parts) < 2:
-        await msg.answer("שימוש: `/logs \\<container\\-name\\>`  \nלמשל: `/logs slh\\-claude\\-bot`")
+        await msg.answer("×©×™×ž×•×©: `/logs \\<container\\-name\\>`  \n×œ×ž×©×œ: `/logs slh\\-claude\\-bot`")
         return
     name = parts[1].strip().replace(";", "").replace("&", "").replace("|", "")
     # Allowlist prefix check
     if not name.startswith(("slh-", "slh_")):
-        await msg.answer("רק containers עם prefix `slh-` מותרים.")
+        await msg.answer("×¨×§ containers ×¢× prefix `slh-` ×ž×•×ª×¨×™×.")
         return
     out = _run_cmd(f"docker logs {name} --tail 25 2>&1")
     await msg.answer(f"*logs {name}:*\n```\n{out[-3500:]}\n```")
@@ -615,7 +645,7 @@ async def cmd_git(msg: Message) -> None:
     subcmd = (parts[1].strip() if len(parts) > 1 else "status").split()[0]
     safe_subs = {"status", "log", "diff", "branch"}
     if subcmd not in safe_subs:
-        await msg.answer(f"פקודת git מותרות בלבד: {', '.join(safe_subs)}")
+        await msg.answer(f"×¤×§×•×“×ª git ×ž×•×ª×¨×•×ª ×‘×œ×‘×“: {', '.join(safe_subs)}")
         return
     repo_hint = (parts[1].strip() if len(parts) > 1 else "")
     # Default = website (small repo); switch to main only if user says api/main
@@ -645,7 +675,7 @@ async def cmd_bots(msg: Message) -> None:
     running = out.strip()
     out_list = _run_cmd("docker ps --format '{{.Names}}: {{.Status}}' | grep ^slh- | sort")
     await msg.answer(
-        f"*Bot fleet: {running} רצים*\n```\n{out_list[:3500]}\n```"
+        f"*Bot fleet: {running} ×¨×¦×™×*\n```\n{out_list[:3500]}\n```"
     )
 
 
@@ -656,11 +686,11 @@ async def cmd_ai_mode(msg: Message) -> None:
         return
     await msg.answer(
         f"*AI mode:* `{_AI_MODE}`\n\n"
-        f"{'✅ Anthropic Claude עם tool use (עולה כסף)' if _AI_MODE == 'anthropic-tools' else '✅ SLH multi-provider (Groq/Gemini �-ינם)'}"
+        f"{'âœ… Anthropic Claude ×¢× tool use (×¢×•×œ×” ×›×¡×£)' if _AI_MODE == 'anthropic-tools' else 'âœ… SLH multi-provider (Groq/Gemini ï¿½-×™× ×)'}"
     )
 
 
-# Photo/screenshot handler — saves incoming images to /workspace/incoming_screenshots/
+# Photo/screenshot handler - saves incoming images to /workspace/incoming_screenshots/
 # so the human operator can read them via Read tool from outside the container.
 @dp.message(F.photo)
 async def on_photo(msg: Message) -> None:
@@ -680,14 +710,14 @@ async def on_photo(msg: Message) -> None:
         cap = (msg.caption or "").strip()
         log.info(f"saved screenshot from {msg.from_user.id} to {out_path} (caption='{cap[:60]}')")
         await msg.answer(
-            f"✅ קיבלתי תמונה ושמרתי\\.\n"
-            f"📂 `screenshot_{ts}`\n"
-            f"{'📝 ' + _escape_md(cap[:200]) if cap else ''}\n\n"
-            f"Claude ניגש לקובץ הזה ויקרא אותו\\."
+            f"âœ… ×§×™×‘×œ×ª×™ ×ª×ž×•× ×” ×•×©×ž×¨×ª×™\\.\n"
+            f"ðŸ“‚ `screenshot_{ts}`\n"
+            f"{'ðŸ“ ' + _escape_md(cap[:200]) if cap else ''}\n\n"
+            f"Claude × ×™×’×© ×œ×§×•×‘×¥ ×”×–×” ×•×™×§×¨× ××•×ª×•\\."
         )
     except Exception as e:
         log.exception("photo save failed")
-        await msg.answer(f"שגיאה בשמירת התמונה: `{type(e).__name__}: {e}`")
+        await msg.answer(f"×©×’×™××” ×‘×©×ž×™×¨×ª ×”×ª×ž×•× ×”: `{type(e).__name__}: {e}`")
 
 
 # Filter excludes slash-commands so they fall through to Command-filtered
@@ -734,11 +764,11 @@ async def on_text(msg: Message) -> None:
                 provider = "free-fallback"
                 model = "groq/llama-3.3-70b-versatile"
                 # Pass tier_mode='pro_fallback' so the system prompt knows the
-                # user paid for Pro — answer richly + acknowledge tool absence.
+                # user paid for Pro - answer richly + acknowledge tool absence.
                 reply, new_msgs = await client.converse(hist, text, tier_mode="pro_fallback")
-                # Tell the user once per message — visible Pro-tier degradation
-                reply = ("⚠️ _Pro tier זמני על Groq Llama (Anthropic balance ריק). "
-                         "תפעולה רגילה ת�-זור מיד שיתווסף balance._\n\n") + reply
+                # Tell the user once per message - visible Pro-tier degradation
+                reply = ("âš ï¸ _Pro tier ×–×ž× ×™ ×¢×œ Groq Llama (Anthropic balance ×¨×™×§). "
+                         "×ª×¤×¢×•×œ×” ×¨×’×™×œ×” ×ªï¿½-×–×•×¨ ×ž×™×“ ×©×™×ª×•×•×¡×£ balance._\n\n") + reply
             else:
                 raise
 
@@ -752,10 +782,10 @@ async def on_text(msg: Message) -> None:
         tokens_out = max(1, len(reply) // 4)
         cost_cents = 0
         if provider == "anthropic":
-            # Anthropic Sonnet 4.5: $3/Mtok in, $15/Mtok out → cents
+            # Anthropic Sonnet 4.5: $3/Mtok in, $15/Mtok out â†’ cents
             cost_usd = (tokens_in * 3.0 + tokens_out * 15.0) / 1_000_000
             cost_cents = int(cost_usd * 100)
-        # provider == 'free-fallback' or 'free' → cost_cents stays 0
+        # provider == 'free-fallback' or 'free' â†’ cost_cents stays 0
         await quota.record(
             user_id=msg.from_user.id,
             chat_id=msg.chat.id,
@@ -770,18 +800,18 @@ async def on_text(msg: Message) -> None:
         for chunk in _chunks(reply):
             await msg.answer(chunk)
 
-        # Low-quota nudge — only on transitions
+        # Low-quota nudge - only on transitions
         new_remaining = decision.quota_remaining - 1
         if 0 < new_remaining <= 3 and decision.tier == "free":
             await msg.answer(
-                f"⚠️ נשארו לך {new_remaining} הודעות ה�-ודש. "
-                f"שדרג ל-Pro: `/upgrade pro`"
+                f"âš ï¸ × ×©××¨×• ×œ×š {new_remaining} ×”×•×“×¢×•×ª ×”ï¿½-×•×“×©. "
+                f"×©×“×¨×’ ×œ-Pro: `/upgrade pro`"
             )
     except Exception as e:
         log.exception("converse failed")
-        err = f"שגיאה: `{type(e).__name__}: {e}`"
+        err = f"×©×’×™××”: `{type(e).__name__}: {e}`"
         if "ANTHROPIC_API_KEY" in str(e):
-            err += "\n\nצריך להוסיף ANTHROPIC\\_API\\_KEY ל-slh-claude-bot/.env"
+            err += "\n\n×¦×¨×™×š ×œ×”×•×¡×™×£ ANTHROPIC\\_API\\_KEY ×œ-slh-claude-bot/.env"
         await msg.answer(err)
 
 
@@ -816,14 +846,14 @@ async def main() -> None:
         log.info("editor_commands wired in")
     except Exception as e:
         log.warning(f"editor_commands not loaded: {e}")
-    log.info(f"starting @SLH_Claude_bot · AI mode: {_AI_MODE}")
+    log.info(f"starting @SLH_Claude_bot Â· AI mode: {_AI_MODE}")
     me = await bot.get_me()
     log.info(f"connected as @{me.username} (id={me.id})")
     # Announce startup to the coordination group (no-op if disabled)
     if _coord is not None:
         await _coord.post_event(
             bot, "claude-bot", "ready",
-            f"@{me.username} polling · AI={_AI_MODE}"
+            f"@{me.username} polling Â· AI={_AI_MODE}"
         )
     await dp.start_polling(bot)
 
