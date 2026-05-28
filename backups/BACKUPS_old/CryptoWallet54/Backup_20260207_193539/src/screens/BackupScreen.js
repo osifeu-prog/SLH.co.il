@@ -1,18 +1,18 @@
-﻿import React from "react";
+import React from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 
 export default function BackupScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>גיבוי ארנק</Text>
-      <Text style={styles.warning}>⚠️ חשוב מאוד!</Text>
+      <Text style={styles.title}>????? ????</Text>
+      <Text style={styles.warning}>?? ???? ????!</Text>
       <Text style={styles.instructions}>
-        שמור את מפתחות הגיבוי במקום בטוח. ללא המפתחות, לא תוכל לשחזר את הארנק.
+        ???? ?? ?????? ?????? ????? ????. ??? ???????, ?? ???? ????? ?? ?????.
       </Text>
       <View style={styles.seedPhrase}>
         <Text style={styles.seedText}>seed phrase will appear here</Text>
       </View>
-      <Button title="צור מפתחות גיבוי" color="#4A90E2" />
+      <Button title="??? ?????? ?????" color="#4A90E2" />
     </View>
   );
 }

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -68,56 +68,56 @@
 </head>
 <body>
     <div class="container">
-        <h1>🎯 SLH Airdrop - פאנל ניהול</h1>
+        <h1>?? SLH Airdrop - ???? ?????</h1>
         
         <div class="stats">
             <div class="stat-card">
                 <div class="stat-value" id="total-users">0</div>
-                <div class="stat-label">👥 משתמשים רשומים</div>
+                <div class="stat-label">?? ??????? ??????</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="total-payments">0</div>
-                <div class="stat-label">💰 תשלומים</div>
+                <div class="stat-label">?? ???????</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value">1,000</div>
-                <div class="stat-label">🎁 טוקנים למשתמש</div>
+                <div class="stat-label">?? ?????? ??????</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value">44.4 ₪</div>
-                <div class="stat-label">💸 מחיר למשתמש</div>
+                <div class="stat-value">44.4 ?</div>
+                <div class="stat-label">?? ???? ??????</div>
             </div>
         </div>
         
-        <h2>📊 משתמשים אחרונים</h2>
+        <h2>?? ??????? ???????</h2>
         <table class="users-table" id="users-table">
             <thead>
                 <tr>
-                    <th>מזהה</th>
-                    <th>שם</th>
+                    <th>????</th>
+                    <th>??</th>
                     <th>Username</th>
-                    <th>תאריך</th>
-                    <th>סטטוס</th>
+                    <th>?????</th>
+                    <th>?????</th>
                 </tr>
             </thead>
             <tbody id="users-list">
-                <tr><td colspan="5" style="text-align:center">טוען נתונים...</td></tr>
+                <tr><td colspan="5" style="text-align:center">???? ??????...</td></tr>
             </tbody>
         </table>
         
         <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
-            <h3>🔗 קישורים חשובים:</h3>
+            <h3>?? ??????? ??????:</h3>
             <ul>
-                <li><a href="https://t.me/SLH_AIR_bot" target="_blank">🤖 הבוט: @SLH_AIR_bot</a></li>
-                <li><a href="https://slhisrael.com/" target="_blank">🌐 אתר רשמי: slhisrael.com</a></li>
-                <li><a href="https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022" target="_blank">📝 חוזה BSC</a></li>
-                <li><a href="https://web-production-112f6.up.railway.app/investors/" target="_blank">📊 דשבורד משקיעים</a></li>
+                <li><a href="https://t.me/SLH_AIR_bot" target="_blank">?? ????: @SLH_AIR_bot</a></li>
+                <li><a href="https://slhisrael.com/" target="_blank">?? ??? ????: slhisrael.com</a></li>
+                <li><a href="https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022" target="_blank">?? ???? BSC</a></li>
+                <li><a href="https://web-production-112f6.up.railway.app/investors/" target="_blank">?? ?????? ???????</a></li>
             </ul>
         </div>
     </div>
     
     <script>
-        // נתונים לדוגמה - בפועל יתחבר ל-API
+        // ?????? ?????? - ????? ????? ?-API
         const demoData = {
             total_users: 1,
             total_payments: 0,
@@ -127,12 +127,12 @@
                     name: "Osif",
                     username: "Osif83",
                     date: "07/02/2026 01:09",
-                    status: "רשום"
+                    status: "????"
                 }
             ]
         };
         
-        // הצג את הנתונים
+        // ??? ?? ???????
         document.getElementById('total-users').textContent = demoData.total_users;
         document.getElementById('total-payments').textContent = demoData.total_payments;
         
@@ -151,10 +151,10 @@
             usersList.appendChild(row);
         });
         
-        // רענון אוטומטי כל 30 שניות
+        // ????? ??????? ?? 30 ?????
         setInterval(() => {
-            console.log('רענון נתונים...');
-            // כאן יהיה קוד אמיתי לקבלת נתונים מ-API
+            console.log('????? ??????...');
+            // ??? ???? ??? ????? ????? ?????? ?-API
         }, 30000);
     </script>
 </body>

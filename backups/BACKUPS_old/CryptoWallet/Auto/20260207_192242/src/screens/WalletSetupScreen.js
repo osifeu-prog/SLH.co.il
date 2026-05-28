@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, TextInput, Button, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -8,17 +8,17 @@ export default function WalletSetupScreen({ navigation }) {
 
   const setupWallet = async () => {
     if (password !== confirmPassword) {
-      Alert.alert("שגיאה", "הסיסמאות לא תואמות");
+      Alert.alert("?????", "???????? ?? ??????");
       return;
     }
 
     if (password.length < 6) {
-      Alert.alert("שגיאה", "סיסמה חייבת להיות לפחות 6 תווים");
+      Alert.alert("?????", "????? ????? ????? ????? 6 ?????");
       return;
     }
 
     try {
-      // סימולציה של יצירת ארנק
+      // ???????? ?? ????? ????
       const walletData = {
         address: "0x" + Math.random().toString(16).slice(2),
         created: new Date().toISOString(),
@@ -26,32 +26,32 @@ export default function WalletSetupScreen({ navigation }) {
       };
 
       await AsyncStorage.setItem("wallet_data", JSON.stringify(walletData));
-      Alert.alert("הצלחה", "הארנק נוצר בהצלחה!");
+      Alert.alert("?????", "????? ???? ??????!");
       navigation.replace("Main");
     } catch (error) {
-      Alert.alert("שגיאה", "לא ניתן ליצור ארנק");
+      Alert.alert("?????", "?? ???? ????? ????");
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>הקמת ארנק חדש</Text>
-      <Text style={styles.subtitle}>צור ארנק קריפטו מאובטח</Text>
+      <Text style={styles.title}>???? ???? ???</Text>
+      <Text style={styles.subtitle}>??? ???? ?????? ??????</Text>
 
       <View style={styles.form}>
-        <Text style={styles.label}>סיסמה</Text>
+        <Text style={styles.label}>?????</Text>
         <TextInput
           style={styles.input}
-          placeholder="הכנס סיסמה"
+          placeholder="???? ?????"
           secureTextEntry
           value={password}
           onChangeText={setPassword}
         />
 
-        <Text style={styles.label}>אימות סיסמה</Text>
+        <Text style={styles.label}>????? ?????</Text>
         <TextInput
           style={styles.input}
-          placeholder="הכנס סיסמה שוב"
+          placeholder="???? ????? ???"
           secureTextEntry
           value={confirmPassword}
           onChangeText={setConfirmPassword}
@@ -59,11 +59,11 @@ export default function WalletSetupScreen({ navigation }) {
 
         <View style={styles.terms}>
           <Text style={styles.termsText}>
-            בהמשך, תקבל מפתחות גיבוי. שמור אותם במקום בטוח!
+            ?????, ???? ?????? ?????. ???? ???? ????? ????!
           </Text>
         </View>
 
-        <Button title="צור ארנק" onPress={setupWallet} color="#4A90E2" />
+        <Button title="??? ????" onPress={setupWallet} color="#4A90E2" />
       </View>
     </View>
   );

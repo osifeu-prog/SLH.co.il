@@ -1,20 +1,20 @@
-﻿import React from "react";
+import React from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 
 export default function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>ברוך הבא לארנק הקריפטו</Text>
-      <Text style={styles.subtitle}>ניהול מאובטח של המטבעות שלך</Text>
+      <Text style={styles.title}>???? ??? ????? ???????</Text>
+      <Text style={styles.subtitle}>????? ?????? ?? ??????? ???</Text>
       
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>יתרה נוכחית</Text>
+        <Text style={styles.cardTitle}>???? ??????</Text>
         <Text style={styles.balance}>0.00 </Text>
       </View>
 
       <View style={styles.buttonContainer}>
         <Button
-          title="צפה בארנק"
+          title="??? ?????"
           onPress={() => navigation.navigate("Wallet")}
           color="#4A90E2"
         />

@@ -1,11 +1,11 @@
-﻿import React from "react";
+import React from "react";
 import { View, Text, StyleSheet, Button, Share } from "react-native";
 
 export default function ReferralScreen() {
   const shareReferral = async () => {
     try {
       await Share.share({
-        message: "הצטרפו לארנק הקריפטו שלי! קוד ההזמנה שלי: WALLET123",
+        message: "?????? ????? ??????? ???! ??? ?????? ???: WALLET123",
       });
     } catch (error) {
       console.error(error);
@@ -14,26 +14,26 @@ export default function ReferralScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>הזמנת חברים</Text>
+      <Text style={styles.title}>????? ?????</Text>
       <View style={styles.card}>
-        <Text style={styles.cardTitle">קוד ההזמנה שלך</Text>
+        <Text style={styles.cardTitle">??? ?????? ???</Text>
         <Text style={styles.referralCode">WALLET123</Text>
-        <Text style={styles.cardSubtitle">קבל 10% מעמלת החבר שהזמנת</Text>
+        <Text style={styles.cardSubtitle">??? 10% ????? ???? ??????</Text>
       </View>
       
       <View style={styles.stats}>
         <View style={styles.statItem}>
           <Text style={styles.statNumber">0</Text>
-          <Text style={styles.statLabel">מוזמנים</Text>
+          <Text style={styles.statLabel">???????</Text>
         </View>
         <View style={styles.statItem}>
           <Text style={styles.statNumber">0.00</Text>
-          <Text style={styles.statLabel">רווח מצטבר</Text>
+          <Text style={styles.statLabel">???? ?????</Text>
         </View>
       </View>
 
       <Button
-        title="שתף קוד הזמנה"
+        title="??? ??? ?????"
         onPress={shareReferral}
         color="#4A90E2"
       />

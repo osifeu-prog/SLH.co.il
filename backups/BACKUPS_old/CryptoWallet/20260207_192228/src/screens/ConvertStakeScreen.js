@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, TextInput, Button, Picker } from "react-native";
 
 export default function ConvertStakeScreen() {
@@ -8,15 +8,15 @@ export default function ConvertStakeScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>המרה וסטייקינג</Text>
+      <Text style={styles.title}>???? ?????????</Text>
       
       <View style={styles.card}>
-        <Text style={styles.sectionTitle}>המרת מטבע</Text>
+        <Text style={styles.sectionTitle}>???? ????</Text>
         
         <View style={styles.inputRow}>
           <TextInput
             style={styles.input}
-            placeholder="כמות"
+            placeholder="????"
             value={amount}
             onChangeText={setAmount}
             keyboardType="numeric"
@@ -33,13 +33,13 @@ export default function ConvertStakeScreen() {
         </View>
 
         <View style={styles.arrowContainer}>
-          <Text style={styles.arrow}>↓</Text>
+          <Text style={styles.arrow}>?</Text>
         </View>
 
         <View style={styles.inputRow}>
           <TextInput
             style={styles.input}
-            placeholder="כמות"
+            placeholder="????"
             value={(parseFloat(amount) || 0).toString()}
             editable={false}
           />
@@ -54,13 +54,13 @@ export default function ConvertStakeScreen() {
           </Picker>
         </View>
 
-        <Button title="המר" color="#4A90E2" />
+        <Button title="???" color="#4A90E2" />
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.sectionTitle">סטייקינג</Text>
-        <Text style={styles.infoText">נעילה לטווח ארוך לריבית משתלמת</Text>
-        <Button title="התחל סטייקינג" color="#28a745" />
+        <Text style={styles.sectionTitle">????????</Text>
+        <Text style={styles.infoText">????? ????? ???? ?????? ??????</Text>
+        <Button title="???? ????????" color="#28a745" />
       </View>
     </View>
   );

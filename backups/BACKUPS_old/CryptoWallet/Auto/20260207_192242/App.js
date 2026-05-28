@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -6,7 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { View, ActivityIndicator } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
-// ייבוא מסכים
+// ????? ?????
 import HomeScreen from "./src/screens/HomeScreen";
 import WalletScreen from "./src/screens/WalletScreen";
 import BackupScreen from "./src/screens/BackupScreen";
@@ -56,22 +56,22 @@ function MainTabs() {
       <Tab.Screen
         name="Home"
         component={HomeScreen}
-        options={{ title: "בית" }}
+        options={{ title: "???" }}
       />
       <Tab.Screen
         name="Convert"
         component={ConvertStakeScreen}
-        options={{ title: "המרה וסטייקינג" }}
+        options={{ title: "???? ?????????" }}
       />
       <Tab.Screen
         name="Referral"
         component={ReferralScreen}
-        options={{ title: "הזמנות" }}
+        options={{ title: "??????" }}
       />
       <Tab.Screen
         name="Backup"
         component={BackupScreen}
-        options={{ title: "גיבוי" }}
+        options={{ title: "?????" }}
       />
     </Tab.Navigator>
   );

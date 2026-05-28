@@ -1,9 +1,9 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from "react-native";
 
 const walletData = [
-  { id: "1", name: "ביטקוין", symbol: "BTC", amount: "0.00", value: "0.00" },
-  { id: "2", name: "אתריום", symbol: "ETH", amount: "0.00", value: "0.00" },
+  { id: "1", name: "???????", symbol: "BTC", amount: "0.00", value: "0.00" },
+  { id: "2", name: "??????", symbol: "ETH", amount: "0.00", value: "0.00" },
   { id: "3", name: "Solana", symbol: "SOL", amount: "0.00", value: "0.00" },
 ];
 
@@ -30,8 +30,8 @@ export default function WalletScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>הארנק שלי</Text>
-        <Text style={styles.totalValue}>סה"כ: 0.00</Text>
+        <Text style={styles.headerTitle}>????? ???</Text>
+        <Text style={styles.totalValue}>??"?: 0.00</Text>
       </View>
 
       <FlatList
@@ -43,13 +43,13 @@ export default function WalletScreen() {
 
       <View style={styles.actions}>
         <TouchableOpacity style={styles.actionButton}>
-          <Text style={styles.actionButtonText}>קבל</Text>
+          <Text style={styles.actionButtonText}>???</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.actionButton}>
-          <Text style={styles.actionButtonText}>שלח</Text>
+          <Text style={styles.actionButtonText}>???</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.actionButton}>
-          <Text style={styles.actionButtonText}>קנה</Text>
+          <Text style={styles.actionButtonText}>???</Text>
         </TouchableOpacity>
       </View>
     </View>
