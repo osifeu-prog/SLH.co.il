@@ -1,4 +1,4 @@
-﻿"""SLH Token Rotation ×³Â³×’â‚¬â„¢×³â€™×’â‚¬ÂšÖ²Â¬×³â€™×’â€šÂ¬Ö²Â Telegram admin panel for @SLH_Claude_bot.
+"""SLH Token Rotation ×³Â³×’â‚¬â„¢×³â€™×’â‚¬ÂšÖ²Â¬×³â€™×’â€šÂ¬Ö²Â Telegram admin panel for @SLH_Claude_bot.
 
 Mirrors /admin/tokens.html on Telegram with inline keyboards. Same backend
 endpoint (POST /api/admin/rotate-bot-token-pipeline) ×³Â³×’â‚¬â„¢×³â€™×’â‚¬ÂšÖ²Â¬×³â€™×’â€šÂ¬Ö²Â bot is just a wrapper.

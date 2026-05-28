@@ -1,4 +1,4 @@
-﻿# admin_panel.py  clean minimal version
+# admin_panel.py  clean minimal version
 from aiogram import Router
 from aiogram.types import Message
 from aiogram.filters import Command
