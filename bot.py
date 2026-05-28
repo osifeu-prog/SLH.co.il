@@ -84,7 +84,7 @@ async def cmd_crowdfunding(msg: Message):
 
 @dp.message(Command("scan"))
 async def cmd_scan(msg: Message):
-    await msg.reply("Scanning requires local agent. Use dashboard or run locally: python scan_agent.py D:\\slh-website")
+    await msg.reply("Scanning requires local agent. Use dashboard or run locally: python scan_agent.py D:/slh-website")
 
 @dp.message(Command("plan"))
 async def cmd_plan(msg: Message):
@@ -880,6 +880,7 @@ async def cmd_auto(msg: Message):
     await msg.reply("Running full auto pipeline...")
     result = run_auto(goal)
     await msg.reply(result[:4000])
+
 
 
 
