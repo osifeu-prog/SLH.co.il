@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """create_staking_engine_tables_fix
 
 Revision ID: 9d4ba33ac368
@@ -160,4 +160,5 @@ def downgrade() -> None:
     _exec("DROP INDEX IF EXISTS public.ix_staking_pools_asset_symbol")
     _exec("DROP INDEX IF EXISTS public.ix_staking_pools_code")
     op.execute(sa.text("DROP TABLE IF EXISTS public.staking_pools"))
+
 

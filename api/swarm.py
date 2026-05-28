@@ -1,5 +1,5 @@
-ï»¿# -*- coding: utf-8 -*-
-"""SLH Swarm â€” independent device mesh API.
+# -*- coding: utf-8 -*-
+"""SLH Swarm — independent device mesh API.
 
 Implements the Phase-1 endpoints from `ops/SWARM_V1_BLUEPRINT_20260424.md`.
 
@@ -9,7 +9,7 @@ Mesh topology (no router required):
 Devices register, beat heartbeats, log events, and poll for commands.
 Two tables: swarm_devices, swarm_events, swarm_commands. Created on first hit.
 
-NOT business logic â€” just the mesh state plane. Tokens/payments stay in main.py.
+NOT business logic — just the mesh state plane. Tokens/payments stay in main.py.
 """
 from __future__ import annotations
 
@@ -134,7 +134,7 @@ async def _ensure_schema(pool) -> None:
 
 
 def _pool(request: Request):
-    """Pool accessor â€” falls back gracefully if app.state.db_pool is missing."""
+    """Pool accessor — falls back gracefully if app.state.db_pool is missing."""
     pool = getattr(request.app.state, "db_pool", None)
     if pool is None:
         raise HTTPException(503, "DB pool unavailable")
@@ -220,7 +220,7 @@ async def heartbeat(req: HeartbeatReq, request: Request):
             req.rssi,
             req.battery_pct,
         )
-        # If 0 rows updated, device isn't registered â€” auto-register as 'unknown'
+        # If 0 rows updated, device isn't registered — auto-register as 'unknown'
         if result.endswith("UPDATE 0"):
             return {"ok": False, "error": "device_not_registered", "hint": "POST /api/swarm/devices/register first"}
 
@@ -387,7 +387,7 @@ async def list_devices(
     limit: int = Query(50, le=200),
     owner_user_id: Optional[int] = None,
 ):
-    """Public-ish list of swarm devices (no PII â€” just IDs, types, last heartbeat)."""
+    """Public-ish list of swarm devices (no PII — just IDs, types, last heartbeat)."""
     pool = _pool(request)
     await _ensure_schema(pool)
 
@@ -463,5 +463,6 @@ async def stats(request: Request):
         "events_24h": int(s["events_24h"] or 0),
         "pending_commands": int(s["pending_commands"] or 0),
     }
+
 
 

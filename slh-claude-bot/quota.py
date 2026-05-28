@@ -121,3 +121,4 @@ async def quota_status_he(user_id: int) -> str:
         f"נותרו: *{remaining}* הודעות\n\n"
         f"מתחדש: `{sub.current_period_end[:10]}`"
     )
+

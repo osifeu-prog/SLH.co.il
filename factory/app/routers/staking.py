@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -165,5 +165,6 @@ def unstake_confirm(position_id: str, body: UnstakeConfirmIn, db: Session = Depe
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=400, detail=str(e))
+
 
 

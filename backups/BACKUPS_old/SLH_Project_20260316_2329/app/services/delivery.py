@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from aiogram import Bot
 
 from app.i18n import t, status_label
@@ -119,4 +119,5 @@ async def send_fulfillment_bundle(
         int(order["user_id"]),
         render_receipt(order, lang, footer=receipt_footer),
     )
+
 

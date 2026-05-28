@@ -17,3 +17,4 @@ if not logger.handlers:
 
 async def log_event(kind: str, message: str):
     logger.info("[%s] %s", kind.upper(), message)
+

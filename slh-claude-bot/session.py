@@ -66,3 +66,4 @@ async def clear(chat_id: int) -> int:
         cur = await db.execute("DELETE FROM messages WHERE chat_id=?", (chat_id,))
         await db.commit()
         return cur.rowcount
+

@@ -564,3 +564,4 @@ async def _execute_pipeline(host_msg: Message, user_id: int, state: dict) -> Non
 
 # Convenience export so bot.py can `import rotation_panel; rotation_panel.register(dp, auth)`
 __all__ = ["register"]
+

@@ -1,16 +1,17 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 class UIManager:
     BANNER = " *ExpertNet SLH System - Active*"
     
     @staticmethod
     def welcome_msg(user_name):
-        return f"ברוך הבא {user_name} ל-ExpertNet!\n\nבחר פעולה מהתפריט למטה:"
+        return f"???? ??? {user_name} ?-ExpertNet!\n\n??? ????? ??????? ????:"
 
     @staticmethod
     def stats_msg(name, symbol, supply, balance):
-        return (f" *נתוני חוזה:*\n"
-                f"שם: {name}\n"
-                f"סימול: {symbol}\n"
-                f"סך היצע: {supply:,.2f}\n\n"
-                f" *היתרה שלך:* {balance:,.2f} {symbol}")
+        return (f" *????? ????:*\n"
+                f"??: {name}\n"
+                f"?????: {symbol}\n"
+                f"?? ????: {supply:,.2f}\n\n"
+                f" *????? ???:* {balance:,.2f} {symbol}")
+
 

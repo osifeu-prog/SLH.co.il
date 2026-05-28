@@ -1,16 +1,17 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import subprocess
 import time
 import sys
 
-print("🚀 Starting ExpertNet Core Dual-Engine...")
+print("?? Starting ExpertNet Core Dual-Engine...")
 
-# הפעלת ה-Dashboard בחלון נפרד
+# ????? ?-Dashboard ????? ????
 subprocess.Popen(["start", "cmd", "/k", "py scripts\\dashboard.py"], shell=True)
 
-time.sleep(2) # מחכה רגע שהשרת יעלה
+time.sleep(2) # ???? ??? ????? ????
 
-# הפעלת הבוט בחלון הנוכחי
-print("🤖 Launching Telegram Bot...")
+# ????? ???? ????? ??????
+print("?? Launching Telegram Bot...")
 subprocess.run(["py", "scripts\\telegram_bot.py"])
+
 

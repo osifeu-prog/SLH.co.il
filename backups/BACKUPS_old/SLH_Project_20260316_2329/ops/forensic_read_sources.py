@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from pathlib import Path
 import ast
 import hashlib
@@ -27,4 +27,5 @@ for p in files:
         print("AST: OK")
     except Exception as e:
         print("AST: FAIL", repr(e))
+
 

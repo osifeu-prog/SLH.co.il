@@ -1,4 +1,4 @@
-﻿"""One-shot: capture the chat_id of the SLH coordination group.
+"""One-shot: capture the chat_id of the SLH coordination group.
 
 Workflow:
   1. Add @SLH_Claude_bot (or any SLH bot) to the coordination group via the
@@ -12,7 +12,7 @@ Workflow:
 
 Token resolution order:
   1. CAPTURE_BOT_TOKEN env var (override)
-  2. SLH_CLAUDE_BOT_TOKEN env var (default — claude-bot)
+  2. SLH_CLAUDE_BOT_TOKEN env var (default � claude-bot)
   3. Fail.
 
 Reads .env from project root and from slh-claude-bot/.env so the token can
@@ -136,4 +136,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+
 

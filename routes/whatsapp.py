@@ -1,4 +1,4 @@
-﻿"""
+"""
 WhatsApp Integration Module
 Contact management + fraud detection system with Twilio gateway
 """
@@ -418,12 +418,12 @@ async def whatsapp_send_invite(
 
     # Default messages
     messages = {
-        "website": "ברוכים הבאים ל-SLH Spark! 🚀 בקרו בחזקות: https://slh-nft.com",
-        "bot": "בואו להצטרף לבוט SLH שלנו ולהתחיל להשתמש בתוקנים: https://t.me/SLH_AIR_bot",
-        "course": "קורס חדש זמין עכשיו! השתמשו בקוד SLH2026 להנחה:",
+        "website": "?????? ????? ?-SLH Spark! ?? ???? ??????: https://slh-nft.com",
+        "bot": "???? ?????? ???? SLH ???? ??????? ?????? ???????: https://t.me/SLH_AIR_bot",
+        "course": "???? ??? ???? ?????! ?????? ???? SLH2026 ?????:",
     }
 
-    message_text = req.message or messages.get(req.invite_type, "ברוכים הבאים ל-SLH Spark!")
+    message_text = req.message or messages.get(req.invite_type, "?????? ????? ?-SLH Spark!")
 
     twilio_message_id = None
     delivery_status = "pending"
@@ -644,4 +644,5 @@ async def whatsapp_broadcast_message(
         except Exception as e:
             logger.error(f"Failed to broadcast: {e}")
             raise HTTPException(500, f"Error: {str(e)[:100]}")
+
 

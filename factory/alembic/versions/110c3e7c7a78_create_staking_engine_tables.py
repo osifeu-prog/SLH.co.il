@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """create_staking_engine_tables
 
 Revision ID: 110c3e7c7a78
@@ -204,5 +204,6 @@ def downgrade() -> None:
     op.drop_index("ix_staking_pools_asset_symbol", table_name="staking_pools")
     op.drop_index("ix_staking_pools_code", table_name="staking_pools")
     op.drop_table("staking_pools")
+
 
 

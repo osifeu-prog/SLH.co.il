@@ -1,4 +1,4 @@
-﻿# utils/log_filter.py
+# utils/log_filter.py
 import re
 
 def filter_tokens(text):
@@ -7,3 +7,4 @@ def filter_tokens(text):
     url_token_pattern = re.compile(r'/bot\d{9,10}:[A-Za-z0-9_-]{35}/')
     text = url_token_pattern.sub('/bot[BOT_TOKEN_FILTERED]/', text)
     return text
+

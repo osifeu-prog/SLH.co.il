@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import requests
 import time
 import statistics
@@ -30,13 +30,14 @@ def get_trending_tokens():
         return []
 
 if __name__ == "__main__":
-    print("=== טרנדים חמים ב-BSC ===\n")
+    print("=== ?????? ???? ?-BSC ===\n")
     tokens = get_trending_tokens()[:5]
     for t in tokens:
         print(f"{t['symbol']} ({t['name']})")
-        print(f"  מחיר: ${t['price_usd']:.6f}")
-        print(f"  נזילות: ${t['liquidity_usd']:,.0f}")
-        print(f"  נפח 24h: ${t['volume_usd_24h']:,.0f}")
+        print(f"  ????: ${t['price_usd']:.6f}")
+        print(f"  ??????: ${t['liquidity_usd']:,.0f}")
+        print(f"  ??? 24h: ${t['volume_usd_24h']:,.0f}")
         print("-" * 40)
+
 
 

@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import os
 import shutil
 import subprocess
@@ -9,7 +9,7 @@ def setup_diagnostics():
     print("--- ExpertNet System Health Check ---")
     base_path = Path(".")
     
-    # בדיקת קבצים קריטיים
+    # ????? ????? ???????
     critical_files = ["vault/.env", "abi/contract_abi.json", "scripts/blockchain_manager.py", "scripts/ui_manager.py", "telegram_bot.py"]
     
     all_ok = True
@@ -20,7 +20,7 @@ def setup_diagnostics():
         else:
             print(f"[V] Verified: {file_path}")
 
-    # גיבוי DB
+    # ????? DB
     db_file = base_path / "vault/expertnet.db"
     if db_file.exists():
         backup_name = f"backups/expertnet_backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.db"
@@ -35,4 +35,5 @@ if __name__ == "__main__":
         subprocess.run(["python", "telegram_bot.py"])
     else:
         print("\n[!] Check failed. Fix missing files first.")
+
 

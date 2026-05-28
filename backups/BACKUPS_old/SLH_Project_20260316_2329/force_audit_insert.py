@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import os
 import psycopg2
 from dotenv import load_dotenv
@@ -54,4 +54,5 @@ print("MANUAL AUDIT INSERTED OK")
 
 cur.close()
 conn.close()
+
 

@@ -1,5 +1,5 @@
-﻿#!/usr/bin/env python3
-"""SLH Secrets Vault — daily digest sender.
+#!/usr/bin/env python3
+"""SLH Secrets Vault � daily digest sender.
 
 Designed to be invoked by Windows Task Scheduler at 21:00 Israel time.
 Calls `POST /api/admin/secrets/digest/send` which composes a Hebrew
@@ -92,4 +92,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+
 

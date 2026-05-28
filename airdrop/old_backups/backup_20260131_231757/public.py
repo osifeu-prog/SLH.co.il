@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from fastapi import APIRouter, HTTPException
 
 router = APIRouter()
@@ -10,16 +10,17 @@ def ping():
 @router.post('/airdrop')
 def send_airdrop(user_id: str, amount: int):
     '''
-    ×¤×•× ×§×¦×™×” × ×™×¡×™×•× ×™×ª ×œ×©×œ×™×—×ª ××™×™×¨×“×¨×•×¤
-    - user_id: ×ž×–×”×” ×”×ž×©×ª×ž×©
-    - amount: ×›×ž×•×ª tokens ×œ×©×œ×™×—×”
+    פונקציה ניסיונית לשליחת איירדרופ
+    - user_id: מזהה המשתמש
+    - amount: כמות tokens לשליחה
     '''
     if amount <= 0:
         raise HTTPException(status_code=400, detail='Amount must be positive')
 
-    # ×œ×•×’ ×‘×¡×™×¡×™ ×œ× ×™×¡×•×™×™ ××™×™×¨×“×¨×•×¤
+    # לוג בסיסי לניסויי איירדרופ
     print(f"[AIRDROP] Sending {amount} tokens to {user_id}")
 
     return {'user_id': user_id, 'amount': amount, 'status': 'success'}
+
 
 

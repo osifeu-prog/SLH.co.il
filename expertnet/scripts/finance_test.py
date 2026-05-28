@@ -1,14 +1,14 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import sqlite3
 
 DB_PATH = r'D:\ExpertNet_Core\vault\expertnet.db'
 
 def test_finance():
-    print(" בודק תשתיות פיננסיות...")
+    print(" ???? ?????? ????????...")
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     
-    # בדיקת עמודות חדשות
+    # ????? ?????? ?????
     cursor.execute("PRAGMA table_info(users)")
     columns = [col[1] for col in cursor.fetchall()]
     
@@ -25,4 +25,5 @@ def test_finance():
         print(f"{'' if status else ''} {f}")
 
 test_finance()
+
 

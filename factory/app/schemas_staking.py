@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from datetime import datetime
@@ -82,4 +82,5 @@ class UnstakeConfirmOut(BaseModel):
     penalty: str | None = None
     matured: bool | None = None
     idempotent: bool | None = None
+
 

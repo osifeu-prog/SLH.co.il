@@ -113,3 +113,4 @@ def invalidate_cache(user_id: Optional[int] = None) -> None:
         _cache.clear()
     else:
         _cache.pop(int(user_id), None)
+

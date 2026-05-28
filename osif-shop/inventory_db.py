@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 OsifShop - Inventory Database Module
 Shops, products, stock movements, reports.
@@ -18,7 +18,7 @@ async def pool():
     global _pool
     if _pool is None:
         # Phase 0B (2026-04-21): unified fail-fast pool via shared_db_core.
-        # max_size standardized 5→4 to fit Railway's 88-conn budget.
+        # max_size standardized 5?4 to fit Railway's 88-conn budget.
         _pool = await _shared_init_db_pool(
             os.getenv("DATABASE_URL", "postgresql://postgres:slh_secure_2026@postgres:5432/slh_main"),
         )
@@ -74,9 +74,9 @@ async def init_tables():
     log.info("Inventory tables ready")
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # SHOPS
-# ═══════════════════════════════════
+# -----------------------------------
 async def get_shop(owner_id: int):
     p = await pool()
     async with p.acquire() as c:
@@ -93,9 +93,9 @@ async def create_shop(owner_id: int, shop_name: str):
         return row
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # PRODUCTS
-# ═══════════════════════════════════
+# -----------------------------------
 async def get_product_by_barcode(shop_id: int, barcode: str):
     p = await pool()
     async with p.acquire() as c:
@@ -171,9 +171,9 @@ async def count_products(shop_id: int) -> int:
         return await c.fetchval("SELECT COUNT(*) FROM shop_products WHERE shop_id=$1", shop_id)
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # STOCK MOVEMENTS
-# ═══════════════════════════════════
+# -----------------------------------
 async def add_stock(shop_id: int, barcode: str, qty: int, note: str = ""):
     """Add stock (incoming). Returns updated product."""
     p = await pool()
@@ -209,9 +209,9 @@ async def remove_stock(shop_id: int, barcode: str, qty: int, movement_type: str 
         return updated, "ok"
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # LOW STOCK ALERTS
-# ═══════════════════════════════════
+# -----------------------------------
 async def get_low_stock(shop_id: int):
     p = await pool()
     async with p.acquire() as c:
@@ -220,9 +220,9 @@ async def get_low_stock(shop_id: int):
             shop_id)
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # REPORTS
-# ═══════════════════════════════════
+# -----------------------------------
 async def get_report(shop_id: int, days: int = 7):
     """Sales report for last N days."""
     p = await pool()
@@ -272,4 +272,5 @@ async def export_csv(shop_id: int) -> str:
     for r in rows:
         lines.append(f"{r['barcode']},{r['name']},{r['brand']},{r['category']},{r['price']},{r['cost']},{r['quantity']},{r['min_quantity']}")
     return "\n".join(lines)
+
 

@@ -230,3 +230,4 @@ async def get_pending_access_requests() -> list:
                FROM access_requests WHERE status='pending' ORDER BY created_at""",
         )
     return [dict(r) for r in rows]
+

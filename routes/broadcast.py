@@ -1,15 +1,15 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
-SLH Broadcast — cross-post to multiple networks via one endpoint.
+SLH Broadcast � cross-post to multiple networks via one endpoint.
 Starts with Telegram channel (@slhniffty, @SLH_AIR bot tokens).
 Extendable to Twitter/LinkedIn/Facebook/Discord when OAuth tokens added.
 
 Endpoints:
-  POST /api/broadcast/publish        — post to chosen networks in one call
-  POST /api/broadcast/telegram       — Telegram-only (uses bot token)
-  POST /api/broadcast/discord        — Discord webhook (if DISCORD_WEBHOOK set)
-  GET  /api/broadcast/status         — which networks are configured
-  GET  /api/broadcast/history/{uid}  — user's broadcast history
+  POST /api/broadcast/publish        � post to chosen networks in one call
+  POST /api/broadcast/telegram       � Telegram-only (uses bot token)
+  POST /api/broadcast/discord        � Discord webhook (if DISCORD_WEBHOOK set)
+  GET  /api/broadcast/status         � which networks are configured
+  GET  /api/broadcast/history/{uid}  � user's broadcast history
 """
 
 from __future__ import annotations
@@ -58,7 +58,7 @@ async def _ensure_broadcast_tables(conn):
     )
 
 
-# ══════════════════ Per-network publishers ══════════════════
+# ------------------ Per-network publishers ------------------
 
 async def _post_telegram(text: str, channel: Optional[str] = None) -> dict:
     if not SLH_AIR_TOKEN:
@@ -93,7 +93,7 @@ async def _post_discord(text: str) -> dict:
 async def _post_twitter(text: str) -> dict:
     """Post to Twitter/X via API v2. Requires OAuth 2.0 bearer token (write scope)."""
     if not TWITTER_BEARER:
-        return {"ok": False, "error": "TWITTER_BEARER_TOKEN not configured — setup at developer.twitter.com"}
+        return {"ok": False, "error": "TWITTER_BEARER_TOKEN not configured � setup at developer.twitter.com"}
     url = "https://api.twitter.com/2/tweets"
     headers = {"Authorization": f"Bearer {TWITTER_BEARER}", "Content-Type": "application/json"}
     payload = {"text": text[:280]}  # Twitter 280 char limit
@@ -111,10 +111,10 @@ async def _post_twitter(text: str) -> dict:
 async def _post_linkedin(text: str) -> dict:
     """Post to LinkedIn via Marketing API v2. Requires OAuth with w_member_social scope."""
     if not LINKEDIN_ACCESS_TOKEN:
-        return {"ok": False, "error": "LINKEDIN_ACCESS_TOKEN not configured — setup at developer.linkedin.com"}
+        return {"ok": False, "error": "LINKEDIN_ACCESS_TOKEN not configured � setup at developer.linkedin.com"}
     url = "https://api.linkedin.com/v2/ugcPosts"
     headers = {"Authorization": f"Bearer {LINKEDIN_ACCESS_TOKEN}", "Content-Type": "application/json", "X-Restli-Protocol-Version": "2.0.0"}
-    # LinkedIn requires user URN — we need LINKEDIN_USER_URN env
+    # LinkedIn requires user URN � we need LINKEDIN_USER_URN env
     user_urn = os.getenv("LINKEDIN_USER_URN", "").strip()
     if not user_urn:
         return {"ok": False, "error": "LINKEDIN_USER_URN not configured"}
@@ -158,7 +158,7 @@ async def _post_facebook(text: str) -> dict:
         return {"ok": False, "error": str(e)}
 
 
-# ══════════════════ Endpoints ══════════════════
+# ------------------ Endpoints ------------------
 
 class BroadcastReq(BaseModel):
     message: str
@@ -286,4 +286,5 @@ async def broadcast_history(user_id: int, limit: int = 20):
             for r in rows
         ],
     }
+
 

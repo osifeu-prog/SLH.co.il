@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from __future__ import annotations
@@ -66,13 +66,13 @@ APP_CTX: Optional[AppContext] = None
 def main_menu() -> ReplyKeyboardMarkup:
     return ReplyKeyboardMarkup(
         keyboard=[
-            [KeyboardButton(text="🏪 שוק המרקטפלייס"), KeyboardButton(text="🔍 חיפוש פריטים")],
-            [KeyboardButton(text="📦 הפריטים שלי"), KeyboardButton(text="🏷️ מרקטפלייס קטגוריות")],
-            [KeyboardButton(text="🛒 עגלת קניות"), KeyboardButton(text="💰 ארנק דיגיטלי")],
-            [KeyboardButton(text="📊 סטטיסטיקות"), KeyboardButton(text="💎 פרימיום")],
-            [KeyboardButton(text="🎮 משחקים"), KeyboardButton(text="🤖 בינה מלאכותית")],
-            [KeyboardButton(text="🎲 הגרלות"), KeyboardButton(text="👤 הפרופיל שלי")],
-            [KeyboardButton(text="ℹ️ עזרה ומידע")],
+            [KeyboardButton(text="?? ??? ??????????"), KeyboardButton(text="?? ????? ??????")],
+            [KeyboardButton(text="?? ??????? ???"), KeyboardButton(text="??? ????????? ????????")],
+            [KeyboardButton(text="?? ???? ?????"), KeyboardButton(text="?? ???? ???????")],
+            [KeyboardButton(text="?? ??????????"), KeyboardButton(text="?? ???????")],
+            [KeyboardButton(text="?? ??????"), KeyboardButton(text="?? ???? ????????")],
+            [KeyboardButton(text="?? ??????"), KeyboardButton(text="?? ??????? ???")],
+            [KeyboardButton(text="?? ???? ?????")],
         ],
         resize_keyboard=True,
         is_persistent=True,
@@ -81,16 +81,16 @@ def main_menu() -> ReplyKeyboardMarkup:
 def admin_listing_actions(listing_id: int, owner_id: int) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[[
-            InlineKeyboardButton(text="✅ אישור", callback_data=f"admin:approve:{listing_id}:{owner_id}"),
-            InlineKeyboardButton(text="❌ דחייה", callback_data=f"admin:reject:{listing_id}:{owner_id}")
+            InlineKeyboardButton(text="? ?????", callback_data=f"admin:approve:{listing_id}:{owner_id}"),
+            InlineKeyboardButton(text="? ?????", callback_data=f"admin:reject:{listing_id}:{owner_id}")
         ]]
     )
 
 def activation_actions(user_id: int) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[[
-            InlineKeyboardButton(text="✅ אישור הפעלה", callback_data=f"admin:activate:{user_id}"),
-            InlineKeyboardButton(text="❌ דחייה הפעלה", callback_data=f"admin:activate_reject:{user_id}")
+            InlineKeyboardButton(text="? ????? ?????", callback_data=f"admin:activate:{user_id}"),
+            InlineKeyboardButton(text="? ????? ?????", callback_data=f"admin:activate_reject:{user_id}")
         ]]
     )
 
@@ -99,7 +99,7 @@ async def create_http_session() -> aiohttp.ClientSession:
 
 async def create_pool() -> asyncpg.Pool:
     # Phase 0B (2026-04-21): unified pool via shared_db_core (fail-fast, health-checked).
-    # max_size drops 10→4 to fit Railway's 88-conn budget across 22 containers.
+    # max_size drops 10?4 to fit Railway's 88-conn budget across 22 containers.
     return await _shared_init_db_pool(DATABASE_URL)
 
 async def bootstrap_db(pool: asyncpg.Pool) -> None:
@@ -234,24 +234,24 @@ async def log_event(pool: asyncpg.Pool, event_type: str, actor_id: Optional[int]
             event_type, actor_id, entity_type, entity_id, json.dumps(payload, ensure_ascii=False)
         )
 
-# ─── Achievements System ───
+# --- Achievements System ---
 
 ACHIEVEMENTS = {
-    "first_breath": {"title": "🫁 נשימה ראשונה", "desc": "השלם תרגיל נשימה ראשון", "xp": 20},
-    "breath_master": {"title": "🧘 מאסטר נשימה", "desc": "השלם 10 תרגילי נשימה", "xp": 50},
-    "quest_rookie": {"title": "🎯 טירון משימות", "desc": "השלם משימה יומית ראשונה", "xp": 15},
-    "quest_master": {"title": "👑 מלך המשימות", "desc": "השלם 3 משימות ביום אחד", "xp": 100},
-    "pet_parent": {"title": "🐾 הורה אוהב", "desc": "האכל את החיה 10 פעמים", "xp": 30},
-    "playful": {"title": "🎮 שובב", "desc": "שחק עם החיה 10 פעמים", "xp": 30},
-    "scholar": {"title": "📚 חכם", "desc": "למד את החיה 10 פעמים", "xp": 40},
-    "early_bird": {"title": "🌅 ציפור מוקדמת", "desc": "בצע פעולה לפני 07:00", "xp": 25},
-    "night_owl": {"title": "🦉 ינשוף לילה", "desc": "בצע פעולה אחרי 23:00", "xp": 25},
-    "week_streak": {"title": "🔥 שבוע רצוף", "desc": "בצע פעולה 7 ימים ברציפות", "xp": 100},
-    "level_5": {"title": "⭐ רמה 5", "desc": "הגע לרמה 5 עם החיה", "xp": 50},
-    "level_10": {"title": "💎 רמה 10", "desc": "הגע לרמה 10 עם החיה", "xp": 100},
-    "social_butterfly": {"title": "🦋 חברותי", "desc": "שתף את הלינק שלך", "xp": 15},
-    "collector": {"title": "🛍️ אספן", "desc": "רכוש פריט ראשון בשוק", "xp": 30},
-    "seller": {"title": "💼 סוחר", "desc": "העלה פריט ראשון למכירה", "xp": 30},
+    "first_breath": {"title": "?? ????? ??????", "desc": "???? ????? ????? ?????", "xp": 20},
+    "breath_master": {"title": "?? ????? ?????", "desc": "???? 10 ?????? ?????", "xp": 50},
+    "quest_rookie": {"title": "?? ????? ??????", "desc": "???? ????? ????? ??????", "xp": 15},
+    "quest_master": {"title": "?? ??? ???????", "desc": "???? 3 ?????? ???? ???", "xp": 100},
+    "pet_parent": {"title": "?? ???? ????", "desc": "???? ?? ???? 10 ?????", "xp": 30},
+    "playful": {"title": "?? ????", "desc": "??? ?? ???? 10 ?????", "xp": 30},
+    "scholar": {"title": "?? ???", "desc": "??? ?? ???? 10 ?????", "xp": 40},
+    "early_bird": {"title": "?? ????? ??????", "desc": "??? ????? ???? 07:00", "xp": 25},
+    "night_owl": {"title": "?? ????? ????", "desc": "??? ????? ???? 23:00", "xp": 25},
+    "week_streak": {"title": "?? ???? ????", "desc": "??? ????? 7 ???? ???????", "xp": 100},
+    "level_5": {"title": "? ??? 5", "desc": "??? ???? 5 ?? ????", "xp": 50},
+    "level_10": {"title": "?? ??? 10", "desc": "??? ???? 10 ?? ????", "xp": 100},
+    "social_butterfly": {"title": "?? ??????", "desc": "??? ?? ????? ???", "xp": 15},
+    "collector": {"title": "??? ????", "desc": "???? ???? ????? ????", "xp": 30},
+    "seller": {"title": "?? ????", "desc": "???? ???? ????? ??????", "xp": 30},
 }
 
 
@@ -282,7 +282,7 @@ async def check_and_unlock_achievement(pool, user_id, key):
 
 async def notify_achievement(msg_or_cb, achievement):
     """Send achievement unlock notification"""
-    text = f"🏆 הישג חדש!\n\n{achievement['title']}\n{achievement['desc']}\n+{achievement['xp']} XP"
+    text = f"?? ???? ???!\n\n{achievement['title']}\n{achievement['desc']}\n+{achievement['xp']} XP"
     if hasattr(msg_or_cb, 'answer'):
         await msg_or_cb.answer(text)
     elif hasattr(msg_or_cb, 'message'):
@@ -347,11 +347,11 @@ async def require_activation(message: Message, pool: asyncpg.Pool) -> bool:
     if await is_activated(pool, message.from_user.id):
         return True
     await message.answer(
-        "⚠️ <b>נדרש הפעלת חשבון</b>\n\n"
-        "כדי להשתמש במרקטפלייס של הבוט עליך להפעיל חשבון דיגיטלי-טלגרם.\n"
-        f"עלות ההפעלה: <b>{ACTIVATION_FEE_ILS}₪</b> (~{ACTIVATION_FEE_TON} TON)\n"
-        f"כתובת TON להעברה:\n<code>{TON_WALLET}</code>\n\n"
-        "שלחו אסמכתא להפעלה:\n<code>/activate TX123456</code>",
+        "?? <b>???? ????? ?????</b>\n\n"
+        "??? ?????? ?????????? ?? ???? ???? ?????? ????? ???????-?????.\n"
+        f"???? ??????: <b>{ACTIVATION_FEE_ILS}?</b> (~{ACTIVATION_FEE_TON} TON)\n"
+        f"????? TON ??????:\n<code>{TON_WALLET}</code>\n\n"
+        "???? ?????? ??????:\n<code>/activate TX123456</code>",
         reply_markup=main_menu()
     )
     return False
@@ -373,15 +373,15 @@ async def fetch_prices(session: aiohttp.ClientSession) -> dict[str, Any]:
     return out
 
 def fmt_prices(prices: dict[str, Any]) -> str:
-    lines = ["📈 <b>מחירי שוק</b>"]
+    lines = ["?? <b>????? ???</b>"]
     if prices.get("bitcoin"):
-        lines.append(f"🪙 BTC: ${prices['bitcoin'].get('usd','?')} | ₪{prices['bitcoin'].get('ils','?')}")
+        lines.append(f"?? BTC: ${prices['bitcoin'].get('usd','?')} | ?{prices['bitcoin'].get('ils','?')}")
     if prices.get("toncoin"):
-        lines.append(f"🪙 TON: ${prices['toncoin'].get('usd','?')} | ₪{prices['toncoin'].get('ils','?')}")
+        lines.append(f"?? TON: ${prices['toncoin'].get('usd','?')} | ?{prices['toncoin'].get('ils','?')}")
     if prices.get("bsc_token"):
-        lines.append(f"🪙 SLH/BSC: ${prices['bsc_token'].get('usd','?')} | ₪{prices['bsc_token'].get('ils','?')}")
+        lines.append(f"?? SLH/BSC: ${prices['bsc_token'].get('usd','?')} | ?{prices['bsc_token'].get('ils','?')}")
     if len(lines) == 1:
-        lines.append("🪙 אין נתונים זמינים כרגע")
+        lines.append("?? ??? ?????? ?????? ????")
     return "\n".join(lines)
 
 def get_ctx() -> AppContext:
@@ -395,24 +395,24 @@ async def get_pet(pool: asyncpg.Pool, user_id: int):
 
 def pet_face(stage: int, mood: int, energy: int) -> str:
     if energy < 25:
-        return "😴"
+        return "??"
     if mood < 35:
-        return "😢"
+        return "??"
     if stage >= 4:
-        return "🦄"
+        return "??"
     if stage == 3:
-        return "🐉"
+        return "??"
     if stage == 2:
-        return "🐣"
-    return "🥚"
+        return "??"
+    return "??"
 
 def pet_stage_name(stage: int) -> str:
     return {
-        1: "ביצה",
-        2: "גור",
-        3: "נוער",
-        4: "בוגר",
-    }.get(stage, "אגדה")
+        1: "????",
+        2: "???",
+        3: "????",
+        4: "????",
+    }.get(stage, "????")
 
 async def apply_pet_action(pool: asyncpg.Pool, user_id: int, action_type: str):
     deltas = {
@@ -477,14 +477,14 @@ def pet_status_text(pet) -> str:
     face = pet_face(int(pet["evolution_stage"]), int(pet["mood"]), int(pet["energy"]))
     return (
         f"{face} <b>{pet['pet_name']}</b>\n"
-        f"שלב: <b>{pet_stage_name(int(pet['evolution_stage']))}</b>\n"
-        f"רמה: <b>{pet['level']}</b>\n"
+        f"???: <b>{pet_stage_name(int(pet['evolution_stage']))}</b>\n"
+        f"???: <b>{pet['level']}</b>\n"
         f"XP: <b>{pet['xp']}</b>\n"
-        f"מצב רוח: <b>{pet['mood']}</b>/100\n"
-        f"אנרגיה: <b>{pet['energy']}</b>/100\n"
-        f"רעב: <b>{pet['hunger']}</b>/100\n"
-        f"סקרנות: <b>{pet['curiosity']}</b>/100\n"
-        f"יצירתיות: <b>{pet['creativity']}</b>/100"
+        f"??? ???: <b>{pet['mood']}</b>/100\n"
+        f"??????: <b>{pet['energy']}</b>/100\n"
+        f"???: <b>{pet['hunger']}</b>/100\n"
+        f"??????: <b>{pet['curiosity']}</b>/100\n"
+        f"????????: <b>{pet['creativity']}</b>/100"
     )
 
 @router.message(Command("start"))
@@ -502,67 +502,67 @@ async def cmd_start(message: Message, command: CommandObject, bot: Bot):
     pet = await get_pet(ctx.pool, message.from_user.id)
 
     await message.answer(
-        f"🎉 <b>{APP_NAME}</b>\n"
+        f"?? <b>{APP_NAME}</b>\n"
         f"<i>{TAGLINE}</i>\n\n"
-        "ברוכים הבאים למרקטפלייס הדיגיטלי של SLH.\n"
-        "כאן תוכלו למכור, לקנות ולסחור בפריטים דיגיטליים 🌐 עם חיית מחמד וירטואלית שגדלה איתכם.\n\n"
+        "?????? ????? ?????????? ???????? ?? SLH.\n"
+        "??? ????? ?????, ????? ?????? ??????? ????????? ?? ?? ???? ???? ????????? ????? ?????.\n\n"
         f"{fmt_prices(prices)}\n\n"
-        f"🐾 החיה שלך כרגע:\n{pet_status_text(pet)}\n\n"
-        f"⚡ עלות הפעלה: <b>{ACTIVATION_FEE_ILS}₪</b> (~{ACTIVATION_FEE_TON} TON)",
+        f"?? ???? ??? ????:\n{pet_status_text(pet)}\n\n"
+        f"? ???? ?????: <b>{ACTIVATION_FEE_ILS}?</b> (~{ACTIVATION_FEE_TON} TON)",
         reply_markup=main_menu()
     )
     await log_event(ctx.pool, "user_start", actor_id=message.from_user.id, payload={"referred_by": referred_by})
 
 @router.message(Command("help"))
-@router.message(F.text == "ℹ️ עזרה ומידע")
+@router.message(F.text == "?? ???? ?????")
 async def cmd_help(message: Message, bot: Bot):
     ctx = get_ctx()
     await log_event(ctx.pool, "view_help", actor_id=message.from_user.id)
     await message.answer(
-        "📋 <b>מדריך פקודות</b>\n\n"
-        "/start 🔹 התחלה\n"
-        "/activate TXREF 🔹 בקשת הפעלה\n"
-        "/browse 🔹 עיון במרקטפלייס\n"
-        "/sell 🔹 יצירת פריט למכירה\n"
-        "/buy 123 🔹 רכישת פריט\n"
-        "/my_items 🔹 הפריטים שלי\n"
-        "/my_listings 🔹 המכירות שלי\n"
-        "/wallet 🔹 ארנק SLH/ZVK\n"
-        "/pet 🔹 מצב החיה הווירטואלית\n"
-        "/feed | /play | /learn | /sleep 🔹 פעולות עם החיה\n"
-        "/share 🔹 שיתוף לינק הפניה",
+        "?? <b>????? ??????</b>\n\n"
+        "/start ?? ?????\n"
+        "/activate TXREF ?? ???? ?????\n"
+        "/browse ?? ???? ??????????\n"
+        "/sell ?? ????? ???? ??????\n"
+        "/buy 123 ?? ????? ????\n"
+        "/my_items ?? ??????? ???\n"
+        "/my_listings ?? ??????? ???\n"
+        "/wallet ?? ???? SLH/ZVK\n"
+        "/pet ?? ??? ???? ???????????\n"
+        "/feed | /play | /learn | /sleep ?? ?????? ?? ????\n"
+        "/share ?? ????? ???? ?????",
         reply_markup=main_menu()
     )
 
 @router.message(Command("faq"))
-@router.message(F.text == "ℹ️ שאלות נפוצות")
+@router.message(F.text == "?? ????? ??????")
 async def cmd_faq(message: Message, bot: Bot):
     await message.answer(
-        "ℹ️ <b>שאלות נפוצות</b>\n\n"
-        "🪙 הפעלה: העבירו תשלום והשתמשו /activate עם האסמכתא\n"
-        "🪙 מטבעות: SLH או ZVK\n"
-        "🪙 איך למכור: צרו פריט חדש דרך המרקטפלייס, מנהל יאשר לפני הצגה\n"
-        "🪙 חיות וירטואליות תמגוצ'י מגדלות כמו נפש, האכלה והשכלה מעלות רמה",
+        "?? <b>????? ??????</b>\n\n"
+        "?? ?????: ?????? ????? ??????? /activate ?? ???????\n"
+        "?? ??????: SLH ?? ZVK\n"
+        "?? ??? ?????: ??? ???? ??? ??? ??????????, ???? ???? ???? ????\n"
+        "?? ???? ?????????? ?????'? ?????? ??? ???, ????? ?????? ????? ???",
         reply_markup=main_menu()
     )
 
 @router.message(Command("share"))
-@router.message(F.text == "📤 שיתוף")
+@router.message(F.text == "?? ?????")
 async def cmd_share(message: Message, bot: Bot):
     ctx = get_ctx()
     me = await bot.get_me()
-    text = f"🔗 {APP_NAME}\n🏷️ {TAGLINE}\nhttps://t.me/{me.username}?start=ref_{message.from_user.id}"
+    text = f"?? {APP_NAME}\n??? {TAGLINE}\nhttps://t.me/{me.username}?start=ref_{message.from_user.id}"
     completed_quest = await check_quest_completion(ctx.pool, message.from_user.id, "share")
-    await message.answer("📤 <b>קישור שיתוף</b>\n\n" + f"<code>{text}</code>", reply_markup=main_menu())
+    await message.answer("?? <b>????? ?????</b>\n\n" + f"<code>{text}</code>", reply_markup=main_menu())
     if completed_quest:
-        await message.answer(f"🎉 משימה הושלמה: {completed_quest['quest_title']}! +{completed_quest['xp_reward']} XP")
+        await message.answer(f"?? ????? ??????: {completed_quest['quest_title']}! +{completed_quest['xp_reward']} XP")
     # Achievement: social_butterfly
     ach = await check_and_unlock_achievement(ctx.pool, message.from_user.id, "social_butterfly")
     if ach:
         await notify_achievement(message, ach)
 
 @router.message(Command("wallet"))
-@router.message(F.text == "🔍 חיפוש פריטים")
+@router.message(F.text == "?? ????? ??????")
 async def cmd_wallet(message: Message, bot: Bot):
     ctx = get_ctx()
     await upsert_user(ctx.pool, message)
@@ -576,15 +576,15 @@ async def cmd_wallet(message: Message, bot: Bot):
                 bal = await get_balance(user_id=message.from_user.id, symbol=symbol)
         except Exception:
             bal = "?"
-        balances.append(f"🪙 {symbol}: <b>{bal}</b>")
+        balances.append(f"?? {symbol}: <b>{bal}</b>")
 
     completed_quest = await check_quest_completion(ctx.pool, message.from_user.id, "wallet")
-    await message.answer("💰 <b>ארנק דיגיטלי</b>\n\n" + "\n".join(balances), reply_markup=main_menu())
+    await message.answer("?? <b>???? ???????</b>\n\n" + "\n".join(balances), reply_markup=main_menu())
     if completed_quest:
-        await message.answer(f"🎉 משימה הושלמה: {completed_quest['quest_title']}! +{completed_quest['xp_reward']} XP")
+        await message.answer(f"?? ????? ??????: {completed_quest['quest_title']}! +{completed_quest['xp_reward']} XP")
 
 @router.message(Command("browse"))
-@router.message(F.text == "🏪 שוק המרקטפלייס")
+@router.message(F.text == "?? ??? ??????????")
 async def cmd_browse(message: Message, bot: Bot):
     ctx = get_ctx()
     await upsert_user(ctx.pool, message)
@@ -602,25 +602,25 @@ async def cmd_browse(message: Message, bot: Bot):
         """)
 
     if not rows:
-        await message.answer("אין עדיין פריטים זמינים במרקטפלייס.", reply_markup=main_menu())
+        await message.answer("??? ????? ?????? ?????? ??????????.", reply_markup=main_menu())
         return
 
-    parts = ["🏪 <b>פריטים זמינים</b>\n"]
+    parts = ["?? <b>?????? ??????</b>\n"]
     for row in rows:
         parts.append(
             f"#{row['id']} | <b>{row['title']}</b>\n"
-            f"קטגוריה: {row['category']}\n"
-            f"מחיר: <b>{row['price']} {row['currency_symbol']}</b>\n"
-            f"תיאור: {row['description'][:120]}\n"
-            f"לרכישה: <code>/buy {row['id']}</code>\n"
+            f"???????: {row['category']}\n"
+            f"????: <b>{row['price']} {row['currency_symbol']}</b>\n"
+            f"?????: {row['description'][:120]}\n"
+            f"??????: <code>/buy {row['id']}</code>\n"
         )
     completed_quest = await check_quest_completion(ctx.pool, message.from_user.id, "browse")
     await message.answer("\n".join(parts), reply_markup=main_menu())
     if completed_quest:
-        await message.answer(f"🎉 משימה הושלמה: {completed_quest['quest_title']}! +{completed_quest['xp_reward']} XP")
+        await message.answer(f"?? ????? ??????: {completed_quest['quest_title']}! +{completed_quest['xp_reward']} XP")
 
 @router.message(Command("my_items"))
-@router.message(F.text == "📦 הפריטים שלי")
+@router.message(F.text == "?? ??????? ???")
 async def cmd_my_items(message: Message, bot: Bot):
     ctx = get_ctx()
     await upsert_user(ctx.pool, message)
@@ -637,16 +637,16 @@ async def cmd_my_items(message: Message, bot: Bot):
         """, message.from_user.id)
 
     if not rows:
-        await message.answer("עדיין אין לך פריטים דיגיטליים.", reply_markup=main_menu())
+        await message.answer("????? ??? ?? ?????? ?????????.", reply_markup=main_menu())
         return
 
-    out = ["📦 <b>הפריטים שלי</b>\n"]
+    out = ["?? <b>??????? ???</b>\n"]
     for row in rows:
-        out.append(f"🪙 #{row['id']} | <b>{row['title']}</b> | {row['category']}\n  {row['description'][:100]}")
+        out.append(f"?? #{row['id']} | <b>{row['title']}</b> | {row['category']}\n  {row['description'][:100]}")
     await message.answer("\n".join(out), reply_markup=main_menu())
 
 @router.message(Command("my_listings"))
-@router.message(F.text == "🏷️ מרקטפלייס קטגוריות")
+@router.message(F.text == "??? ????????? ????????")
 async def cmd_my_listings(message: Message, bot: Bot):
     ctx = get_ctx()
     await upsert_user(ctx.pool, message)
@@ -664,12 +664,12 @@ async def cmd_my_listings(message: Message, bot: Bot):
         """, message.from_user.id)
 
     if not rows:
-        await message.answer("אין לך עדיין מכירות פעילות.", reply_markup=main_menu())
+        await message.answer("??? ?? ????? ?????? ??????.", reply_markup=main_menu())
         return
 
-    out = ["🏷️ <b>המכירות שלי</b>\n"]
+    out = ["??? <b>??????? ???</b>\n"]
     for row in rows:
-        out.append(f"🪙 #{row['id']} | <b>{row['title']}</b>\n  מחיר: {row['price']} {row['currency_symbol']} | סטטוס: <b>{row['status']}</b>")
+        out.append(f"?? #{row['id']} | <b>{row['title']}</b>\n  ????: {row['price']} {row['currency_symbol']} | ?????: <b>{row['status']}</b>")
     await message.answer("\n".join(out), reply_markup=main_menu())
 
 @router.message(Command("activate"))
@@ -678,7 +678,7 @@ async def cmd_activate(message: Message, command: CommandObject, bot: Bot):
     await upsert_user(ctx.pool, message)
     tx_ref = (command.args or "").strip()
     if not tx_ref:
-        await message.answer("שימוש נכון:\n<code>/activate TX123456</code>", reply_markup=main_menu())
+        await message.answer("????? ????:\n<code>/activate TX123456</code>", reply_markup=main_menu())
         return
 
     async with ctx.pool.acquire() as conn:
@@ -687,14 +687,14 @@ async def cmd_activate(message: Message, command: CommandObject, bot: Bot):
             VALUES ($1, $2, 'pending')
         """, message.from_user.id, tx_ref)
 
-    await message.answer("✅ בקשת ההפעלה נשלחה לבדיקת מנהל.", reply_markup=main_menu())
+    await message.answer("? ???? ?????? ????? ?????? ????.", reply_markup=main_menu())
 
     try:
         await bot.send_message(
             ADMIN_USER_ID,
-            "⚡ <b>בקשת הפעלה חדשה</b>\n\n"
-            f"משתמש: <code>{message.from_user.id}</code>\n"
-            f"אסמכתא: <code>{tx_ref}</code>",
+            "? <b>???? ????? ????</b>\n\n"
+            f"?????: <code>{message.from_user.id}</code>\n"
+            f"??????: <code>{tx_ref}</code>",
             reply_markup=activation_actions(message.from_user.id)
         )
     except Exception:
@@ -704,7 +704,7 @@ async def cmd_activate(message: Message, command: CommandObject, bot: Bot):
 async def cb_admin_activate(callback, bot: Bot):
     ctx = get_ctx()
     if callback.from_user.id != ADMIN_USER_ID:
-        await callback.answer("אין הרשאה", show_alert=True)
+        await callback.answer("??? ?????", show_alert=True)
         return
 
     user_id = int(callback.data.split(":")[2])
@@ -721,15 +721,15 @@ async def cb_admin_activate(callback, bot: Bot):
             WHERE user_id=$1 AND status='pending'
         """, user_id)
 
-    await callback.answer("ההפעלה אושרה")
+    await callback.answer("?????? ?????")
     await callback.message.edit_reply_markup(reply_markup=None)
-    await bot.send_message(user_id, "🎉 ההפעלה שלך אושרה.", reply_markup=main_menu())
+    await bot.send_message(user_id, "?? ?????? ??? ?????.", reply_markup=main_menu())
 
 @router.callback_query(F.data.startswith("admin:activate_reject:"))
 async def cb_admin_activate_reject(callback, bot: Bot):
     ctx = get_ctx()
     if callback.from_user.id != ADMIN_USER_ID:
-        await callback.answer("אין הרשאה", show_alert=True)
+        await callback.answer("??? ?????", show_alert=True)
         return
 
     user_id = int(callback.data.split(":")[2])
@@ -740,12 +740,12 @@ async def cb_admin_activate_reject(callback, bot: Bot):
             WHERE user_id=$1 AND status='pending'
         """, user_id)
 
-    await callback.answer("בקשת ההפעלה נדחתה")
+    await callback.answer("???? ?????? ?????")
     await callback.message.edit_reply_markup(reply_markup=None)
-    await bot.send_message(user_id, "❌ בקשת ההפעלה נדחתה.", reply_markup=main_menu())
+    await bot.send_message(user_id, "? ???? ?????? ?????.", reply_markup=main_menu())
 
 @router.message(Command("sell"))
-@router.message(F.text == "🛒 עגלת קניות")
+@router.message(F.text == "?? ???? ?????")
 async def cmd_sell(message: Message, state: FSMContext, bot: Bot):
     ctx = get_ctx()
     await upsert_user(ctx.pool, message)
@@ -753,19 +753,19 @@ async def cmd_sell(message: Message, state: FSMContext, bot: Bot):
         return
 
     await state.set_state(SellStates.waiting_name)
-    await message.answer("📦 <b>יצירת פריט חדש</b>\n\nשלב 1/6\nהכניסו את שם הפריט:", reply_markup=main_menu())
+    await message.answer("?? <b>????? ???? ???</b>\n\n??? 1/6\n?????? ?? ?? ?????:", reply_markup=main_menu())
 
 @router.message(SellStates.waiting_name)
 async def sell_name(message: Message, state: FSMContext):
     await state.update_data(title=message.text.strip())
     await state.set_state(SellStates.waiting_category)
-    await message.answer("שלב 2/6\nהכניסו קטגוריה לפריט:")
+    await message.answer("??? 2/6\n?????? ??????? ?????:")
 
 @router.message(SellStates.waiting_category)
 async def sell_category(message: Message, state: FSMContext):
     await state.update_data(category=message.text.strip())
     await state.set_state(SellStates.waiting_price)
-    await message.answer("שלב 3/6\nהכניסו מחיר מספרי. לדוגמה: 150")
+    await message.answer("??? 3/6\n?????? ???? ?????. ??????: 150")
 
 @router.message(SellStates.waiting_price)
 async def sell_price(message: Message, state: FSMContext):
@@ -774,27 +774,27 @@ async def sell_price(message: Message, state: FSMContext):
         if price <= 0:
             raise ValueError()
     except (InvalidOperation, ValueError):
-        await message.answer("אנא הזינו מחיר מספרי תקין.")
+        await message.answer("??? ????? ???? ????? ????.")
         return
     await state.update_data(price=str(price))
     await state.set_state(SellStates.waiting_currency)
-    await message.answer("שלב 4/6\nבחרו מטבע: SLH או ZVK")
+    await message.answer("??? 4/6\n???? ????: SLH ?? ZVK")
 
 @router.message(SellStates.waiting_currency)
 async def sell_currency(message: Message, state: FSMContext):
     symbol = message.text.strip().upper()
     if symbol not in {"SLH", "ZVK"}:
-        await message.answer("אנא בחרו את SLH או ZVK.")
+        await message.answer("??? ???? ?? SLH ?? ZVK.")
         return
     await state.update_data(currency_symbol=symbol)
     await state.set_state(SellStates.waiting_description)
-    await message.answer("שלב 5/6\nהכניסו תיאור של הפריט:")
+    await message.answer("??? 5/6\n?????? ????? ?? ?????:")
 
 @router.message(SellStates.waiting_description)
 async def sell_description(message: Message, state: FSMContext):
     await state.update_data(description=message.text.strip())
     await state.set_state(SellStates.waiting_media_url)
-    await message.answer("שלב 6/6\nשלחו לינק לתמונה/סרטון, או הקלידו - לדילוג.")
+    await message.answer("??? 6/6\n???? ???? ??????/?????, ?? ?????? - ??????.")
 
 @router.message(SellStates.waiting_media_url)
 async def sell_media_url(message: Message, state: FSMContext, bot: Bot):
@@ -817,7 +817,7 @@ async def sell_media_url(message: Message, state: FSMContext, bot: Bot):
                 RETURNING id
             """, item_id, message.from_user.id, Decimal(data["price"]), data["currency_symbol"])
 
-    await message.answer(f"✅ הפריט נוצר ונשלח לאישור מנהל.\nמספר מכירה: <b>{listing_id}</b>", reply_markup=main_menu())
+    await message.answer(f"? ????? ???? ????? ?????? ????.\n???? ?????: <b>{listing_id}</b>", reply_markup=main_menu())
     # Achievement: seller
     ach = await check_and_unlock_achievement(ctx.pool, message.from_user.id, "seller")
     if ach:
@@ -826,13 +826,13 @@ async def sell_media_url(message: Message, state: FSMContext, bot: Bot):
     try:
         await bot.send_message(
             ADMIN_USER_ID,
-            "⚡ <b>פריט חדש לאישור</b>\n\n"
-            f"מספר מכירה: <b>{listing_id}</b>\n"
-            f"מוכר: <code>{message.from_user.id}</code>\n"
-            f"שם: <b>{data['title']}</b>\n"
-            f"קטגוריה: {data['category']}\n"
-            f"מחיר: {data['price']} {data['currency_symbol']}\n"
-            f"תיאור: {data['description']}",
+            "? <b>???? ??? ??????</b>\n\n"
+            f"???? ?????: <b>{listing_id}</b>\n"
+            f"????: <code>{message.from_user.id}</code>\n"
+            f"??: <b>{data['title']}</b>\n"
+            f"???????: {data['category']}\n"
+            f"????: {data['price']} {data['currency_symbol']}\n"
+            f"?????: {data['description']}",
             reply_markup=admin_listing_actions(listing_id, message.from_user.id)
         )
     except Exception:
@@ -842,7 +842,7 @@ async def sell_media_url(message: Message, state: FSMContext, bot: Bot):
 async def cb_admin_approve(callback, bot: Bot):
     ctx = get_ctx()
     if callback.from_user.id != ADMIN_USER_ID:
-        await callback.answer("אין הרשאה", show_alert=True)
+        await callback.answer("??? ?????", show_alert=True)
         return
 
     _, _, listing_id, owner_id = callback.data.split(":")
@@ -860,9 +860,9 @@ async def cb_admin_approve(callback, bot: Bot):
             WHERE l.id = $1
         """, int(listing_id))
 
-    await callback.answer("הפריט אושר")
+    await callback.answer("????? ????")
     await callback.message.edit_reply_markup(reply_markup=None)
-    await bot.send_message(int(owner_id), f"🎉 הפריט #{listing_id} שלך אושר למרקטפלייס.", reply_markup=main_menu())
+    await bot.send_message(int(owner_id), f"?? ????? #{listing_id} ??? ???? ??????????.", reply_markup=main_menu())
 
     if listing_row:
         await broadcast_new_listing(bot, listing_row)
@@ -879,12 +879,12 @@ async def broadcast_new_listing(bot: Bot, row) -> None:
         deep_link = f"https://t.me/{BOT_USERNAME}?start=buy_{row['id']}"
 
         caption = (
-            f"🎨 <b>פריט חדש במרקטפלייס SLH NFT</b>\n\n"
+            f"?? <b>???? ??? ?????????? SLH NFT</b>\n\n"
             f"<b>{title}</b>\n"
             f"{category}\n\n"
             f"{description}\n\n"
-            f"💰 <b>{price} {currency}</b>\n"
-            f"🛒 <a href=\"{deep_link}\">קנה עכשיו בבוט</a>"
+            f"?? <b>{price} {currency}</b>\n"
+            f"?? <a href=\"{deep_link}\">??? ????? ????</a>"
         )
 
         if media_url and media_url.startswith(("http://", "https://")):
@@ -902,7 +902,7 @@ async def broadcast_new_listing(bot: Bot, row) -> None:
 async def cb_admin_reject(callback, bot: Bot):
     ctx = get_ctx()
     if callback.from_user.id != ADMIN_USER_ID:
-        await callback.answer("אין הרשאה", show_alert=True)
+        await callback.answer("??? ?????", show_alert=True)
         return
 
     _, _, listing_id, owner_id = callback.data.split(":")
@@ -913,9 +913,9 @@ async def cb_admin_reject(callback, bot: Bot):
             WHERE id=$2
         """, callback.from_user.id, int(listing_id))
 
-    await callback.answer("הפריט נדחה")
+    await callback.answer("????? ????")
     await callback.message.edit_reply_markup(reply_markup=None)
-    await bot.send_message(int(owner_id), f"❌ הפריט #{listing_id} נדחה.", reply_markup=main_menu())
+    await bot.send_message(int(owner_id), f"? ????? #{listing_id} ????.", reply_markup=main_menu())
 
 @router.message(Command("buy"))
 async def cmd_buy(message: Message, command: CommandObject, bot: Bot):
@@ -925,13 +925,13 @@ async def cmd_buy(message: Message, command: CommandObject, bot: Bot):
         return
 
     if not command.args:
-        await message.answer("יש לציין מספר פריט: <code>/buy 123</code>", reply_markup=main_menu())
+        await message.answer("?? ????? ???? ????: <code>/buy 123</code>", reply_markup=main_menu())
         return
 
     try:
         listing_id = int(command.args.strip())
     except Exception:
-        await message.answer("מספר פריט לא תקין. לדוגמה: <code>/buy 123</code>", reply_markup=main_menu())
+        await message.answer("???? ???? ?? ????. ??????: <code>/buy 123</code>", reply_markup=main_menu())
         return
 
     async with ctx.pool.acquire() as conn:
@@ -943,13 +943,13 @@ async def cmd_buy(message: Message, command: CommandObject, bot: Bot):
         """, listing_id)
 
     if not row:
-        await message.answer("הפריט לא נמצא.", reply_markup=main_menu())
+        await message.answer("????? ?? ????.", reply_markup=main_menu())
         return
     if row["status"] != "active":
-        await message.answer("הפריט אינו זמין לרכישה.", reply_markup=main_menu())
+        await message.answer("????? ???? ???? ??????.", reply_markup=main_menu())
         return
     if row["seller_id"] == message.from_user.id:
-        await message.answer("אי אפשר לקנות את הפריט של עצמך.", reply_markup=main_menu())
+        await message.answer("?? ???? ????? ?? ????? ?? ????.", reply_markup=main_menu())
         return
 
     price = Decimal(str(row["price"]))
@@ -961,11 +961,11 @@ async def cmd_buy(message: Message, command: CommandObject, bot: Bot):
         except TypeError:
             enough = await ensure_balance(user_id=message.from_user.id, symbol=symbol, amount=price)
     except Exception:
-        await message.answer("לא הצלחנו לבדוק יתרה כרגע.", reply_markup=main_menu())
+        await message.answer("?? ?????? ????? ???? ????.", reply_markup=main_menu())
         return
 
     if not enough:
-        await message.answer(f"❌ אין מספיק {symbol}. נדרש: <b>{price} {symbol}</b>", reply_markup=main_menu())
+        await message.answer(f"? ??? ????? {symbol}. ????: <b>{price} {symbol}</b>", reply_markup=main_menu())
         return
 
     try:
@@ -974,7 +974,7 @@ async def cmd_buy(message: Message, command: CommandObject, bot: Bot):
         except TypeError:
             await transfer(from_user_id=message.from_user.id, to_user_id=row["seller_id"], symbol=symbol, amount=price, note=f"NFT purchase #{listing_id}")
     except Exception:
-        await message.answer("שגיאה בביצוע ההעברה.", reply_markup=main_menu())
+        await message.answer("????? ?????? ??????.", reply_markup=main_menu())
         return
 
     async with ctx.pool.acquire() as conn:
@@ -982,16 +982,16 @@ async def cmd_buy(message: Message, command: CommandObject, bot: Bot):
             await conn.execute("UPDATE nfty_items SET owner_id = $1 WHERE id = $2", message.from_user.id, row["item_id"])
             await conn.execute("UPDATE nfty_listings SET status='sold', sold_to=$1, sold_at=NOW() WHERE id=$2", message.from_user.id, listing_id)
 
-    # רכישה מעדכנת חיית מחמד וירטואלית של הקונה
+    # ????? ?????? ???? ???? ????????? ?? ?????
     await apply_pet_action(ctx.pool, message.from_user.id, "play")
 
     await message.answer(
-        f"✅ רכישה הושלמה\nרכשת את <b>{row['title']}</b>\nעלות: <b>{price} {symbol}</b>\n\n"
-        "🐾 החיה שלך קיבלה בונוס משחק על הרכישה.",
+        f"? ????? ??????\n???? ?? <b>{row['title']}</b>\n????: <b>{price} {symbol}</b>\n\n"
+        "?? ???? ??? ????? ????? ???? ?? ??????.",
         reply_markup=main_menu()
     )
     try:
-        await bot.send_message(row["seller_id"], f"💰 הפריט שלך <b>{row['title']}</b> נמכר.", reply_markup=main_menu())
+        await bot.send_message(row["seller_id"], f"?? ????? ??? <b>{row['title']}</b> ????.", reply_markup=main_menu())
     except Exception:
         pass
     # Achievement: collector
@@ -1000,26 +1000,26 @@ async def cmd_buy(message: Message, command: CommandObject, bot: Bot):
         await notify_achievement(message, ach)
 
 @router.message(Command("pet"))
-@router.message(F.text == "🐾 החיה שלי")
+@router.message(F.text == "?? ???? ???")
 async def cmd_pet(message: Message, bot: Bot):
     ctx = get_ctx()
     await upsert_user(ctx.pool, message)
     pet = await get_pet(ctx.pool, message.from_user.id)
     completed_quest = await check_quest_completion(ctx.pool, message.from_user.id, "pet")
-    await message.answer("🐾 <b>החיה הווירטואלית שלך</b>\n\n" + pet_status_text(pet), reply_markup=main_menu())
+    await message.answer("?? <b>???? ??????????? ???</b>\n\n" + pet_status_text(pet), reply_markup=main_menu())
     if completed_quest:
-        await message.answer(f"🎉 משימה הושלמה: {completed_quest['quest_title']}! +{completed_quest['xp_reward']} XP")
+        await message.answer(f"?? ????? ??????: {completed_quest['quest_title']}! +{completed_quest['xp_reward']} XP")
 
 @router.message(Command("feed"))
-@router.message(F.text == "📊 סטטיסטיקות")
+@router.message(F.text == "?? ??????????")
 async def cmd_feed(message: Message, bot: Bot):
     ctx = get_ctx()
     await upsert_user(ctx.pool, message)
     pet = await apply_pet_action(ctx.pool, message.from_user.id, "feed")
     completed_quest = await check_quest_completion(ctx.pool, message.from_user.id, "feed")
-    await message.answer("🍖 החיה שלך אכלה.\n\n" + pet_status_text(pet), reply_markup=main_menu())
+    await message.answer("?? ???? ??? ????.\n\n" + pet_status_text(pet), reply_markup=main_menu())
     if completed_quest:
-        await message.answer(f"🎉 משימה הושלמה: {completed_quest['quest_title']}! +{completed_quest['xp_reward']} XP")
+        await message.answer(f"?? ????? ??????: {completed_quest['quest_title']}! +{completed_quest['xp_reward']} XP")
     # Achievement checks: pet_parent, time, quest, level
     async with ctx.pool.acquire() as conn:
         feed_count = await conn.fetchval("SELECT COUNT(*) FROM pet_action_log WHERE user_id = $1 AND action_type = $2", message.from_user.id, "feed")
@@ -1031,15 +1031,15 @@ async def cmd_feed(message: Message, bot: Bot):
     await check_pet_level_achievements(ctx.pool, message.from_user.id, message)
 
 @router.message(Command("play"))
-@router.message(F.text == "🎮 משחקים")
+@router.message(F.text == "?? ??????")
 async def cmd_play(message: Message, bot: Bot):
     ctx = get_ctx()
     await upsert_user(ctx.pool, message)
     pet = await apply_pet_action(ctx.pool, message.from_user.id, "play")
     completed_quest = await check_quest_completion(ctx.pool, message.from_user.id, "play")
-    await message.answer("🎮 שיחקת עם החיה שלך.\n\n" + pet_status_text(pet), reply_markup=main_menu())
+    await message.answer("?? ????? ?? ???? ???.\n\n" + pet_status_text(pet), reply_markup=main_menu())
     if completed_quest:
-        await message.answer(f"🎉 משימה הושלמה: {completed_quest['quest_title']}! +{completed_quest['xp_reward']} XP")
+        await message.answer(f"?? ????? ??????: {completed_quest['quest_title']}! +{completed_quest['xp_reward']} XP")
     # Achievement checks: playful, time, quest, level
     async with ctx.pool.acquire() as conn:
         play_count = await conn.fetchval("SELECT COUNT(*) FROM pet_action_log WHERE user_id = $1 AND action_type = $2", message.from_user.id, "play")
@@ -1051,15 +1051,15 @@ async def cmd_play(message: Message, bot: Bot):
     await check_pet_level_achievements(ctx.pool, message.from_user.id, message)
 
 @router.message(Command("learn"))
-@router.message(F.text == "🤖 בינה מלאכותית")
+@router.message(F.text == "?? ???? ????????")
 async def cmd_learn(message: Message, bot: Bot):
     ctx = get_ctx()
     await upsert_user(ctx.pool, message)
     pet = await apply_pet_action(ctx.pool, message.from_user.id, "learn")
     completed_quest = await check_quest_completion(ctx.pool, message.from_user.id, "learn")
-    await message.answer("📚 החיה שלך למדה דבר חדש.\n\n" + pet_status_text(pet), reply_markup=main_menu())
+    await message.answer("?? ???? ??? ???? ??? ???.\n\n" + pet_status_text(pet), reply_markup=main_menu())
     if completed_quest:
-        await message.answer(f"🎉 משימה הושלמה: {completed_quest['quest_title']}! +{completed_quest['xp_reward']} XP")
+        await message.answer(f"?? ????? ??????: {completed_quest['quest_title']}! +{completed_quest['xp_reward']} XP")
     # Achievement checks: scholar, time, quest, level
     async with ctx.pool.acquire() as conn:
         learn_count = await conn.fetchval("SELECT COUNT(*) FROM pet_action_log WHERE user_id = $1 AND action_type = $2", message.from_user.id, "learn")
@@ -1071,35 +1071,35 @@ async def cmd_learn(message: Message, bot: Bot):
     await check_pet_level_achievements(ctx.pool, message.from_user.id, message)
 
 @router.message(Command("sleep"))
-@router.message(F.text == "😴 שינה")
+@router.message(F.text == "?? ????")
 async def cmd_sleep(message: Message, bot: Bot):
     ctx = get_ctx()
     await upsert_user(ctx.pool, message)
     pet = await apply_pet_action(ctx.pool, message.from_user.id, "sleep")
     completed_quest = await check_quest_completion(ctx.pool, message.from_user.id, "sleep")
-    await message.answer("😴 החיה שלך הלכה לישון.\n\n" + pet_status_text(pet), reply_markup=main_menu())
+    await message.answer("?? ???? ??? ???? ?????.\n\n" + pet_status_text(pet), reply_markup=main_menu())
     if completed_quest:
-        await message.answer(f"🎉 משימה הושלמה: {completed_quest['quest_title']}! +{completed_quest['xp_reward']} XP")
+        await message.answer(f"?? ????? ??????: {completed_quest['quest_title']}! +{completed_quest['xp_reward']} XP")
 
-# ─── CBT Breathing Exercises (/breathe) ───
+# --- CBT Breathing Exercises (/breathe) ---
 
 @router.message(Command("breathe"))
 async def cmd_breathe(msg: Message):
     """Start a breathing exercise"""
     ctx = get_ctx()
     if not await is_activated(ctx.pool, msg.from_user.id):
-        return await msg.answer("⚠️ Activate first with /activate")
+        return await msg.answer("?? Activate first with /activate")
 
     kb = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🫁 נשימה מרגיעה (60 שניות)", callback_data="breath_calm_60")],
-        [InlineKeyboardButton(text="🔥 נשימה מאנרגטית (90 שניות)", callback_data="breath_energy_90")],
-        [InlineKeyboardButton(text="🧘 מדיטציה קצרה (120 שניות)", callback_data="breath_meditate_120")],
-        [InlineKeyboardButton(text="💨 4-7-8 להירגעות (60 שניות)", callback_data="breath_478_60")]
+        [InlineKeyboardButton(text="?? ????? ?????? (60 ?????)", callback_data="breath_calm_60")],
+        [InlineKeyboardButton(text="?? ????? ???????? (90 ?????)", callback_data="breath_energy_90")],
+        [InlineKeyboardButton(text="?? ??????? ???? (120 ?????)", callback_data="breath_meditate_120")],
+        [InlineKeyboardButton(text="?? 4-7-8 ???????? (60 ?????)", callback_data="breath_478_60")]
     ])
     await msg.answer(
-        "🌬️ <b>תרגילי נשימה — CBT</b>\n\n"
-        "בחרו תרגיל. החיית המחמד שלכם תקבל בונוס אנרגיה ומצב רוח!\n\n"
-        "💡 <i>טיפ: תרגול יומי משפר ריכוז, מפחית מתח, ומעלה XP</i>",
+        "??? <b>?????? ????? � CBT</b>\n\n"
+        "???? ?????. ????? ????? ???? ???? ????? ?????? ???? ???!\n\n"
+        "?? <i>???: ????? ???? ???? ?????, ????? ???, ????? XP</i>",
         reply_markup=kb, parse_mode="HTML"
     )
 
@@ -1122,45 +1122,45 @@ async def cb_breathing(cb: CallbackQuery):
     # Exercise configurations
     exercises = {
         "calm": {
-            "name": "נשימה מרגיעה",
+            "name": "????? ??????",
             "steps": [
-                ("🫁 שאפו דרך האף... 4 שניות", 4),
-                ("⏸️ החזיקו... 4 שניות", 4),
-                ("💨 נשפו באיטיות דרך הפה... 6 שניות", 6),
-                ("😌 יופי! סיבוב נוסף...", 2),
+                ("?? ???? ??? ???... 4 ?????", 4),
+                ("?? ??????... 4 ?????", 4),
+                ("?? ???? ??????? ??? ???... 6 ?????", 6),
+                ("?? ????! ????? ????...", 2),
             ],
             "rounds": 4,
             "pet_bonus": {"mood": 10, "energy": 5, "xp": 5}
         },
         "energy": {
-            "name": "נשימה מאנרגטית",
+            "name": "????? ????????",
             "steps": [
-                ("🔥 שאפו בעוצמה דרך האף!", 3),
-                ("💥 נשפו בחוזקה דרך הפה!", 3),
-                ("⚡ שוב! מהר יותר!", 2),
-                ("🌟 מצוין! עוד סיבוב!", 2),
+                ("?? ???? ?????? ??? ???!", 3),
+                ("?? ???? ?????? ??? ???!", 3),
+                ("? ???! ??? ????!", 2),
+                ("?? ?????! ??? ?????!", 2),
             ],
             "rounds": 5,
             "pet_bonus": {"mood": 5, "energy": 15, "xp": 5}
         },
         "meditate": {
-            "name": "מדיטציה קצרה",
+            "name": "??????? ????",
             "steps": [
-                ("🧘 עצמו עיניים. שאפו עמוק...", 5),
-                ("🌊 דמיינו גל שוטף מתח...", 5),
-                ("☁️ נשפו. שחררו הכל...", 5),
-                ("✨ הרגישו את הרגיעה...", 5),
+                ("?? ???? ??????. ???? ????...", 5),
+                ("?? ?????? ?? ???? ???...", 5),
+                ("?? ????. ????? ???...", 5),
+                ("? ?????? ?? ??????...", 5),
             ],
             "rounds": 3,
             "pet_bonus": {"mood": 15, "energy": 3, "curiosity": 5, "creativity": 8, "xp": 8}
         },
         "478": {
-            "name": "טכניקת 4-7-8",
+            "name": "?????? 4-7-8",
             "steps": [
-                ("🫁 שאפו דרך האף... 4 שניות", 4),
-                ("⏸️ החזיקו את הנשימה... 7 שניות", 7),
-                ("💨 נשפו דרך הפה... 8 שניות", 8),
-                ("😌 נהדר! שוב...", 2),
+                ("?? ???? ??? ???... 4 ?????", 4),
+                ("?? ?????? ?? ??????... 7 ?????", 7),
+                ("?? ???? ??? ???... 8 ?????", 8),
+                ("?? ????! ???...", 2),
             ],
             "rounds": 3,
             "pet_bonus": {"mood": 12, "energy": 8, "xp": 6}
@@ -1170,9 +1170,9 @@ async def cb_breathing(cb: CallbackQuery):
     ex = exercises.get(exercise_type, exercises["calm"])
 
     await cb.message.edit_text(
-        f"🌬️ <b>{ex['name']}</b> — מתחילים!\n\n"
-        f"⏱ {duration} שניות | {ex['rounds']} סיבובים\n"
-        "──────────────",
+        f"??? <b>{ex['name']}</b> � ???????!\n\n"
+        f"? {duration} ????? | {ex['rounds']} ???????\n"
+        "--------------",
         parse_mode="HTML"
     )
 
@@ -1181,9 +1181,9 @@ async def cb_breathing(cb: CallbackQuery):
             await asyncio.sleep(wait_sec)
             try:
                 await cb.message.edit_text(
-                    f"🌬️ <b>{ex['name']}</b> — סיבוב {round_num}/{ex['rounds']}\n\n"
+                    f"??? <b>{ex['name']}</b> � ????? {round_num}/{ex['rounds']}\n\n"
                     f"{step_text}\n"
-                    "──────────────",
+                    "--------------",
                     parse_mode="HTML"
                 )
             except Exception:
@@ -1223,12 +1223,12 @@ async def cb_breathing(cb: CallbackQuery):
 
     bonus_text = " | ".join(f"+{v} {k}" for k, v in ex["pet_bonus"].items())
     await cb.message.edit_text(
-        f"✅ <b>{ex['name']} — הושלם!</b>\n\n"
-        f"🎉 מעולה! סיימתם {ex['rounds']} סיבובים\n"
-        f"🐾 בונוס לחיית המחמד: {bonus_text}\n"
-        f"📊 סה\"כ תרגילים שהשלמתם: {total}\n\n"
-        "💡 תרגול יומי מוריד מתח ומעלה XP!\n"
-        "הקלידו /breathe לתרגיל נוסף",
+        f"? <b>{ex['name']} � ?????!</b>\n\n"
+        f"?? ?????! ?????? {ex['rounds']} ???????\n"
+        f"?? ????? ????? ?????: {bonus_text}\n"
+        f"?? ??\"? ??????? ???????: {total}\n\n"
+        "?? ????? ???? ????? ??? ????? XP!\n"
+        "?????? /breathe ?????? ????",
         parse_mode="HTML"
     )
     await log_event(ctx.pool, "breathing_completed", user_id, "breathing", str(session_id), {"type": exercise_type, "duration": duration})
@@ -1236,7 +1236,7 @@ async def cb_breathing(cb: CallbackQuery):
     # Check quest completion for breathing
     completed_quest = await check_quest_completion(ctx.pool, user_id, "breathing")
     if completed_quest:
-        await cb.message.answer(f"🎉 משימה הושלמה: {completed_quest['quest_title']}! +{completed_quest['xp_reward']} XP")
+        await cb.message.answer(f"?? ????? ??????: {completed_quest['quest_title']}! +{completed_quest['xp_reward']} XP")
 
     # Achievement checks for breathing
     ach = await check_and_unlock_achievement(ctx.pool, user_id, "first_breath")
@@ -1248,19 +1248,19 @@ async def cb_breathing(cb: CallbackQuery):
             await notify_achievement(cb, ach)
     await check_time_achievements(ctx.pool, user_id, cb)
 
-# ─── Daily Quests (/quests) ───
+# --- Daily Quests (/quests) ---
 
 QUEST_POOL = [
-    {"key": "feed_pet", "title": "🍖 האכל את החיה", "desc": "השתמש בפקודה /feed פעם אחת", "xp": 10, "check_action": "feed"},
-    {"key": "play_pet", "title": "🎮 שחק עם החיה", "desc": "השתמש בפקודה /play פעם אחת", "xp": 10, "check_action": "play"},
-    {"key": "learn_pet", "title": "📚 למד את החיה", "desc": "השתמש בפקודה /learn פעם אחת", "xp": 15, "check_action": "learn"},
-    {"key": "breathe_once", "title": "🫁 תרגיל נשימה", "desc": "השלם תרגיל נשימה אחד (/breathe)", "xp": 20, "check_action": "breathing"},
-    {"key": "check_wallet", "title": "💰 בדוק ארנק", "desc": "בדוק את היתרה שלך (/wallet)", "xp": 5, "check_action": "wallet"},
-    {"key": "share_link", "title": "🔗 שתף הפניה", "desc": "שתף את הלינק שלך (/share)", "xp": 15, "check_action": "share"},
-    {"key": "browse_market", "title": "🛍️ עיין בשוק", "desc": "עיין בפריטים (/browse)", "xp": 10, "check_action": "browse"},
-    {"key": "pet_status", "title": "🐾 בדוק חיה", "desc": "בדוק את מצב החיה (/pet)", "xp": 5, "check_action": "pet"},
-    {"key": "sleep_pet", "title": "😴 שים את החיה לישון", "desc": "השתמש בפקודה /sleep", "xp": 10, "check_action": "sleep"},
-    {"key": "breathe_twice", "title": "🧘 תרגל פעמיים", "desc": "השלם 2 תרגילי נשימה היום", "xp": 30, "check_action": "breathing_x2"},
+    {"key": "feed_pet", "title": "?? ???? ?? ????", "desc": "????? ?????? /feed ??? ???", "xp": 10, "check_action": "feed"},
+    {"key": "play_pet", "title": "?? ??? ?? ????", "desc": "????? ?????? /play ??? ???", "xp": 10, "check_action": "play"},
+    {"key": "learn_pet", "title": "?? ??? ?? ????", "desc": "????? ?????? /learn ??? ???", "xp": 15, "check_action": "learn"},
+    {"key": "breathe_once", "title": "?? ????? ?????", "desc": "???? ????? ????? ??? (/breathe)", "xp": 20, "check_action": "breathing"},
+    {"key": "check_wallet", "title": "?? ???? ????", "desc": "???? ?? ????? ??? (/wallet)", "xp": 5, "check_action": "wallet"},
+    {"key": "share_link", "title": "?? ??? ?????", "desc": "??? ?? ????? ??? (/share)", "xp": 15, "check_action": "share"},
+    {"key": "browse_market", "title": "??? ???? ????", "desc": "???? ??????? (/browse)", "xp": 10, "check_action": "browse"},
+    {"key": "pet_status", "title": "?? ???? ???", "desc": "???? ?? ??? ???? (/pet)", "xp": 5, "check_action": "pet"},
+    {"key": "sleep_pet", "title": "?? ??? ?? ???? ?????", "desc": "????? ?????? /sleep", "xp": 10, "check_action": "sleep"},
+    {"key": "breathe_twice", "title": "?? ???? ??????", "desc": "???? 2 ?????? ????? ????", "xp": 30, "check_action": "breathing_x2"},
 ]
 
 async def get_or_assign_quests(pool, user_id):
@@ -1339,35 +1339,35 @@ async def cmd_quests(msg: Message):
     """Show today's daily quests"""
     ctx = get_ctx()
     if not await is_activated(ctx.pool, msg.from_user.id):
-        return await msg.answer("⚠️ Activate first with /activate")
+        return await msg.answer("?? Activate first with /activate")
 
     quests = await get_or_assign_quests(ctx.pool, msg.from_user.id)
 
-    lines = ["🎯 <b>משימות יומיות</b>\n"]
+    lines = ["?? <b>?????? ??????</b>\n"]
     total_xp = 0
     completed = 0
     for q in quests:
         if q["completed"]:
-            lines.append(f"  ✅ <s>{q['quest_title']}</s> (+{q['xp_reward']} XP)")
+            lines.append(f"  ? <s>{q['quest_title']}</s> (+{q['xp_reward']} XP)")
             total_xp += q["xp_reward"]
             completed += 1
         else:
-            lines.append(f"  ⬜ {q['quest_title']}")
-            lines.append(f"     <i>{q['quest_desc']}</i> — {q['xp_reward']} XP")
+            lines.append(f"  ? {q['quest_title']}")
+            lines.append(f"     <i>{q['quest_desc']}</i> � {q['xp_reward']} XP")
 
-    lines.append(f"\n📊 הושלמו: {completed}/{len(quests)}")
+    lines.append(f"\n?? ??????: {completed}/{len(quests)}")
     if completed == len(quests):
-        lines.append("🏆 כל המשימות הושלמו! חזרו מחר למשימות חדשות")
+        lines.append("?? ?? ??????? ??????! ???? ??? ??????? ?????")
     else:
-        lines.append(f"💰 XP שנותר: {sum(q['xp_reward'] for q in quests if not q['completed'])}")
+        lines.append(f"?? XP ?????: {sum(q['xp_reward'] for q in quests if not q['completed'])}")
 
-    lines.append("\n🔄 המשימות מתחדשות כל יום בחצות")
+    lines.append("\n?? ??????? ??????? ?? ??? ?????")
     await msg.answer("\n".join(lines), parse_mode="HTML")
 
 @router.message(Command("achievements"))
 async def cmd_achievements(msg: Message):
     if not await is_activated(get_ctx().pool, msg.from_user.id):
-        return await msg.answer("⚠️ Activate first with /activate")
+        return await msg.answer("?? Activate first with /activate")
 
     async with get_ctx().pool.acquire() as conn:
         unlocked = await conn.fetch(
@@ -1377,21 +1377,21 @@ async def cmd_achievements(msg: Message):
 
     unlocked_keys = {r["achievement_key"] for r in unlocked}
 
-    lines = ["🏆 <b>הישגים</b>\n"]
+    lines = ["?? <b>??????</b>\n"]
     for key, ach in ACHIEVEMENTS.items():
         if key in unlocked_keys:
-            lines.append(f"  ✅ {ach['title']} — {ach['desc']} (+{ach['xp']} XP)")
+            lines.append(f"  ? {ach['title']} � {ach['desc']} (+{ach['xp']} XP)")
         else:
-            lines.append(f"  🔒 {ach['title']} — {ach['desc']}")
+            lines.append(f"  ?? {ach['title']} � {ach['desc']}")
 
-    lines.append(f"\n📊 נפתחו: {len(unlocked_keys)}/{len(ACHIEVEMENTS)}")
+    lines.append(f"\n?? ?????: {len(unlocked_keys)}/{len(ACHIEVEMENTS)}")
     await msg.answer("\n".join(lines), parse_mode="HTML")
 
 @router.message()
 async def fallback(message: Message):
     await message.answer(
-        "לא הבנתי את הפקודה.\n\n"
-        "תוכלו להשתמש בפקודות הבאות:\n"
+        "?? ????? ?? ??????.\n\n"
+        "????? ?????? ??????? ?????:\n"
         "/start | /browse | /sell | /buy  | /my_items | /my_listings | /wallet | /pet | /feed | /play | /learn | /sleep | /help | /faq | /share",
         reply_markup=main_menu()
     )
@@ -1442,4 +1442,5 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
 

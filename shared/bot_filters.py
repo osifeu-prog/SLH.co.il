@@ -72,3 +72,4 @@ def install_cross_bot_filters(dp: Dispatcher, bot_username: str, echo_window_sec
     mw = IgnoreOtherBotsMiddleware(bot_username, echo_window_sec=echo_window_sec)
     dp.message.middleware(mw)
     dp.callback_query.middleware(mw)
+

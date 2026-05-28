@@ -1,6 +1,6 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 #!/usr/bin/env python3
-# SLH Spark — Independence Day Broadcast (2026)
+# SLH Spark � Independence Day Broadcast (2026)
 # Gift: 78 ZVK + 78 REP per registered user
 # Message: Happy 78th Independence Day
 
@@ -26,14 +26,14 @@ GIFT = {"ZVK": 78, "REP": 78}
 SKIP_IDS = {100001, 100002, 100003, 200001}
 
 MESSAGE = (
-    "🇮🇱 *יום העצמאות השמח! חג עצמאות שמח!* 🇮🇱\n\n"
-    "78 שנה למדינת ישראל — ואנחנו חוגגים יחד!\n\n"
-    "🎁 *מתנה אישית מאיתנו:*\n"
-    "• ZVK: +78 (כנגד 78 שנות עצמאות)\n"
-    "• REP: +78 (מוניטין בונוס חגיגי)\n\n"
-    "💛 תודה שאתם חלק מקהילת SLH Spark.\n"
-    "ביחד אנחנו בונים את הכלכלה הדיגיטלית הישראלית.\n\n"
-    "🔗 [slh-nft.com](https://slh-nft.com) | /wallet לצפייה ביתרה"
+    "???? *??? ??????? ????! ?? ?????? ???!* ????\n\n"
+    "78 ??? ?????? ????? � ?????? ?????? ???!\n\n"
+    "?? *???? ????? ??????:*\n"
+    "� ZVK: +78 (???? 78 ???? ??????)\n"
+    "� REP: +78 (??????? ????? ?????)\n\n"
+    "?? ???? ???? ??? ?????? SLH Spark.\n"
+    "???? ????? ????? ?? ?????? ????????? ????????.\n\n"
+    "?? [slh-nft.com](https://slh-nft.com) | /wallet ?????? ?????"
 )
 
 async def get_real_users(pool):
@@ -70,7 +70,7 @@ async def main():
         ts = datetime.now().isoformat()
 
         print(f"\n{'='*60}")
-        print(f"INDEPENDENCE DAY BROADCAST — {ts}")
+        print(f"INDEPENDENCE DAY BROADCAST � {ts}")
         print(f"Gift: ZVK+78, REP+78 | Users: {len(users)}")
         print(f"{'='*60}\n")
 
@@ -90,10 +90,10 @@ async def main():
                 name = u["first_name"] or u["username"] or str(u["telegram_id"])
                 if ok:
                     sent += 1
-                    print(f"   ✅ {name} ({u['telegram_id']})")
+                    print(f"   ? {name} ({u['telegram_id']})")
                 else:
                     failed += 1
-                    print(f"   ❌ {name} ({u['telegram_id']}) — {err}")
+                    print(f"   ? {name} ({u['telegram_id']}) � {err}")
                 await asyncio.sleep(0.05)
 
         # Step 3: log to broadcast_log
@@ -105,7 +105,7 @@ async def main():
         """, len(users), sent, failed)
 
         print(f"\n{'='*60}")
-        print(f"✅ Completed!")
+        print(f"? Completed!")
         print(f"   Users targeted : {len(users)}")
         print(f"   TG sent        : {sent}")
         print(f"   TG failed      : {failed}")
@@ -118,5 +118,6 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
 
 

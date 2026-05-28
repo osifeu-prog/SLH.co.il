@@ -1,4 +1,4 @@
-﻿import requests
+import requests
 
 REGISTRY_URL = "http://slh-device-registry:8090"
 
@@ -13,3 +13,4 @@ def verify_device(serial, code):
         "serial": serial,
         "code": code
     }).json()
+

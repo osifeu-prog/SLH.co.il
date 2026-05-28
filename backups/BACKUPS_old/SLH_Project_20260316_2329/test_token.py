@@ -1,7 +1,8 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import os
 from dotenv import load_dotenv
 load_dotenv(".env", override=True)
 print(f"DEBUG: Token from .env is: {os.getenv('BOT_TOKEN')}")
+
 
 

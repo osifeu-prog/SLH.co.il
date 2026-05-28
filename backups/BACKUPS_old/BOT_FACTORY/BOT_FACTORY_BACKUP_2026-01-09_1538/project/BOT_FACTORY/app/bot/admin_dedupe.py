@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import os
@@ -66,25 +66,26 @@ def get_dedupe_stats() -> Tuple[int, Optional[tuple]]:
 async def admin_dedupe_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     uid = update.effective_user.id if update.effective_user else None
     if not _is_admin(uid):
-        await update.effective_message.reply_text("⛔ אין הרשאה. (ADMIN בלבד)")
+        await update.effective_message.reply_text("? ??? ?????. (ADMIN ????)")
         return
 
     count_rows, last_row = get_dedupe_stats()
 
     lines = []
-    lines.append("🧩 Dedupe Status (telegram_updates)")
-    lines.append(f"• rows: {count_rows}")
+    lines.append("?? Dedupe Status (telegram_updates)")
+    lines.append(f"� rows: {count_rows}")
 
     if last_row:
         update_id, received_at, chat_id, user_id, kind = last_row
-        lines.append("• last:")
+        lines.append("� last:")
         lines.append(f"  - update_id: {update_id}")
         lines.append(f"  - received_at: {received_at}")
         lines.append(f"  - chat_id: {chat_id}")
         lines.append(f"  - user_id: {user_id}")
         lines.append(f"  - kind: {kind}")
     else:
-        lines.append("• last: (empty)")
+        lines.append("� last: (empty)")
 
     await update.effective_message.reply_text("\n".join(lines))
+
 

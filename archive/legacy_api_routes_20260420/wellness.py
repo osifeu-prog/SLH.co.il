@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 SLH Wellness System - Courses, Tasks, Scheduling & Broadcasting
 Integrated with token rewards (ZVK, REP, SLH)
@@ -438,5 +438,6 @@ async def list_tasks():
             "tasks": [dict(row) for row in tasks],
             "total": len(tasks)
         }
+
 
 

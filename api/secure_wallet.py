@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from fastapi import APIRouter, Depends, HTTPException, Header, Request
 from pydantic import BaseModel, Field
 from decimal import Decimal
@@ -42,7 +42,7 @@ class WalletSendRequest(BaseModel):
     request_id: str
 
 
-# ========= FAKE STORAGE (× ×—×œ×™×£ ××—×¨ ×›×š DB ××ž×™×ª×™) =========
+# ========= FAKE STORAGE (נחליף אחר כך DB אמיתי) =========
 
 IDEMPOTENCY_STORE = {}
 BALANCE_STORE = {
@@ -121,4 +121,5 @@ async def secure_wallet_send(
         "status": "ok",
         "data": result
     }
+
 

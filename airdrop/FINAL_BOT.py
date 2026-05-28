@@ -1,7 +1,7 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 #!/usr/bin/env python3
 """
-SLH Airdrop Bot - גרסה סופית מעודכנת
+SLH Airdrop Bot - ???? ????? ???????
 """
 
 import logging
@@ -17,7 +17,7 @@ from datetime import datetime
 # ====================
 TOKEN = "8530795944:AAFXDx-vWZPpiXTlfsv5izUayJ4OpLLq3Ls"
 API_URL = "https://successful-fulfillment-production.up.railway.app"
-ADMIN_ID = "224223270"  # 👈 זה המזהה הנכון שלך
+ADMIN_ID = "224223270"  # ?? ?? ????? ????? ???
 TON_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
 
 # Therapists Network deep-link (Phase 4): /start therapist_<id> in this bot
@@ -50,7 +50,7 @@ logger = logging.getLogger(__name__)
 # HELPER FUNCTIONS
 # ====================
 def send_message(chat_id, text, parse_mode="HTML"):
-    """שולח הודעה לטלגרם"""
+    """???? ????? ??????"""
     url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
     
     payload = {
@@ -68,7 +68,7 @@ def send_message(chat_id, text, parse_mode="HTML"):
         return False
 
 def call_api(endpoint, method="POST", data=None):
-    """קורא ל-API עם Form data"""
+    """???? ?-API ?? Form data"""
     url = f"{API_URL}{endpoint}"
     
     try:
@@ -91,38 +91,38 @@ def call_api(endpoint, method="POST", data=None):
 # ====================
 def get_welcome_message(name, username=""):
     return f"""
-🎉 <b>ברוך הבא ל-SLH Airdrop System!</b>
+?? <b>???? ??? ?-SLH Airdrop System!</b>
 
-👤 <b>משתמש:</b> {name}
+?? <b>?????:</b> {name}
 {'@' + username if username else ''}
 
-💰 <b>מבצע השקה בלעדי:</b>
- 1,000 טוקני SLH = 44.4 ₪ בלבד!
- קבלה אוטומטית תוך 24 שעות
- תמיכה טכנית 24/7
+?? <b>???? ???? ?????:</b>
+ 1,000 ????? SLH = 44.4 ? ????!
+ ???? ???????? ??? 24 ????
+ ????? ????? 24/7
 
-🚀 <b>התחלת תהליך:</b>
-שלח לי את שם המשתמש הטלגרם שלך (לדוגמה: @username)
+?? <b>????? ?????:</b>
+??? ?? ?? ?? ?????? ?????? ??? (??????: @username)
 """
 
 def get_payment_instructions():
     return f"""
-💸 <b>הוראות תשלום</b>
+?? <b>?????? ?????</b>
 
-🏦 <b>ארנק TON שלנו:</b>
+?? <b>???? TON ????:</b>
 <code>{TON_WALLET}</code>
 
-📋 <b>שלבי התשלום:</b>
-1. שלח בדיוק <b>44.4 TON</b> לכתובת למעלה
-2. שמור את מספר העסקה (Transaction Hash)
-3. שלח את מספר העסקה לכאן
-4. קבל אוטומטית 1,000 טוקני SLH
+?? <b>???? ??????:</b>
+1. ??? ????? <b>44.4 TON</b> ?????? ?????
+2. ???? ?? ???? ????? (Transaction Hash)
+3. ??? ?? ???? ????? ????
+4. ??? ???????? 1,000 ????? SLH
 
-⚠️ <b>חשוב:</b>
- שלח בדיוק 44.4 TON
- זמן אספקה: עד 24 שעות
+?? <b>????:</b>
+ ??? ????? 44.4 TON
+ ??? ?????: ?? 24 ????
 
-<b>שאלות?</b> @Osif83
+<b>??????</b> @Osif83
 """
 
 # ====================
@@ -137,11 +137,11 @@ def _link_therapist_telegram(application_id: int, telegram_id: int) -> tuple[boo
     same (telegram_id, application_id) returns ok with idempotent=true.
     """
     if not TELEGRAM_LINK_SECRET:
-        logger.warning("TELEGRAM_LINK_SECRET not set — skipping therapist link")
+        logger.warning("TELEGRAM_LINK_SECRET not set � skipping therapist link")
         return False, (
-            "⚠️ <b>חיבור הטלגרם זמנית לא זמין</b>\n\n"
-            "אדמין SLH צריך לקבוע <code>TELEGRAM_LINK_SECRET</code> ב-Railway "
-            "ובסביבת הבוט. נסה שוב בעוד מספר דקות."
+            "?? <b>????? ?????? ????? ?? ????</b>\n\n"
+            "????? SLH ???? ????? <code>TELEGRAM_LINK_SECRET</code> ?-Railway "
+            "??????? ????. ??? ??? ???? ???? ????."
         )
     try:
         resp = requests.post(
@@ -161,32 +161,32 @@ def _link_therapist_telegram(application_id: int, telegram_id: int) -> tuple[boo
             data = resp.json()
             if data.get("idempotent"):
                 return True, (
-                    f"✅ <b>כבר חובר</b>\n\n"
-                    f"חשבון הטלגרם שלך כבר מקושר לאפליקציה #{application_id}."
+                    f"? <b>??? ????</b>\n\n"
+                    f"????? ?????? ??? ??? ????? ????????? #{application_id}."
                 )
             return True, (
-                f"✅ <b>חוברת בהצלחה!</b>\n\n"
-                f"חשבון הטלגרם שלך מקושר עכשיו לאפליקציית מטפל #{application_id}.\n"
-                f"מעכשיו תקבל כאן התראות על פגישות חדשות, אישורים ותשלומים."
+                f"? <b>????? ??????!</b>\n\n"
+                f"????? ?????? ??? ????? ????? ?????????? ???? #{application_id}.\n"
+                f"?????? ???? ??? ?????? ?? ?????? ?????, ??????? ????????."
             )
         if resp.status_code == 403:
-            return False, "⚠️ <b>סוד בוט לא תקין</b> — פנה לתמיכה."
+            return False, "?? <b>??? ??? ?? ????</b> � ??? ??????."
         if resp.status_code == 404:
             return False, (
-                f"❌ <b>אפליקציה #{application_id} לא נמצאה</b>\n\n"
-                "ייתכן שהאפליקציה נמחקה או שמספר האפליקציה שגוי. "
-                "פנה לתמיכה: @osifeu_prog"
+                f"? <b>???????? #{application_id} ?? ?????</b>\n\n"
+                "????? ?????????? ????? ?? ????? ????????? ????. "
+                "??? ??????: @osifeu_prog"
             )
         if resp.status_code == 400:
             return False, (
-                "⏳ <b>האפליקציה עדיין לא אושרה</b>\n\n"
-                "ברגע שצוות SLH יאשר את הבקשה — תוכל לחבר את הטלגרם שוב."
+                "? <b>????????? ????? ?? ?????</b>\n\n"
+                "???? ????? SLH ???? ?? ????? � ???? ???? ?? ?????? ???."
             )
         logger.error(f"Therapist link returned HTTP {resp.status_code}: {resp.text[:200]}")
-        return False, f"❌ שגיאה (HTTP {resp.status_code})"
+        return False, f"? ????? (HTTP {resp.status_code})"
     except Exception as e:
         logger.error(f"Therapist link failed: {e!r}")
-        return False, f"❌ שגיאת רשת: {e}"
+        return False, f"? ????? ???: {e}"
 
 
 # ====================
@@ -197,10 +197,10 @@ class AirdropBot:
         self.user_states = {}
     
     def handle_start(self, chat_id, name, username=""):
-        """מטפל בפקודת /start"""
+        """???? ?????? /start"""
         logger.info(f"User {name} (@{username}) started bot")
         
-        # רישום משתמש ב-API
+        # ????? ????? ?-API
         if username.startswith('@'):
             username = username[1:]
         
@@ -210,24 +210,24 @@ class AirdropBot:
             "first_name": name
         }
         
-        # נסה לרשום את המשתמש
+        # ??? ????? ?? ??????
         api_result = call_api("/api/register", "POST", user_data)
         
-        # שלח הודעת ברוכים הבאים
+        # ??? ????? ?????? ?????
         send_message(chat_id, get_welcome_message(name, username))
         
-        # עדכן מצב משתמש
+        # ???? ??? ?????
         self.user_states[chat_id] = {"state": "awaiting_username", "name": name}
         
-        # התראה למנהל
+        # ????? ?????
         if api_result and api_result.get("status") in ["success", "exists"]:
-            admin_msg = f"👤 משתמש חדש בבוט:\n{name} (@{username})\nID: {chat_id}"
+            admin_msg = f"?? ????? ??? ????:\n{name} (@{username})\nID: {chat_id}"
             send_message(ADMIN_ID, admin_msg)
         
         return True
     
     def handle_username(self, chat_id, text):
-        """מטפל בקבלת username"""
+        """???? ????? username"""
         state_data = self.user_states.get(chat_id)
         if not state_data:
             return False
@@ -235,10 +235,10 @@ class AirdropBot:
         username = text.replace('@', '').strip()
         
         if len(username) < 3:
-            send_message(chat_id, "❌ <b>שם משתמש לא תקין.</b>\n\nאנא שלח username תקין (לפחות 3 תווים).")
+            send_message(chat_id, "? <b>?? ????? ?? ????.</b>\n\n??? ??? username ???? (????? 3 ?????).")
             return False
         
-        # עדכן את ה-username ב-API
+        # ???? ?? ?-username ?-API
         user_data = {
             "telegram_id": str(chat_id),
             "username": username,
@@ -247,25 +247,25 @@ class AirdropBot:
         
         call_api("/api/register", "POST", user_data)
         
-        # שלח הוראות תשלום
+        # ??? ?????? ?????
         send_message(chat_id, get_payment_instructions())
         
-        # עדכן מצב
+        # ???? ???
         self.user_states[chat_id] = {"state": "awaiting_payment", "name": state_data["name"], "username": username}
         
         return True
     
     def handle_transaction(self, chat_id, tx_hash):
-        """מטפל בקבלת transaction hash"""
+        """???? ????? transaction hash"""
         state_data = self.user_states.get(chat_id)
         if not state_data:
             return False
         
         if len(tx_hash) < 30:
-            send_message(chat_id, "❌ <b>מספר עסקה לא תקין.</b>\n\nאנא שלח את מספר העסקה המלא (לפחות 30 תווים).")
+            send_message(chat_id, "? <b>???? ???? ?? ????.</b>\n\n??? ??? ?? ???? ????? ???? (????? 30 ?????).")
             return False
         
-        # שמור את העסקה ב-API
+        # ???? ?? ????? ?-API
         tx_data = {
             "telegram_id": str(chat_id),
             "transaction_hash": tx_hash,
@@ -275,47 +275,47 @@ class AirdropBot:
         result = call_api("/api/submit", "POST", tx_data)
         
         if result and result.get("status") == "success":
-            # הודעה למשתמש
+            # ????? ??????
             success_msg = f"""
-✅ <b>תשלום התקבל!</b>
+? <b>????? ?????!</b>
 
-👤 <b>משתמש:</b> {state_data['name']}
-📝 <b>עסקה:</b> {tx_hash[:20]}...
-💰 <b>סכום:</b> 44.4 TON
-🎁 <b>טוקנים:</b> 1,000 SLH
-⏳ <b>סטטוס:</b> ממתין לאישור מנהל
-🕐 <b>זמן אספקה:</b> עד 24 שעות
+?? <b>?????:</b> {state_data['name']}
+?? <b>????:</b> {tx_hash[:20]}...
+?? <b>????:</b> 44.4 TON
+?? <b>??????:</b> 1,000 SLH
+? <b>?????:</b> ????? ?????? ????
+?? <b>??? ?????:</b> ?? 24 ????
 
-📊 <b>למעקב:</b> שלח /status בכל עת
+?? <b>?????:</b> ??? /status ??? ??
 """
             send_message(chat_id, success_msg)
             
-            # התראה למנהל
+            # ????? ?????
             admin_msg = f"""
-💰 <b>תשלום חדש!</b>
+?? <b>????? ???!</b>
 
-👤 משתמש: {state_data['name']}
-📱 מזהה: {chat_id}
-📝 עסקה: {tx_hash[:20]}...
-💰 סכום: 44.4 TON
-🕐 זמן: {datetime.now().strftime('%H:%M:%S')}
+?? ?????: {state_data['name']}
+?? ????: {chat_id}
+?? ????: {tx_hash[:20]}...
+?? ????: 44.4 TON
+?? ???: {datetime.now().strftime('%H:%M:%S')}
 
-🌐 <b>פאנל ניהול:</b>
+?? <b>???? ?????:</b>
 {API_URL}/admin/dashboard?admin_key=airdrop_admin_2026
 """
             send_message(ADMIN_ID, admin_msg)
             
-            # עדכן מצב
+            # ???? ???
             self.user_states[chat_id]["state"] = "completed"
             return True
         else:
-            send_message(chat_id, "❌ <b>שגיאה בשמירת העסקה.</b>\n\nאנא נסה שוב או פנה לתמיכה: @Osif83")
+            send_message(chat_id, "? <b>????? ?????? ?????.</b>\n\n??? ??? ??? ?? ??? ??????: @Osif83")
             return False
     
     def show_status(self, chat_id):
-        """מציג סטטוס משתמש"""
+        """???? ????? ?????"""
         try:
-            # בדוק עם ה-API
+            # ???? ?? ?-API
             response = requests.get(f"{API_URL}/api/user/{chat_id}", timeout=10)
             
             if response.status_code == 200:
@@ -325,20 +325,20 @@ class AirdropBot:
                     transactions = result.get("transactions", [])
                     
                     status_msg = f"""
-📊 <b>סטטוס אישי</b>
+?? <b>????? ????</b>
 
-👤 <b>משתמש:</b> {user['first_name']}
-🆔 <b>מזהה:</b> {chat_id}
-💰 <b>טוקנים:</b> {user['tokens']:,} SLH
-💸 <b>שווי משוער:</b> {user['tokens'] * 44.4 / 1000:,.1f} ₪
+?? <b>?????:</b> {user['first_name']}
+?? <b>????:</b> {chat_id}
+?? <b>??????:</b> {user['tokens']:,} SLH
+?? <b>???? ?????:</b> {user['tokens'] * 44.4 / 1000:,.1f} ?
 
-📝 <b>עסקאות אחרונות:</b>
+?? <b>?????? ???????:</b>
 """
                     if transactions:
                         for tx in transactions[:3]:
-                            status_msg += f" • {tx['status']}: {tx['amount']} TON ({tx['submitted_at'][:10]})\n"
+                            status_msg += f" � {tx['status']}: {tx['amount']} TON ({tx['submitted_at'][:10]})\n"
                     else:
-                        status_msg += "אין עסקאות עדיין"
+                        status_msg += "??? ?????? ?????"
                     
                     send_message(chat_id, status_msg)
                     return True
@@ -346,27 +346,27 @@ class AirdropBot:
         except Exception as e:
             logger.error(f"Status error: {e}")
         
-        # אם לא הצליח, שלח הודעה כללית
-        send_message(chat_id, "📊 <b>עדיין לא רכשת טוקנים.</b>\n\nשלח username להתחלה!")
+        # ?? ?? ?????, ??? ????? ?????
+        send_message(chat_id, "?? <b>????? ?? ???? ??????.</b>\n\n??? username ??????!")
         return False
 
 # ====================
 # MAIN BOT LOOP
 # ====================
 def main():
-    """לולאת הבוט הראשית"""
+    """????? ???? ??????"""
     bot = AirdropBot()
     offset = 0
     
     logger.info("=" * 50)
-    logger.info("🤖 SLH Airdrop Bot - גרסה סופית")
-    logger.info(f"👤 מנהל: {ADMIN_ID}")
-    logger.info(f"🌐 API: {API_URL}")
+    logger.info("?? SLH Airdrop Bot - ???? ?????")
+    logger.info(f"?? ????: {ADMIN_ID}")
+    logger.info(f"?? API: {API_URL}")
     logger.info("=" * 50)
     
     while True:
         try:
-            # קבל עדכונים מטלגרם
+            # ??? ??????? ??????
             url = f"https://api.telegram.org/bot{TOKEN}/getUpdates"
             params = {"offset": offset, "timeout": 30}
             
@@ -381,12 +381,12 @@ def main():
                         msg = update["message"]
                         chat_id = msg["chat"]["id"]
                         text = msg.get("text", "").strip()
-                        name = msg["chat"].get("first_name", "משתמש")
+                        name = msg["chat"].get("first_name", "?????")
                         username = msg["chat"].get("username", "")
                         
-                        logger.info(f"📨 {name}: {text}")
+                        logger.info(f"?? {name}: {text}")
                         
-                        # פקודות מיוחדות
+                        # ?????? ???????
                         if text == "/start" or text.startswith("/start "):
                             # Phase 4: deep-link parser. /start therapist_<id>
                             # pairs the chat_id with an approved therapist app.
@@ -399,13 +399,13 @@ def main():
                                     if ok and str(chat_id) != ADMIN_ID:
                                         send_message(
                                             ADMIN_ID,
-                                            f"🩺 מטפל חיבר טלגרם:\n"
-                                            f"app #{app_id} ↔ tg {chat_id} ({name})",
+                                            f"?? ???? ???? ?????:\n"
+                                            f"app #{app_id} ? tg {chat_id} ({name})",
                                         )
                                     # don't fall through to airdrop handler
                                     continue
                                 except (ValueError, IndexError):
-                                    send_message(chat_id, "❌ קישור לא תקין. ודא שלחצת על הקישור המלא מהאתר.")
+                                    send_message(chat_id, "? ????? ?? ????. ??? ????? ?? ?????? ???? ?????.")
                                     continue
                             # Default: airdrop /start flow
                             bot.handle_start(chat_id, name, username)
@@ -415,40 +415,40 @@ def main():
                         
                         elif text == "/help":
                             help_msg = """
-❓ <b>עזרה - SLH Airdrop Bot</b>
+? <b>???? - SLH Airdrop Bot</b>
 
-<b>פקודות:</b>
-/start - התחלת מערכת
-/status - בדיקת סטטוס
-/help - הצגת עזרה זו
+<b>??????:</b>
+/start - ????? ?????
+/status - ????? ?????
+/help - ???? ???? ??
 
-<b>תהליך רכישה:</b>
-1. שלח username טלגרם
-2. שלח 44.4 TON לארנק שלנו
-3. שלח את מספר העסקה
-4. קבל 1,000 טוקני SLH
+<b>????? ?????:</b>
+1. ??? username ?????
+2. ??? 44.4 TON ????? ????
+3. ??? ?? ???? ?????
+4. ??? 1,000 ????? SLH
 
-<b>תמיכה:</b> @Osif83
+<b>?????:</b> @Osif83
 """
                             send_message(chat_id, help_msg)
                         
                         elif text == "/admin":
                             if str(chat_id) == ADMIN_ID:
                                 admin_panel = f"""
-👑 <b>פאנל ניהול מנהל</b>
+?? <b>???? ????? ????</b>
 
-🌐 API: {API_URL}
-📊 פאנל: {API_URL}/admin/dashboard?admin_key=airdrop_admin_2026
-❤️  בריאות: {API_URL}/health
+?? API: {API_URL}
+?? ????: {API_URL}/admin/dashboard?admin_key=airdrop_admin_2026
+??  ??????: {API_URL}/health
 
-<b>פקודות:</b>
-/status - סטטוס מערכת
-/users - משתמשים רשומים
+<b>??????:</b>
+/status - ????? ?????
+/users - ??????? ??????
 """
                                 send_message(chat_id, admin_panel)
                         
                         else:
-                            # בדוק מצב נוכחי
+                            # ???? ??? ?????
                             state_data = bot.user_states.get(chat_id)
                             
                             if state_data:
@@ -461,23 +461,24 @@ def main():
                                     bot.handle_transaction(chat_id, text)
                                 
                                 else:
-                                    # ברירת מחדל
+                                    # ????? ????
                                     if text.startswith("/"):
-                                        send_message(chat_id, "❓ <b>פקודה לא מוכרת.</b>\n\nלחץ /start להתחיל מחדש.")
+                                        send_message(chat_id, "? <b>????? ?? ?????.</b>\n\n??? /start ?????? ????.")
                                     else:
-                                        send_message(chat_id, "🤖 <b>הבוט מוכן!</b>\n\nלחץ /start להתחיל תהליך רכישה.")
+                                        send_message(chat_id, "?? <b>???? ????!</b>\n\n??? /start ?????? ????? ?????.")
                             else:
-                                # אם לא במצב פעיל, התחל מחדש
+                                # ?? ?? ???? ????, ???? ????
                                 if text and not text.startswith("/"):
-                                    send_message(chat_id, "🤖 <b>ברוך הבא!</b>\n\nלחץ /start להתחיל תהליך רכישה.")
+                                    send_message(chat_id, "?? <b>???? ???!</b>\n\n??? /start ?????? ????? ?????.")
             
             time.sleep(1)
             
         except Exception as e:
-            logger.error(f"🚨 שגיאה בלולאה ראשית: {e}")
+            logger.error(f"?? ????? ?????? ?????: {e}")
             time.sleep(5)
 
 if __name__ == "__main__":
     main()
+
 
 

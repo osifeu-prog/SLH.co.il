@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from pathlib import Path
 
 p = Path("worker.py")
@@ -236,4 +236,5 @@ s = s.replace(profile_anchor, profile_insert, 1)
 
 p.write_text(s, encoding="utf-8", newline="\n")
 print("worker.py patched: leaderboard + profile rank")
+
 

@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from alembic import op
 import sqlalchemy as sa
 
@@ -8,7 +8,7 @@ branch_labels = None
 depends_on = None
 
 def upgrade():
-    # ×‘×“×™×§×” ×•×”×•×¡×¤×ª ×¢×ž×•×“×•×ª ×œ×˜×‘×œ×ª users
+    # בדיקה והוספת עמודות לטבלת users
     conn = op.get_bind()
     inspector = sa.inspect(conn)
     columns = [c['name'] for c in inspector.get_columns('users')]
@@ -23,5 +23,6 @@ def upgrade():
         op.add_column('users', sa.Column('is_active', sa.Boolean(), server_default='true'))
     if 'role' not in columns:
         op.add_column('users', sa.Column('role', sa.String(), server_default='user'))
+
 
 

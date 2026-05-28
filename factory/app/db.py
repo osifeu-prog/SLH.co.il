@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import os
@@ -37,4 +37,5 @@ def db_session() -> Session:
         raise
     finally:
         db.close()
+
 

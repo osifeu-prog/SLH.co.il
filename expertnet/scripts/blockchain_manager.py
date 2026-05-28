@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import json
 import os
 from web3 import Web3
@@ -30,5 +30,6 @@ class BlockchainManager:
             return balance / (10**18)
         except:
             return 0
+
 
 

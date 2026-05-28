@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 SLH Token Transfer Module
 Handles BNB/SLH transfers on BSC network.
@@ -147,5 +147,6 @@ def format_gas_info(gas_price_wei, gas_limit=60000):
         "usd": f"~${gas_usd:.4f}",
         "ils": f"~{gas_usd * 3.7:.2f} ILS",
     }
+
 
 

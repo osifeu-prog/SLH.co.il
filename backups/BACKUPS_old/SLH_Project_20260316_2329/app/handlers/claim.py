@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import logging
 
 from aiogram import F, Router, types
@@ -62,5 +62,6 @@ async def claim(message: types.Message):
     )
 
     await message.answer(_success_text(res))
+
 
 

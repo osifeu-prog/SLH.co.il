@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import os
 import json
 from typing import Dict, List
@@ -239,5 +239,6 @@ def assign_position(position_id: str, user_id: str, timestamp: str):
         valueInputOption="RAW",
         body=body
     ).execute()
+
 
 

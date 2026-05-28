@@ -1,6 +1,6 @@
-ï»¿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
-Treasury â€” revenue tracking, buyback log, burn events.
+Treasury — revenue tracking, buyback log, burn events.
 
 Purpose: transparency about what the treasury does with revenue.
 Every sale that goes through the ecosystem leaves a trail:
@@ -8,19 +8,19 @@ Every sale that goes through the ecosystem leaves a trail:
   2. buyback_events: planned/executed SLH buybacks from market
   3. burn_events: tokens sent to dead address (AIC internally, SLH on-chain)
 
-No signer integration yet â€” SLH buybacks + burns logged here but
+No signer integration yet — SLH buybacks + burns logged here but
 executed manually by Osif via MetaMask. This gives us a public audit
 trail without needing hot wallets on Railway.
 
 Endpoints:
-  GET  /api/treasury/summary           â€” totals (revenue, bought back, burned)
-  GET  /api/treasury/buybacks          â€” chronological buyback log
-  GET  /api/treasury/burns             â€” chronological burn log
-  POST /api/treasury/revenue/record   â€” internal; called by payments_auto on each sale
-  POST /api/treasury/buyback/log      â€” admin; log a buyback after MetaMask TX
-  POST /api/treasury/burn/log          â€” admin; log a burn after MetaMask TX
-  GET  /api/treasury/burn-rate         â€” how much would be auto-burned from unburned AIC
-  POST /api/treasury/aic/burn          â€” admin; execute AIC burn (2% of marketplace in AIC)
+  GET  /api/treasury/summary           — totals (revenue, bought back, burned)
+  GET  /api/treasury/buybacks          — chronological buyback log
+  GET  /api/treasury/burns             — chronological burn log
+  POST /api/treasury/revenue/record   — internal; called by payments_auto on each sale
+  POST /api/treasury/buyback/log      — admin; log a buyback after MetaMask TX
+  POST /api/treasury/burn/log          — admin; log a burn after MetaMask TX
+  GET  /api/treasury/burn-rate         — how much would be auto-burned from unburned AIC
+  POST /api/treasury/aic/burn          — admin; execute AIC burn (2% of marketplace in AIC)
 """
 from __future__ import annotations
 
@@ -37,12 +37,12 @@ router = APIRouter(prefix="/api/treasury", tags=["Treasury"])
 
 _pool = None
 
-# Burn policy â€” what percentage of AIC-denominated marketplace sales get burned
+# Burn policy — what percentage of AIC-denominated marketplace sales get burned
 BURN_RATE_AIC = float(os.getenv("TREASURY_BURN_RATE_AIC", "0.02"))  # 2% default
-# Buyback policy â€” what % of fiat revenue the treasury commits to SLH buyback
+# Buyback policy — what % of fiat revenue the treasury commits to SLH buyback
 BUYBACK_RATE_FIAT = float(os.getenv("TREASURY_BUYBACK_RATE", "0.10"))  # 10% default
 
-# House cut configuration (Level 5 model) â€” % of gross sale that becomes house revenue.
+# House cut configuration (Level 5 model) — % of gross sale that becomes house revenue.
 # Default 0 keeps behavior identical to pre-audit; set via env to monetize channels.
 MARKETPLACE_HOUSE_CUT = float(os.getenv("MARKETPLACE_HOUSE_CUT", "0"))     # 0 = current state (full 100% to seller)
 ACADEMIA_HOUSE_CUT = float(os.getenv("ACADEMIA_HOUSE_CUT", "0.30"))        # CLAUDE.md says 70/30 to lecturer
@@ -69,7 +69,7 @@ async def record_revenue_internal(
     """
     Call this from any payment flow to make revenue visible in /api/treasury/health.
 
-    Uses the SAME DB connection as the caller â€” no HTTP round-trip, safe inside
+    Uses the SAME DB connection as the caller — no HTTP round-trip, safe inside
     an existing transaction. Swallows errors by design: better to have invisible
     revenue than to break a customer's purchase because of an audit bug.
 
@@ -125,7 +125,7 @@ async def record_revenue_internal(
             json.dumps(meta, default=str),
         )
     except Exception:
-        # Intentionally swallowed â€” revenue-recording bugs must NEVER break sales.
+        # Intentionally swallowed — revenue-recording bugs must NEVER break sales.
         # See ops/REVENUE_RECORDING_AUDIT_20260421.md for why this is the policy.
         pass
 
@@ -598,4 +598,5 @@ async def execute_aic_burn(x_admin_key: Optional[str] = Header(None)):
             burn_amount,
         )
     return {"ok": True, "burn_id": bid, "burned_aic": burn_amount, "source_sales": float(aic_sales)}
+
 

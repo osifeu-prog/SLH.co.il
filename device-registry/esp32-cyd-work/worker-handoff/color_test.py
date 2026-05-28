@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import machine, time, ili9341
 from machine import Pin, SPI
 
@@ -35,5 +35,6 @@ display.text("SLH TEST", 100, 100, 0xFFFF)
 time.sleep(3)
 
 print("Done")
+
 
 

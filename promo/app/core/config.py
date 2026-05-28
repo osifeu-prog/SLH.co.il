@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from pydantic_settings import BaseSettings
 from typing import Optional
 
@@ -37,4 +37,5 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
 

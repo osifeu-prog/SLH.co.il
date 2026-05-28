@@ -1,18 +1,18 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
-@G4meb0t_bot_bot — SLH Dating Telegram bot
+@G4meb0t_bot_bot � SLH Dating Telegram bot
 ============================================
-Consumes the /api/dating/* endpoints. No local DB — everything via SLH API.
+Consumes the /api/dating/* endpoints. No local DB � everything via SLH API.
 
 Commands:
-  /start        — welcome + age gate
-  /profile      — view/edit your profile (redirects to web for full edit)
-  /match        — get next candidate
-  /like         — like current candidate (after /match)
-  /pass         — pass on current candidate
-  /matches      — list mutual matches
-  /help         — commands
-  /settings     — language, notifications, pause
+  /start        � welcome + age gate
+  /profile      � view/edit your profile (redirects to web for full edit)
+  /match        � get next candidate
+  /like         � like current candidate (after /match)
+  /pass         � pass on current candidate
+  /matches      � list mutual matches
+  /help         � commands
+  /settings     � language, notifications, pause
 
 Deploy:
   Env: G4MEBOT_TOKEN (from BotFather)
@@ -85,8 +85,8 @@ async def api_post(path: str, body: dict) -> dict:
 def age_gate_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
         [
-            InlineKeyboardButton(text="✅ כן, 18+", callback_data="age:ok"),
-            InlineKeyboardButton(text="❌ לא", callback_data="age:no"),
+            InlineKeyboardButton(text="? ??, 18+", callback_data="age:ok"),
+            InlineKeyboardButton(text="? ??", callback_data="age:no"),
         ]
     ])
 
@@ -95,33 +95,33 @@ def main_menu(tg_id: int | None = None) -> InlineKeyboardMarkup:
     dating_url = web_url("/dating.html", tg_id)
     profile_url = web_url("/profile.html", tg_id)
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🔍 מצא התאמה", callback_data="cmd:match")],
-        [InlineKeyboardButton(text="💘 ההתאמות שלי", callback_data="cmd:matches")],
-        [InlineKeyboardButton(text="🔗 הזמן חברים", callback_data="cmd:share")],
-        [InlineKeyboardButton(text="👤 פרופיל (עריכה באתר)", url=dating_url)],
-        [InlineKeyboardButton(text="🌐 אזור אישי באתר", url=profile_url)],
-        [InlineKeyboardButton(text="❓ עזרה", callback_data="cmd:help")],
+        [InlineKeyboardButton(text="?? ??? ?????", callback_data="cmd:match")],
+        [InlineKeyboardButton(text="?? ??????? ???", callback_data="cmd:matches")],
+        [InlineKeyboardButton(text="?? ???? ?????", callback_data="cmd:share")],
+        [InlineKeyboardButton(text="?? ?????? (????? ????)", url=dating_url)],
+        [InlineKeyboardButton(text="?? ???? ???? ????", url=profile_url)],
+        [InlineKeyboardButton(text="? ????", callback_data="cmd:help")],
     ])
 
 
 def candidate_keyboard(cand_uid: int) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
         [
-            InlineKeyboardButton(text="💔 דלג", callback_data=f"act:pass:{cand_uid}"),
-            InlineKeyboardButton(text="❤️ לייק", callback_data=f"act:like:{cand_uid}"),
-            InlineKeyboardButton(text="⭐ Super", callback_data=f"act:superlike:{cand_uid}"),
+            InlineKeyboardButton(text="?? ???", callback_data=f"act:pass:{cand_uid}"),
+            InlineKeyboardButton(text="?? ????", callback_data=f"act:like:{cand_uid}"),
+            InlineKeyboardButton(text="? Super", callback_data=f"act:superlike:{cand_uid}"),
         ],
-        [InlineKeyboardButton(text="🔍 הבא", callback_data="cmd:match")],
+        [InlineKeyboardButton(text="?? ???", callback_data="cmd:match")],
     ])
 
 
 WELCOME = (
-    "💘 ברוכים הבאים ל‑SLH Dating\n\n"
-    "זה לא Tinder. זה קהילה של אנשים עם ערכים:\n"
-    "• מומחים מאומתים\n"
-    "• הכרויות רציניות\n"
-    "• תחומי עניין עמוקים\n\n"
-    "השירות ל‑18+ בלבד. האם אתה/את מעל גיל 18?"
+    "?? ?????? ????? ?-SLH Dating\n\n"
+    "?? ?? Tinder. ?? ????? ?? ????? ?? ?????:\n"
+    "� ?????? ???????\n"
+    "� ??????? ???????\n"
+    "� ????? ????? ??????\n\n"
+    "?????? ?-18+ ????. ??? ???/?? ??? ??? 18?"
 )
 
 
@@ -129,10 +129,10 @@ WELCOME = (
 async def cmd_start(m: Message, command: CommandObject | None = None):
     # Block the family minor immediately
     if m.from_user.id == 6466974138:
-        await m.answer("⚠ שירות זה מיועד למשתמשים מעל גיל 18 בלבד. צור קשר עם אוסיף לעזרה.")
+        await m.answer("? ????? ?? ????? ???????? ??? ??? 18 ????. ??? ??? ?? ????? ?????.")
         return
 
-    # Referral tracking: /start <ref_code>  — ref_code is inviter's tg_id
+    # Referral tracking: /start <ref_code>  � ref_code is inviter's tg_id
     ref_raw = (command.args if command else None) or ""
     ref_raw = ref_raw.strip()
     if ref_raw.isdigit() and int(ref_raw) != m.from_user.id:
@@ -152,20 +152,20 @@ async def cmd_start(m: Message, command: CommandObject | None = None):
 @dp.callback_query(F.data.startswith("age:"))
 async def cb_age(c: CallbackQuery):
     if c.data == "age:no":
-        await c.message.edit_text("עלית על כפתור 'לא'. חזור לאתר SLH הראשי: https://slh-nft.com")
+        await c.message.edit_text("???? ?? ????? '??'. ???? ???? SLH ?????: https://slh-nft.com")
         return
     # Check if profile exists
     profile = await api_get(f"/api/dating/profile/{c.from_user.id}")
     if profile.get("exists"):
         await c.message.edit_text(
-            f"ברוך הבא, {profile.get('display_name','חבר')}! הפרופיל שלך פעיל.\n\nמה לעשות?",
+            f"???? ???, {profile.get('display_name','???')}! ??????? ??? ????.\n\n?? ??????",
             reply_markup=main_menu(c.from_user.id),
         )
     else:
         await c.message.edit_text(
-            "נהדר! כדי להתחיל — צור פרופיל באתר:\n\n"
-            f"👉 {web_url('/dating.html', c.from_user.id)}\n\n"
-            "אחרי שתשמור פרופיל, חזור לכאן וכתוב /match כדי למצוא התאמות.",
+            "????! ??? ?????? � ??? ?????? ????:\n\n"
+            f"?? {web_url('/dating.html', c.from_user.id)}\n\n"
+            "???? ?????? ??????, ???? ???? ????? /match ??? ????? ??????.",
             reply_markup=main_menu(c.from_user.id),
         )
     await c.answer()
@@ -186,8 +186,8 @@ async def show_candidate(event):
     profile = await api_get(f"/api/dating/profile/{user_id}")
     if not profile.get("exists"):
         await reply(
-            "עוד לא יצרת פרופיל. לחץ כדי ליצור:\n"
-            "👉 https://slh-nft.com/dating.html",
+            "??? ?? ???? ??????. ??? ??? ?????:\n"
+            "?? https://slh-nft.com/dating.html",
         )
         return
 
@@ -195,16 +195,16 @@ async def show_candidate(event):
     res = await api_post("/api/dating/match/candidates", {"user_id": user_id, "limit": 1})
     cands = res.get("candidates", [])
     if not cands:
-        await reply("אין מועמדים חדשים כרגע. חזור מאוחר יותר, או כתוב /matches.")
+        await reply("??? ??????? ????? ????. ???? ????? ????, ?? ???? /matches.")
         return
 
     c = cands[0]
     USER_STATE[user_id] = {"current_candidate": c["user_id"]}
     text = (
-        f"👤 *{c['display_name']}* · {c['age']}\n"
-        f"📍 {c.get('city') or '—'} · {'✓ מאומת' if c.get('verified') else ''}\n\n"
-        f"{c.get('bio') or '(אין ביו)'}\n\n"
-        f"🎯 {c.get('overlap_count', 0)} תחומי עניין משותפים"
+        f"?? *{c['display_name']}* � {c['age']}\n"
+        f"?? {c.get('city') or '�'} � {'? ?????' if c.get('verified') else ''}\n\n"
+        f"{c.get('bio') or '(??? ???)'}\n\n"
+        f"?? {c.get('overlap_count', 0)} ????? ????? ???????"
     )
     await reply(text, reply_markup=candidate_keyboard(c["user_id"]), parse_mode="Markdown")
 
@@ -222,16 +222,16 @@ async def cb_action(c: CallbackQuery):
         # Fetch the matched profile
         pub = await api_get(f"/api/dating/profile/{target_uid}/public")
         tg = pub.get("tg_username")
-        tg_line = f"\n💬 שלח הודעה: t.me/{tg}" if tg else "\nאין לו username בטלגרם."
-        await c.answer("🎉 התאמה הדדית!", show_alert=True)
+        tg_line = f"\n?? ??? ?????: t.me/{tg}" if tg else "\n??? ?? username ??????."
+        await c.answer("?? ????? ?????!", show_alert=True)
         await c.message.answer(
-            f"🎉 *התאמה הדדית עם {pub.get('display_name')}!*\n"
+            f"?? *????? ????? ?? {pub.get('display_name')}!*\n"
             f"{pub.get('bio') or ''}\n{tg_line}",
             parse_mode="Markdown",
         )
     else:
-        emoji = {"like": "❤️", "pass": "💔", "superlike": "⭐"}.get(action, "✓")
-        await c.answer(f"{emoji} נשמר")
+        emoji = {"like": "??", "pass": "??", "superlike": "?"}.get(action, "?")
+        await c.answer(f"{emoji} ????")
     # Auto-show next
     await show_candidate(c)
 
@@ -250,14 +250,14 @@ async def show_matches(event):
     res = await api_get(f"/api/dating/matches/{user_id}")
     matches = res.get("matches", [])
     if not matches:
-        await reply("עדיין אין התאמות הדדיות. המשך לחפש עם /match.")
+        await reply("????? ??? ?????? ??????. ???? ???? ?? /match.")
         return
 
-    lines = ["💘 *ההתאמות שלך:*\n"]
+    lines = ["?? *??????? ???:*\n"]
     for m in matches[:10]:
-        tg = f" · t.me/{m['tg_username']}" if m.get("tg_username") else ""
-        verified = " ✓" if m.get("verified") else ""
-        lines.append(f"• {m['display_name']} · {m['age']}{verified}{tg}")
+        tg = f" � t.me/{m['tg_username']}" if m.get("tg_username") else ""
+        verified = " ?" if m.get("verified") else ""
+        lines.append(f"� {m['display_name']} � {m['age']}{verified}{tg}")
     await reply("\n".join(lines), parse_mode="Markdown")
 
 
@@ -266,17 +266,17 @@ async def show_matches(event):
 async def cmd_help(event):
     uid = event.from_user.id
     text = (
-        "📚 *פקודות:*\n"
-        "/start — התחלה מחדש\n"
-        "/match — מצא התאמה חדשה\n"
-        "/matches — רשימת התאמות הדדיות\n"
-        "/profile — תצוגת הפרופיל שלך + לינק לעריכה\n"
-        "/share — הזמן חברים (+3 AIC עבורך)\n"
-        "/site — לינקים לאזור האישי באתר\n"
-        "/help — הודעה זו\n\n"
-        "💡 עריכה מלאה של פרופיל, תמונות, תחומי עניין — רק באתר:\n"
+        "?? *??????:*\n"
+        "/start � ????? ????\n"
+        "/match � ??? ????? ????\n"
+        "/matches � ????? ?????? ??????\n"
+        "/profile � ????? ??????? ??? + ???? ??????\n"
+        "/share � ???? ????? (+3 AIC ?????)\n"
+        "/site � ?????? ????? ????? ????\n"
+        "/help � ????? ??\n\n"
+        "?? ????? ???? ?? ??????, ??????, ????? ????? � ?? ????:\n"
         f"{web_url('/dating.html', uid)}\n"
-        f"🌐 אזור אישי מלא: {web_url('/profile.html', uid)}"
+        f"?? ???? ???? ???: {web_url('/profile.html', uid)}"
     )
     kb = main_menu(uid)
     if isinstance(event, CallbackQuery):
@@ -291,18 +291,18 @@ async def cmd_profile(m: Message):
     profile = await api_get(f"/api/dating/profile/{m.from_user.id}")
     if not profile.get("exists"):
         await m.answer(
-            f"עוד אין לך פרופיל. צור באתר: {web_url('/dating.html', m.from_user.id)}",
+            f"??? ??? ?? ??????. ??? ????: {web_url('/dating.html', m.from_user.id)}",
             reply_markup=main_menu(m.from_user.id),
         )
         return
     text = (
-        f"👤 *{profile['display_name']}* · {profile['age']}\n"
-        f"📍 {profile.get('city','—')}\n"
-        f"🎯 {profile.get('looking_for','—')}\n"
-        f"💼 {profile.get('profession','—')}\n\n"
-        f"{profile.get('bio','(אין ביו)')}\n\n"
-        f"🔗 עריכה: {web_url('/dating.html', m.from_user.id)}\n"
-        f"🌐 אזור אישי: {web_url('/profile.html', m.from_user.id)}"
+        f"?? *{profile['display_name']}* � {profile['age']}\n"
+        f"?? {profile.get('city','�')}\n"
+        f"?? {profile.get('looking_for','�')}\n"
+        f"?? {profile.get('profession','�')}\n\n"
+        f"{profile.get('bio','(??? ???)')}\n\n"
+        f"?? ?????: {web_url('/dating.html', m.from_user.id)}\n"
+        f"?? ???? ????: {web_url('/profile.html', m.from_user.id)}"
     )
     await m.answer(text, parse_mode="Markdown", reply_markup=main_menu(m.from_user.id))
 
@@ -320,41 +320,41 @@ async def cmd_share(event):
 
     invite = f"https://t.me/{BOT_USERNAME}?start={user_id}"
     text = (
-        "🎁 *הזמן חברים וצברו יחד מטבעות אהבה*\n\n"
-        "שתף את הקישור האישי שלך:\n"
+        "?? *???? ????? ????? ??? ?????? ????*\n\n"
+        "??? ?? ?????? ????? ???:\n"
         f"`{invite}`\n\n"
-        "כל מי שמצטרף דרך הקישור שלך:\n"
-        "• אתה מקבל +3 AIC\n"
-        "• הוא/היא מקבלים +5 AIC welcome\n"
-        "• שניכם מופיעים ב‑leaderboard של ההפניות\n\n"
-        "💡 טיפ: אפשר גם לשתף לפייסבוק/אינסטגרם/וואטסאפ דרך האתר."
+        "?? ?? ?????? ??? ?????? ???:\n"
+        "� ??? ???? +3 AIC\n"
+        "� ???/??? ?????? +5 AIC welcome\n"
+        "� ????? ??????? ?-leaderboard ?? ???????\n\n"
+        "?? ???: ???? ?? ???? ????????/????????/??????? ??? ????."
     )
     share_kb = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(
-            text="📤 שתף את הקישור",
-            switch_inline_query=f"הצטרפו איתי ל‑SLH Dating — לא רק עוד אפליקציה: {invite}",
+            text="?? ??? ?? ??????",
+            switch_inline_query=f"?????? ???? ?-SLH Dating � ?? ?? ??? ????????: {invite}",
         )],
-        [InlineKeyboardButton(text="🌐 שיתוף דרך האתר (כל הרשתות)", url=web_url("/referral.html", user_id))],
-        [InlineKeyboardButton(text="🔙 חזרה לתפריט", callback_data="cmd:menu")],
+        [InlineKeyboardButton(text="?? ????? ??? ???? (?? ??????)", url=web_url("/referral.html", user_id))],
+        [InlineKeyboardButton(text="?? ???? ??????", callback_data="cmd:menu")],
     ])
     await reply(text, parse_mode="Markdown", reply_markup=share_kb)
 
 
 @dp.callback_query(F.data == "cmd:menu")
 async def cb_menu(c: CallbackQuery):
-    await c.message.answer("תפריט ראשי:", reply_markup=main_menu(c.from_user.id))
+    await c.message.answer("????? ????:", reply_markup=main_menu(c.from_user.id))
     await c.answer()
 
 
 @dp.message(Command("site"))
 async def cmd_site(m: Message):
     await m.answer(
-        "🌐 *אזור אישי באתר SLH*\n\n"
-        f"• [Dashboard]({web_url('/dashboard.html', m.from_user.id)})\n"
-        f"• [פרופיל Dating]({web_url('/dating.html', m.from_user.id)})\n"
-        f"• [Wallet]({web_url('/wallet.html', m.from_user.id)})\n"
-        f"• [Community]({web_url('/community.html', m.from_user.id)})\n"
-        f"• [Sudoku]({web_url('/sudoku.html', m.from_user.id)})\n",
+        "?? *???? ???? ???? SLH*\n\n"
+        f"� [Dashboard]({web_url('/dashboard.html', m.from_user.id)})\n"
+        f"� [?????? Dating]({web_url('/dating.html', m.from_user.id)})\n"
+        f"� [Wallet]({web_url('/wallet.html', m.from_user.id)})\n"
+        f"� [Community]({web_url('/community.html', m.from_user.id)})\n"
+        f"� [Sudoku]({web_url('/sudoku.html', m.from_user.id)})\n",
         parse_mode="Markdown",
         disable_web_page_preview=True,
         reply_markup=main_menu(m.from_user.id),
@@ -369,5 +369,6 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
 
 

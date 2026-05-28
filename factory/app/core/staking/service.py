@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import uuid
@@ -433,4 +433,5 @@ def accrue_all_active_positions(db: Session, now: datetime | None = None) -> lis
         results.append({"position_id": r["id"], "reward": str(reward)})
 
     return results
+
 

@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import asyncio
 from app.db.database import db
 from app.services.task_verifications import request_task_verification
@@ -17,4 +17,5 @@ async def main():
         await db.close()
 
 asyncio.run(main())
+
 

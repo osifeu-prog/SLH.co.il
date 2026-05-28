@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
 SLH Prompt Analyzer
 ====================
@@ -34,11 +34,11 @@ PROMPT_PATTERNS = [
     re.compile(r"(\w*(?:SYSTEM_)?PROMPT\w*)\s*=\s*'''(.*?)'''", re.DOTALL),
 ]
 
-# Estimated daily call volumes (rough — adjust per-bot from real metrics)
+# Estimated daily call volumes (rough � adjust per-bot from real metrics)
 DAILY_CALLS = {
-    "claude_client.py":     200,   # main executor — high frequency
+    "claude_client.py":     200,   # main executor � high frequency
     "free_ai_client.py":    150,
-    "ai_chat.py":           500,   # public AI chat — highest
+    "ai_chat.py":           500,   # public AI chat � highest
     "ai_cmd.py":            80,
     "DEFAULT":              50,
 }
@@ -99,42 +99,43 @@ def main():
 
     # Pretty text report
     print()
-    print("═" * 78)
-    print(f"  SLH Prompt Analyzer — {len(results)} prompts found")
-    print("═" * 78)
+    print("-" * 78)
+    print(f"  SLH Prompt Analyzer � {len(results)} prompts found")
+    print("-" * 78)
     print()
 
     total_current = sum(r["monthly_cost_ils"]["current_no_optimization"] for r in results)
     total_optimized = sum(r["monthly_cost_ils"]["with_denoising_and_caching"] for r in results)
     total_savings = total_current - total_optimized
 
-    print(f"  TOTAL monthly cost (no optimization): ₪{total_current:.2f}")
-    print(f"  TOTAL monthly cost (with denoise+cache): ₪{total_optimized:.2f}")
-    print(f"  TOTAL savings: ₪{total_savings:.2f}/month ({total_savings/max(total_current,0.01)*100:.1f}%)")
+    print(f"  TOTAL monthly cost (no optimization): ?{total_current:.2f}")
+    print(f"  TOTAL monthly cost (with denoise+cache): ?{total_optimized:.2f}")
+    print(f"  TOTAL savings: ?{total_savings:.2f}/month ({total_savings/max(total_current,0.01)*100:.1f}%)")
     print()
-    print("─" * 78)
+    print("-" * 78)
     print(f"  {'NAME':<25} {'TOKENS':>8} {'CALLS':>8} {'CURRENT':>10} {'OPTIMIZED':>10} {'SAVE':>8}")
-    print("─" * 78)
+    print("-" * 78)
     for r in results:
         print(f"  {r['name'][:24]:<25} "
               f"{r['tokens']['original']:>8} "
               f"{r['calls_per_day']:>8} "
-              f"₪{r['monthly_cost_ils']['current_no_optimization']:>8.2f} "
-              f"₪{r['monthly_cost_ils']['with_denoising_and_caching']:>8.2f} "
+              f"?{r['monthly_cost_ils']['current_no_optimization']:>8.2f} "
+              f"?{r['monthly_cost_ils']['with_denoising_and_caching']:>8.2f} "
               f"{r['monthly_cost_ils']['savings_pct']:>6.0f}%")
-    print("─" * 78)
+    print("-" * 78)
     print()
     print("  Top 3 detail:")
     for r in results[:3]:
-        print(f"\n  📊 {r['name']}  ({r['file']})")
-        print(f"     Tokens: {r['tokens']['original']} → {r['tokens']['denoised']} "
+        print(f"\n  ?? {r['name']}  ({r['file']})")
+        print(f"     Tokens: {r['tokens']['original']} ? {r['tokens']['denoised']} "
               f"(saved {r['tokens']['tokens_saved_by_denoising']}, "
               f"{r['tokens']['pct_saved_by_denoising']}%)")
-        print(f"     Cost:   ₪{r['monthly_cost_ils']['current_no_optimization']}/mo "
-              f"→ ₪{r['monthly_cost_ils']['with_denoising_and_caching']}/mo "
-              f"(saves ₪{r['monthly_cost_ils']['savings_vs_current']})")
+        print(f"     Cost:   ?{r['monthly_cost_ils']['current_no_optimization']}/mo "
+              f"? ?{r['monthly_cost_ils']['with_denoising_and_caching']}/mo "
+              f"(saves ?{r['monthly_cost_ils']['savings_vs_current']})")
     print()
 
 if __name__ == "__main__":
     main()
+
 

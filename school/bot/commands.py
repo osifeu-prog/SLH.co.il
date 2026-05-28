@@ -1,7 +1,7 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
-מודול פקודות הבוט - Crypto-Class
-גרסה 2.4.0 - מלא ומאורגן עם כל הפקודות
+????? ?????? ???? - Crypto-Class
+???? 2.4.0 - ??? ??????? ?? ?? ???????
 """
 
 import logging
@@ -28,29 +28,29 @@ from database.queries import (
 
 logger = logging.getLogger(__name__)
 
-# ========== הגדרות קבועות ==========
+# ========== ?????? ?????? ==========
 
-# בונוסים לפי יום רצוף
+# ??????? ??? ??? ????
 STREAK_BONUS = {
-    3: 5,    # יום שלישי רצוף: +5 טוקנים
-    7: 10,   # שבוע רצוף: +10 טוקנים
-    14: 20,  # שבועיים רצופים: +20 טוקנים
-    30: 50   # חודש רצוף: +50 טוקנים
+    3: 5,    # ??? ????? ????: +5 ??????
+    7: 10,   # ???? ????: +10 ??????
+    14: 20,  # ??????? ??????: +20 ??????
+    30: 50   # ???? ????: +50 ??????
 }
 
-# פרטי מנהל המערכת
+# ???? ???? ??????
 ADMIN_INFO = {
-    "name": "אוסיף אונגר",
+    "name": "????? ?????",
     "telegram": "@osifeu",
     "phone": "0584203384",
     "email": "osif.programmer@gmail.com",
-    "response_time": "24-48 שעות"
+    "response_time": "24-48 ????"
 }
 
-# ========== פונקציות עזר ==========
+# ========== ???????? ??? ==========
 
 def generate_referral_code(user_id: int, length: int = 8) -> str:
-    """יצירת קוד הפניה ייחודי"""
+    """????? ??? ????? ??????"""
     base = str(user_id)[-4:] if len(str(user_id)) >= 4 else str(user_id).zfill(4)
     chars = string.ascii_uppercase + string.digits
     random_part = ''.join(random.choice(chars) for _ in range(length - 4))
@@ -58,7 +58,7 @@ def generate_referral_code(user_id: int, length: int = 8) -> str:
     return code[:length]
 
 def calculate_level(tokens: int) -> int:
-    """חישוב רמה לפי כמות הטוקנים"""
+    """????? ??? ??? ???? ???????"""
     level_thresholds = [0, 10, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000]
     
     for level, threshold in enumerate(level_thresholds, 1):
@@ -68,7 +68,7 @@ def calculate_level(tokens: int) -> int:
     return 10
 
 def get_level_progress(tokens: int) -> tuple:
-    """קבלת התקדמות ברמה הנוכחית"""
+    """???? ??????? ???? ???????"""
     level = calculate_level(tokens)
     level_thresholds = [0, 10, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000]
     
@@ -81,19 +81,19 @@ def get_level_progress(tokens: int) -> tuple:
     return level, progress, total_for_level, next_level_min
 
 def format_number(num: int) -> str:
-    """פורמט מספר עם פסיקים"""
+    """????? ???? ?? ??????"""
     return f"{num:,}".replace(",", ",")
 
 def create_progress_bar(progress: int, total: int, length: int = 10) -> str:
-    """יצירת סרגל התקדמות ויזואלי"""
+    """????? ???? ??????? ???????"""
     filled = int((progress / total) * length) if total > 0 else 0
-    bar = "▓" * filled + "░" * (length - filled)
+    bar = "�" * filled + "�" * (length - filled)
     percentage = (progress / total * 100) if total > 0 else 0
     return f"{bar} {percentage:.1f}%"
 
 def get_day_name(date_str: str) -> str:
-    """קבלת שם היום בעברית"""
-    days = ["שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת", "ראשון"]
+    """???? ?? ???? ??????"""
+    days = ["???", "?????", "?????", "?????", "????", "???", "?????"]
     try:
         date_obj = datetime.strptime(date_str, "%Y-%m-%d")
         return days[date_obj.weekday()]
@@ -101,54 +101,54 @@ def get_day_name(date_str: str) -> str:
         return date_str
 
 def format_time_delta(delta: timedelta) -> str:
-    """פורמט זמן בעברית"""
+    """????? ??? ??????"""
     if delta.days > 0:
-        return f"{delta.days} ימים"
+        return f"{delta.days} ????"
     elif delta.seconds > 3600:
         hours = delta.seconds // 3600
-        return f"{hours} שעות"
+        return f"{hours} ????"
     elif delta.seconds > 60:
         minutes = delta.seconds // 60
-        return f"{minutes} דקות"
+        return f"{minutes} ????"
     else:
-        return f"{delta.seconds} שניות"
+        return f"{delta.seconds} ?????"
 
-# ========== פקודות בסיסיות ==========
+# ========== ?????? ??????? ==========
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """פקודת התחלה - רישום/התחברות משתמש"""
+    """????? ????? - ?????/??????? ?????"""
     try:
         user = update.effective_user
-        logger.info(f"🚀 קבלת /start ממשתמש: {user.id} ({user.first_name})")
+        logger.info(f"?? ???? /start ??????: {user.id} ({user.first_name})")
         
-        # בדיקת פרמטר הפניה
+        # ????? ????? ?????
         referral_param = None
         if context.args:
             referral_param = context.args[0]
         
-        # בדוק אם המשתמש קיים
+        # ???? ?? ?????? ????
         existing_user = get_user(user.id)
         
         if existing_user:
-            # משתמש קיים - הצג הודעת ברוכים השב
+            # ????? ???? - ??? ????? ?????? ???
             welcome_message = (
-                f"🎉 **ברוך השב, {user.first_name}!** 👋\n\n"
-                f"📍 כבר רשום במערכת Crypto-Class\n"
-                f"📅 תאריך הצטרפות: {existing_user.created_at.strftime('%d/%m/%Y')}\n\n"
-                f"📋 **פקודות זמינות:**\n"
-                f"└── /checkin - צ'ק-אין יומי\n"
-                f"└── /balance - יתרת טוקנים\n"
-                f"└── /referral - קוד הפניה שלך\n"
-                f"└── /leaderboard - טבלת מובילים\n"
-                f"└── /level - הרמה שלך\n"
-                f"└── /help - עזרה והדרכה\n\n"
-                f"🚀 **מה עכשיו?**\n"
-                f"השתמש ב-/checkin כדי לקבל את הטוקן היומי שלך!"
+                f"?? **???? ???, {user.first_name}!** ??\n\n"
+                f"?? ??? ???? ?????? Crypto-Class\n"
+                f"?? ????? ???????: {existing_user.created_at.strftime('%d/%m/%Y')}\n\n"
+                f"?? **?????? ??????:**\n"
+                f"+-- /checkin - ?'?-??? ????\n"
+                f"+-- /balance - ???? ??????\n"
+                f"+-- /referral - ??? ????? ???\n"
+                f"+-- /leaderboard - ???? ???????\n"
+                f"+-- /level - ???? ???\n"
+                f"+-- /help - ???? ??????\n\n"
+                f"?? **?? ??????**\n"
+                f"????? ?-/checkin ??? ???? ?? ????? ????? ???!"
             )
             
             await update.message.reply_text(welcome_message, parse_mode='Markdown')
         else:
-            # משתמש חדש - רשום אותו
+            # ????? ??? - ???? ????
             referral_code = generate_referral_code(user.id)
             success = register_user(
                 telegram_id=user.id,
@@ -158,79 +158,79 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
             
             if success:
-                # מעקב הפניה אם קיים
+                # ???? ????? ?? ????
                 if referral_param:
                     try:
                         referrer = get_user_by_referral_code(referral_param)
                         if referrer:
-                            # הוסף טוקנים למזמין
+                            # ???? ?????? ??????
                             add_tokens_to_user(referrer.telegram_id, 10)
-                            logger.info(f"🎯 משתמש {user.id} הצטרף דרך קוד הפניה של {referrer.telegram_id}")
+                            logger.info(f"?? ????? {user.id} ????? ??? ??? ????? ?? {referrer.telegram_id}")
                     except Exception as e:
-                        logger.error(f"❌ שגיאה בעיבוד הפניה: {e}")
+                        logger.error(f"? ????? ?????? ?????: {e}")
                 
-                logger.info(f"✅ משתמש נרשם: {user.id} עם קוד הפניה: {referral_code}")
+                logger.info(f"? ????? ????: {user.id} ?? ??? ?????: {referral_code}")
                 
                 welcome_message = (
-                    f"🎉 **ברוך הבא ל-Crypto-Class!** 🚀\n\n"
-                    f"✅ **נרשמת בהצלחה למערכת!**\n"
-                    f"└── 👤 שם: {user.first_name}\n"
-                    f"└── 🆔 מזהה: {user.id}\n"
-                    f"└── 📅 תאריך: {datetime.now().strftime('%d/%m/%Y')}\n"
-                    f"└── 🔐 קוד הפניה: `{referral_code}`\n\n"
-                    f"📋 **פקודות זמינות:**\n"
-                    f"└── /checkin - צ'ק-אין יומי (מקבל טוקן)\n"
-                    f"└── /balance - בדיקת יתרת טוקנים\n"
-                    f"└── /referral - קוד ההפניה שלך\n"
-                    f"└── /my_referrals - המוזמנים שלך\n"
-                    f"└── /leaderboard - טבלת מובילים\n"
-                    f"└── /level - הרמה והניסיון שלך\n\n"
-                    f"💰 **מערכת הטוקנים:**\n"
-                    f"└── צ'ק-אין יומי: 1 טוקן\n"
-                    f"└── הזמנת חבר: 10 טוקנים\n"
-                    f"└── רצף יומי: עד 50 טוקנים\n\n"
-                    f"🚀 **התחל עם:**\n"
-                    f"/checkin - כדי לצבור טוקנים!\n"
-                    f"/referral - כדי להזמין חברים!"
+                    f"?? **???? ??? ?-Crypto-Class!** ??\n\n"
+                    f"? **????? ?????? ??????!**\n"
+                    f"+-- ?? ??: {user.first_name}\n"
+                    f"+-- ?? ????: {user.id}\n"
+                    f"+-- ?? ?????: {datetime.now().strftime('%d/%m/%Y')}\n"
+                    f"+-- ?? ??? ?????: `{referral_code}`\n\n"
+                    f"?? **?????? ??????:**\n"
+                    f"+-- /checkin - ?'?-??? ???? (???? ????)\n"
+                    f"+-- /balance - ????? ???? ??????\n"
+                    f"+-- /referral - ??? ?????? ???\n"
+                    f"+-- /my_referrals - ???????? ???\n"
+                    f"+-- /leaderboard - ???? ???????\n"
+                    f"+-- /level - ???? ???????? ???\n\n"
+                    f"?? **????? ???????:**\n"
+                    f"+-- ?'?-??? ????: 1 ????\n"
+                    f"+-- ????? ???: 10 ??????\n"
+                    f"+-- ??? ????: ?? 50 ??????\n\n"
+                    f"?? **???? ??:**\n"
+                    f"/checkin - ??? ????? ??????!\n"
+                    f"/referral - ??? ?????? ?????!"
                 )
                 
                 await update.message.reply_text(welcome_message, parse_mode='Markdown')
             else:
                 await update.message.reply_text(
-                    "❌ **אירעה שגיאה בזמן הרישום**\n\n"
-                    "אנא נסה שוב מאוחר יותר או פנה למנהל המערכת עם /contact."
+                    "? **????? ????? ???? ??????**\n\n"
+                    "??? ??? ??? ????? ???? ?? ??? ????? ?????? ?? /contact."
                 )
                 
     except Exception as e:
-        logger.error(f"❌ שגיאה בפקודת start: {e}")
+        logger.error(f"? ????? ?????? start: {e}")
         await update.message.reply_text(
-            "❌ **שגיאה בפקודת התחלה**\n\n"
-            "אנא נסה שוב או פנה למנהל המערכת עם /contact."
+            "? **????? ?????? ?????**\n\n"
+            "??? ??? ??? ?? ??? ????? ?????? ?? /contact."
         )
 
 async def checkin(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """צ'ק-אין יומי - קבלת טוקן יומי"""
+    """?'?-??? ???? - ???? ???? ????"""
     try:
         user = update.effective_user
-        logger.info(f"📅 קבלת /checkin ממשתמש: {user.id}")
+        logger.info(f"?? ???? /checkin ??????: {user.id}")
         
-        # בדוק אם המשתמש רשום
+        # ???? ?? ?????? ????
         db_user = get_user(user.id)
         if not db_user:
             await update.message.reply_text(
-                "❌ **אתה לא רשום במערכת!**\n\n"
-                "שלח /start כדי להירשם."
+                "? **??? ?? ???? ??????!**\n\n"
+                "??? /start ??? ??????."
             )
             return
         
-        # בצע צ'ק-אין
+        # ??? ?'?-???
         success, message = checkin_user(user.id)
         
         if success:
-            # קבל את היתרה המעודכנת
+            # ??? ?? ????? ????????
             balance = get_balance(user.id)
             
-            # בדוק בונוסי רצף
+            # ???? ?????? ???
             streak_days = getattr(db_user, 'current_streak', 0) or 0
             bonus_tokens = 0
             
@@ -240,51 +240,51 @@ async def checkin(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     break
             
             response = (
-                f"✅ **צ'ק-אין מוצלח!** 🎉\n\n"
+                f"? **?'?-??? ?????!** ??\n\n"
                 f"{message}\n\n"
-                f"📊 **פרטים:**\n"
-                f"└── 💰 יתרה מעודכנת: **{format_number(balance)} טוקנים** 🪙\n"
-                f"└── 🔥 רצף נוכחי: {streak_days} ימים\n"
+                f"?? **?????:**\n"
+                f"+-- ?? ???? ???????: **{format_number(balance)} ??????** ??\n"
+                f"+-- ?? ??? ?????: {streak_days} ????\n"
             )
             
             if bonus_tokens > 0:
-                response += f"└── 🎁 בונוס רצף: +{bonus_tokens} טוקנים!\n\n"
+                response += f"+-- ?? ????? ???: +{bonus_tokens} ??????!\n\n"
             else:
-                response += f"└── 🎯 לרמה הבאה: עוד {get_level_progress(balance)[3] - balance} טוקנים\n\n"
+                response += f"+-- ?? ???? ????: ??? {get_level_progress(balance)[3] - balance} ??????\n\n"
             
             response += (
-                f"📈 **המשך להתמיד!**\n"
-                f"חזור מחר ל-/checkin כדי לשמור על הרצף!"
+                f"?? **???? ??????!**\n"
+                f"???? ??? ?-/checkin ??? ????? ?? ????!"
             )
             
-            # יצירת סרגל התקדמות
+            # ????? ???? ???????
             level, progress, total, _ = get_level_progress(balance)
             progress_bar = create_progress_bar(progress, total)
-            response += f"\n\n🏆 **רמה {level}:**\n{progress_bar}"
+            response += f"\n\n?? **??? {level}:**\n{progress_bar}"
             
             await update.message.reply_text(response, parse_mode='Markdown')
         else:
-            await update.message.reply_text(f"❌ **{message}**\n\nנסה שוב מחר עם /checkin!")
+            await update.message.reply_text(f"? **{message}**\n\n??? ??? ??? ?? /checkin!")
             
     except Exception as e:
-        logger.error(f"❌ שגיאה בפקודת checkin: {e}")
+        logger.error(f"? ????? ?????? checkin: {e}")
         await update.message.reply_text(
-            "❌ **שגיאה בצ'ק-אין**\n\n"
-            "אנא נסה שוב או פנה למנהל המערכת עם /contact."
+            "? **????? ??'?-???**\n\n"
+            "??? ??? ??? ?? ??? ????? ?????? ?? /contact."
         )
 
 async def balance(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """הצגת יתרת הטוקנים של המשתמש"""
+    """???? ???? ??????? ?? ??????"""
     try:
         user = update.effective_user
-        logger.info(f"💰 קבלת /balance ממשתמש: {user.id}")
+        logger.info(f"?? ???? /balance ??????: {user.id}")
         
-        # בדוק אם המשתמש רשום
+        # ???? ?? ?????? ????
         db_user = get_user(user.id)
         if not db_user:
             await update.message.reply_text(
-                "❌ **אתה לא רשום במערכת!**\n\n"
-                "שלח /start כדי להירשם."
+                "? **??? ?? ???? ??????!**\n\n"
+                "??? /start ??? ??????."
             )
             return
         
@@ -292,80 +292,80 @@ async def balance(update: Update, context: ContextTypes.DEFAULT_TYPE):
         level, progress, total, next_level = get_level_progress(balance)
         progress_bar = create_progress_bar(progress, total)
         
-        # סטטיסטיקות נוספות
+        # ?????????? ??????
         total_referrals = get_total_referrals(user.id)
         streak_days = getattr(db_user, 'current_streak', 0) or 0
         
         response = (
-            f"💰 **פרטי חשבון - {user.first_name}**\n\n"
-            f"📊 **יתרה נוכחית:**\n"
-            f"└── 🪙 טוקנים: **{format_number(balance)}**\n"
-            f"└── 🏦 ערך כולל: **{format_number(balance * 100)} נקודות**\n\n"
-            f"🏆 **רמה והתקדמות:**\n"
-            f"└── 📈 רמה: {level}\n"
-            f"└── 📊 התקדמות: {progress}/{total}\n"
-            f"└── 🎯 עד רמה {level+1}: {next_level - balance} טוקנים\n"
-            f"└── {progress_bar}\n\n"
-            f"📈 **סטטיסטיקות:**\n"
-            f"└── 🔥 רצף יומי: {streak_days} ימים\n"
-            f"└── 👥 מוזמנים: {total_referrals}\n"
-            f"└── 💰 טוקנים מהפניות: {format_number(total_referrals * 10)}\n\n"
-            f"💡 **טיפ:** השתמש ב-/checkin כל יום כדי לשמור על הרצף ולקבל בונוסים!"
+            f"?? **???? ????? - {user.first_name}**\n\n"
+            f"?? **???? ??????:**\n"
+            f"+-- ?? ??????: **{format_number(balance)}**\n"
+            f"+-- ?? ??? ????: **{format_number(balance * 100)} ??????**\n\n"
+            f"?? **??? ????????:**\n"
+            f"+-- ?? ???: {level}\n"
+            f"+-- ?? ???????: {progress}/{total}\n"
+            f"+-- ?? ?? ??? {level+1}: {next_level - balance} ??????\n"
+            f"+-- {progress_bar}\n\n"
+            f"?? **??????????:**\n"
+            f"+-- ?? ??? ????: {streak_days} ????\n"
+            f"+-- ?? ???????: {total_referrals}\n"
+            f"+-- ?? ?????? ???????: {format_number(total_referrals * 10)}\n\n"
+            f"?? **???:** ????? ?-/checkin ?? ??? ??? ????? ?? ???? ????? ???????!"
         )
         
         await update.message.reply_text(response, parse_mode='Markdown')
         
     except Exception as e:
-        logger.error(f"❌ שגיאה בפקודת balance: {e}")
+        logger.error(f"? ????? ?????? balance: {e}")
         await update.message.reply_text(
-            "❌ **שגיאה בבדיקת יתרה**\n\n"
-            "אנא נסה שוב מאוחר יותר."
+            "? **????? ?????? ????**\n\n"
+            "??? ??? ??? ????? ????."
         )
 
 async def referral(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """הצגת קוד ההפניה של המשתמש"""
+    """???? ??? ?????? ?? ??????"""
     try:
         user = update.effective_user
-        logger.info(f"📱 קבלת /referral ממשתמש: {user.id}")
+        logger.info(f"?? ???? /referral ??????: {user.id}")
         
-        # בדוק אם המשתמש רשום
+        # ???? ?? ?????? ????
         db_user = get_user(user.id)
         if not db_user:
             await update.message.reply_text(
-                "❌ **אתה לא רשום במערכת!**\n\n"
-                "שלח /start כדי להירשם."
+                "? **??? ?? ???? ??????!**\n\n"
+                "??? /start ??? ??????."
             )
             return
         
         referral_code = db_user.referral_code
         total_referrals = get_total_referrals(user.id)
         
-        # בניית קישור הפניה
+        # ????? ????? ?????
         bot_username = context.bot.username
         referral_link = f"https://t.me/{bot_username}?start={referral_code}"
         
         response = (
-            f"👤 **קוד ההפניה שלך**\n\n"
-            f"📱 **קוד אישי:**\n"
+            f"?? **??? ?????? ???**\n\n"
+            f"?? **??? ????:**\n"
             f"`{referral_code}`\n\n"
-            f"🔗 **קישור להזמנה:**\n"
+            f"?? **????? ??????:**\n"
             f"`{referral_link}`\n\n"
-            f"📊 **סטטיסטיקות הפניות:**\n"
-            f"└── 👥 משתמשים שהזמנת: **{total_referrals}**\n"
-            f"└── 💰 טוקנים שהרווחת: **{format_number(total_referrals * 10)}**\n"
-            f"└── 🎯 יעד הבא: 5 חברים (50 טוקנים)\n\n"
-            f"📚 **איך להזמין חברים:**\n"
-            f"1. שלח לחבר את הקישור למעלה\n"
-            f"2. או בקש ממנו לשלוח: /start {referral_code}\n"
-            f"3. קבל 10 טוקנים על כל חבר שמצטרף!\n\n"
-            f"💡 **טיפ:** שתף בקבוצות לימוד לקבל יותר הפניות!"
+            f"?? **?????????? ??????:**\n"
+            f"+-- ?? ??????? ??????: **{total_referrals}**\n"
+            f"+-- ?? ?????? ???????: **{format_number(total_referrals * 10)}**\n"
+            f"+-- ?? ??? ???: 5 ????? (50 ??????)\n\n"
+            f"?? **??? ?????? ?????:**\n"
+            f"1. ??? ???? ?? ?????? ?????\n"
+            f"2. ?? ??? ???? ?????: /start {referral_code}\n"
+            f"3. ??? 10 ?????? ?? ?? ??? ??????!\n\n"
+            f"?? **???:** ??? ??????? ????? ???? ???? ??????!"
         )
         
-        # יצירת כפתורי שיתוף
+        # ????? ?????? ?????
         keyboard = [
             [
-                InlineKeyboardButton("📤 שתף קישור", url=f"tg://msg?text={referral_link}"),
-                InlineKeyboardButton("📊 המוזמנים שלי", callback_data="my_referrals")
+                InlineKeyboardButton("?? ??? ?????", url=f"tg://msg?text={referral_link}"),
+                InlineKeyboardButton("?? ???????? ???", callback_data="my_referrals")
             ]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -377,43 +377,43 @@ async def referral(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         
     except Exception as e:
-        logger.error(f"❌ שגיאה בפקודת referral: {e}")
+        logger.error(f"? ????? ?????? referral: {e}")
         await update.message.reply_text(
-            "❌ **שגיאה בהצגת קוד הפניה**\n\n"
-            "אנא נסה שוב מאוחר יותר."
+            "? **????? ????? ??? ?????**\n\n"
+            "??? ??? ??? ????? ????."
         )
 
 async def my_referrals(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """הצגת רשימת המוזמנים של המשתמש"""
+    """???? ????? ???????? ?? ??????"""
     try:
         user = update.effective_user
-        logger.info(f"👥 קבלת /my_referrals ממשתמש: {user.id}")
+        logger.info(f"?? ???? /my_referrals ??????: {user.id}")
         
-        # בדוק אם המשתמש רשום
+        # ???? ?? ?????? ????
         db_user = get_user(user.id)
         if not db_user:
             await update.message.reply_text(
-                "❌ **אתה לא רשום במערכת!**\n\n"
-                "שלח /start כדי להירשם."
+                "? **??? ?? ???? ??????!**\n\n"
+                "??? /start ??? ??????."
             )
             return
         
-        # קבל את המוזמנים
+        # ??? ?? ????????
         referrals = get_referred_users(user.id)
         total_referrals = get_total_referrals(user.id)
         
         if not referrals:
             response = (
-                f"📊 **סטטיסטיקות הפניות של {user.first_name}**\n\n"
-                f"👥 **מוזמנים:** 0\n"
-                f"💰 **טוקנים מהפניות:** 0\n"
-                f"🎯 **יעד הבא:** הזמן חבר אחד (10 טוקנים)\n\n"
-                f"📱 **עדיין לא הזמנת חברים.**\n"
-                f"השתמש ב-/referral כדי לקבל את קוד ההפניה שלך!\n\n"
-                f"💡 כל חבר מזמין שווה 10 טוקנים!"
+                f"?? **?????????? ?????? ?? {user.first_name}**\n\n"
+                f"?? **???????:** 0\n"
+                f"?? **?????? ???????:** 0\n"
+                f"?? **??? ???:** ???? ??? ??? (10 ??????)\n\n"
+                f"?? **????? ?? ????? ?????.**\n"
+                f"????? ?-/referral ??? ???? ?? ??? ?????? ???!\n\n"
+                f"?? ?? ??? ????? ???? 10 ??????!"
             )
         else:
-            # סטטיסטיקות מפורטות
+            # ?????????? ???????
             today = datetime.now().date()
             recent_referrals = 0
             for ref in referrals:
@@ -421,78 +421,78 @@ async def my_referrals(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     recent_referrals += 1
             
             response = (
-                f"📊 **סטטיסטיקות הפניות של {user.first_name}**\n\n"
-                f"👥 **סך הכל מוזמנים:** {total_referrals}\n"
-                f"💰 **טוקנים מהפניות:** {format_number(total_referrals * 10)}\n"
-                f"📈 **הוזמנו היום:** {recent_referrals}\n\n"
-                f"📋 **רשימת המוזמנים:**\n"
+                f"?? **?????????? ?????? ?? {user.first_name}**\n\n"
+                f"?? **?? ??? ???????:** {total_referrals}\n"
+                f"?? **?????? ???????:** {format_number(total_referrals * 10)}\n"
+                f"?? **?????? ????:** {recent_referrals}\n\n"
+                f"?? **????? ????????:**\n"
             )
             
-            # הצגת 5 מוזמנים אחרונים
+            # ???? 5 ??????? ???????
             for i, ref in enumerate(referrals[:5], 1):
-                name = ref.first_name or ref.username or f"משתמש {ref.telegram_id}"
-                ref_date = ref.created_at.strftime('%d/%m/%Y') if ref.created_at else "תאריך לא ידוע"
+                name = ref.first_name or ref.username or f"????? {ref.telegram_id}"
+                ref_date = ref.created_at.strftime('%d/%m/%Y') if ref.created_at else "????? ?? ????"
                 days_ago = ""
                 
                 if ref.created_at:
                     delta = today - ref.created_at.date()
                     if delta.days == 0:
-                        days_ago = "היום"
+                        days_ago = "????"
                     elif delta.days == 1:
-                        days_ago = "אתמול"
+                        days_ago = "?????"
                     else:
-                        days_ago = f"לפני {delta.days} ימים"
+                        days_ago = f"???? {delta.days} ????"
                 
                 response += f"{i}. {name} - {ref_date} ({days_ago})\n"
             
             if len(referrals) > 5:
-                response += f"\n... ועוד {len(referrals) - 5} מוזמנים"
+                response += f"\n... ???? {len(referrals) - 5} ???????"
             
-            response += "\n\n💡 **הזמן עוד חברים וקבל עוד טוקנים!**"
+            response += "\n\n?? **???? ??? ????? ???? ??? ??????!**"
         
         await update.message.reply_text(response, parse_mode='Markdown')
         
     except Exception as e:
-        logger.error(f"❌ שגיאה בפקודת my_referrals: {e}")
+        logger.error(f"? ????? ?????? my_referrals: {e}")
         await update.message.reply_text(
-            "❌ **שגיאה בהצגת המוזמנים**\n\n"
-            "אנא נסה שוב מאוחר יותר."
+            "? **????? ????? ????????**\n\n"
+            "??? ??? ??? ????? ????."
         )
 
 async def leaderboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """טבלת המובילים - המשתמשים עם הכי הרבה טוקנים"""
+    """???? ???????? - ???????? ?? ??? ???? ??????"""
     try:
         user = update.effective_user
-        logger.info(f"🏆 קבלת /leaderboard ממשתמש: {user.id}")
+        logger.info(f"?? ???? /leaderboard ??????: {user.id}")
         
-        # קבל את המובילים (Top 10)
+        # ??? ?? ???????? (Top 10)
         top_users = get_top_users(limit=10, order_by='tokens')
         
         if not top_users:
             response = (
-                "🏆 **טבלת המובילים**\n\n"
-                "אין עדיין נתונים. היה הראשון שצובר טוקנים! 💪\n\n"
-                "🚀 שלח /checkin כדי להתחיל לצבור טוקנים!"
+                "?? **???? ????????**\n\n"
+                "??? ????? ??????. ??? ?????? ????? ??????! ??\n\n"
+                "?? ??? /checkin ??? ?????? ????? ??????!"
             )
         else:
-            response = "🏆 **טבלת המובילים - Top 10**\n\n"
+            response = "?? **???? ???????? - Top 10**\n\n"
             
-            # סמלים לפי מיקום
-            medals = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"]
+            # ????? ??? ?????
+            medals = ["??", "??", "??", "4??", "5??", "6??", "7??", "8??", "9??", "??"]
             
             for i, top_user in enumerate(top_users[:10], 0):
-                name = top_user.first_name or top_user.username or f"משתמש {top_user.telegram_id}"
+                name = top_user.first_name or top_user.username or f"????? {top_user.telegram_id}"
                 
-                # קיצור שם אם ארוך מדי
+                # ????? ?? ?? ???? ???
                 if len(name) > 15:
                     name = name[:12] + "..."
                 
-                # סמל מיוחד אם זה המשתמש הנוכחי
-                user_indicator = " 👈" if top_user.telegram_id == user.id else ""
+                # ??? ????? ?? ?? ?????? ??????
+                user_indicator = " ??" if top_user.telegram_id == user.id else ""
                 
-                response += f"{medals[i] if i < 10 else str(i+1)+'.'} {name}: {format_number(top_user.tokens)} טוקנים{user_indicator}\n"
+                response += f"{medals[i] if i < 10 else str(i+1)+'.'} {name}: {format_number(top_user.tokens)} ??????{user_indicator}\n"
             
-            # הוסף את המיקום של המשתמש הנוכחי
+            # ???? ?? ?????? ?? ?????? ??????
             all_users = get_top_users(limit=100, order_by='tokens')
             user_position = None
             user_tokens = 0
@@ -504,37 +504,37 @@ async def leaderboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     break
             
             if user_position:
-                response += f"\n📊 **המיקום שלך:** #{user_position} עם {format_number(user_tokens)} טוקנים\n"
+                response += f"\n?? **?????? ???:** #{user_position} ?? {format_number(user_tokens)} ??????\n"
                 
-                # הצעה לשיפור מיקום
+                # ???? ?????? ?????
                 if user_position > 10:
-                    users_ahead = all_users[9]  # המשתמש במקום ה-10
+                    users_ahead = all_users[9]  # ?????? ????? ?-10
                     tokens_needed = users_ahead.tokens - user_tokens + 1
-                    response += f"🎯 **ל-Top 10 חסרים:** {format_number(tokens_needed)} טוקנים\n"
+                    response += f"?? **?-Top 10 ?????:** {format_number(tokens_needed)} ??????\n"
             
-            response += "\n💪 **התחרה עם החברים וטפס למעלה!**"
+            response += "\n?? **????? ?? ?????? ???? ?????!**"
         
         await update.message.reply_text(response, parse_mode='Markdown')
         
     except Exception as e:
-        logger.error(f"❌ שגיאה בפקודת leaderboard: {e}")
+        logger.error(f"? ????? ?????? leaderboard: {e}")
         await update.message.reply_text(
-            "❌ **שגיאה בטבלת המובילים**\n\n"
-            "אנא נסה שוב מאוחר יותר."
+            "? **????? ????? ????????**\n\n"
+            "??? ??? ??? ????? ????."
         )
 
 async def level(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """הצגת הרמה וההתקדמות של המשתמש"""
+    """???? ???? ????????? ?? ??????"""
     try:
         user = update.effective_user
-        logger.info(f"🏅 קבלת /level ממשתמש: {user.id}")
+        logger.info(f"?? ???? /level ??????: {user.id}")
         
-        # בדוק אם המשתמש רשום
+        # ???? ?? ?????? ????
         db_user = get_user(user.id)
         if not db_user:
             await update.message.reply_text(
-                "❌ **אתה לא רשום במערכת!**\n\n"
-                "שלח /start כדי להירשם."
+                "? **??? ?? ???? ??????!**\n\n"
+                "??? /start ??? ??????."
             )
             return
         
@@ -542,74 +542,74 @@ async def level(update: Update, context: ContextTypes.DEFAULT_TYPE):
         level, progress, total, next_level = get_level_progress(balance)
         progress_bar = create_progress_bar(progress, total)
         
-        # קבל מידע על הרמה
+        # ??? ???? ?? ????
         level_info = get_level_info(level)
         next_level_info = get_level_info(level + 1) if level < 10 else None
         
-        # סטטיסטיקות נוספות
+        # ?????????? ??????
         total_users = get_system_stats().get('total_users', 0)
         activity_today = get_activity_count()
         streak_days = getattr(db_user, 'current_streak', 0) or 0
         
         response = (
-            f"🏆 **פרופיל משתמש - {user.first_name}**\n\n"
-            f"📊 **נתונים כלליים:**\n"
-            f"└── 💰 טוקנים: **{format_number(balance)}**\n"
-            f"└── 🏅 רמה נוכחית: **{level}**\n"
-            f"└── 🔥 רצף יומי: **{streak_days} ימים**\n\n"
-            f"📈 **התקדמות ברמה:**\n"
-            f"└── {progress_bar}\n"
-            f"└── 📊 התקדמות: {progress}/{total} טוקנים\n"
-            f"└── 🎯 עד לרמה {level+1}: {next_level - balance} טוקנים\n\n"
+            f"?? **?????? ????? - {user.first_name}**\n\n"
+            f"?? **?????? ??????:**\n"
+            f"+-- ?? ??????: **{format_number(balance)}**\n"
+            f"+-- ?? ??? ??????: **{level}**\n"
+            f"+-- ?? ??? ????: **{streak_days} ????**\n\n"
+            f"?? **??????? ????:**\n"
+            f"+-- {progress_bar}\n"
+            f"+-- ?? ???????: {progress}/{total} ??????\n"
+            f"+-- ?? ?? ???? {level+1}: {next_level - balance} ??????\n\n"
         )
         
-        # תיאור הרמה הנוכחית
+        # ????? ???? ???????
         if level_info:
-            response += f"📋 **רמה {level}:** {level_info.get('description', '')}\n\n"
+            response += f"?? **??? {level}:** {level_info.get('description', '')}\n\n"
         
-        # מידע על הרמה הבאה
+        # ???? ?? ???? ????
         if next_level_info:
-            response += f"🚀 **רמה {level+1}:** {next_level_info.get('description', '')}\n\n"
+            response += f"?? **??? {level+1}:** {next_level_info.get('description', '')}\n\n"
         
-        # הוסף מוטיבציה לפי הרמה
+        # ???? ???????? ??? ????
         if level < 3:
-            response += "🌱 **מתחיל** - עבודה טובה! כל יום צ'ק-אין מקרב אותך לרמה הבאה.\n"
+            response += "?? **?????** - ????? ????! ?? ??? ?'?-??? ???? ???? ???? ????.\n"
         elif level < 6:
-            response += "🚀 **מתקדם** - מעולה! אתה בדרך להצלחה.\n"
+            response += "?? **?????** - ?????! ??? ???? ??????.\n"
         elif level < 9:
-            response += "💎 **מנוסה** - מדהים! אתה אחד המובילים.\n"
+            response += "?? **?????** - ?????! ??? ??? ????????.\n"
         else:
-            response += "👑 **אלוף** - פנטסטי! אתה בפסגה.\n"
+            response += "?? **????** - ??????! ??? ?????.\n"
         
         response += (
-            f"\n📊 **סטטיסטיקות מערכת:**\n"
-            f"└── 👥 משתמשים רשומים: {format_number(total_users)}\n"
-            f"└── 📈 פעילים היום: {activity_today}\n"
-            f"└── 🏆 המיקום שלך: #{get_user_rank(user.id)}\n\n"
-            f"💪 **השתמש ב-/checkin כל יום כדי להתקדם!**"
+            f"\n?? **?????????? ?????:**\n"
+            f"+-- ?? ??????? ??????: {format_number(total_users)}\n"
+            f"+-- ?? ?????? ????: {activity_today}\n"
+            f"+-- ?? ?????? ???: #{get_user_rank(user.id)}\n\n"
+            f"?? **????? ?-/checkin ?? ??? ??? ??????!**"
         )
         
         await update.message.reply_text(response, parse_mode='Markdown')
         
     except Exception as e:
-        logger.error(f"❌ שגיאה בפקודת level: {e}")
+        logger.error(f"? ????? ?????? level: {e}")
         await update.message.reply_text(
-            "❌ **שגיאה בהצגת הרמה**\n\n"
-            "אנא נסה שוב מאוחר יותר."
+            "? **????? ????? ????**\n\n"
+            "??? ??? ??? ????? ????."
         )
 
 async def profile(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """הצגת פרופיל מלא של המשתמש"""
+    """???? ?????? ??? ?? ??????"""
     try:
         user = update.effective_user
-        logger.info(f"👤 קבלת /profile ממשתמש: {user.id}")
+        logger.info(f"?? ???? /profile ??????: {user.id}")
         
-        # בדוק אם המשתמש רשום
+        # ???? ?? ?????? ????
         db_user = get_user(user.id)
         if not db_user:
             await update.message.reply_text(
-                "❌ **אתה לא רשום במערכת!**\n\n"
-                "שלח /start כדי להירשם."
+                "? **??? ?? ???? ??????!**\n\n"
+                "??? /start ??? ??????."
             )
             return
         
@@ -618,101 +618,101 @@ async def profile(update: Update, context: ContextTypes.DEFAULT_TYPE):
         total_referrals = get_total_referrals(user.id)
         streak_days = getattr(db_user, 'current_streak', 0) or 0
         
-        # היסטוריית נוכחות (7 ימים אחרונים)
+        # ????????? ?????? (7 ???? ???????)
         attendance_history = get_user_attendance_history(user.id, 7)
         
         response = (
-            f"👤 **פרופיל משתמש מלא**\n\n"
-            f"**👤 פרטים אישיים:**\n"
-            f"└── שם: {user.first_name}\n"
-            f"└── משתמש: @{user.username or 'ללא'}\n"
-            f"└── 🆔 מזהה: {user.id}\n"
-            f"└── 📅 הצטרף: {db_user.created_at.strftime('%d/%m/%Y')}\n\n"
+            f"?? **?????? ????? ???**\n\n"
+            f"**?? ????? ??????:**\n"
+            f"+-- ??: {user.first_name}\n"
+            f"+-- ?????: @{user.username or '???'}\n"
+            f"+-- ?? ????: {user.id}\n"
+            f"+-- ?? ?????: {db_user.created_at.strftime('%d/%m/%Y')}\n\n"
             
-            f"**💰 כלכלה:**\n"
-            f"└── 🪙 טוקנים: {format_number(balance)}\n"
-            f"└── 🏅 רמה: {level}\n"
-            f"└── 📊 התקדמות: {progress}/{total} טוקנים\n"
-            f"└── 🔥 רצף יומי: {streak_days} ימים\n\n"
+            f"**?? ?????:**\n"
+            f"+-- ?? ??????: {format_number(balance)}\n"
+            f"+-- ?? ???: {level}\n"
+            f"+-- ?? ???????: {progress}/{total} ??????\n"
+            f"+-- ?? ??? ????: {streak_days} ????\n\n"
             
-            f"**👥 רשת:**\n"
-            f"└── 👥 מוזמנים: {total_referrals}\n"
-            f"└── 💰 טוקנים מהפניות: {format_number(total_referrals * 10)}\n"
-            f"└── 🔗 קוד הפניה: `{db_user.referral_code}`\n\n"
+            f"**?? ???:**\n"
+            f"+-- ?? ???????: {total_referrals}\n"
+            f"+-- ?? ?????? ???????: {format_number(total_referrals * 10)}\n"
+            f"+-- ?? ??? ?????: `{db_user.referral_code}`\n\n"
         )
         
-        # היסטוריית נוכחות
+        # ????????? ??????
         if attendance_history:
-            response += "**📅 נוכחות 7 ימים אחרונים:**\n"
+            response += "**?? ?????? 7 ???? ???????:**\n"
             for record in attendance_history:
                 date_str = record['date'].strftime('%d/%m') if isinstance(record['date'], datetime) else record['date']
                 day_name = get_day_name(record['date'].strftime('%Y-%m-%d') if isinstance(record['date'], datetime) else record['date'])
-                checkin_status = "✅" if record['checked_in'] else "❌"
-                response += f"└── {day_name} ({date_str}): {checkin_status}\n"
+                checkin_status = "?" if record['checked_in'] else "?"
+                response += f"+-- {day_name} ({date_str}): {checkin_status}\n"
         else:
-            response += "**📅 נוכחות:** אין היסטוריה זמינה\n"
+            response += "**?? ??????:** ??? ???????? ?????\n"
         
-        response += "\n💡 **השתמש ב-/checkin כל יום כדי לשפר את הפרופיל שלך!**"
+        response += "\n?? **????? ?-/checkin ?? ??? ??? ???? ?? ??????? ???!**"
         
         await update.message.reply_text(response, parse_mode='Markdown')
         
     except Exception as e:
-        logger.error(f"❌ שגיאה בפקודת profile: {e}")
+        logger.error(f"? ????? ?????? profile: {e}")
         await update.message.reply_text(
-            "❌ **שגיאה בהצגת פרופיל**\n\n"
-            "אנא נסה שוב מאוחר יותר."
+            "? **????? ????? ??????**\n\n"
+            "??? ??? ??? ????? ????."
         )
 
 async def tasks(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """הצגת המשימות הזמינות"""
+    """???? ??????? ???????"""
     try:
         user = update.effective_user
-        logger.info(f"📋 קבלת /tasks ממשתמש: {user.id}")
+        logger.info(f"?? ???? /tasks ??????: {user.id}")
         
-        # בדוק אם המשתמש רשום
+        # ???? ?? ?????? ????
         db_user = get_user(user.id)
         if not db_user:
             await update.message.reply_text(
-                "❌ **אתה לא רשום במערכת!**\n\n"
-                "שלח /start כדי להירשם."
+                "? **??? ?? ???? ??????!**\n\n"
+                "??? /start ??? ??????."
             )
             return
         
-        # קבל משימות זמינות
+        # ??? ?????? ??????
         available_tasks = get_available_tasks(user.id)
         
         if not available_tasks:
             response = (
-                "📋 **משימות זמינות**\n\n"
-                "כרגע אין משימות זמינות.\n\n"
-                "💡 **משימות יומיות אוטומטיות:**\n"
-                "└── 📅 צ'ק-אין יומי - 1 טוקן\n"
-                "└── 🔥 7 ימים רצופים - 10 טוקנים\n"
-                "└── 🗓️ 30 ימים רצופים - 50 טוקנים\n\n"
-                "🔔 משימות חדשות יופיעו כאן בקרוב!"
+                "?? **?????? ??????**\n\n"
+                "???? ??? ?????? ??????.\n\n"
+                "?? **?????? ?????? ?????????:**\n"
+                "+-- ?? ?'?-??? ???? - 1 ????\n"
+                "+-- ?? 7 ???? ?????? - 10 ??????\n"
+                "+-- ??? 30 ???? ?????? - 50 ??????\n\n"
+                "?? ?????? ????? ?????? ??? ?????!"
             )
         else:
-            response = "📋 **משימות זמינות**\n\n"
+            response = "?? **?????? ??????**\n\n"
             
             for i, task in enumerate(available_tasks[:5], 1):
-                task_name = task.get('name', 'משימה')
+                task_name = task.get('name', '?????')
                 task_reward = task.get('reward', 0)
                 task_description = task.get('description', '')
                 
                 response += f"{i}. **{task_name}**\n"
-                response += f"   └── 🎁 פרס: {task_reward} טוקנים\n"
-                response += f"   └── 📝 {task_description}\n\n"
+                response += f"   +-- ?? ???: {task_reward} ??????\n"
+                response += f"   +-- ?? {task_description}\n\n"
             
             if len(available_tasks) > 5:
-                response += f"... ועוד {len(available_tasks) - 5} משימות\n\n"
+                response += f"... ???? {len(available_tasks) - 5} ??????\n\n"
             
-            response += "💡 **בצע משימות וקבל טוקנים נוספים!**"
+            response += "?? **??? ?????? ???? ?????? ??????!**"
         
-        # כפתורים לניהול משימות
+        # ??????? ?????? ??????
         keyboard = [
             [
-                InlineKeyboardButton("✅ סיימתי משימה", callback_data="complete_task"),
-                InlineKeyboardButton("📊 משימות שלי", callback_data="my_tasks")
+                InlineKeyboardButton("? ?????? ?????", callback_data="complete_task"),
+                InlineKeyboardButton("?? ?????? ???", callback_data="my_tasks")
             ]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -724,132 +724,132 @@ async def tasks(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         
     except Exception as e:
-        logger.error(f"❌ שגיאה בפקודת tasks: {e}")
+        logger.error(f"? ????? ?????? tasks: {e}")
         await update.message.reply_text(
-            "❌ **שגיאה בהצגת משימות**\n\n"
-            "אנא נסה שוב מאוחר יותר."
+            "? **????? ????? ??????**\n\n"
+            "??? ??? ??? ????? ????."
         )
 
 async def contact(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """הצגת פרטי קשר עם המנהל"""
+    """???? ???? ??? ?? ?????"""
     try:
         response = (
-            f"📞 **צור קשר עם המנהל**\n\n"
-            f"**👤 פרטי מנהל:**\n"
-            f"└── שם: {ADMIN_INFO['name']}\n"
-            f"└── 📱 טלגרם: {ADMIN_INFO['telegram']}\n"
-            f"└── 📞 טלפון: {ADMIN_INFO['phone']}\n"
-            f"└── 📧 אימייל: {ADMIN_INFO['email']}\n\n"
+            f"?? **??? ??? ?? ?????**\n\n"
+            f"**?? ???? ????:**\n"
+            f"+-- ??: {ADMIN_INFO['name']}\n"
+            f"+-- ?? ?????: {ADMIN_INFO['telegram']}\n"
+            f"+-- ?? ?????: {ADMIN_INFO['phone']}\n"
+            f"+-- ?? ??????: {ADMIN_INFO['email']}\n\n"
             
-            f"**🕒 זמני תגובה:**\n"
-            f"└── {ADMIN_INFO['response_time']}\n\n"
+            f"**?? ???? ?????:**\n"
+            f"+-- {ADMIN_INFO['response_time']}\n\n"
             
-            f"**💬 ניתן לפנות בנושאים:**\n"
-            f"• 🛠️ תמיכה טכנית\n"
-            f"• ❓ שאלות על המערכת\n"
-            f"• 💡 הצעות לשיפור\n"
-            f"• 🐛 דיווח על בעיות\n"
-            f"• 🤝 שיתופי פעולה\n\n"
+            f"**?? ???? ????? ???????:**\n"
+            f"� ??? ????? ?????\n"
+            f"� ? ????? ?? ??????\n"
+            f"� ?? ????? ??????\n"
+            f"� ?? ????? ?? ?????\n"
+            f"� ?? ?????? ?????\n\n"
             
-            f"**✉️ נשמח לעזור בכל שאלה!**\n\n"
-            f"📧 **דרכי התקשרות מועדפות:**\n"
-            f"1. הודעה פרטית בטלגרם\n"
-            f"2. שיחת טלפון\n"
-            f"3. אימייל"
+            f"**?? ???? ????? ??? ????!**\n\n"
+            f"?? **???? ??????? ???????:**\n"
+            f"1. ????? ????? ??????\n"
+            f"2. ???? ?????\n"
+            f"3. ??????"
         )
         
         await update.message.reply_text(response, parse_mode='Markdown')
         
     except Exception as e:
-        logger.error(f"❌ שגיאה בפקודת contact: {e}")
+        logger.error(f"? ????? ?????? contact: {e}")
         await update.message.reply_text(
-            "❌ **שגיאה בהצגת פרטי קשר**\n\n"
-            "אנא נסה שוב מאוחר יותר."
+            "? **????? ????? ???? ???**\n\n"
+            "??? ??? ??? ????? ????."
         )
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """הצגת הודעת עזרה עם כל הפקודות"""
+    """???? ????? ???? ?? ?? ???????"""
     try:
         response = (
-            f"🆘 **עזרה והדרכה - Crypto-Class**\n\n"
+            f"?? **???? ?????? - Crypto-Class**\n\n"
             
-            f"**📚 רשימת הפקודות המלאה:**\n\n"
+            f"**?? ????? ??????? ?????:**\n\n"
             
-            f"**👤 פקודות בסיסיות:**\n"
-            f"└── /start - הרשמה והתחלת שימוש\n"
-            f"└── /help - תפריט זה\n"
-            f"└── /contact - פרטי קשר עם מנהל\n\n"
+            f"**?? ?????? ???????:**\n"
+            f"+-- /start - ????? ?????? ?????\n"
+            f"+-- /help - ????? ??\n"
+            f"+-- /contact - ???? ??? ?? ????\n\n"
             
-            f"**💰 כלכלת טוקנים:**\n"
-            f"└── /checkin - צ'ק-אין יומי (טוקן + בונוסים)\n"
-            f"└── /balance - הצגת יתרת טוקנים\n"
-            f"└── /level - הרמה וההתקדמות שלך\n"
-            f"└── /profile - פרופיל משתמש מלא\n\n"
+            f"**?? ????? ??????:**\n"
+            f"+-- /checkin - ?'?-??? ???? (???? + ???????)\n"
+            f"+-- /balance - ???? ???? ??????\n"
+            f"+-- /level - ???? ????????? ???\n"
+            f"+-- /profile - ?????? ????? ???\n\n"
             
-            f"**👥 רשת והפניות:**\n"
-            f"└── /referral - קוד ההפניה שלך\n"
-            f"└── /my_referrals - המוזמנים שלך\n\n"
+            f"**?? ??? ???????:**\n"
+            f"+-- /referral - ??? ?????? ???\n"
+            f"+-- /my_referrals - ???????? ???\n\n"
             
-            f"**🏆 תחרות ולידרבורד:**\n"
-            f"└── /leaderboard - טבלת המובילים\n"
-            f"└── /stats - סטטיסטיקות מערכת\n\n"
+            f"**?? ????? ?????????:**\n"
+            f"+-- /leaderboard - ???? ????????\n"
+            f"+-- /stats - ?????????? ?????\n\n"
             
-            f"**📋 משימות:**\n"
-            f"└── /tasks - משימות זמינות\n\n"
+            f"**?? ??????:**\n"
+            f"+-- /tasks - ?????? ??????\n\n"
             
-            f"**🌐 אתר המערכת:**\n"
-            f"└── /website - קישור לאתר\n\n"
+            f"**?? ??? ??????:**\n"
+            f"+-- /website - ????? ????\n\n"
             
-            f"**🎯 איך להצליח במערכת:**\n"
-            f"1. שלח /start כדי להירשם\n"
-            f"2. שלח /checkin כל יום (רצף=בונוסים)\n"
-            f"3. הזמן חברים עם /referral\n"
-            f"4. עקוב אחר ההתקדמות עם /level\n"
-            f"5. תחרה עם אחרים ב-/leaderboard\n\n"
+            f"**?? ??? ?????? ??????:**\n"
+            f"1. ??? /start ??? ??????\n"
+            f"2. ??? /checkin ?? ??? (???=???????)\n"
+            f"3. ???? ????? ?? /referral\n"
+            f"4. ???? ??? ???????? ?? /level\n"
+            f"5. ???? ?? ????? ?-/leaderboard\n\n"
             
-            f"**💰 מערכת הטוקנים:**\n"
-            f"└── צ'ק-אין יומי: 1 טוקן\n"
-            f"└── הזמנת חבר: 10 טוקנים\n"
-            f"└── רצף 7 ימים: 10 טוקנים\n"
-            f"└── רצף 30 ימים: 50 טוקנים\n\n"
+            f"**?? ????? ???????:**\n"
+            f"+-- ?'?-??? ????: 1 ????\n"
+            f"+-- ????? ???: 10 ??????\n"
+            f"+-- ??? 7 ????: 10 ??????\n"
+            f"+-- ??? 30 ????: 50 ??????\n\n"
             
-            f"**❓ בעיות טכניות?** שלח /contact"
+            f"**? ????? ???????** ??? /contact"
         )
         
         await update.message.reply_text(response, parse_mode='Markdown')
         
     except Exception as e:
-        logger.error(f"❌ שגיאה בפקודת help: {e}")
+        logger.error(f"? ????? ?????? help: {e}")
         await update.message.reply_text(
-            "❌ **שגיאה בהצגת עזרה**\n\n"
-            "אנא נסה שוב מאוחר יותר."
+            "? **????? ????? ????**\n\n"
+            "??? ??? ??? ????? ????."
         )
 
 async def website(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """שליחת קישור לאתר המערכת"""
+    """????? ????? ???? ??????"""
     try:
         web_url = "https://school-production-4d9d.up.railway.app"
         
         response = (
-            f"🌐 **אתר המערכת - Crypto-Class**\n\n"
+            f"?? **??? ?????? - Crypto-Class**\n\n"
             
-            f"**🔗 קישור לאתר:**\n"
+            f"**?? ????? ????:**\n"
             f"{web_url}\n\n"
             
-            f"**📊 באתר תוכל למצוא:**\n"
-            f"• 📈 סטטיסטיקות מערכת בזמן אמת\n"
-            f"• 🏆 טבלאות מובילים מפורטות\n"
-            f"• 👨‍🏫 דשבורד ניהול למורים\n"
-            f"• 💪 בדיקת בריאות המערכת\n"
-            f"• 📊 גרפים ומגמות\n"
-            f"• 🔍 חיפוש משתמשים מתקדם\n\n"
+            f"**?? ???? ???? ?????:**\n"
+            f"� ?? ?????????? ????? ???? ???\n"
+            f"� ?? ?????? ??????? ???????\n"
+            f"� ????? ?????? ????? ??????\n"
+            f"� ?? ????? ?????? ??????\n"
+            f"� ?? ????? ??????\n"
+            f"� ?? ????? ??????? ?????\n\n"
             
-            f"**💻 גש לאתר למידע נוסף!**\n\n"
-            f"💡 האתר מעודכן בזמן אמת עם הנתונים מהבוט."
+            f"**?? ?? ???? ????? ????!**\n\n"
+            f"?? ???? ?????? ???? ??? ?? ??????? ?????."
         )
         
-        # כפתור לקישור ישיר
-        keyboard = [[InlineKeyboardButton("🌐 כניסה לאתר", url=web_url)]]
+        # ????? ?????? ????
+        keyboard = [[InlineKeyboardButton("?? ????? ????", url=web_url)]]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
         await update.message.reply_text(
@@ -859,168 +859,168 @@ async def website(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         
     except Exception as e:
-        logger.error(f"❌ שגיאה בפקודת website: {e}")
+        logger.error(f"? ????? ?????? website: {e}")
         await update.message.reply_text(
-            "❌ **שגיאה בהצגת קישור לאתר**\n\n"
-            "אנא נסה שוב מאוחר יותר."
+            "? **????? ????? ????? ????**\n\n"
+            "??? ??? ??? ????? ????."
         )
 
-# ========== פקודות מנהל ==========
+# ========== ?????? ???? ==========
 
 async def admin_panel(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """פאנל ניהול למערכת (למנהל בלבד)"""
+    """???? ????? ?????? (????? ????)"""
     try:
         user = update.effective_user
         
-        # בדוק אם המשתמש הוא מנהל
-        if str(user.id) != "224223270":  # החלף במזהה הטלגרם שלך
+        # ???? ?? ?????? ??? ????
+        if str(user.id) != "224223270":  # ???? ????? ?????? ???
             await update.message.reply_text(
-                "❌ **גישה נדחתה**\n\n"
-                "רק מנהל המערכת יכול לגשת לפאנל זה."
+                "? **???? ?????**\n\n"
+                "?? ???? ?????? ???? ???? ????? ??."
             )
             return
         
-        logger.info(f"🔧 מנהל נכנס לפאנל: {user.id}")
+        logger.info(f"?? ???? ???? ?????: {user.id}")
         
-        # קבל סטטיסטיקות מערכת
+        # ??? ?????????? ?????
         stats = get_system_stats()
         today_stats = get_today_stats()
         
         response = (
-            f"🔧 **פאנל ניהול - Crypto-Class**\n\n"
+            f"?? **???? ????? - Crypto-Class**\n\n"
             
-            f"**📊 סטטיסטיקות מערכת:**\n"
-            f"└── 👥 משתמשים: {stats.get('total_users', 0)}\n"
-            f"└── 💰 טוקנים כוללים: {format_number(stats.get('total_tokens', 0))}\n"
-            f"└── 📈 פעילים היום: {today_stats.get('active_users', 0)}\n"
-            f"└── 🔥 צ'ק-אין היום: {today_stats.get('checkins_today', 0)}\n\n"
+            f"**?? ?????????? ?????:**\n"
+            f"+-- ?? ???????: {stats.get('total_users', 0)}\n"
+            f"+-- ?? ?????? ??????: {format_number(stats.get('total_tokens', 0))}\n"
+            f"+-- ?? ?????? ????: {today_stats.get('active_users', 0)}\n"
+            f"+-- ?? ?'?-??? ????: {today_stats.get('checkins_today', 0)}\n\n"
             
-            f"**⚡ פקודות ניהול:**\n"
-            f"└── /add_tokens - הוספת טוקנים למשתמש\n"
-            f"└── /reset_checkin - איפוס צ'ק-אין למשתמש\n"
-            f"└── /system_stats - סטטיסטיקות מפורטות\n"
-            f"└── /broadcast - שליחת הודעה לכל המשתמשים\n\n"
+            f"**? ?????? ?????:**\n"
+            f"+-- /add_tokens - ????? ?????? ??????\n"
+            f"+-- /reset_checkin - ????? ?'?-??? ??????\n"
+            f"+-- /system_stats - ?????????? ???????\n"
+            f"+-- /broadcast - ????? ????? ??? ????????\n\n"
             
-            f"**🔍 ניטור:**\n"
-            f"└── /user_info - מידע על משתמש ספציפי\n"
-            f"└── /recent_activity - פעילות אחרונה\n"
-            f"└── /top_referrers - המובילים בהפניות\n\n"
+            f"**?? ?????:**\n"
+            f"+-- /user_info - ???? ?? ????? ??????\n"
+            f"+-- /recent_activity - ?????? ??????\n"
+            f"+-- /top_referrers - ???????? ???????\n\n"
             
-            f"💡 השתמש בפקודות לעיל לניהול המערכת."
+            f"?? ????? ??????? ???? ?????? ??????."
         )
         
         await update.message.reply_text(response, parse_mode='Markdown')
         
     except Exception as e:
-        logger.error(f"❌ שגיאה בפקודת admin: {e}")
+        logger.error(f"? ????? ?????? admin: {e}")
         await update.message.reply_text(
-            "❌ **שגיאה בפאנל ניהול**\n\n"
-            "אנא נסה שוב מאוחר יותר."
+            "? **????? ????? ?????**\n\n"
+            "??? ??? ??? ????? ????."
         )
 
 async def add_tokens(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """הוספת טוקנים למשתמש (למנהל בלבד)"""
+    """????? ?????? ?????? (????? ????)"""
     try:
         user = update.effective_user
         
-        # בדוק אם המשתמש הוא מנהל
+        # ???? ?? ?????? ??? ????
         if str(user.id) != "224223270":
-            await update.message.reply_text("❌ גישה נדחתה")
+            await update.message.reply_text("? ???? ?????")
             return
         
-        # בדוק פרמטרים
+        # ???? ???????
         if len(context.args) < 2:
             await update.message.reply_text(
-                "**❌ שימוש לא נכון:**\n"
-                "השתמש: /add_tokens [user_id] [amount]\n\n"
-                "**דוגמה:** /add_tokens 123456 100"
+                "**? ????? ?? ????:**\n"
+                "?????: /add_tokens [user_id] [amount]\n\n"
+                "**?????:** /add_tokens 123456 100"
             )
             return
         
         user_id = int(context.args[0])
         amount = int(context.args[1])
         
-        # הוסף טוקנים
+        # ???? ??????
         success, message = add_tokens_to_user(user_id, amount)
         
         if success:
             response = (
-                f"✅ **טוקנים נוספו בהצלחה!**\n\n"
-                f"**📝 פרטים:**\n"
-                f"└── 🆔 מזהה משתמש: {user_id}\n"
-                f"└── 💰 כמות טוקנים: {amount}\n"
-                f"└── 📅 תאריך: {datetime.now().strftime('%d/%m/%Y %H:%M')}\n\n"
+                f"? **?????? ????? ??????!**\n\n"
+                f"**?? ?????:**\n"
+                f"+-- ?? ???? ?????: {user_id}\n"
+                f"+-- ?? ???? ??????: {amount}\n"
+                f"+-- ?? ?????: {datetime.now().strftime('%d/%m/%Y %H:%M')}\n\n"
                 f"{message}"
             )
         else:
-            response = f"❌ **שגיאה:** {message}"
+            response = f"? **?????:** {message}"
         
         await update.message.reply_text(response, parse_mode='Markdown')
         
     except Exception as e:
-        logger.error(f"❌ שגיאה בפקודת add_tokens: {e}")
-        await update.message.reply_text("❌ שגיאה בהוספת טוקנים")
+        logger.error(f"? ????? ?????? add_tokens: {e}")
+        await update.message.reply_text("? ????? ?????? ??????")
 
 async def reset_checkin(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """איפוס צ'ק-אין למשתמש (למנהל בלבד)"""
+    """????? ?'?-??? ?????? (????? ????)"""
     try:
         user = update.effective_user
         
-        # בדוק אם המשתמש הוא מנהל
+        # ???? ?? ?????? ??? ????
         if str(user.id) != "224223270":
-            await update.message.reply_text("❌ גישה נדחתה")
+            await update.message.reply_text("? ???? ?????")
             return
         
-        # בדוק פרמטרים
+        # ???? ???????
         if not context.args:
             await update.message.reply_text(
-                "**❌ שימוש לא נכון:**\n"
-                "השתמש: /reset_checkin [user_id]\n\n"
-                "**דוגמה:** /reset_checkin 123456"
+                "**? ????? ?? ????:**\n"
+                "?????: /reset_checkin [user_id]\n\n"
+                "**?????:** /reset_checkin 123456"
             )
             return
         
         user_id = int(context.args[0])
         
-        # אפס צ'ק-אין
+        # ??? ?'?-???
         success, message = reset_user_checkin(user_id)
         
         if success:
             response = (
-                f"✅ **צ'ק-אין אופס בהצלחה!**\n\n"
-                f"**📝 פרטים:**\n"
-                f"└── 🆔 מזהה משתמש: {user_id}\n"
-                f"└── 📅 תאריך: {datetime.now().strftime('%d/%m/%Y %H:%M')}\n\n"
+                f"? **?'?-??? ???? ??????!**\n\n"
+                f"**?? ?????:**\n"
+                f"+-- ?? ???? ?????: {user_id}\n"
+                f"+-- ?? ?????: {datetime.now().strftime('%d/%m/%Y %H:%M')}\n\n"
                 f"{message}"
             )
         else:
-            response = f"❌ **שגיאה:** {message}"
+            response = f"? **?????:** {message}"
         
         await update.message.reply_text(response, parse_mode='Markdown')
         
     except Exception as e:
-        logger.error(f"❌ שגיאה בפקודת reset_checkin: {e}")
-        await update.message.reply_text("❌ שגיאה באיפוס צ'ק-אין")
+        logger.error(f"? ????? ?????? reset_checkin: {e}")
+        await update.message.reply_text("? ????? ?????? ?'?-???")
 
-# ========== פונקציות עזר נוספות ==========
+# ========== ???????? ??? ?????? ==========
 
 def get_user_by_referral_code(referral_code: str):
-    """מציאת משתמש לפי קוד הפניה"""
+    """????? ????? ??? ??? ?????"""
     from database.queries import get_user_by_referral_code as db_query
     return db_query(referral_code)
 
 def get_user_rank(user_id: int) -> int:
-    """קבלת מיקום המשתמש בטבלת המובילים"""
+    """???? ????? ?????? ????? ????????"""
     all_users = get_top_users(limit=1000, order_by='tokens')
     for i, user in enumerate(all_users, 1):
         if user.telegram_id == user_id:
             return i
     return 0
 
-# ========== פונקציות לטיפול בבקשות ==========
+# ========== ???????? ?????? ?????? ==========
 
 async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """טיפול בבקשות callback"""
+    """????? ?????? callback"""
     try:
         query = update.callback_query
         await query.answer()
@@ -1031,25 +1031,26 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
             await my_referrals(update, context)
         elif data == "complete_task":
             await query.edit_message_text(
-                "📝 **שלח את פרטי המשימה שביצעת:**\n\n"
-                "• שם המשימה\n"
-                • תיאור קצר\n"
-                • הוכחה (קישור/תמונה)",
+                "?? **??? ?? ???? ?????? ??????:**\n\n"
+                "� ?? ??????\n"
+                � ????? ???\n"
+                � ????? (?????/?????)",
                 parse_mode='Markdown'
             )
         elif data == "my_tasks":
             await query.edit_message_text(
-                "📋 **משימות שביצעת:**\n\n"
-                "כרגע אין מידע על משימות שבוצעו.\n\n"
-                "💡 בצע משימות חדשות דרך /tasks",
+                "?? **?????? ??????:**\n\n"
+                "???? ??? ???? ?? ?????? ??????.\n\n"
+                "?? ??? ?????? ????? ??? /tasks",
                 parse_mode='Markdown'
             )
             
     except Exception as e:
-        logger.error(f"❌ שגיאה ב-callback: {e}")
+        logger.error(f"? ????? ?-callback: {e}")
 
-# ========== אתחול לוגר ==========
+# ========== ????? ???? ==========
 if __name__ == "__main__":
-    print("✅ קובץ commands.py נטען בהצלחה")
-    print(f"📁 פקודות זמינות: {[func for func in dir() if not func.startswith('_')]}")
+    print("? ???? commands.py ???? ??????")
+    print(f"?? ?????? ??????: {[func for func in dir() if not func.startswith('_')]}")
+
 

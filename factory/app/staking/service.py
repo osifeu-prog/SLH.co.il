@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from datetime import datetime, timezone
 from sqlalchemy import text
 
@@ -60,5 +60,6 @@ def accrue_position(db, position, pool, now=None):
     })
 
     return reward
+
 
 

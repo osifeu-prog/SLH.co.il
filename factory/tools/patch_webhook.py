@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from pathlib import Path
 import re
 
@@ -47,7 +47,7 @@ async def telegram_webhook(request: Request, background: BackgroundTasks):
         async def _send():
             try:
                 if text.startswith("/start"):
-                    reply = "✅ BOT_FACTORY online. (/start OK)"
+                    reply = "? BOT_FACTORY online. (/start OK)"
                 elif text.startswith("/chatid"):
                     reply = f"chat_id = {chat_id}"
                 else:
@@ -68,4 +68,5 @@ t2 = t[:m.start()] + replacement + t[m.end():]
 t2 = t2.replace("\r\n", "\n").replace("\r", "\n")
 p.write_text(t2, encoding="utf-8", newline="\n")
 print("OK: webhook now replies to /start and /chatid (async)")
+
 

@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>דשבורד מורה - Crypto-Class</title>
+    <title>?????? ???? - Crypto-Class</title>
     <link rel="stylesheet" href="/static/css/style.css">
     <style>
         .teacher-header {
@@ -199,58 +199,58 @@
     <div class="teacher-header">
         <div class="container">
             <div class="teacher-nav">
-                <h1>👨‍🏫 דשבורד מורה - Crypto-Class</h1>
+                <h1>????? ?????? ???? - Crypto-Class</h1>
                 <div class="nav-links">
-                    <a href="/teacher" class="nav-link">🏠 דשבורד</a>
-                    <a href="/teacher/users" class="nav-link">👥 משתמשים</a>
-                    <a href="/" class="nav-link">🌐 אתר ראשי</a>
-                    <a href="/teacher/logout" class="logout-btn">🚪 יציאה</a>
+                    <a href="/teacher" class="nav-link">?? ??????</a>
+                    <a href="/teacher/users" class="nav-link">?? ???????</a>
+                    <a href="/" class="nav-link">?? ??? ????</a>
+                    <a href="/teacher/logout" class="logout-btn">?? ?????</a>
                 </div>
             </div>
             
-            <p>ניהול כיתה מתקדם מבוסס טוקנים</p>
+            <p>????? ???? ????? ????? ??????</p>
         </div>
     </div>
     
     <div class="container">
-        <!-- סטטיסטיקות מהירות -->
+        <!-- ?????????? ?????? -->
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-icon">👥</div>
+                <div class="stat-icon">??</div>
                 <div class="stat-number">{{ stats.total_users|default(0)|intcomma }}</div>
-                <div class="stat-label">משתמשים רשומים</div>
+                <div class="stat-label">??????? ??????</div>
             </div>
             
             <div class="stat-card">
-                <div class="stat-icon">📅</div>
+                <div class="stat-icon">??</div>
                 <div class="stat-number">{{ stats.active_today|default(0)|intcomma }}</div>
-                <div class="stat-label">פעילים היום</div>
+                <div class="stat-label">?????? ????</div>
             </div>
             
             <div class="stat-card">
-                <div class="stat-icon">💰</div>
+                <div class="stat-icon">??</div>
                 <div class="stat-number">{{ stats.total_tokens|default(0)|intcomma }}</div>
-                <div class="stat-label">טוקנים כוללים</div>
+                <div class="stat-label">?????? ??????</div>
             </div>
             
             <div class="stat-card">
-                <div class="stat-icon">📈</div>
+                <div class="stat-icon">??</div>
                 <div class="stat-number">{{ stats.avg_tokens|default(0)|round(1) }}</div>
-                <div class="stat-label">טוקנים ממוצע</div>
+                <div class="stat-label">?????? ?????</div>
             </div>
         </div>
         
-        <!-- פעולות מהירות -->
+        <!-- ?????? ?????? -->
         <div class="quick-actions">
-            <a href="/teacher/users" class="action-btn">👥 ניהול משתמשים</a>
-            <a href="/stats" class="action-btn">📊 סטטיסטיקות מלאות</a>
-            <a href="/health" class="action-btn">🩺 בריאות מערכת</a>
-            <a href="/setwebhook" class="action-btn">🔗 הגדרות Webhook</a>
+            <a href="/teacher/users" class="action-btn">?? ????? ???????</a>
+            <a href="/stats" class="action-btn">?? ?????????? ?????</a>
+            <a href="/health" class="action-btn">?? ?????? ?????</a>
+            <a href="/setwebhook" class="action-btn">?? ?????? Webhook</a>
         </div>
         
-        <!-- משתמשים מובילים -->
+        <!-- ??????? ??????? -->
         <div class="top-users">
-            <h2 style="color: #2d3748; margin-bottom: 20px;">🏆 5 המובילים בטוקנים</h2>
+            <h2 style="color: #2d3748; margin-bottom: 20px;">?? 5 ???????? ???????</h2>
             
             {% if top_users %}
                 {% for user in top_users[:5] %}
@@ -261,55 +261,55 @@
                         </div>
                         <div>
                             <div class="user-name">
-                                {{ user.first_name or user.username or ("משתמש " ~ user.telegram_id) }}
+                                {{ user.first_name or user.username or ("????? " ~ user.telegram_id) }}
                             </div>
                             <div class="user-details">
-                                רמה {{ user.level }} • {{ user.total_referrals }} הפניות
+                                ??? {{ user.level }} � {{ user.total_referrals }} ??????
                             </div>
                         </div>
                     </div>
                     <div class="user-tokens">
-                        {{ user.tokens|intcomma }} טוקנים
+                        {{ user.tokens|intcomma }} ??????
                     </div>
                 </div>
                 {% endfor %}
             {% else %}
                 <div style="text-align: center; padding: 40px; color: #718096;">
-                    <div style="font-size: 3rem; margin-bottom: 20px;">📭</div>
-                    <h3 style="color: #2d3748;">אין משתמשים עדיין</h3>
-                    <p>המערכת מחכה למשתמשים הראשונים שיצטרפו.</p>
+                    <div style="font-size: 3rem; margin-bottom: 20px;">??</div>
+                    <h3 style="color: #2d3748;">??? ??????? ?????</h3>
+                    <p>?????? ???? ???????? ???????? ???????.</p>
                 </div>
             {% endif %}
         </div>
         
-        <!-- מידע טכני -->
+        <!-- ???? ???? -->
         <div style="background: #f8f9fa; border-radius: 15px; padding: 25px; margin: 30px 0;">
-            <h3 style="color: #2d3748; margin-bottom: 20px;">ℹ️ מידע טכני</h3>
+            <h3 style="color: #2d3748; margin-bottom: 20px;">?? ???? ????</h3>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
                 <div>
-                    <h4 style="color: #4c51bf; font-size: 1rem; margin-bottom: 10px;">📊 סטטיסטיקות</h4>
+                    <h4 style="color: #4c51bf; font-size: 1rem; margin-bottom: 10px;">?? ??????????</h4>
                     <p style="color: #718096; font-size: 0.9rem;">
-                        • משתמשים: {{ stats.total_users|default(0) }}<br>
-                        • פעילים היום: {{ stats.active_today|default(0) }}<br>
-                        • טוקנים כוללים: {{ stats.total_tokens|default(0) }}
+                        � ???????: {{ stats.total_users|default(0) }}<br>
+                        � ?????? ????: {{ stats.active_today|default(0) }}<br>
+                        � ?????? ??????: {{ stats.total_tokens|default(0) }}
                     </p>
                 </div>
                 
                 <div>
-                    <h4 style="color: #4c51bf; font-size: 1rem; margin-bottom: 10px;">🔗 קישורים מהירים</h4>
+                    <h4 style="color: #4c51bf; font-size: 1rem; margin-bottom: 10px;">?? ??????? ??????</h4>
                     <p style="color: #718096; font-size: 0.9rem;">
-                        <a href="/api/v1/stats" style="color: #667eea;">API סטטיסטיקות</a><br>
-                        <a href="/api/v1/checkin_data/7" style="color: #667eea;">API צ'ק-אין</a><br>
-                        <a href="/health" style="color: #667eea;">בריאות מערכת</a>
+                        <a href="/api/v1/stats" style="color: #667eea;">API ??????????</a><br>
+                        <a href="/api/v1/checkin_data/7" style="color: #667eea;">API ?'?-???</a><br>
+                        <a href="/health" style="color: #667eea;">?????? ?????</a>
                     </p>
                 </div>
                 
                 <div>
-                    <h4 style="color: #4c51bf; font-size: 1rem; margin-bottom: 10px;">⚙️ ניהול</h4>
+                    <h4 style="color: #4c51bf; font-size: 1rem; margin-bottom: 10px;">?? ?????</h4>
                     <p style="color: #718096; font-size: 0.9rem;">
-                        • סיסמת מורה: ******<br>
-                        • גרסה: 2.2.0<br>
-                        • סביבה: {{ 'Production' if stats.total_users else 'Development' }}
+                        � ????? ????: ******<br>
+                        � ????: 2.2.0<br>
+                        � ?????: {{ 'Production' if stats.total_users else 'Development' }}
                     </p>
                 </div>
             </div>
@@ -317,19 +317,19 @@
     </div>
     
     <div style="text-align: center; padding: 40px; color: #718096; border-top: 1px solid #e2e8f0; margin-top: 40px;">
-        <p>Crypto-Class © 2026 | דשבורד מורים | גרסה 2.2.0</p>
+        <p>Crypto-Class � 2026 | ?????? ????? | ???? 2.2.0</p>
         <p style="margin-top: 10px; font-size: 0.9rem;">
-            זמין גם בבוט הטלגרם ובאתר הראשי
+            ???? ?? ???? ?????? ????? ?????
         </p>
     </div>
     
     <script>
-        // פונקציית עזר לפורמט מספרים
+        // ???????? ??? ?????? ??????
         function intcomma(x) {
             return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
         
-        // החל פורמט מספרים על כל המספרים בדף
+        // ??? ????? ?????? ?? ?? ??????? ???
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.stat-number').forEach(el => {
                 const text = el.textContent;
@@ -343,11 +343,12 @@
                 const text = el.textContent;
                 const number = text.match(/\d+/g);
                 if (number) {
-                    el.textContent = intcomma(number[0]) + ' טוקנים';
+                    el.textContent = intcomma(number[0]) + ' ??????';
                 }
             });
         });
     </script>
 </body>
 </html>
+
 

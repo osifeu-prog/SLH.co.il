@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ALLOWED_TRANSITIONS = {
     "created": [
         "awaiting_payment",
@@ -55,4 +55,5 @@ async def transition_order_state(conn, order_id: int, from_state: str, to_state:
         raise RuntimeError("Order state changed concurrently or order not found")
 
     return dict(row)
+
 

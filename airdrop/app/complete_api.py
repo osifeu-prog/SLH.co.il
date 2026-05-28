@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel
 from datetime import datetime
@@ -36,11 +36,11 @@ class AdminLogin(BaseModel):
 # DATABASE SETUP
 # ====================
 def init_database():
-    """מאתחל את מסד הנתונים"""
+    """????? ?? ??? ???????"""
     conn = sqlite3.connect('data/airdrop.db')
     cursor = conn.cursor()
     
-    # טבלת משתמשים
+    # ???? ???????
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -53,7 +53,7 @@ def init_database():
         )
     ''')
     
-    # טבלת ארנקים
+    # ???? ??????
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS wallets (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -65,7 +65,7 @@ def init_database():
         )
     ''')
     
-    # טבלת עסקאות
+    # ???? ??????
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS transactions (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -81,7 +81,7 @@ def init_database():
         )
     ''')
     
-    # טבלת סטטיסטיקות
+    # ???? ??????????
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS stats (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -109,7 +109,7 @@ def get_db_connection():
 # ====================
 @app.post("/api/users/register")
 async def register_user(user: UserRegister):
-    """רושם משתמש חדש"""
+    """???? ????? ???"""
     conn = get_db_connection()
     cursor = conn.cursor()
     
@@ -133,19 +133,19 @@ async def register_user(user: UserRegister):
 
 @app.post("/api/users/submit_wallet")
 async def submit_wallet(wallet: WalletSubmit):
-    """מקבל כתובת ארנק"""
+    """???? ????? ????"""
     conn = get_db_connection()
     cursor = conn.cursor()
     
     try:
-        # בדוק אם המשתמש קיים
+        # ???? ?? ?????? ????
         cursor.execute("SELECT id FROM users WHERE telegram_id = ?", (wallet.telegram_id,))
         user = cursor.fetchone()
         
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
         
-        # הוסף את הארנק
+        # ???? ?? ?????
         cursor.execute('''
             INSERT OR REPLACE INTO wallets (telegram_id, wallet_address, wallet_type)
             VALUES (?, ?, ?)
@@ -166,25 +166,25 @@ async def submit_wallet(wallet: WalletSubmit):
 
 @app.post("/api/users/submit_transaction")
 async def submit_transaction(transaction: TransactionSubmit):
-    """מקבל עסקת תשלום"""
+    """???? ???? ?????"""
     conn = get_db_connection()
     cursor = conn.cursor()
     
     try:
-        # בדוק אם המשתמש קיים
+        # ???? ?? ?????? ????
         cursor.execute("SELECT id FROM users WHERE telegram_id = ?", (transaction.telegram_id,))
         user = cursor.fetchone()
         
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
         
-        # הוסף את העסקה
+        # ???? ?? ?????
         cursor.execute('''
             INSERT INTO transactions (telegram_id, transaction_hash, amount, currency, status)
             VALUES (?, ?, ?, ?, 'pending')
         ''', (transaction.telegram_id, transaction.transaction_hash, transaction.amount, transaction.currency))
         
-        # עדכן סטטיסטיקות
+        # ???? ??????????
         cursor.execute('''
             INSERT OR REPLACE INTO stats (id, total_users, total_transactions, total_ton_received)
             VALUES (1, 
@@ -196,7 +196,7 @@ async def submit_transaction(transaction: TransactionSubmit):
         
         conn.commit()
         
-        # שלח התראה למנהל
+        # ??? ????? ?????
         admin_alert = {
             "user": transaction.telegram_id,
             "transaction": transaction.transaction_hash[:20] + "...",
@@ -220,12 +220,12 @@ async def submit_transaction(transaction: TransactionSubmit):
 
 @app.get("/api/users/{telegram_id}/status")
 async def get_user_status(telegram_id: str):
-    """מחזיר סטטוס משתמש"""
+    """????? ????? ?????"""
     conn = get_db_connection()
     cursor = conn.cursor()
     
     try:
-        # נתוני משתמש
+        # ????? ?????
         cursor.execute('''
             SELECT u.*, 
                    w.wallet_address,
@@ -243,7 +243,7 @@ async def get_user_status(telegram_id: str):
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
         
-        # עסקאות אחרונות
+        # ?????? ???????
         cursor.execute('''
             SELECT * FROM transactions 
             WHERE telegram_id = ? 
@@ -265,7 +265,7 @@ async def get_user_status(telegram_id: str):
 
 @app.get("/api/stats")
 async def get_system_stats():
-    """מחזיר סטטיסטיקות מערכת"""
+    """????? ?????????? ?????"""
     conn = get_db_connection()
     cursor = conn.cursor()
     
@@ -283,7 +283,7 @@ async def get_system_stats():
         else:
             stats = dict(stats)
         
-        # הוסף מידע נוסף
+        # ???? ???? ????
         cursor.execute("SELECT COUNT(*) as active_users FROM users WHERE status = 'active'")
         active = cursor.fetchone()
         
@@ -304,7 +304,7 @@ async def get_system_stats():
 
 @app.get("/admin/dashboard")
 async def admin_dashboard(admin_key: str):
-    """פאנל ניהול"""
+    """???? ?????"""
     if admin_key != "airdrop_admin_2026":
         raise HTTPException(status_code=403, detail="Invalid admin key")
     
@@ -312,11 +312,11 @@ async def admin_dashboard(admin_key: str):
     cursor = conn.cursor()
     
     try:
-        # סטטיסטיקות
+        # ??????????
         cursor.execute("SELECT * FROM stats WHERE id = 1")
         stats = cursor.fetchone()
         
-        # משתמשים אחרונים
+        # ??????? ???????
         cursor.execute('''
             SELECT u.*, 
                    COUNT(t.id) as transactions_count,
@@ -330,7 +330,7 @@ async def admin_dashboard(admin_key: str):
         
         users = cursor.fetchall()
         
-        # עסקאות אחרונות
+        # ?????? ???????
         cursor.execute('''
             SELECT t.*, u.username, u.first_name
             FROM transactions t
@@ -359,22 +359,22 @@ async def admin_dashboard(admin_key: str):
 # ====================
 @app.on_event("startup")
 async def startup_event():
-    """אתחול עם הפעלת השרת"""
-    # צור תיקיית data אם לא קיימת
+    """????? ?? ????? ????"""
+    # ??? ?????? data ?? ?? ?????
     os.makedirs("data", exist_ok=True)
     
-    # אתחל את מסד הנתונים
+    # ???? ?? ??? ???????
     init_database()
     
-    print("✅ Database initialized")
-    print("🚀 API Ready: http://localhost:8000")
-    print("📊 Admin: http://localhost:8000/admin/dashboard?admin_key=airdrop_admin_2026")
+    print("? Database initialized")
+    print("?? API Ready: http://localhost:8000")
+    print("?? Admin: http://localhost:8000/admin/dashboard?admin_key=airdrop_admin_2026")
 
 @app.get("/")
 async def root():
-    """דף הבית"""
+    """?? ????"""
     return {
-        "message": "🚀 SLH Airdrop API",
+        "message": "?? SLH Airdrop API",
         "version": "2.0",
         "status": "operational",
         "endpoints": {
@@ -390,13 +390,14 @@ async def root():
 
 @app.get("/health")
 async def health_check():
-    """בדיקת בריאות"""
+    """????? ??????"""
     return {
         "status": "healthy",
         "timestamp": datetime.now().isoformat(),
         "database": "connected",
         "version": "2.0"
     }
+
 
 
 

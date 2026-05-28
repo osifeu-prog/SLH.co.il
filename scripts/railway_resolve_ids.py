@@ -1,4 +1,4 @@
-﻿"""Resolve Railway project/service/environment IDs for config/railway_services.json.
+"""Resolve Railway project/service/environment IDs for config/railway_services.json.
 
 Usage (once, after `RAILWAY_API_TOKEN` is set locally):
     cd D:\\SLH_ECOSYSTEM
@@ -10,7 +10,7 @@ What it does:
     2. For each entry in config/railway_services.json with empty IDs,
        matches by `project` (project name) + `service` (service name) +
        `environment` (env name) and fills the IDs.
-    3. Reports unresolved entries — these need manual fix (typically a
+    3. Reports unresolved entries � these need manual fix (typically a
        project/service rename mismatch between the JSON and Railway).
 
 Token required: RAILWAY_API_TOKEN with read scope on the workspace.
@@ -178,14 +178,14 @@ async def main():
             unresolved.append((env_var, msg))
         elif changed:
             changed_count += 1
-            print(f"  ✓ resolved {env_var:<28} → {entry['project']}/{entry['service']}/{entry['environment']}")
+            print(f"  ? resolved {env_var:<28} ? {entry['project']}/{entry['service']}/{entry['environment']}")
 
     print()
     print(f"Resolved: {changed_count} entries")
     if unresolved:
-        print(f"Unresolved: {len(unresolved)} entries — fix project/service names in JSON:")
+        print(f"Unresolved: {len(unresolved)} entries � fix project/service names in JSON:")
         for env_var, msg in unresolved:
-            print(f"  ✗ {env_var:<28} {msg}")
+            print(f"  ? {env_var:<28} {msg}")
 
     if args.write:
         CONFIG_PATH.write_text(json.dumps(cfg, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
@@ -196,4 +196,5 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
 

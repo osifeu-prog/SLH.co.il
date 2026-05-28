@@ -42,3 +42,4 @@ async def user_card(
             "base_url": settings.base_url,
         },
     )
+

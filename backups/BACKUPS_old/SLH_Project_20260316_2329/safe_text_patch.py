@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from pathlib import Path
 import re
 import shutil
@@ -126,13 +126,13 @@ text, n_redeem = sub_once(
     text
 )
 
-text = text.replace('await message.answer("שימוש נכון: /approve <user_id>")', 'await message.answer("Usage: /approve <user_id>")')
-text = text.replace('await message.answer("שימוש נכון: /reject <user_id>")', 'await message.answer("Usage: /reject <user_id>")')
-text = text.replace('await message.answer("שימוש נכון: /status <user_id>")', 'await message.answer("Usage: /status <user_id>")')
+text = text.replace('await message.answer("????? ????: /approve <user_id>")', 'await message.answer("Usage: /approve <user_id>")')
+text = text.replace('await message.answer("????? ????: /reject <user_id>")', 'await message.answer("Usage: /reject <user_id>")')
+text = text.replace('await message.answer("????? ????: /status <user_id>")', 'await message.answer("Usage: /status <user_id>")')
 
-text = text.replace('text += f"\\n\\nלינק הגישה שלך:\\n{VIP_GROUP_LINK}"', 'text += f"\\n\\n{ACCESS_LINK_LABEL}\\n{VIP_GROUP_LINK}"')
+text = text.replace('text += f"\\n\\n???? ????? ???:\\n{VIP_GROUP_LINK}"', 'text += f"\\n\\n{ACCESS_LINK_LABEL}\\n{VIP_GROUP_LINK}"')
 text = text.replace('text += f"\\n\\nAccess link:\\n{VIP_GROUP_LINK}"', 'text += f"\\n\\n{ACCESS_LINK_LABEL}\\n{VIP_GROUP_LINK}"')
-text = text.replace('text = "הגישה שלך כבר פעילה."', 'text = ALREADY_ACTIVE')
+text = text.replace('text = "????? ??? ??? ?????."', 'text = ALREADY_ACTIVE')
 
 path.write_text(text, encoding="utf-8", newline="\n")
 
@@ -140,4 +140,5 @@ print("backup:", backup)
 print("constants replaced:", n_const)
 print("redeem replaced:", n_redeem)
 print("DONE")
+
 

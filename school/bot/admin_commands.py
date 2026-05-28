@@ -1,7 +1,7 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
-פקודות אדמין - Crypto-Class
-פקודות ניהול מתקדמות למנהלי המערכת
+?????? ????? - Crypto-Class
+?????? ????? ??????? ?????? ??????
 """
 
 import logging
@@ -14,177 +14,177 @@ from database.queries import (
 
 logger = logging.getLogger(__name__)
 
-# רשימת אדמינים (ניתן גם להגדיר ב-env)
-ADMIN_IDS = [224223270]  # החלף ל-telegram_id שלך
+# ????? ??????? (???? ?? ?????? ?-env)
+ADMIN_IDS = [224223270]  # ???? ?-telegram_id ???
 
 def is_admin(user_id):
-    """בדיקה אם משתמש הוא אדמין"""
+    """????? ?? ????? ??? ?????"""
     return user_id in ADMIN_IDS
 
 async def admin_panel(update, context):
-    """פאנל ניהול למנהלי המערכת"""
+    """???? ????? ?????? ??????"""
     try:
         user = update.effective_user
         
-        # בדוק אם המשתמש הוא אדמין
+        # ???? ?? ?????? ??? ?????
         if not is_admin(user.id):
             await update.message.reply_text(
-                "❌ **אין לך הרשאות ניהול!**\n\n"
-                "רק מנהלי המערכת יכולים להשתמש בפקודה זו.",
+                "? **??? ?? ?????? ?????!**\n\n"
+                "?? ????? ?????? ?????? ?????? ?????? ??.",
                 parse_mode="Markdown"
             )
             return
         
-        # קבל סטטיסטיקות מערכת
+        # ??? ?????????? ?????
         stats = get_system_stats()
         
         response = (
-            "👑 **פאנל ניהול - Crypto-Class**\n\n"
-            "📊 **סטטיסטיקות מערכת:**\n"
-            f"• 👥 משתמשים: {stats.get('total_users', 0):,}\n"
-            f"• 📅 פעילים היום: {stats.get('active_today', 0):,}\n"
-            f"• 💰 טוקנים כוללים: {stats.get('total_tokens', 0):,}\n\n"
-            "⚙️ **פקודות ניהול:**\n"
-            "• `/admin_stats` - סטטיסטיקות מפורטות\n"
-            "• `/admin_users` - ניהול משתמשים\n"
-            "• `/admin_broadcast` - שליחת הודעה לכולם\n"
-            "• `/add_tokens <user_id> <amount>` - הוספת טוקנים\n"
-            "• `/reset_checkin <user_id>` - איפוס צ'ק-אין\n\n"
-            "🌐 **דשבורד אתר:**\n"
-            "• אתר: https://school-production-4d9d.up.railway.app\n"
-            "• דשבורד מורה: /teacher\n"
-            "• סטטיסטיקות: /stats\n\n"
-            "🆔 **מזהה האדמין שלך:** {user.id}"
+            "?? **???? ????? - Crypto-Class**\n\n"
+            "?? **?????????? ?????:**\n"
+            f"� ?? ???????: {stats.get('total_users', 0):,}\n"
+            f"� ?? ?????? ????: {stats.get('active_today', 0):,}\n"
+            f"� ?? ?????? ??????: {stats.get('total_tokens', 0):,}\n\n"
+            "?? **?????? ?????:**\n"
+            "� `/admin_stats` - ?????????? ???????\n"
+            "� `/admin_users` - ????? ???????\n"
+            "� `/admin_broadcast` - ????? ????? ?????\n"
+            "� `/add_tokens <user_id> <amount>` - ????? ??????\n"
+            "� `/reset_checkin <user_id>` - ????? ?'?-???\n\n"
+            "?? **?????? ???:**\n"
+            "� ???: https://school-production-4d9d.up.railway.app\n"
+            "� ?????? ????: /teacher\n"
+            "� ??????????: /stats\n\n"
+            "?? **???? ?????? ???:** {user.id}"
         )
         
         await update.message.reply_text(response, parse_mode="Markdown")
         
     except Exception as e:
-        logger.error(f"❌ שגיאה בפקודת admin: {e}")
+        logger.error(f"? ????? ?????? admin: {e}")
         await update.message.reply_text(
-            "❌ אירעה שגיאה בגישה לפאנל הניהול.",
+            "? ????? ????? ????? ????? ??????.",
             parse_mode="Markdown"
         )
 
 async def admin_stats(update, context):
-    """סטטיסטיקות מפורטות למערכת"""
+    """?????????? ??????? ??????"""
     try:
         user = update.effective_user
         
-        # בדוק אם המשתמש הוא אדמין
+        # ???? ?? ?????? ??? ?????
         if not is_admin(user.id):
-            await update.message.reply_text("❌ אין לך הרשאות ניהול.")
+            await update.message.reply_text("? ??? ?? ?????? ?????.")
             return
         
-        # קבל סטטיסטיקות
+        # ??? ??????????
         stats = get_system_stats()
         top_users = get_top_users(5, 'tokens')
         all_users = get_all_users()
         
         response = (
-            "📊 **סטטיסטיקות מפורטות - Crypto-Class**\n\n"
-            f"👥 **משתמשים:** {stats.get('total_users', 0):,}\n"
-            f"📅 **פעילים היום:** {stats.get('active_today', 0):,}\n"
-            f"💰 **טוקנים כוללים:** {stats.get('total_tokens', 0):,}\n\n"
-            "🏆 **5 המובילים:**\n"
+            "?? **?????????? ??????? - Crypto-Class**\n\n"
+            f"?? **???????:** {stats.get('total_users', 0):,}\n"
+            f"?? **?????? ????:** {stats.get('active_today', 0):,}\n"
+            f"?? **?????? ??????:** {stats.get('total_tokens', 0):,}\n\n"
+            "?? **5 ????????:**\n"
         )
         
         for i, top_user in enumerate(top_users, 1):
-            name = top_user.first_name or top_user.username or f"משתמש {top_user.telegram_id}"
-            response += f"{i}. {name} - {top_user.tokens:,} טוקנים\n"
+            name = top_user.first_name or top_user.username or f"????? {top_user.telegram_id}"
+            response += f"{i}. {name} - {top_user.tokens:,} ??????\n"
         
-        # חישוב ממוצע טוקנים
+        # ????? ????? ??????
         if all_users:
             avg_tokens = sum(u.tokens for u in all_users) / len(all_users)
-            response += f"\n📈 **ממוצע טוקנים למשתמש:** {avg_tokens:.1f}"
+            response += f"\n?? **????? ?????? ??????:** {avg_tokens:.1f}"
         
-        response += f"\n\n⏰ **זמן מערכת:** {datetime.now().strftime('%H:%M:%S %d/%m/%Y')}"
+        response += f"\n\n? **??? ?????:** {datetime.now().strftime('%H:%M:%S %d/%m/%Y')}"
         
         await update.message.reply_text(response, parse_mode="Markdown")
         
     except Exception as e:
-        logger.error(f"❌ שגיאה בפקודת admin_stats: {e}")
-        await update.message.reply_text("❌ שגיאה בטעינת סטטיסטיקות.")
+        logger.error(f"? ????? ?????? admin_stats: {e}")
+        await update.message.reply_text("? ????? ?????? ??????????.")
 
 async def admin_users(update, context):
-    """רשימת משתמשים למערכת"""
+    """????? ??????? ??????"""
     try:
         user = update.effective_user
         
-        # בדוק אם המשתמש הוא אדמין
+        # ???? ?? ?????? ??? ?????
         if not is_admin(user.id):
-            await update.message.reply_text("❌ אין לך הרשאות ניהול.")
+            await update.message.reply_text("? ??? ?? ?????? ?????.")
             return
         
-        # קבל את כל המשתמשים
+        # ??? ?? ?? ????????
         all_users = get_all_users()
         
         if not all_users:
-            await update.message.reply_text("📭 אין משתמשים רשומים במערכת.")
+            await update.message.reply_text("?? ??? ??????? ?????? ??????.")
             return
         
         response = (
-            "👥 **רשימת משתמשים - Crypto-Class**\n\n"
-            f"📋 **סה\"כ משתמשים:** {len(all_users)}\n\n"
+            "?? **????? ??????? - Crypto-Class**\n\n"
+            f"?? **??\"? ???????:** {len(all_users)}\n\n"
         )
         
-        # הצג 10 משתמשים ראשונים
+        # ??? 10 ??????? ???????
         for i, user_obj in enumerate(all_users[:10], 1):
-            name = user_obj.first_name or user_obj.username or f"משתמש {user_obj.telegram_id}"
-            created = user_obj.created_at.strftime('%d/%m/%Y') if user_obj.created_at else "לא ידוע"
+            name = user_obj.first_name or user_obj.username or f"????? {user_obj.telegram_id}"
+            created = user_obj.created_at.strftime('%d/%m/%Y') if user_obj.created_at else "?? ????"
             response += (
                 f"{i}. **{name}**\n"
-                f"   🆔: {user_obj.telegram_id}\n"
-                f"   💰: {user_obj.tokens:,} טוקנים\n"
-                f"   📅: {created}\n\n"
+                f"   ??: {user_obj.telegram_id}\n"
+                f"   ??: {user_obj.tokens:,} ??????\n"
+                f"   ??: {created}\n\n"
             )
         
         if len(all_users) > 10:
-            response += f"\n... ועוד {len(all_users) - 10} משתמשים."
+            response += f"\n... ???? {len(all_users) - 10} ???????."
         
         response += (
-            "\n⚙️ **פקודות ניהול משתמשים:**\n"
-            "• `/add_tokens <user_id> <amount>` - הוספת טוקנים\n"
-            "• `/reset_checkin <user_id>` - איפוס צ'ק-אין\n"
+            "\n?? **?????? ????? ???????:**\n"
+            "� `/add_tokens <user_id> <amount>` - ????? ??????\n"
+            "� `/reset_checkin <user_id>` - ????? ?'?-???\n"
         )
         
         await update.message.reply_text(response, parse_mode="Markdown")
         
     except Exception as e:
-        logger.error(f"❌ שגיאה בפקודת admin_users: {e}")
-        await update.message.reply_text("❌ שגיאה בטעינת רשימת משתמשים.")
+        logger.error(f"? ????? ?????? admin_users: {e}")
+        await update.message.reply_text("? ????? ?????? ????? ???????.")
 
 async def admin_broadcast(update, context):
-    """שליחת הודעה לכל המשתמשים"""
+    """????? ????? ??? ????????"""
     try:
         user = update.effective_user
         
-        # בדוק אם המשתמש הוא אדמין
+        # ???? ?? ?????? ??? ?????
         if not is_admin(user.id):
-            await update.message.reply_text("❌ אין לך הרשאות ניהול.")
+            await update.message.reply_text("? ??? ?? ?????? ?????.")
             return
         
-        # בדוק אם יש טקסט בהודעה
+        # ???? ?? ?? ???? ??????
         if not context.args:
             await update.message.reply_text(
-                "📢 **שליחת הודעה לכולם**\n\n"
-                "שימוש: `/admin_broadcast <הודעה>`\n\n"
-                "דוגמה: `/admin_broadcast הודעה חשובה לכולם!`",
+                "?? **????? ????? ?????**\n\n"
+                "?????: `/admin_broadcast <?????>`\n\n"
+                "?????: `/admin_broadcast ????? ????? ?????!`",
                 parse_mode="Markdown"
             )
             return
         
         message = " ".join(context.args)
         
-        # שליחה למשתמש הנוכחי
+        # ????? ?????? ??????
         await update.message.reply_text(
-            f"📢 **מתחיל לשלוח הודעה לכולם...**\n\n"
-            f"📝 **ההודעה:**\n{message}\n\n"
-            f"⏳ נא להמתין...",
+            f"?? **????? ????? ????? ?????...**\n\n"
+            f"?? **??????:**\n{message}\n\n"
+            f"? ?? ??????...",
             parse_mode="Markdown"
         )
         
-        # שליחה לכל המשתמשים (במקרה אמיתי, יש לעשות זאת ברקע)
+        # ????? ??? ???????? (????? ?????, ?? ????? ??? ????)
         users = get_all_users()
         success_count = 0
         fail_count = 0
@@ -193,41 +193,41 @@ async def admin_broadcast(update, context):
             try:
                 await context.bot.send_message(
                     chat_id=user_obj.telegram_id,
-                    text=f"📢 **הודעה מהמערכת:**\n\n{message}",
+                    text=f"?? **????? ???????:**\n\n{message}",
                     parse_mode="Markdown"
                 )
                 success_count += 1
             except Exception as e:
-                logger.error(f"❌ שגיאה בשליחה למשתמש {user_obj.telegram_id}: {e}")
+                logger.error(f"? ????? ?????? ?????? {user_obj.telegram_id}: {e}")
                 fail_count += 1
         
         await update.message.reply_text(
-            f"✅ **שליחת הודעה הושלמה!**\n\n"
-            f"✅ נשלח בהצלחה ל: {success_count} משתמשים\n"
-            f"❌ נכשל בשליחה ל: {fail_count} משתמשים",
+            f"? **????? ????? ??????!**\n\n"
+            f"? ???? ?????? ?: {success_count} ???????\n"
+            f"? ???? ?????? ?: {fail_count} ???????",
             parse_mode="Markdown"
         )
         
     except Exception as e:
-        logger.error(f"❌ שגיאה בפקודת admin_broadcast: {e}")
-        await update.message.reply_text("❌ שגיאה בשליחת הודעה לכולם.")
+        logger.error(f"? ????? ?????? admin_broadcast: {e}")
+        await update.message.reply_text("? ????? ?????? ????? ?????.")
 
 async def add_tokens(update, context):
-    """הוספת טוקנים למשתמש"""
+    """????? ?????? ??????"""
     try:
         user = update.effective_user
         
-        # בדוק אם המשתמש הוא אדמין
+        # ???? ?? ?????? ??? ?????
         if not is_admin(user.id):
-            await update.message.reply_text("❌ אין לך הרשאות ניהול.")
+            await update.message.reply_text("? ??? ?? ?????? ?????.")
             return
         
-        # בדוק את הפרמטרים
+        # ???? ?? ????????
         if len(context.args) != 2:
             await update.message.reply_text(
-                "💰 **הוספת טוקנים למשתמש**\n\n"
-                "שימוש: `/add_tokens <user_id> <amount>`\n\n"
-                "דוגמה: `/add_tokens 123456789 100`",
+                "?? **????? ?????? ??????**\n\n"
+                "?????: `/add_tokens <user_id> <amount>`\n\n"
+                "?????: `/add_tokens 123456789 100`",
                 parse_mode="Markdown"
             )
             return
@@ -236,50 +236,50 @@ async def add_tokens(update, context):
             target_user_id = int(context.args[0])
             amount = int(context.args[1])
         except ValueError:
-            await update.message.reply_text("❌ מזהה משתמש או כמות לא חוקיים.")
+            await update.message.reply_text("? ???? ????? ?? ???? ?? ??????.")
             return
         
-        # הוסף טוקנים
+        # ???? ??????
         success, new_balance = add_tokens_to_user(target_user_id, amount)
         
         if success:
             target_user = get_user(target_user_id)
-            user_name = target_user.first_name if target_user else f"משתמש {target_user_id}"
+            user_name = target_user.first_name if target_user else f"????? {target_user_id}"
             
             await update.message.reply_text(
-                f"✅ **טוקנים נוספו בהצלחה!**\n\n"
-                f"👤 **משתמש:** {user_name}\n"
-                f"🆔 **מזהה:** {target_user_id}\n"
-                f"➕ **נוספו:** {amount:,} טוקנים\n"
-                f"💰 **יתרה חדשה:** {new_balance:,} טוקנים",
+                f"? **?????? ????? ??????!**\n\n"
+                f"?? **?????:** {user_name}\n"
+                f"?? **????:** {target_user_id}\n"
+                f"? **?????:** {amount:,} ??????\n"
+                f"?? **???? ????:** {new_balance:,} ??????",
                 parse_mode="Markdown"
             )
         else:
             await update.message.reply_text(
-                "❌ לא ניתן להוסיף טוקנים למשתמש זה.\n"
-                "ייתכן שהמשתמש לא קיים."
+                "? ?? ???? ?????? ?????? ?????? ??.\n"
+                "????? ??????? ?? ????."
             )
         
     except Exception as e:
-        logger.error(f"❌ שגיאה בפקודת add_tokens: {e}")
-        await update.message.reply_text("❌ שגיאה בהוספת טוקנים.")
+        logger.error(f"? ????? ?????? add_tokens: {e}")
+        await update.message.reply_text("? ????? ?????? ??????.")
 
 async def reset_checkin(update, context):
-    """איפוס צ'ק-אין למשתמש"""
+    """????? ?'?-??? ??????"""
     try:
         user = update.effective_user
         
-        # בדוק אם המשתמש הוא אדמין
+        # ???? ?? ?????? ??? ?????
         if not is_admin(user.id):
-            await update.message.reply_text("❌ אין לך הרשאות ניהול.")
+            await update.message.reply_text("? ??? ?? ?????? ?????.")
             return
         
-        # בדוק את הפרמטרים
+        # ???? ?? ????????
         if len(context.args) != 1:
             await update.message.reply_text(
-                "🔄 **איפוס צ'ק-אין למשתמש**\n\n"
-                "שימוש: `/reset_checkin <user_id>`\n\n"
-                "דוגמה: `/reset_checkin 123456789`",
+                "?? **????? ?'?-??? ??????**\n\n"
+                "?????: `/reset_checkin <user_id>`\n\n"
+                "?????: `/reset_checkin 123456789`",
                 parse_mode="Markdown"
             )
             return
@@ -287,30 +287,31 @@ async def reset_checkin(update, context):
         try:
             target_user_id = int(context.args[0])
         except ValueError:
-            await update.message.reply_text("❌ מזהה משתמש לא חוקי.")
+            await update.message.reply_text("? ???? ????? ?? ????.")
             return
         
-        # אפס צ'ק-אין
+        # ??? ?'?-???
         success = reset_user_checkin(target_user_id)
         
         if success:
             target_user = get_user(target_user_id)
-            user_name = target_user.first_name if target_user else f"משתמש {target_user_id}"
+            user_name = target_user.first_name if target_user else f"????? {target_user_id}"
             
             await update.message.reply_text(
-                f"✅ **צ'ק-אין אופס בהצלחה!**\n\n"
-                f"👤 **משתמש:** {user_name}\n"
-                f"🆔 **מזהה:** {target_user_id}\n"
-                f"🔄 **ניתן כעת לבצע צ'ק-אין יומי חדש**",
+                f"? **?'?-??? ???? ??????!**\n\n"
+                f"?? **?????:** {user_name}\n"
+                f"?? **????:** {target_user_id}\n"
+                f"?? **???? ??? ???? ?'?-??? ???? ???**",
                 parse_mode="Markdown"
             )
         else:
             await update.message.reply_text(
-                "❌ לא ניתן לאפס צ'ק-אין למשתמש זה.\n"
-                "ייתכן שהמשתמש לא קיים."
+                "? ?? ???? ???? ?'?-??? ?????? ??.\n"
+                "????? ??????? ?? ????."
             )
         
     except Exception as e:
-        logger.error(f"❌ שגיאה בפקודת reset_checkin: {e}")
-        await update.message.reply_text("❌ שגיאה באיפוס צ'ק-אין.")
+        logger.error(f"? ????? ?????? reset_checkin: {e}")
+        await update.message.reply_text("? ????? ?????? ?'?-???.")
+
 

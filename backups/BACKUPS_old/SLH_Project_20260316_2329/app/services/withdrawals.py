@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import re
 
 from app.db.database import db
@@ -63,4 +63,5 @@ async def create_withdrawal(user_id: int, amount: float, wallet: str) -> dict:
         "wallet": str(row["wallet"]),
         "status": str(row["status"]),
     }
+
 

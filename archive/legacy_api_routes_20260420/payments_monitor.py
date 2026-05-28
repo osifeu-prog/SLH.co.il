@@ -1,6 +1,6 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
-SLH Payment Monitor â€” automatic BSC/TON ingestion.
+SLH Payment Monitor — automatic BSC/TON ingestion.
 
 Polls Genesis wallets every POLL_INTERVAL seconds. When a new incoming
 transaction is found that is not yet recorded, tries to match it against
@@ -238,5 +238,6 @@ async def register_intent(user_id: int, chain: str, expected_amount: float, plan
             user_id, chain, expected_amount, plan_key, bot_name,
         )
     return {"ok": True, "intent_id": row["id"], "expires_at": row["expires_at"].isoformat()}
+
 
 

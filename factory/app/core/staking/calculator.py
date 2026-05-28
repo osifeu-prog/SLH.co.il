@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -40,4 +40,5 @@ def calc_reward(principal: Decimal, apy_bps: int, start: datetime, end: datetime
     rate = (Decimal(apy_bps) / Decimal(10000))
     amount = Decimal(principal) * rate * (Decimal(delta_seconds) / SECONDS_IN_YEAR)
     return RewardCalcResult(amount=_quantize_18(amount), seconds=delta_seconds)
+
 

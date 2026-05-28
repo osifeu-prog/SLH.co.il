@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from aiogram import Router, types, F
 from aiogram.filters import Command
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
@@ -56,4 +56,5 @@ async def admin_system(callback: types.CallbackQuery):
 @router.callback_query(F.data == "admin:logs")
 async def admin_logs(callback: types.CallbackQuery):
     await callback.message.answer("Logs feature coming soon")
+
 

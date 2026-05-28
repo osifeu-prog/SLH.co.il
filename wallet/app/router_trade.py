@@ -49,3 +49,4 @@ async def create_offer(
 
     await log_event("trade", f"Offer created by telegram_id={telegram_id}, id={offer.id}")
     return offer
+

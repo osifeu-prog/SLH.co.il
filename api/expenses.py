@@ -1,11 +1,11 @@
-﻿# -*- coding: utf-8 -*-
-"""SLH Expense Tracker — personal cashflow management for the owner + family.
+# -*- coding: utf-8 -*-
+"""SLH Expense Tracker � personal cashflow management for the owner + family.
 
 Built after Osif raised:
-  'אולי בשלב זה כדאי שנכנסי למערכת את טבלאת ההוצאות שלי? זה יכול להיות צעד חכם
-   נגיד שכ"ד אני משלם 6900 ארנונה אם אני לא טועה כרגע 2300 דלק והוצאות שוטפות כ 600 ש"ח
-   מוסכים וטיפולים כ 5000 ש"ח. יש לנו ארנקים אז אולי כשירות נוסיף גם תחשיבים
-   וניהול הוצאות ותזרים וכו?'
+  '???? ???? ?? ???? ?????? ?????? ?? ????? ??????? ???? ?? ???? ????? ??? ???
+   ???? ??"? ??? ???? 6900 ?????? ?? ??? ?? ???? ???? 2300 ??? ??????? ?????? ? 600 ?"?
+   ?????? ???????? ? 5000 ?"?. ?? ??? ?????? ?? ???? ?????? ????? ?? ???????
+   ?????? ?????? ?????? ????'
 
 Phase 1 scope (this commit):
   - expenses table: per-user, per-category, ILS amounts, recurring flag
@@ -14,10 +14,10 @@ Phase 1 scope (this commit):
   - Recurring detection (manual flag for now; auto-detection in Phase 2)
 
 NOT in this phase (deliberate):
-  - Auto-categorization (needs LLM call — Phase 2)
-  - OCR receipt upload (needs Tesseract/cloud OCR — Phase 2)
-  - SLH/MNH/ZVK conversion (price feed integration — Phase 2)
-  - Tax estimation for עוסק עצמאי (needs accounting rules — Phase 2)
+  - Auto-categorization (needs LLM call � Phase 2)
+  - OCR receipt upload (needs Tesseract/cloud OCR � Phase 2)
+  - SLH/MNH/ZVK conversion (price feed integration � Phase 2)
+  - Tax estimation for ???? ????? (needs accounting rules � Phase 2)
 
 All endpoints require X-Admin-Key for now (single-user phase). Phase 2 will
 move to per-user auth via the Telegram Gateway.
@@ -39,24 +39,24 @@ router = APIRouter(prefix="/api/expenses", tags=["expenses"])
 
 # Predefined categories Osif mentioned + extras a personal finance flow needs.
 DEFAULT_CATEGORIES = [
-    "rent",        # שכ"ד
-    "property_tax", # ארנונה
-    "fuel",        # דלק
-    "auto_repair", # מוסכים, טיפולים
-    "groceries",   # מזון
-    "utilities",   # תקשורת, חשמל, מים
-    "insurance",   # ביטוחים
-    "subscriptions", # מנויים (Netflix, Spotify, AWS, etc.)
-    "health",      # בריאות
-    "education",   # חינוך
-    "business",    # הוצאות עסקיות
-    "tax",         # מס הכנסה / מע"מ
-    "savings",     # חיסכון / השקעה
-    "other",       # אחר
+    "rent",        # ??"?
+    "property_tax", # ??????
+    "fuel",        # ???
+    "auto_repair", # ??????, ???????
+    "groceries",   # ????
+    "utilities",   # ??????, ????, ???
+    "insurance",   # ???????
+    "subscriptions", # ?????? (Netflix, Spotify, AWS, etc.)
+    "health",      # ??????
+    "education",   # ?????
+    "business",    # ?????? ??????
+    "tax",         # ?? ????? / ??"?
+    "savings",     # ?????? / ?????
+    "other",       # ???
 ]
 
 
-# ─── Models ────────────────────────────────────────────────────────────────
+# --- Models ----------------------------------------------------------------
 
 
 class ExpenseIn(BaseModel):
@@ -77,7 +77,7 @@ class ExpenseUpdate(BaseModel):
     recurring: Optional[str] = Field(None, pattern=r"^(monthly|yearly|weekly|none)$")
 
 
-# ─── Auth ──────────────────────────────────────────────────────────────────
+# --- Auth ------------------------------------------------------------------
 
 
 def _admin(authorization: Optional[str], x_admin_key: Optional[str]) -> int:
@@ -91,7 +91,7 @@ def _admin(authorization: Optional[str], x_admin_key: Optional[str]) -> int:
         raise HTTPException(403, "Admin authentication required")
 
 
-# ─── Schema ────────────────────────────────────────────────────────────────
+# --- Schema ----------------------------------------------------------------
 
 _SCHEMA_READY = False
 
@@ -148,12 +148,12 @@ def _row_to_dict(r) -> dict:
     }
 
 
-# ─── Endpoints ─────────────────────────────────────────────────────────────
+# --- Endpoints -------------------------------------------------------------
 
 
 @router.get("/categories")
 async def list_categories():
-    """Public — list of predefined categories. No auth needed."""
+    """Public � list of predefined categories. No auth needed."""
     return {
         "categories": [
             {"key": c, "label": _CATEGORY_LABELS.get(c, c)} for c in DEFAULT_CATEGORIES
@@ -162,20 +162,20 @@ async def list_categories():
 
 
 _CATEGORY_LABELS = {
-    "rent": "שכ\"ד",
-    "property_tax": "ארנונה",
-    "fuel": "דלק",
-    "auto_repair": "מוסכים וטיפולי רכב",
-    "groceries": "מזון",
-    "utilities": "תקשורת / חשמל / מים",
-    "insurance": "ביטוחים",
-    "subscriptions": "מנויים",
-    "health": "בריאות",
-    "education": "חינוך",
-    "business": "עסקי",
-    "tax": "מס",
-    "savings": "חיסכון / השקעה",
-    "other": "אחר",
+    "rent": "??\"?",
+    "property_tax": "??????",
+    "fuel": "???",
+    "auto_repair": "?????? ??????? ???",
+    "groceries": "????",
+    "utilities": "?????? / ???? / ???",
+    "insurance": "???????",
+    "subscriptions": "??????",
+    "health": "??????",
+    "education": "?????",
+    "business": "????",
+    "tax": "??",
+    "savings": "?????? / ?????",
+    "other": "???",
 }
 
 
@@ -220,7 +220,7 @@ async def create_expense(
                 body.recurring or "none", body.source or "manual",
             )
 
-    # Emit public event for activity feed (sanitized — no description)
+    # Emit public event for activity feed (sanitized � no description)
     try:
         from shared.events import emit as _emit
         await _emit(pool, "expense.recorded", {
@@ -340,7 +340,7 @@ async def expenses_summary(
 ):
     """Monthly totals + category breakdown + recurring vs ad-hoc split.
 
-    The shape is shaped for direct rendering in /miniapp/expenses.html — one
+    The shape is shaped for direct rendering in /miniapp/expenses.html � one
     fetch gives the page everything it needs.
     """
     _admin(authorization, x_admin_key)
@@ -389,7 +389,7 @@ async def expenses_summary(
             """,
             user_id,
         )
-        # Burn rate — average monthly total over last 3 months
+        # Burn rate � average monthly total over last 3 months
         burn = await conn.fetchval(
             """
             SELECT COALESCE(AVG(monthly_total), 0)::float
@@ -439,17 +439,17 @@ async def seed_initial(
     authorization: Optional[str] = Header(None),
     x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key"),
 ):
-    """One-time seed of Osif's monthly fixed costs. Idempotent — checks if any
+    """One-time seed of Osif's monthly fixed costs. Idempotent � checks if any
     expenses exist for this user this month before inserting."""
     _admin(authorization, x_admin_key)
     pool = _pool(request)
     await _ensure_schema(pool)
 
     seed_data = [
-        {"category": "rent",         "amount_ils": 6900, "recurring": "monthly", "description": "שכ\"ד דירה"},
-        {"category": "property_tax", "amount_ils": 2300, "recurring": "monthly", "description": "ארנונה"},
-        {"category": "fuel",         "amount_ils":  600, "recurring": "monthly", "description": "דלק חודשי"},
-        {"category": "auto_repair",  "amount_ils": 5000, "recurring": "yearly",  "description": "מוסכים וטיפולים (אומדן שנתי)"},
+        {"category": "rent",         "amount_ils": 6900, "recurring": "monthly", "description": "??\"? ????"},
+        {"category": "property_tax", "amount_ils": 2300, "recurring": "monthly", "description": "??????"},
+        {"category": "fuel",         "amount_ils":  600, "recurring": "monthly", "description": "??? ?????"},
+        {"category": "auto_repair",  "amount_ils": 5000, "recurring": "yearly",  "description": "?????? ???????? (????? ????)"},
     ]
 
     async with pool.acquire() as conn:
@@ -476,5 +476,6 @@ async def seed_initial(
             )
             inserted.append(_row_to_dict(row))
     return {"ok": True, "inserted": len(inserted), "expenses": inserted}
+
 
 

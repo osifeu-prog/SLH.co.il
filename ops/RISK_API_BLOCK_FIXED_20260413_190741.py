@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # ===== RISK DASHBOARD API (FIXED) =====
 
 @app.get("/api/risk/entities")
@@ -71,4 +71,5 @@ async def api_external_watch():
         }
 
 # ===== END RISK DASHBOARD API (FIXED) =====
+
 

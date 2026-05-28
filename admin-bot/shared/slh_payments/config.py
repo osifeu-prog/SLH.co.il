@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """Payment configuration shared across all SLH bots."""
 import os
 import json
@@ -78,5 +78,6 @@ BOT_PRICING = {
 
 # System bus group
 SYSTEM_BUS_LINK = "https://t.me/+qon4jktYobA3Mjlk"
+
 
 

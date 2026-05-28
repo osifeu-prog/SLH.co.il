@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 #!/usr/bin/env python3
 """Create a pending_payment_intent on the SLH Railway API so the monitor can
 auto-match an incoming BSC/TON transfer to a user.
@@ -89,4 +89,5 @@ def main(argv: list[str]) -> int:
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
+
 

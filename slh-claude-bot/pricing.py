@@ -163,3 +163,4 @@ if __name__ == "__main__":
     print(f"Cost / message: ILS {cost_per_message_ils():.3f}")
     for t in ("free", "pro", "vip"):
         print(f"  {t}: margin ILS {expected_margin_ils(t):+.2f} ({margin_pct(t):+.1f}%)")
+

@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import os
 import asyncio
 import redis
@@ -22,10 +22,10 @@ def get_menu(uid):
     is_happy = db.get("happy_hour") == "1"
     slot_text = " Spin (Happy Hour! )" if is_happy else " Spin"
     keyboard = [
-        [InlineKeyboardButton(slot_text, callback_data='v_slots'), InlineKeyboardButton(" גלגל המזל", callback_data='wheel')],
-        [InlineKeyboardButton(" ארקייד", callback_data='v_arcade'), InlineKeyboardButton(" בונוס יומי", callback_data='daily')],
-        [InlineKeyboardButton(" טבלה", callback_data='leader'), InlineKeyboardButton(" פרופיל", callback_data='prof')],
-        [InlineKeyboardButton(" קופון", callback_data='promo')]
+        [InlineKeyboardButton(slot_text, callback_data='v_slots'), InlineKeyboardButton(" ???? ????", callback_data='wheel')],
+        [InlineKeyboardButton(" ??????", callback_data='v_arcade'), InlineKeyboardButton(" ????? ????", callback_data='daily')],
+        [InlineKeyboardButton(" ????", callback_data='leader'), InlineKeyboardButton(" ??????", callback_data='prof')],
+        [InlineKeyboardButton(" ?????", callback_data='promo')]
     ]
     if str(uid) == str(ADMIN_ID):
         keyboard.append([InlineKeyboardButton(" Admin Panel", callback_data='admin')])
@@ -37,8 +37,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     db.sadd("all_users", user.id)
     db.zadd("leaderboard", {user.first_name: bal})
     
-    msg = f" <b>NFTY CASINO V29</b> \n\n שחקן: <b>{user.first_name}</b>\n יתרה: <b>{bal:,} </b>\n"
-    if db.get("happy_hour") == "1": msg += "\n <b>HAPPY HOUR: זכיות כפולות!</b>"
+    msg = f" <b>NFTY CASINO V29</b> \n\n ????: <b>{user.first_name}</b>\n ????: <b>{bal:,} </b>\n"
+    if db.get("happy_hour") == "1": msg += "\n <b>HAPPY HOUR: ????? ??????!</b>"
     
     if update.message: await update.message.reply_text(msg, reply_markup=get_menu(user.id), parse_mode='HTML')
     else: await update.callback_query.edit_message_text(msg, reply_markup=get_menu(user.id), parse_mode='HTML')
@@ -52,13 +52,13 @@ async def handle_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if context.user_data.get('lock'): return
 
     if query.data == 'v_slots':
-        kb = [[InlineKeyboardButton("הימור 50", callback_data='b_50'), InlineKeyboardButton("הימור 100", callback_data='b_100')], [InlineKeyboardButton(" חזור", callback_data='home')]]
-        await query.edit_message_text(" בחר סכום הימור:", reply_markup=InlineKeyboardMarkup(kb))
+        kb = [[InlineKeyboardButton("????? 50", callback_data='b_50'), InlineKeyboardButton("????? 100", callback_data='b_100')], [InlineKeyboardButton(" ????", callback_data='home')]]
+        await query.edit_message_text(" ??? ???? ?????:", reply_markup=InlineKeyboardMarkup(kb))
 
     elif query.data.startswith('b_'):
         amt = int(query.data.split('_')[1])
         if bal < amt:
-            await query.message.reply_text(" אין לך מספיק כסף!")
+            await query.message.reply_text(" ??? ?? ????? ???!")
             return
         context.user_data['lock'] = True
         set_bal(uid, bal - amt)
@@ -70,19 +70,19 @@ async def handle_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
             mult = 20 if db.get("happy_hour") == "1" else 10
             win = amt * mult
             set_bal(uid, get_bal(uid) + win)
-            await query.message.reply_text(f" <b>זכית ב-{win:,}!</b>", reply_markup=get_menu(uid), parse_mode='HTML')
+            await query.message.reply_text(f" <b>???? ?-{win:,}!</b>", reply_markup=get_menu(uid), parse_mode='HTML')
         else:
-            await query.message.reply_text("לא הפעם... נסה שוב!", reply_markup=get_menu(uid))
+            await query.message.reply_text("?? ????... ??? ???!", reply_markup=get_menu(uid))
         context.user_data['lock'] = False
 
     elif query.data == 'daily':
         today = datetime.now().strftime("%d%m")
         if db.get(f"d:{uid}") == today:
-            await query.message.reply_text(" כבר אספת היום!")
+            await query.message.reply_text(" ??? ???? ????!")
         else:
             db.set(f"d:{uid}", today)
             set_bal(uid, bal + 250)
-            await query.message.reply_text(" קיבלת 250 מטבעות!", reply_markup=get_menu(uid))
+            await query.message.reply_text(" ????? 250 ??????!", reply_markup=get_menu(uid))
 
     elif query.data == 'home': await start(update, context)
 
@@ -92,8 +92,8 @@ async def promo_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if not db.get(f"up:{uid}"):
             db.set(f"up:{uid}", "1")
             set_bal(uid, get_bal(uid) + 500)
-            await update.message.reply_text(" קופון נוצל! +500 ")
-        else: await update.message.reply_text(" כבר נוצל.")
+            await update.message.reply_text(" ????? ????! +500 ")
+        else: await update.message.reply_text(" ??? ????.")
     await start(update, context)
 
 def main():
@@ -108,4 +108,5 @@ def main():
     app.run_polling(drop_pending_updates=True)
 
 if __name__ == "__main__": main()
+
 

@@ -1,11 +1,11 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import pandas as pd
 import numpy as np
 
 df = pd.read_csv('tokens_history.csv')
 print(f"Loaded {len(df)} tokens.")
 
-# תנאי סינון
+# ???? ?????
 df_filtered = df[
     (df['liquidity_usd'] > 100_000) &
     (df['volume_usd_24h'] > 50_000) &
@@ -15,7 +15,7 @@ df_filtered = df[
 print(f"After filtering: {len(df_filtered)} tokens.")
 
 def simulate_trade(row):
-    # הסתברות 40% לרווח 30%, 60% להפסד 20%
+    # ??????? 40% ????? 30%, 60% ????? 20%
     if np.random.random() < 0.4:
         return 0.30
     else:
@@ -45,4 +45,5 @@ if results:
     print(f"Expectancy per trade: {np.mean(results):.2%}")
 else:
     print("No trades after filtering.")
+
 

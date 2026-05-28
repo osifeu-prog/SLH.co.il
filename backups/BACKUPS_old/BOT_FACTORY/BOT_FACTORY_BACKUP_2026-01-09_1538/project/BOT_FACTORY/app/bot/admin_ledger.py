@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from decimal import Decimal, InvalidOperation
@@ -30,7 +30,7 @@ async def admin_credit_ledger_cmd(update: Update, context: ContextTypes.DEFAULT_
       /admin_credit_ledger 1.00
     """
     if not _is_admin(update):
-        await update.effective_message.reply_text("⛔ Admin only.")
+        await update.effective_message.reply_text("? Admin only.")
         return
 
     args = list(context.args or [])
@@ -81,9 +81,10 @@ async def admin_credit_ledger_cmd(update: Update, context: ContextTypes.DEFAULT_
     )
 
     await update.effective_message.reply_text(
-        "✅ Ledger credited\n"
+        "? Ledger credited\n"
         f"telegram_id: {tid}\n"
         f"amount: {amt:.4f} SLH\n"
         f"tx_id: {tx_id}"
     )
+
 

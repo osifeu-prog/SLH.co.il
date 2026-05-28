@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import os
 from typing import Any, Dict, List
 
@@ -28,7 +28,7 @@ def _check_database(checks: Dict[str, Any]) -> str:
 
 
 def _check_env(checks: Dict[str, Any]) -> str:
-    # �-ש�.�': /ready �o�? �?�?�.ר �o�"�T�>ש�o �>ש�?ר�Tצ�T�? API-only (DISABLE_TELEGRAM_BOT=1)
+    # ?-??.?': /ready ?o?? ?????.? ?o?"?T?>??o ?>?????T??T?? API-only (DISABLE_TELEGRAM_BOT=1)
     missing: List[str] = []
 
     disable_bot = _is_truthy(os.getenv("DISABLE_TELEGRAM_BOT") or "")
@@ -36,11 +36,11 @@ def _check_env(checks: Dict[str, Any]) -> str:
 
     required: List[str] = []
 
-    # BOT_TOKEN נ�"רש רק �?�? �"�'�.�? �?�.פע�o
+    # BOT_TOKEN ??"?? ?? ???? ?"?'?.?? ???.???o
     if not disable_bot:
         required.append("BOT_TOKEN")
 
-    # �?ש�?נ�T BSC נ�"רש�T�? רק �?�? �'�Tקש�? �'�>�o�o �o�'צע �'�"�Tק�.�? �?�.�?-צ'�T�T�?
+    # ???????T BSC ??"???T?? ?? ???? ?'?T???? ?'?>?o?o ?o?'?? ?'?"?T??.?? ???.??-?'?T?T??
     if bsc_rpc:
         required.extend(["COMMUNITY_WALLET_ADDRESS", "SLH_TOKEN_ADDRESS"])
 
@@ -63,7 +63,7 @@ def _check_telegram(checks: Dict[str, Any], quick: bool) -> str:
         checks["telegram"] = {"ok": False, "error": "BOT_TOKEN not configured"}
         return "degraded"
 
-    # �?�? �?רצ�" later: �'�"�Tק�? getMe �?�?�T�?�T�?. �>ר�'ע נש�?�.ר �Tצ�T�'/�?�"�Tר.
+    # ???? ?????" later: ?'?"?T??? getMe ?????T???T??. ?>??'? ?????.? ?T??T?'/???"?T?.
     checks["telegram"] = {"ok": True}
     return "ok"
 
@@ -97,5 +97,6 @@ def run_checks(quick: bool = True) -> Dict[str, Any]:
 def run_selftest(quick: bool = True) -> Dict[str, Any]:
     # Backward-compatible alias (older main.py imports run_selftest)
     return run_checks(quick=quick)
+
 
 

@@ -1,11 +1,11 @@
-﻿"""
-הגדרות מערכת Crypto-Class
+"""
+?????? ????? Crypto-Class
 """
 
 import os
 
 class Config:
-    """הגדרות בסיסיות"""
+    """?????? ???????"""
     BOT_TOKEN = os.environ.get("BOT_TOKEN")
     WEBHOOK_URL = os.environ.get("WEBHOOK_URL", "").rstrip('/')
     TEACHER_PASSWORD = os.environ.get("TEACHER_PASSWORD", "admin123")
@@ -15,17 +15,18 @@ class Config:
     
     @classmethod
     def validate(cls):
-        """בדיקת תקינות ההגדרות"""
+        """????? ?????? ???????"""
         errors = []
         
         if not cls.BOT_TOKEN:
-            errors.append("BOT_TOKEN לא מוגדר")
+            errors.append("BOT_TOKEN ?? ?????")
         
         if not cls.WEBHOOK_URL:
-            errors.append("WEBHOOK_URL לא מוגדר (מומלץ ב-production)")
+            errors.append("WEBHOOK_URL ?? ????? (????? ?-production)")
         
         if errors:
-            raise ValueError("שגיאות בהגדרות: " + ", ".join(errors))
+            raise ValueError("?????? ???????: " + ", ".join(errors))
         
         return True
+
 

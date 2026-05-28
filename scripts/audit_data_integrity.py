@@ -1,6 +1,6 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
-Data Integrity Audit — scan SLH codebase for fake/mock/fallback patterns
+Data Integrity Audit � scan SLH codebase for fake/mock/fallback patterns
 that violate CLAUDE.md's "never fake data in production" rule.
 
 Usage:
@@ -28,7 +28,7 @@ import json
 import re
 import sys
 
-# Force UTF-8 stdout on Windows (avoids cp1252 UnicodeEncodeError on ─ box chars)
+# Force UTF-8 stdout on Windows (avoids cp1252 UnicodeEncodeError on - box chars)
 if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace", line_buffering=True)
 from dataclasses import dataclass, asdict
@@ -58,18 +58,18 @@ class Finding:
     note: str
 
     def __repr__(self):
-        return f"[{self.severity}] {self.file}:{self.line} — {self.note}"
+        return f"[{self.severity}] {self.file}:{self.line} � {self.note}"
 
 
 FINDINGS: list[Finding] = []
 
-# ── Rule 1: `|| <digits>` in JS / HTML ─────────────────────────────
-# High-risk fallback — JS coerces 0/"" to falsy → fallback fires when real data is 0.
+# -- Rule 1: `|| <digits>` in JS / HTML -----------------------------
+# High-risk fallback � JS coerces 0/"" to falsy ? fallback fires when real data is 0.
 RE_JS_FALLBACK = re.compile(
     r'\b(\w+(?:\.\w+)*|\w+\[[^\]]+\])\s*\|\|\s*(\d{1,5})(?![\d.])'
 )
 
-# ── Rule 2: HTML hardcoded stat values ─────────────────────────────
+# -- Rule 2: HTML hardcoded stat values -----------------------------
 # <span id="...something stat-y..."> <number> </span>
 RE_HTML_STAT = re.compile(
     r'<(span|div|strong|b|em|h[1-6])\s+[^>]*id\s*=\s*["\']'
@@ -78,10 +78,10 @@ RE_HTML_STAT = re.compile(
     re.IGNORECASE,
 )
 
-# ── Rule 3: Mock markers ───────────────────────────────────────────
+# -- Rule 3: Mock markers -------------------------------------------
 RE_MOCK = re.compile(r'\b(mock|fake|dummy|placeholder|lorem)\w*', re.IGNORECASE)
 
-# ── Rule 4: TODO/FIXME referencing real data ───────────────────────
+# -- Rule 4: TODO/FIXME referencing real data -----------------------
 RE_TODO = re.compile(r'\b(TODO|FIXME|HACK|XXX)\b[^\n]*\b(real|api|endpoint|live|backend|connect|replace|hardcoded)\b', re.IGNORECASE)
 
 # Contexts where a numeric fallback is LIKELY display (not offset / limit / timeout)
@@ -122,20 +122,20 @@ def scan_file(path: Path) -> None:
             if any(kw in lower_line for kw in ("limit", "offset", "timeout", "delay", "margin", "padding", "width", "height", "fontsize", "zindex", "opacity", "retries", "maxretries")):
                 continue
             # Severity heuristic:
-            #   `|| 0` or `|| 0.0` — honest (shows 0 when unknown)
-            #   `|| <nonzero>` + display hint — HIGH (phantom number)
-            #   `|| <nonzero>` elsewhere — MED
+            #   `|| 0` or `|| 0.0` � honest (shows 0 when unknown)
+            #   `|| <nonzero>` + display hint � HIGH (phantom number)
+            #   `|| <nonzero>` elsewhere � MED
             num_int = int(num)
             has_hint = bool(DISPLAY_HINT_RE.search(stripped))
             if num_int == 0:
                 sev = "LOW"
-                note = f"`{var} || 0` — benign; displays 0 when data missing (matches 0 truthfully)"
+                note = f"`{var} || 0` � benign; displays 0 when data missing (matches 0 truthfully)"
             elif has_hint:
                 sev = "HIGH"
-                note = f"`{var} || {num}` — PHANTOM FALLBACK. When real value is 0, renders {num} as if truth."
+                note = f"`{var} || {num}` � PHANTOM FALLBACK. When real value is 0, renders {num} as if truth."
             else:
                 sev = "MED"
-                note = f"`{var} || {num}` — non-zero fallback; verify not user-visible"
+                note = f"`{var} || {num}` � non-zero fallback; verify not user-visible"
             FINDINGS.append(Finding(
                 severity=sev, category="JS_FALLBACK",
                 file=rel, line=lineno,
@@ -153,10 +153,10 @@ def scan_file(path: Path) -> None:
                     severity="HIGH", category="HTML_HARDCODED_STAT",
                     file=rel, line=lineno,
                     snippet=stripped[:160],
-                    note=f"<{_tag} id=\"{elem_id}\"> contains hardcoded {num} — should start as '--' or '0'",
+                    note=f"<{_tag} id=\"{elem_id}\"> contains hardcoded {num} � should start as '--' or '0'",
                 ))
 
-        # Rule 3: mock markers (context-aware — skip in tests + comments with 'not mock')
+        # Rule 3: mock markers (context-aware � skip in tests + comments with 'not mock')
         if RE_MOCK.search(stripped) and not any(kw in stripped.lower() for kw in ("not mock", "no mock", "remove mock", "kill mock", "test_", "test.py")):
             if "// " not in stripped and "# " not in stripped:  # not a comment saying "avoid mock"
                 # actual mock usage
@@ -164,7 +164,7 @@ def scan_file(path: Path) -> None:
                     severity="MED", category="MOCK_REFERENCE",
                     file=rel, line=lineno,
                     snippet=stripped[:160],
-                    note="contains mock/fake/dummy marker — verify not in production path",
+                    note="contains mock/fake/dummy marker � verify not in production path",
                 ))
 
         # Rule 4: TODO/FIXME around real-data wiring
@@ -173,7 +173,7 @@ def scan_file(path: Path) -> None:
                 severity="LOW", category="TODO_REAL_DATA",
                 file=rel, line=lineno,
                 snippet=stripped[:160],
-                note="TODO/FIXME mentions real/api/endpoint — incomplete wiring",
+                note="TODO/FIXME mentions real/api/endpoint � incomplete wiring",
             ))
 
 
@@ -185,7 +185,7 @@ def print_human(severity_filter: str | None) -> None:
         sorted_findings = [f for f in sorted_findings if f.severity == severity_filter.upper()]
 
     if not sorted_findings:
-        print("✓ No data-integrity violations found.")
+        print("? No data-integrity violations found.")
         return
 
     by_sev: dict[str, list[Finding]] = {}
@@ -197,11 +197,11 @@ def print_human(severity_filter: str | None) -> None:
         fs = by_sev.get(sev, [])
         if not fs:
             continue
-        print(f"── {sev} ({len(fs)}) ──")
+        print(f"-- {sev} ({len(fs)}) --")
         for f in fs:
             print(f"  {f.file}:{f.line}  [{f.category}]")
             print(f"      {f.snippet[:140]}")
-            print(f"      → {f.note}")
+            print(f"      ? {f.note}")
             print()
 
 
@@ -227,4 +227,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+
 

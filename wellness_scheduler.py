@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 SLH Wellness Task Scheduler - APScheduler Integration
 Handles cron-based task broadcasting and token distribution
@@ -24,7 +24,7 @@ class WellnessScheduler:
     async def start(self):
         """Initialize database connection and start scheduler"""
         # Phase 0B (2026-04-21): unified fail-fast pool via shared_db_core.
-        # max_size standardized 10→4 per Phase 0B plan.
+        # max_size standardized 10?4 per Phase 0B plan.
         try:
             from shared_db_core import init_db_pool as _shared_init_db_pool
             self.pool = await _shared_init_db_pool(self.database_url)
@@ -195,5 +195,6 @@ def get_wellness_scheduler() -> WellnessScheduler:
     if not _wellness_scheduler:
         raise RuntimeError("Wellness scheduler not initialized")
     return _wellness_scheduler
+
 
 

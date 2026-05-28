@@ -1,10 +1,10 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import requests
 import time
 import json
 
 def fetch_new_pairs(chain='bsc', limit=10):
-    """מביא את המטבעות החדשים ביותר ב-DEX לפי DexScreener"""
+    """???? ?? ??????? ?????? ????? ?-DEX ??? DexScreener"""
     url = f"https://api.dexscreener.com/token-profiles/latest/{chain}"
     try:
         resp = requests.get(url, timeout=10)
@@ -23,4 +23,5 @@ if __name__ == '__main__':
     print(f"Found {len(tokens)} new tokens:")
     for token in tokens:
         print(token)
+
 

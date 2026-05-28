@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from fastapi import APIRouter
 
 router = APIRouter()
@@ -6,4 +6,5 @@ router = APIRouter()
 @router.get("/items")
 async def get_items():
     return {"items": []}
+
 

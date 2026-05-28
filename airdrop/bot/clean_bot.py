@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 #!/usr/bin/env python3
 """
 TON Airdrop Bot - CLEAN WORKING VERSION
@@ -40,19 +40,19 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         pass
     
     # SIMPLE welcome - no complex formatting
-    welcome = f"""ברוך הבא {user.first_name}!
+    welcome = f"""???? ??? {user.first_name}!
 
-בוט Airdrop TON פעיל.
+??? Airdrop TON ????.
 
-מחיר: {PRICE} ₪ (TON)
-טוקנים: 1000 למשתמש
+????: {PRICE} ? (TON)
+??????: 1000 ??????
 
-פקודות:
-/airdrop - בקשת airdrop
-/status - מצב משתמש
-/help - עזרה
+??????:
+/airdrop - ???? airdrop
+/status - ??? ?????
+/help - ????
 
-ארנק לתשלום:
+???? ??????:
 {TON_WALLET}"""
     
     await update.message.reply_text(welcome)
@@ -60,7 +60,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def airdrop(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Create airdrop request"""
     user = update.effective_user
-    await update.message.reply_text("מכין airdrop...")
+    await update.message.reply_text("???? airdrop...")
     
     try:
         # Request airdrop from API
@@ -71,16 +71,16 @@ async def airdrop(update: Update, context: ContextTypes.DEFAULT_TYPE):
             data = response.json()["airdrop"]
             
             # SIMPLE payment message
-            payment_msg = f"""Airdrop מוכן!
+            payment_msg = f"""Airdrop ????!
 
-מספר עסקה: {data['id']}
-סכום: {data.get('price_ils', PRICE)} TON
-תוקף: שעה
+???? ????: {data['id']}
+????: {data.get('price_ils', PRICE)} TON
+????: ???
 
-ארנק TON:
+???? TON:
 {data.get('ton_wallet', TON_WALLET)}
 
-קישור תשלום:
+????? ?????:
 {data.get('payment_url', '')}"""
             
             await update.message.reply_text(payment_msg)
@@ -92,11 +92,11 @@ async def airdrop(update: Update, context: ContextTypes.DEFAULT_TYPE):
             logger.info(f"Airdrop created: {data['id']}")
             
         else:
-            await update.message.reply_text("שגיאה בשרת. נסה שוב.")
+            await update.message.reply_text("????? ????. ??? ???.")
             
     except Exception as e:
         logger.error(f"Airdrop error: {e}")
-        await update.message.reply_text("שגיאה. נסה שוב מאוחר יותר.")
+        await update.message.reply_text("?????. ??? ??? ????? ????.")
 
 async def status(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Check user status"""
@@ -109,52 +109,52 @@ async def status(update: Update, context: ContextTypes.DEFAULT_TYPE):
             user_data = response.json()
             
             if user_data.get("status") == "user_not_found":
-                await update.message.reply_text("לא נרשמת. הקש /start")
+                await update.message.reply_text("?? ?????. ??? /start")
                 return
             
-            status_msg = f"""סטטוס משתמש
+            status_msg = f"""????? ?????
 
-שם: {user_data.get('first_name', 'משתמש')}
-טוקנים: {user_data.get('balance', 0)}
+??: {user_data.get('first_name', '?????')}
+??????: {user_data.get('balance', 0)}
 Airdrops: {len(user_data.get('airdrops', []))}"""
             
             await update.message.reply_text(status_msg)
         else:
-            await update.message.reply_text("לא ניתן לטעון נתונים.")
+            await update.message.reply_text("?? ???? ????? ??????.")
             
     except Exception as e:
         logger.error(f"Status error: {e}")
-        await update.message.reply_text("שגיאה זמנית.")
+        await update.message.reply_text("????? ?????.")
 
 async def help_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Help command"""
-    help_text = """עזרה
+    help_text = """????
 
-/start - הרשמה
-/airdrop - בקשת airdrop
-/status - מצב משתמש
+/start - ?????
+/airdrop - ???? airdrop
+/status - ??? ?????
 
-תהליך:
-1. הקש /start
-2. הקש /airdrop
-3. שלח תשלום
-4. קבל טוקנים
+?????:
+1. ??? /start
+2. ??? /airdrop
+3. ??? ?????
+4. ??? ??????
 
-תמיכה: @Osif83"""
+?????: @Osif83"""
     
     await update.message.reply_text(help_text)
 
 def main():
     """Start the bot"""
-    print("🚀 Starting CLEAN Airdrop Bot...")
-    print(f"🔗 API: {API_URL}")
+    print("?? Starting CLEAN Airdrop Bot...")
+    print(f"?? API: {API_URL}")
     
     # Clear webhooks
     try:
         requests.get(f"https://api.telegram.org/bot{TOKEN}/deleteWebhook", timeout=5)
-        print("✅ Cleared webhooks")
+        print("? Cleared webhooks")
     except:
-        print("⚠️ Could not clear webhooks")
+        print("?? Could not clear webhooks")
     
     # Create app
     app = Application.builder().token(TOKEN).build()
@@ -166,10 +166,11 @@ def main():
     app.add_handler(CommandHandler("help", help_cmd))
     
     # Start
-    print("🤖 Bot is running and ready!")
+    print("?? Bot is running and ready!")
     app.run_polling()
 
 if __name__ == "__main__":
     main()
+
 
 

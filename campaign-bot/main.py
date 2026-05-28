@@ -1,6 +1,6 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
-SLH Campaign SaaS - ×›×œ×™ × ×™×”×•×œ ×§×ž×¤×™×™× ×™× ×œ×ž×•×‘×™×œ×™ ×“×¢×ª ×§×”×œ
+SLH Campaign SaaS - כלי ניהול קמפיינים למובילי דעת קהל
 Powered by SPARK IND | SLH Ecosystem
 """
 import os
@@ -230,7 +230,7 @@ async def _coord_post_init(application):
 
     PTB Application doesn't share an aiogram bot instance, so we use
     post_event_via_token (raw HTTP). No-op if COORDINATION_GROUP_CHAT_ID
-    is unset. Inbound coordination is not yet wired for PTB bots —
+    is unset. Inbound coordination is not yet wired for PTB bots �
     Phase 2C follow-up.
     """
     try:
@@ -265,5 +265,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 

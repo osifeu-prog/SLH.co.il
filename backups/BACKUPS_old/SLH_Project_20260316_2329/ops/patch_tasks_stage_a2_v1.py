@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from pathlib import Path
 from textwrap import dedent
 
@@ -389,4 +389,5 @@ service_path.write_text(service_text, encoding="utf-8", newline="\\n")
 handler_path.write_text(handler_text, encoding="utf-8", newline="\\n")
 
 print("tasks service + handler patched")
+
 

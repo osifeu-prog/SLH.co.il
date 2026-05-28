@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """create core financial tables v3
 
 Revises: 46be64a69648
@@ -83,4 +83,5 @@ def downgrade() -> None:
         DROP TABLE IF EXISTS public.users;
         """
     )
+
 

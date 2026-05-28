@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import re
 
 with open('D:/SLH_ECOSYSTEM/website/admin.html', 'r', encoding='utf-8') as f:
@@ -12,7 +12,7 @@ print(f'Base OK: {len(c)} chars')
 # 1. Nav: Finance + Trust
 c = c.replace(
     "onclick=\"refreshAll()\">",
-    "onclick=\"showPage('finance')\">💰 Finance</a>\n        <a href=\"#\" onclick=\"showPage('trust')\">🌐 Trust Network</a>\n        <a href=\"#\" onclick=\"refreshAll()\">"
+    "onclick=\"showPage('finance')\">?? Finance</a>\n        <a href=\"#\" onclick=\"showPage('trust')\">?? Trust Network</a>\n        <a href=\"#\" onclick=\"refreshAll()\">"
 )
 
 # 2. Page triggers
@@ -22,7 +22,7 @@ c = c.replace(
 )
 
 # 3. Finance + Trust HTML
-pages_html = '\n        <div id="page-finance" style="display:none"><div style="background:linear-gradient(135deg,rgba(255,215,0,.08),rgba(0,232,135,.04));border:1px solid var(--gold);padding:20px;margin-bottom:24px"><h2 style="color:var(--gold);font-size:18px">💰 Financial Dashboard</h2></div><div class="kpi-grid"><div class="kpi gold"><div class="kpi-label">Genesis</div><div class="kpi-value" id="fin-raised">--</div></div><div class="kpi green"><div class="kpi-label">Pool BNB</div><div class="kpi-value" id="fin-pool-bnb">--</div></div><div class="kpi cyan"><div class="kpi-label">SLH</div><div class="kpi-value" id="fin-slh-db">--</div></div><div class="kpi purple"><div class="kpi-label">ZVK</div><div class="kpi-value" id="fin-zvk">--</div></div></div></div>\n        <div id="page-trust" style="display:none"><div style="background:linear-gradient(135deg,rgba(0,229,255,.08),rgba(168,85,247,.04));border:1px solid var(--cyan);padding:20px;margin-bottom:24px"><h2 style="color:var(--cyan);font-size:18px">🌐 Trust Network</h2></div><div class="kpi-grid"><div class="kpi green"><div class="kpi-label">Trust</div><div class="kpi-value" id="gtn-trust">100</div></div><div class="kpi red"><div class="kpi-label">Flagged</div><div class="kpi-value" id="gtn-flagged">0</div></div></div></div>\n'
+pages_html = '\n        <div id="page-finance" style="display:none"><div style="background:linear-gradient(135deg,rgba(255,215,0,.08),rgba(0,232,135,.04));border:1px solid var(--gold);padding:20px;margin-bottom:24px"><h2 style="color:var(--gold);font-size:18px">?? Financial Dashboard</h2></div><div class="kpi-grid"><div class="kpi gold"><div class="kpi-label">Genesis</div><div class="kpi-value" id="fin-raised">--</div></div><div class="kpi green"><div class="kpi-label">Pool BNB</div><div class="kpi-value" id="fin-pool-bnb">--</div></div><div class="kpi cyan"><div class="kpi-label">SLH</div><div class="kpi-value" id="fin-slh-db">--</div></div><div class="kpi purple"><div class="kpi-label">ZVK</div><div class="kpi-value" id="fin-zvk">--</div></div></div></div>\n        <div id="page-trust" style="display:none"><div style="background:linear-gradient(135deg,rgba(0,229,255,.08),rgba(168,85,247,.04));border:1px solid var(--cyan);padding:20px;margin-bottom:24px"><h2 style="color:var(--cyan);font-size:18px">?? Trust Network</h2></div><div class="kpi-grid"><div class="kpi green"><div class="kpi-label">Trust</div><div class="kpi-value" id="gtn-trust">100</div></div><div class="kpi red"><div class="kpi-label">Flagged</div><div class="kpi-value" id="gtn-flagged">0</div></div></div></div>\n'
 c = c.replace('        <!-- INFRA PAGE -->', pages_html + '        <!-- INFRA PAGE -->')
 
 # 4. Users table upgrade
@@ -48,4 +48,5 @@ for i, s in enumerate(scripts):
 with open('D:/SLH_ECOSYSTEM/website/admin.html', 'w', encoding='utf-8') as f:
     f.write(c)
 print(f'Done! {len(c)} chars, all checks passed')
+
 

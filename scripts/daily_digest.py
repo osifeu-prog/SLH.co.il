@@ -1,6 +1,6 @@
-ï»¿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
-Daily Digest â€” every ~21:00 Israel time, compile a summary of what
+Daily Digest — every ~21:00 Israel time, compile a summary of what
 happened today and DM it to Osif.
 
 Sources:
@@ -79,35 +79,35 @@ def build_digest(target_date: _date) -> str:
     until_iso = until.isoformat()
 
     lines = []
-    lines.append(f"ðŸ“… *SLH Daily Digest Â· {target_date.isoformat()}*")
+    lines.append(f"?? *SLH Daily Digest · {target_date.isoformat()}*")
     lines.append("")
 
     # Commits
     api_commits = git_commits_today(API_REPO, since_iso, until_iso)
     web_commits = git_commits_today(WEB_REPO, since_iso, until_iso) if WEB_REPO.exists() else []
 
-    lines.append(f"ðŸ“¦ *Commits* â€” api: {len(api_commits)} Â· website: {len(web_commits)}")
+    lines.append(f"?? *Commits* — api: {len(api_commits)} · website: {len(web_commits)}")
     if api_commits:
         lines.append("")
         lines.append("_API repo:_")
         for c in api_commits[:8]:
-            lines.append(f"  â€¢ {c}")
+            lines.append(f"  • {c}")
         if len(api_commits) > 8:
-            lines.append(f"  â€¢ ...+{len(api_commits)-8} more")
+            lines.append(f"  • ...+{len(api_commits)-8} more")
     if web_commits:
         lines.append("")
         lines.append("_Website repo:_")
         for c in web_commits[:5]:
-            lines.append(f"  â€¢ {c}")
+            lines.append(f"  • {c}")
 
     lines.append("")
 
     # API health
     health = api_get("/api/health")
     if health:
-        lines.append(f"â¤ï¸  *API health:* {health.get('status')} Â· v{health.get('version')} Â· db={health.get('db')}")
+        lines.append(f"??  *API health:* {health.get('status')} · v{health.get('version')} · db={health.get('db')}")
     else:
-        lines.append("â¤ï¸  *API health:* âŒ UNREACHABLE")
+        lines.append("??  *API health:* ? UNREACHABLE")
     lines.append("")
 
     # Reality snapshot
@@ -117,7 +117,7 @@ def build_digest(target_date: _date) -> str:
         founders = len(users.get("founders", []) or [])
         community = len(users.get("community", []) or [])
         total = founders + community
-        lines.append(f"ðŸ‘¥ *Users:* {total} total Â· founders={founders} Â· community={community}")
+        lines.append(f"?? *Users:* {total} total · founders={founders} · community={community}")
 
         bc = reality.get("recent_broadcasts") or []
         today_bc = 0
@@ -126,14 +126,14 @@ def build_digest(target_date: _date) -> str:
             if ca and ca.startswith(target_date.isoformat()):
                 today_bc += 1
         if today_bc:
-            lines.append(f"ðŸ“¤ *Broadcasts today:* {today_bc}")
+            lines.append(f"?? *Broadcasts today:* {today_bc}")
 
     # Community stats
     stats = api_get("/api/community/stats")
     if stats:
         lines.append(
-            f"ðŸ’¬ *Community:* posts_today={stats.get('posts_today',0)} Â· "
-            f"active_today={stats.get('active_today',0)} Â· "
+            f"?? *Community:* posts_today={stats.get('posts_today',0)} · "
+            f"active_today={stats.get('active_today',0)} · "
             f"total_posts={stats.get('total_posts',0)}"
         )
     lines.append("")
@@ -142,11 +142,11 @@ def build_digest(target_date: _date) -> str:
     high = count_audit_high()
     if high >= 0:
         if high == 0:
-            lines.append("âœ… *Data integrity:* 0 HIGH findings")
+            lines.append("? *Data integrity:* 0 HIGH findings")
         elif high == 1:
-            lines.append("ðŸŸ¢ *Data integrity:* 1 HIGH finding (legitimate library default)")
+            lines.append("?? *Data integrity:* 1 HIGH finding (legitimate library default)")
         else:
-            lines.append(f"ðŸŸ¡ *Data integrity:* {high} HIGH findings â€” run `python scripts/audit_data_integrity.py --severity HIGH`")
+            lines.append(f"?? *Data integrity:* {high} HIGH findings — run `python scripts/audit_data_integrity.py --severity HIGH`")
     lines.append("")
 
     # End
@@ -172,7 +172,7 @@ def send_to_osif(message: str) -> bool:
         )
         with urllib.request.urlopen(req, timeout=30) as r:
             body = r.read().decode("utf-8")
-            print(f"[OK] HTTP {r.status} â€” {body[:200]}")
+            print(f"[OK] HTTP {r.status} — {body[:200]}")
             return True
     except Exception as e:
         print(f"[ERR] {e}", file=sys.stderr)
@@ -209,4 +209,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+
 

@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from app.main import app
 
 def show(path: str):
@@ -18,5 +18,6 @@ def show(path: str):
 
 show("/public/progress")
 show("/api/v1/public/progress")
+
 
 

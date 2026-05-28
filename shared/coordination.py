@@ -263,3 +263,4 @@ async def init_coordination_for_bot(
 
     register_inbound(dispatcher, bot_handle, handlers)
     return await post_event(bot, name, "ready", f"{info} polling started")
+

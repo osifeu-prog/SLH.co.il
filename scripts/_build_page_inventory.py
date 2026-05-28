@@ -174,3 +174,4 @@ lines.append("")
 OUT.parent.mkdir(parents=True, exist_ok=True)
 OUT.write_text("\n".join(lines), encoding="utf-8")
 print(f"Wrote: {OUT}  ({len(lines)} lines, {sum(len(v) for v in buckets.values())} root pages classified)")
+

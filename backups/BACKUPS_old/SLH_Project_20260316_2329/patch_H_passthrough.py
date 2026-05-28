@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from pathlib import Path
 import re
 import shutil
@@ -21,4 +21,5 @@ if n == 0:
 path.write_text(new_text, encoding="utf-8", newline="\n")
 print("Patched H() successfully")
 print(f"Backup: {backup}")
+
 

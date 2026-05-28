@@ -1,32 +1,32 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
-Academia UGC â€” User-Generated Content infrastructure for SLH Academia.
+Academia UGC — User-Generated Content infrastructure for SLH Academia.
 
 Backs the instructor marketplace: users can register as instructors, upload
 courses (admin-approved), get paid 70% of every license sold (platform takes
 30%), and students can review the courses they purchased.
 
 Schema additions:
-  academy_instructors  â€” instructor profiles + lifetime stats
-  academy_earnings     â€” per-license 70/30 split ledger
-  academy_reviews      â€” student reviews (1-5 stars), one per (course, user)
+  academy_instructors  — instructor profiles + lifetime stats
+  academy_earnings     — per-license 70/30 split ledger
+  academy_reviews      — student reviews (1-5 stars), one per (course, user)
   + ALTER academy_courses to add instructor_id, approval_status, language, preview_url
 
 Endpoints (prefix /api/academia):
   POST   /instructor/register
-  POST   /instructor/approve            â€” admin (X-Admin-Key)
+  POST   /instructor/approve            — admin (X-Admin-Key)
   GET    /instructor/{user_id}
   POST   /course/create
-  POST   /course/approve                â€” admin (X-Admin-Key)
-  GET    /courses                       â€” public catalog with filters
-  GET    /course/{slug}                 â€” single course + review aggregate
+  POST   /course/approve                — admin (X-Admin-Key)
+  GET    /courses                       — public catalog with filters
+  GET    /course/{slug}                 — single course + review aggregate
   POST   /review
   GET    /earnings/{instructor_user_id}
-  POST   /earnings/trigger-split        â€” internal/admin (X-Admin-Key)
+  POST   /earnings/trigger-split        — internal/admin (X-Admin-Key)
 
 All queries parameterized. Admin pattern mirrors agent_hub.py (X-Admin-Key
 checked against ADMIN_API_KEYS / ADMIN_API_KEY env vars, dev fallback
-slh2026admin). DB pool is optional â€” endpoints return 503 if missing
+slh2026admin). DB pool is optional — endpoints return 503 if missing
 instead of 500.
 """
 from __future__ import annotations
@@ -58,7 +58,7 @@ def set_pool(pool):
 # CONFIG
 # ============================================================
 
-# Revenue split â€” instructor keeps 70%, platform takes 30%
+# Revenue split — instructor keeps 70%, platform takes 30%
 PLATFORM_CUT_PCT = 30
 INSTRUCTOR_CUT_PCT = 70
 
@@ -137,7 +137,7 @@ class CourseCreateIn(BaseModel):
         v = (v or "").strip().lower()
         if not v or len(v) > 120:
             raise ValueError("slug must be 1-120 chars")
-        # Permissive â€” allow alphanum + hyphen + underscore
+        # Permissive — allow alphanum + hyphen + underscore
         for ch in v:
             if not (ch.isalnum() or ch in "-_"):
                 raise ValueError("slug must be alphanumeric, '-' or '_' only")
@@ -182,7 +182,7 @@ class ReviewIn(BaseModel):
 
 class EarningsTriggerIn(BaseModel):
     license_id: int
-    # Optional override â€” useful when the license itself doesn't carry the price
+    # Optional override — useful when the license itself doesn't carry the price
     gross_ils: Optional[float] = None
 
 
@@ -199,7 +199,7 @@ class EarningsPayoutIn(BaseModel):
 async def init_academia_ugc_tables():
     """Create UGC tables + extend academy_courses. Safe to call repeatedly."""
     if _pool is None:
-        logger.warning("[academia-ugc] init skipped â€” pool not set")
+        logger.warning("[academia-ugc] init skipped — pool not set")
         return
     try:
         async with _pool.acquire() as conn:
@@ -331,7 +331,7 @@ async def _get_instructor_by_user(conn, user_id: int):
 
 
 # ============================================================
-# ENDPOINTS â€” INSTRUCTORS
+# ENDPOINTS — INSTRUCTORS
 # ============================================================
 
 @router.post("/instructor/register")
@@ -340,14 +340,14 @@ async def instructor_register(payload: InstructorRegisterIn):
     await _require_pool()
     try:
         async with _pool.acquire() as conn:
-            # Idempotent â€” if user already registered, return existing
+            # Idempotent — if user already registered, return existing
             existing = await _get_instructor_by_user(conn, payload.user_id)
             if existing:
                 return {
                     "id": existing["id"],
                     "approved": bool(existing["approved"]),
-                    "message": "×›×‘×¨ ×¨×©×•× ×›×ž×“×¨×™×š â€” ×ž×ž×ª×™×Ÿ ×œ××™×©×•×¨" if not existing["approved"]
-                               else "×›×‘×¨ ×¨×©×•× ×•×ž××•×©×¨",
+                    "message": "כבר רשום כמדריך — ממתין לאישור" if not existing["approved"]
+                               else "כבר רשום ומאושר",
                 }
             row = await conn.fetchrow(
                 """
@@ -364,7 +364,7 @@ async def instructor_register(payload: InstructorRegisterIn):
             return {
                 "id": row["id"],
                 "approved": bool(row["approved"]),
-                "message": "× ×¨×©×ž×ª ×›×ž×“×¨×™×š â€” ×ž×ž×ª×™×Ÿ ×œ××™×©×•×¨ ×ž× ×”×œ",
+                "message": "נרשמת כמדריך — ממתין לאישור מנהל",
             }
     except HTTPException:
         raise
@@ -391,14 +391,14 @@ async def instructor_register(payload: InstructorRegisterIn):
                     return {
                         "id": row["id"],
                         "approved": False,
-                        "message": "× ×¨×©×ž×ª ×›×ž×“×¨×™×š â€” ×ž×ž×ª×™×Ÿ ×œ××™×©×•×¨ ×ž× ×”×œ",
+                        "message": "נרשמת כמדריך — ממתין לאישור מנהל",
                     }
                 # ON CONFLICT path
                 existing = await _get_instructor_by_user(conn, payload.user_id)
                 return {
                     "id": existing["id"] if existing else None,
                     "approved": bool(existing["approved"]) if existing else False,
-                    "message": "×›×‘×¨ ×¨×©×•× ×›×ž×“×¨×™×š",
+                    "message": "כבר רשום כמדריך",
                 }
         except Exception as e2:  # noqa: BLE001
             logger.error(f"[academia-ugc] register retry failed: {e2!r}")
@@ -444,7 +444,7 @@ async def get_instructor(user_id: int):
             if not row:
                 raise HTTPException(status_code=404, detail="instructor not found")
 
-            # Live stats â€” courses + students + earnings
+            # Live stats — courses + students + earnings
             stats = await conn.fetchrow(
                 """
                 SELECT
@@ -486,7 +486,7 @@ async def get_instructor(user_id: int):
 
 
 # ============================================================
-# ENDPOINTS â€” COURSES
+# ENDPOINTS — COURSES
 # ============================================================
 
 @router.post("/course/create")
@@ -537,7 +537,7 @@ async def course_create(payload: CourseCreateIn):
                 "id": row["id"],
                 "slug": row["slug"],
                 "approval_status": row["approval_status"],
-                "message": "×”×§×•×¨×¡ × ×•×¦×¨ ×•×ž×ž×ª×™×Ÿ ×œ××™×©×•×¨ ×ž× ×”×œ",
+                "message": "הקורס נוצר וממתין לאישור מנהל",
             }
     except HTTPException:
         raise
@@ -753,7 +753,7 @@ async def get_course(slug: str):
 
 
 # ============================================================
-# ENDPOINTS â€” REVIEWS
+# ENDPOINTS — REVIEWS
 # ============================================================
 
 @router.post("/review")
@@ -797,7 +797,7 @@ async def post_review(payload: ReviewIn):
             return {
                 "id": row["id"],
                 "created_at": _iso(row["created_at"]),
-                "message": "×ª×•×“×” ×¢×œ ×”×‘×™×§×•×¨×ª!",
+                "message": "תודה על הביקורת!",
             }
     except HTTPException:
         raise
@@ -807,7 +807,7 @@ async def post_review(payload: ReviewIn):
 
 
 # ============================================================
-# ENDPOINTS â€” EARNINGS
+# ENDPOINTS — EARNINGS
 # ============================================================
 
 @router.get("/earnings/{instructor_user_id}")
@@ -954,7 +954,7 @@ async def trigger_split(
                 instructor_cut,
             )
             if not inserted:
-                # Race â€” someone inserted between our check and insert
+                # Race — someone inserted between our check and insert
                 existing_id = await conn.fetchval(
                     "SELECT id FROM academy_earnings WHERE license_id = $1",
                     payload.license_id,
@@ -1021,7 +1021,7 @@ async def mark_earnings_paid(
             if not row:
                 raise HTTPException(status_code=404, detail="earnings row not found")
             if row["paid_out"]:
-                # Idempotent â€” same tx is a no-op; different tx is a 409
+                # Idempotent — same tx is a no-op; different tx is a 409
                 if (row["payout_tx"] or "") == payload.payout_tx:
                     return {
                         "already_paid": True,
@@ -1072,5 +1072,6 @@ async def mark_earnings_paid(
     except Exception as e:  # noqa: BLE001
         logger.error(f"[academia-ugc] mark_earnings_paid failed: {e!r}")
         raise HTTPException(status_code=500, detail=str(e))
+
 
 

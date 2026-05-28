@@ -1,11 +1,11 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, Boolean, Text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 import os
 
-# השתמש ב-Postgres אם קיים, אחרת SQLite
+# ????? ?-Postgres ?? ????, ???? SQLite
 if os.getenv("DATABASE_URL"):
     DATABASE_URL = os.getenv("DATABASE_URL")
     if DATABASE_URL.startswith("postgres://"):
@@ -39,7 +39,7 @@ class Transaction(Base):
     status = Column(String, default="pending")  # pending, confirmed, failed
     created_at = Column(DateTime, default=datetime.utcnow)
 
-# צור טבלאות
+# ??? ??????
 Base.metadata.create_all(bind=engine)
 
 def get_db():
@@ -48,5 +48,6 @@ def get_db():
         yield db
     finally:
         db.close()
+
 
 

@@ -1,4 +1,4 @@
-﻿# handlers/message_handler.py
+# handlers/message_handler.py
 from telegram import Update
 from telegram.ext import ContextTypes
 from config import ADMIN_ID
@@ -32,3 +32,4 @@ async def message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE, ha
         await handlers_dict['updates'](update, context)
     elif text == 'Account':
         await handlers_dict['account'](update, context)
+

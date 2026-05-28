@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import asyncio
 import json
 import sys
@@ -32,4 +32,5 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
 

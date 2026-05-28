@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import pandas as pd
 import numpy as np
 import requests
@@ -7,7 +7,7 @@ import csv
 from datetime import datetime
 
 # --------------------------------------
-# 1. שליפת טוקנים חדשים מ-DexPaprika
+# 1. ????? ?????? ????? ?-DexPaprika
 # --------------------------------------
 def fetch_new_token_addresses(limit=30):
     url = f"https://api.dexpaprika.com/networks/bsc/tokens/filter?sort=created_at&order=desc&limit={limit}"
@@ -47,7 +47,7 @@ def get_token_details(address):
         return None
 
 # --------------------------------------
-# 2. הרצת איסוף ושמירה
+# 2. ???? ????? ??????
 # --------------------------------------
 def collect_tokens(limit=30):
     addresses = fetch_new_token_addresses(limit)
@@ -60,20 +60,20 @@ def collect_tokens(limit=30):
         details = get_token_details(addr)
         if details and details.get('price_usd') and details['price_usd'] > 0:
             tokens.append(details)
-            print(f"✓ {details['symbol']}: ${details['price_usd']:.6f}")
+            print(f"? {details['symbol']}: ${details['price_usd']:.6f}")
         else:
-            print(f"✗ {addr[:10]}... no price")
+            print(f"? {addr[:10]}... no price")
         time.sleep(0.5)
     return tokens
 
 # --------------------------------------
-# 3. סימולציית מסחר (משופרת)
+# 3. ????????? ???? (??????)
 # --------------------------------------
 def simulate_trade(row, liquidity_threshold=50000, volume_threshold=25000):
     liquidity = row.get('liquidity_usd')
     volume = row.get('volume_usd_24h')
     if (liquidity and liquidity > liquidity_threshold) and (volume and volume > volume_threshold):
-        # הסתברות 40% לרווח 30%, 60% להפסד 20%
+        # ??????? 40% ????? 30%, 60% ????? 20%
         if np.random.random() < 0.4:
             return 0.30
         else:
@@ -81,7 +81,7 @@ def simulate_trade(row, liquidity_threshold=50000, volume_threshold=25000):
     return None
 
 # --------------------------------------
-# 4. ניתוח תוצאות
+# 4. ????? ??????
 # --------------------------------------
 def analyze_results(pnls):
     if not pnls:
@@ -108,7 +108,7 @@ def analyze_results(pnls):
     }
 
 # --------------------------------------
-# 5. הרצה ראשית
+# 5. ???? ?????
 # --------------------------------------
 if __name__ == '__main__':
     print("=== 1. Collecting tokens from DexPaprika ===\n")
@@ -137,5 +137,6 @@ if __name__ == '__main__':
         print(f"Expectancy per trade: {stats['expectancy']:.2%}")
     else:
         print("No trades triggered. Try lowering thresholds.")
+
 
 

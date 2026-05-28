@@ -1,4 +1,4 @@
-﻿import telebot
+import telebot
 import os
 import sys
 import traceback
@@ -24,4 +24,5 @@ try:
 except Exception as e:
     print("\n[!!!] CRASH DETECTED:")
     traceback.print_exc()
+
 

@@ -1,14 +1,14 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 ZVIKUSH ARCADE - Extra Games
-Trivia (תשחצים), Minesweeper (שולה מוקשים), Sudoku hints
+Trivia (??????), Minesweeper (???? ??????), Sudoku hints
 """
 import random
 from aiogram.types import InlineKeyboardMarkup as IKM, InlineKeyboardButton as IKB
 
-# ═══════════════════════════════════
-# TRIVIA / תשחצים - Question Bank
-# ═══════════════════════════════════
+# -----------------------------------
+# TRIVIA / ?????? - Question Bank
+# -----------------------------------
 
 TRIVIA_TOPICS = {
     "crypto": {
@@ -148,9 +148,9 @@ def trivia_answer(uid, q_idx, ans_idx):
     return next_kb, f"{result}\n\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n\n{next_text}", 0
 
 
-# ═══════════════════════════════════
-# MINESWEEPER / שולה מוקשים
-# ═══════════════════════════════════
+# -----------------------------------
+# MINESWEEPER / ???? ??????
+# -----------------------------------
 
 mine_games = {}  # uid -> {grid, revealed, flags, mines, size, game_over}
 
@@ -341,5 +341,6 @@ def mine_grid_keyboard_final(game):
             row.append(IKB(text=txt, callback_data="noop"))
         buttons.append(row)
     return IKM(inline_keyboard=buttons)
+
 
 

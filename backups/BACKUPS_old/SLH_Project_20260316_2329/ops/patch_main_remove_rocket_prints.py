@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from pathlib import Path
 import re
 
@@ -9,7 +9,7 @@ out = []
 changed = 0
 for line in lines:
     # remove any print line containing rocket or escaped rocket or U0001f680
-    if re.search(r'^\s*print\s*\(.*(U0001f680|\\U0001f680|🚀).*?\)\s*$', line):
+    if re.search(r'^\s*print\s*\(.*(U0001f680|\\U0001f680|??).*?\)\s*$', line):
         # preserve indentation of the original line
         indent = re.match(r'^(\s*)', line).group(1)
         out.append(f"{indent}print('BOT ONLINE')")
@@ -19,5 +19,6 @@ for line in lines:
 
 p.write_text("\n".join(out) + "\n", encoding="utf-8", newline="\n")
 print(f"OK: main.py rocket-print patched, changed={changed}")
+
 
 

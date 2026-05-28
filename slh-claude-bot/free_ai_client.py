@@ -127,3 +127,4 @@ async def converse(history: List[dict], user_text: str,
 async def chat(history: List[dict], user_text: str,
                tier_mode: str = "free") -> Tuple[str, List[dict]]:
     return await converse(history, user_text, tier_mode=tier_mode)
+

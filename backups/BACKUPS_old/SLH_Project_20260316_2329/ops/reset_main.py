@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from pathlib import Path
 
 code = r"""# SLH_BOT_STABLE (reset, includes /myid, resilient polling)
@@ -83,5 +83,6 @@ if __name__ == "__main__":
 """
 Path("main.py").write_text(code.replace("\r\n","\n") + ("\n" if not code.endswith("\n") else ""), encoding="utf-8", newline="\n")
 print("OK: main.py reset to stable version (with /myid)")
+
 
 

@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import os
 import logging
 import aiohttp
@@ -33,31 +33,31 @@ def check_lock_and_create():
         try:
             with open(LOCK_FILE, 'r') as f:
                 pid = f.read().strip()
-            # בדיקה אם התהליך עדיין רץ (ב-Windows)
+            # ????? ?? ?????? ????? ?? (?-Windows)
             result = subprocess.run(f'ps -p {pid}', shell=True, capture_output=True, text=True)
             if result.returncode == 0:
-                print(f"❌ Bot already running (PID: {pid}). Exiting.")
+                print(f"? Bot already running (PID: {pid}). Exiting.")
                 sys.exit(1)
             else:
-                # קובץ נעילה ישן – מוחק וממשיך
+                # ???? ????? ??? � ???? ??????
                 os.remove(LOCK_FILE)
-                print(f"⚠️ Removed stale lock file from PID {pid}.")
+                print(f"?? Removed stale lock file from PID {pid}.")
         except Exception as e:
-            print(f"⚠️ Error checking lock file: {e}. Continuing anyway?")
-            # מחיקת הקובץ השבור
+            print(f"?? Error checking lock file: {e}. Continuing anyway?")
+            # ????? ????? ?????
             try:
                 os.remove(LOCK_FILE)
             except:
                 pass
-    # כתיבת PID נוכחי
+    # ????? PID ?????
     with open(LOCK_FILE, 'w') as f:
         f.write(str(os.getpid()))
-    print(f"🔒 Lock file created with PID: {os.getpid()}")
+    print(f"?? Lock file created with PID: {os.getpid()}")
 
 def remove_lock():
     if os.path.exists(LOCK_FILE):
         os.remove(LOCK_FILE)
-        print("🔓 Lock file removed.")
+        print("?? Lock file removed.")
 
 atexit.register(remove_lock)
 
@@ -68,7 +68,7 @@ def signal_handler(sig, frame):
 signal.signal(signal.SIGINT, signal_handler)
 signal.signal(signal.SIGTERM, signal_handler)
 
-# הפעל את הבדיקה מיד
+# ???? ?? ?????? ???
 check_lock_and_create()
 
 # ========== LOGGING ==========
@@ -195,7 +195,7 @@ async def balance(update: Update, context: ContextTypes.DEFAULT_TYPE):
     waiting = await update.message.reply_text("Fetching balance...")
     bal = await get_ton_balance(USER_WALLET)
     if bal is None:
-        # נסיון חוזר אחד
+        # ????? ???? ???
         bal = await get_ton_balance(USER_WALLET)
     if bal is None:
         await waiting.edit_text("Cannot get balance after retry. Check connection and API key.")
@@ -255,7 +255,7 @@ async def buy(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f"To purchase {product['name']}, send exactly {price} TON\n"
             f"to address {USER_WALLET}\n"
             f"with memo: {memo}"
-        )  # ללא parse_mode כדי למנוע שגיאות Markdown
+        )  # ??? parse_mode ??? ????? ?????? Markdown
     except IndexError:
         await update.message.reply_text("Usage: /buy <product_id>")
 
@@ -382,10 +382,10 @@ async def message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # ========== LOG FILTERING ==========
 def filter_tokens(text):
-    # תבנית לטוקן רגיל: 10 ספרות:35 תווים
+    # ????? ????? ????: 10 ?????:35 ?????
     token_pattern = re.compile(r'\b\d{9,10}:[A-Za-z0-9_-]{35}\b')
     text = token_pattern.sub('[BOT_TOKEN_FILTERED]', text)
-    # תבנית לטוקן בנתיב URL: /bot<TOKEN>/
+    # ????? ????? ????? URL: /bot<TOKEN>/
     url_token_pattern = re.compile(r'/bot\d{9,10}:[A-Za-z0-9_-]{35}/')
     text = url_token_pattern.sub('/bot[BOT_TOKEN_FILTERED]/', text)
     return text
@@ -442,7 +442,7 @@ async def version_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"*SLH Bot v{VERSION}*\n"
         f"Uptime: {hours}h {minutes}m {seconds}s\n"
         f"Admin: @osifungar\n"
-        f"Repo: [GitHub](https://github.com/your/repo)",  # החלף בקישור אמיתי
+        f"Repo: [GitHub](https://github.com/your/repo)",  # ???? ?????? ?????
         parse_mode='Markdown',
         disable_web_page_preview=True
     )
@@ -555,3 +555,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

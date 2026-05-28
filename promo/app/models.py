@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime, Float, Text
 from sqlalchemy.orm import relationship
 from datetime import datetime
@@ -53,4 +53,5 @@ class Link(Base):
     category = Column(String, index=True)
     label = Column(String)
     url = Column(String)
+
 

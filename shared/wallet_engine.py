@@ -627,3 +627,4 @@ class WalletEngine:
                 pass
 
         return prices
+

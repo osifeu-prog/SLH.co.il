@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import pandas as pd
 import numpy as np
 import requests
@@ -47,9 +47,9 @@ def collect_tokens(limit=30):
         details = get_token_details(addr)
         if details and details.get('price_usd') and details['price_usd'] > 0:
             tokens.append(details)
-            print(f"✓ {details['symbol']}: ${details['price_usd']:.6f}")
+            print(f"? {details['symbol']}: ${details['price_usd']:.6f}")
         else:
-            print(f"✗ {addr[:10]}... no price")
+            print(f"? {addr[:10]}... no price")
         time.sleep(0.5)
     return tokens
 
@@ -66,5 +66,6 @@ if __name__ == '__main__':
     df.to_csv(filename, index=False)
     print(f"\nSaved {len(tokens)} tokens to {filename}")
     print("Run this script again tomorrow to calculate actual PnL.")
+
 
 

@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 Blockchain balance checker for SLH
 - TON balance via TonCenter API
@@ -104,5 +104,6 @@ async def get_all_balances(ton_addr=None, bnb_addr=None):
             pass
 
     return results
+
 
 

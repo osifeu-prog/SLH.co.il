@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from aiogram import Router, F, types
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
@@ -56,5 +56,6 @@ async def cancel_sell(callback: types.CallbackQuery):
     await callback.message.edit_text("Cancelled")
 
     await callback.answer()
+
 
 

@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 Simple HTTP server for the OsifShop barcode scanner Mini App.
 Serves static files from /app/webapp/ on port 8080.
@@ -25,4 +25,5 @@ if __name__ == "__main__":
     server = HTTPServer(("0.0.0.0", PORT), Handler)
     print(f"Serving Mini App on port {PORT}")
     server.serve_forever()
+
 

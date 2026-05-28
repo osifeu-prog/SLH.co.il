@@ -158,3 +158,4 @@ async def get_onchain_balances(user_id: int):
         "bsc_address": bsc_addr,
         "onchain": {"SLH": slh, "BNB": bnb},
     }
+

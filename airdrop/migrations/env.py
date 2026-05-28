@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import os
@@ -18,7 +18,7 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# ××™×Ÿ ×œ× ×• ×›××Ÿ metadata ×›×™ ×× ×—× ×• ×¢×•×©×™× migration ×™×“× ×™ (×œ× autogenerate)
+# אין לנו כאן metadata כי אנחנו עושים migration ידני (לא autogenerate)
 target_metadata = None
 
 def get_url() -> str:
@@ -56,5 +56,6 @@ if context.is_offline_mode():
     run_migrations_offline()
 else:
     run_migrations_online()
+
 
 

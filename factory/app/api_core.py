@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from decimal import Decimal, InvalidOperation
@@ -96,5 +96,6 @@ def account_balance(telegram_id: int, currency: str = "USD", kind: str = "MAIN")
             kind=kind,
             balance=str(bal),
         )
+
 
 

@@ -1,7 +1,7 @@
-ï»¿# -*- coding: utf-8 -*-
-"""Campaign admin â€” lead visibility + status tracking.
+# -*- coding: utf-8 -*-
+"""Campaign admin — lead visibility + status tracking.
 
-Osif was blind to who registered via /api/campaign/register â€” 10 real leads
+Osif was blind to who registered via /api/campaign/register — 10 real leads
 sitting in DB with no way to see them. This router exposes:
   GET  /api/admin/campaign/list?campaign_id=&status=&limit=&offset=
   GET  /api/admin/campaign/stats                (all-campaign summary)
@@ -178,4 +178,5 @@ async def delete_lead(lead_id: int, x_admin_key: Optional[str] = Header(None)):
         if not row:
             raise HTTPException(404, "lead not found")
     return {"deleted": row["id"]}
+
 

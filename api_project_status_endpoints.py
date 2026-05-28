@@ -1,6 +1,6 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # ============================================================
-# SLH Spark — Project Status API Endpoints
+# SLH Spark � Project Status API Endpoints
 # Provides real-time data for project-map dashboard
 # ============================================================
 
@@ -12,7 +12,7 @@ import json
 router = APIRouter(prefix="/api/project", tags=["project"])
 
 # ============================================================
-# GET ENDPOINTS — Read-only data for dashboard
+# GET ENDPOINTS � Read-only data for dashboard
 # ============================================================
 
 @router.get("/status")
@@ -44,18 +44,18 @@ async def get_project_status():
             "ai": 0
         },
         "systems": [
-            {"name": "NIFTII Bot", "status": "online", "emoji": "🤖"},
-            {"name": "Guardian Bot", "status": "online", "emoji": "🛡️"},
-            {"name": "PostgreSQL", "status": "healthy", "emoji": "🗄️"},
-            {"name": "Redis", "status": "healthy", "emoji": "⚡"},
-            {"name": "Railway API", "status": "running", "emoji": "🚀"},
-            {"name": "Broadcast", "status": "scheduled", "emoji": "📢"}
+            {"name": "NIFTII Bot", "status": "online", "emoji": "??"},
+            {"name": "Guardian Bot", "status": "online", "emoji": "???"},
+            {"name": "PostgreSQL", "status": "healthy", "emoji": "???"},
+            {"name": "Redis", "status": "healthy", "emoji": "?"},
+            {"name": "Railway API", "status": "running", "emoji": "??"},
+            {"name": "Broadcast", "status": "scheduled", "emoji": "??"}
         ],
         "timeline": [
-            {"date": "Apr 18", "event": "✅ Core systems live", "status": "completed", "progress": 36},
-            {"date": "Apr 24", "event": "⚙️ Website pages 50%", "status": "in-progress", "progress": 45},
-            {"date": "May 15", "event": "📊 Full feature coverage", "status": "pending", "progress": 60},
-            {"date": "Jun 30", "event": "🚀 Launch ready", "status": "pending", "progress": 95}
+            {"date": "Apr 18", "event": "? Core systems live", "status": "completed", "progress": 36},
+            {"date": "Apr 24", "event": "?? Website pages 50%", "status": "in-progress", "progress": 45},
+            {"date": "May 15", "event": "?? Full feature coverage", "status": "pending", "progress": 60},
+            {"date": "Jun 30", "event": "?? Launch ready", "status": "pending", "progress": 95}
         ],
         "lastUpdated": datetime.now().isoformat()
     }
@@ -104,7 +104,7 @@ async def get_achievements():
 
 
 # ============================================================
-# POST ENDPOINTS — Log task completions from admin
+# POST ENDPOINTS � Log task completions from admin
 # ============================================================
 
 @router.post("/task-complete")
@@ -232,7 +232,7 @@ async def update_system_status(system_data: dict):
 
 
 # ============================================================
-# WebSocket — Real-time updates
+# WebSocket � Real-time updates
 # ============================================================
 
 from fastapi import WebSocket
@@ -289,28 +289,28 @@ async def get_pending_tasks():
         "pending": [
             {
                 "id": "admin-payment",
-                "title": "admin.html — Add payment tracking",
+                "title": "admin.html � Add payment tracking",
                 "priority": "HIGH",
                 "estimate": "3-4 hours",
                 "assignedTo": "Osif"
             },
             {
                 "id": "pay-fixes",
-                "title": "pay.html — Fix 3 bugs",
+                "title": "pay.html � Fix 3 bugs",
                 "priority": "HIGH",
                 "estimate": "1 hour",
                 "assignedTo": "Osif"
             },
             {
                 "id": "project-map",
-                "title": "project-map.html — Update metrics",
+                "title": "project-map.html � Update metrics",
                 "priority": "HIGH",
                 "estimate": "2 hours",
                 "assignedTo": "Osif"
             },
             {
                 "id": "community-dm",
-                "title": "community.html — Add DM feature",
+                "title": "community.html � Add DM feature",
                 "priority": "MEDIUM",
                 "estimate": "6 hours",
                 "assignedTo": "Team"
@@ -380,5 +380,6 @@ async def mark_task_complete(task_id: str, notes: Optional[str] = None):
 # from .routes import project
 # app = FastAPI()
 # app.include_router(project.router)
+
 
 

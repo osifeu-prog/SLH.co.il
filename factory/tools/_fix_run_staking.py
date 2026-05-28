@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from __future__ import annotations
 from pathlib import Path
 import re
@@ -86,4 +86,5 @@ PATH.write_text(text, encoding="utf-8", newline="\n")
 print("Patched OK. Head:")
 for i, l in enumerate(text.splitlines()[:25], start=1):
     print(f"{i:04d}: {l}")
+
 

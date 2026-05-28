@@ -46,3 +46,4 @@ async def health():
 
 app.include_router(wallet_router.router)
 app.include_router(telegram_router)
+

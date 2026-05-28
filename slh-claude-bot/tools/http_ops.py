@@ -13,3 +13,4 @@ async def get(url: str, timeout: int = 15) -> str:
     if len(body) > 4096:
         body = body[:4096] + f"\n... [truncated, total {len(body)} chars]"
     return f"[{r.status_code}] {url}\n{body}"
+

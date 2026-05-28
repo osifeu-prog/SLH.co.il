@@ -48,3 +48,4 @@ def session_scope() -> Session:
         raise
     finally:
         session.close()
+

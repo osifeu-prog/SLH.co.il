@@ -1,7 +1,7 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 #!/usr/bin/env python3
 # ============================================================
-# SLH SPARK — Broadcast Airdrop Script
+# SLH SPARK � Broadcast Airdrop Script
 # Runs at 19:45 daily
 # Distributes tokens to all users + sends Telegram notification
 # ============================================================
@@ -17,7 +17,7 @@ from datetime import datetime
 if sys.platform == "win32":
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-# Connect via DATABASE_URL env var. Railway proxy URL lives in .env / Railway Variables — never hardcode.
+# Connect via DATABASE_URL env var. Railway proxy URL lives in .env / Railway Variables � never hardcode.
 DATABASE_URL = os.getenv("DATABASE_URL") or os.getenv("RAILWAY_DATABASE_URL")
 if not DATABASE_URL:
     raise SystemExit("DATABASE_URL missing. Set it in .env or Railway Variables.")
@@ -38,15 +38,15 @@ AIRDROP = {
 }
 
 AIRDROP_MESSAGE = (
-    "🎁 *קיבלת Airdrop יומי מ-SLH Spark!*\n\n"
-    "💰 הנכסים שנוספו לארנקך:\n"
-    "• SLH: +0.12\n"
-    "• ZVK: +8\n"
-    "• MNH: +32\n"
-    "• REP: +12\n"
-    "• ZUZ: +100\n\n"
-    "📊 לצפייה ביתרה המעודכנת: /wallet\n"
-    "🔗 [slh-nft.com](https://slh-nft.com)"
+    "?? *????? Airdrop ???? ?-SLH Spark!*\n\n"
+    "?? ?????? ?????? ??????:\n"
+    "� SLH: +0.12\n"
+    "� ZVK: +8\n"
+    "� MNH: +32\n"
+    "� REP: +12\n"
+    "� ZUZ: +100\n\n"
+    "?? ?????? ????? ????????: /wallet\n"
+    "?? [slh-nft.com](https://slh-nft.com)"
 )
 
 async def get_all_users(pool):
@@ -77,10 +77,10 @@ async def send_telegram_message(session, chat_id, text):
             if data.get("ok"):
                 return True
             else:
-                print(f"   ⚠️  TG error for {chat_id}: {data.get('description', 'unknown')}")
+                print(f"   ??  TG error for {chat_id}: {data.get('description', 'unknown')}")
                 return False
     except Exception as e:
-        print(f"   ❌ TG exception for {chat_id}: {e}")
+        print(f"   ? TG exception for {chat_id}: {e}")
         return False
 
 async def broadcast_airdrop():
@@ -118,7 +118,7 @@ async def broadcast_airdrop():
                 ok = await send_telegram_message(session, user_id, AIRDROP_MESSAGE)
                 if ok:
                     sent += 1
-                    print(f"   ✅ Sent to {user_id}")
+                    print(f"   ? Sent to {user_id}")
                 else:
                     failed += 1
                 await asyncio.sleep(0.05)  # Avoid Telegram rate limit
@@ -144,5 +144,6 @@ async def broadcast_airdrop():
 
 if __name__ == "__main__":
     asyncio.run(broadcast_airdrop())
+
 
 

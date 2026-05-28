@@ -255,3 +255,4 @@ def register(dp: Dispatcher, auth_module) -> None:
         await msg.answer("\n".join(lines))
 
     log.info("admin_panel handlers registered")
+

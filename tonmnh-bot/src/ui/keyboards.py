@@ -8,3 +8,4 @@ def kb_merchant_main():
         InlineKeyboardButton(" ????? ?-PRO", callback_data="buy_STORE_PRO")
     )
     return markup
+

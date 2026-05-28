@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from fastapi import FastAPI, Depends, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -20,10 +20,10 @@ logging.basicConfig(level=logging.INFO)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
-    logger.info("🚀 Application starting up on Railway...")
-    logger.info(f"📊 Environment: {settings.RAILWAY_ENVIRONMENT}")
+    logger.info("?? Application starting up on Railway...")
+    logger.info(f"?? Environment: {settings.RAILWAY_ENVIRONMENT}")
     logger.info(
-        f"🔑 Bot Token: {'***' + settings.BOT_TOKEN[-4:] if settings.BOT_TOKEN else 'Not set'}"
+        f"?? Bot Token: {'***' + settings.BOT_TOKEN[-4:] if settings.BOT_TOKEN else 'Not set'}"
     )
 
     # Initialize Telegram Bot if token exists
@@ -32,14 +32,14 @@ async def lifespan(app: FastAPI):
             from app.bot import initialize_bot
 
             await initialize_bot()
-            logger.info("✅ Telegram bot initialized")
+            logger.info("? Telegram bot initialized")
         except Exception as e:
-            logger.error(f"❌ Telegram bot initialization failed: {e}")
+            logger.error(f"? Telegram bot initialization failed: {e}")
 
     yield
 
     # Shutdown
-    logger.info("🛑 Application shutting down...")
+    logger.info("?? Application shutting down...")
 
 
 app = FastAPI(
@@ -76,7 +76,7 @@ async def log_requests(request: Request, call_next):
 @app.get("/")
 async def root():
     return {
-        "message": "🚀 Welcome to My FastAPI App on Railway!",
+        "message": "?? Welcome to My FastAPI App on Railway!",
         "version": settings.VERSION,
         "environment": settings.RAILWAY_ENVIRONMENT,
         "timestamp": datetime.utcnow().isoformat(),
@@ -152,9 +152,9 @@ try:
     )
     app.include_router(users.router, prefix=settings.API_V1_STR, tags=["users"])
     app.include_router(items.router, prefix=settings.API_V1_STR, tags=["items"])
-    logger.info("✅ API routes loaded successfully")
+    logger.info("? API routes loaded successfully")
 except ImportError as e:
-    logger.warning(f"⚠️ Some API routes not available: {e}")
+    logger.warning(f"?? Some API routes not available: {e}")
 
 
 # Error handlers
@@ -179,4 +179,5 @@ async def server_error(request: Request, exc: HTTPException):
 @app.get("/live")
 async def liveness_probe():
     return {"status": "alive", "timestamp": datetime.utcnow().isoformat()}
+
 

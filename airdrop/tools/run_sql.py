@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import os
 import psycopg2
 
@@ -13,7 +13,7 @@ def main():
     try:
         cur = conn.cursor()
         cur.execute(sql)
-        # ×× ×”-SQL ×ž×—×–×™×¨ SELECT ×‘×¡×•×£, ×™×© ×ª×•×¦××”
+        # אם ה-SQL מחזיר SELECT בסוף, יש תוצאה
         rows = cur.fetchall() if cur.description else []
         conn.commit()
         print(rows)
@@ -23,5 +23,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 

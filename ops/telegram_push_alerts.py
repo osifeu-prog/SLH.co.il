@@ -1,7 +1,7 @@
-Ôªø# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 #!/usr/bin/env python3
 """
-SLH Telegram Push Alerts ‚Äî daily digest + threshold-based alerts.
+SLH Telegram Push Alerts ó daily digest + threshold-based alerts.
 
 Polls the Railway API for:
   - /api/performance/digest  (daily snapshot)
@@ -20,8 +20,8 @@ Usage:
     python telegram_push_alerts.py --chat-id 224223270 --mode both
 
 Env vars required (read from D:/SLH_ECOSYSTEM/.env):
-    BROADCAST_BOT_TOKEN         ‚Äî bot token for @SLH_AIR_bot
-    ADMIN_BROADCAST_KEY         ‚Äî for authenticated endpoints (optional)
+    BROADCAST_BOT_TOKEN         ó bot token for @SLH_AIR_bot
+    ADMIN_BROADCAST_KEY         ó for authenticated endpoints (optional)
 
 Exit codes:
     0 = ok (message sent or nothing new)
@@ -125,7 +125,7 @@ def mode_events(bot_token: str, chat_id: int, state: dict) -> int:
     # Compact summary (< 4000 chars for Telegram)
     lines = [f"<b>SLH events update</b>  ({len(events)} new)\n"]
     for ev in events[:15]:
-        lines.append(f"‚Ä¢ <code>{ev['type']}</code>  at {ev.get('at','?')[:19].replace('T',' ')}")
+        lines.append(f"ï <code>{ev['type']}</code>  at {ev.get('at','?')[:19].replace('T',' ')}")
 
     if len(events) > 15:
         lines.append(f"\n(+{len(events)-15} more)")
@@ -147,15 +147,15 @@ def mode_health(bot_token: str, chat_id: int) -> int:
     try:
         health = http_get_json(f"{API_BASE}/api/health")
     except Exception as e:
-        # Health failed ‚Äî alert!
-        tg_send(bot_token, chat_id, f"<b>üö® SLH API is DOWN</b>\n\n<code>{e!r}</code>")
+        # Health failed ó alert!
+        tg_send(bot_token, chat_id, f"<b>?? SLH API is DOWN</b>\n\n<code>{e!r}</code>")
         return 2
 
     status = health.get("status")
     if status == "ok":
         print(f"[HEALTH] ok (silent)")
         return 0
-    text = f"<b>‚ö†Ô∏è SLH API health degraded</b>\n\n<code>{json.dumps(health, ensure_ascii=False)}</code>"
+    text = f"<b>?? SLH API health degraded</b>\n\n<code>{json.dumps(health, ensure_ascii=False)}</code>"
     tg_send(bot_token, chat_id, text)
     return 2
 
@@ -188,4 +188,5 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+
 

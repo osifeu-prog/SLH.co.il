@@ -1,6 +1,6 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
-SLH Campaign Bot Handlers — Drop-in for community bot
+SLH Campaign Bot Handlers � Drop-in for community bot
 Handles /start promo_shekel_april26_<AFFCODE> and 4 path types
 
 Integration:
@@ -32,11 +32,11 @@ def make_path_keyboard(ref_code: str = None) -> InlineKeyboardMarkup:
     """4-path picker keyboard."""
     suffix = f"_{ref_code}" if ref_code else ""
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🛒 קונה מיידי — ₪99", callback_data=f"promo:buyer{suffix}")],
-        [InlineKeyboardButton(text="🤝 שותף משווק — חינם + 20% ZVK", callback_data=f"promo:partner{suffix}")],
-        [InlineKeyboardButton(text="💎 Genesis Contributor — 0.002+ BNB", callback_data=f"promo:genesis{suffix}")],
-        [InlineKeyboardButton(text="🌱 חבר קהילה — חינם", callback_data=f"promo:community{suffix}")],
-        [InlineKeyboardButton(text="🌐 דף הקמפיין באתר", url="https://slh-nft.com/promo-shekel.html")]
+        [InlineKeyboardButton(text="?? ???? ????? � ?99", callback_data=f"promo:buyer{suffix}")],
+        [InlineKeyboardButton(text="?? ???? ????? � ???? + 20% ZVK", callback_data=f"promo:partner{suffix}")],
+        [InlineKeyboardButton(text="?? Genesis Contributor � 0.002+ BNB", callback_data=f"promo:genesis{suffix}")],
+        [InlineKeyboardButton(text="?? ??? ????? � ????", callback_data=f"promo:community{suffix}")],
+        [InlineKeyboardButton(text="?? ?? ??????? ????", url="https://slh-nft.com/promo-shekel.html")]
     ])
 
 
@@ -47,20 +47,20 @@ async def cmd_promo_start(message: Message, command: CommandObject):
     ref_code = args if args else None
 
     text = (
-        "🎯 <b>SLH Spark — חלון 48 שעות</b>\n\n"
-        "הדולר נחלש, השקל התחזק → רגע מושלם להיכנס לאקוסיסטם.\n\n"
-        "📍 בחר את הדרך שלך:\n\n"
-        "🛒 <b>קונה מיידי</b> — ₪99 בלבד\n"
+        "?? <b>SLH Spark � ???? 48 ????</b>\n\n"
+        "????? ????, ???? ????? ? ??? ????? ?????? ?????????.\n\n"
+        "?? ??? ?? ???? ???:\n\n"
+        "?? <b>???? ?????</b> � ?99 ????\n"
         "   0.25 SLH + 1,000 ZVK + Premium\n\n"
-        "🤝 <b>שותף / משווק</b> — חינם\n"
-        "   20% ZVK + 10% SLH על כל קנייה\n\n"
-        "💎 <b>Genesis</b> — 0.002+ BNB\n"
-        "   NFT היסטורי + שמך לעד\n\n"
-        "🌱 <b>חבר קהילה</b> — חינם\n"
-        "   100 ZVK ברכת פתיחה"
+        "?? <b>???? / ?????</b> � ????\n"
+        "   20% ZVK + 10% SLH ?? ?? ?????\n\n"
+        "?? <b>Genesis</b> � 0.002+ BNB\n"
+        "   NFT ??????? + ??? ???\n\n"
+        "?? <b>??? ?????</b> � ????\n"
+        "   100 ZVK ???? ?????"
     )
     if ref_code:
-        text += f"\n\n✨ הוזמנת ע\"י: <code>{ref_code}</code>\nהוא יקבל בונוס על ההצטרפות שלך."
+        text += f"\n\n? ?????? ?\"?: <code>{ref_code}</code>\n??? ???? ????? ?? ???????? ???."
 
     await message.answer(text, parse_mode="HTML", reply_markup=make_path_keyboard(ref_code))
 
@@ -111,69 +111,70 @@ async def register_path(message: Message, path: str, ref_code: str = None, user_
     # Path-specific responses
     if path == "buyer":
         text = (
-            "💎 <b>Starter Pack — ₪99</b>\n\n"
-            "מה תקבל אחרי תשלום:\n"
-            "✅ 0.25 SLH + 10% בונוס\n"
-            "✅ 1,000 ZVK פתיחה\n"
-            "✅ קבוצת Premium 30 יום\n"
-            "✅ קורס בסיס באקדמיה\n\n"
-            "💳 לתשלום לחץ:"
+            "?? <b>Starter Pack � ?99</b>\n\n"
+            "?? ???? ???? ?????:\n"
+            "? 0.25 SLH + 10% ?????\n"
+            "? 1,000 ZVK ?????\n"
+            "? ????? Premium 30 ???\n"
+            "? ???? ???? ???????\n\n"
+            "?? ?????? ???:"
         )
         kb = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="💳 רכישה ב-₪99", url=f"https://slh-nft.com/buy.html?campaign={CAMPAIGN_ID}&path=buyer&ref={ref_code or ''}")],
-            [InlineKeyboardButton(text="❓ שאלות נפוצות", url="https://slh-nft.com/promo-shekel.html#faq")]
+            [InlineKeyboardButton(text="?? ????? ?-?99", url=f"https://slh-nft.com/buy.html?campaign={CAMPAIGN_ID}&path=buyer&ref={ref_code or ''}")],
+            [InlineKeyboardButton(text="? ????? ??????", url="https://slh-nft.com/promo-shekel.html#faq")]
         ])
 
     elif path == "partner":
         text = (
-            "🤝 <b>ברוך הבא, שותף!</b>\n\n"
-            f"קוד האפילייט שלך: <code>{affiliate_code or 'מתעדכן...'}</code>\n\n"
-            "💰 איך אתה מרוויח:\n"
-            "• 50 ZVK על כל הרשמה דרכך (גם בלי תשלום)\n"
-            "• 20% ZVK + 10% SLH על כל קנייה\n"
-            "• בונוסים מצטברים — אין תקרה\n\n"
-            "📤 שתף את הקישור שלך:"
+            "?? <b>???? ???, ????!</b>\n\n"
+            f"??? ???????? ???: <code>{affiliate_code or '??????...'}</code>\n\n"
+            "?? ??? ??? ??????:\n"
+            "� 50 ZVK ?? ?? ????? ???? (?? ??? ?????)\n"
+            "� 20% ZVK + 10% SLH ?? ?? ?????\n"
+            "� ??????? ??????? � ??? ????\n\n"
+            "?? ??? ?? ?????? ???:"
         )
         share_link = referral_link or f"https://slh-nft.com/promo-shekel.html?ref={affiliate_code or 'NEW'}"
         kb = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="📋 העתק קישור הפנייה", url=share_link)],
-            [InlineKeyboardButton(text="📊 דשבורד שותף", url=f"https://slh-nft.com/partner-dashboard.html?code={affiliate_code or ''}")],
-            [InlineKeyboardButton(text="📚 חומרי שיווק מוכנים", url="https://slh-nft.com/promo-shekel.html#materials")]
+            [InlineKeyboardButton(text="?? ???? ????? ??????", url=share_link)],
+            [InlineKeyboardButton(text="?? ?????? ????", url=f"https://slh-nft.com/partner-dashboard.html?code={affiliate_code or ''}")],
+            [InlineKeyboardButton(text="?? ????? ????? ??????", url="https://slh-nft.com/promo-shekel.html#materials")]
         ])
 
     elif path == "genesis":
         text = (
-            "💎 <b>Genesis Contributor</b>\n\n"
-            "להיות חלק היסטורי בייסוד SLH — רק 8 אנשים נמצאים שם היום.\n\n"
-            "💰 השקעה: 0.002+ BNB (~₪40+)\n"
-            "🎁 מקבל:\n"
-            "✅ NFT Genesis ייחודי\n"
-            "✅ 500 ZVK + 0.5 SLH\n"
-            "✅ שמך ב-Wall of Founders לנצח\n"
-            "✅ 7x תגמול עתידי\n\n"
-            "📍 כתובת BNB:\n<code>0xd061de73B06d5E91bfA46b35EfB7B08b16903da4</code>"
+            "?? <b>Genesis Contributor</b>\n\n"
+            "????? ??? ??????? ?????? SLH � ?? 8 ????? ?????? ?? ????.\n\n"
+            "?? ?????: 0.002+ BNB (~?40+)\n"
+            "?? ????:\n"
+            "? NFT Genesis ??????\n"
+            "? 500 ZVK + 0.5 SLH\n"
+            "? ??? ?-Wall of Founders ????\n"
+            "? 7x ????? ?????\n\n"
+            "?? ????? BNB:\n<code>0xd061de73B06d5E91bfA46b35EfB7B08b16903da4</code>"
         )
         kb = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="🎯 פרטי התרומה", url="https://slh-nft.com/launch-event.html")],
-            [InlineKeyboardButton(text="📜 Wall of Founders", url="https://slh-nft.com/about.html#founders")]
+            [InlineKeyboardButton(text="?? ???? ??????", url="https://slh-nft.com/launch-event.html")],
+            [InlineKeyboardButton(text="?? Wall of Founders", url="https://slh-nft.com/about.html#founders")]
         ])
 
     else:  # community
         text = (
-            "🌱 <b>ברוך הבא לקהילה!</b>\n\n"
-            "✅ נרשמת בהצלחה — 100 ZVK הוקפצו לחשבונך\n"
-            "✅ דשבורד צפייה זמין באתר\n"
-            "✅ עדכונים יומיים יישלחו אליך כאן\n\n"
-            f"קוד האפילייט שלך (במידה ותרצה להזמין חברים):\n<code>{affiliate_code or 'מתעדכן...'}</code>"
+            "?? <b>???? ??? ??????!</b>\n\n"
+            "? ????? ?????? � 100 ZVK ?????? ???????\n"
+            "? ?????? ????? ???? ????\n"
+            "? ??????? ?????? ?????? ???? ???\n\n"
+            f"??? ???????? ??? (????? ????? ?????? ?????):\n<code>{affiliate_code or '??????...'}</code>"
         )
         kb = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="🌐 דשבורד", url=f"https://slh-nft.com/dashboard.html?uid={user_id}")],
-            [InlineKeyboardButton(text="📖 התחל ללמוד", url="https://slh-nft.com/getting-started.html")],
-            [InlineKeyboardButton(text="🤝 ארצה להיות שותף בעתיד", callback_data=f"promo:partner_{ref_code or ''}")]
+            [InlineKeyboardButton(text="?? ??????", url=f"https://slh-nft.com/dashboard.html?uid={user_id}")],
+            [InlineKeyboardButton(text="?? ???? ?????", url="https://slh-nft.com/getting-started.html")],
+            [InlineKeyboardButton(text="?? ???? ????? ???? ?????", callback_data=f"promo:partner_{ref_code or ''}")]
         ])
 
     await message.answer(text, parse_mode="HTML", reply_markup=kb)
 
 
 # Register router with: dp.include_router(router)
+
 

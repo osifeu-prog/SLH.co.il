@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 SPARK IND - Match & Friends Bot
 ================================
@@ -32,7 +32,7 @@ try:
 except ImportError:
     HAS_PAYMENTS = False
 
-# ── Config ──────────────────────────────────────────────────────
+# -- Config ------------------------------------------------------
 
 BOT_TOKEN = os.getenv("BOT_TOKEN", "")
 ADMIN_USER_ID = int(os.getenv("ADMIN_USER_ID", "224223270"))
@@ -40,14 +40,14 @@ ADMIN_USER_ID = int(os.getenv("ADMIN_USER_ID", "224223270"))
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 log = logging.getLogger("match-bot")
 
-# ── In-Memory Storage ───────────────────────────────────────────
+# -- In-Memory Storage -------------------------------------------
 
 profiles: dict[int, dict] = {}       # user_id -> profile
 match_requests: dict[str, dict] = {} # "uid1:uid2" -> {from, to, status}
 activities: list[dict] = []          # live activity posts
 blocked: dict[int, set] = {}         # user_id -> set of blocked user_ids
 
-# ── Interest Categories ─────────────────────────────────────────
+# -- Interest Categories -----------------------------------------
 
 INTERESTS = {
     "tech":      {"emoji": "\U0001f4bb", "label": "\u05d8\u05db\u05e0\u05d5\u05dc\u05d5\u05d2\u05d9\u05d4"},
@@ -64,7 +64,7 @@ INTERESTS = {
     "nature":    {"emoji": "\U0001f333", "label": "\u05d8\u05d1\u05e2"},
 }
 
-# ── FSM States ──────────────────────────────────────────────────
+# -- FSM States --------------------------------------------------
 
 class ProfileSetup(StatesGroup):
     name = State()
@@ -80,11 +80,11 @@ class EditProfile(StatesGroup):
 class ActivityPost(StatesGroup):
     text = State()
 
-# ── Router ──────────────────────────────────────────────────────
+# -- Router ------------------------------------------------------
 
 router = Router()
 
-# ── Helpers ─────────────────────────────────────────────────────
+# -- Helpers -----------------------------------------------------
 
 BRAND = "\u2728 SPARK IND \u00b7 Match & Friends"
 
@@ -130,7 +130,7 @@ def score(uid: int) -> int:
     posted = sum(1 for a in activities if a["user_id"] == uid)
     return accepted * 3 + posted
 
-# ── /start ──────────────────────────────────────────────────────
+# -- /start ------------------------------------------------------
 
 @router.message(CommandStart())
 async def cmd_start(msg: Message, state: FSMContext):
@@ -207,7 +207,7 @@ async def setup_interests_cb(cb: CallbackQuery, state: FSMContext):
     await cb.message.edit_reply_markup(reply_markup=interests_keyboard(selected))
     await cb.answer()
 
-# ── /profile ────────────────────────────────────────────────────
+# -- /profile ----------------------------------------------------
 
 @router.message(Command("profile"))
 async def cmd_profile(msg: Message, state: FSMContext):
@@ -282,7 +282,7 @@ async def edit_interests_cb(cb: CallbackQuery, state: FSMContext):
     await cb.message.edit_reply_markup(reply_markup=interests_keyboard(selected))
     await cb.answer()
 
-# ── /find ───────────────────────────────────────────────────────
+# -- /find -------------------------------------------------------
 
 @router.message(Command("find"))
 async def cmd_find(msg: Message):
@@ -339,7 +339,7 @@ async def cmd_find(msg: Message):
     kb = InlineKeyboardMarkup(inline_keyboard=buttons) if buttons else None
     await msg.answer(text, parse_mode="HTML", reply_markup=kb)
 
-# ── Match request / accept ──────────────────────────────────────
+# -- Match request / accept --------------------------------------
 
 @router.callback_query(F.data.startswith("match:"))
 async def handle_match(cb: CallbackQuery):
@@ -420,7 +420,7 @@ async def handle_decline(cb: CallbackQuery):
     await cb.message.edit_text("\u05d3\u05d7\u05d9\u05ea \u05d0\u05ea \u05d4\u05d1\u05e7\u05e9\u05d4.")
     await cb.answer()
 
-# ── /matches ────────────────────────────────────────────────────
+# -- /matches ----------------------------------------------------
 
 @router.message(Command("matches"))
 async def cmd_matches(msg: Message):
@@ -464,7 +464,7 @@ async def cmd_matches(msg: Message):
     text += f"\n{BRAND}"
     await msg.answer(text, parse_mode="HTML")
 
-# ── /activity ───────────────────────────────────────────────────
+# -- /activity ---------------------------------------------------
 
 @router.message(Command("activity"))
 async def cmd_activity(msg: Message, state: FSMContext):
@@ -532,7 +532,7 @@ async def post_activity(msg: Message, state: FSMContext):
     if notified:
         await msg.answer(f"\U0001f4e8 \u05e0\u05e9\u05dc\u05d7\u05d4 \u05d4\u05ea\u05e8\u05d0\u05d4 \u05dc-{notified} \u05d0\u05e0\u05e9\u05d9\u05dd \u05e2\u05dd \u05ea\u05d7\u05d5\u05de\u05d9\u05dd \u05d3\u05d5\u05de\u05d9\u05dd!")
 
-# ── /active ─────────────────────────────────────────────────────
+# -- /active -----------------------------------------------------
 
 @router.message(Command("active"))
 async def cmd_active(msg: Message):
@@ -553,7 +553,7 @@ async def cmd_active(msg: Message):
     text += f"\n\u05e9\u05dc\u05d7/\u05d9 /activity \u05dc\u05e4\u05e8\u05e1\u05dd \u05de\u05e9\u05d4\u05d5 \u05de\u05e9\u05dc\u05da!\n\n{BRAND}"
     await msg.answer(text, parse_mode="HTML")
 
-# ── /leaderboard ────────────────────────────────────────────────
+# -- /leaderboard ------------------------------------------------
 
 @router.message(Command("leaderboard"))
 async def cmd_leaderboard(msg: Message):
@@ -573,7 +573,7 @@ async def cmd_leaderboard(msg: Message):
     text += f"\n\u05e0\u05e7\u05d5\u05d3\u05d5\u05ea = \u05d7\u05d9\u05d1\u05d5\u05e8\u05d9\u05dd (\u00d73) + \u05e4\u05e2\u05d9\u05dc\u05d5\u05d9\u05d5\u05ea\n\n{BRAND}"
     await msg.answer(text, parse_mode="HTML")
 
-# ── /block ──────────────────────────────────────────────────────
+# -- /block ------------------------------------------------------
 
 @router.message(Command("block"))
 async def cmd_block(msg: Message):
@@ -590,7 +590,7 @@ async def cmd_block(msg: Message):
     blocked.setdefault(msg.from_user.id, set()).add(target)
     await msg.answer("\u2705 \u05d4\u05de\u05e9\u05ea\u05de\u05e9 \u05e0\u05d7\u05e1\u05dd.")
 
-# ── /help ───────────────────────────────────────────────────────
+# -- /help -------------------------------------------------------
 
 @router.message(Command("help"))
 async def cmd_help(msg: Message):
@@ -609,7 +609,7 @@ async def cmd_help(msg: Message):
         parse_mode="HTML"
     )
 
-# ── Main ────────────────────────────────────────────────────────
+# -- Main --------------------------------------------------------
 
 async def main():
     if not BOT_TOKEN:
@@ -646,5 +646,6 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
 
 

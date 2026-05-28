@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import os
@@ -60,16 +60,17 @@ def main() -> int:
             bad.append((p, "CRLF line endings detected. Use LF only."))
 
     if bad:
-        print("\n❌ Pre-commit checks failed:\n")
+        print("\n? Pre-commit checks failed:\n")
         for p, msg in bad:
             rel = os.path.relpath(str(p), str(git_root()))
             print(f"- {rel}: {msg}")
         print("\nFix the files and re-commit.\n")
         return 1
 
-    print("✅ Pre-commit checks passed.")
+    print("? Pre-commit checks passed.")
     return 0
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
 

@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import psycopg2
 import os
 from dotenv import load_dotenv
@@ -12,5 +12,6 @@ def reset():
     conn.commit(); cur.close(); conn.close()
     print('Database initialized successfully.')
 if __name__ == '__main__': reset()
+
 
 

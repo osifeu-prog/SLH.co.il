@@ -270,3 +270,4 @@ if __name__ == "__main__":
     print("Stats:   ", stats)
     print("Tokens for 'שלום עולם':", estimate_tokens("שלום עולם"))
     print("Tokens for 'Hello world':", estimate_tokens("Hello world"))
+

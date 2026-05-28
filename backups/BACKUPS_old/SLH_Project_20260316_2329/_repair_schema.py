@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import os, asyncio, asyncpg
 
 SQL = """
@@ -86,5 +86,6 @@ async def main():
         await conn.close()
 
 asyncio.run(main())
+
 
 

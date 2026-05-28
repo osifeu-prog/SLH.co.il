@@ -1,4 +1,4 @@
-ï»¿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from pathlib import Path
 import re
 import shutil
@@ -286,25 +286,25 @@ print(f"replaced BUY handler: {n}")
 # 5) Targeted string repairs
 # -----------------------------
 replacements = {
-    'await message.answer("Ã—Ú¯Ã—Ã—Úº Ã—Ã—Ã—Ã—Ú¯Ã—.")': 'await message.answer(NO_PERMISSION)',
-    'await message.answer("Ã—Ã—Ã—\u200dÃ—Ã— Ã—\u200cÃ— Ã—Ã—Ã—Úº: /approve <user_id>")': 'await message.answer(USAGE_APPROVE)',
-    'await message.answer("Ã—Ã—Ã—\u200dÃ—Ã— Ã—\u200cÃ— Ã—Ã—Ã—Úº: /reject <user_id>")': 'await message.answer(USAGE_REJECT)',
-    'await message.answer("Ã—Ã—Ã—\u200dÃ—Ã— Ã—\u200cÃ— Ã—Ã—Ã—Úº: /status <user_id>")': 'await message.answer(USAGE_STATUS)',
-    'await message.answer("Ã—Ú¯Ã—Ã—Úº Ã—Å“Ã—Ã—Ã—Ã—\u200c Ã—Ã—Ã—Ã—Ã—Úº.")': 'await message.answer(NO_AUDIT_YET)',
-    'await message.answer("Ã—Ã—Ã— Ã—Å“Ã—Ã—Ú¾Ã—Ã— Ã—Ã—Ã—Ã—Ú¾ Ã—Ú¾Ã—Ã—Å“Ã—Ã—\u200c Ã—Ã—Å“Ã— BUY.")': 'await message.answer(SEND_BUY_HINT)',
-    'await callback.answer("Ã—Ã—Ã—Ã—Ú¾ Ã—Ú¾Ã—Ã—Å“Ã—Ã—\u200c Ã—\u200cÃ—Ã—Ú¾Ã—Ã—")': 'await callback.answer(PAYMENT_OPENED)',
-    'await message.answer("Ã—Ã—Ã—Ã—Ã— Ã—Ã—Å“Ã—Ú‘ Ã—Ã—Ã—Ã—Å“Ã—.")': 'await message.answer(ALREADY_ACTIVE)',
-    'user_text = "Ã—Ã—Ú¾Ã—Ã—Å“Ã—Ã—\u200c Ã—Ã—Å“Ã—Ú‘ Ã—Ú¯Ã—Ã—Ã—.\\n\\nÃ—Ã—Ã—Ã—Ã— Ã—Ã—Å“Ã—Ú‘ Ã—Ã—Ã—Ã—Å“Ã— Ã—Ã—Ã—Ú¾."': 'user_text = WELCOME_PAID',
-    'await bot.send_message(\n                target_id,\n                "Ã—Ã—Ã—Ã—Ú¾ Ã—Ã—Ú¾Ã—Ã—Å“Ã—Ã—\u200c Ã—\u200cÃ—Ã—Ã—Ú¾Ã—. Ã—Ú¯Ã—Ã—Ã— Ã—Å“Ã—Ã—Å“Ã—Ã— BUY Ã—\u200dÃ—Ã—Ã— Ã—Ã—Å“Ã—Ã—Ú¾Ã—Ã— Ã—Ã—Ã—Ã— Ã—Ã—Ã—Ã—.\"\n            )': 'await bot.send_message(target_id, REJECTED_USER_TEXT)',
+    'await message.answer("×?××? ××××?×.")': 'await message.answer(NO_PERMISSION)',
+    'await message.answer("×××\u200d×× ×\u200c× ×××?: /approve <user_id>")': 'await message.answer(USAGE_APPROVE)',
+    'await message.answer("×××\u200d×× ×\u200c× ×××?: /reject <user_id>")': 'await message.answer(USAGE_REJECT)',
+    'await message.answer("×××\u200d×× ×\u200c× ×××?: /status <user_id>")': 'await message.answer(USAGE_STATUS)',
+    'await message.answer("×?××? ×œ××××\u200c ×××××?.")': 'await message.answer(NO_AUDIT_YET)',
+    'await message.answer("××× ×œ××?×× ××××? ×?××œ××\u200c ××œ× BUY.")': 'await message.answer(SEND_BUY_HINT)',
+    'await callback.answer("××××? ×?××œ××\u200c ×\u200c××?××")': 'await callback.answer(PAYMENT_OPENED)',
+    'await message.answer("××××× ××œ×? ××××œ×.")': 'await message.answer(ALREADY_ACTIVE)',
+    'user_text = "××?××œ××\u200c ××œ×? ×?×××.\\n\\n××××× ××œ×? ××××œ× ×××?."': 'user_text = WELCOME_PAID',
+    'await bot.send_message(\n                target_id,\n                "××××? ××?××œ××\u200c ×\u200c×××?×. ×?××× ×œ××œ×× BUY ×\u200d××× ××œ××?×× ×××× ××××.\"\n            )': 'await bot.send_message(target_id, REJECTED_USER_TEXT)',
 }
 
 for old, new in replacements.items():
     text = text.replace(old, new)
 
 # Safer generic cleanups
-text = text.replace('await message.answer("Ã—Ú¯Ã—Ã—Úº Ã—Ã—Ã—Ã—Ú¯Ã—.")', 'await message.answer(NO_PERMISSION)')
-text = text.replace('await message.answer("Ã—Ú¯Ã—Ã—Úº Ã—Å“Ã—Ã—Ã—Ã— Ã—Ã—Ã—Ã—Ã—Úº.")', 'await message.answer(NO_AUDIT_YET)')
-text = text.replace('await message.answer("Ã—Ã—Ã— Ã—Å“Ã—Ã—Ú¾Ã—Ã— Ã—Ã—Ã—Ã—Ú¾ Ã—Ú¾Ã—Ã—Å“Ã—Ã— Ã—Ã—Å“Ã— BUY.")', 'await message.answer(SEND_BUY_HINT)')
+text = text.replace('await message.answer("×?××? ××××?×.")', 'await message.answer(NO_PERMISSION)')
+text = text.replace('await message.answer("×?××? ×œ×××× ×××××?.")', 'await message.answer(NO_AUDIT_YET)')
+text = text.replace('await message.answer("××× ×œ××?×× ××××? ×?××œ×× ××œ× BUY.")', 'await message.answer(SEND_BUY_HINT)')
 
 # Normalize approval message block
 text = re.sub(
@@ -327,4 +327,5 @@ text = re.sub(
 path.write_text(text, encoding="utf-8", newline="\n")
 print("OK: bot_full.py patched")
 print(f"Backup: {backup}")
+
 

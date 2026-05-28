@@ -1,7 +1,7 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
-פקודות בוט סינכרוניות משודרגות
-גרסה מלאה ומוכנה להפעלה
+?????? ??? ?????????? ????????
+???? ???? ?????? ??????
 """
 
 import logging
@@ -12,10 +12,10 @@ import traceback
 
 logger = logging.getLogger(__name__)
 
-# ========== פונקציות עזר ==========
+# ========== ???????? ??? ==========
 
 def generate_referral_code(user_id: int, length: int = 8) -> str:
-    """יצירת קוד הפניה ייחודי"""
+    """????? ??? ????? ??????"""
     try:
         base = str(user_id)[-4:] if len(str(user_id)) >= 4 else str(user_id).zfill(4)
         chars = string.ascii_uppercase + string.digits
@@ -23,11 +23,11 @@ def generate_referral_code(user_id: int, length: int = 8) -> str:
         code = f"{base}{random_part}"
         return code[:length]
     except Exception as e:
-        logger.error(f"❌ שגיאה ביצירת קוד הפניה: {e}")
+        logger.error(f"? ????? ?????? ??? ?????: {e}")
         return f"REF{user_id}"
 
 def calculate_level(tokens: int) -> int:
-    """חישוב רמה לפי טוקנים"""
+    """????? ??? ??? ??????"""
     if tokens < 10:
         return 1
     elif tokens < 50:
@@ -56,7 +56,7 @@ def calculate_level(tokens: int) -> int:
         return 13
 
 def get_level_progress(tokens: int) -> tuple:
-    """קבלת התקדמות ברמה הנוכחית"""
+    """???? ??????? ???? ???????"""
     level = calculate_level(tokens)
     
     level_thresholds = [0, 10, 50, 100, 200, 500, 1000, 2000, 5000, 
@@ -74,13 +74,13 @@ def get_level_progress(tokens: int) -> tuple:
     return level, progress, total_for_level, next_level_min
 
 def format_number(num: int) -> str:
-    """פורמט מספר עם פסיקים"""
+    """????? ???? ?? ??????"""
     try:
         return f"{int(num):,}"
     except:
         return str(num)
 
-# ========== יבוא פונקציות ממסד הנתונים ==========
+# ========== ???? ???????? ???? ??????? ==========
 try:
     from database.queries import (
         get_user, register_user, checkin_user, get_balance,
@@ -92,10 +92,10 @@ try:
     )
     DATABASE_AVAILABLE = True
 except ImportError as e:
-    logger.error(f"❌ שגיאה בטעינת מודול מסד נתונים: {e}")
+    logger.error(f"? ????? ?????? ????? ??? ??????: {e}")
     DATABASE_AVAILABLE = False
     
-    # פונקציות דמה למקרה של שגיאה
+    # ???????? ??? ????? ?? ?????
     def get_user(*args, **kwargs): 
         return None
     def get_balance(*args, **kwargs):
@@ -105,10 +105,10 @@ except ImportError as e:
     def get_system_stats(*args, **kwargs):
         return {'total_users': 0, 'active_today': 0, 'total_tokens': 0}
 
-# ========== פונקציות טיפול בשגיאות ==========
+# ========== ???????? ????? ??????? ==========
 
 async def safe_reply(bot, chat_id, text, parse_mode=None, reply_markup=None):
-    """שליחת הודעה עם טיפול בשגיאות"""
+    """????? ????? ?? ????? ???????"""
     try:
         await bot.send_message(
             chat_id=chat_id,
@@ -118,66 +118,66 @@ async def safe_reply(bot, chat_id, text, parse_mode=None, reply_markup=None):
         )
         return True
     except Exception as e:
-        logger.error(f"❌ שגיאה בשליחת הודעה: {e}")
+        logger.error(f"? ????? ?????? ?????: {e}")
         return False
 
 async def handle_command_error(bot, chat_id, command, error):
-    """טיפול בשגיאות פקודה"""
+    """????? ??????? ?????"""
     error_msg = (
-        f"⚠️ **שגיאה בפקודה {command}**\n\n"
-        f"המערכת נתקלה בבעיה טכנית.\n"
-        f"נסה שוב מאוחר יותר או פנה לתמיכה.\n\n"
-        f"📞 /contact - לתמיכה טכנית"
+        f"?? **????? ?????? {command}**\n\n"
+        f"?????? ????? ????? ?????.\n"
+        f"??? ??? ????? ???? ?? ??? ??????.\n\n"
+        f"?? /contact - ?????? ?????"
     )
     await safe_reply(bot, chat_id, error_msg, parse_mode="Markdown")
-    logger.error(f"❌ שגיאה בפקודה {command}: {error}\n{traceback.format_exc()}")
+    logger.error(f"? ????? ?????? {command}: {error}\n{traceback.format_exc()}")
 
-# ========== פקודות בוט ==========
+# ========== ?????? ??? ==========
 
 async def start(message, bot):
-    """פקודת התחלה"""
+    """????? ?????"""
     try:
         user = message.from_user
         chat_id = message.chat.id
-        logger.info(f"🚀 /start ממשתמש {user.id} ({user.first_name})")
+        logger.info(f"?? /start ?????? {user.id} ({user.first_name})")
         
         if not DATABASE_AVAILABLE:
             await safe_reply(bot, chat_id, 
-                "⚠️ **מסד הנתונים לא זמין**\n\n"
-                "המערכת בעיצומה של עדכון. נסה שוב בעוד מספר דקות.",
+                "?? **??? ??????? ?? ????**\n\n"
+                "?????? ??????? ?? ?????. ??? ??? ???? ???? ????.",
                 parse_mode="Markdown")
             return
         
-        # בדיקה אם המשתמש קיים
+        # ????? ?? ?????? ????
         db_user = get_user(user.id)
         
         if db_user:
-            # משתמש קיים
+            # ????? ????
             welcome_msg = (
-                f"👋 **ברוך השב, {user.first_name}!**\n\n"
-                f"🎓 אתה כבר רשום ב-**Crypto-Class**\n"
-                f"💰 הטוקנים שלך: **{db_user.tokens:,}**\n"
-                f"🏆 הרמה שלך: **{db_user.level}**\n\n"
-                f"📋 **פקודות זמינות:**\n"
-                f"• /checkin - צ'ק-אין יומי (טוקן)\n"
-                f"• /balance - יתרת טוקנים\n"
-                f"• /tasks - משימות זמינות\n"
-                f"• /referral - קוד הפניה\n"
-                f"• /leaderboard - טבלת מובילים\n"
-                f"• /profile - הפרופיל שלך\n"
-                f"• /help - עזרה מלאה\n\n"
-                f"🚀 **התחל עם:** /checkin"
+                f"?? **???? ???, {user.first_name}!**\n\n"
+                f"?? ??? ??? ???? ?-**Crypto-Class**\n"
+                f"?? ??????? ???: **{db_user.tokens:,}**\n"
+                f"?? ???? ???: **{db_user.level}**\n\n"
+                f"?? **?????? ??????:**\n"
+                f"� /checkin - ?'?-??? ???? (????)\n"
+                f"� /balance - ???? ??????\n"
+                f"� /tasks - ?????? ??????\n"
+                f"� /referral - ??? ?????\n"
+                f"� /leaderboard - ???? ???????\n"
+                f"� /profile - ??????? ???\n"
+                f"� /help - ???? ????\n\n"
+                f"?? **???? ??:** /checkin"
             )
             
             await safe_reply(bot, chat_id, welcome_msg, parse_mode="Markdown")
             
         else:
-            # משתמש חדש
+            # ????? ???
             referral_code = None
             if len(message.text.split()) > 1:
                 referral_code = message.text.split()[1]
             
-            # רישום המשתמש
+            # ????? ??????
             success = register_user(
                 telegram_id=user.id,
                 username=user.username,
@@ -190,46 +190,46 @@ async def start(message, bot):
                 new_user = get_user(user.id)
                 
                 welcome_msg = (
-                    f"🎉 **ברוך הבא ל-Crypto-Class!**\n\n"
-                    f"✅ **נרשמת בהצלחה!**\n"
-                    f"👤 **שם:** {user.first_name}\n"
-                    f"🆔 **מזהה:** {user.id}\n"
-                    f"📅 **תאריך:** {datetime.now().strftime('%d/%m/%Y')}\n"
-                    f"🔗 **קוד הפניה:** `{new_user.referral_code if new_user else 'לא זמין'}`\n\n"
-                    f"🎁 **קבלת מתנה:** **10 טוקנים**!\n\n"
-                    f"📚 **מה זה Crypto-Class?**\n"
-                    f"זו מערכת למידה מבוססת טוקנים.\n"
-                    f"• צבור טוקנים עם צ'ק-אין ומשימות\n"
-                    f"• הזמן חברים וקבל טוקנים\n"
-                    f"• התקדם ברמות וקבל הטבות\n\n"
-                    f"🚀 **התחל עכשיו עם:** /checkin"
+                    f"?? **???? ??? ?-Crypto-Class!**\n\n"
+                    f"? **????? ??????!**\n"
+                    f"?? **??:** {user.first_name}\n"
+                    f"?? **????:** {user.id}\n"
+                    f"?? **?????:** {datetime.now().strftime('%d/%m/%Y')}\n"
+                    f"?? **??? ?????:** `{new_user.referral_code if new_user else '?? ????'}`\n\n"
+                    f"?? **???? ????:** **10 ??????**!\n\n"
+                    f"?? **?? ?? Crypto-Class?**\n"
+                    f"?? ????? ????? ?????? ??????.\n"
+                    f"� ???? ?????? ?? ?'?-??? ???????\n"
+                    f"� ???? ????? ???? ??????\n"
+                    f"� ????? ????? ???? ?????\n\n"
+                    f"?? **???? ????? ??:** /checkin"
                 )
                 
                 await safe_reply(bot, chat_id, welcome_msg, parse_mode="Markdown")
                 
             else:
                 await safe_reply(bot, chat_id, 
-                    "❌ **אירעה שגיאה ברישום**\n\nנסה שוב או פנה לתמיכה: /contact",
+                    "? **????? ????? ??????**\n\n??? ??? ?? ??? ??????: /contact",
                     parse_mode="Markdown")
                 
     except Exception as e:
         await handle_command_error(bot, message.chat.id, "/start", e)
 
 async def checkin(message, bot):
-    """צ'ק-אין יומי"""
+    """?'?-??? ????"""
     try:
         user = message.from_user
         chat_id = message.chat.id
         
-        logger.info(f"📅 /checkin ממשתמש {user.id}")
+        logger.info(f"?? /checkin ?????? {user.id}")
         
         if not DATABASE_AVAILABLE:
             await safe_reply(bot, chat_id,
-                "⚠️ **מסד הנתונים לא זמין**\n\nנסה שוב מאוחר יותר.",
+                "?? **??? ??????? ?? ????**\n\n??? ??? ????? ????.",
                 parse_mode="Markdown")
             return
         
-        # בצע צ'ק-אין
+        # ??? ?'?-???
         success, msg = checkin_user(user.id)
         
         if success:
@@ -238,16 +238,16 @@ async def checkin(message, bot):
             level, progress, total, next_level = get_level_progress(balance)
             
             response = (
-                f"✅ **{msg}**\n\n"
-                f"💰 **יתרה מעודכנת:** {format_number(balance)} טוקנים\n"
-                f"🏆 **רמה:** {level}\n"
-                f"📊 **התקדמות:** {progress}/{total} טוקנים\n\n"
-                f"🎯 **לרמה הבאה חסרים:** {format_number(next_level - balance)} טוקנים\n\n"
-                f"📈 **סטטיסטיקות מערכת:**\n"
-                f"• 👥 משתמשים: {format_number(stats.get('total_users', 0))}\n"
-                f"• 📅 פעילים היום: {format_number(stats.get('active_today', 0))}\n\n"
-                f"💪 **המשך להתמיד!**\n"
-                f"הצ'ק-אין הבא בעוד 24 שעות."
+                f"? **{msg}**\n\n"
+                f"?? **???? ???????:** {format_number(balance)} ??????\n"
+                f"?? **???:** {level}\n"
+                f"?? **???????:** {progress}/{total} ??????\n\n"
+                f"?? **???? ???? ?????:** {format_number(next_level - balance)} ??????\n\n"
+                f"?? **?????????? ?????:**\n"
+                f"� ?? ???????: {format_number(stats.get('total_users', 0))}\n"
+                f"� ?? ?????? ????: {format_number(stats.get('active_today', 0))}\n\n"
+                f"?? **???? ??????!**\n"
+                f"??'?-??? ??? ???? 24 ????."
             )
             
             await safe_reply(bot, chat_id, response, parse_mode="Markdown")
@@ -258,12 +258,12 @@ async def checkin(message, bot):
                 last_date = user_data.last_checkin
                 if isinstance(last_date, date):
                     response = (
-                        f"⏳ **כבר ביצעת צ'ק-אין היום!**\n\n"
-                        f"🕒 **צ'ק-אין אחרון:** {last_date.strftime('%d/%m/%Y %H:%M')}\n"
-                        f"⏰ **צ'ק-אין הבא:** מחר בשעה זו\n\n"
-                        f"📊 **הטוקנים שלך:** {format_number(user_data.tokens)}\n"
-                        f"🏆 **הרמה שלך:** {user_data.level}\n\n"
-                        f"💡 **טיפ:** הזמן חברים עם /referral כדי לקבל טוקנים נוספים!"
+                        f"? **??? ????? ?'?-??? ????!**\n\n"
+                        f"?? **?'?-??? ?????:** {last_date.strftime('%d/%m/%Y %H:%M')}\n"
+                        f"? **?'?-??? ???:** ??? ???? ??\n\n"
+                        f"?? **??????? ???:** {format_number(user_data.tokens)}\n"
+                        f"?? **???? ???:** {user_data.level}\n\n"
+                        f"?? **???:** ???? ????? ?? /referral ??? ???? ?????? ??????!"
                     )
                 else:
                     response = msg
@@ -276,21 +276,21 @@ async def checkin(message, bot):
         await handle_command_error(bot, message.chat.id, "/checkin", e)
 
 async def balance(message, bot):
-    """יתרת טוקנים"""
+    """???? ??????"""
     try:
         user = message.from_user
         chat_id = message.chat.id
         
         if not DATABASE_AVAILABLE:
             await safe_reply(bot, chat_id,
-                "⚠️ **מסד הנתונים לא זמין**\n\nנסה שוב מאוחר יותר.",
+                "?? **??? ??????? ?? ????**\n\n??? ??? ????? ????.",
                 parse_mode="Markdown")
             return
         
         balance_amount = get_balance(user.id)
         level, progress, total, next_level = get_level_progress(balance_amount)
         
-        # היסטוריית צ'ק-אין
+        # ????????? ?'?-???
         attendance_history = []
         try:
             attendance_history = get_user_attendance_history(user.id, 7)
@@ -300,34 +300,34 @@ async def balance(message, bot):
         streak = len(attendance_history)
         
         response = (
-            f"💰 **פירוט יתרה - {user.first_name}**\n\n"
-            f"🪙 **טוקנים נוכחיים:** {format_number(balance_amount)}\n"
-            f"🏆 **רמה:** {level}\n"
-            f"📊 **התקדמות ברמה:** {progress}/{total}\n"
-            f"🎯 **לרמה {level+1} חסרים:** {format_number(next_level - balance_amount)}\n\n"
-            f"🔥 **רצף צ'ק-אין:** {streak} ימים\n"
-            f"📅 **אחרון:** {attendance_history[0].date.strftime('%d/%m') if attendance_history else 'אין'}\n\n"
-            f"💎 **הטבות לפי רמה:**\n"
+            f"?? **????? ???? - {user.first_name}**\n\n"
+            f"?? **?????? ???????:** {format_number(balance_amount)}\n"
+            f"?? **???:** {level}\n"
+            f"?? **??????? ????:** {progress}/{total}\n"
+            f"?? **???? {level+1} ?????:** {format_number(next_level - balance_amount)}\n\n"
+            f"?? **??? ?'?-???:** {streak} ????\n"
+            f"?? **?????:** {attendance_history[0].date.strftime('%d/%m') if attendance_history else '???'}\n\n"
+            f"?? **????? ??? ???:**\n"
         )
         
-        # הוסף הטבות לפי רמה
+        # ???? ????? ??? ???
         if level >= 3:
-            response += "• ✅ גישה לפורום VIP\n"
+            response += "� ? ???? ?????? VIP\n"
         if level >= 5:
-            response += "• 🎁 הטבות שבועיות\n"
+            response += "� ?? ????? ???????\n"
         if level >= 7:
-            response += "• 👑 דירוג אלוף\n"
+            response += "� ?? ????? ????\n"
         if level >= 10:
-            response += "• 💰 בונוסים מיוחדים\n"
+            response += "� ?? ??????? ???????\n"
         
-        response += f"\n🚀 **הגדל את הרמה עם:** /tasks"
+        response += f"\n?? **???? ?? ???? ??:** /tasks"
         
-        # גרף התקדמות פשוט
+        # ??? ??????? ????
         progress_bar_length = 20
         filled = int((progress / total) * progress_bar_length) if total > 0 else 0
-        progress_bar = "▓" * filled + "░" * (progress_bar_length - filled)
+        progress_bar = "�" * filled + "�" * (progress_bar_length - filled)
         
-        response += f"\n\n📈 **מתקדם לרמה {level+1}:**\n`{progress_bar}` {int((progress/total)*100) if total > 0 else 0}%"
+        response += f"\n\n?? **????? ???? {level+1}:**\n`{progress_bar}` {int((progress/total)*100) if total > 0 else 0}%"
         
         await safe_reply(bot, chat_id, response, parse_mode="Markdown")
         
@@ -335,61 +335,61 @@ async def balance(message, bot):
         await handle_command_error(bot, message.chat.id, "/balance", e)
 
 async def referral(message, bot):
-    """מערכת הפניות"""
+    """????? ??????"""
     try:
         user = message.from_user
         chat_id = message.chat.id
         
         if not DATABASE_AVAILABLE:
             await safe_reply(bot, chat_id,
-                "⚠️ **מסד הנתונים לא זמין**\n\nנסה שוב מאוחר יותר.",
+                "?? **??? ??????? ?? ????**\n\n??? ??? ????? ????.",
                 parse_mode="Markdown")
             return
         
         db_user = get_user(user.id)
         if not db_user:
-            await safe_reply(bot, chat_id, "❌ **אתה לא רשום!**\n\nשלח /start כדי להירשם.", parse_mode="Markdown")
+            await safe_reply(bot, chat_id, "? **??? ?? ????!**\n\n??? /start ??? ??????.", parse_mode="Markdown")
             return
         
         referral_code = db_user.referral_code
         total_refs = get_total_referrals(user.id)
         referred_users = get_referred_users(user.id)
         
-        # צור קישור הפניה
+        # ??? ????? ?????
         bot_username = (await bot.get_me()).username
         invite_link = f"https://t.me/{bot_username}?start={referral_code}"
         
         response = (
-            f"👥 **מערכת ההפניות שלך**\n\n"
-            f"🔗 **קוד ההפניה שלך:**\n`{referral_code}`\n\n"
-            f"📊 **סטטיסטיקות:**\n"
-            f"• 👥 משתמשים שהוזמנו: **{total_refs}**\n"
-            f"• 💰 טוקנים מהפניות: **{total_refs * 10}**\n"
-            f"• 🎯 יעד ההזמנות הבא: **{total_refs + 1}**\n\n"
-            f"🎁 **בונוסי הפניה:**\n"
-            f"• הזמן חבר = **10 טוקנים**\n"
-            f"• כל 5 חברים = **+50 טוקנים**\n"
-            f"• כל 10 חברים = **רמה חינם!**\n\n"
-            f"🔗 **קישור הזמנה:**\n{invite_link}\n\n"
-            f"📝 **הוראות:**\n"
-            f"1. שלח לחבר את הקישור\n"
-            f"2. הוא ישלח /start עם הקוד\n"
-            f"3. קבל 10 טוקנים מיד!\n\n"
-            f"👥 **מוזמנים אחרונים:**\n"
+            f"?? **????? ??????? ???**\n\n"
+            f"?? **??? ?????? ???:**\n`{referral_code}`\n\n"
+            f"?? **??????????:**\n"
+            f"� ?? ??????? ???????: **{total_refs}**\n"
+            f"� ?? ?????? ???????: **{total_refs * 10}**\n"
+            f"� ?? ??? ??????? ???: **{total_refs + 1}**\n\n"
+            f"?? **?????? ?????:**\n"
+            f"� ???? ??? = **10 ??????**\n"
+            f"� ?? 5 ????? = **+50 ??????**\n"
+            f"� ?? 10 ????? = **??? ????!**\n\n"
+            f"?? **????? ?????:**\n{invite_link}\n\n"
+            f"?? **??????:**\n"
+            f"1. ??? ???? ?? ??????\n"
+            f"2. ??? ???? /start ?? ????\n"
+            f"3. ??? 10 ?????? ???!\n\n"
+            f"?? **??????? ???????:**\n"
         )
         
-        # הוסף מוזמנים אחרונים
+        # ???? ??????? ???????
         if referred_users:
             for i, ref in enumerate(referred_users[:5], 1):
-                name = ref.first_name or ref.username or f"משתמש {ref.telegram_id}"
-                date_str = ref.created_at.strftime('%d/%m') if ref.created_at else "לאחרונה"
+                name = ref.first_name or ref.username or f"????? {ref.telegram_id}"
+                date_str = ref.created_at.strftime('%d/%m') if ref.created_at else "???????"
                 response += f"{i}. {name} - {date_str}\n"
             if len(referred_users) > 5:
-                response += f"... ועוד {len(referred_users) - 5} מוזמנים\n"
+                response += f"... ???? {len(referred_users) - 5} ???????\n"
         else:
-            response += "עדיין אין מוזמנים. התחל להזמין!\n"
+            response += "????? ??? ???????. ???? ??????!\n"
         
-        response += f"\n📱 **לצפייה במוזמנים המלאים:** /my_referrals"
+        response += f"\n?? **?????? ???????? ??????:** /my_referrals"
         
         await safe_reply(bot, chat_id, response, parse_mode="Markdown")
         
@@ -397,14 +397,14 @@ async def referral(message, bot):
         await handle_command_error(bot, message.chat.id, "/referral", e)
 
 async def my_referrals(message, bot):
-    """מוזמנים מפורט"""
+    """??????? ?????"""
     try:
         user = message.from_user
         chat_id = message.chat.id
         
         if not DATABASE_AVAILABLE:
             await safe_reply(bot, chat_id,
-                "⚠️ **מסד הנתונים לא זמין**\n\nנסה שוב מאוחר יותר.",
+                "?? **??? ??????? ?? ????**\n\n??? ??? ????? ????.",
                 parse_mode="Markdown")
             return
         
@@ -413,27 +413,27 @@ async def my_referrals(message, bot):
         
         if not referred_users:
             response = (
-                f"👥 **המוזמנים שלך - {user.first_name}**\n\n"
-                f"📭 **עדיין אין מוזמנים**\n\n"
-                f"💡 **טיפים להזמנות:**\n"
-                f"• שתף את קוד ההפניה בקבוצות\n"
-                f"• שלח לחברים אישית\n"
-                f"• הצע טוקנים כמתנה\n\n"
-                f"🔗 **לקבלת קוד הפניה:** /referral"
+                f"?? **???????? ??? - {user.first_name}**\n\n"
+                f"?? **????? ??? ???????**\n\n"
+                f"?? **????? ???????:**\n"
+                f"� ??? ?? ??? ?????? ???????\n"
+                f"� ??? ?????? ?????\n"
+                f"� ??? ?????? ?????\n\n"
+                f"?? **????? ??? ?????:** /referral"
             )
         else:
             response = (
-                f"👥 **המוזמנים שלך - {user.first_name}**\n\n"
-                f"📊 **סה\"כ מוזמנים:** {total_refs}\n"
-                f"💰 **טוקנים שהרווחת:** {total_refs * 10}\n\n"
-                f"📋 **רשימת מוזמנים:**\n"
+                f"?? **???????? ??? - {user.first_name}**\n\n"
+                f"?? **??\"? ???????:** {total_refs}\n"
+                f"?? **?????? ???????:** {total_refs * 10}\n\n"
+                f"?? **????? ???????:**\n"
             )
             
             for i, ref in enumerate(referred_users, 1):
-                name = ref.first_name or ref.username or f"משתמש {ref.telegram_id}"
-                date_str = ref.created_at.strftime('%d/%m/%Y') if ref.created_at else "לא ידוע"
+                name = ref.first_name or ref.username or f"????? {ref.telegram_id}"
+                date_str = ref.created_at.strftime('%d/%m/%Y') if ref.created_at else "?? ????"
                 tokens = ref.tokens or 0
-                response += f"{i}. **{name}** - {date_str} ({tokens} טוקנים)\n"
+                response += f"{i}. **{name}** - {date_str} ({tokens} ??????)\n"
         
         await safe_reply(bot, chat_id, response, parse_mode="Markdown")
         
@@ -441,20 +441,20 @@ async def my_referrals(message, bot):
         await handle_command_error(bot, message.chat.id, "/my_referrals", e)
 
 async def leaderboard(message, bot):
-    """טבלת מובילים"""
+    """???? ???????"""
     try:
         user = message.from_user
         chat_id = message.chat.id
         
         if not DATABASE_AVAILABLE:
             await safe_reply(bot, chat_id,
-                "⚠️ **מסד הנתונים לא זמין**\n\nנסה שוב מאוחר יותר.",
+                "?? **??? ??????? ?? ????**\n\n??? ??? ????? ????.",
                 parse_mode="Markdown")
             return
         
         top_users = get_top_users(10, 'tokens')
         
-        # מצא את המיקום של המשתמש
+        # ??? ?? ?????? ?? ??????
         all_users = get_top_users(100, 'tokens')
         user_position = None
         for i, u in enumerate(all_users, 1):
@@ -463,26 +463,26 @@ async def leaderboard(message, bot):
                 break
         
         response = (
-            f"🏆 **טבלת המובילים - Crypto-Class**\n\n"
-            f"💰 **מובילים בטוקנים:**\n"
+            f"?? **???? ???????? - Crypto-Class**\n\n"
+            f"?? **??????? ???????:**\n"
         )
         
-        # הוסף 5 מובילים ראשונים
+        # ???? 5 ??????? ???????
         for i, top_user in enumerate(top_users[:5], 1):
-            name = top_user.first_name or top_user.username or f"משתמש {top_user.telegram_id}"
+            name = top_user.first_name or top_user.username or f"????? {top_user.telegram_id}"
             if top_user.telegram_id == user.id:
-                response += f"{i}. 👑 **{name}** - {format_number(top_user.tokens)} טוקנים\n"
+                response += f"{i}. ?? **{name}** - {format_number(top_user.tokens)} ??????\n"
             else:
-                response += f"{i}. {name} - {format_number(top_user.tokens)} טוקנים\n"
+                response += f"{i}. {name} - {format_number(top_user.tokens)} ??????\n"
         
-        response += f"\n⏰ **עדכון אחרון:** {datetime.now().strftime('%H:%M')}"
+        response += f"\n? **????? ?????:** {datetime.now().strftime('%H:%M')}"
         
-        # הוסף את מיקום המשתמש
+        # ???? ?? ????? ??????
         if user_position:
             user_balance = get_balance(user.id)
-            response += f"\n\n📊 **המיקום שלך:** #{user_position} עם {format_number(user_balance)} טוקנים\n"
+            response += f"\n\n?? **?????? ???:** #{user_position} ?? {format_number(user_balance)} ??????\n"
         
-        response += f"\n📈 **לצפייה בטבלה המלאה:**\nהשתמש באתר האינטרנט שלנו!"
+        response += f"\n?? **?????? ????? ?????:**\n????? ???? ???????? ????!"
         
         await safe_reply(bot, chat_id, response, parse_mode="Markdown")
         
@@ -490,71 +490,71 @@ async def leaderboard(message, bot):
         await handle_command_error(bot, message.chat.id, "/leaderboard", e)
 
 async def level(message, bot):
-    """מידע רמה"""
+    """???? ???"""
     try:
         user = message.from_user
         chat_id = message.chat.id
         
         if not DATABASE_AVAILABLE:
             await safe_reply(bot, chat_id,
-                "⚠️ **מסד הנתונים לא זמין**\n\nנסה שוב מאוחר יותר.",
+                "?? **??? ??????? ?? ????**\n\n??? ??? ????? ????.",
                 parse_mode="Markdown")
             return
         
         balance = get_balance(user.id)
         level_num, progress, total, next_level = get_level_progress(balance)
         
-        # חישוב אחוזים
+        # ????? ??????
         percentage = int((progress / total) * 100) if total > 0 else 0
         
         response = (
-            f"🎯 **רמה וקידום - {user.first_name}**\n\n"
-            f"🏆 **רמה נוכחית:** {level_num}\n"
-            f"💰 **טוקנים:** {format_number(balance)}\n"
-            f"📊 **התקדמות:** {format_number(progress)}/{format_number(total)} ({percentage}%)\n"
-            f"🎯 **לרמה {level_num+1} חסרים:** {format_number(next_level - balance)} טוקנים\n\n"
+            f"?? **??? ?????? - {user.first_name}**\n\n"
+            f"?? **??? ??????:** {level_num}\n"
+            f"?? **??????:** {format_number(balance)}\n"
+            f"?? **???????:** {format_number(progress)}/{format_number(total)} ({percentage}%)\n"
+            f"?? **???? {level_num+1} ?????:** {format_number(next_level - balance)} ??????\n\n"
         )
         
-        # הוסף גרף התקדמות
+        # ???? ??? ???????
         bar_length = 15
         filled = int((progress / total) * bar_length) if total > 0 else 0
-        progress_bar = "█" * filled + "░" * (bar_length - filled)
+        progress_bar = "�" * filled + "�" * (bar_length - filled)
         response += f"`{progress_bar}`\n\n"
         
-        # תיאור הרמה
+        # ????? ????
         level_descriptions = {
-            1: "🌱 **מתחיל** - אתה בתחילת הדרך! המשך לצבור טוקנים.",
-            2: "🚀 **לומד** - אתה מתקדם יפה. המשך כך!",
-            3: "💪 **פעיל** - אתה תורם לקהילה. מעולה!",
-            4: "🌟 **מתמיד** - התמדה מרשימה. המשך להתקדם!",
-            5: "🏅 **מתקדם** - הגעת לחצי הדרך. כל הכבוד!",
-            6: "💎 **מוביל** - אתה בין המובילים. ממשיך למצוינות!",
-            7: "👑 **אלוף** - אתה בפסגה. שמור על ההובלה!",
-            8: "🚀 **מאסטר** - רמת מאסטר. אתה מודל לחיקוי!",
-            9: "🌌 **גורו** - רמת גורו. ידע וניסיון עצומים!",
-            10: "⚡ **אליל** - הרמה הגבוהה ביותר. אתה אגדה!"
+            1: "?? **?????** - ??? ?????? ????! ???? ????? ??????.",
+            2: "?? **????** - ??? ????? ???. ???? ??!",
+            3: "?? **????** - ??? ???? ??????. ?????!",
+            4: "?? **?????** - ????? ??????. ???? ??????!",
+            5: "?? **?????** - ???? ???? ????. ?? ?????!",
+            6: "?? **?????** - ??? ??? ????????. ????? ????????!",
+            7: "?? **????** - ??? ?????. ???? ?? ??????!",
+            8: "?? **?????** - ??? ?????. ??? ???? ??????!",
+            9: "?? **????** - ??? ????. ??? ??????? ??????!",
+            10: "? **????** - ???? ?????? ?????. ??? ????!"
         }
         
-        description = level_descriptions.get(level_num, "מצוין! המשיך להתקדם!")
+        description = level_descriptions.get(level_num, "?????! ????? ??????!")
         response += f"{description}\n\n"
         
-        # הטבות הרמה
-        response += "🎁 **הטבות הרמה הנוכחית:**\n"
+        # ????? ????
+        response += "?? **????? ???? ???????:**\n"
         if level_num >= 1:
-            response += "• ✅ גישה לכל הפיצ'רים הבסיסיים\n"
+            response += "� ? ???? ??? ????'??? ????????\n"
         if level_num >= 3:
-            response += "• 🎁 בונוס צ'ק-אין +1 טוקן\n"
+            response += "� ?? ????? ?'?-??? +1 ????\n"
         if level_num >= 5:
-            response += "• 👑 סימון מיוחד בשם\n"
+            response += "� ?? ????? ????? ???\n"
         if level_num >= 7:
-            response += "• 💰 ריבית טוקנים יומית\n"
+            response += "� ?? ????? ?????? ?????\n"
         if level_num >= 10:
-            response += "• 🌟 תואר אלוף המערכת\n"
+            response += "� ?? ???? ???? ??????\n"
         
-        response += f"\n🚀 **דרכים להתקדם:**\n"
-        response += "• 📅 צ'ק-אין יומי עם /checkin\n"
-        response += "• 👥 הזמנת חברים עם /referral\n"
-        response += "• ✅ ביצוע משימות עם /tasks\n"
+        response += f"\n?? **????? ??????:**\n"
+        response += "� ?? ?'?-??? ???? ?? /checkin\n"
+        response += "� ?? ????? ????? ?? /referral\n"
+        response += "� ? ????? ?????? ?? /tasks\n"
         
         await safe_reply(bot, chat_id, response, parse_mode="Markdown")
         
@@ -562,20 +562,20 @@ async def level(message, bot):
         await handle_command_error(bot, message.chat.id, "/level", e)
 
 async def profile(message, bot):
-    """פרופיל משתמש"""
+    """?????? ?????"""
     try:
         user = message.from_user
         chat_id = message.chat.id
         
         if not DATABASE_AVAILABLE:
             await safe_reply(bot, chat_id,
-                "⚠️ **מסד הנתונים לא זמין**\n\nנסה שוב מאוחר יותר.",
+                "?? **??? ??????? ?? ????**\n\n??? ??? ????? ????.",
                 parse_mode="Markdown")
             return
         
         db_user = get_user(user.id)
         if not db_user:
-            await safe_reply(bot, chat_id, "❌ **אינך רשום!**\n\nשלח /start כדי להירשם.", parse_mode="Markdown")
+            await safe_reply(bot, chat_id, "? **???? ????!**\n\n??? /start ??? ??????.", parse_mode="Markdown")
             return
         
         balance = db_user.tokens
@@ -591,39 +591,39 @@ async def profile(message, bot):
         streak = len([a for a in attendance_history if isinstance(a.date, date) and a.date == date.today()])
         
         response = (
-            f"👤 **פרופיל משתמש - {user.first_name}**\n\n"
-            f"🆔 **מזהה:** {user.id}\n"
-            f"📅 **נרשם:** {db_user.created_at.strftime('%d/%m/%Y') if db_user.created_at else 'לא ידוע'}\n"
-            f"💰 **טוקנים:** {format_number(balance)}\n"
-            f"🏆 **רמה:** {level_num}\n"
-            f"👥 **הפניות:** {total_refs}\n"
-            f"🔥 **רצף נוכחות:** {streak} ימים\n\n"
+            f"?? **?????? ????? - {user.first_name}**\n\n"
+            f"?? **????:** {user.id}\n"
+            f"?? **????:** {db_user.created_at.strftime('%d/%m/%Y') if db_user.created_at else '?? ????'}\n"
+            f"?? **??????:** {format_number(balance)}\n"
+            f"?? **???:** {level_num}\n"
+            f"?? **??????:** {total_refs}\n"
+            f"?? **??? ??????:** {streak} ????\n\n"
         )
         
-        # הישגים
-        response += "🏅 **הישגים:**\n"
+        # ??????
+        response += "?? **??????:**\n"
         if balance >= 100:
-            response += "• 💰 אספן טוקנים (100+)\n"
+            response += "� ?? ???? ?????? (100+)\n"
         if total_refs >= 5:
-            response += "• 👥 מגייס מצטיין (5+)\n"
+            response += "� ?? ????? ?????? (5+)\n"
         if streak >= 7:
-            response += "• 🔥 מלך הרצף (7+ ימים)\n"
+            response += "� ?? ??? ???? (7+ ????)\n"
         if level_num >= 5:
-            response += "• ⭐ כוכב עולה (רמה 5+)\n"
+            response += "� ? ???? ???? (??? 5+)\n"
         if level_num >= 10:
-            response += "• 👑 אלוף העל (רמה 10+)\n"
+            response += "� ?? ???? ??? (??? 10+)\n"
         
         if not (balance >= 100 or total_refs >= 5 or streak >= 7 or level_num >= 5):
-            response += "• 🎯 התחל לצבור הישגים!\n"
+            response += "� ?? ???? ????? ??????!\n"
         
-        response += f"\n📈 **התקדמות החודש:**\n"
-        response += f"• 📅 צ'ק-אין: {len(attendance_history)} ימים\n"
-        response += f"• 💰 טוקנים שנוספו: {balance - (db_user.tokens or 0)}\n\n"
+        response += f"\n?? **??????? ?????:**\n"
+        response += f"� ?? ?'?-???: {len(attendance_history)} ????\n"
+        response += f"� ?? ?????? ??????: {balance - (db_user.tokens or 0)}\n\n"
         
-        response += f"🚀 **יעדים להמשך:**\n"
-        response += f"• להגיע לרמה {level_num + 1} (חסרים {next_level - balance} טוקנים)\n"
-        response += f"• להזמין {5 - total_refs if total_refs < 5 else 0} חברים נוספים\n"
-        response += f"• לשמור על רצף של {7 - streak if streak < 7 else 0} ימים נוספים\n"
+        response += f"?? **????? ?????:**\n"
+        response += f"� ????? ???? {level_num + 1} (????? {next_level - balance} ??????)\n"
+        response += f"� ?????? {5 - total_refs if total_refs < 5 else 0} ????? ??????\n"
+        response += f"� ????? ?? ??? ?? {7 - streak if streak < 7 else 0} ???? ??????\n"
         
         await safe_reply(bot, chat_id, response, parse_mode="Markdown")
         
@@ -631,14 +631,14 @@ async def profile(message, bot):
         await handle_command_error(bot, message.chat.id, "/profile", e)
 
 async def tasks(message, bot):
-    """מערכת משימות"""
+    """????? ??????"""
     try:
         user = message.from_user
         chat_id = message.chat.id
         
         if not DATABASE_AVAILABLE:
             await safe_reply(bot, chat_id,
-                "⚠️ **מסד הנתונים לא זמין**\n\nנסה שוב מאוחר יותר.",
+                "?? **??? ??????? ?? ????**\n\n??? ??? ????? ????.",
                 parse_mode="Markdown")
             return
         
@@ -646,37 +646,37 @@ async def tasks(message, bot):
         
         if not available_tasks:
             response = (
-                f"✅ **מערכת המשימות**\n\n"
-                f"📭 **אין משימות זמינות כרגע**\n\n"
-                f"💡 **מה תוכל לעשות?**\n"
-                f"• בדוק שוב מחר\n"
-                f"• הזמן חברים עם /referral\n"
-                f"• בצע צ'ק-אין יומי עם /checkin\n\n"
-                f"🚀 **משימות חדשות מתווספות כל הזמן!**"
+                f"? **????? ???????**\n\n"
+                f"?? **??? ?????? ?????? ????**\n\n"
+                f"?? **?? ???? ??????**\n"
+                f"� ???? ??? ???\n"
+                f"� ???? ????? ?? /referral\n"
+                f"� ??? ?'?-??? ???? ?? /checkin\n\n"
+                f"?? **?????? ????? ???????? ?? ????!**"
             )
         else:
             response = (
-                f"✅ **מערכת המשימות - משימות זמינות**\n\n"
-                f"📋 **יש לך {len(available_tasks)} משימות זמינות:**\n\n"
+                f"? **????? ??????? - ?????? ??????**\n\n"
+                f"?? **?? ?? {len(available_tasks)} ?????? ??????:**\n\n"
             )
             
             for i, task in enumerate(available_tasks, 1):
                 response += f"{i}. **{task.name}**\n"
-                response += f"   📝 {task.description}\n"
-                response += f"   💰 {task.tokens_reward} טוקנים\n"
+                response += f"   ?? {task.description}\n"
+                response += f"   ?? {task.tokens_reward} ??????\n"
                 
                 if task.frequency.value == 'daily':
-                    response += f"   ⏰ יומי\n"
+                    response += f"   ? ????\n"
                 elif task.frequency.value == 'weekly':
-                    response += f"   ⏰ שבועי\n"
+                    response += f"   ? ?????\n"
                 elif task.frequency.value == 'monthly':
-                    response += f"   ⏰ חודשי\n"
+                    response += f"   ? ?????\n"
                 elif task.frequency.value == 'one_time':
-                    response += f"   ⏰ חד-פעמי\n"
+                    response += f"   ? ??-????\n"
                 
                 response += f"\n"
         
-        response += f"\nℹ️ **לצפייה במשימות שהושלמו:**\nהשתמש באתר האינטרנט שלנו!"
+        response += f"\n?? **?????? ??????? ???????:**\n????? ???? ???????? ????!"
         
         await safe_reply(bot, chat_id, response, parse_mode="Markdown")
         
@@ -684,32 +684,32 @@ async def tasks(message, bot):
         await handle_command_error(bot, message.chat.id, "/tasks", e)
 
 async def contact(message, bot):
-    """צור קשר"""
+    """??? ???"""
     try:
         user = message.from_user
         chat_id = message.chat.id
         
         response = (
-            f"📞 **צור קשר - Crypto-Class**\n\n"
-            f"👤 **מנהל המערכת:** אוסיף אונגר\n"
-            f"💼 **תפקיד:** מנהל פרויקט ומפתח ראשי\n\n"
-            f"📱 **דרכי התקשרות:**\n"
-            f"• 📞 טלפון: 058-420-3384\n"
-            f"• 📨 טלגרם: @osifeu\n\n"
-            f"🕒 **זמינות:**\n"
-            f"• ימים א'-ה': 09:00-18:00\n"
-            f"• שישי: 09:00-13:00\n"
-            f"• שבת: סגור\n\n"
-            f"📋 **נושאים שניתן לפנות בהם:**\n"
-            f"• 🔧 תמיכה טכנית\n"
-            f"• 💡 הצעות לשיפור\n"
-            f"• 🐛 דיווח על באגים\n"
-            f"• 🤝 שיתופי פעולה\n"
-            f"• 📊 שאלות על המערכת\n\n"
-            f"⏱️ **זמני תגובה:**\n"
-            f"• דחוף: 2-4 שעות\n"
-            f"• רגיל: 24-48 שעות\n\n"
-            f"🙏 **תודה שאתה חלק מהקהילה שלנו!**"
+            f"?? **??? ??? - Crypto-Class**\n\n"
+            f"?? **???? ??????:** ????? ?????\n"
+            f"?? **?????:** ???? ?????? ????? ????\n\n"
+            f"?? **???? ???????:**\n"
+            f"� ?? ?????: 058-420-3384\n"
+            f"� ?? ?????: @osifeu\n\n"
+            f"?? **??????:**\n"
+            f"� ???? ?'-?': 09:00-18:00\n"
+            f"� ????: 09:00-13:00\n"
+            f"� ???: ????\n\n"
+            f"?? **?????? ????? ????? ???:**\n"
+            f"� ?? ????? ?????\n"
+            f"� ?? ????? ??????\n"
+            f"� ?? ????? ?? ?????\n"
+            f"� ?? ?????? ?????\n"
+            f"� ?? ????? ?? ??????\n\n"
+            f"?? **???? ?????:**\n"
+            f"� ????: 2-4 ????\n"
+            f"� ????: 24-48 ????\n\n"
+            f"?? **???? ???? ??? ??????? ????!**"
         )
         
         await safe_reply(bot, chat_id, response, parse_mode="Markdown")
@@ -718,45 +718,45 @@ async def contact(message, bot):
         await handle_command_error(bot, message.chat.id, "/contact", e)
 
 async def help_command(message, bot):
-    """עזרה"""
+    """????"""
     try:
         user = message.from_user
         chat_id = message.chat.id
         
         response = (
-            f"🆘 **עזרה והדרכה מלאה - Crypto-Class**\n\n"
-            f"📚 **קטגוריות פקודות:**\n\n"
-            f"👤 **רישום והתחלה:**\n"
-            f"• /start - הרשמה והתחלת שימוש\n"
-            f"• /profile - הצגת הפרופיל שלך\n\n"
-            f"💰 **טוקנים ורמות:**\n"
-            f"• /balance - הצגת יתרת טוקנים\n"
-            f"• /level - הרמה וההתקדמות שלך\n"
-            f"• /checkin - צ'ק-אין יומי\n\n"
-            f"👥 **הפניות וחברים:**\n"
-            f"• /referral - קוד ההפניה שלך\n"
-            f"• /my_referrals - המוזמנים שלך\n\n"
-            f"🏆 **תחרות ודירוג:**\n"
-            f"• /leaderboard - טבלת המובילים\n"
-            f"• /stats - סטטיסטיקות אישיות\n\n"
-            f"ℹ️ **מידע ותמיכה:**\n"
-            f"• /contact - צור קשר עם מנהל\n"
-            f"• /help - תפריט זה\n"
-            f"• /website - קישור לאתר\n\n"
-            f"📖 **מדריך מהיר למתחילים:**\n"
-            f"1. שלח /start כדי להירשם\n"
-            f"2. שלח /checkin כל יום\n"
-            f"3. הזמן חברים עם /referral\n"
-            f"4. עקוב אחר ההתקדמות עם /profile\n\n"
-            f"💡 **טיפים ושיטות עבודה:**\n"
-            f"• בצע צ'ק-אין כל יום באותה שעה\n"
-            f"• הזמן לפחות 3 חברים לפתוח\n"
-            f"• עקוב אחר הטבלה עם /leaderboard\n\n"
-            f"❓ **בעיות נפוצות:**\n"
-            f"• לא מצליח להירשם? שלח /start שוב\n"
-            f"• לא מקבל טוקנים? שלח /checkin\n"
-            f"• קוד הפניה לא עובד? שלח /referral\n\n"
-            f"📞 **צריך עוד עזרה?** שלח /contact"
+            f"?? **???? ?????? ???? - Crypto-Class**\n\n"
+            f"?? **???????? ??????:**\n\n"
+            f"?? **????? ??????:**\n"
+            f"� /start - ????? ?????? ?????\n"
+            f"� /profile - ???? ??????? ???\n\n"
+            f"?? **?????? ?????:**\n"
+            f"� /balance - ???? ???? ??????\n"
+            f"� /level - ???? ????????? ???\n"
+            f"� /checkin - ?'?-??? ????\n\n"
+            f"?? **?????? ??????:**\n"
+            f"� /referral - ??? ?????? ???\n"
+            f"� /my_referrals - ???????? ???\n\n"
+            f"?? **????? ??????:**\n"
+            f"� /leaderboard - ???? ????????\n"
+            f"� /stats - ?????????? ??????\n\n"
+            f"?? **???? ??????:**\n"
+            f"� /contact - ??? ??? ?? ????\n"
+            f"� /help - ????? ??\n"
+            f"� /website - ????? ????\n\n"
+            f"?? **????? ???? ????????:**\n"
+            f"1. ??? /start ??? ??????\n"
+            f"2. ??? /checkin ?? ???\n"
+            f"3. ???? ????? ?? /referral\n"
+            f"4. ???? ??? ???????? ?? /profile\n\n"
+            f"?? **????? ?????? ?????:**\n"
+            f"� ??? ?'?-??? ?? ??? ????? ???\n"
+            f"� ???? ????? 3 ????? ?????\n"
+            f"� ???? ??? ????? ?? /leaderboard\n\n"
+            f"? **????? ??????:**\n"
+            f"� ?? ????? ??????? ??? /start ???\n"
+            f"� ?? ???? ??????? ??? /checkin\n"
+            f"� ??? ????? ?? ????? ??? /referral\n\n"
+            f"?? **???? ??? ?????** ??? /contact"
         )
         
         await safe_reply(bot, chat_id, response, parse_mode="Markdown")
@@ -765,7 +765,7 @@ async def help_command(message, bot):
         await handle_command_error(bot, message.chat.id, "/help", e)
 
 async def website(message, bot):
-    """אתר אינטרנט"""
+    """??? ???????"""
     try:
         user = message.from_user
         chat_id = message.chat.id
@@ -773,28 +773,28 @@ async def website(message, bot):
         web_url = "https://school-production-4d9d.up.railway.app"
         
         response = (
-            f"🌐 **אתר האינטרנט של Crypto-Class**\n\n"
-            f"🔗 **קישור לאתר:** {web_url}\n\n"
-            f"🎯 **מה תמצא באתר:**\n"
-            f"• 📊 **דשבורד אישי** - סטטיסטיקות מפורטות\n"
-            f"• 🏆 **טבלאות מובילים** - עם גרפים ודירוגים\n"
-            f"• 👨‍🏫 **דשבורד מורים** - ניהול כיתה מתקדם\n"
-            f"• 📈 **אנליטיקס** - ניתוח נתונים מתקדם\n"
-            f"• 🔔 **התראות** - עדכונים והודעות\n\n"
-            f"💻 **יתרונות האתר:**\n"
-            f"• נוח יותר לשימוש ממסך גדול\n"
-            f"• אפשרויות מתקדמות שלא קיימות בבוט\n"
-            f"• גרפים וויזואליזציה של נתונים\n"
-            f"• גישה מהירה לכל הפיצ'רים\n\n"
-            f"📱 **איך להשתמש:**\n"
-            f"1. היכנס לקישור למעלה\n"
-            f"2. התחבר עם חשבון הטלגרם שלך\n"
-            f"3. גלה את כל התכונות החדשות!\n\n"
-            f"🚀 **המלצות שלנו:**\n"
-            f"• השתמש באתר לניהול ארוך טווח\n"
-            f"• השתמש בבוט לפעולות מהירות\n"
-            f"• סנכרן בין הפלטפורמות\n\n"
-            f"📞 **בעיות באתר?** שלח /contact"
+            f"?? **??? ???????? ?? Crypto-Class**\n\n"
+            f"?? **????? ????:** {web_url}\n\n"
+            f"?? **?? ???? ????:**\n"
+            f"� ?? **?????? ????** - ?????????? ???????\n"
+            f"� ?? **?????? ???????** - ?? ????? ????????\n"
+            f"� ????? **?????? ?????** - ????? ???? ?????\n"
+            f"� ?? **????????** - ????? ?????? ?????\n"
+            f"� ?? **??????** - ??????? ???????\n\n"
+            f"?? **??????? ????:**\n"
+            f"� ??? ???? ?????? ???? ????\n"
+            f"� ???????? ??????? ??? ?????? ????\n"
+            f"� ????? ???????????? ?? ??????\n"
+            f"� ???? ????? ??? ????'???\n\n"
+            f"?? **??? ??????:**\n"
+            f"1. ????? ?????? ?????\n"
+            f"2. ????? ?? ????? ?????? ???\n"
+            f"3. ??? ?? ?? ??????? ??????!\n\n"
+            f"?? **?????? ????:**\n"
+            f"� ????? ???? ?????? ???? ????\n"
+            f"� ????? ???? ??????? ??????\n"
+            f"� ????? ??? ??????????\n\n"
+            f"?? **????? ?????** ??? /contact"
         )
         
         await safe_reply(bot, chat_id, response, parse_mode="Markdown")
@@ -803,44 +803,44 @@ async def website(message, bot):
         await handle_command_error(bot, message.chat.id, "/website", e)
 
 async def admin_panel(message, bot):
-    """פאנל ניהול"""
+    """???? ?????"""
     try:
         user = message.from_user
         chat_id = message.chat.id
         
-        # רשימת אדמינים (ניתן להגדיר ב-env)
+        # ????? ??????? (???? ?????? ?-env)
         ADMIN_IDS = [224223270]
         
         if user.id not in ADMIN_IDS:
             await safe_reply(bot, chat_id,
-                "❌ **אין לך הרשאות ניהול!**\n\n"
-                "רק מנהלי המערכת יכולים להשתמש בפקודה זו.",
+                "? **??? ?? ?????? ?????!**\n\n"
+                "?? ????? ?????? ?????? ?????? ?????? ??.",
                 parse_mode="Markdown")
             return
         
         if not DATABASE_AVAILABLE:
             await safe_reply(bot, chat_id,
-                "⚠️ **מסד הנתונים לא זמין**\n\nנסה שוב מאוחר יותר.",
+                "?? **??? ??????? ?? ????**\n\n??? ??? ????? ????.",
                 parse_mode="Markdown")
             return
         
         stats = get_system_stats()
         
         response = (
-            "👑 **פאנל ניהול - Crypto-Class**\n\n"
-            "📊 **סטטיסטיקות מערכת:**\n"
-            f"• 👥 משתמשים: {stats.get('total_users', 0):,}\n"
-            f"• 📅 פעילים היום: {stats.get('active_today', 0):,}\n"
-            f"• 💰 טוקנים כוללים: {stats.get('total_tokens', 0):,}\n\n"
-            "⚙️ **פקודות ניהול:**\n"
-            "• `/admin_stats` - סטטיסטיקות מפורטות\n"
-            "• `/add_tokens <user_id> <amount>` - הוספת טוקנים\n"
-            "• `/reset_checkin <user_id>` - איפוס צ'ק-אין\n\n"
-            "🌐 **דשבורד אתר:**\n"
-            "• אתר: https://school-production-4d9d.up.railway.app\n"
-            "• דשבורד מורה: /teacher\n"
-            "• סטטיסטיקות: /stats\n\n"
-            f"🆔 **מזהה האדמין שלך:** {user.id}"
+            "?? **???? ????? - Crypto-Class**\n\n"
+            "?? **?????????? ?????:**\n"
+            f"� ?? ???????: {stats.get('total_users', 0):,}\n"
+            f"� ?? ?????? ????: {stats.get('active_today', 0):,}\n"
+            f"� ?? ?????? ??????: {stats.get('total_tokens', 0):,}\n\n"
+            "?? **?????? ?????:**\n"
+            "� `/admin_stats` - ?????????? ???????\n"
+            "� `/add_tokens <user_id> <amount>` - ????? ??????\n"
+            "� `/reset_checkin <user_id>` - ????? ?'?-???\n\n"
+            "?? **?????? ???:**\n"
+            "� ???: https://school-production-4d9d.up.railway.app\n"
+            "� ?????? ????: /teacher\n"
+            "� ??????????: /stats\n\n"
+            f"?? **???? ?????? ???:** {user.id}"
         )
         
         await safe_reply(bot, chat_id, response, parse_mode="Markdown")
@@ -849,31 +849,31 @@ async def admin_panel(message, bot):
         await handle_command_error(bot, message.chat.id, "/admin", e)
 
 async def add_tokens(message, bot):
-    """הוספת טוקנים למשתמש"""
+    """????? ?????? ??????"""
     try:
         user = message.from_user
         chat_id = message.chat.id
         
-        # רשימת אדמינים
+        # ????? ???????
         ADMIN_IDS = [224223270]
         
         if user.id not in ADMIN_IDS:
-            await safe_reply(bot, chat_id, "❌ אין לך הרשאות ניהול.")
+            await safe_reply(bot, chat_id, "? ??? ?? ?????? ?????.")
             return
         
         if not DATABASE_AVAILABLE:
             await safe_reply(bot, chat_id,
-                "⚠️ **מסד הנתונים לא זמין**\n\nנסה שוב מאוחר יותר.",
+                "?? **??? ??????? ?? ????**\n\n??? ??? ????? ????.",
                 parse_mode="Markdown")
             return
         
-        # בדוק את הפרמטרים
+        # ???? ?? ????????
         args = message.text.split()
         if len(args) != 3:
             await safe_reply(bot, chat_id,
-                "💰 **הוספת טוקנים למשתמש**\n\n"
-                "שימוש: `/add_tokens <user_id> <amount>`\n\n"
-                "דוגמה: `/add_tokens 123456789 100`",
+                "?? **????? ?????? ??????**\n\n"
+                "?????: `/add_tokens <user_id> <amount>`\n\n"
+                "?????: `/add_tokens 123456789 100`",
                 parse_mode="Markdown")
             return
         
@@ -881,94 +881,95 @@ async def add_tokens(message, bot):
             target_user_id = int(args[1])
             amount = int(args[2])
         except ValueError:
-            await safe_reply(bot, chat_id, "❌ מזהה משתמש או כמות לא חוקיים.")
+            await safe_reply(bot, chat_id, "? ???? ????? ?? ???? ?? ??????.")
             return
         
-        # הוסף טוקנים
+        # ???? ??????
         success, new_balance, msg = add_tokens_to_user(target_user_id, amount)
         
         if success:
             target_user = get_user(target_user_id)
-            user_name = target_user.first_name if target_user else f"משתמש {target_user_id}"
+            user_name = target_user.first_name if target_user else f"????? {target_user_id}"
             
             response = (
-                f"✅ **טוקנים נוספו בהצלחה!**\n\n"
-                f"👤 **משתמש:** {user_name}\n"
-                f"🆔 **מזהה:** {target_user_id}\n"
-                f"➕ **נוספו:** {amount:,} טוקנים\n"
-                f"💰 **יתרה חדשה:** {new_balance:,} טוקנים"
+                f"? **?????? ????? ??????!**\n\n"
+                f"?? **?????:** {user_name}\n"
+                f"?? **????:** {target_user_id}\n"
+                f"? **?????:** {amount:,} ??????\n"
+                f"?? **???? ????:** {new_balance:,} ??????"
             )
             await safe_reply(bot, chat_id, response, parse_mode="Markdown")
         else:
             await safe_reply(bot, chat_id,
-                "❌ לא ניתן להוסיף טוקנים למשתמש זה.\n"
-                "ייתכן שהמשתמש לא קיים.")
+                "? ?? ???? ?????? ?????? ?????? ??.\n"
+                "????? ??????? ?? ????.")
         
     except Exception as e:
         await handle_command_error(bot, message.chat.id, "/add_tokens", e)
 
 async def reset_checkin(message, bot):
-    """איפוס צ'ק-אין למשתמש"""
+    """????? ?'?-??? ??????"""
     try:
         user = message.from_user
         chat_id = message.chat.id
         
-        # רשימת אדמינים
+        # ????? ???????
         ADMIN_IDS = [224223270]
         
         if user.id not in ADMIN_IDS:
-            await safe_reply(bot, chat_id, "❌ אין לך הרשאות ניהול.")
+            await safe_reply(bot, chat_id, "? ??? ?? ?????? ?????.")
             return
         
         if not DATABASE_AVAILABLE:
             await safe_reply(bot, chat_id,
-                "⚠️ **מסד הנתונים לא זמין**\n\nנסה שוב מאוחר יותר.",
+                "?? **??? ??????? ?? ????**\n\n??? ??? ????? ????.",
                 parse_mode="Markdown")
             return
         
-        # בדוק את הפרמטרים
+        # ???? ?? ????????
         args = message.text.split()
         if len(args) != 2:
             await safe_reply(bot, chat_id,
-                "🔄 **איפוס צ'ק-אין למשתמש**\n\n"
-                "שימוש: `/reset_checkin <user_id>`\n\n"
-                "דוגמה: `/reset_checkin 123456789`",
+                "?? **????? ?'?-??? ??????**\n\n"
+                "?????: `/reset_checkin <user_id>`\n\n"
+                "?????: `/reset_checkin 123456789`",
                 parse_mode="Markdown")
             return
         
         try:
             target_user_id = int(args[1])
         except ValueError:
-            await safe_reply(bot, chat_id, "❌ מזהה משתמש לא חוקי.")
+            await safe_reply(bot, chat_id, "? ???? ????? ?? ????.")
             return
         
-        # אפס צ'ק-אין
+        # ??? ?'?-???
         success, msg = reset_user_checkin(target_user_id)
         
         if success:
             target_user = get_user(target_user_id)
-            user_name = target_user.first_name if target_user else f"משתמש {target_user_id}"
+            user_name = target_user.first_name if target_user else f"????? {target_user_id}"
             
             response = (
-                f"✅ **צ'ק-אין אופס בהצלחה!**\n\n"
-                f"👤 **משתמש:** {user_name}\n"
-                f"🆔 **מזהה:** {target_user_id}\n"
-                f"🔄 **ניתן כעת לבצע צ'ק-אין יומי חדש**"
+                f"? **?'?-??? ???? ??????!**\n\n"
+                f"?? **?????:** {user_name}\n"
+                f"?? **????:** {target_user_id}\n"
+                f"?? **???? ??? ???? ?'?-??? ???? ???**"
             )
             await safe_reply(bot, chat_id, response, parse_mode="Markdown")
         else:
             await safe_reply(bot, chat_id,
-                "❌ לא ניתן לאפס צ'ק-אין למשתמש זה.\n"
-                "ייתכן שהמשתמש לא קיים.")
+                "? ?? ???? ???? ?'?-??? ?????? ??.\n"
+                "????? ??????? ?? ????.")
         
     except Exception as e:
         await handle_command_error(bot, message.chat.id, "/reset_checkin", e)
 
-# ========== רשימת פונקציות לייצוא ==========
+# ========== ????? ???????? ?????? ==========
 __all__ = [
     'start', 'checkin', 'balance', 'referral', 'my_referrals',
     'leaderboard', 'level', 'profile', 'tasks', 'contact',
     'help_command', 'website', 'admin_panel', 'add_tokens',
     'reset_checkin'
 ]
+
 

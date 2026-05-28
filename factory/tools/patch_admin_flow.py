@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from pathlib import Path
@@ -63,17 +63,17 @@ async def _tg_send(token: str, chat_id: int, text: str, reply_markup: dict | Non
 def _start_menu():
     return {
         "inline_keyboard": [
-            [{"text": "📌 הצג chat_id", "callback_data": "public:chatid"}],
-            [{"text": "🔐 Admin Login", "callback_data": "admin:login"}],
+            [{"text": "?? ??? chat_id", "callback_data": "public:chatid"}],
+            [{"text": "?? Admin Login", "callback_data": "admin:login"}],
         ]
     }
 
 def _admin_menu():
     return {
         "inline_keyboard": [
-            [{"text": "📊 סטטוס", "callback_data": "admin:status"}],
-            [{"text": "📌 chat_id", "callback_data": "admin:chatid"}],
-            [{"text": "🚪 Logout", "callback_data": "admin:logout"}],
+            [{"text": "?? ?????", "callback_data": "admin:status"}],
+            [{"text": "?? chat_id", "callback_data": "admin:chatid"}],
+            [{"text": "?? Logout", "callback_data": "admin:logout"}],
         ]
     }
 
@@ -178,22 +178,22 @@ async def telegram_webhook(request: Request, background: BackgroundTasks):
 
                 need = (os.getenv("ADMIN_PASSWORD") or "").strip()
                 if not need:
-                    await _tg_send(token, chat_id, "❌ ADMIN_PASSWORD לא מוגדר בשרת.")
+                    await _tg_send(token, chat_id, "? ADMIN_PASSWORD ?? ????? ????.")
                     return
 
                 if text.strip() == need:
                     ok = await _grant_admin(redis, uid)
                     if ok:
-                        await _tg_send(token, chat_id, "✅ התחברת כאדמין.\nבחר פעולה:", _admin_menu())
+                        await _tg_send(token, chat_id, "? ?????? ??????.\n??? ?????:", _admin_menu())
                     else:
-                        await _tg_send(token, chat_id, "❌ לא ניתן לשמור סשן אדמין (Redis).")
+                        await _tg_send(token, chat_id, "? ?? ???? ????? ??? ????? (Redis).")
                 else:
-                    await _tg_send(token, chat_id, "❌ סיסמה שגויה. לחץ שוב Admin Login כדי לנסות מחדש.")
+                    await _tg_send(token, chat_id, "? ????? ?????. ??? ??? Admin Login ??? ????? ????.")
                 return
 
             # /start -> buttons
             if text.startswith("/start"):
-                await _tg_send(token, chat_id, "✅ BOT_FACTORY online.\nבחר פעולה:", _start_menu())
+                await _tg_send(token, chat_id, "? BOT_FACTORY online.\n??? ?????:", _start_menu())
                 return
 
             # keep /chatid too
@@ -209,14 +209,14 @@ async def telegram_webhook(request: Request, background: BackgroundTasks):
             # admin login button
             if text == "admin:login":
                 if uid and await _is_admin(redis, uid):
-                    await _tg_send(token, chat_id, "✅ כבר מחובר כאדמין.\nבחר פעולה:", _admin_menu())
+                    await _tg_send(token, chat_id, "? ??? ????? ??????.\n??? ?????:", _admin_menu())
                     return
 
                 await _set_pending_login(redis, uid)
                 await _tg_send(
                     token,
                     chat_id,
-                    "הכנס סיסמת אדמין (Reply להודעה הזו):",
+                    "???? ????? ????? (Reply ?????? ???):",
                     {"force_reply": True, "selective": True},
                 )
                 return
@@ -224,11 +224,11 @@ async def telegram_webhook(request: Request, background: BackgroundTasks):
             # admin actions (only if logged in)
             if text.startswith("admin:"):
                 if not (uid and await _is_admin(redis, uid)):
-                    await _tg_send(token, chat_id, "❌ אין הרשאת אדמין. לחץ Admin Login והכנס סיסמה.")
+                    await _tg_send(token, chat_id, "? ??? ????? ?????. ??? Admin Login ????? ?????.")
                     return
 
                 if text == "admin:status":
-                    await _tg_send(token, chat_id, "📊 סטטוס: ONLINE ✅\n/health תקין.")
+                    await _tg_send(token, chat_id, "?? ?????: ONLINE ?\n/health ????.")
                     return
 
                 if text == "admin:chatid":
@@ -240,10 +240,10 @@ async def telegram_webhook(request: Request, background: BackgroundTasks):
                         await redis.delete(f"admin:session:{uid}")
                     except Exception:
                         pass
-                    await _tg_send(token, chat_id, "🚪 התנתקת. לחץ Admin Login כדי להתחבר שוב.")
+                    await _tg_send(token, chat_id, "?? ??????. ??? Admin Login ??? ?????? ???.")
                     return
 
-                await _tg_send(token, chat_id, "בחר פעולה:", _admin_menu())
+                await _tg_send(token, chat_id, "??? ?????:", _admin_menu())
                 return
 
             # default: ignore quietly
@@ -257,4 +257,5 @@ t2 = t[:m.start()] + replacement + t[m.end():]
 t2 = t2.replace("\r\n", "\n").replace("\r", "\n")
 p.write_text(t2, encoding="utf-8", newline="\n")
 print("OK: /start buttons + admin login flow (button -> password -> admin panel)")
+
 

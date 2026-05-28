@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from passlib.context import CryptContext
 from hashlib import sha256
 import os
@@ -16,4 +16,5 @@ def verify_password(plain_password, hashed_password):
 
 def generate_contract_hash(data: str):
     return sha256((data + os.environ["SECRET_KEY"]).encode()).hexdigest()
+
 

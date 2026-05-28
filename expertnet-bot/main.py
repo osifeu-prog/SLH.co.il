@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 SLH Investment House - Telegram Investment Operating System
 5 Layers: UI | Market Intelligence | Execution | Risk | Business
@@ -217,9 +217,9 @@ def lock_msg():
     return f"\U0001f512 \u05dc\u05de\u05e9\u05dc\u05de\u05d9\u05dd ({ACTIVATION_ILS}\u20aa)\n\U0001f4b3 \u05d4\u05e4\u05e2\u05dc\u05d4"
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # LAYER 1: USER INTERFACE
-# ═══════════════════════════════════
+# -----------------------------------
 
 def home_kb():
     return RKM(keyboard=[
@@ -302,9 +302,9 @@ async def start(m: types.Message, command: CommandObject = None):
     await pay_db.log_event("user.start", "expertnet", uid)
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # LAYER 2: MARKET INTELLIGENCE
-# ═══════════════════════════════════
+# -----------------------------------
 @dp.message(F.text == "\U0001f4ca \u05d4\u05e9\u05d5\u05e7 \u05e2\u05db\u05e9\u05d9\u05d5")
 async def market_now(m: types.Message):
     kb = IKM(inline_keyboard=[
@@ -381,9 +381,9 @@ async def mkt_alert(cb: types.CallbackQuery):
     await cb.answer()
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # LAYER 3: INVESTMENT PORTFOLIO
-# ═══════════════════════════════════
+# -----------------------------------
 @dp.message(F.text == "\U0001f4bc \u05d4\u05e9\u05e7\u05e2\u05d5\u05ea")
 async def invest_menu(m: types.Message):
     uid = m.from_user.id
@@ -599,9 +599,9 @@ async def admin_reject_dep(cb: types.CallbackQuery):
     await cb.answer()
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # LAYER 4: RISK & CONTROL
-# ═══════════════════════════════════
+# -----------------------------------
 @dp.message(F.text == "\U0001f6e1 \u05e1\u05d9\u05db\u05d5\u05df \u05d5\u05d1\u05e7\u05e8\u05d4")
 async def risk_menu(m: types.Message):
     d = g(m.from_user.id)
@@ -625,9 +625,9 @@ async def risk_menu(m: types.Message):
     )
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # WALLET + TRANSFERS
-# ═══════════════════════════════════
+# -----------------------------------
 @dp.message(F.text == "\U0001f4b0 \u05d0\u05e8\u05e0\u05e7")
 @dp.message(Command("wallet"))
 async def wallet(m: types.Message):
@@ -853,9 +853,9 @@ async def send_cmd(m: types.Message, command: CommandObject = None):
         await m.answer(f"\u274c {str(result)[:80]}")
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # LAYER 5: BUSINESS
-# ═══════════════════════════════════
+# -----------------------------------
 @dp.message(F.text == "\U0001f4ca \u05d3\u05e9\u05d1\u05d5\u05e8\u05d3")
 async def dashboard(m: types.Message):
     uid = m.from_user.id
@@ -1140,9 +1140,9 @@ async def no(cb: types.CallbackQuery):
     await cb.message.edit_caption(caption=f"\u274c {uid}")
     await cb.answer()
 
-# ═══════════════════════════════════
+# -----------------------------------
 # BANKING COMMANDS
-# ═══════════════════════════════════
+# -----------------------------------
 @dp.message(Command("deposit"))
 async def deposit_cmd(m: types.Message, command: CommandObject = None):
     """Start a real deposit. /deposit <plan> <amount>"""
@@ -1351,9 +1351,9 @@ async def rk(m: types.Message):
     await m.answer("\U0001f511 \u05de\u05e4\u05ea\u05d7 \u05e0\u05de\u05d7\u05e7")
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # PRICES (12 COINS)
-# ═══════════════════════════════════
+# -----------------------------------
 @dp.message(Command("prices"))
 async def prices_cmd(m: types.Message):
     if not HAS_MARKET:
@@ -1363,9 +1363,9 @@ async def prices_cmd(m: types.Message):
     await m.answer(f"{txt}\n\n\u23f0 {now_s}\n\U0001f3e6 SLH Investment House")
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # MY ID (for transfers)
-# ═══════════════════════════════════
+# -----------------------------------
 @dp.message(Command("myid"))
 async def myid_cmd(m: types.Message):
     uid = m.from_user.id
@@ -1377,9 +1377,9 @@ async def myid_cmd(m: types.Message):
     )
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # PORTFOLIO
-# ═══════════════════════════════════
+# -----------------------------------
 @dp.message(Command("portfolio"))
 async def portfolio_cmd(m: types.Message):
     uid = m.from_user.id
@@ -1430,9 +1430,9 @@ async def portfolio_cmd(m: types.Message):
     await m.answer("\n".join(lines))
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # PRICE ALERTS
-# ═══════════════════════════════════
+# -----------------------------------
 @dp.message(Command("alert"))
 async def alert_cmd(m: types.Message, command: CommandObject = None):
     if not paid(m.from_user.id):
@@ -1477,9 +1477,9 @@ async def alert_cmd(m: types.Message, command: CommandObject = None):
     await m.answer(f"\u2705 \u05d4\u05ea\u05e8\u05d0\u05d4 \u05e0\u05e7\u05d1\u05e2\u05d4!\n{coin} {d_txt} ${target:,.2f}")
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # SWAP QUOTES (STON.fi)
-# ═══════════════════════════════════
+# -----------------------------------
 STONFI_API = "https://api.ston.fi"
 
 async def get_swap_quote(from_token, to_token, amount):
@@ -1547,9 +1547,9 @@ async def swap_cmd(m: types.Message, command: CommandObject = None):
     await m.answer(f"\u274c \u05dc\u05d0 \u05e0\u05d9\u05ea\u05df \u05dc\u05d7\u05e9\u05d1 {from_t}/{to_t}")
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # LIMIT ORDERS (notification-based)
-# ═══════════════════════════════════
+# -----------------------------------
 @dp.message(Command("limit"))
 async def limit_cmd(m: types.Message, command: CommandObject = None):
     global _order_counter
@@ -1621,9 +1621,9 @@ async def orders_cmd(m: types.Message):
     await m.answer(txt)
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # TRANSFER CALLBACKS
-# ═══════════════════════════════════
+# -----------------------------------
 @dp.callback_query(F.data == "w:transfer_slh")
 async def w_transfer_slh(cb: types.CallbackQuery):
     await cb.message.answer(
@@ -1645,9 +1645,9 @@ async def w_transfer_zvk(cb: types.CallbackQuery):
     await cb.answer()
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # ENHANCED MARKET CALLBACKS
-# ═══════════════════════════════════
+# -----------------------------------
 @dp.callback_query(F.data == "mkt:prices")
 async def mkt_prices(cb: types.CallbackQuery):
     if HAS_MARKET:
@@ -1680,9 +1680,9 @@ async def mkt_portfolio(cb: types.CallbackQuery):
     await cb.answer()
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # BACKGROUND TASK: CHECK ALERTS & LIMITS
-# ═══════════════════════════════════
+# -----------------------------------
 async def check_alerts_task():
     """Background task checking price alerts and limit orders every 60s."""
     while True:
@@ -1755,5 +1755,6 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
 
 

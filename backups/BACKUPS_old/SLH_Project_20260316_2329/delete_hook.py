@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import asyncio
 import os
 from dotenv import load_dotenv
@@ -15,5 +15,6 @@ async def main():
     await bot.session.close()
 
 asyncio.run(main())
+
 
 

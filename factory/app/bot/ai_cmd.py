@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import os
@@ -27,7 +27,7 @@ async def ai_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     Admin-only. Uses OPENAI_API_KEY + OPENAI_MODEL.
     """
     if not _is_admin(update):
-        await update.effective_message.reply_text("⛔ Admin only.")
+        await update.effective_message.reply_text("? Admin only.")
         return
 
     prompt = " ".join(list(context.args or [])).strip()
@@ -58,7 +58,8 @@ async def ai_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     text = (resp.choices[0].message.content or "").strip() or "(empty response)"
     if len(text) > 3500:
-        text = text[:3500] + "\n…(truncated)"
+        text = text[:3500] + "\n�(truncated)"
 
     await update.effective_message.reply_text(text)
+
 

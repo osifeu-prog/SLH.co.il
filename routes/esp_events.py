@@ -1,19 +1,19 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
-SLH ESP32 Events → Revenue Bridge
+SLH ESP32 Events ? Revenue Bridge
 ==================================
 Receives signed events from ESP32 devices, validates them, optionally converts
 qualifying events into revenue_ledger entries.
 
 This is the missing piece from the architecture:
-  ESP32 → POST /api/esp/events → revenue_ledger → Distribution Engine
+  ESP32 ? POST /api/esp/events ? revenue_ledger ? Distribution Engine
 
 Endpoints:
-  POST /api/esp/events            — ESP32 device posts an event (auth: X-Device-Key)
-  GET  /api/esp/events            — admin: list recent events
-  GET  /api/esp/devices           — admin: list known devices + status
-  POST /api/esp/devices/register  — admin: register a new device
-  POST /api/esp/events/{id}/promote-to-revenue — admin: convert event → revenue line
+  POST /api/esp/events            � ESP32 device posts an event (auth: X-Device-Key)
+  GET  /api/esp/events            � admin: list recent events
+  GET  /api/esp/devices           � admin: list known devices + status
+  POST /api/esp/devices/register  � admin: register a new device
+  POST /api/esp/events/{id}/promote-to-revenue � admin: convert event ? revenue line
 
 Author: Claude (Cowork mode, 2026-04-27)
 """
@@ -193,4 +193,5 @@ async def promote_event(event_id: int, req: PromoteToRevenue,
             raise HTTPException(500, f"revenue_ledger not available: {e}")
         await conn.execute("UPDATE esp_events SET promoted_to_revenue_id=$1 WHERE id=$2", rev_id, event_id)
     return {"ok": True, "event_id": event_id, "revenue_id": rev_id}
+
 

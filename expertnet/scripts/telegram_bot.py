@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import os, sqlite3, logging, datetime, csv, psutil
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, CallbackQueryHandler
@@ -25,12 +25,12 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     agent_log("START", f"User {uid} connected")
     
     keyboard = [
-        [InlineKeyboardButton(" פתח ExpertNet App", web_app=WebAppInfo(url=VERCEL_URL))],
-        [InlineKeyboardButton(" פרופיל", callback_data='me'), InlineKeyboardButton(" סטייקינג", callback_data='staking')],
-        [InlineKeyboardButton(" העברה P2P", callback_data='p2p'), InlineKeyboardButton(" דוח CSV", callback_data='get_csv')],
-        [InlineKeyboardButton(" סטטוס AI", callback_data='ai_status'), InlineKeyboardButton(" אבחון", callback_data='diag')]
+        [InlineKeyboardButton(" ??? ExpertNet App", web_app=WebAppInfo(url=VERCEL_URL))],
+        [InlineKeyboardButton(" ??????", callback_data='me'), InlineKeyboardButton(" ????????", callback_data='staking')],
+        [InlineKeyboardButton(" ????? P2P", callback_data='p2p'), InlineKeyboardButton(" ??? CSV", callback_data='get_csv')],
+        [InlineKeyboardButton(" ????? AI", callback_data='ai_status'), InlineKeyboardButton(" ?????", callback_data='diag')]
     ]
-    await update.message.reply_html("<b>ExpertNet Master v21.0</b>\nהמערכת אחודה, מתועדת ומוכנה.", reply_markup=InlineKeyboardMarkup(keyboard))
+    await update.message.reply_html("<b>ExpertNet Master v21.0</b>\n?????? ?????, ?????? ??????.", reply_markup=InlineKeyboardMarkup(keyboard))
 
 async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
@@ -38,13 +38,13 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     agent_log("CALLBACK", f"Action: {query.data}")
 
     if query.data == 'me':
-        await query.edit_message_text(" <b>פרופיל משתמש</b>\nהנתונים נמשכים מה-Vault...", parse_mode='HTML', reply_markup=query.message.reply_markup)
+        await query.edit_message_text(" <b>?????? ?????</b>\n??????? ?????? ??-Vault...", parse_mode='HTML', reply_markup=query.message.reply_markup)
     elif query.data == 'ai_status':
-        await query.edit_message_text(" <b>סטטוס AI</b>\nתיעוד: פעיל\nסוכן: OpenClaw\nמצב: למידה", parse_mode='HTML', reply_markup=query.message.reply_markup)
+        await query.edit_message_text(" <b>????? AI</b>\n?????: ????\n????: OpenClaw\n???: ?????", parse_mode='HTML', reply_markup=query.message.reply_markup)
     elif query.data == 'diag':
-        await query.edit_message_text(f" <b>אבחון</b>\nCPU: {psutil.cpu_percent()}%\nRAM: {psutil.virtual_memory().percent}%", parse_mode='HTML', reply_markup=query.message.reply_markup)
+        await query.edit_message_text(f" <b>?????</b>\nCPU: {psutil.cpu_percent()}%\nRAM: {psutil.virtual_memory().percent}%", parse_mode='HTML', reply_markup=query.message.reply_markup)
     else:
-        await query.edit_message_text(f"פונקציית {query.data} בהקמה...", reply_markup=query.message.reply_markup)
+        await query.edit_message_text(f"???????? {query.data} ?????...", reply_markup=query.message.reply_markup)
 
 if __name__ == '__main__':
     app = ApplicationBuilder().token(TOKEN).build()
@@ -52,4 +52,5 @@ if __name__ == '__main__':
     app.add_handler(CallbackQueryHandler(handle_callback))
     print("--- SYSTEM ONLINE: V21.0 ---")
     app.run_polling()
+
 

@@ -1,21 +1,21 @@
-ï»¿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
-Agent Hub â€” multi-agent coordination API for SLH Spark.
+Agent Hub — multi-agent coordination API for SLH Spark.
 
 Backs the /agent-hub.html "ICQ of AI agents" page. Every paste from Claude,
-Copilot, Gemini, Grok, or Osif lands here â€” shared across devices, searchable,
+Copilot, Gemini, Grok, or Osif lands here — shared across devices, searchable,
 priority-tagged. The website keeps localStorage as an offline fallback only.
 
 Endpoints (prefix /api/agent-hub):
-  POST   /message          â€” insert a new coordination message
-  GET    /messages         â€” paginated feed with filters (source, priority, topic, search)
-  GET    /stats            â€” aggregate counts by source + priority
-  DELETE /message/{id}     â€” admin-only (X-Admin-Key header)
-  POST   /bulk-import      â€” admin-only, useful for migrating localStorage dumps
+  POST   /message          — insert a new coordination message
+  GET    /messages         — paginated feed with filters (source, priority, topic, search)
+  GET    /stats            — aggregate counts by source + priority
+  DELETE /message/{id}     — admin-only (X-Admin-Key header)
+  POST   /bulk-import      — admin-only, useful for migrating localStorage dumps
 
 All endpoints degrade gracefully if the DB pool is unavailable (503, never 500
 on a missing pool). Admin authentication mirrors the existing pattern used by
-creator_economy.py and arkham_bridge.py â€” comma-separated ADMIN_API_KEYS env
+creator_economy.py and arkham_bridge.py — comma-separated ADMIN_API_KEYS env
 var, falls back to ADMIN_API_KEY single-value, then a hard-coded default that
 prints a warning in production.
 """
@@ -126,7 +126,7 @@ class BulkImportIn(BaseModel):
 async def init_agent_hub_tables():
     """Create the agent_hub_messages table + indexes. Safe to call repeatedly."""
     if _pool is None:
-        logger.warning("[agent-hub] init skipped â€” pool not set")
+        logger.warning("[agent-hub] init skipped — pool not set")
         return
     try:
         async with _pool.acquire() as conn:
@@ -275,7 +275,7 @@ async def list_messages(
                 "messages": [_row_to_dict(r) for r in rows],
             }
     except Exception as e:  # noqa: BLE001
-        # Table may not exist yet â€” return empty gracefully
+        # Table may not exist yet — return empty gracefully
         logger.warning(f"[agent-hub] list failed: {e!r}")
         return {"total": 0, "limit": limit, "offset": offset, "messages": []}
 
@@ -307,7 +307,7 @@ async def get_stats():
                 if src in by_source:
                     by_source[src] = int(r["n"])
                 else:
-                    # Unknown / legacy label â€” expose as-is so Osif can see it
+                    # Unknown / legacy label — expose as-is so Osif can see it
                     by_source[src] = int(r["n"])
 
             by_priority_rows = await conn.fetch(
@@ -397,4 +397,5 @@ async def bulk_import(
     except Exception as e:  # noqa: BLE001
         logger.error(f"[agent-hub] bulk-import failed: {e!r}")
         raise HTTPException(status_code=500, detail=str(e))
+
 

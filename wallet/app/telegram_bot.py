@@ -208,3 +208,4 @@ async def telegram_webhook(
     await app.process_update(update)
 
     return {"ok": True}
+

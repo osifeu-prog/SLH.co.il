@@ -1,23 +1,23 @@
-﻿# main.py
+# main.py
 import os
 import sys
 import time
 import logging
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, CallbackQueryHandler, ConversationHandler
 
-# תצורה
+# ?????
 from config import TOKEN, LOCK_FILE, LOG_FILE, DATA_DIR, USERS_FILE, PRODUCTS_FILE, ORDERS_FILE, ADMIN_ID, START_TIME
 
-# יבוא פונקציות עזר
+# ???? ???????? ???
 from utils.lock import setup_lock
 from utils.json_utils import load_json, save_json
 from utils.ton_api import get_ton_balance
 from utils.notifications import notify_admin
 
-# יבוא handlers
+# ???? handlers
 from handlers import user_commands, admin_commands, logs_handler, purchase_flow, message_handler
 
-# ========== טעינת נתונים ==========
+# ========== ????? ?????? ==========
 os.makedirs(DATA_DIR, exist_ok=True)
 users = load_json(USERS_FILE, {})
 products = load_json(PRODUCTS_FILE, {
@@ -27,10 +27,10 @@ products = load_json(PRODUCTS_FILE, {
 })
 orders = load_json(ORDERS_FILE, {})
 
-# ========== נעילה ==========
+# ========== ????? ==========
 setup_lock(LOCK_FILE)
 
-# ========== לוגים ==========
+# ========== ????? ==========
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -40,7 +40,7 @@ logging.basicConfig(
     ]
 )
 
-# ========== פונקציות שעוטפות את ה-handlers עם הפרמטרים הנדרשים ==========
+# ========== ???????? ??????? ?? ?-handlers ?? ???????? ??????? ==========
 def get_user_handlers():
     async def start_wrapper(update, context):
         await user_commands.start(update, context, users, USERS_FILE)
@@ -105,7 +105,7 @@ def get_purchase_handlers():
         'cancel': purchase_flow.cancel,
     }
 
-# ========== הגדרת האפליקציה ==========
+# ========== ????? ????????? ==========
 def main():
     app = ApplicationBuilder().token(TOKEN).build()
 
@@ -113,7 +113,7 @@ def main():
     admin = get_admin_handlers()
     purchase = get_purchase_handlers()
 
-    # פקודות משתמש
+    # ?????? ?????
     app.add_handler(CommandHandler("start", user['start']))
     app.add_handler(CommandHandler("menu", user['menu']))
     app.add_handler(CommandHandler("balance", user['balance']))
@@ -127,7 +127,7 @@ def main():
     app.add_handler(CommandHandler("docs", user['docs']))
     app.add_handler(CommandHandler("help", user['help']))
 
-    # פקודות מנהל
+    # ?????? ????
     app.add_handler(CommandHandler("admin", admin['admin']))
     app.add_handler(CommandHandler("set_price", admin['set_price']))
     app.add_handler(CommandHandler("set_group", admin['set_group']))
@@ -139,7 +139,7 @@ def main():
     app.add_handler(CommandHandler("logs", logs_handler.logs_command))
     app.add_handler(CommandHandler("logs_raw", logs_handler.logs_raw))
 
-    # שיחת רכישה
+    # ???? ?????
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler("buy", purchase['buy_start'])],
         states={
@@ -150,7 +150,7 @@ def main():
     )
     app.add_handler(conv_handler)
 
-    # כפתורי אדמין
+    # ?????? ?????
     async def msg_wrapper(update, context):
         handlers_dict = {
             'admin_stats': admin['admin_stats'],
@@ -174,3 +174,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

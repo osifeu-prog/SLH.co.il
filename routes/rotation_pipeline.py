@@ -1,5 +1,5 @@
-﻿# -*- coding: utf-8 -*-
-"""Token Rotation Pipeline — atomic rotate→push→redeploy→verify→audit→broadcast.
+# -*- coding: utf-8 -*-
+"""Token Rotation Pipeline � atomic rotate?push?redeploy?verify?audit?broadcast.
 
 Endpoint:  POST /api/admin/rotate-bot-token-pipeline
 History:   GET  /api/admin/rotation-history
@@ -15,13 +15,13 @@ Security model:
 - Critical-tier secrets require a confirm_token round-trip (60s TTL).
 
 Failure model:
-- Pre-Railway validation failure → no system change, audit `secret.rotate.failed`.
-- Railway push failure → no system change, audit `secret.rotate.failed`.
-- Railway redeploy failure → variable IS set; next deploy will pick it up.
+- Pre-Railway validation failure ? no system change, audit `secret.rotate.failed`.
+- Railway push failure ? no system change, audit `secret.rotate.failed`.
+- Railway redeploy failure ? variable IS set; next deploy will pick it up.
   Audit `secret.rotate.failed`, broadcast to admins for manual recovery.
-- Healthcheck failure → variable + deploy succeeded but bot not responding.
+- Healthcheck failure ? variable + deploy succeeded but bot not responding.
   Audit `secret.rotate.healthcheck_failed`, broadcast loud alert.
-- setMyCommands failure → cosmetic only, best-effort, non-blocking.
+- setMyCommands failure ? cosmetic only, best-effort, non-blocking.
 """
 from __future__ import annotations
 
@@ -64,7 +64,7 @@ log = logging.getLogger("slh.rotation_pipeline")
 
 router = APIRouter(prefix="/api/admin", tags=["admin", "rotation"])
 
-# ─── Constants ─────────────────────────────────────────────────────────────
+# --- Constants -------------------------------------------------------------
 
 CONFIRM_TTL_SECONDS = 60
 HEALTHCHECK_DELAY_SECONDS = 8
@@ -72,13 +72,13 @@ COOLDOWN_BY_TIER = {"critical": 900, "high": 300, "medium": 60, "low": 0}
 
 BOT_COMMANDS_PATH = Path(__file__).resolve().parent.parent / "config" / "bot_commands.json"
 
-# ─── In-memory cooldown tracking ───────────────────────────────────────────
-# Per-process. Resets on restart, which is fine — DB audit log is the
-# durable source of truth. Maps env_var → unix timestamp of last successful rotation.
+# --- In-memory cooldown tracking -------------------------------------------
+# Per-process. Resets on restart, which is fine � DB audit log is the
+# durable source of truth. Maps env_var ? unix timestamp of last successful rotation.
 _LAST_ROTATION_TS: dict[str, float] = {}
 
 
-# ─── Models ────────────────────────────────────────────────────────────────
+# --- Models ----------------------------------------------------------------
 
 
 class RotateRequest(BaseModel):
@@ -90,7 +90,7 @@ class RotateRequest(BaseModel):
     skip_healthcheck: bool = Field(False)  # for non-bot secrets that have no getMe equivalent
 
 
-# ─── Confirm-token table (for Critical tier) ──────────────────────────────
+# --- Confirm-token table (for Critical tier) ------------------------------
 
 
 _CONFIRM_SCHEMA_READY = False
@@ -152,7 +152,7 @@ async def _consume_confirm_token(pool, token: str, env_var: str, actor: str) -> 
     return row is not None
 
 
-# ─── Helpers ───────────────────────────────────────────────────────────────
+# --- Helpers ---------------------------------------------------------------
 
 
 async def _telegram_get_me(token: str) -> dict:
@@ -189,8 +189,8 @@ def _load_bot_commands(handle: str) -> list[dict]:
     """Return the command list to register for `handle`. Falls back to default."""
     if not BOT_COMMANDS_PATH.exists():
         return [
-            {"command": "start", "description": "התחל"},
-            {"command": "help",  "description": "עזרה"},
+            {"command": "start", "description": "????"},
+            {"command": "help",  "description": "????"},
         ]
     try:
         cfg = json.loads(BOT_COMMANDS_PATH.read_text(encoding="utf-8"))
@@ -208,7 +208,7 @@ async def _broadcast_admins(text: str) -> None:
     """
     bot_token = os.getenv("SLH_CLAUDE_BOT_TOKEN") or os.getenv("TELEGRAM_BOT_TOKEN", "")
     if not bot_token:
-        log.warning("rotation broadcast skipped — no admin bot token in env")
+        log.warning("rotation broadcast skipped � no admin bot token in env")
         return
     admin_ids = [
         x.strip() for x in (os.getenv("ADMIN_TELEGRAM_IDS", "224223270") or "").split(",")
@@ -266,7 +266,7 @@ def _resolve_tier(env_var: str, bot_row: Optional[dict]) -> str:
 
 
 async def _audit(pool, action: str, **kwargs) -> str:
-    """Wrap audit_log_write — pulls a fresh connection. Returns entry_hash or ''."""
+    """Wrap audit_log_write � pulls a fresh connection. Returns entry_hash or ''."""
     try:
         from main import audit_log_write  # type: ignore
     except Exception:
@@ -284,7 +284,7 @@ def _lazy_require_admin():
     return _require_admin
 
 
-# ─── Endpoint ──────────────────────────────────────────────────────────────
+# --- Endpoint --------------------------------------------------------------
 
 
 @router.post("/rotate-bot-token-pipeline")
@@ -297,9 +297,9 @@ async def rotate_pipeline(
     """Atomic rotate-push-redeploy-verify-audit-broadcast.
 
     Returns one of:
-        {ok: true, ...}                                  — success
-        {ok: false, needs_confirm: true, confirm_token}  — Critical tier, awaiting confirm
-        {ok: false, phase: "healthcheck_failed", ...}    — soft failure, recovery needed
+        {ok: true, ...}                                  � success
+        {ok: false, needs_confirm: true, confirm_token}  � Critical tier, awaiting confirm
+        {ok: false, phase: "healthcheck_failed", ...}    � soft failure, recovery needed
     Raises 4xx on user errors, 502 on Railway failures.
     """
     actor_id = _lazy_require_admin()(authorization, x_admin_key)
@@ -309,21 +309,21 @@ async def rotate_pipeline(
     if pool is None:
         raise HTTPException(503, "DB pool unavailable")
 
-    # ── Phase 0: lookup + tier resolution ────────────────────────────────
+    # -- Phase 0: lookup + tier resolution --------------------------------
     bot = await _lookup_bot_by_env(pool, body.env_var)
     tier = _resolve_tier(body.env_var, bot)
     is_bot = bot is not None
     skip_healthcheck = body.skip_healthcheck or not is_bot
     handle = (bot or {}).get("handle") or body.expect_handle or "(non-bot)"
 
-    # ── Cooldown check ───────────────────────────────────────────────────
+    # -- Cooldown check ---------------------------------------------------
     cooldown = COOLDOWN_BY_TIER.get(tier, 0)
     last_ts = _LAST_ROTATION_TS.get(body.env_var, 0)
     if cooldown and (time.time() - last_ts) < cooldown:
         wait = int(cooldown - (time.time() - last_ts))
-        raise HTTPException(429, f"cooldown active for {body.env_var} — wait {wait}s")
+        raise HTTPException(429, f"cooldown active for {body.env_var} � wait {wait}s")
 
-    # ── Phase 1: Critical tier confirm-token gate ────────────────────────
+    # -- Phase 1: Critical tier confirm-token gate ------------------------
     if tier == "critical":
         if not body.confirm_token:
             ct = await _create_confirm_token(pool, body.env_var, actor)
@@ -336,15 +336,15 @@ async def rotate_pipeline(
                 "env_var": body.env_var,
                 "handle": handle,
                 "message_he": (
-                    f"⚠️ פעולה רגישה (tier={tier}). שלח שוב את אותה הבקשה תוך "
-                    f"{CONFIRM_TTL_SECONDS} שניות עם confirm_token כדי לאשר."
+                    f"?? ????? ????? (tier={tier}). ??? ??? ?? ???? ????? ??? "
+                    f"{CONFIRM_TTL_SECONDS} ????? ?? confirm_token ??? ????."
                 ),
             })
         ok = await _consume_confirm_token(pool, body.confirm_token, body.env_var, actor)
         if not ok:
             raise HTTPException(403, "confirm_token invalid, expired, or for different env_var/actor")
 
-    # ── Phase 2: validate token against Telegram (if it's a bot token) ───
+    # -- Phase 2: validate token against Telegram (if it's a bot token) ---
     tg_info: dict = {}
     if not skip_healthcheck:
         try:
@@ -369,7 +369,7 @@ async def rotate_pipeline(
                     "Set swap_mode=true to override (intentional bot replacement)."
                 )
 
-    # ── Phase 3: audit initiated ─────────────────────────────────────────
+    # -- Phase 3: audit initiated -----------------------------------------
     last4 = body.new_token[-4:]
     initiated_hash = await _audit(
         pool, "secret.rotate.initiated",
@@ -385,7 +385,7 @@ async def rotate_pipeline(
         metadata={"tier": tier, "swap": body.swap_mode, "is_bot": is_bot},
     )
 
-    # ── Phase 4: push to Railway ─────────────────────────────────────────
+    # -- Phase 4: push to Railway -----------------------------------------
     try:
         await railway_client.variable_upsert(body.env_var, body.new_token, skip_deploys=True)
     except Exception as e:
@@ -396,7 +396,7 @@ async def rotate_pipeline(
                      metadata={"phase": "railway_push", "tier": tier, "error": msg})
         raise HTTPException(502, f"Railway variable_upsert failed: {msg}")
 
-    # ── Phase 5: trigger redeploy ────────────────────────────────────────
+    # -- Phase 5: trigger redeploy ----------------------------------------
     deploy_id: Optional[str] = None
     try:
         result = await railway_client.service_redeploy(body.env_var)
@@ -409,12 +409,12 @@ async def rotate_pipeline(
                      metadata={"phase": "railway_redeploy", "tier": tier, "error": msg,
                                "note": "variable WAS pushed; manual redeploy required"})
         await _broadcast_admins(
-            f"⚠️ סיבוב חלקי: {handle} ({body.env_var})\n"
-            f"Variable עודכן ב-Railway אך redeploy נכשל. נדרש redeploy ידני."
+            f"?? ????? ????: {handle} ({body.env_var})\n"
+            f"Variable ????? ?-Railway ?? redeploy ????. ???? redeploy ????."
         )
         raise HTTPException(502, f"Railway redeploy failed (variable WAS set): {msg}")
 
-    # ── Phase 6: wait + healthcheck ──────────────────────────────────────
+    # -- Phase 6: wait + healthcheck --------------------------------------
     if not skip_healthcheck:
         await asyncio.sleep(HEALTHCHECK_DELAY_SECONDS)
         healthy = await _telegram_get_me_quiet(body.new_token)
@@ -424,10 +424,10 @@ async def rotate_pipeline(
                          resource_id=body.env_var,
                          metadata={"tier": tier, "deploy_id": deploy_id, "delay_s": HEALTHCHECK_DELAY_SECONDS})
             await _broadcast_admins(
-                f"🚨 ROTATION HEALTHCHECK נכשל: {handle} ({body.env_var})\n"
-                f"Variable + redeploy הצליחו אך הבוט לא מגיב ל-getMe.\n"
+                f"?? ROTATION HEALTHCHECK ????: {handle} ({body.env_var})\n"
+                f"Variable + redeploy ?????? ?? ???? ?? ???? ?-getMe.\n"
                 f"Deploy: {deploy_id}\n"
-                f"דרושה התערבות ידנית."
+                f"????? ??????? ?????."
             )
             return _secure({
                 "ok": False,
@@ -438,14 +438,14 @@ async def rotate_pipeline(
                 "handle": handle,
             })
 
-    # ── Phase 7: mark rotated in catalog ─────────────────────────────────
+    # -- Phase 7: mark rotated in catalog ---------------------------------
     if bot and tg_info:
         try:
             await _mark_rotated(pool, bot["id"], tg_info["id"])
         except Exception as e:
             log.warning("mark_rotated failed: %s", e)
 
-    # ── Phase 8: setMyCommands sync (best-effort) ────────────────────────
+    # -- Phase 8: setMyCommands sync (best-effort) ------------------------
     if is_bot and not skip_healthcheck:
         try:
             cmds = _load_bot_commands(handle)
@@ -459,7 +459,7 @@ async def rotate_pipeline(
         except Exception as e:
             log.warning("setMyCommands for %s failed: %s", handle, e)
 
-    # ── Phase 9: audit pushed ────────────────────────────────────────────
+    # -- Phase 9: audit pushed --------------------------------------------
     await _audit(
         pool, "secret.rotate.pushed",
         actor_user_id=actor_id,
@@ -469,10 +469,10 @@ async def rotate_pipeline(
         metadata={"tier": tier, "handle": handle},
     )
 
-    # ── Phase 10: broadcast success ──────────────────────────────────────
+    # -- Phase 10: broadcast success --------------------------------------
     _LAST_ROTATION_TS[body.env_var] = time.time()
     await _broadcast_admins(
-        f"✅ סיבוב טוקן הושלם: {handle}\n"
+        f"? ????? ???? ?????: {handle}\n"
         f"env_var: {body.env_var}\n"
         f"tier: {tier}\n"
         f"last4: ...{last4}\n"
@@ -492,7 +492,7 @@ async def rotate_pipeline(
     })
 
 
-# ─── Rotation history endpoint ─────────────────────────────────────────────
+# --- Rotation history endpoint ---------------------------------------------
 
 
 @router.get("/rotation-history")
@@ -549,7 +549,7 @@ async def rotation_history(
     return {"count": len(rows), "events": [_serialize(r) for r in rows]}
 
 
-# ─── Self-check endpoint ───────────────────────────────────────────────────
+# --- Self-check endpoint ---------------------------------------------------
 
 
 @router.get("/rotation-pipeline/health")
@@ -583,4 +583,5 @@ async def rotation_health(
             [x for x in (os.getenv("ADMIN_TELEGRAM_IDS", "224223270") or "").split(",") if x.strip()]
         ),
     }
+
 

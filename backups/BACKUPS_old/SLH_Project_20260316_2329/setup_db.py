@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import asyncpg, asyncio, os
 from dotenv import load_dotenv
 load_dotenv()
@@ -15,5 +15,6 @@ async def setup():
 
 if __name__ == '__main__':
     asyncio.run(setup())
+
 
 

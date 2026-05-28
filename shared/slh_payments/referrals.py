@@ -225,3 +225,4 @@ class ReferralEngine:
 
 # Global singleton
 referral_engine = ReferralEngine()
+

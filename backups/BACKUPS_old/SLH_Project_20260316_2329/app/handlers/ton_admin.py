@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from aiogram import Router, types
 from aiogram.filters import Command
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
@@ -647,4 +647,5 @@ async def set_setting_text_cmd(message: types.Message):
         f"Key: {row['key']}\n"
         f"Value: {row['value_text']}"
     )
+
 

@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from __future__ import annotations
 import os, sys
 from pathlib import Path
@@ -67,4 +67,5 @@ tables = sorted(list(Base.metadata.tables.keys()))
 print("metadata tables count:", len(tables))
 for t in tables:
     print(" -", t)
+
 

@@ -63,3 +63,4 @@ def list_dir(path: str = ".") -> str:
         size = child.stat().st_size if child.is_file() else 0
         entries.append(f"{kind}\t{size}\t{child.name}")
     return "\n".join(entries) if entries else "(empty)"
+

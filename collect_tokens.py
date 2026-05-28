@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import requests
 import time
 import csv
@@ -64,14 +64,15 @@ if __name__ == '__main__':
         details = get_token_details(addr)
         if details and details.get('price_usd') and details['price_usd'] > 0:
             details_list.append(details)
-            print(f"✓ {details['symbol']}: ${details['price_usd']:.6f}")
+            print(f"? {details['symbol']}: ${details['price_usd']:.6f}")
         else:
-            print(f"✗ {addr[:10]}... no price")
+            print(f"? {addr[:10]}... no price")
         time.sleep(0.5)
     
     if details_list:
         save_to_csv(details_list)
-        print(f"\n✅ Done. Collected {len(details_list)} tokens.")
+        print(f"\n? Done. Collected {len(details_list)} tokens.")
     else:
-        print("❌ No data collected.")
+        print("? No data collected.")
+
 

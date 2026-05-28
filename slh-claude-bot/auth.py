@@ -29,3 +29,4 @@ def unauthorized_reply_he(telegram_id: int) -> str:
         f"הבוט מוגדר עבור: {allowed}\n"
         f"ה-ID שלך: {telegram_id}"
     )
+

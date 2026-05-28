@@ -1,11 +1,11 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 import logging
 import os
 
 # ----------------------------
-# Logging ×ž×ª×§×“×
+# Logging מתקדם
 # ----------------------------
 log_folder = os.path.join(os.getcwd(), 'logs')
 os.makedirs(log_folder, exist_ok=True)
@@ -16,7 +16,7 @@ logging.basicConfig(
 )
 
 # ----------------------------
-# ×ž×•×“×œ Pydantic ×œ-POST JSON
+# מודל Pydantic ל-POST JSON
 # ----------------------------
 class AirdropRequest(BaseModel):
     user_id: str
@@ -31,24 +31,25 @@ def ping():
 @router.post('/airdrop')
 def send_airdrop(request: AirdropRequest):
     '''
-    ×¤×•× ×§×¦×™×” × ×™×¡×™×•× ×™×ª ×œ×©×œ×™×—×ª ××™×™×¨×“×¨×•×¤
-    - request.user_id: ×ž×–×”×” ×”×ž×©×ª×ž×©
-    - request.amount: ×›×ž×•×ª tokens ×œ×©×œ×™×—×”
+    פונקציה ניסיונית לשליחת איירדרופ
+    - request.user_id: מזהה המשתמש
+    - request.amount: כמות tokens לשליחה
     '''
     if request.amount <= 0:
         raise HTTPException(status_code=400, detail='Amount must be positive')
 
-    # ×œ×•×’ ×œ×ž×¡×•×£ ×•×§×•×‘×¥
+    # לוג למסוף וקובץ
     message = f"[AIRDROP] Sending {request.amount} tokens to {request.user_id}"
     print(message)
     logging.info(message)
 
-    # ×›××Ÿ × ×™×ª×Ÿ ×œ×”×•×¡×™×£ ×©×œ×™×—×” ××ž×™×ª×™×ª ×‘×¢×ª×™×“ (DB / Blockchain / Telegram)
+    # כאן ניתן להוסיף שליחה אמיתית בעתיד (DB / Blockchain / Telegram)
     return {
         'user_id': request.user_id,
         'amount': request.amount,
         'status': 'success',
-        'note': 'mock send - × ×™×¡×•×™'
+        'note': 'mock send - ניסוי'
     }
+
 
 

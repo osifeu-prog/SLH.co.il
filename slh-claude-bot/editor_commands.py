@@ -630,3 +630,4 @@ def register(dp: Dispatcher, auth_module, _chunks_fn) -> None:
         await msg.answer(EDITOR_HELP)
 
     log.info("editor_commands registered: cat ls grep find append replace newpage commit push sync draft apply reject editor")
+

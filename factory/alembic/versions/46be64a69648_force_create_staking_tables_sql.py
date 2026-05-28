@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """force_create_staking_tables_sql
 
 Revision ID: 46be64a69648
@@ -77,4 +77,5 @@ def upgrade():
 
 def downgrade():
     pass
+
 

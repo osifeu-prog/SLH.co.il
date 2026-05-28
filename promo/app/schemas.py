@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
@@ -55,4 +55,5 @@ class StatsOut(BaseModel):
     total_users: int
     total_transactions: int
     total_amount_usd: float
+
 

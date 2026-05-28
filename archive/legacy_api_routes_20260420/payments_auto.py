@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 SLH Auto-verify Payment Endpoints
 ==================================
@@ -6,13 +6,13 @@ On-chain verification for TON + BSC transfers.
 Replaces the manual 24h approve flow with sub-60s automatic verification.
 
 Endpoints:
-  POST /api/payment/ton/auto-verify     â€” verify TON tx, grant premium
-  POST /api/payment/bsc/auto-verify     â€” verify BSC/BNB tx, grant premium
-  GET  /api/payment/status/{user_id}    â€” check user premium + last deposit
-  GET  /api/payment/config              â€” public config (addresses, min amounts)
-  POST /api/payment/external/record     â€” record a 3rd-party fiat payment (Stripe/PayBox/Bit)
-  POST /api/payment/receipt              â€” issue a SLH digital receipt
-  GET  /api/payment/geography/summary   â€” dashboard: payments by country/currency
+  POST /api/payment/ton/auto-verify     — verify TON tx, grant premium
+  POST /api/payment/bsc/auto-verify     — verify BSC/BNB tx, grant premium
+  GET  /api/payment/status/{user_id}    — check user premium + last deposit
+  GET  /api/payment/config              — public config (addresses, min amounts)
+  POST /api/payment/external/record     — record a 3rd-party fiat payment (Stripe/PayBox/Bit)
+  POST /api/payment/receipt              — issue a SLH digital receipt
+  GET  /api/payment/geography/summary   — dashboard: payments by country/currency
 
 Added 2026-04-17 morning (ship-all session).
 """
@@ -38,18 +38,18 @@ BSCSCAN_API_KEY = os.getenv("BSCSCAN_API_KEY", "").strip()
 TONCENTER_API_KEY = os.getenv("TONCENTER_API_KEY", "").strip()
 PREMIUM_MIN_BNB = float(os.getenv("PREMIUM_MIN_BNB", "0.0005"))  # ~$0.30 at BNB=$633
 PREMIUM_MIN_TON = float(os.getenv("PREMIUM_MIN_TON", "0.01"))    # ~$0.014 at TON=$1.41
-PREMIUM_MIN_ILS = float(os.getenv("PREMIUM_MIN_ILS", "1"))       # for testing â€” 1 ILS = symbolic
+PREMIUM_MIN_ILS = float(os.getenv("PREMIUM_MIN_ILS", "1"))       # for testing — 1 ILS = symbolic
 
-# Testnet mode â€” set PAYMENT_MODE=testnet in Railway to switch to TON Testnet + BSC Chapel.
-# Default is "mainnet" â€” real money. Testnet = fake money, safe for QA/tutorials.
+# Testnet mode — set PAYMENT_MODE=testnet in Railway to switch to TON Testnet + BSC Chapel.
+# Default is "mainnet" — real money. Testnet = fake money, safe for QA/tutorials.
 PAYMENT_MODE = os.getenv("PAYMENT_MODE", "mainnet").lower().strip()
 IS_TESTNET = PAYMENT_MODE == "testnet"
 
 if IS_TESTNET:
-    # BSC Testnet (Chapel) â€” public RPCs, free tBNB from https://testnet.binance.org/faucet-smart
+    # BSC Testnet (Chapel) — public RPCs, free tBNB from https://testnet.binance.org/faucet-smart
     BSC_GENESIS_ADDRESS = os.getenv("BSC_TESTNET_ADDRESS", BSC_GENESIS_ADDRESS).lower()
-    # TON Testnet â€” https://testnet.toncenter.com
-    # (TON_PAY_ADDRESS on testnet is a separate wallet â€” user sets via env)
+    # TON Testnet — https://testnet.toncenter.com
+    # (TON_PAY_ADDRESS on testnet is a separate wallet — user sets via env)
 
 
 # Pool is injected by main.py via set_pool()
@@ -258,7 +258,7 @@ async def ton_auto_verify(req: TonVerifyReq, request: Request):
         "country_code": _client_country(request),
         "receipt": receipt,
         **result,
-        "message": "×ª×©×œ×•× ××•×ž×ª ×‘-TON. Premium ×”×•×¤×¢×œ.",
+        "message": "תשלום אומת ב-TON. Premium הופעל.",
     }
 
 
@@ -284,14 +284,14 @@ async def bsc_auto_verify(req: BscVerifyReq, request: Request):
     expected_min = req.expected_min_bnb or PREMIUM_MIN_BNB
     # BSC public RPC (free, no key needed).
     if IS_TESTNET:
-        # BSC Testnet (Chapel) â€” free tBNB at https://testnet.binance.org/faucet-smart
+        # BSC Testnet (Chapel) — free tBNB at https://testnet.binance.org/faucet-smart
         bsc_rpcs = [
             "https://data-seed-prebsc-1-s1.binance.org:8545",
             "https://data-seed-prebsc-2-s1.binance.org:8545",
             "https://bsc-testnet.public.blastapi.io",
         ]
     else:
-        # Mainnet â€” Binance dataseed + fallbacks
+        # Mainnet — Binance dataseed + fallbacks
         bsc_rpcs = [
             "https://bsc-dataseed.binance.org",
             "https://bsc-dataseed1.ninicoin.io",
@@ -366,13 +366,13 @@ async def bsc_auto_verify(req: BscVerifyReq, request: Request):
         "country_code": _client_country(request),
         "receipt": rcpt,
         **result,
-        "message": "×ª×©×œ×•× ××•×ž×ª ×‘-BSC. Premium ×”×•×¤×¢×œ.",
+        "message": "תשלום אומת ב-BSC. Premium הופעל.",
     }
 
 
 # ============================================================
 # External providers (Stripe, PayBox, Bit, PayPal, GrowClub, ICount)
-# Record-only â€” the actual card processing happens on the provider side,
+# Record-only — the actual card processing happens on the provider side,
 # we just ingest the confirmed webhook/return and grant premium + issue receipt.
 # ============================================================
 
@@ -448,7 +448,7 @@ async def external_payment_record(req: ExternalPaymentRecord, request: Request):
         "provider": provider,
         "country_code": country,
         "receipt": rcpt,
-        "message": f"×ª×©×œ×•× {provider} × ×¨×©×" + (" ×•-Premium ×”×•×¤×¢×œ" if req.grant_premium else ""),
+        "message": f"תשלום {provider} נרשם" + (" ו-Premium הופעל" if req.grant_premium else ""),
     }
 
 
@@ -511,12 +511,12 @@ async def payment_config():
         # Estimated gas + micro-transaction info (for UI to show "total cost")
         "gas_estimate": {
             "ton_network_fee": 0.005,  # typical TON transfer fee
-            "bsc_network_fee_bnb": 0.0003,  # ~21000 gas Ã— 5 gwei
+            "bsc_network_fee_bnb": 0.0003,  # ~21000 gas × 5 gwei
             "bsc_usd_equivalent": 0.20,  # rough
         },
         "test_tx_note": (
-            "×œ×‘×“×™×§×ª flow ×¨××©×•× ×” ×ž×•×ž×œ×¥: 0.01 TON (×›×•×œ×œ ×¢×ž×œ×” ~0.005 TON) "
-            "××• 0.001 BNB (~$0.63). ××—×¨×™ ×©×”test ×¢×•×‘×“, ×¤×¨×ž×™×™×“ ×¨×’×™×œ ×ž-0.5 TON / 0.05 BNB."
+            "לבדיקת flow ראשונה מומלץ: 0.01 TON (כולל עמלה ~0.005 TON) "
+            "או 0.001 BNB (~$0.63). אחרי שהtest עובד, פרמייד רגיל מ-0.5 TON / 0.05 BNB."
         ),
     }
 
@@ -588,5 +588,6 @@ async def user_receipts(user_id: int, limit: int = 50):
             user_id, max(1, min(limit, 500)),
         )
     return {"user_id": user_id, "receipts": [dict(r) for r in rows]}
+
 
 

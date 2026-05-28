@@ -33,3 +33,4 @@ async def run(subcommand: str, cwd: str = "") -> str:
                 return f"[blocked] destructive git pattern: {bad!r} — set ALLOW_DESTRUCTIVE=true"
 
     return await bash_ops.run(f"git {subcommand}", cwd=cwd, timeout=120)
+

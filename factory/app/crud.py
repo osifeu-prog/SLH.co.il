@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from decimal import Decimal
 from sqlalchemy.orm import Session
 
@@ -7,7 +7,7 @@ from app import models
 
 def get_or_create_user(db: Session, telegram_id: int, username: str | None):
     """
-    מאתר משתמש לפי telegram_id; אם לא קיים – יוצר עם balance_slh=0.
+    ???? ????? ??? telegram_id; ?? ?? ???? � ???? ?? balance_slh=0.
     """
     user = (
         db.query(models.User)
@@ -28,7 +28,7 @@ def get_or_create_user(db: Session, telegram_id: int, username: str | None):
 
 def set_bnb_address(db: Session, user: models.User, address: str):
     """
-    מעדכן את כתובת ה-BNB של המשתמש.
+    ????? ?? ????? ?-BNB ?? ??????.
     """
     user.bnb_address = address
     db.add(user)
@@ -46,7 +46,7 @@ def change_balance(
     to_user: int | None,
 ) -> models.Transaction:
     """
-    שינוי יתרה פנימית + יצירת טרנזקציה בלג'ר.
+    ????? ???? ?????? + ????? ???????? ???'?.
     """
     amount = Decimal(str(delta_slh))
 
@@ -75,7 +75,7 @@ def internal_transfer(
     amount_slh: float | Decimal,
 ) -> models.Transaction:
     """
-    העברת SLH פנימית בין שני משתמשים (off-chain).
+    ????? SLH ?????? ??? ??? ??????? (off-chain).
     """
     amount = Decimal(str(amount_slh))
 
@@ -83,10 +83,10 @@ def internal_transfer(
     if sender_balance < amount:
         raise ValueError("Insufficient balance for this transfer.")
 
-    # מורידים מהשולח
+    # ??????? ??????
     sender.balance_slh = sender_balance - amount
 
-    # מוסיפים למקבל
+    # ??????? ?????
     receiver_balance = receiver.balance_slh or Decimal("0")
     receiver.balance_slh = receiver_balance + amount
 
@@ -105,5 +105,6 @@ def internal_transfer(
     db.refresh(receiver)
     db.refresh(tx)
     return tx
+
 
 

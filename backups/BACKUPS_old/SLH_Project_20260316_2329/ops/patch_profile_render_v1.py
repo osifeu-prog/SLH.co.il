@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from pathlib import Path
 import re
 
@@ -61,4 +61,5 @@ if n != 1:
 
 p.write_text(new_s, encoding="utf-8", newline="\n")
 print("worker.py patched: render_profile_text")
+
 

@@ -1,8 +1,8 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 #!/usr/bin/env python3
 """
 TON Airdrop Bot - Stable Version
-מונע conflicts ומנהל סטטיסטיקות
+???? conflicts ????? ??????????
 """
 import os
 import logging
@@ -27,14 +27,14 @@ TON_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
 active_users = set()
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """ברוכים הבא - רישום משתמש"""
+    """?????? ??? - ????? ?????"""
     user = update.effective_user
     
     if user.id in active_users:
-        await update.message.reply_text("👋 כבר נרשמת! השתמש ב-/airdrop כדי לבקש airdrop.")
+        await update.message.reply_text("?? ??? ?????! ????? ?-/airdrop ??? ???? airdrop.")
         return
     
-    # רישום משתמש חדש
+    # ????? ????? ???
     try:
         user_data = {
             "telegram_id": user.id,
@@ -46,43 +46,43 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         if response.status_code == 200:
             active_users.add(user.id)
-            logger.info(f"✅ User registered: {user.id}")
+            logger.info(f"? User registered: {user.id}")
             
-                        welcome = f"""🎉 ברוך הבא {user.first_name}!
+                        welcome = f"""?? ???? ??? {user.first_name}!
 
-🤖 בוט ה-Airdrop של TON מוכן לשירותך!
+?? ??? ?-Airdrop ?? TON ???? ???????!
 
-💰 מחיר Airdrop: 44.4 ₪ (ב-TON)
-🎯 כמות טוקנים: 1000 למשתמש
+?? ???? Airdrop: 44.4 ? (?-TON)
+?? ???? ??????: 1000 ??????
 
-📋 פקודות זמינות:
-/airdrop - בקשת airdrop חדשה
-/status - מצב משתמש
-/help - עזרה והסברים
+?? ?????? ??????:
+/airdrop - ???? airdrop ????
+/status - ??? ?????
+/help - ???? ???????
 
-💼 ארנק לתשלום:
+?? ???? ??????:
 {TON_WALLET}
 
-⚡ המערכת פעילה ומוכנה!"""
+? ?????? ????? ??????!"""
             
             await update.message.reply_text(welcome)
             
         else:
-            await update.message.reply_text("⚠️ בעיה בשרת. נסה שוב בעוד דקה.")
+            await update.message.reply_text("?? ???? ????. ??? ??? ???? ???.")
             
     except Exception as e:
         logger.error(f"Registration error: {e}")
-        await update.message.reply_text("🔧 המערכת מתעדכנת כרגע. נסה שוב תוך 5 דקות.")
+        await update.message.reply_text("?? ?????? ??????? ????. ??? ??? ??? 5 ????.")
 
 async def airdrop(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """יצירת airdrop עם QR"""
+    """????? airdrop ?? QR"""
     user = update.effective_user
     
     if user.id not in active_users:
-        await update.message.reply_text("⚠️ אנא הקש /start תחילה לרישום.")
+        await update.message.reply_text("?? ??? ??? /start ????? ??????.")
         return
     
-    await update.message.reply_text("🔄 *מכין לך airdrop חדש...*", parse_mode="Markdown")
+    await update.message.reply_text("?? *???? ?? airdrop ???...*", parse_mode="Markdown")
     
     try:
         airdrop_data = {"user_id": user.id}
@@ -91,41 +91,41 @@ async def airdrop(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if response.status_code == 200:
             data = response.json()["airdrop"]
             
-            payment_msg = f"""🎁 **AIRDROP מוכן לתשלום!**
+            payment_msg = f"""?? **AIRDROP ???? ??????!**
 
-🔢 *מספר עסקה:* `{data['id']}`
-💰 *סכום:* {data['price']} TON (44.4 ₪)
-⏰ *תוקף:* שעה אחת
+?? *???? ????:* `{data['id']}`
+?? *????:* {data['price']} TON (44.4 ?)
+? *????:* ??? ???
 
-🏦 *ארנק TON:*
+?? *???? TON:*
 `{data['wallet']}`
 
-📲 *קישור תשלום:*
+?? *????? ?????:*
 {data['payment_url']}
 
-📸 *הוראות:*
-1. שלח {data['price']} TON לארנק למעלה
-2. שמור את מספר העסקה: `{data['id']}`
-3. שלח צילום תשלום למנהל
+?? *??????:*
+1. ??? {data['price']} TON ????? ?????
+2. ???? ?? ???? ?????: `{data['id']}`
+3. ??? ????? ????? ?????
 
-⚡ *התשלום מאומת ידנית תוך 24 שעות*"""
+? *?????? ????? ????? ??? 24 ????*"""
             
             await update.message.reply_text(payment_msg, parse_mode="Markdown")
             
-            # שלח QR code
+            # ??? QR code
             await update.message.reply_photo(data["qr_code"])
             
-            logger.info(f"✅ Airdrop created for {user.id}: {data['id']}")
+            logger.info(f"? Airdrop created for {user.id}: {data['id']}")
             
         else:
-            await update.message.reply_text("❌ לא ניתן ליצור airdrop כרגע. נסה שוב מאוחר יותר.")
+            await update.message.reply_text("? ?? ???? ????? airdrop ????. ??? ??? ????? ????.")
             
     except Exception as e:
         logger.error(f"Airdrop error: {e}")
-        await update.message.reply_text("⚠️ שגיאה בשרת. המערכת תשוב בקרוב.")
+        await update.message.reply_text("?? ????? ????. ?????? ???? ?????.")
 
 async def status(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """בדיקת סטטוס משתמש"""
+    """????? ????? ?????"""
     user = update.effective_user
     
     try:
@@ -135,59 +135,59 @@ async def status(update: Update, context: ContextTypes.DEFAULT_TYPE):
             user_data = response.json()
             
             if user_data.get("status") == "user_not_found":
-                await update.message.reply_text("📝 עדיין לא נרשמת. הקש /start להתחיל.")
+                await update.message.reply_text("?? ????? ?? ?????. ??? /start ??????.")
                 return
             
-            status_msg = f"""📊 *סטטוס משתמש*
+            status_msg = f"""?? *????? ?????*
 
-👤 שם: {user_data.get('first_name', 'משתמש')}
-🆔 ID: {user_data.get('id')}
-💰 יתרה: {user_data.get('balance', 0)} טוקנים
+?? ??: {user_data.get('first_name', '?????')}
+?? ID: {user_data.get('id')}
+?? ????: {user_data.get('balance', 0)} ??????
 
-📈 Airdrops שביצעת: {len(user_data.get('airdrops', []))}
-⏳ ממתינים לאימות: {len([a for a in user_data.get('airdrops', []) if a.get('status') == 'pending'])}
+?? Airdrops ??????: {len(user_data.get('airdrops', []))}
+? ??????? ??????: {len([a for a in user_data.get('airdrops', []) if a.get('status') == 'pending'])}
 
-💡 לבדיקת airdrops ספציפיים, פנה למנהל עם מספר העסקה."""
+?? ?????? airdrops ????????, ??? ????? ?? ???? ?????."""
             
             await update.message.reply_text(status_msg, parse_mode="Markdown")
             
         else:
-            await update.message.reply_text("📡 לא ניתן לטעון נתונים כרגע.")
+            await update.message.reply_text("?? ?? ???? ????? ?????? ????.")
             
     except Exception as e:
         logger.error(f"Status error: {e}")
-        await update.message.reply_text("🔧 שגיאה זמנית בשרת.")
+        await update.message.reply_text("?? ????? ????? ????.")
 
 async def help_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """הוראות ושירות"""
-    help_text = """🆘 *מדריך שימוש מהיר*
+    """?????? ??????"""
+    help_text = """?? *????? ????? ????*
 
-1. *הרשמה:* הקש /start
-2. *בקשת Airdrop:* הקש /airdrop
-3. *בדיקת סטטוס:* הקש /status
+1. *?????:* ??? /start
+2. *???? Airdrop:* ??? /airdrop
+3. *????? ?????:* ??? /status
 
-💳 *תהליך תשלום:*
-• בקשת airdrop → קבלת מספר עסקה
-• תשלום TON לארנק → שמירת hash עסקה
-• שליחת אישור למנהל → קבלת טוקנים
+?? *????? ?????:*
+� ???? airdrop ? ???? ???? ????
+� ????? TON ????? ? ????? hash ????
+� ????? ????? ????? ? ???? ??????
 
-⏱️ *זמני מענה:*
-• אישור תשלום: עד 24 שעות
-• קבלת טוקנים: מיידי לאחר אישור
+?? *???? ????:*
+� ????? ?????: ?? 24 ????
+� ???? ??????: ????? ???? ?????
 
-📞 *תמיכה:* @Osif83 (מנהל הפרויקט)
+?? *?????:* @Osif83 (???? ???????)
 
-⚡ *המערכת בתקופת הרצה - תודה על הסבלנות!*"""
+? *?????? ?????? ???? - ???? ?? ???????!*"""
     
     await update.message.reply_text(help_text, parse_mode="Markdown")
 
 async def stats_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """סטטיסטיקות מערכת (למנהל בלבד)"""
+    """?????????? ????? (????? ????)"""
     user = update.effective_user
     
-    # בדיקת מנהל (תחליף ל-ID האמיתי שלך)
-    if str(user.id) != "7757102350":  # החלף ב-ID האמיתי שלך
-        await update.message.reply_text("⚠️ פקודה זו זמינה למנהל בלבד.")
+    # ????? ???? (????? ?-ID ?????? ???)
+    if str(user.id) != "7757102350":  # ???? ?-ID ?????? ???
+        await update.message.reply_text("?? ????? ?? ????? ????? ????.")
         return
     
     try:
@@ -196,63 +196,64 @@ async def stats_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if response.status_code == 200:
             stats_data = response.json()
             
-            stats_msg = f"""📈 *סטטיסטיקות מערכת - מנהל*
+            stats_msg = f"""?? *?????????? ????? - ????*
 
-👥 משתמשים: {stats_data['statistics']['total_users']}
-🎯 Airdrops: {stats_data['statistics']['total_airdrops']}
-⏳ ממתינים: {stats_data['statistics']['pending_payments']}
-✅ הושלמו: {stats_data['statistics']['completed_payments']}
-💰 נפח: {stats_data['statistics']['total_volume_ton']} TON
+?? ???????: {stats_data['statistics']['total_users']}
+?? Airdrops: {stats_data['statistics']['total_airdrops']}
+? ???????: {stats_data['statistics']['pending_payments']}
+? ??????: {stats_data['statistics']['completed_payments']}
+?? ???: {stats_data['statistics']['total_volume_ton']} TON
 
-🕒 עדכון אחרון: {stats_data['timestamp'][11:16]}
+?? ????? ?????: {stats_data['timestamp'][11:16]}
             
-👤 משתמשים אחרונים: {len(stats_data.get('recent_users', []))}"""
+?? ??????? ???????: {len(stats_data.get('recent_users', []))}"""
             
             await update.message.reply_text(stats_msg, parse_mode="Markdown")
             
-            # שליחת נתונים גולמיים למנהל
+            # ????? ?????? ??????? ?????
             await update.message.reply_text(
-                f"📋 נתונים מלאים:\n{json.dumps(stats_data, indent=2, ensure_ascii=False)}"
+                f"?? ?????? ?????:\n{json.dumps(stats_data, indent=2, ensure_ascii=False)}"
             )
             
         else:
-            await update.message.reply_text("❌ לא ניתן לטעון סטטיסטיקות.")
+            await update.message.reply_text("? ?? ???? ????? ??????????.")
             
     except Exception as e:
         logger.error(f"Stats error: {e}")
-        await update.message.reply_text("🔧 שגיאה בטעינת סטטיסטיקות.")
+        await update.message.reply_text("?? ????? ?????? ??????????.")
 
 def main():
-    """הפעלת הבוט - גרסה יציבה"""
-    print("🚀 Starting TON Airdrop Bot...")
-    print(f"🔗 API: {API_URL}")
-    print(f"👑 Admin ID: 7757102350")
+    """????? ???? - ???? ?????"""
+    print("?? Starting TON Airdrop Bot...")
+    print(f"?? API: {API_URL}")
+    print(f"?? Admin ID: 7757102350")
     
-    # נקה webhooks קודמים
+    # ??? webhooks ??????
     try:
         requests.get(f"https://api.telegram.org/bot{TOKEN}/deleteWebhook", timeout=5)
-        print("✅ Cleared previous webhooks")
+        print("? Cleared previous webhooks")
     except:
-        print("⚠️ No webhooks to clear")
+        print("?? No webhooks to clear")
     
-    # בניית אפליקציה
+    # ????? ????????
     app = Application.builder().token(TOKEN).build()
     
-    # הוספת פקודות
+    # ????? ??????
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("airdrop", airdrop))
     app.add_handler(CommandHandler("status", status))
     app.add_handler(CommandHandler("help", help_cmd))
-    app.add_handler(CommandHandler("stats", stats_cmd))  # למנהל בלבד
+    app.add_handler(CommandHandler("stats", stats_cmd))  # ????? ????
     
-    # הפעלה
-    print("🤖 Bot is running and ready!")
-    print("📊 Use /stats for admin statistics")
+    # ?????
+    print("?? Bot is running and ready!")
+    print("?? Use /stats for admin statistics")
     app.run_polling(allowed_updates=Update.ALL_TYPES)
 
 if __name__ == "__main__":
     import json
     main()
+
 
 
 

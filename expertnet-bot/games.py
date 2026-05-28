@@ -1,11 +1,11 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 ZVIKUSH ULTIMATE ARCADE - Interactive Game Module
 Every game requires PLAYER INPUT - choose, aim, decide!
 
 Telegram animated dice: send_dice with emoji returns animated result.
-  🎲=dice(1-6) 🎯=darts(1-6,6=bull) 🏀=basket(1-5,4-5=score)
-  🎳=bowling(1-6,6=strike) 🎰=slots(1-64,64=jackpot) ⚽=football(1-5,3-5=goal)
+  ??=dice(1-6) ??=darts(1-6,6=bull) ??=basket(1-5,4-5=score)
+  ??=bowling(1-6,6=strike) ??=slots(1-64,64=jackpot) ?=football(1-5,3-5=goal)
 """
 import random
 import asyncio
@@ -13,9 +13,9 @@ from datetime import datetime
 from aiogram.types import InlineKeyboardMarkup as IKM, InlineKeyboardButton as IKB
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # Leaderboard & Stats
-# ═══════════════════════════════════
+# -----------------------------------
 leaderboard = {}  # uid -> {username, total_won, games_played, games_won}
 
 
@@ -71,9 +71,9 @@ def use_free_spin(u):
     return False
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # SLOTS - Player chooses bet amount
-# ═══════════════════════════════════
+# -----------------------------------
 async def play_slots(bot, chat_id, u):
     cost = 1
     free = use_free_spin(u)
@@ -116,9 +116,9 @@ async def play_slots(bot, chat_id, u):
     return True, text
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # DICE - Player guesses high/low BEFORE roll
-# ═══════════════════════════════════
+# -----------------------------------
 def dice_guess_keyboard():
     return IKM(inline_keyboard=[
         [IKB(text="\u2b06\ufe0f \u05d2\u05d1\u05d5\u05d4 (7+)", callback_data="dice_guess:high"),
@@ -186,9 +186,9 @@ async def play_dice_roll(bot, chat_id, u, guess):
     return text
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # BASKETBALL - Player chooses power
-# ═══════════════════════════════════
+# -----------------------------------
 def basket_power_keyboard():
     return IKM(inline_keyboard=[
         [IKB(text="\U0001f4aa \u05e7\u05dc \u05e2\u05d3\u05d9\u05df", callback_data="bask_pow:soft"),
@@ -239,9 +239,9 @@ async def play_basket_shot(bot, chat_id, u, power):
     return text
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # DARTS - Player chooses aim zone
-# ═══════════════════════════════════
+# -----------------------------------
 def darts_aim_keyboard():
     return IKM(inline_keyboard=[
         [IKB(text="\U0001f3af \u05de\u05e8\u05db\u05d6 (x3)", callback_data="dart_aim:center"),
@@ -283,9 +283,9 @@ async def play_darts_throw(bot, chat_id, u, aim):
     return text
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # BOWLING - Player chooses lane
-# ═══════════════════════════════════
+# -----------------------------------
 def bowling_lane_keyboard():
     return IKM(inline_keyboard=[
         [IKB(text="\u2b05\ufe0f \u05e9\u05de\u05d0\u05dc", callback_data="bowl_lane:left"),
@@ -332,9 +332,9 @@ async def play_bowling_roll(bot, chat_id, u, lane):
     return text
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # FOOTBALL - Player chooses kick direction
-# ═══════════════════════════════════
+# -----------------------------------
 def football_kick_keyboard():
     return IKM(inline_keyboard=[
         [IKB(text="\u2b05\ufe0f \u05e9\u05de\u05d0\u05dc", callback_data="foot_dir:left"),
@@ -383,9 +383,9 @@ async def play_football_kick(bot, chat_id, u, direction):
     return text
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # BLACKJACK - Interactive Hit/Stand
-# ═══════════════════════════════════
+# -----------------------------------
 SUITS = ["\u2660\ufe0f", "\u2665\ufe0f", "\u2666\ufe0f", "\u2663\ufe0f"]
 VALUES = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
 
@@ -515,9 +515,9 @@ async def play_blackjack_action(bot, chat_id, u, uid, action):
     )
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # MARIO - Player chooses action each step
-# ═══════════════════════════════════
+# -----------------------------------
 mario_games = {}  # uid -> {step, coins, alive, log}
 
 
@@ -623,9 +623,9 @@ async def play_mario_action(bot, chat_id, u, uid, action, step):
     return True, text
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # ALADDIN - Player chooses which cave
-# ═══════════════════════════════════
+# -----------------------------------
 aladdin_games = {}  # uid -> {caves, revealed, loot}
 
 
@@ -709,5 +709,6 @@ async def play_aladdin_choose(bot, chat_id, u, uid, choice):
             f"\u05e1\u05d4\"\u05db \u05e9\u05dc\u05dc: {game['loot']}\n\n"
             "\u05dc\u05e4\u05ea\u05d5\u05d7 \u05e2\u05d5\u05d3 \u05de\u05e2\u05e8\u05d4 \u05d0\u05d5 \u05dc\u05d1\u05e8\u05d5\u05d7?"
         )
+
 
 

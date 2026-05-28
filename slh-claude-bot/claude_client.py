@@ -145,3 +145,4 @@ async def converse(history: list[dict], user_text: str) -> tuple[str, list[dict]
     if not final_text:
         final_text = "(אין תשובה טקסטואלית — בדוק תוצאות כלים)"
     return final_text, new_messages
+

@@ -1,7 +1,8 @@
-﻿"""
-בוט Crypto-Class - חבילת פקודות
+"""
+??? Crypto-Class - ????? ??????
 """
 
 __version__ = "3.0.0"
 __author__ = "Osif Ungar"
+
 

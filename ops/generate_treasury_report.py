@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 #!/usr/bin/env python3
 """
 Monthly Treasury Report Generator
@@ -53,7 +53,7 @@ def fetch_health(api_base: str) -> dict:
 def ils(value) -> str:
     """Format a number as an ILS amount (e.g. 1,234.56)."""
     if value is None:
-        return "—"
+        return "�"
     try:
         v = float(value)
         return f"{v:,.2f}"
@@ -63,7 +63,7 @@ def ils(value) -> str:
 
 def pct(value) -> str:
     if value is None:
-        return "—"
+        return "�"
     try:
         return f"{float(value):.1f}%"
     except (TypeError, ValueError):
@@ -71,17 +71,17 @@ def pct(value) -> str:
 
 
 STATUS_LABEL_HE = {
-    "pre_revenue": "🔵 Pre-revenue (טרום-הכנסות)",
-    "healthy": "🟢 Healthy (בריא)",
-    "caution": "🟡 Caution (זהירות)",
-    "undercollateralized": "🔴 Undercollateralized (חשיפה)",
+    "pre_revenue": "?? Pre-revenue (????-??????)",
+    "healthy": "?? Healthy (????)",
+    "caution": "?? Caution (??????)",
+    "undercollateralized": "?? Undercollateralized (?????)",
 }
 
 TIER_LABEL_HE = {
-    "survival": "Survival (1,000 ₪/חודש)",
-    "sustainable": "Sustainable (5,000 ₪/חודש)",
-    "thriving": "Thriving (20,000 ₪/חודש)",
-    "above_thriving": "מעל Thriving — איזור הצמיחה",
+    "survival": "Survival (1,000 ?/????)",
+    "sustainable": "Sustainable (5,000 ?/????)",
+    "thriving": "Thriving (20,000 ?/????)",
+    "above_thriving": "??? Thriving � ????? ??????",
 }
 
 
@@ -96,14 +96,14 @@ def build_report(data: dict, month_label: str) -> str:
     rates = data.get("rates_ils") or {}
     notes = data.get("notes") or []
 
-    status_line = STATUS_LABEL_HE.get(status.get("code"), status.get("code", "—"))
+    status_line = STATUS_LABEL_HE.get(status.get("code"), status.get("code", "�"))
     coverage = status.get("coverage_ratio")
-    coverage_str = "—" if coverage is None else f"{coverage * 100:.2f}%"
+    coverage_str = "�" if coverage is None else f"{coverage * 100:.2f}%"
 
     next_tier = BE.get("next_milestone")
-    next_tier_label = TIER_LABEL_HE.get(next_tier, next_tier or "—")
+    next_tier_label = TIER_LABEL_HE.get(next_tier, next_tier or "�")
     gap = BE.get("gap_to_next_ils")
-    gap_str = "הושג ✓" if not gap or gap <= 0 else f"{ils(gap)} ₪"
+    gap_str = "???? ?" if not gap or gap <= 0 else f"{ils(gap)} ?"
 
     survival_pct = (BE.get("progress_pct") or {}).get("survival")
     sustain_pct = (BE.get("progress_pct") or {}).get("sustainable")
@@ -112,112 +112,112 @@ def build_report(data: dict, month_label: str) -> str:
     burns_lines = []
     for tok, d in (W.get("burns_by_token") or {}).items():
         burns_lines.append(f"  - **{tok}**: {ils(d.get('amount'))} ({d.get('count', 0)} events)")
-    burns_block = "\n".join(burns_lines) if burns_lines else "  - (אין burns עדיין)"
+    burns_block = "\n".join(burns_lines) if burns_lines else "  - (??? burns ?????)"
 
-    rates_lines = [f"  - {k}: {ils(v)} ₪" for k, v in rates.items()]
+    rates_lines = [f"  - {k}: {ils(v)} ?" for k, v in rates.items()]
     rates_block = "\n".join(rates_lines)
 
-    notes_block = "\n".join(f"- {n}" for n in notes) or "- —"
+    notes_block = "\n".join(f"- {n}" for n in notes) or "- �"
 
-    report = f"""# Treasury Report · {month_label}
+    report = f"""# Treasury Report � {month_label}
 
-*נוצר אוטומטית מ-/api/treasury/health · snapshot at `{as_of}`*
-
----
-
-## 🎯 Bottom Line
-
-**סטטוס:** {status_line}
-**יחס כיסוי (Buffer / P):** {coverage_str}
-**יעד הבא:** {next_tier_label}
-**פער ליעד:** {gap_str}
+*???? ???????? ?-/api/treasury/health � snapshot at `{as_of}`*
 
 ---
 
-## 💰 R — Revenue In
+## ?? Bottom Line
 
-| תקופה | סכום (₪) |
+**?????:** {status_line}
+**??? ????? (Buffer / P):** {coverage_str}
+**??? ???:** {next_tier_label}
+**??? ????:** {gap_str}
+
+---
+
+## ?? R � Revenue In
+
+| ????? | ???? (?) |
 |---|---|
-| היום | {ils(R.get('ils_today'))} |
-| 7 ימים | {ils(R.get('ils_7d'))} |
-| 30 ימים | **{ils(R.get('ils_30d'))}** |
-| מתחילת הדרך | {ils(R.get('ils_lifetime'))} |
+| ???? | {ils(R.get('ils_today'))} |
+| 7 ???? | {ils(R.get('ils_7d'))} |
+| 30 ???? | **{ils(R.get('ils_30d'))}** |
+| ?????? ???? | {ils(R.get('ils_lifetime'))} |
 
-### Breakdown לפי מטבע (lifetime)
+### Breakdown ??? ???? (lifetime)
 """
 
     lifetime_by_cur = (R.get("by_currency_period") or {}).get("lifetime") or {}
     if lifetime_by_cur:
         for cur, d in lifetime_by_cur.items():
-            report += f"- **{cur}**: {ils(d.get('amount'))} ({d.get('count', 0)} עסקאות)\n"
+            report += f"- **{cur}**: {ils(d.get('amount'))} ({d.get('count', 0)} ??????)\n"
     else:
-        report += "- (אין עסקאות עדיין)\n"
+        report += "- (??? ?????? ?????)\n"
 
     report += f"""
 ---
 
-## 📏 P — Contingent Obligations
+## ?? P � Contingent Obligations
 
-| רכיב | ערך |
+| ???? | ??? |
 |---|---|
-| סה״כ התחייבות מותנית (₪) | {ils(P.get('ils_total'))} |
-| ZVK פעיל (יחידות) | {ils(P.get('zvk_outstanding_units'))} |
-| ZVK שווי ₪ | {ils(P.get('zvk_contingent_ils'))} |
-| התחייבות Buyback עתידית | {ils(P.get('upcoming_slh_buyback_ils'))} |
-| שיעור Buyback | {pct(float(P.get('buyback_rate', 0)) * 100)} |
+| ???? ???????? ?????? (?) | {ils(P.get('ils_total'))} |
+| ZVK ???? (??????) | {ils(P.get('zvk_outstanding_units'))} |
+| ZVK ???? ? | {ils(P.get('zvk_contingent_ils'))} |
+| ???????? Buyback ?????? | {ils(P.get('upcoming_slh_buyback_ils'))} |
+| ????? Buyback | {pct(float(P.get('buyback_rate', 0)) * 100)} |
 
 ---
 
-## 💸 W — Executed Outflows
+## ?? W � Executed Outflows
 
-| רכיב | ערך |
+| ???? | ??? |
 |---|---|
-| סה״כ תזרים יוצא (₪) | {ils(W.get('ils_total'))} |
-| Buybacks שבוצעו (₪) | {ils(W.get('buybacks_executed_ils'))} |
-| SLH נרכש | {ils(W.get('buybacks_slh_bought'))} |
-| מספר Buybacks | {W.get('buybacks_count', 0)} |
-| Burns (שווי ₪) | {ils(W.get('burns_ils_equiv'))} |
+| ???? ????? ???? (?) | {ils(W.get('ils_total'))} |
+| Buybacks ?????? (?) | {ils(W.get('buybacks_executed_ils'))} |
+| SLH ???? | {ils(W.get('buybacks_slh_bought'))} |
+| ???? Buybacks | {W.get('buybacks_count', 0)} |
+| Burns (???? ?) | {ils(W.get('burns_ils_equiv'))} |
 
 ### Burns by Token
 {burns_block}
 
 ---
 
-## 🛡️ Buffer
+## ??? Buffer
 
-| רכיב | ערך |
+| ???? | ??? |
 |---|---|
-| סה״כ Buffer (₪) | **{ils(B.get('ils_total'))}** |
+| ???? Buffer (?) | **{ils(B.get('ils_total'))}** |
 | AIC Reserve (USD) | {ils(B.get('reserve_usd'))} |
-| Net Treasury (₪) | {ils(B.get('net_treasury_ils'))} |
+| Net Treasury (?) | {ils(B.get('net_treasury_ils'))} |
 
 ---
 
-## 🎯 Break-Even Progress (Level 5 Model)
+## ?? Break-Even Progress (Level 5 Model)
 
-| יעד | סף (₪/חודש) | התקדמות |
+| ??? | ?? (?/????) | ??????? |
 |---|---|---|
 | Survival | 1,000 | **{pct(survival_pct)}** |
 | Sustainable | 5,000 | {pct(sustain_pct)} |
 | Thriving | 20,000 | {pct(thriving_pct)} |
 
-**R_30d נוכחי:** {ils(BE.get('current_r_ils_30d'))} ₪
+**R_30d ?????:** {ils(BE.get('current_r_ils_30d'))} ?
 
 ---
 
-## 💱 שערי המרה שומשו
+## ?? ???? ???? ?????
 
 {rates_block}
 
 ---
 
-## 📝 הערות מה-API
+## ?? ????? ??-API
 
 {notes_block}
 
 ---
 
-## 🔍 מסקנות + המלצות
+## ?? ?????? + ??????
 
 """
 
@@ -225,30 +225,30 @@ def build_report(data: dict, month_label: str) -> str:
     survival_pct_val = float(survival_pct or 0)
     if survival_pct_val < 10:
         report += (
-            "- **מצב:** עמוק ב-pre-revenue. R_30d מתחת ל-10% מ-Survival. פעולה דרושה: הפעלת Ambassador/VIP.\n"
-            "- **המלצה:** קמפיין גיוס של 3 שגרירים + 10 מנויי VIP בחודש הבא (= ~1,985 ₪/חודש → 198% Survival).\n"
+            "- **???:** ???? ?-pre-revenue. R_30d ???? ?-10% ?-Survival. ????? ?????: ????? Ambassador/VIP.\n"
+            "- **?????:** ?????? ???? ?? 3 ??????? + 10 ????? VIP ????? ??? (= ~1,985 ?/???? ? 198% Survival).\n"
         )
     elif survival_pct_val < 50:
         report += (
-            "- **מצב:** זנב של pre-revenue — יש תחילת תנועה אבל עדיין רחוק מ-Survival.\n"
-            "- **המלצה:** ממש בזמן להכפיל את ערוצי ה-recurring (VIP / Ambassador).\n"
+            "- **???:** ??? ?? pre-revenue � ?? ????? ????? ??? ????? ???? ?-Survival.\n"
+            "- **?????:** ??? ???? ?????? ?? ????? ?-recurring (VIP / Ambassador).\n"
         )
     elif survival_pct_val < 100:
         report += (
-            "- **מצב:** קרוב ל-Survival. כל שגריר/VIP נוסף בחודש הזה חוצה את הסף.\n"
-            "- **המלצה:** דחוף את הכפתורים האחרונים — אפילו פגישת מכירה אחת מוצלחת תדחוף אותך ל-Green.\n"
+            "- **???:** ???? ?-Survival. ?? ?????/VIP ???? ????? ??? ???? ?? ???.\n"
+            "- **?????:** ???? ?? ???????? ???????? � ????? ????? ????? ??? ?????? ????? ???? ?-Green.\n"
         )
     else:
         report += (
-            "- **מצב:** מעל Survival — המערכת מרוויחה.\n"
-            "- **המלצה:** התמקד ב-Sustainable (5,000 ₪/חודש). זה מממן שיווק + עתודה.\n"
+            "- **???:** ??? Survival � ?????? ???????.\n"
+            "- **?????:** ????? ?-Sustainable (5,000 ?/????). ?? ???? ????? + ?????.\n"
         )
 
     report += f"""
 ---
 
-*דוח זה נוצר באמצעות `ops/generate_treasury_report.py` מ-{DEFAULT_API}*
-*לצפייה חיה: [/treasury-health.html](https://slh-nft.com/treasury-health.html)*
+*??? ?? ???? ??????? `ops/generate_treasury_report.py` ?-{DEFAULT_API}*
+*?????? ???: [/treasury-health.html](https://slh-nft.com/treasury-health.html)*
 """
     return report
 
@@ -275,9 +275,10 @@ def main():
     REPORT_DIR.mkdir(parents=True, exist_ok=True)
     out_path = REPORT_DIR / f"{month_label}.md"
     out_path.write_text(report, encoding="utf-8")
-    print(f"✓ Saved: {out_path}", file=sys.stderr)
+    print(f"? Saved: {out_path}", file=sys.stderr)
 
 
 if __name__ == "__main__":
     main()
+
 

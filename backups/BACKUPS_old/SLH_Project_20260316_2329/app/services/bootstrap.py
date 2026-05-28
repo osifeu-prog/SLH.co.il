@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import json
 
 from app.db.database import db
@@ -237,4 +237,5 @@ async def grant_referral_reward_for_user(user_id: int) -> bool:
             )
 
     return True
+
 

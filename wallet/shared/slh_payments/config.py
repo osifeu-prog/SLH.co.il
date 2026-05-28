@@ -77,3 +77,4 @@ BOT_PRICING = {
 
 # System bus group
 SYSTEM_BUS_LINK = "https://t.me/+qon4jktYobA3Mjlk"
+

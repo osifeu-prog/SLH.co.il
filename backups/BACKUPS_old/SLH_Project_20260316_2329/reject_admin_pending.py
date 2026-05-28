@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import psycopg2
 
 conn = psycopg2.connect(
@@ -16,5 +16,6 @@ conn.commit()
 cur.close()
 conn.close()
 print("done")
+
 
 

@@ -1,7 +1,7 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 #!/usr/bin/env python3
 """
-TON Airdrop Bot - גרסה פשוטה ויציבה
+TON Airdrop Bot - ???? ????? ??????
 """
 
 import os
@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 # TELEGRAM API FUNCTIONS
 # ====================
 def send_message(chat_id, text):
-    """שולח הודעה דרך Telegram API"""
+    """???? ????? ??? Telegram API"""
     url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
     data = {
         "chat_id": chat_id,
@@ -44,39 +44,39 @@ def send_message(chat_id, text):
         return None
 
 def handle_start(chat_id, user_name):
-    """מטפל בפקודת /start"""
+    """???? ?????? /start"""
     message = f"""
-🎉 <b>ברוך הבא ל-TON Airdrop Bot!</b>
+?? <b>???? ??? ?-TON Airdrop Bot!</b>
 
-👤 <b>משתמש:</b> {user_name}
-📅 <b>תאריך:</b> {datetime.now().strftime('%d/%m/%Y %H:%M')}
+?? <b>?????:</b> {user_name}
+?? <b>?????:</b> {datetime.now().strftime('%d/%m/%Y %H:%M')}
 
-💰 <b>פרטי Airdrop:</b>
-• סכום: 1-10 TON למשתמש
-• סה"כ תקציב: 1000 TON
-• זמן אספקה: עד 24 שעות
+?? <b>???? Airdrop:</b>
+� ????: 1-10 TON ??????
+� ??"? ?????: 1000 TON
+� ??? ?????: ?? 24 ????
 
-📋 <b>איך לקבל Airdrop?</b>
-1. שלח את כתובת ארנק ה-TON שלך
-2. המתן לאימות אוטומטי
-3. קבל את הטוקנים ישירות לארנק!
+?? <b>??? ???? Airdrop?</b>
+1. ??? ?? ????? ???? ?-TON ???
+2. ???? ?????? ???????
+3. ??? ?? ??????? ?????? ?????!
 
-⚠️ <b>תנאים:</b>
-• משתמש אחד בלבד לכתובת ארנק
-• כתובת TON תקינה בלבד
-• זמין עד גמר התקציב
+?? <b>?????:</b>
+� ????? ??? ???? ?????? ????
+� ????? TON ????? ????
+� ???? ?? ??? ??????
 
-<b>התחל עכשיו:</b> שלח את כתובת הארנק שלך!
+<b>???? ?????:</b> ??? ?? ????? ????? ???!
 """
     return send_message(chat_id, message)
 
 def handle_wallet(chat_id, wallet_address):
-    """מטפל בכתובת ארנק"""
-    # בדיקה בסיסית
+    """???? ?????? ????"""
+    # ????? ??????
     if not wallet_address.startswith(("UQ", "EQ", "0Q")):
-        return send_message(chat_id, "❌ כתובת ארנק לא תקינה. אנא שלח כתובת TON שתחל ב-UQ/EQ/0Q")
+        return send_message(chat_id, "? ????? ???? ?? ?????. ??? ??? ????? TON ???? ?-UQ/EQ/0Q")
     
-    # שליחה ל-API החדש
+    # ????? ?-API ????
     try:
         api_data = {
             "telegram_id": str(chat_id),
@@ -93,48 +93,48 @@ def handle_wallet(chat_id, wallet_address):
         
         if api_response.status_code == 200:
             message = f"""
-✅ <b>ארנק התקבל בהצלחה!</b>
+? <b>???? ????? ??????!</b>
 
-📝 <b>פרטים:</b>
-• <b>כתובת:</b> <code>{wallet_address[:20]}...</code>
-• <b>סטטוס:</b> מאושר
-• <b>זמן:</b> {datetime.now().strftime('%H:%M:%S')}
+?? <b>?????:</b>
+� <b>?????:</b> <code>{wallet_address[:20]}...</code>
+� <b>?????:</b> ?????
+� <b>???:</b> {datetime.now().strftime('%H:%M:%S')}
 
-💰 <b>הטוקנים ישלחו בתוך 24 שעות.</b>
+?? <b>??????? ????? ???? 24 ????.</b>
 
-🆔 <b>מזהה:</b> {chat_id}
+?? <b>????:</b> {chat_id}
 """
         else:
             message = f"""
-❌ <b>שגיאה בשמירת הארנק</b>
+? <b>????? ?????? ?????</b>
 
 <code>{api_response.text}</code>
 
-נסה שוב בעוד כמה דקות.
+??? ??? ???? ??? ????.
 """
         
         return send_message(chat_id, message)
         
     except Exception as e:
         logger.error(f"API Error: {e}")
-        return send_message(chat_id, "⚠️ שגיאה במערכת. נסה שוב מאוחר יותר.")
+        return send_message(chat_id, "?? ????? ??????. ??? ??? ????? ????.")
 
 def handle_unknown(chat_id):
-    """מטפל בהודעות לא מובנות"""
-    return send_message(chat_id, "🤖 שלח לי את כתובת ארנק ה-TON שלך או /start")
+    """???? ??????? ?? ??????"""
+    return send_message(chat_id, "?? ??? ?? ?? ????? ???? ?-TON ??? ?? /start")
 
 # ====================
 # POLLING LOOP
 # ====================
 def poll_updates():
-    """לולאת קבלת עדכונים מהטלגרם"""
-    logger.info("🤖 TON Airdrop Bot מתחיל...")
+    """????? ???? ??????? ???????"""
+    logger.info("?? TON Airdrop Bot ?????...")
     
     offset = 0
     
     while True:
         try:
-            # קבלת עדכונים
+            # ???? ???????
             url = f"https://api.telegram.org/bot{TOKEN}/getUpdates"
             params = {"offset": offset, "timeout": 30}
             
@@ -150,17 +150,17 @@ def poll_updates():
                         chat_id = message["chat"]["id"]
                         text = message.get("text", "").strip()
                         
-                        # טיפול בפקודות
+                        # ????? ???????
                         if text == "/start":
-                            user_name = message["chat"].get("first_name", "משתמש")
+                            user_name = message["chat"].get("first_name", "?????")
                             handle_start(chat_id, user_name)
                         
                         elif text.startswith("/"):
-                            # פקודה לא מוכרת
+                            # ????? ?? ?????
                             handle_unknown(chat_id)
                         
                         elif text:
-                            # הודעת טקסט רגילה - מניחים שזה ארנק
+                            # ????? ???? ????? - ?????? ??? ????
                             handle_wallet(chat_id, text)
                         
                         else:
@@ -176,5 +176,6 @@ def poll_updates():
 # ====================
 if __name__ == "__main__":
     poll_updates()
+
 
 

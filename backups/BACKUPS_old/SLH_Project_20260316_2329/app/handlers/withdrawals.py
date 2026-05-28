@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from aiogram import Router, F, types
 from aiogram.filters import Command
 import re
@@ -254,4 +254,5 @@ async def mark_failed_cmd(message: types.Message):
         f"reason={row.get('reject_reason')}\n"
         f"status={row['status']}"
     )
+
 

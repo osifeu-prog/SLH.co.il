@@ -1,9 +1,9 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import requests
 import time
 
 def fetch_new_pairs(limit=10):
-    """מביא את המטבעות החדשים ביותר ברשת BSC מ-DexPaprika (חינמי, ללא מפתח)"""
+    """???? ?? ??????? ?????? ????? ???? BSC ?-DexPaprika (?????, ??? ????)"""
     url = f"https://api.dexpaprika.com/networks/bsc/tokens/filter?sort_by=created_at&sort_dir=desc&limit={limit}"
     try:
         resp = requests.get(url, timeout=15)
@@ -27,5 +27,6 @@ if __name__ == '__main__':
     print(f"Found {len(tokens)} tokens:")
     for token in tokens:
         print(f"  - {token}")
+
 
 

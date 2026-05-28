@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from sqlalchemy import BigInteger, Column, DateTime, Index, Sequence
@@ -21,4 +21,5 @@ class TelegramUpdate(Base):
         # DB index is (received_at DESC)
         Index("ix_telegram_updates_received_at", received_at.desc()),
     )
+
 

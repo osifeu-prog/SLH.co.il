@@ -97,3 +97,4 @@ async def get_latest_id(pool) -> int:
         await ensure_event_log_table(conn)
         val = await conn.fetchval("SELECT COALESCE(MAX(id), 0) FROM event_log")
         return int(val)
+

@@ -197,3 +197,4 @@ async def _send_invoice(bot: Bot, chat_id: int, user_id: int, tier: str) -> None
         prices=[LabeledPrice(label=f"{spec.name_he} ×30 ימים", amount=spec.price_stars)],
         # provider_token left empty — Telegram Stars don't need a provider
     )
+

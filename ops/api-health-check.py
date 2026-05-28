@@ -1,6 +1,6 @@
-ï»¿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
-SLH API Health Check â€” Automated endpoint testing
+SLH API Health Check — Automated endpoint testing
 Run: python ops/api-health-check.py
 Output: ops/API_STATUS_{date}.md
 """
@@ -97,7 +97,7 @@ for method, path, auth, desc in tests:
 # Write report
 ts = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 with open(OUT, 'w', encoding='utf-8') as f:
-    f.write(f'# API Status Report â€” {ts}\n\n')
+    f.write(f'# API Status Report — {ts}\n\n')
     f.write(f'**Total: {len(tests)} endpoints tested | {ok_count} OK | {len(tests)-ok_count} errors**\n\n')
     f.write('| # | Status | ms | Endpoint | Description |\n')
     f.write('|---|--------|-----|----------|-------------|\n')
@@ -108,4 +108,5 @@ with open(OUT, 'w', encoding='utf-8') as f:
     f.write(f'\n---\nGenerated: {ts}\n')
 
 print(f'\nDone: {ok_count}/{len(tests)} OK. Report: {OUT}')
+
 

@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 OsifShop - Inventory Management SaaS Bot
 Barcode scanning, stock management, reports.
@@ -51,9 +51,9 @@ dp = Dispatcher()
 scan_mode = {}
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # HELPERS
-# ═══════════════════════════════════
+# -----------------------------------
 async def is_paid(uid: int) -> bool:
     if uid == ADMIN_USER_ID:
         return True
@@ -90,9 +90,9 @@ def fmt_product(p, currency="ILS"):
     )
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # /start
-# ═══════════════════════════════════
+# -----------------------------------
 @dp.message(Command("start"))
 async def cmd_start(m: types.Message):
     uid = m.from_user.id
@@ -148,9 +148,9 @@ async def cmd_start(m: types.Message):
     )
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # /shop - Create/rename store
-# ═══════════════════════════════════
+# -----------------------------------
 @dp.message(Command("shop"))
 async def cmd_shop(m: types.Message, command: CommandObject = None):
     if not await is_paid(m.from_user.id):
@@ -174,9 +174,9 @@ async def cmd_shop(m: types.Message, command: CommandObject = None):
     await m.answer(f"\u2705 \u05d7\u05e0\u05d5\u05ea \"{shop['shop_name']}\" \u05e0\u05d5\u05e6\u05e8\u05d4!\n\n\u05e2\u05db\u05e9\u05d9\u05d5 \u05e1\u05e8\u05d5\u05e7 \u05d1\u05e8\u05e7\u05d5\u05d3 \u05dc\u05d4\u05d5\u05e1\u05e4\u05ea \u05de\u05d5\u05e6\u05e8 \u05e8\u05d0\u05e9\u05d5\u05df!", reply_markup=home_kb())
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # SCAN BARCODE
-# ═══════════════════════════════════
+# -----------------------------------
 @dp.message(F.text == "\U0001f4f7 \u05e1\u05e8\u05d5\u05e7 \u05d1\u05e8\u05e7\u05d5\u05d3")
 @dp.message(Command("scan"))
 async def cmd_scan(m: types.Message):
@@ -317,9 +317,9 @@ async def handle_text(m: types.Message):
     )
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # QUICK ADD/REMOVE CALLBACKS
-# ═══════════════════════════════════
+# -----------------------------------
 @dp.callback_query(F.data.startswith("qadd:"))
 async def quick_add(cb: types.CallbackQuery):
     parts = cb.data.split(":")
@@ -352,9 +352,9 @@ async def quick_remove(cb: types.CallbackQuery):
     await cb.answer()
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # /add /remove - Manual stock commands
-# ═══════════════════════════════════
+# -----------------------------------
 @dp.message(Command("add"))
 async def cmd_add(m: types.Message, command: CommandObject = None):
     if not command or not command.args:
@@ -391,9 +391,9 @@ async def cmd_remove(m: types.Message, command: CommandObject = None):
         await m.answer(f"\u274c \u05d1\u05e8\u05e7\u05d5\u05d3 {barcode} \u05dc\u05d0 \u05e0\u05de\u05e6\u05d0")
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # /setprice /setcost /setmin
-# ═══════════════════════════════════
+# -----------------------------------
 @dp.message(Command("setprice"))
 async def cmd_setprice(m: types.Message, command: CommandObject = None):
     if not command or not command.args:
@@ -430,9 +430,9 @@ async def cmd_setmin(m: types.Message, command: CommandObject = None):
     await m.answer(f"\u2705 \u05de\u05d9\u05e0\u05d9\u05de\u05d5\u05dd \u05e2\u05d5\u05d3\u05db\u05df: {args[1]}")
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # STOCK VIEW + SEARCH
-# ═══════════════════════════════════
+# -----------------------------------
 @dp.message(F.text == "\U0001f4e6 \u05de\u05dc\u05d0\u05d9")
 @dp.message(Command("stock"))
 async def cmd_stock(m: types.Message):
@@ -475,9 +475,9 @@ async def cmd_search(m: types.Message, command: CommandObject = None):
     await m.answer(txt)
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # LOW STOCK
-# ═══════════════════════════════════
+# -----------------------------------
 @dp.message(F.text == "\U0001f4c9 \u05de\u05dc\u05d0\u05d9 \u05e0\u05de\u05d5\u05da")
 @dp.message(Command("low"))
 async def cmd_low(m: types.Message):
@@ -493,9 +493,9 @@ async def cmd_low(m: types.Message):
     await m.answer(txt)
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # REPORT
-# ═══════════════════════════════════
+# -----------------------------------
 @dp.message(F.text == "\U0001f4ca \u05d3\u05d5\u05d7")
 @dp.message(Command("report"))
 async def cmd_report(m: types.Message):
@@ -526,9 +526,9 @@ async def cmd_report(m: types.Message):
     await m.answer(txt)
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # EXPORT CSV
-# ═══════════════════════════════════
+# -----------------------------------
 @dp.message(F.text == "\U0001f4be \u05d9\u05d9\u05e6\u05d5\u05d0")
 @dp.message(Command("export"))
 async def cmd_export(m: types.Message):
@@ -540,9 +540,9 @@ async def cmd_export(m: types.Message):
     await m.answer_document(doc, caption=f"\U0001f4be \u05de\u05dc\u05d0\u05d9 - {shop['shop_name']}")
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # HELP
-# ═══════════════════════════════════
+# -----------------------------------
 @dp.message(F.text == "\u2753 \u05e2\u05d6\u05e8\u05d4")
 @dp.message(Command("help"))
 async def cmd_help(m: types.Message):
@@ -569,9 +569,9 @@ async def cmd_help(m: types.Message):
     )
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # PAYMENT (photo proof) - only for unpaid users
-# ═══════════════════════════════════
+# -----------------------------------
 @dp.message(F.photo)
 async def handle_photo(m: types.Message):
     uid = m.from_user.id
@@ -629,9 +629,9 @@ async def reject_payment(cb: types.CallbackQuery):
     await cb.answer()
 
 
-# ═══════════════════════════════════
+# -----------------------------------
 # MAIN
-# ═══════════════════════════════════
+# -----------------------------------
 async def main():
     await pay_db.init_schema()
     await init_tables()
@@ -656,4 +656,5 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
 

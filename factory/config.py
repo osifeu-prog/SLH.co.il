@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from pydantic import BaseModel
 from dotenv import load_dotenv
 import os
@@ -10,5 +10,6 @@ class Settings(BaseModel):
     env: str = os.getenv("ENV", "development")
 
 settings = Settings()
+
 
 

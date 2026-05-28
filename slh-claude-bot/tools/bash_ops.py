@@ -86,3 +86,4 @@ async def run(command: str, cwd: str = "", timeout: int = 60) -> str:
     if len(out) > 8000:
         out = out[:8000] + f"\n... [truncated, total {len(out)} chars]"
     return f"[exit {proc.returncode}]\n{out}" if out.strip() else f"[exit {proc.returncode}] (no output)"
+

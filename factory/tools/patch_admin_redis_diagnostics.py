@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from pathlib import Path
@@ -97,7 +97,7 @@ if needle in block and "Redis not connected" not in block:
         needle + r'''
                 # Require Redis for login/session; otherwise user will be stuck
                 if not await _redis_healthcheck(redis_client):
-                    await _tg_send(token, chat_id, "⚠️ Redis לא מחובר/לא נגיש כרגע. לא ניתן לבצע Admin Login.\nבדוק ש-REDIS_URL קיים ושאתחול Redis הצליח בלוגים.")
+                    await _tg_send(token, chat_id, "?? Redis ?? ?????/?? ???? ????. ?? ???? ???? Admin Login.\n???? ?-REDIS_URL ???? ??????? Redis ????? ??????.")
                     return
 '''
     )
@@ -123,7 +123,7 @@ if status_old in block and "redis_connected" not in block:
                     await _tg_send(
                         token,
                         chat_id,
-                        f"✅ STATUS\nonline=true\nredis_connected={rc_ok}\nadmin_password_set={pwd_set}\npending_login={pending}\nsession_active={session}\nuid={uid}\nchat_id={chat_id}",
+                        f"? STATUS\nonline=true\nredis_connected={rc_ok}\nadmin_password_set={pwd_set}\npending_login={pending}\nsession_active={session}\nuid={uid}\nchat_id={chat_id}",
                     )
                     return''',
         block,
@@ -134,4 +134,5 @@ t2 = t[:m.start()] + block + t[m.end():]
 t2 = t2.replace("\r\n", "\n").replace("\r", "\n")
 p.write_text(t2, encoding="utf-8", newline="\n")
 print("OK: webhook now uses robust redis_client + diagnostics + loud failure if Redis missing")
+
 

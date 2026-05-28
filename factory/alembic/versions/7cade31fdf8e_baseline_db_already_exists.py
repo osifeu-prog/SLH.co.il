@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """baseline (db already exists)
 
 Revision ID: 7cade31fdf8e
@@ -27,5 +27,6 @@ def upgrade() -> None:
 def downgrade() -> None:
     """Downgrade schema."""
     pass
+
 
 

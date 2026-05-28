@@ -1,4 +1,4 @@
-﻿# utils/ton_api.py
+# utils/ton_api.py
 import logging
 import aiohttp
 from config import TONCENTER_API_KEY, RPC_URL
@@ -29,3 +29,4 @@ async def get_ton_balance(address: str) -> float | None:
     except Exception as e:
         logging.exception(f"Exception in get_ton_balance: {e}")
         return None
+

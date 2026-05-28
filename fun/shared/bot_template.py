@@ -1,10 +1,10 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 SLH Minimal Bot Template - used for bots without dedicated code.
 Provides: /start, /premium, payment proof handling, admin approve/reject.
 
 Usage:
-    BOT_KEY=campaign BOT_DESCRIPTION="קמפיינים שיווקיים" python bot_template.py
+    BOT_KEY=campaign BOT_DESCRIPTION="???????? ????????" python bot_template.py
 """
 import os
 import sys
@@ -104,5 +104,6 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
 
 

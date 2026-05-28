@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
@@ -25,5 +25,6 @@ with e.connect() as c:
         limit 3
     """)):
         print(" ", r)
+
 
 

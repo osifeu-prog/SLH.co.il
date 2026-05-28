@@ -1,16 +1,16 @@
-﻿# -*- coding: utf-8 -*-
-"""SLH Secrets Vault — Phase 2 alerts + scheduled sweep.
+# -*- coding: utf-8 -*-
+"""SLH Secrets Vault � Phase 2 alerts + scheduled sweep.
 
 Sits on top of api/admin_secrets_catalog.py:
-  - /sweep            — iterate every row in secrets_catalog, call _run_probe per
-                        key_name, detect status transitions (ok/unknown → bad_key/
+  - /sweep            � iterate every row in secrets_catalog, call _run_probe per
+                        key_name, detect status transitions (ok/unknown ? bad_key/
                         missing) and overdue-rotation, fire Telegram alert
                         (with cooldown), record in secret_alerts table, emit
                         audit event.
-  - /alerts/recent    — list last N hours of secret_alerts (read-only, audit).
-  - /alerts/test      — fire a single test Telegram message, end-to-end smoke
+  - /alerts/recent    � list last N hours of secret_alerts (read-only, audit).
+  - /alerts/test      � fire a single test Telegram message, end-to-end smoke
                         check the BROADCAST_BOT_TOKEN pipe works.
-  - /digest/send      — compose a single Hebrew Telegram digest (last 24h
+  - /digest/send      � compose a single Hebrew Telegram digest (last 24h
                         transitions + currently overdue list) and send.
 
 All endpoints under /api/admin/secrets, X-Admin-Key gated. Designed to be
@@ -42,7 +42,7 @@ log = logging.getLogger("slh.secrets_alerts")
 router = APIRouter(prefix="/api/admin/secrets", tags=["admin", "secrets", "alerts"])
 
 
-# ─── Auth (mirror admin_secrets_catalog._admin) ────────────────────────────
+# --- Auth (mirror admin_secrets_catalog._admin) ----------------------------
 
 
 def _admin(authorization: Optional[str], x_admin_key: Optional[str]) -> int:
@@ -63,7 +63,7 @@ def _pool(request: Request):
     return pool
 
 
-# ─── Telegram pipe (sync, urllib — matches ops/telegram_push_alerts.py) ────
+# --- Telegram pipe (sync, urllib � matches ops/telegram_push_alerts.py) ----
 
 
 # Osif's tg_id from CLAUDE.md / MEMORY. Hardcoded so a stranger can't redirect
@@ -96,7 +96,7 @@ def _tg_send(text: str, parse_mode: str = "HTML") -> tuple[bool, str]:
         return False, f"{type(e).__name__}: {e}"
 
 
-# ─── Alert classification ──────────────────────────────────────────────────
+# --- Alert classification --------------------------------------------------
 
 
 # Transitions that should fire an alert
@@ -118,24 +118,24 @@ def _is_overdue(last_rotated_at, cadence_days: int) -> bool:
 
 def _format_alert(row, alert_type: str, prev: Optional[str], new: Optional[str], detail: Optional[str]) -> str:
     """Hebrew Telegram alert body. No secret value, only metadata."""
-    icon = {"bad_key": "🚨", "missing": "🚨", "service_error": "⚠️", "overdue": "⏰"}.get(alert_type, "ℹ️")
-    head = f"{icon} <b>SLH Secrets Vault — התראה</b>"
+    icon = {"bad_key": "??", "missing": "??", "service_error": "??", "overdue": "?"}.get(alert_type, "??")
+    head = f"{icon} <b>SLH Secrets Vault � ?????</b>"
     body = (
         f"\n\n<b>{row['display_name']}</b>"
         f"\n<code>{row['key_name']}</code>"
-        f"\n\nסוג התראה: <b>{alert_type}</b>"
+        f"\n\n??? ?????: <b>{alert_type}</b>"
     )
     if prev or new:
-        body += f"\nמעבר: <code>{prev or '—'}</code> → <code>{new or '—'}</code>"
+        body += f"\n????: <code>{prev or '�'}</code> ? <code>{new or '�'}</code>"
     if detail:
-        body += f"\nפרט: <code>{str(detail)[:200]}</code>"
+        body += f"\n???: <code>{str(detail)[:200]}</code>"
     if row.get("rotation_url"):
-        body += f"\n\n🔧 <a href=\"{row['rotation_url']}\">סובב עכשיו ↗</a>"
-    body += "\n\n<a href=\"https://slh-nft.com/admin/secrets-vault.html\">פתח Vault</a>"
+        body += f"\n\n?? <a href=\"{row['rotation_url']}\">???? ????? ?</a>"
+    body += "\n\n<a href=\"https://slh-nft.com/admin/secrets-vault.html\">??? Vault</a>"
     return head + body
 
 
-# ─── Endpoints ─────────────────────────────────────────────────────────────
+# --- Endpoints -------------------------------------------------------------
 
 
 class TestAlertIn(BaseModel):
@@ -154,7 +154,7 @@ async def sweep(
     `alert_cooldown_hours` hours. Designed to be called every ~6h by Task
     Scheduler. Safe to call manually.
 
-    Returns aggregate counts only — never key names or values.
+    Returns aggregate counts only � never key names or values.
     """
     _admin(authorization, x_admin_key)
     pool = _pool(request)
@@ -203,7 +203,7 @@ async def sweep(
             skipped_no_probe += 1
             continue
 
-        # Detect health transition (only fire on healthy/unknown → bad)
+        # Detect health transition (only fire on healthy/unknown ? bad)
         is_transition = (
             result in _ALERT_RESULTS
             and (prev is None or prev in _HEALTHY_RESULTS or prev == "unknown")
@@ -259,7 +259,7 @@ async def sweep(
                 except Exception:
                     pass
 
-        # Fire overdue alert (separate cooldown — once per cycle is enough)
+        # Fire overdue alert (separate cooldown � once per cycle is enough)
         if overdue and not is_transition:
             cooldown_h = int(row["alert_cooldown_hours"] or 24)
             last_alert = row["last_alert_at"]
@@ -389,7 +389,7 @@ async def alerts_test(
 ):
     """Smoke-test the Telegram pipe. Sends a single throwaway message."""
     _admin(authorization, x_admin_key)
-    text = (body and body.text) or "🧪 SLH Secrets Vault — alert pipe test (you can ignore this)"
+    text = (body and body.text) or "?? SLH Secrets Vault � alert pipe test (you can ignore this)"
     ok, detail = _tg_send(text)
     return {"ok": ok, "detail": detail}
 
@@ -463,42 +463,42 @@ async def digest_send(
         )
 
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    lines = [f"🔐 <b>SLH Secrets — דיגסט יומי {today}</b>", ""]
+    lines = [f"?? <b>SLH Secrets � ????? ???? {today}</b>", ""]
     lines.append(
-        f"סה״כ secrets: <b>{stats['total']}</b> · "
-        f"שבורים: <b>{stats['broken']}</b> · "
-        f"לסיבוב: <b>{stats['overdue']}</b>"
+        f"???? secrets: <b>{stats['total']}</b> � "
+        f"??????: <b>{stats['broken']}</b> � "
+        f"??????: <b>{stats['overdue']}</b>"
     )
 
     if recent_alerts:
         lines.append("")
-        lines.append("🚨 <b>התראות 24ש</b>")
+        lines.append("?? <b>?????? 24?</b>")
         for r in recent_alerts:
-            lines.append(f"  • <code>{r['alert_type']}</code>: {r['n']}")
+            lines.append(f"  � <code>{r['alert_type']}</code>: {r['n']}")
 
     if broken_rows:
         lines.append("")
-        lines.append("❌ <b>סודות שבורים</b>")
+        lines.append("? <b>????? ??????</b>")
         for r in broken_rows:
             lines.append(
-                f"  • {r['display_name']} (<code>{r['key_name']}</code>) — {r['last_health_result']}"
+                f"  � {r['display_name']} (<code>{r['key_name']}</code>) � {r['last_health_result']}"
             )
 
     if overdue_rows:
         lines.append("")
-        lines.append("⏰ <b>חורגים מתדירות סיבוב</b>")
+        lines.append("? <b>?????? ??????? ?????</b>")
         for r in overdue_rows:
             age = int(r["age_days"] or 0)
             lines.append(
-                f"  • {r['display_name']} — {age}d (cadence {r['rotation_cadence_days']}d)"
+                f"  � {r['display_name']} � {age}d (cadence {r['rotation_cadence_days']}d)"
             )
 
     if not (broken_rows or overdue_rows or recent_alerts):
         lines.append("")
-        lines.append("✅ <i>הכל ירוק. שום דבר לא דורש פעולה.</i>")
+        lines.append("? <i>??? ????. ??? ??? ?? ???? ?????.</i>")
 
     lines.append("")
-    lines.append('<a href="https://slh-nft.com/admin/security-hub.html">Security Hub ↗</a>')
+    lines.append('<a href="https://slh-nft.com/admin/security-hub.html">Security Hub ?</a>')
 
     text = "\n".join(lines)
     ok, detail = _tg_send(text)
@@ -530,5 +530,6 @@ async def digest_send(
             "alerts_24h": sum(int(r["n"] or 0) for r in recent_alerts),
         },
     }
+
 
 

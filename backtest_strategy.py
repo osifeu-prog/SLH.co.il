@@ -1,10 +1,10 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import backtrader as bt
 import pandas as pd
 from datetime import datetime
 
 # --------------------------------------
-# 1. אסטרטגיה פשוטה (RSI)
+# 1. ???????? ????? (RSI)
 # --------------------------------------
 class RSIStrategy(bt.Strategy):
     params = (
@@ -25,14 +25,14 @@ class RSIStrategy(bt.Strategy):
                 self.sell()
 
 # --------------------------------------
-# 2. טעינת נתונים (מקובץ CSV או יצירת דמה)
+# 2. ????? ?????? (????? CSV ?? ????? ???)
 # --------------------------------------
 def load_data_from_csv(filename='tokens_history.csv'):
-    """טוען נתונים מקובץ CSV (אם קיים)"""
+    """???? ?????? ????? CSV (?? ????)"""
     try:
         df = pd.read_csv(filename)
-        # נניח שיש עמודות: date, close, open, high, low, volume
-        # אם אין – ניצור נתונים לדוגמה
+        # ???? ??? ??????: date, close, open, high, low, volume
+        # ?? ??? � ????? ?????? ??????
         if 'date' not in df.columns:
             df['date'] = pd.date_range(start='2024-01-01', periods=len(df))
         df = df[['date', 'open', 'high', 'low', 'close', 'volume']]
@@ -41,8 +41,8 @@ def load_data_from_csv(filename='tokens_history.csv'):
         data = bt.feeds.PandasData(dataname=df)
         return data
     except Exception as e:
-        print(f"לא נמצא קובץ CSV אמיתי, יוצר נתוני דמה: {e}")
-        # נתוני דמה
+        print(f"?? ???? ???? CSV ?????, ???? ????? ???: {e}")
+        # ????? ???
         dates = pd.date_range(start='2024-01-01', periods=100)
         df = pd.DataFrame({
             'open': [100 + i for i in range(100)],
@@ -54,7 +54,7 @@ def load_data_from_csv(filename='tokens_history.csv'):
         return bt.feeds.PandasData(dataname=df)
 
 # --------------------------------------
-# 3. הרצת Backtest
+# 3. ???? Backtest
 # --------------------------------------
 if __name__ == '__main__':
     cerebro = bt.Cerebro()
@@ -64,10 +64,11 @@ if __name__ == '__main__':
     cerebro.adddata(data)
 
     cerebro.broker.setcash(10000.0)
-    cerebro.broker.setcommission(commission=0.001)  # 0.1% עמלה
+    cerebro.broker.setcommission(commission=0.001)  # 0.1% ????
 
     print('Starting Portfolio Value: %.2f' % cerebro.broker.getvalue())
     cerebro.run()
     print('Final Portfolio Value: %.2f' % cerebro.broker.getvalue())
     cerebro.plot()
+
 

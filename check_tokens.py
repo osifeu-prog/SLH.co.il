@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import requests
 import time
 import csv
@@ -24,18 +24,19 @@ def get_token_details(token_address):
     except:
         return None
 
-# רשימת כתובות לדוגמה (החלף בכתובות אמיתיות)
+# ????? ?????? ?????? (???? ??????? ???????)
 test_addresses = [
     "0x4c3c902bfe07857c7d6abd5e983847a6e4247f16",
     "0xf3dfad315321eb786e0617641df808697b38253b"
 ]
 
-print("בודק טוקנים...")
+print("???? ??????...")
 for addr in test_addresses:
     details = get_token_details(addr)
     if details:
-        print(f"{details['symbol']}: ${details['price_usd']:.6f}, נזילות: ${details['liquidity_usd']:,.0f}")
+        print(f"{details['symbol']}: ${details['price_usd']:.6f}, ??????: ${details['liquidity_usd']:,.0f}")
     else:
-        print(f"שגיאה ב-{addr[:10]}...")
+        print(f"????? ?-{addr[:10]}...")
     time.sleep(0.5)
+
 

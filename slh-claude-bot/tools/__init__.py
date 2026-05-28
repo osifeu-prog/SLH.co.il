@@ -101,3 +101,4 @@ async def execute(name: str, args: dict) -> str:
         return str(result)
     except Exception as e:  # never crash the bot on tool error
         return f"[error] {type(e).__name__}: {e}"
+

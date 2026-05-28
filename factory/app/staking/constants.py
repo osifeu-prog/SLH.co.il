@@ -1,7 +1,8 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from decimal import Decimal
 
 YEAR_SECONDS = Decimal(365 * 24 * 60 * 60)
 ZERO = Decimal("0")
+
 
 

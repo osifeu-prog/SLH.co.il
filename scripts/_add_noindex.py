@@ -103,3 +103,4 @@ if results["errors"]:
     print(f"\n❌ Errors — {len(results['errors'])}:")
     for r in results["errors"]:
         print(f"  ✗ {r}")
+

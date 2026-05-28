@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import logging
 from telegram import Bot, Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
@@ -34,17 +34,17 @@ class TelegramBotService:
             else:
                 logger.info("Running in polling mode")
                 
-            logger.info("✅ Telegram bot initialized successfully")
+            logger.info("? Telegram bot initialized successfully")
             
         except Exception as e:
-            logger.error(f"❌ Failed to initialize Telegram bot: {e}")
+            logger.error(f"? Failed to initialize Telegram bot: {e}")
             raise
 
     async def start_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Handle /start command"""
         user = update.effective_user
         await update.message.reply_text(
-            f"👋 Hello {user.first_name}!\n\n"
+            f"?? Hello {user.first_name}!\n\n"
             f"Welcome to {settings.PROJECT_NAME}!\n"
             f"Version: {settings.VERSION}\n"
             f"Environment: {settings.RAILWAY_ENVIRONMENT}"
@@ -53,13 +53,13 @@ class TelegramBotService:
     async def help_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Handle /help command"""
         help_text = """
-🤖 **Available Commands:**
+?? **Available Commands:**
 
 /start - Start the bot
 /help - Show this help message
 /status - Check bot status
 
-📊 **Bot Information:**
+?? **Bot Information:**
 - Environment: {environment}
 - Version: {version}
 - Admin: {admin_id}
@@ -76,9 +76,9 @@ class TelegramBotService:
         
         # Check if user is admin
         if str(user_id) == settings.ADMIN_USER_ID:
-            await update.message.reply_text("✅ Admin command received")
+            await update.message.reply_text("? Admin command received")
         else:
-            await update.message.reply_text("👋 Thanks for your message!")
+            await update.message.reply_text("?? Thanks for your message!")
 
     async def send_to_admin(self, message: str):
         """Send message to admin"""
@@ -116,4 +116,5 @@ async def process_webhook(update_dict: dict):
     if telegram_bot.application:
         update = Update.de_json(update_dict, telegram_bot.application.bot)
         await telegram_bot.application.process_update(update)
+
 

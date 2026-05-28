@@ -1,6 +1,6 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
-Creator Economy — XP = ROI metric + SLH Index.
+Creator Economy � XP = ROI metric + SLH Index.
 
 Track 7 of Alpha Readiness. Extends existing marketplace module with:
   - XP snapshot per user (current_value / fiat_invested)
@@ -9,17 +9,17 @@ Track 7 of Alpha Readiness. Extends existing marketplace module with:
   - Course-lesson flag on items
 
 Endpoints:
-  GET  /api/creator/xp/{user_id}         — user's XP (ROI ratio)
-  GET  /api/creator/slh-index            — global median XP + sparkline data
-  GET  /api/creator/shop/{user_id}       — personal shop view with stats
-  POST /api/creator/roi/snapshot         — admin; recompute snapshot for a user
-  POST /api/creator/roi/snapshot/all     — admin; recompute for all users (cron)
+  GET  /api/creator/xp/{user_id}         � user's XP (ROI ratio)
+  GET  /api/creator/slh-index            � global median XP + sparkline data
+  GET  /api/creator/shop/{user_id}       � personal shop view with stats
+  POST /api/creator/roi/snapshot         � admin; recompute snapshot for a user
+  POST /api/creator/roi/snapshot/all     � admin; recompute for all users (cron)
 
 XP formula:
   user_xp = total_portfolio_value_now / total_fiat_invested
   where:
-    total_portfolio_value_now = sum(SLH_held × current_SLH_price
-                                   + AIC_held × current_AIC_price
+    total_portfolio_value_now = sum(SLH_held � current_SLH_price
+                                   + AIC_held � current_AIC_price
                                    + marketplace_earnings
                                    + staking_yield
                                    + REP_bonus * 0.1)
@@ -28,7 +28,7 @@ XP formula:
 SLH Index formula:
   slh_index = median(user_xp for user in users where total_fiat_invested > 0)
 
-A user with 0 fiat invested is "xp = ∞ (pure gain)" — not counted in index.
+A user with 0 fiat invested is "xp = 8 (pure gain)" � not counted in index.
 """
 from __future__ import annotations
 
@@ -44,10 +44,10 @@ router = APIRouter(prefix="/api/creator", tags=["Creator Economy"])
 
 _pool = None
 
-# Current prices — editable via env vars. TODO: fetch live from oracle.
-SLH_PRICE_USD = float(os.getenv("SLH_PRICE_USD", "121.6"))  # ~₪444 / 3.65
+# Current prices � editable via env vars. TODO: fetch live from oracle.
+SLH_PRICE_USD = float(os.getenv("SLH_PRICE_USD", "121.6"))  # ~?444 / 3.65
 AIC_PRICE_USD = float(os.getenv("AIC_PRICE_USD", "0.001"))
-REP_VALUE_USD = float(os.getenv("REP_VALUE_USD", "0.01"))  # REP is symbolic — 0.01$ per point
+REP_VALUE_USD = float(os.getenv("REP_VALUE_USD", "0.01"))  # REP is symbolic � 0.01$ per point
 
 
 def set_pool(pool):
@@ -133,7 +133,7 @@ async def _compute_xp(conn, user_id: int) -> dict:
     except Exception:
         pass
 
-    # SLH held — try multiple possible tables
+    # SLH held � try multiple possible tables
     slh_held = 0.0
     for q in (
         "SELECT balance FROM tokens WHERE user_id = $1 AND symbol = 'SLH'",
@@ -190,7 +190,7 @@ async def _compute_xp(conn, user_id: int) -> dict:
         "marketplace_earnings_usd": earnings_usd,
         "current_value_usd": current_value_usd,
         "xp_ratio": xp_ratio,
-        "xp_display": "∞" if xp_ratio is None else f"{xp_ratio:.2f}",
+        "xp_display": "8" if xp_ratio is None else f"{xp_ratio:.2f}",
         "status": (
             "infinite" if xp_ratio is None
             else "profit" if xp_ratio > 1.0
@@ -244,7 +244,7 @@ async def user_xp(user_id: int, fresh: bool = False):
 
 @router.get("/slh-index")
 async def slh_index():
-    """Global SLH Index — median XP across users with >0 fiat invested."""
+    """Global SLH Index � median XP across users with >0 fiat invested."""
     if _pool is None:
         raise HTTPException(500, "db pool not initialized")
     async with _pool.acquire() as conn:
@@ -264,7 +264,7 @@ async def slh_index():
         median = xps[count // 2] if count % 2 == 1 else (xps[count // 2 - 1] + xps[count // 2]) / 2
         avg = sum(xps) / count
 
-        # Trend — compare to 24h ago via heuristic (simplified)
+        # Trend � compare to 24h ago via heuristic (simplified)
         trend = "up" if median > 1.0 else "down" if median < 1.0 else "flat"
 
         return {
@@ -274,14 +274,14 @@ async def slh_index():
             "max_xp": round(xps[-1], 4),
             "users_included": count,
             "trend": trend,
-            "peak_xp_label": "∞" if any(r.get("xp_ratio") is None for r in rows) else round(xps[-1], 2),
+            "peak_xp_label": "8" if any(r.get("xp_ratio") is None for r in rows) else round(xps[-1], 2),
             "computed_at": datetime.utcnow().isoformat(),
         }
 
 
 @router.get("/shop/{user_id}")
 async def personal_shop(user_id: int):
-    """Personal creator shop — listings + earnings + XP."""
+    """Personal creator shop � listings + earnings + XP."""
     if _pool is None:
         raise HTTPException(500, "db pool not initialized")
     async with _pool.acquire() as conn:
@@ -457,7 +457,7 @@ async def purchase_complete(req: PurchaseCompleteReq):
         "amount_usd": usd,
         "seller_new_xp": seller_xp["xp_ratio"],
         "seller_new_xp_display": seller_xp["xp_display"],
-        "message": f"רכישה הושלמה · המוכר #{seller_id} קיבל ${usd:.2f}, XP עודכן.",
+        "message": f"????? ?????? � ????? #{seller_id} ???? ${usd:.2f}, XP ?????.",
     }
 
 
@@ -501,7 +501,7 @@ async def refresh_roi_snapshot(req: SnapshotRefreshReq, x_admin_key: Optional[st
 
 @router.post("/roi/snapshot/all")
 async def refresh_all_snapshots(x_admin_key: Optional[str] = Header(None)):
-    """Admin: recompute XP for all users — run as cron."""
+    """Admin: recompute XP for all users � run as cron."""
     admin_keys = [k.strip() for k in os.getenv("ADMIN_API_KEYS", "").split(",") if k.strip()]
     if x_admin_key not in admin_keys:
         raise HTTPException(403, "admin key required")
@@ -544,4 +544,5 @@ async def refresh_all_snapshots(x_admin_key: Optional[str] = Header(None)):
                 continue
 
     return {"ok": True, "users_updated": updated}
+
 

@@ -70,3 +70,4 @@ async def get_wallet_by_telegram(telegram_id: str, db: Session = Depends(get_db)
         created_at=wallet.created_at,
         updated_at=wallet.updated_at,
     )
+

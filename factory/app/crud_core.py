@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from decimal import Decimal
@@ -75,4 +75,5 @@ def compute_balance(db: Session, account_id: int) -> Decimal:
     )
     val = db.execute(select(func.coalesce(func.sum(signed), 0)).where(LedgerEntry.account_id == account_id)).scalar_one()
     return Decimal(val)
+
 

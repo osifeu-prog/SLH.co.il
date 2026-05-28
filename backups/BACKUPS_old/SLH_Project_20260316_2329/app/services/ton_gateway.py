@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import os
 import time
 import hashlib
@@ -20,4 +20,5 @@ async def send_ton_withdrawal(*, withdrawal_id: int, wallet: str, amount: float)
         "ok": False,
         "error": "TON live mode is not implemented yet in this gateway.",
     }
+
 

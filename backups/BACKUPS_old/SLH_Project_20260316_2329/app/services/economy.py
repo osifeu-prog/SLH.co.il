@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from app.db.database import db
 
 
@@ -111,4 +111,5 @@ async def get_balance(user_id: int):
             "available": float(row["available"]),
             "locked": float(row["locked"]),
         }
+
 

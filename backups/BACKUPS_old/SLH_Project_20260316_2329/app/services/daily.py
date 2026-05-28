@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import json
 from datetime import datetime, timedelta
 from decimal import Decimal
@@ -210,4 +210,5 @@ async def claim_daily(user_id: int, username: str | None = None) -> dict:
         "level": xp_info["level"],
         "mnh_units": int(reward * Decimal("10000")),
     }
+
 

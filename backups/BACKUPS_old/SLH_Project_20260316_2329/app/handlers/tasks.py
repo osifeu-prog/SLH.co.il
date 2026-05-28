@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import re
 import logging
 
@@ -111,4 +111,5 @@ async def claim_task_slash_text(message: types.Message):
     logger.info("HANDLER: slash-text claim_task by %s task_id=%s", user_id, task_id)
     res = await claim_task_reward(user_id, task_id)
     await message.answer(_render_claim_result(res))
+
 

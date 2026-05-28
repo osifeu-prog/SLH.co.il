@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from app import models, schemas
@@ -66,4 +66,5 @@ def get_stats(db: Session) -> schemas.StatsOut:
         total_transactions=total_transactions,
         total_amount_usd=float(total_amount),
     )
+
 

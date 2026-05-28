@@ -1,7 +1,7 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
-@SLH_community_bot — Main community bot
-Updated: April 15, 2026 — New 4-path funnel with campaign tracking
+@SLH_community_bot � Main community bot
+Updated: April 15, 2026 � New 4-path funnel with campaign tracking
 
 Design principles:
 - No friction on first message (removed "send to friend" antipattern)
@@ -50,44 +50,44 @@ user_states: Dict[int, Dict] = {}
 # ============================================================
 
 def main_menu_keyboard() -> InlineKeyboardMarkup:
-    """4-path main menu — the FIRST thing users see."""
+    """4-path main menu � the FIRST thing users see."""
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=f"🛒 קונה — ₪{PRICE_ILS} Starter Pack", callback_data="path:buyer")],
-        [InlineKeyboardButton(text="🤝 שותף — חינם + 20% עמלה", callback_data="path:partner")],
-        [InlineKeyboardButton(text="💎 Genesis — מייסד היסטורי", callback_data="path:genesis")],
-        [InlineKeyboardButton(text="🌱 קהילה — חינם, רק לראות", callback_data="path:community")],
-        [InlineKeyboardButton(text="🌐 פתח דף קמפיין", url="https://slh-nft.com/promo-shekel.html")],
+        [InlineKeyboardButton(text=f"?? ???? � ?{PRICE_ILS} Starter Pack", callback_data="path:buyer")],
+        [InlineKeyboardButton(text="?? ???? � ???? + 20% ????", callback_data="path:partner")],
+        [InlineKeyboardButton(text="?? Genesis � ????? ???????", callback_data="path:genesis")],
+        [InlineKeyboardButton(text="?? ????? � ????, ?? ?????", callback_data="path:community")],
+        [InlineKeyboardButton(text="?? ??? ?? ??????", url="https://slh-nft.com/promo-shekel.html")],
     ])
 
 
 def buyer_payment_keyboard() -> InlineKeyboardMarkup:
     """Payment options for Buyer path."""
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="💎 שלם ב-TON", callback_data="pay:ton")],
-        [InlineKeyboardButton(text="🏦 העברה בנקאית", callback_data="pay:bank")],
-        [InlineKeyboardButton(text="🟡 שלם ב-BNB", callback_data="pay:bnb")],
-        [InlineKeyboardButton(text="⬅️ חזרה לתפריט", callback_data="back:main")],
+        [InlineKeyboardButton(text="?? ??? ?-TON", callback_data="pay:ton")],
+        [InlineKeyboardButton(text="?? ????? ??????", callback_data="pay:bank")],
+        [InlineKeyboardButton(text="?? ??? ?-BNB", callback_data="pay:bnb")],
+        [InlineKeyboardButton(text="?? ???? ??????", callback_data="back:main")],
     ])
 
 
 def partner_keyboard(affiliate_code: Optional[str] = None) -> InlineKeyboardMarkup:
-    """Partner onboarding — copy affiliate link."""
+    """Partner onboarding � copy affiliate link."""
     btns = []
     if affiliate_code:
         share_url = f"https://slh-nft.com/promo-shekel.html?ref={affiliate_code}"
-        btns.append([InlineKeyboardButton(text="📤 שתף קישור שלך", url=f"https://t.me/share/url?url={share_url}")])
+        btns.append([InlineKeyboardButton(text="?? ??? ????? ???", url=f"https://t.me/share/url?url={share_url}")])
     btns.extend([
-        [InlineKeyboardButton(text="📊 דשבורד שותף", url="https://slh-nft.com/partner-dashboard.html")],
-        [InlineKeyboardButton(text="📚 חומרי שיווק", url="https://slh-nft.com/promo-shekel.html")],
-        [InlineKeyboardButton(text="⬅️ חזרה לתפריט", callback_data="back:main")],
+        [InlineKeyboardButton(text="?? ?????? ????", url="https://slh-nft.com/partner-dashboard.html")],
+        [InlineKeyboardButton(text="?? ????? ?????", url="https://slh-nft.com/promo-shekel.html")],
+        [InlineKeyboardButton(text="?? ???? ??????", callback_data="back:main")],
     ])
     return InlineKeyboardMarkup(inline_keyboard=btns)
 
 
 def admin_approval_keyboard(user_id: int) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[[
-        InlineKeyboardButton(text="✅ אשר", callback_data=f"admin_approve:{user_id}"),
-        InlineKeyboardButton(text="❌ דחה", callback_data=f"admin_reject:{user_id}"),
+        InlineKeyboardButton(text="? ???", callback_data=f"admin_approve:{user_id}"),
+        InlineKeyboardButton(text="? ???", callback_data=f"admin_reject:{user_id}"),
     ]])
 
 
@@ -142,14 +142,14 @@ async def api_track_click(user_id: int, path: str, source: str = "telegram"):
 
 
 # ============================================================
-# /start handler — the critical first impression
+# /start handler � the critical first impression
 # ============================================================
 
 @dp.message(CommandStart())
 async def on_start(message: Message, command: CommandObject = None):
     user_id = message.from_user.id
     username = message.from_user.username
-    full_name = message.from_user.full_name or (username or "משתמש")
+    full_name = message.from_user.full_name or (username or "?????")
 
     # Parse start parameter (deep link)
     args = (command.args if command else None) or ""
@@ -157,12 +157,12 @@ async def on_start(message: Message, command: CommandObject = None):
     direct_path = None
 
     # Campaign deep-link parsing:
-    # /start promo_shekel_april26             → show full menu
-    # /start promo_shekel_april26_SLH-ABC12   → with affiliate
-    # /start partner_april26                  → direct to partner
-    # /start genesis_april26                  → direct to genesis
-    # /start community_april26                → direct to community
-    # /start kosher_wallet                    → kosher wallet info
+    # /start promo_shekel_april26             ? show full menu
+    # /start promo_shekel_april26_SLH-ABC12   ? with affiliate
+    # /start partner_april26                  ? direct to partner
+    # /start genesis_april26                  ? direct to genesis
+    # /start community_april26                ? direct to community
+    # /start kosher_wallet                    ? kosher wallet info
     if args.startswith("promo_shekel_april26"):
         tail = args[len("promo_shekel_april26"):].lstrip("_")
         if tail:
@@ -183,7 +183,7 @@ async def on_start(message: Message, command: CommandObject = None):
     # Track the click
     await api_track_click(user_id, direct_path or "pageview", source="telegram_start")
 
-    # If direct path — route immediately
+    # If direct path � route immediately
     if direct_path == "partner":
         return await handle_partner(message, user_id, username, full_name, ref_code)
     if direct_path == "genesis":
@@ -194,22 +194,22 @@ async def on_start(message: Message, command: CommandObject = None):
         return await handle_kosher(message)
 
     # Default: show the beautiful main menu
-    greet = f"👋 שלום {full_name}!" if full_name else "👋 שלום!"
-    ref_note = f"\n✨ הגעת עם קוד הפניה: <code>{ref_code}</code>" if ref_code else ""
+    greet = f"?? ???? {full_name}!" if full_name else "?? ????!"
+    ref_note = f"\n? ???? ?? ??? ?????: <code>{ref_code}</code>" if ref_code else ""
 
     text = (
-        f"🌟 <b>{greet}</b>\n"
-        f"<b>ברוך הבא ל-SLH Spark</b> ⚡{ref_note}\n\n"
-        f"💎 האקוסיסטם הקריפטו הישראלי — <b>25 בוטים · 5 טוקנים · 5 שפות · קוד פתוח</b>\n\n"
-        f"━━━━━━━━━━━━━━━━━\n"
-        f"<b>בחר את הדרך שלך:</b>\n\n"
-        f"🛒 <b>קונה מיידי</b> — ₪{PRICE_ILS} Starter Pack\n"
-        f"   0.25 SLH + 1,000 ZVK + Premium + קורס\n\n"
-        f"🤝 <b>שותף</b> — חינם, 20% עמלה על כל קנייה\n\n"
-        f"💎 <b>Genesis</b> — מייסד היסטורי עם NFT\n\n"
-        f"🌱 <b>קהילה</b> — חינם, לראות ולהשתתף\n\n"
-        f"━━━━━━━━━━━━━━━━━\n"
-        f"💬 /help · 🌐 /menu · 🎯 /invite"
+        f"?? <b>{greet}</b>\n"
+        f"<b>???? ??? ?-SLH Spark</b> ?{ref_note}\n\n"
+        f"?? ????????? ??????? ??????? � <b>25 ????? � 5 ?????? � 5 ???? � ??? ????</b>\n\n"
+        f"?????????????????\n"
+        f"<b>??? ?? ???? ???:</b>\n\n"
+        f"?? <b>???? ?????</b> � ?{PRICE_ILS} Starter Pack\n"
+        f"   0.25 SLH + 1,000 ZVK + Premium + ????\n\n"
+        f"?? <b>????</b> � ????, 20% ???? ?? ?? ?????\n\n"
+        f"?? <b>Genesis</b> � ????? ??????? ?? NFT\n\n"
+        f"?? <b>?????</b> � ????, ????? ???????\n\n"
+        f"?????????????????\n"
+        f"?? /help � ?? /menu � ?? /invite"
     )
 
     await message.answer(text, parse_mode="HTML", reply_markup=main_menu_keyboard())
@@ -219,7 +219,7 @@ async def on_start(message: Message, command: CommandObject = None):
         try:
             await bot.send_message(
                 ADMIN_CHAT_ID,
-                f"👤 משתמש חדש: @{username or 'ללא'} (ID: {user_id}){(' ref: ' + ref_code) if ref_code else ''}"
+                f"?? ????? ???: @{username or '???'} (ID: {user_id}){(' ref: ' + ref_code) if ref_code else ''}"
             )
         except Exception:
             pass
@@ -234,7 +234,7 @@ async def on_path_select(cb: CallbackQuery):
     path = cb.data.split(":", 1)[1]
     user_id = cb.from_user.id
     username = cb.from_user.username
-    full_name = cb.from_user.full_name or (username or "משתמש")
+    full_name = cb.from_user.full_name or (username or "?????")
     ref_code = user_states.get(user_id, {}).get("ref_code")
 
     await cb.answer()
@@ -251,18 +251,18 @@ async def on_path_select(cb: CallbackQuery):
 
 
 async def handle_buyer(msg_ref, user_id, username, full_name, ref_code):
-    """Buyer path — show payment options."""
+    """Buyer path � show payment options."""
     user_states[user_id]["path"] = "buyer"
     text = (
-        f"🛒 <b>SLH Starter Pack — ₪{PRICE_ILS}</b>\n"
-        f"(במקום ₪222 · מבצע השקה)\n\n"
-        f"💎 <b>מקבל:</b>\n"
-        f"• 0.25 SLH + 10% בונוס\n"
-        f"• 1,000 ZVK פתיחה\n"
-        f"• גישה לקבוצת Premium (30 יום)\n"
-        f"• קורס בסיס באקדמיה + יכולת למכור קורסים משלך\n\n"
-        f"━━━━━━━━━━━━━━━━━\n"
-        f"💳 <b>בחר שיטת תשלום:</b>"
+        f"?? <b>SLH Starter Pack � ?{PRICE_ILS}</b>\n"
+        f"(????? ?222 � ???? ????)\n\n"
+        f"?? <b>????:</b>\n"
+        f"� 0.25 SLH + 10% ?????\n"
+        f"� 1,000 ZVK ?????\n"
+        f"� ???? ?????? Premium (30 ???)\n"
+        f"� ???? ???? ??????? + ????? ????? ?????? ????\n\n"
+        f"?????????????????\n"
+        f"?? <b>??? ???? ?????:</b>"
     )
     try:
         await msg_ref.edit_text(text, parse_mode="HTML", reply_markup=buyer_payment_keyboard())
@@ -271,7 +271,7 @@ async def handle_buyer(msg_ref, user_id, username, full_name, ref_code):
 
 
 async def handle_partner(msg_ref, user_id, username, full_name, ref_code):
-    """Partner path — register + show affiliate code."""
+    """Partner path � register + show affiliate code."""
     user_states[user_id]["path"] = "partner"
     # Register via API
     result = await api_register_path(user_id, username, full_name, "partner", ref_code)
@@ -279,15 +279,15 @@ async def handle_partner(msg_ref, user_id, username, full_name, ref_code):
     share_link = (result or {}).get("referral_link", f"https://slh-nft.com/promo-shekel.html?ref={aff_code or 'NEW'}")
 
     text = (
-        f"🤝 <b>ברוך הבא, שותף!</b>\n\n"
-        f"קוד האפילייט שלך:\n<code>{aff_code or 'יופק תוך רגע'}</code>\n\n"
-        f"💰 <b>איך אתה מרוויח:</b>\n"
-        f"• <b>50 ZVK</b> על כל הרשמה דרכך (גם בלי תשלום)\n"
-        f"• <b>20% ZVK + 10% SLH</b> על כל קנייה\n"
-        f"• בונוסים מצטברים — אין תקרה\n\n"
-        f"📤 <b>הקישור שלך לשיתוף:</b>\n"
+        f"?? <b>???? ???, ????!</b>\n\n"
+        f"??? ???????? ???:\n<code>{aff_code or '???? ??? ???'}</code>\n\n"
+        f"?? <b>??? ??? ??????:</b>\n"
+        f"� <b>50 ZVK</b> ?? ?? ????? ???? (?? ??? ?????)\n"
+        f"� <b>20% ZVK + 10% SLH</b> ?? ?? ?????\n"
+        f"� ??????? ??????? � ??? ????\n\n"
+        f"?? <b>?????? ??? ??????:</b>\n"
         f"{share_link}\n\n"
-        f"🎯 שתף עם חברים, בקבוצות, ברשתות — והתחל להרוויח."
+        f"?? ??? ?? ?????, ???????, ?????? � ????? ???????."
     )
     try:
         await msg_ref.edit_text(text, parse_mode="HTML", reply_markup=partner_keyboard(aff_code))
@@ -296,27 +296,27 @@ async def handle_partner(msg_ref, user_id, username, full_name, ref_code):
 
 
 async def handle_genesis(msg_ref, user_id, username, full_name, ref_code):
-    """Genesis path — BNB payment."""
+    """Genesis path � BNB payment."""
     user_states[user_id]["path"] = "genesis"
     await api_register_path(user_id, username, full_name, "genesis", ref_code)
     text = (
-        f"💎 <b>Genesis Contributor</b>\n\n"
-        f"להיות חלק היסטורי בייסוד SLH Spark.\n"
-        f"רק 8 אנשים נמצאים שם היום.\n\n"
-        f"💰 <b>השקעה:</b> 0.002+ BNB (~₪40+)\n\n"
-        f"🎁 <b>מקבל:</b>\n"
-        f"• NFT Genesis ייחודי\n"
-        f"• 500 ZVK + 0.5 SLH\n"
-        f"• שמך ב-Wall of Founders לנצח\n"
-        f"• 7x תגמול עתידי\n\n"
-        f"📍 <b>כתובת BNB לתרומה:</b>\n"
+        f"?? <b>Genesis Contributor</b>\n\n"
+        f"????? ??? ??????? ?????? SLH Spark.\n"
+        f"?? 8 ????? ?????? ?? ????.\n\n"
+        f"?? <b>?????:</b> 0.002+ BNB (~?40+)\n\n"
+        f"?? <b>????:</b>\n"
+        f"� NFT Genesis ??????\n"
+        f"� 500 ZVK + 0.5 SLH\n"
+        f"� ??? ?-Wall of Founders ????\n"
+        f"� 7x ????? ?????\n\n"
+        f"?? <b>????? BNB ??????:</b>\n"
         f"<code>{COMPANY_BSC_WALLET}</code>\n\n"
-        f"לאחר ההעברה — שלח צילום מסך של העסקה."
+        f"???? ?????? � ??? ????? ??? ?? ?????."
     )
     kb = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🎯 פרטי Genesis Launch", url="https://slh-nft.com/launch-event.html")],
-        [InlineKeyboardButton(text="📜 Wall of Founders", url="https://slh-nft.com/about.html")],
-        [InlineKeyboardButton(text="⬅️ חזרה לתפריט", callback_data="back:main")],
+        [InlineKeyboardButton(text="?? ???? Genesis Launch", url="https://slh-nft.com/launch-event.html")],
+        [InlineKeyboardButton(text="?? Wall of Founders", url="https://slh-nft.com/about.html")],
+        [InlineKeyboardButton(text="?? ???? ??????", callback_data="back:main")],
     ])
     try:
         await msg_ref.edit_text(text, parse_mode="HTML", reply_markup=kb)
@@ -325,24 +325,24 @@ async def handle_genesis(msg_ref, user_id, username, full_name, ref_code):
 
 
 async def handle_community(msg_ref, user_id, username, full_name, ref_code):
-    """Community path — free entry."""
+    """Community path � free entry."""
     user_states[user_id]["path"] = "community"
     result = await api_register_path(user_id, username, full_name, "community", ref_code)
     aff = (result or {}).get("affiliate_code")
     text = (
-        f"🌱 <b>ברוך הבא לקהילה!</b>\n\n"
-        f"✅ נרשמת בהצלחה — 100 ZVK הוקפצו לחשבונך\n"
-        f"✅ תקבל עדכונים יומיים כאן\n"
-        f"✅ תוכל לעלות לסטייקינג ולרכוש בהמשך\n\n"
-        f"🎁 <b>אם תרצה להרוויח — יש לך קוד הפניה:</b>\n"
-        f"<code>{aff or 'יופק תוך רגע'}</code>\n"
-        f"שתף אותו וקבל 50 ZVK על כל הרשמה דרכך."
+        f"?? <b>???? ??? ??????!</b>\n\n"
+        f"? ????? ?????? � 100 ZVK ?????? ???????\n"
+        f"? ???? ??????? ?????? ???\n"
+        f"? ???? ????? ????????? ?????? ?????\n\n"
+        f"?? <b>?? ???? ??????? � ?? ?? ??? ?????:</b>\n"
+        f"<code>{aff or '???? ??? ???'}</code>\n"
+        f"??? ???? ???? 50 ZVK ?? ?? ????? ????."
     )
     kb = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🌐 דשבורד אישי", url=f"https://slh-nft.com/dashboard.html?uid={user_id}")],
-        [InlineKeyboardButton(text="📖 התחל ללמוד", url="https://slh-nft.com/getting-started.html")],
-        [InlineKeyboardButton(text="🤝 ארצה להיות שותף", callback_data="path:partner")],
-        [InlineKeyboardButton(text="⬅️ חזרה לתפריט", callback_data="back:main")],
+        [InlineKeyboardButton(text="?? ?????? ????", url=f"https://slh-nft.com/dashboard.html?uid={user_id}")],
+        [InlineKeyboardButton(text="?? ???? ?????", url="https://slh-nft.com/getting-started.html")],
+        [InlineKeyboardButton(text="?? ???? ????? ????", callback_data="path:partner")],
+        [InlineKeyboardButton(text="?? ???? ??????", callback_data="back:main")],
     ])
     try:
         await msg_ref.edit_text(text, parse_mode="HTML", reply_markup=kb)
@@ -353,15 +353,15 @@ async def handle_community(msg_ref, user_id, username, full_name, ref_code):
 async def handle_kosher(message: Message):
     """Kosher wallet info."""
     text = (
-        f"🕊️ <b>הארנק הקריפטוגרפי הכשר</b>\n\n"
-        f"המכשיר הראשון בעולם לניהול קריפטו מטלפון כשר ב-SMS.\n\n"
-        f"💰 <b>מכירה מוקדמת: ₪888</b> (במקום ₪1,222)\n"
-        f"📅 <b>השקה: 7 בנובמבר 2026</b>\n"
-        f"🎯 100 ראשונים בלבד\n\n"
-        f"פרטים מלאים באתר:"
+        f"??? <b>????? ??????????? ????</b>\n\n"
+        f"?????? ?????? ????? ?????? ?????? ?????? ??? ?-SMS.\n\n"
+        f"?? <b>????? ??????: ?888</b> (????? ?1,222)\n"
+        f"?? <b>????: 7 ??????? 2026</b>\n"
+        f"?? 100 ??????? ????\n\n"
+        f"????? ????? ????:"
     )
     kb = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🕊️ פרטים + הזמנה", url="https://slh-nft.com/kosher-wallet.html#preorder")],
+        [InlineKeyboardButton(text="??? ????? + ?????", url="https://slh-nft.com/kosher-wallet.html#preorder")],
     ])
     await message.answer(text, parse_mode="HTML", reply_markup=kb)
 
@@ -377,35 +377,35 @@ async def on_payment_method(cb: CallbackQuery):
 
     if method == "ton":
         text = (
-            f"💎 <b>תשלום ב-TON</b>\n\n"
-            f"<b>סכום:</b> {PRICE_TEXT} (≈ ₪{PRICE_ILS})\n\n"
-            f"<b>כתובת:</b>\n<code>{ALT_TELEGRAM_ROUTE}</code>\n\n"
-            f"📲 לאחר ההעברה — שלח <b>צילום מסך</b> של אישור העסקה כאן.\n"
-            f"אשלח לך אישור תוך 24 שעות."
+            f"?? <b>????? ?-TON</b>\n\n"
+            f"<b>????:</b> {PRICE_TEXT} (� ?{PRICE_ILS})\n\n"
+            f"<b>?????:</b>\n<code>{ALT_TELEGRAM_ROUTE}</code>\n\n"
+            f"?? ???? ?????? � ??? <b>????? ???</b> ?? ????? ????? ???.\n"
+            f"???? ?? ????? ??? 24 ????."
         )
     elif method == "bank":
         text = (
-            f"🏦 <b>העברה בנקאית (ILS)</b>\n\n"
-            f"<b>סכום:</b> ₪{PRICE_ILS}\n\n"
-            f"<b>פרטי חשבון:</b>\n"
+            f"?? <b>????? ?????? (ILS)</b>\n\n"
+            f"<b>????:</b> ?{PRICE_ILS}\n\n"
+            f"<b>???? ?????:</b>\n"
             f"{BANK_DETAILS}\n\n"
-            f"📲 לאחר ההעברה — מלא טופס באתר (לאסמכתא):\n"
+            f"?? ???? ?????? � ??? ???? ???? (???????):\n"
             f"https://slh-nft.com/buy.html\n\n"
-            f"או שלח כאן צילום אסמכתא + מספר טלפון."
+            f"?? ??? ??? ????? ?????? + ???? ?????."
         )
     elif method == "bnb":
         text = (
-            f"🟡 <b>תשלום ב-BNB (BSC)</b>\n\n"
-            f"<b>סכום:</b> כ-0.04 BNB (₪{PRICE_ILS})\n\n"
-            f"<b>כתובת:</b>\n<code>{COMPANY_BSC_WALLET}</code>\n\n"
+            f"?? <b>????? ?-BNB (BSC)</b>\n\n"
+            f"<b>????:</b> ?-0.04 BNB (?{PRICE_ILS})\n\n"
+            f"<b>?????:</b>\n<code>{COMPANY_BSC_WALLET}</code>\n\n"
             f"<b>Network:</b> Binance Smart Chain (BEP-20)\n\n"
-            f"📲 לאחר ההעברה — שלח צילום מסך של אישור העסקה."
+            f"?? ???? ?????? � ??? ????? ??? ?? ????? ?????."
         )
     else:
-        text = "שיטה לא מוכרת"
+        text = "???? ?? ?????"
 
     kb = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="⬅️ חזרה לתשלום", callback_data="path:buyer")],
+        [InlineKeyboardButton(text="?? ???? ??????", callback_data="path:buyer")],
     ])
     try:
         await cb.message.edit_text(text, parse_mode="HTML", reply_markup=kb)
@@ -417,13 +417,13 @@ async def on_payment_method(cb: CallbackQuery):
 async def on_back_main(cb: CallbackQuery):
     """Back to main menu."""
     await cb.answer()
-    full_name = cb.from_user.full_name or "משתמש"
+    full_name = cb.from_user.full_name or "?????"
     text = (
-        f"🌟 <b>{full_name}</b>, בחר את הדרך שלך:\n\n"
-        f"🛒 <b>קונה</b> — ₪{PRICE_ILS} Starter Pack\n"
-        f"🤝 <b>שותף</b> — חינם + 20% עמלה\n"
-        f"💎 <b>Genesis</b> — מייסד היסטורי\n"
-        f"🌱 <b>קהילה</b> — חינם, לראות"
+        f"?? <b>{full_name}</b>, ??? ?? ???? ???:\n\n"
+        f"?? <b>????</b> � ?{PRICE_ILS} Starter Pack\n"
+        f"?? <b>????</b> � ???? + 20% ????\n"
+        f"?? <b>Genesis</b> � ????? ???????\n"
+        f"?? <b>?????</b> � ????, ?????"
     )
     try:
         await cb.message.edit_text(text, parse_mode="HTML", reply_markup=main_menu_keyboard())
@@ -437,20 +437,20 @@ async def on_back_main(cb: CallbackQuery):
 
 @dp.message(Command("menu"))
 async def cmd_menu(message: Message):
-    text = f"🌟 <b>תפריט ראשי — SLH Spark</b>\n\nבחר את הדרך שלך:"
+    text = f"?? <b>????? ???? � SLH Spark</b>\n\n??? ?? ???? ???:"
     await message.answer(text, parse_mode="HTML", reply_markup=main_menu_keyboard())
 
 
 @dp.message(Command("help"))
 async def cmd_help(message: Message):
     text = (
-        "📖 <b>עזרה — SLH Spark Bot</b>\n\n"
-        "/start — התחל מההתחלה\n"
-        "/menu — תפריט ראשי\n"
-        "/invite — קבל את קוד ההפניה שלך\n"
-        "/help — עזרה זו\n\n"
-        "🌐 אתר: slh-nft.com\n"
-        "📱 תמיכה: @osifeu_prog"
+        "?? <b>???? � SLH Spark Bot</b>\n\n"
+        "/start � ???? ???????\n"
+        "/menu � ????? ????\n"
+        "/invite � ??? ?? ??? ?????? ???\n"
+        "/help � ???? ??\n\n"
+        "?? ???: slh-nft.com\n"
+        "?? ?????: @osifeu_prog"
     )
     await message.answer(text, parse_mode="HTML")
 
@@ -459,15 +459,15 @@ async def cmd_help(message: Message):
 async def cmd_invite(message: Message):
     user_id = message.from_user.id
     username = message.from_user.username
-    full_name = message.from_user.full_name or "משתמש"
+    full_name = message.from_user.full_name or "?????"
     # Register as community if not registered
     result = await api_register_path(user_id, username, full_name, "community")
     aff = (result or {}).get("affiliate_code")
     share_link = f"https://slh-nft.com/promo-shekel.html?ref={aff or ''}"
     text = (
-        f"🎯 <b>קוד ההפניה שלך:</b>\n<code>{aff or 'יופק'}</code>\n\n"
-        f"📤 הקישור לשיתוף:\n{share_link}\n\n"
-        f"💰 תרוויח 50 ZVK על כל הרשמה דרכך + 20% ZVK ו-10% SLH על כל קנייה."
+        f"?? <b>??? ?????? ???:</b>\n<code>{aff or '????'}</code>\n\n"
+        f"?? ?????? ??????:\n{share_link}\n\n"
+        f"?? ?????? 50 ZVK ?? ?? ????? ???? + 20% ZVK ?-10% SLH ?? ?? ?????."
     )
     await message.answer(text, parse_mode="HTML")
 
@@ -482,20 +482,20 @@ async def on_payment_proof(message: Message):
     state = user_states.setdefault(user_id, {"path": None})
 
     await message.reply(
-        "✅ <b>קיבלתי את אישור התשלום.</b>\n\n"
-        "שולח לאדמין לאימות. תקבל תגובה תוך 24 שעות.\n"
-        "תודה על ההצטרפות! 🌟",
+        "? <b>?????? ?? ????? ??????.</b>\n\n"
+        "???? ?????? ??????. ???? ????? ??? 24 ????.\n"
+        "???? ?? ????????! ??",
         parse_mode="HTML"
     )
 
     if ADMIN_CHAT_ID:
         try:
             caption = (
-                f"💳 <b>אישור תשלום חדש</b>\n"
-                f"משתמש: @{message.from_user.username or 'ללא'} (ID: {user_id})\n"
-                f"נתיב: {state.get('path', 'לא זוהה')}\n"
-                f"סכום: {PRICE_TEXT} / ₪{PRICE_ILS}\n"
-                f"ref_code: {state.get('ref_code') or 'ללא'}"
+                f"?? <b>????? ????? ???</b>\n"
+                f"?????: @{message.from_user.username or '???'} (ID: {user_id})\n"
+                f"????: {state.get('path', '?? ????')}\n"
+                f"????: {PRICE_TEXT} / ?{PRICE_ILS}\n"
+                f"ref_code: {state.get('ref_code') or '???'}"
             )
             photo = message.photo[-1]
             await bot.send_photo(
@@ -516,19 +516,19 @@ async def on_payment_proof(message: Message):
 @dp.callback_query(F.data.startswith("admin_approve:"))
 async def on_admin_approve(cb: CallbackQuery):
     if cb.from_user.id != ADMIN_CHAT_ID:
-        await cb.answer("רק אדמין יכול לאשר", show_alert=True)
+        await cb.answer("?? ????? ???? ????", show_alert=True)
         return
     target_user_id = int(cb.data.split(":")[1])
     await cb.answer()
-    await cb.message.edit_caption(cb.message.caption + "\n\n✅ <b>אושר</b>", parse_mode="HTML")
+    await cb.message.edit_caption(cb.message.caption + "\n\n? <b>????</b>", parse_mode="HTML")
     try:
         await bot.send_message(
             chat_id=target_user_id,
             text=(
-                "🎉 <b>התשלום שלך אושר!</b>\n\n"
-                f"הטוקנים זוכו לחשבונך.\n"
-                f"קישור לקבוצת Premium: {GROUP_PREMIUM_INVITE_LINK}\n"
-                f"דשבורד: https://slh-nft.com/dashboard.html?uid={target_user_id}"
+                "?? <b>?????? ??? ????!</b>\n\n"
+                f"??????? ???? ???????.\n"
+                f"????? ?????? Premium: {GROUP_PREMIUM_INVITE_LINK}\n"
+                f"??????: https://slh-nft.com/dashboard.html?uid={target_user_id}"
             ),
             parse_mode="HTML"
         )
@@ -539,15 +539,15 @@ async def on_admin_approve(cb: CallbackQuery):
 @dp.callback_query(F.data.startswith("admin_reject:"))
 async def on_admin_reject(cb: CallbackQuery):
     if cb.from_user.id != ADMIN_CHAT_ID:
-        await cb.answer("רק אדמין יכול לדחות", show_alert=True)
+        await cb.answer("?? ????? ???? ?????", show_alert=True)
         return
     target_user_id = int(cb.data.split(":")[1])
     await cb.answer()
-    await cb.message.edit_caption(cb.message.caption + "\n\n❌ <b>נדחה</b>", parse_mode="HTML")
+    await cb.message.edit_caption(cb.message.caption + "\n\n? <b>????</b>", parse_mode="HTML")
     try:
         await bot.send_message(
             chat_id=target_user_id,
-            text="❌ התשלום לא אושר. פנה לתמיכה @osifeu_prog לבירור."
+            text="? ?????? ?? ????. ??? ?????? @osifeu_prog ??????."
         )
     except Exception:
         pass
@@ -581,7 +581,7 @@ async def debug():
 async def on_startup():
     mode = os.getenv("MODE", "webhook").lower()
     if mode == "polling" or not WEBHOOK_BASE:
-        logger.info("Starting in polling mode — SLH Community Bot v2.0")
+        logger.info("Starting in polling mode � SLH Community Bot v2.0")
         await bot.delete_webhook(drop_pending_updates=True)
         asyncio.create_task(dp.start_polling(bot, drop_pending_updates=True))
     else:
@@ -610,5 +610,6 @@ async def on_shutdown():
     except Exception as e:
         logger.error(f"Webhook delete failed: {e}")
     await bot.session.close()
+
 
 

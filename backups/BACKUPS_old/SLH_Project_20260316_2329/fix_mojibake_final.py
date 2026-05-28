@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from pathlib import Path
 import re
 
@@ -70,13 +70,13 @@ text, n = re.subn(
 )
 print("constants replaced:", n)
 
-text, n1 = replace_literal(text, 'text += f"\\n\\nלינק הגישה שלך:\\n{VIP_GROUP_LINK}"', 'text += f"\\n\\n{ACCESS_LINK_LABEL}\\n{VIP_GROUP_LINK}"')
+text, n1 = replace_literal(text, 'text += f"\\n\\n???? ????? ???:\\n{VIP_GROUP_LINK}"', 'text += f"\\n\\n{ACCESS_LINK_LABEL}\\n{VIP_GROUP_LINK}"')
 text, n2 = replace_literal(text, 'text += f"\\n\\nAccess link:\\n{VIP_GROUP_LINK}"', 'text += f"\\n\\n{ACCESS_LINK_LABEL}\\n{VIP_GROUP_LINK}"')
-text, n3 = replace_literal(text, 'text = "הגישה שלך כבר פעילה."', 'text = ALREADY_ACTIVE')
-text, n4 = replace_literal(text, 'await message.answer("הקוד לא תקין, לא פעיל, פג תוקף או מיצה שימושים.")', 'await message.answer(REDEEM_BAD)')
-text, n5 = replace_literal(text, 'text = "קוד הניסוי הופעל בהצלחה.\\n\\nהגישה שלך פעילה כעת."', 'text = REDEEM_OK')
-text, n6 = replace_literal(text, 'await message.answer("קוד הניסוי הופעל. נוצרה עבורך בקשה במצב pending.")', 'await message.answer(REDEEM_PENDING)')
-text, n7 = replace_literal(text, 'await message.answer("קוד הניסוי הופעל. המשתמש הוחזר למצב ללא גישה.")', 'await message.answer(REDEEM_REJECT)')
+text, n3 = replace_literal(text, 'text = "????? ??? ??? ?????."', 'text = ALREADY_ACTIVE')
+text, n4 = replace_literal(text, 'await message.answer("???? ?? ????, ?? ????, ?? ???? ?? ???? ???????.")', 'await message.answer(REDEEM_BAD)')
+text, n5 = replace_literal(text, 'text = "??? ?????? ????? ??????.\\n\\n????? ??? ????? ???."', 'text = REDEEM_OK')
+text, n6 = replace_literal(text, 'await message.answer("??? ?????? ?????. ????? ????? ???? ???? pending.")', 'await message.answer(REDEEM_PENDING)')
+text, n7 = replace_literal(text, 'await message.answer("??? ?????? ?????. ?????? ????? ???? ??? ????.")', 'await message.answer(REDEEM_REJECT)')
 
 text = text.replace('await message.answer("Usage: /approve <user_id>")', 'await message.answer("Usage: /approve <user_id>")')
 text = text.replace('await message.answer("Usage: /reject <user_id>")', 'await message.answer("Usage: /reject <user_id>")')
@@ -84,4 +84,5 @@ text = text.replace('await message.answer("Usage: /status <user_id>")', 'await m
 
 path.write_text(text, encoding="utf-8", newline="\\n")
 print("DONE", n1, n2, n3, n4, n5, n6, n7)
+
 

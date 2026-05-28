@@ -1,7 +1,7 @@
-ï»¿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 #!/usr/bin/env python3
 """
-SLH Dynamic Yield â€” Treasury Simulation
+SLH Dynamic Yield — Treasury Simulation
 
 Run 12-month stress tests on the Dynamic Yield economic model across
 4 scenarios: Bear, Base, Bull, Crisis. Outputs CSV + matplotlib charts
@@ -92,7 +92,7 @@ def evaluate_breakers(state: PeriodState, net: float, pool: float) -> Tuple[List
         active.append("COVERAGE_GUARDRAIL")
         k_adj = k_adj * 0.8
 
-    # Breaker 2: Withdrawal Throttle (symbolic â€” simulation doesn't throttle at daily level)
+    # Breaker 2: Withdrawal Throttle (symbolic — simulation doesn't throttle at daily level)
     if withdrawal_ratio > 0.15:
         active.append("WITHDRAWAL_THROTTLE")
 
@@ -163,13 +163,13 @@ def scenario_base(month: int, tvl: float, rng: np.random.Generator) -> Dict[str,
         "R": r_base * (1 + rng.normal(0, 0.15)),
         "C": tvl * 0.008 + 3000,  # 0.8% + fixed 3K
         "Ref": r_base * 0.15,       # 15% of revenue as referrals
-        "W": tvl * (0.03 + max(0, rng.normal(0, 0.02))),  # 3% Â± 2%
+        "W": tvl * (0.03 + max(0, rng.normal(0, 0.02))),  # 3% ± 2%
         "growth": 0.03 + rng.normal(0, 0.015),  # 3% monthly user growth
     }
 
 
 def scenario_bear(month: int, tvl: float, rng: np.random.Generator) -> Dict[str, float]:
-    """Sustained downturn â€” revenue cut in half, costs unchanged."""
+    """Sustained downturn — revenue cut in half, costs unchanged."""
     r_base = tvl * 0.010  # 1% monthly (down from 2.5%)
     return {
         "R": r_base * (1 + rng.normal(0, 0.20)),
@@ -181,7 +181,7 @@ def scenario_bear(month: int, tvl: float, rng: np.random.Generator) -> Dict[str,
 
 
 def scenario_bull(month: int, tvl: float, rng: np.random.Generator) -> Dict[str, float]:
-    """Bull market â€” strong revenue, new users flowing in."""
+    """Bull market — strong revenue, new users flowing in."""
     r_base = tvl * 0.045  # 4.5% monthly
     return {
         "R": r_base * (1 + rng.normal(0, 0.15)),
@@ -193,7 +193,7 @@ def scenario_bull(month: int, tvl: float, rng: np.random.Generator) -> Dict[str,
 
 
 def scenario_crisis(month: int, tvl: float, rng: np.random.Generator) -> Dict[str, float]:
-    """Black swan â€” month 3 bank run, slow recovery."""
+    """Black swan — month 3 bank run, slow recovery."""
     if month == 3:
         # Bank run month
         return {
@@ -322,7 +322,7 @@ def print_report(scenario: str, results: List[PeriodResult]):
     print(f"  Avg CR:              {avg_cr:.2f}")
     print(f"  Min CR:              {min_cr:.2f}")
     print(f"  Months w/ breakers:  {months_with_breakers}/{len(results)}")
-    print(f"  System survival:     {'YES âœ“' if min_cr >= 0.3 else 'FAILED âœ—'}")
+    print(f"  System survival:     {'YES ?' if min_cr >= 0.3 else 'FAILED ?'}")
 
 
 def save_csv(scenario: str, results: List[PeriodResult], output_dir: Path):
@@ -344,7 +344,7 @@ def plot_results(scenario: str, results: List[PeriodResult], output_dir: Path):
         matplotlib.use("Agg")
         import matplotlib.pyplot as plt
     except ImportError:
-        print("Matplotlib not installed â€” skipping chart. Install: pip install matplotlib")
+        print("Matplotlib not installed — skipping chart. Install: pip install matplotlib")
         return
 
     months = [r.month for r in results]
@@ -354,7 +354,7 @@ def plot_results(scenario: str, results: List[PeriodResult], output_dir: Path):
     apy = [r.implied_APY * 100 for r in results]
 
     fig, axes = plt.subplots(2, 2, figsize=(13, 9))
-    fig.suptitle(f"SLH Dynamic Yield Simulation â€” {scenario.upper()}", fontsize=15, fontweight='bold')
+    fig.suptitle(f"SLH Dynamic Yield Simulation — {scenario.upper()}", fontsize=15, fontweight='bold')
 
     ax1 = axes[0, 0]
     ax1.plot(months, tvl, label="TVL (U)", color="#06b6d4", linewidth=2)
@@ -441,4 +441,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 

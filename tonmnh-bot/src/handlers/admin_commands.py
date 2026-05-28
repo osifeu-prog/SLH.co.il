@@ -1,4 +1,4 @@
-﻿# handlers/admin_commands.py
+# handlers/admin_commands.py
 import subprocess
 import sys
 import logging
@@ -159,3 +159,4 @@ async def kill_process(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"Process {pid} killed.")
     except Exception as e:
         await update.message.reply_text(f"Error: {e}")
+

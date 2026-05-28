@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import asyncio
 from aiogram import Bot
 import os
@@ -14,5 +14,6 @@ async def main():
 
 if __name__ == '__main__':
     asyncio.run(main())
+
 
 

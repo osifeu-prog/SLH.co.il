@@ -1,8 +1,8 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 #!/usr/bin/env python3
 """
 TON Airdrop Bot - Connected to Management Panel
-גרסה מחוברת לפאנל הניהול החדש
+???? ?????? ????? ?????? ????
 """
 
 import os
@@ -42,7 +42,7 @@ class APIClient:
         self.headers = {"X-API-Key": api_key}
     
     async def register_user(self, user_id: int, username: str) -> dict:
-        """רושם משתמש חדש בפאנל"""
+        """???? ????? ??? ?????"""
         url = f"{self.base_url}/api/users/register"
         data = {
             "telegram_id": str(user_id),
@@ -59,7 +59,7 @@ class APIClient:
                     return {"error": "Registration failed"}
     
     async def check_eligibility(self, user_id: int) -> dict:
-        """בודק זכאות למשתמש"""
+        """???? ????? ??????"""
         url = f"{self.base_url}/api/airdrop/eligibility/{user_id}"
         
         async with aiohttp.ClientSession() as session:
@@ -71,7 +71,7 @@ class APIClient:
                     return {"eligible": False, "reason": "API error"}
     
     async def submit_wallet(self, user_id: int, wallet_address: str) -> dict:
-        """שולח ארנק TON לשרת"""
+        """???? ???? TON ????"""
         url = f"{self.base_url}/api/users/wallet"
         data = {
             "telegram_id": str(user_id),
@@ -92,100 +92,100 @@ class APIClient:
 api_client = APIClient(API_URL, API_KEY)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """פקודת /start"""
+    """????? /start"""
     user = update.effective_user
     logger.info(f"User {user.id} started the bot")
     
-    # רישום המשתמש
+    # ????? ??????
     result = await api_client.register_user(user.id, user.username or user.first_name)
     
     if "error" not in result:
         welcome_text = f"""
-🎉 ברוך הבא ל-TON Airdrop Bot!
+?? ???? ??? ?-TON Airdrop Bot!
 
-👤 משתמש: {user.first_name}
-🆔 ID: {user.id}
+?? ?????: {user.first_name}
+?? ID: {user.id}
 
-📋 הוראות:
-1. שלח את כתובת ארנק ה-TON שלך
-2. המתן לאימות
-3. קבל את הטוקנים שלך!
+?? ??????:
+1. ??? ?? ????? ???? ?-TON ???
+2. ???? ??????
+3. ??? ?? ??????? ???!
 
-💰 הפרס: עד 100 TON למשתמש
+?? ????: ?? 100 TON ??????
         """
     else:
-        welcome_text = "❌ שגיאה בהרשמה. נסה שוב מאוחר יותר."
+        welcome_text = "? ????? ??????. ??? ??? ????? ????."
     
     await update.message.reply_text(welcome_text)
 
 async def wallet_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """מטפל בכתובת ארנק"""
+    """???? ?????? ????"""
     user = update.effective_user
     wallet_address = update.message.text.strip()
     
-    # בדיקה בסיסית של כתובת TON
+    # ????? ?????? ?? ????? TON
     if not wallet_address.startswith(("UQ", "EQ", "0Q")):
-        await update.message.reply_text("❌ כתובת ארנק לא תקינה. אנא שלח כתובת TON תקינה.")
+        await update.message.reply_text("? ????? ???? ?? ?????. ??? ??? ????? TON ?????.")
         return
     
-    # שליחת הארנק לשרת
+    # ????? ????? ????
     result = await api_client.submit_wallet(user.id, wallet_address)
     
     if "error" not in result:
-        # בדיקת זכאות
+        # ????? ?????
         eligibility = await api_client.check_eligibility(user.id)
         
         if eligibility.get("eligible", False):
             response_text = f"""
-✅ ארנק התקבל בהצלחה!
+? ???? ????? ??????!
 
-📝 פרטים:
-• כתובת: {wallet_address[:20]}...
-• סטטוס: מאושר
-• זכאות: ✅ מאושר
+?? ?????:
+� ?????: {wallet_address[:20]}...
+� ?????: ?????
+� ?????: ? ?????
 
-💰 הטוקנים ישלחו בתוך 24 שעות.
+?? ??????? ????? ???? 24 ????.
             """
         else:
-            reason = eligibility.get("reason", "סיבה לא ידועה")
-            response_text = f"❌ אינך זכאי ל-airdrop. סיבה: {reason}"
+            reason = eligibility.get("reason", "???? ?? ?????")
+            response_text = f"? ???? ???? ?-airdrop. ????: {reason}"
     else:
-        response_text = "❌ שגיאה בשמירת הארנק. נסה שוב מאוחר יותר."
+        response_text = "? ????? ?????? ?????. ??? ??? ????? ????."
     
     await update.message.reply_text(response_text)
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """פקודת /help"""
+    """????? /help"""
     help_text = """
-🤖 TON Airdrop Bot - עזרה
+?? TON Airdrop Bot - ????
 
-פקודות זמינות:
-/start - התחל את הבוט
-/help - הצג הודעה זו
-/status - בדוק סטטוס משתמש
+?????? ??????:
+/start - ???? ?? ????
+/help - ??? ????? ??
+/status - ???? ????? ?????
 
-📝 הוראות:
-1. שלח את כתובת ארנק ה-TON שלך
-2. המתן לאימות
-3. קבל את הטוקנים ישירות לארנק
+?? ??????:
+1. ??? ?? ????? ???? ?-TON ???
+2. ???? ??????
+3. ??? ?? ??????? ?????? ?????
 
-⚠️ הערות:
-• כל משתמש יכול לקבל airdrop פעם אחת בלבד
-• נדרשת כתובת TON תקינה
-• התהליך אוטומטי לחלוטין
+?? ?????:
+� ?? ????? ???? ???? airdrop ??? ??? ????
+� ????? ????? TON ?????
+� ?????? ??????? ???????
     """
     await update.message.reply_text(help_text)
 
 async def status_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """פקודת /status - בדיקת סטטוס"""
+    """????? /status - ????? ?????"""
     user = update.effective_user
     eligibility = await api_client.check_eligibility(user.id)
     
     if eligibility.get("eligible", False):
-        status_text = "✅ אתה זכאי ל-airdrop! שלח את כתובת הארנק שלך."
+        status_text = "? ??? ???? ?-airdrop! ??? ?? ????? ????? ???."
     else:
-        reason = eligibility.get("reason", "טרם נבדק")
-        status_text = f"❌ אינך זכאי כרגע. סיבה: {reason}"
+        reason = eligibility.get("reason", "??? ????")
+        status_text = f"? ???? ???? ????. ????: {reason}"
     
     await update.message.reply_text(status_text)
 
@@ -193,25 +193,26 @@ async def status_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # MAIN
 # ====================
 def main():
-    """הפונקציה הראשית"""
+    """???????? ??????"""
     if not TOKEN:
-        logger.error("TELEGRAM_TOKEN לא הוגדר!")
+        logger.error("TELEGRAM_TOKEN ?? ?????!")
         return
     
-    # יצירת אפליקציית הבוט
+    # ????? ????????? ????
     application = Application.builder().token(TOKEN).build()
     
-    # הוספת handlers
+    # ????? handlers
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("help", help_command))
     application.add_handler(CommandHandler("status", status_command))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, wallet_handler))
     
-    # הרצת הבוט
+    # ???? ????
     logger.info("Bot is starting...")
     application.run_polling(allowed_updates=Update.ALL_TYPES)
 
 if __name__ == "__main__":
     main()
+
 
 

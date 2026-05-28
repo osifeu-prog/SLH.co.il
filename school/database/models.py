@@ -1,7 +1,7 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
-מודלים של מסד הנתונים
-גרסה מעודכנת ופשוטה
+?????? ?? ??? ???????
+???? ??????? ??????
 """
 
 from sqlalchemy import create_engine, Column, Integer, String, Date, DateTime, Boolean, BigInteger, ForeignKey, JSON, Enum, Text, Float
@@ -10,7 +10,7 @@ from datetime import datetime, date
 import os
 import enum
 
-# יצירת מסד נתונים SQLite
+# ????? ??? ?????? SQLite
 DB_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'attendance.db')
 os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
 
@@ -43,7 +43,7 @@ class TaskStatus(enum.Enum):
 # ===================== MODELS =====================
 
 class User(Base):
-    """מודל משתמש"""
+    """???? ?????"""
     __tablename__ = 'users'
     
     id = Column(Integer, primary_key=True)
@@ -62,7 +62,7 @@ class User(Base):
     referral_tokens = Column(Integer, default=0)
     total_experience = Column(Integer, default=0)
     
-    # יחסים
+    # ?????
     attendances = relationship("Attendance", back_populates="user", cascade="all, delete-orphan")
     task_completions = relationship("TaskCompletion", back_populates="user", cascade="all, delete-orphan")
     
@@ -70,7 +70,7 @@ class User(Base):
         return f"<User {self.telegram_id} ({self.username})>"
 
 class Attendance(Base):
-    """מודל נוכחות"""
+    """???? ??????"""
     __tablename__ = 'attendance'
     
     id = Column(Integer, primary_key=True)
@@ -79,14 +79,14 @@ class Attendance(Base):
     checkin_time = Column(DateTime, default=datetime.now)
     tokens_earned = Column(Integer, default=1)
     
-    # יחסים
+    # ?????
     user = relationship("User", back_populates="attendances")
     
     def __repr__(self):
         return f"<Attendance {self.telegram_id} on {self.date}>"
 
 class Task(Base):
-    """מודל משימה"""
+    """???? ?????"""
     __tablename__ = 'tasks'
     
     id = Column(Integer, primary_key=True)
@@ -101,14 +101,14 @@ class Task(Base):
     requires_proof = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.now)
     
-    # יחסים
+    # ?????
     completions = relationship("TaskCompletion", back_populates="task", cascade="all, delete-orphan")
     
     def __repr__(self):
         return f"<Task '{self.name}' ({self.tokens_reward} tokens)>"
 
 class TaskCompletion(Base):
-    """מודל השלמת משימה"""
+    """???? ????? ?????"""
     __tablename__ = 'task_completions'
     
     id = Column(Integer, primary_key=True)
@@ -121,7 +121,7 @@ class TaskCompletion(Base):
     proof_text = Column(Text)
     verified_by = Column(BigInteger)
     
-    # יחסים
+    # ?????
     user = relationship("User", back_populates="task_completions")
     task = relationship("Task", back_populates="completions")
     
@@ -129,7 +129,7 @@ class TaskCompletion(Base):
         return f"<TaskCompletion user:{self.telegram_id} task:{self.task_id}>"
 
 class UserDailyStats(Base):
-    """סטטיסטיקות יומיות של משתמש"""
+    """?????????? ?????? ?? ?????"""
     __tablename__ = 'user_daily_stats'
     
     id = Column(Integer, primary_key=True)
@@ -139,14 +139,14 @@ class UserDailyStats(Base):
     tokens_earned = Column(Integer, default=0)
     streak_days = Column(Integer, default=0)
     
-    # יחסים
+    # ?????
     user = relationship("User")
     
     def __repr__(self):
         return f"<UserDailyStats {self.telegram_id} on {self.date}>"
 
 class Referral(Base):
-    """מודל הפניות"""
+    """???? ??????"""
     __tablename__ = 'referrals'
     
     id = Column(Integer, primary_key=True)
@@ -159,12 +159,13 @@ class Referral(Base):
     def __repr__(self):
         return f"<Referral {self.referrer_id} -> {self.referred_id}>"
 
-# יצירת הטבלאות
+# ????? ???????
 def create_tables():
-    """יצירת כל הטבלאות במסד הנתונים"""
+    """????? ?? ??????? ???? ???????"""
     Base.metadata.create_all(engine)
-    print("✅ טבלאות נוצרו בהצלחה")
+    print("? ?????? ????? ??????")
 
 if __name__ == "__main__":
     create_tables()
+
 

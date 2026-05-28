@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import logging
 from decimal import Decimal
 from typing import Optional, Dict
@@ -19,7 +19,7 @@ def _get_w3() -> Optional[Web3]:
         return _w3
 
     if not settings.BSC_RPC_URL:
-        logger.warning("BSC_RPC_URL is not configured – on-chain balances disabled")
+        logger.warning("BSC_RPC_URL is not configured � on-chain balances disabled")
         return None
 
     try:
@@ -65,7 +65,7 @@ def _get_token_contract():
 
 
 def get_onchain_balances(address: str) -> Optional[Dict[str, Decimal]]:
-    """מחזיר מילון עם BNB ו-SLH לפי כתובת, או None אם אי אפשר לחשב."""
+    """????? ????? ?? BNB ?-SLH ??? ?????, ?? None ?? ?? ???? ????."""
     if not address:
         return None
 
@@ -101,5 +101,6 @@ def get_onchain_balances(address: str) -> Optional[Dict[str, Decimal]]:
             logger.warning("Failed to fetch SLH token balance: %s", e)
 
     return {"bnb": bnb, "slh": slh}
+
 
 

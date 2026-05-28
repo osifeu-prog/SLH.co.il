@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 SLH Ecosystem API - FastAPI Backend
 Deployed on Railway | Connected to PostgreSQL
@@ -43,7 +43,7 @@ except Exception as _gw_err:  # pragma: no cover
     require_admin = None  # type: ignore
     GatewayError = None  # type: ignore
 
-# SLH Swarm — independent device mesh router (Phase 1 of SWARM_V1_BLUEPRINT).
+# SLH Swarm � independent device mesh router (Phase 1 of SWARM_V1_BLUEPRINT).
 # Same fail-safe pattern as the gateway: missing module can't block API boot.
 try:
     from api import swarm as _swarm
@@ -54,7 +54,7 @@ except Exception as _sw_err:  # pragma: no cover
     _SWARM_AVAILABLE = False
     _swarm = None  # type: ignore
 
-# Bot catalog — DB-backed list of all 31 Telegram bots in the fleet.
+# Bot catalog � DB-backed list of all 31 Telegram bots in the fleet.
 # Used by /admin/tokens.html + /admin/rotate-token.html instead of hardcoded JS arrays.
 try:
     from api import admin_bots_catalog as _bots_catalog
@@ -65,7 +65,7 @@ except Exception as _bc_err:  # pragma: no cover
     _BOTS_CATALOG_AVAILABLE = False
     _bots_catalog = None  # type: ignore
 
-# Personal expense tracker — Phase 1 of cashflow management feature.
+# Personal expense tracker � Phase 1 of cashflow management feature.
 # Per-user expenses table + monthly summary + recurring detection.
 try:
     from api import expenses as _expenses_router
@@ -76,7 +76,7 @@ except Exception as _exp_err:  # pragma: no cover
     _EXPENSES_AVAILABLE = False
     _expenses_router = None  # type: ignore
 
-# Secrets vault — unified inventory of all credentials (bot tokens, API keys,
+# Secrets vault � unified inventory of all credentials (bot tokens, API keys,
 # DB creds, AI providers). Stores metadata only, never secret values.
 try:
     from api import admin_secrets_catalog as _secrets_vault
@@ -87,7 +87,7 @@ except Exception as _sv_err:  # pragma: no cover
     _SECRETS_VAULT_AVAILABLE = False
     _secrets_vault = None  # type: ignore
 
-# Secrets vault Phase 2 — scheduled health sweep + Telegram alerts + daily digest.
+# Secrets vault Phase 2 � scheduled health sweep + Telegram alerts + daily digest.
 # Sits on top of admin_secrets_catalog (reuses _run_probe + _ensure_schema).
 try:
     from api import admin_secret_alerts as _secret_alerts
@@ -98,7 +98,7 @@ except Exception as _sa_err:  # pragma: no cover
     _SECRET_ALERTS_AVAILABLE = False
     _secret_alerts = None  # type: ignore
 
-# Public security beacon — sanitized aggregate counts for /my.html and any
+# Public security beacon � sanitized aggregate counts for /my.html and any
 # other personal page. No auth, no key names, no per-secret detail.
 try:
     from api import public_security_status as _public_security
@@ -151,7 +151,7 @@ from wellness_scheduler import init_wellness_scheduler, get_wellness_scheduler
 # === CONFIG ===
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:slh_secure_2026@localhost:5432/slh_main")
 BOT_TOKEN = os.getenv("EXPERTNET_BOT_TOKEN", "")
-# Broadcast bot â€” @SLH_AIR_bot is the main user-facing bot
+# Broadcast bot — @SLH_AIR_bot is the main user-facing bot
 BROADCAST_BOT_TOKEN = os.getenv("SLH_AIR_TOKEN") or os.getenv("CORE_BOT_TOKEN") or os.getenv("AIRDROP_BOT_TOKEN", "")
 JWT_SECRET = os.getenv("JWT_SECRET", "")
 JWT_ALGORITHM = "HS256"
@@ -189,7 +189,7 @@ app.add_middleware(
 )
 
 
-# ── Rate limiting middleware (simple in-memory sliding window, per-IP per-path-group) ──
+# -- Rate limiting middleware (simple in-memory sliding window, per-IP per-path-group) --
 from collections import defaultdict, deque
 
 _RL_MAX_PER_MIN = int(os.getenv("RATE_LIMIT_PER_MIN", "180"))
@@ -209,7 +209,7 @@ async def rate_limit_middleware(request: Request, call_next):
     client_host = request.client.host if request.client else "unknown"
     ip = (fwd.split(",")[0].strip() if fwd else client_host) or "unknown"
 
-    # Group by /api/<section>; unknown → path itself
+    # Group by /api/<section>; unknown ? path itself
     parts = path.split("/", 3)
     section = parts[2] if len(parts) > 2 and parts[1] == "api" else "root"
     key = f"{ip}|{section}"
@@ -229,9 +229,9 @@ async def rate_limit_middleware(request: Request, call_next):
     return await call_next(request)
 
 
-# Admin keys — env-sourced only (no public-source default).
+# Admin keys � env-sourced only (no public-source default).
 # Set ADMIN_API_KEYS on Railway (comma-separated). If unset, admin calls fail 403.
-# For runtime rotation without touching env, use POST /api/admin/rotate-key —
+# For runtime rotation without touching env, use POST /api/admin/rotate-key �
 # rotated keys live in the admin_secrets DB table and are additive to env keys.
 ADMIN_API_KEYS = set(
     (os.getenv("ADMIN_API_KEYS") or "").split(",")
@@ -251,7 +251,7 @@ def _require_admin(authorization: Optional[str] = None, admin_key_header: Option
     if admin_key_header and admin_key_header in ADMIN_API_KEYS:
         return ADMIN_USER_ID
 
-    # Try DB-backed rotated keys (in-memory cached — no DB hit per request)
+    # Try DB-backed rotated keys (in-memory cached � no DB hit per request)
     if admin_key_header and _check_db_admin_key(admin_key_header):
         return ADMIN_USER_ID
 
@@ -278,7 +278,7 @@ def _require_admin(authorization: Optional[str] = None, admin_key_header: Option
 
     raise HTTPException(403, "Admin authentication required")
 
-# ── Admin password hashing (SHA-256 + salt, no extra dependency) ──
+# -- Admin password hashing (SHA-256 + salt, no extra dependency) --
 def hash_admin_password(password: str) -> str:
     salt = secrets.token_hex(16)
     h = hashlib.sha256((salt + password).encode()).hexdigest()
@@ -343,7 +343,7 @@ app.include_router(therapists_router)
 app.include_router(device_inventory_router)
 app.include_router(tasks_router)
 
-# Swarm router — devices mesh API (gated; OK if module is missing).
+# Swarm router � devices mesh API (gated; OK if module is missing).
 if _SWARM_AVAILABLE and _swarm is not None:
     app.include_router(_swarm.router)
 
@@ -365,7 +365,7 @@ if _PUBLIC_SECURITY_AVAILABLE and _public_security is not None:
 
 # === DATABASE ===
 pool: Optional[asyncpg.Pool] = None
-_db_init_failed: bool = False  # True when shared_db_core pool init fails — /api/health returns 503
+_db_init_failed: bool = False  # True when shared_db_core pool init fails � /api/health returns 503
 
 @app.on_event("startup")
 async def startup():
@@ -373,15 +373,15 @@ async def startup():
     # SECURITY CHECK (C-3): warn if any default credentials are still in use
     _security_warnings = []
     if DATABASE_URL == "postgresql://postgres:slh_secure_2026@localhost:5432/slh_main":
-        _security_warnings.append("DATABASE_URL using default â€” set on Railway")
+        _security_warnings.append("DATABASE_URL using default — set on Railway")
     if os.getenv("ADMIN_API_KEY", "slh_admin_2026") == "slh_admin_2026":
-        _security_warnings.append("ADMIN_API_KEY is default â€” set on Railway")
+        _security_warnings.append("ADMIN_API_KEY is default — set on Railway")
     if os.getenv("ENCRYPTION_KEY", "slh_dev_key_CHANGE_ME_IN_PRODUCTION_2026") == "slh_dev_key_CHANGE_ME_IN_PRODUCTION_2026":
-        _security_warnings.append("ENCRYPTION_KEY is default â€” CRITICAL: set on Railway before storing real CEX keys!")
+        _security_warnings.append("ENCRYPTION_KEY is default — CRITICAL: set on Railway before storing real CEX keys!")
     if os.getenv("ADMIN_BROADCAST_KEY", "slh-broadcast-2026-change-me") == "slh-broadcast-2026-change-me":
-        _security_warnings.append("ADMIN_BROADCAST_KEY is default â€” set on Railway")
+        _security_warnings.append("ADMIN_BROADCAST_KEY is default — set on Railway")
     if not os.getenv("JWT_SECRET"):
-        _security_warnings.append("JWT_SECRET not set â€” JWT auth will be unreliable")
+        _security_warnings.append("JWT_SECRET not set — JWT auth will be unreliable")
     for w in _security_warnings:
         print(f"[SECURITY WARNING] {w}")
     if _security_warnings:
@@ -399,7 +399,7 @@ async def startup():
         _db_init_failed = False
         print("[Startup] DB pool created via shared_db_core")
     except Exception as e:
-        print(f"[Startup][CRITICAL] DB pool init failed: {e!r} — /api/health will return 503")
+        print(f"[Startup][CRITICAL] DB pool init failed: {e!r} � /api/health will return 503")
         pool = None
         _db_init_failed = True
 
@@ -421,7 +421,7 @@ async def startup():
             except Exception as e:
                 print(f"[Startup][WARN] set_pool on {setter.__name__} failed: {e!r}")
 
-        # Each init isolated — one failure doesn't block the others or healthcheck
+        # Each init isolated � one failure doesn't block the others or healthcheck
         for init_name, init_coro in (("wellness", _init_wellness), ("threat", _init_threat), ("whatsapp", _init_whatsapp), ("agent_hub", _init_agent_hub), ("academia_ugc", _init_academia_ugc), ("bot_registry", _init_bot_registry), ("admin_rotate", _init_admin_rotate)):
             try:
                 await asyncio.wait_for(init_coro(), timeout=15.0)
@@ -429,14 +429,14 @@ async def startup():
             except Exception as e:
                 print(f"[Startup][WARN] init_{init_name} failed: {e!r}")
 
-    # Initialize wellness scheduler (APScheduler) — non-blocking
+    # Initialize wellness scheduler (APScheduler) � non-blocking
     try:
         await asyncio.wait_for(init_wellness_scheduler(DATABASE_URL), timeout=10.0)
         print("[Wellness] Scheduler initialized successfully")
     except Exception as e:
         print(f"[WARNING] Wellness scheduler initialization failed: {e!r}")
 
-    # STARTUP HARDENING: if pool creation failed, skip table creation — let uvicorn
+    # STARTUP HARDENING: if pool creation failed, skip table creation � let uvicorn
     # start serving so /api/health returns 200 and Railway healthcheck passes.
     if pool is None:
         print("[Startup] pool unavailable, skipping CREATE TABLE block; endpoints will degrade gracefully")
@@ -893,7 +893,7 @@ class EnsureUserRequest(BaseModel):
 async def ensure_user(req: EnsureUserRequest):
     """Idempotent user creation/update from a Telegram ID.
 
-    Used by the website's "manual login" flow â€” when a user types their
+    Used by the website's "manual login" flow — when a user types their
     Telegram ID directly (without the Telegram Login Widget), we still need
     to persist them in web_users so they don't "disappear" on refresh.
 
@@ -904,7 +904,7 @@ async def ensure_user(req: EnsureUserRequest):
     - Rate limits and validation prevent abuse
     """
     tg_id = req.telegram_id
-    # Basic validation â€” must be a real Telegram user range
+    # Basic validation — must be a real Telegram user range
     if tg_id < 100000 or tg_id > 9999999999:
         raise HTTPException(400, "Invalid Telegram ID")
 
@@ -1008,7 +1008,7 @@ class RegistrationApproveRequest(BaseModel):
 
 @app.post("/api/registration/initiate")
 async def registration_initiate(req: RegistrationInitRequest, authorization: Optional[str] = Header(None)):
-    """Start registration â€” create pending payment record."""
+    """Start registration — create pending payment record."""
     user_id = get_current_user_id(authorization)
 
     async with pool.acquire() as conn:
@@ -1103,14 +1103,14 @@ async def registration_approve(
     try:
         _require_admin(authorization, x_admin_key)
     except HTTPException:
-        # Fallback: body field admin_key (deprecated — logs warning + only accepts env-matched value, not defaults)
+        # Fallback: body field admin_key (deprecated � logs warning + only accepts env-matched value, not defaults)
         env_keys = {k for k in os.getenv("ADMIN_API_KEYS", "").split(",") if k.strip()}
         legacy_key = os.getenv("ADMIN_API_KEY", "")
         if legacy_key:
             env_keys.add(legacy_key)
         if not (req.admin_key and req.admin_key in env_keys and req.admin_key != "slh_admin_2026"):
             raise HTTPException(403, "Admin authentication required (use X-Admin-Key header)")
-        print(f"[SECURITY][DEPRECATED] /api/registration/approve called with body admin_key — migrate to X-Admin-Key header")
+        print(f"[SECURITY][DEPRECATED] /api/registration/approve called with body admin_key � migrate to X-Admin-Key header")
 
     async with pool.acquire() as conn:
         # Verify pending registration exists
@@ -1168,7 +1168,7 @@ async def registration_approve(
     }
 
 
-# === SIMPLIFIED UNLOCK ENDPOINT (no JWT needed â€” works with ?uid= flow) ===
+# === SIMPLIFIED UNLOCK ENDPOINT (no JWT needed — works with ?uid= flow) ===
 class UnlockRequest(BaseModel):
     user_id: int
     method: str = "payment_proof"  # payment_proof | coupon | admin
@@ -1186,13 +1186,13 @@ async def registration_unlock(
 ):
     """Unlock a user's full access via one of 3 methods:
 
-    1. payment_proof — user submits TX hash, goes to pending_review
-    2. coupon — user enters beta code, instantly unlocked if code valid + available
-    3. admin — admin key bypasses everything, instant unlock
+    1. payment_proof � user submits TX hash, goes to pending_review
+    2. coupon � user enters beta code, instantly unlocked if code valid + available
+    3. admin � admin key bypasses everything, instant unlock
          (auth via X-Admin-Key header preferred; body field deprecated)
 
     This is the NEW flow that doesn't require JWT, so it works with the
-    seamless bot → /start → dashboard?uid= onboarding.
+    seamless bot ? /start ? dashboard?uid= onboarding.
     """
     if not req.user_id:
         raise HTTPException(400, "user_id required")
@@ -1220,11 +1220,11 @@ async def registration_unlock(
                 "message": "User is already registered"
             }
 
-        # ─── Method 1: Admin override ───
+        # --- Method 1: Admin override ---
         if req.method == "admin":
             # Security: prefer header auth. Body field admin_key still accepted
             # as deprecated fallback (logs warning). Default "slh_admin_2026"
-            # is NEVER a valid key — admins must rotate.
+            # is NEVER a valid key � admins must rotate.
             try:
                 _require_admin(authorization, x_admin_key)
             except HTTPException:
@@ -1234,7 +1234,7 @@ async def registration_unlock(
                     env_keys.add(legacy_key)
                 if not (req.admin_key and req.admin_key in env_keys and req.admin_key != "slh_admin_2026"):
                     raise HTTPException(403, "Admin authentication required (use X-Admin-Key header)")
-                print(f"[SECURITY][DEPRECATED] /api/registration/unlock method=admin called with body admin_key — migrate to X-Admin-Key header")
+                print(f"[SECURITY][DEPRECATED] /api/registration/unlock method=admin called with body admin_key � migrate to X-Admin-Key header")
             async with conn.transaction():
                 await conn.execute("""
                     UPDATE web_users SET is_registered = TRUE, registered_at = CURRENT_TIMESTAMP
@@ -1262,10 +1262,10 @@ async def registration_unlock(
                 "method": "admin",
                 "user_id": req.user_id,
                 "slh_credited": REGISTRATION_SLH_AMOUNT,
-                "message": "Admin override â€” user is now fully registered"
+                "message": "Admin override — user is now fully registered"
             }
 
-        # â”€â”€â”€ Method 2: Beta coupon â”€â”€â”€
+        # ─── Method 2: Beta coupon ───
         if req.method == "coupon":
             code = (req.coupon_code or "").strip().upper()
             if not code:
@@ -1291,7 +1291,7 @@ async def registration_unlock(
                     "ok": True,
                     "status": "already_redeemed",
                     "nft_number": already,
-                    "message": f"You already redeemed coupon â€” you are Genesis Member #{already}"
+                    "message": f"You already redeemed coupon — you are Genesis Member #{already}"
                 }
 
             async with conn.transaction():
@@ -1324,9 +1324,9 @@ async def registration_unlock(
                 """, req.user_id)
 
                 # Credit coupon bonus in ZVK (cheap reward token, NOT SLH which is scarce premium)
-                # 1 SLH = 444 ILS, so to give ~44 ILS worth = 10 ZVK (1 ZVK â‰ˆ 4.4 ILS)
+                # 1 SLH = 444 ILS, so to give ~44 ILS worth = 10 ZVK (1 ZVK ≈ 4.4 ILS)
                 # Post-distribution gift = 100 ZVK (~444 ILS) handled by cashback engine
-                # SLH stays scarce â€” encourages users to BUY SLH from existing holders
+                # SLH stays scarce — encourages users to BUY SLH from existing holders
                 slh_bonus_legacy = float(coupon["slh_bonus"] or 0.1)
                 zvk_amount = 10.0  # ~44 ILS distribution token (10 ZVK)
                 await conn.execute("""
@@ -1337,9 +1337,9 @@ async def registration_unlock(
                 await conn.execute("""
                     INSERT INTO token_transfers (from_user_id, to_user_id, token, amount, memo, tx_type)
                     VALUES ($1, $1, 'ZVK', $2, $3, 'beta_coupon')
-                """, req.user_id, zvk_amount, f'Beta coupon {code} â€” Genesis #{nft_number} (ZVK distribution token)')
+                """, req.user_id, zvk_amount, f'Beta coupon {code} — Genesis #{nft_number} (ZVK distribution token)')
 
-            print(f"[Unlock] Coupon '{code}' redeemed by user {req.user_id} â€” Genesis #{nft_number} ({zvk_amount} ZVK)")
+            print(f"[Unlock] Coupon '{code}' redeemed by user {req.user_id} — Genesis #{nft_number} ({zvk_amount} ZVK)")
             return {
                 "ok": True,
                 "status": "approved",
@@ -1349,13 +1349,13 @@ async def registration_unlock(
                 "nft_number": nft_number,
                 "nft_name": f"{coupon['nft_reward']}{nft_number}",
                 "zvk_credited": zvk_amount,
-                "slh_credited": 0,  # SLH NOT given â€” must be earned via cashback or purchased
+                "slh_credited": 0,  # SLH NOT given — must be earned via cashback or purchased
                 "post_distribution_gift_zvk": 100,  # promised after first share
                 "remaining_slots": int(coupon["max_uses"]) - nft_number,
-                "message": f"ðŸŽ‰ ×‘×¨×•×›×™× ×”×‘××™× Genesis Member #{nft_number}! ×§×™×‘×œ×ª 10 ZVK + NFT. ××—×¨×™ ×”×”×¤×¦×” ×”×¨××©×•× ×” â€” ×¢×•×“ 100 ZVK ×ž×ª× ×”!"
+                "message": f"🎉 ברוכים הבאים Genesis Member #{nft_number}! קיבלת 10 ZVK + NFT. אחרי ההפצה הראשונה — עוד 100 ZVK מתנה!"
             }
 
-        # â”€â”€â”€ Method 3: Payment proof (same as submit-proof but no JWT) â”€â”€â”€
+        # ─── Method 3: Payment proof (same as submit-proof but no JWT) ───
         if req.method == "payment_proof":
             tx_hash = (req.tx_hash or "").strip()
             async with conn.transaction():
@@ -1376,7 +1376,7 @@ async def registration_unlock(
                 "method": "payment_proof",
                 "user_id": req.user_id,
                 "tx_hash": tx_hash,
-                "message": "Payment proof received â€” waiting for admin approval (up to 24 hours)"
+                "message": "Payment proof received — waiting for admin approval (up to 24 hours)"
             }
 
         raise HTTPException(400, f"Unknown method: {req.method}")
@@ -1405,12 +1405,12 @@ async def beta_status():
 
 
 # ============================================================
-# CASHBACK ENGINE â€” distribution rewards for Genesis users
+# CASHBACK ENGINE — distribution rewards for Genesis users
 # ============================================================
 # Each user accumulates "distributions" (verified referrals).
 # When they hit a tier, they automatically receive a SLH bonus.
 #
-# Tiers (referrals â†’ SLH bonus):
+# Tiers (referrals → SLH bonus):
 #   First successful share = +1 SLH (auto-credited as "post-distribution gift")
 #   5  shares = 0.5 SLH cashback
 #   10 shares = 1.5 SLH cashback (cumulative includes prior tiers)
@@ -1419,21 +1419,21 @@ async def beta_status():
 #   100 shares = 30 SLH cashback
 
 # All amounts in ZVK (NOT SLH - SLH stays scarce, only purchased or earned via tasks)
-# 10 ZVK â‰ˆ 44 ILS (matches Genesis distribution amount, 1 ZVK â‰ˆ 4.4 ILS)
+# 10 ZVK ≈ 44 ILS (matches Genesis distribution amount, 1 ZVK ≈ 4.4 ILS)
 # Math: 1 SLH equivalent value = 100 ZVK
 CASHBACK_TIERS = [
-    (1,    100,  "post_distribution_gift"),  # 100 ZVK (~444 ILS) â€” first share gift
+    (1,    100,  "post_distribution_gift"),  # 100 ZVK (~444 ILS) — first share gift
     (5,     50,  "tier_bronze"),              # 50 ZVK (~222 ILS)
     (10,   150,  "tier_silver"),              # 150 ZVK (~666 ILS)
     (25,   500,  "tier_gold"),                # 500 ZVK (~2,220 ILS)
     (50,  1200,  "tier_platinum"),            # 1,200 ZVK (~5,328 ILS)
     (100, 3000,  "tier_diamond"),             # 3,000 ZVK (~13,320 ILS)
 ]
-CASHBACK_TOKEN = "ZVK"  # NEVER SLH â€” SLH is the scarce premium token
+CASHBACK_TOKEN = "ZVK"  # NEVER SLH — SLH is the scarce premium token
 
 
 async def _ensure_cashback_table(conn):
-    """Idempotent â€” creates the distribution + cashback tables if missing."""
+    """Idempotent — creates the distribution + cashback tables if missing."""
     await conn.execute("""
         CREATE TABLE IF NOT EXISTS user_distributions (
             user_id BIGINT NOT NULL,
@@ -1492,7 +1492,7 @@ async def get_cashback_status(user_id: int):
 @app.post("/api/cashback/process/{user_id}")
 async def process_cashback(user_id: int):
     """Recompute cashback tiers for a user based on their verified distributions.
-    Credits in ZVK (NOT SLH). Idempotent â€” already-credited tiers won't be paid twice.
+    Credits in ZVK (NOT SLH). Idempotent — already-credited tiers won't be paid twice.
     """
     async with pool.acquire() as conn:
         await _ensure_cashback_table(conn)
@@ -1502,7 +1502,7 @@ async def process_cashback(user_id: int):
         newly_credited = []
         for threshold, amount, key in CASHBACK_TIERS:
             if verified_count >= threshold:
-                # Try to insert â€” UNIQUE constraint prevents double-pay
+                # Try to insert — UNIQUE constraint prevents double-pay
                 inserted = await conn.fetchval("""
                     INSERT INTO user_cashback (user_id, tier_key, tier_threshold, slh_amount)
                     VALUES ($1, $2, $3, $4)
@@ -1510,7 +1510,7 @@ async def process_cashback(user_id: int):
                     RETURNING id
                 """, user_id, key, threshold, amount)
                 if inserted:
-                    # Credit ZVK balance (NOT SLH â€” SLH stays scarce)
+                    # Credit ZVK balance (NOT SLH — SLH stays scarce)
                     await conn.execute("""
                         INSERT INTO token_balances (user_id, token, balance)
                         VALUES ($1, $2, $3)
@@ -1528,7 +1528,7 @@ async def process_cashback(user_id: int):
 
 
 # ============================================================
-# EXTERNAL WALLETS â€” Bybit, Binance, custom TON addresses
+# EXTERNAL WALLETS — Bybit, Binance, custom TON addresses
 # ============================================================
 # Users can register multiple external wallet addresses (TON, BSC, ETH, BTC)
 # from exchanges (Bybit, Binance, Bitget, OKX) or self-custody.
@@ -1697,14 +1697,14 @@ async def refresh_all_external_wallets(user_id: int):
 
 
 # ============================================================
-# IMMUTABLE AUDIT LOG â€” Institutional / Regulator-Grade
+# IMMUTABLE AUDIT LOG — Institutional / Regulator-Grade
 # ============================================================
 # Every sensitive action is written to an append-only log with a
 # SHA-256 hash chain. Each entry includes the hash of the previous
 # entry, making tampering detectable: any modification breaks the chain.
 #
 # This is the table regulators ask to see first. We never DELETE or
-# UPDATE rows â€” only INSERT.
+# UPDATE rows — only INSERT.
 
 async def _ensure_institutional_audit_table(conn):
     await conn.execute("""
@@ -1909,7 +1909,7 @@ async def audit_recent(limit: int = 100, action_filter: Optional[str] = None, us
 
 
 # ============================================================
-# CEX INTEGRATIONS â€” Bybit + Binance (READ-ONLY)
+# CEX INTEGRATIONS — Bybit + Binance (READ-ONLY)
 # ============================================================
 # Each user can link their own Bybit/Binance API keys (READ-ONLY scope).
 # Keys are encrypted at rest, never logged. We only call GET endpoints.
@@ -1960,7 +1960,7 @@ async def _ensure_cex_keys_table(conn):
 
 def _get_encryption_key() -> bytes:
     """Derive a 32-byte AES-GCM key from ENCRYPTION_KEY env var via SHA-256.
-    Accepts any length input â€” hashes to produce a stable 256-bit key.
+    Accepts any length input — hashes to produce a stable 256-bit key.
     """
     raw = os.getenv("ENCRYPTION_KEY", "slh_dev_key_CHANGE_ME_IN_PRODUCTION_2026")
     return hashlib.sha256(raw.encode("utf-8")).digest()
@@ -1976,7 +1976,7 @@ def _encrypt_secret(secret: str) -> str:
     try:
         from cryptography.hazmat.primitives.ciphers.aead import AESGCM
     except ImportError:
-        # Fallback if cryptography lib not installed â€” this should never happen
+        # Fallback if cryptography lib not installed — this should never happen
         # in production. Force AES-GCM via requirements.txt.
         return _encrypt_secret_xor(secret)
 
@@ -2010,7 +2010,7 @@ def _decrypt_secret(blob: str) -> str:
 
 
 def _encrypt_secret_xor(secret: str) -> str:
-    """LEGACY v1 XOR encryption â€” kept only for backwards compat / fallback."""
+    """LEGACY v1 XOR encryption — kept only for backwards compat / fallback."""
     key = os.getenv("ENCRYPTION_KEY", "slh_dev_key_CHANGE_ME_IN_PRODUCTION_2026")
     result = []
     for i, c in enumerate(secret):
@@ -2019,7 +2019,7 @@ def _encrypt_secret_xor(secret: str) -> str:
 
 
 def _decrypt_secret_xor(hex_str: str) -> str:
-    """LEGACY v1 XOR decryption â€” called automatically by _decrypt_secret for old data."""
+    """LEGACY v1 XOR decryption — called automatically by _decrypt_secret for old data."""
     try:
         encrypted = bytes.fromhex(hex_str).decode("latin-1")
         key = os.getenv("ENCRYPTION_KEY", "slh_dev_key_CHANGE_ME_IN_PRODUCTION_2026")
@@ -2282,7 +2282,7 @@ async def cex_portfolio(user_id: int):
 
 
 # ============================================================
-# BSC HOLDERS â€” via Etherscan V2 Multichain API (chainid=56)
+# BSC HOLDERS — via Etherscan V2 Multichain API (chainid=56)
 # ============================================================
 # Etherscan's V2 API works across all supported chains including BSC.
 # Uses BSCSCAN_API_KEY env var (fallback to ETHERSCAN_API_KEY).
@@ -2366,9 +2366,9 @@ async def get_slh_holders(limit: int = 100, force_refresh: bool = False):
     """Fetch SLH token holders from BSC.
 
     Tries multiple free providers in order:
-    1. BitQuery GraphQL (free 10k/month) â€” BITQUERY_API_KEY env var
-    2. Etherscan V2 Multichain (PRO only for BSC) â€” BSCSCAN_API_KEY
-    3. NodeReal (free 100k/day) â€” NODEREAL_API_KEY
+    1. BitQuery GraphQL (free 10k/month) — BITQUERY_API_KEY env var
+    2. Etherscan V2 Multichain (PRO only for BSC) — BSCSCAN_API_KEY
+    3. NodeReal (free 100k/day) — NODEREAL_API_KEY
 
     Cached for 5 minutes.
     """
@@ -2402,7 +2402,7 @@ async def get_slh_holders(limit: int = 100, force_refresh: bool = False):
             "total_holders": 0,
         }
 
-    # Etherscan V2 Multichain API â€” chainid=56 is BSC
+    # Etherscan V2 Multichain API — chainid=56 is BSC
     # tokenholderlist is a PRO-tier endpoint in V2, but tokentx works on free tier
     # We'll use tokensupply + tokenbalance for the contract to get top holders
     url = (
@@ -2529,7 +2529,7 @@ async def beta_create_coupon(
             env_keys.add(legacy_key)
         if not (admin_key and admin_key in env_keys and admin_key != "slh_admin_2026"):
             raise HTTPException(403, "Admin authentication required (use X-Admin-Key header)")
-        print(f"[SECURITY][DEPRECATED] /api/beta/create-coupon called with query admin_key — migrate to X-Admin-Key header")
+        print(f"[SECURITY][DEPRECATED] /api/beta/create-coupon called with query admin_key � migrate to X-Admin-Key header")
     code = code.strip().upper()
     if not code or len(code) < 4:
         raise HTTPException(400, "Code must be at least 4 characters")
@@ -2595,7 +2595,7 @@ async def link_wallet(req: LinkWalletRequest):
     """Link a Web3 (BSC/ETH) wallet address to a web_users row.
 
     Validates the address format (0x + 40 hex chars) and stores it lowercase.
-    Signature verification is optional â€” if present, we verify personal_sign.
+    Signature verification is optional — if present, we verify personal_sign.
     """
     addr = (req.address or "").strip().lower()
     if not addr.startswith("0x") or len(addr) != 42:
@@ -2603,7 +2603,7 @@ async def link_wallet(req: LinkWalletRequest):
     try:
         int(addr[2:], 16)  # ensure hex
     except ValueError:
-        raise HTTPException(400, "Invalid Ethereum address â€” not hex")
+        raise HTTPException(400, "Invalid Ethereum address — not hex")
 
     if not req.user_id:
         raise HTTPException(400, "user_id required")
@@ -2612,7 +2612,7 @@ async def link_wallet(req: LinkWalletRequest):
         # Ensure user exists
         exists = await conn.fetchval("SELECT 1 FROM web_users WHERE telegram_id=$1", req.user_id)
         if not exists:
-            raise HTTPException(404, "User not found â€” please login first")
+            raise HTTPException(404, "User not found — please login first")
 
         # Check for collision: this wallet already linked to a different user
         other = await conn.fetchval(
@@ -2677,7 +2677,7 @@ async def update_user_profile(req: ProfileUpdateRequest):
     """Update user's custom profile fields (display_name, bio, language).
 
     These fields are SET BY THE USER and persist across Telegram re-authentication.
-    Only non-None fields are updated â€” pass partial objects to avoid wiping.
+    Only non-None fields are updated — pass partial objects to avoid wiping.
     Validation:
       - display_name: 2-32 chars, stripped
       - bio: up to 200 chars
@@ -2718,7 +2718,7 @@ async def update_user_profile(req: ProfileUpdateRequest):
         raise HTTPException(400, "No fields to update")
 
     params.append(req.user_id)
-    # SECURITY: whitelisted — 'updates' entries built only from hardcoded column literals (display_name, display_name_set_at, bio, language_pref); all user values are parameterized via $idx
+    # SECURITY: whitelisted � 'updates' entries built only from hardcoded column literals (display_name, display_name_set_at, bio, language_pref); all user values are parameterized via $idx
     sql = f"UPDATE web_users SET {', '.join(updates)} WHERE telegram_id = ${idx} RETURNING display_name, bio, language_pref, first_name, username"
 
     async with pool.acquire() as conn:
@@ -2897,7 +2897,7 @@ async def create_stake(req: StakeRequest, x_admin_override_zuz: Optional[str] = 
     if req.amount < min_amount:
         raise HTTPException(400, f"Minimum deposit is {min_amount} {currency}")
 
-    # ZUZ Guardian gate — stakes concentrate capital; a banned user should not lock more.
+    # ZUZ Guardian gate � stakes concentrate capital; a banned user should not lock more.
     try:
         from shared.guardian_gate import require_clean_zuz as _zuz_gate
         await _zuz_gate(pool, req.user_id, admin_override_header=x_admin_override_zuz)
@@ -3005,7 +3005,7 @@ async def approve_stake(
             if not pos:
                 raise HTTPException(404, "Position not found")
 
-            # Safely read status — default to 'active' if column missing
+            # Safely read status � default to 'active' if column missing
             pos_dict = dict(pos)
             current_status = pos_dict.get("status", "active")
 
@@ -3051,7 +3051,7 @@ async def approve_stake(
                     "UPDATE staking_positions SET status='active' WHERE id=$1", position_id
                 )
             except Exception:
-                pass  # status column missing — position is treated as active
+                pass  # status column missing � position is treated as active
 
             # Distribute referral commissions
             try:
@@ -3093,7 +3093,7 @@ _price_cache = {"data": None, "ts": 0}
 
 @app.get("/api/prices")
 async def get_prices():
-    """Proxy for CoinGecko prices â€” cached 60s, 10s timeout, 2 retries"""
+    """Proxy for CoinGecko prices — cached 60s, 10s timeout, 2 retries"""
     import aiohttp, time as _time
     now = _time.time()
     # Return cached data if fresh (< 60s)
@@ -3149,7 +3149,7 @@ async def get_stats():
 # === HEALTH ===
 @app.get("/api/health")
 async def health():
-    """Health check — returns 503 when DB pool is unavailable (Phase 0: no silent lies)."""
+    """Health check � returns 503 when DB pool is unavailable (Phase 0: no silent lies)."""
     if pool is None or _db_init_failed:
         return JSONResponse(
             {"status": "error", "db": "pool_unavailable", "version": "1.1.0"},
@@ -3167,7 +3167,7 @@ async def health():
 # === TELEGRAM MINI APP GATEWAY ===
 # Gated behind _GATEWAY_AVAILABLE so a missing telegram_gateway.py can't
 # break startup. The endpoint below proves the wiring end-to-end: a Mini App
-# opens with initData → gateway verifies HMAC → returns the resolved user.
+# opens with initData ? gateway verifies HMAC ? returns the resolved user.
 
 if _GATEWAY_AVAILABLE:
     @app.get("/api/miniapp/me")
@@ -3193,7 +3193,7 @@ if _GATEWAY_AVAILABLE:
 
     @app.get("/api/miniapp/health")
     async def miniapp_health():
-        """Unauthenticated probe for dashboards — proves the gateway module loaded."""
+        """Unauthenticated probe for dashboards � proves the gateway module loaded."""
         import os as _os
         return {
             "gateway_loaded": True,
@@ -3214,7 +3214,7 @@ else:
 
 
 # ============================================================================
-# AI Spark — Subscription mirror endpoints (Phase B)
+# AI Spark � Subscription mirror endpoints (Phase B)
 # slh-claude-bot is the canonical source (SQLite). It pushes state here so the
 # Mini App widget can show live tier + quota without bouncing through the bot.
 # Dual-write architecture: bot writes SQLite first (always succeeds), then
@@ -3267,7 +3267,7 @@ async def ai_spark_sync(req: AISparkSyncReq, request: Request):
     if pool is None:
         raise HTTPException(503, "db pool not ready")
 
-    # asyncpg requires datetime instances for TIMESTAMP columns — strings raise
+    # asyncpg requires datetime instances for TIMESTAMP columns � strings raise
     # DataError even with explicit ::timestamp cast. Parse defensively here so
     # the bot can keep sending ISO-8601 strings.
     def _parse_dt(value):
@@ -3316,7 +3316,7 @@ async def ai_spark_sync(req: AISparkSyncReq, request: Request):
 async def ai_spark_credits(user_id: int):
     """Public read: returns subscription state for Mini App widget.
 
-    Currently no auth — returns minimal safe info. If we ever store secrets
+    Currently no auth � returns minimal safe info. If we ever store secrets
     here (we shouldn't), gate with verify_miniapp_request. For now: tier +
     quota are not sensitive (the bot already shows them via /credits).
     """
@@ -3403,9 +3403,9 @@ async def transfer_tokens(req: TransferRequest):
 # === TWO-TIER AFFILIATE PROGRAM ===
 # Per 2026-04-20 Dynamic Yield pivot: reduced from 10-gen to 2-tier to comply with
 # securities regulation (MLM/Ponzi-adjacent structure removed).
-# See ops/DYNAMIC_YIELD_SPEC_20260420.md §7 and COPY_OVERHAUL_URGENT_20260420.md.
+# See ops/DYNAMIC_YIELD_SPEC_20260420.md �7 and COPY_OVERHAUL_URGENT_20260420.md.
 # Payouts funded from separate referral budget carved out of real system revenue
-# (course sales, marketplace fees, SaaS subs) — NOT from other users' deposits.
+# (course sales, marketplace fees, SaaS subs) � NOT from other users' deposits.
 REFERRAL_RATES = {
     1: 0.20,   # Tier 1 (direct referral): 20% of their purchase
     2: 0.05,   # Tier 2 (referral's referral): 5% of their purchase
@@ -3644,7 +3644,7 @@ async def get_activity(user_id: int, limit: int = Query(30, le=100)):
             )
             for r in rows:
                 activities.append({
-                    "type": "staking", "icon": "ðŸ’Ž",
+                    "type": "staking", "icon": "💎",
                     "title": f"Staked {float(r['amount'])} TON ({r['plan']})",
                     "status": r["status"], "timestamp": r["ts"].isoformat() if r["ts"] else None,
                 })
@@ -3659,7 +3659,7 @@ async def get_activity(user_id: int, limit: int = Query(30, le=100)):
             )
             for r in rows:
                 activities.append({
-                    "type": "deposit", "icon": "ðŸ“¥",
+                    "type": "deposit", "icon": "📥",
                     "title": f"Deposited {float(r['amount'])} {r['currency'] or 'TON'} ({r['plan_key']})",
                     "status": r["status"], "timestamp": r["ts"].isoformat() if r["ts"] else None,
                 })
@@ -3674,7 +3674,7 @@ async def get_activity(user_id: int, limit: int = Query(30, le=100)):
             )
             for r in rows:
                 activities.append({
-                    "type": "transfer_out", "icon": "ðŸ“¤",
+                    "type": "transfer_out", "icon": "📤",
                     "title": f"Sent {float(r['amount'])} {r['token']} to {r['to_user_id']}",
                     "status": "completed", "timestamp": r["ts"].isoformat() if r["ts"] else None,
                 })
@@ -3689,7 +3689,7 @@ async def get_activity(user_id: int, limit: int = Query(30, le=100)):
             )
             for r in rows:
                 activities.append({
-                    "type": "transfer_in", "icon": "ðŸ“¥",
+                    "type": "transfer_in", "icon": "📥",
                     "title": f"Received {float(r['amount'])} {r['token']} from {r['from_user_id']}",
                     "status": "completed", "timestamp": r["ts"].isoformat() if r["ts"] else None,
                 })
@@ -3704,7 +3704,7 @@ async def get_activity(user_id: int, limit: int = Query(30, le=100)):
             )
             for r in rows:
                 activities.append({
-                    "type": "referral_earning", "icon": "ðŸ¤",
+                    "type": "referral_earning", "icon": "🤝",
                     "title": f"Earned {float(r['commission_amount'])} {r['token']} from Gen {r['generation']} referral",
                     "status": "completed", "timestamp": r["ts"].isoformat() if r["ts"] else None,
                 })
@@ -3719,7 +3719,7 @@ async def get_activity(user_id: int, limit: int = Query(30, le=100)):
             )
             for r in rows:
                 activities.append({
-                    "type": "daily_claim", "icon": "ðŸŽ",
+                    "type": "daily_claim", "icon": "🎁",
                     "title": f"Daily claim: {float(r['amount'])} tokens (streak {r['streak']})",
                     "status": "completed", "timestamp": r["ts"].isoformat() if r["ts"] else None,
                 })
@@ -3768,9 +3768,9 @@ async def global_leaderboard(category: str = Query("xp", enum=["xp", "balance", 
     Filters out test/seed user IDs (100001-299999) and negative IDs (group chats)
     so the leaderboard shows only real Telegram users.
     """
-    # Test/seed IDs to exclude â€” keep real Telegram users only
+    # Test/seed IDs to exclude — keep real Telegram users only
     # Real Telegram user IDs are ALWAYS positive and typically > 1M
-    # SECURITY: whitelisted — EXCLUDE_RANGE is a hardcoded constant, not user input; category param is constrained by FastAPI enum
+    # SECURITY: whitelisted � EXCLUDE_RANGE is a hardcoded constant, not user input; category param is constrained by FastAPI enum
     EXCLUDE_RANGE = "user_id >= 1000000 AND user_id > 0"
     async with pool.acquire() as conn:
         rows = []
@@ -3888,7 +3888,7 @@ async def _extended_startup():
         print(f"[community] init warning: {e}")
     try:
         _payments_monitor_start()
-        print("[payments-monitor] started · polling BSC Genesis wallet")
+        print("[payments-monitor] started � polling BSC Genesis wallet")
     except Exception as e:
         print(f"[payments-monitor] start warning: {e}")
 app.router.on_startup.clear()
@@ -3912,7 +3912,7 @@ class CommunityCommentCreate(BaseModel):
 
 @app.get("/api/community/rss")
 async def community_rss():
-    """RSS 2.0 feed of recent community posts — for IFTTT/Zapier/Buffer auto-share.
+    """RSS 2.0 feed of recent community posts � for IFTTT/Zapier/Buffer auto-share.
 
     Usage:
       1. Register at ifttt.com (free, 2 applets)
@@ -3945,7 +3945,7 @@ async def community_rss():
     rss = (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<rss version="2.0">\n<channel>\n'
-        '<title>SLH Spark — קהילה</title>\n'
+        '<title>SLH Spark � ?????</title>\n'
         '<link>https://slh-nft.com/community.html</link>\n'
         '<description>Official feed of SLH Spark community updates, product launches, and ecosystem news.</description>\n'
         '<language>he</language>\n'
@@ -3999,7 +3999,7 @@ async def community_create_post(body: CommunityPostCreate):
     if image_data:
         if not image_data.startswith("data:image/"):
             image_data = None  # silently drop if not a proper data URL
-        elif len(image_data) > 3_500_000:  # 2MB base64 â‰ˆ 2.7MB encoded, +safety
+        elif len(image_data) > 3_500_000:  # 2MB base64 ≈ 2.7MB encoded, +safety
             raise HTTPException(413, "Image too large (max 2MB)")
 
     async with pool.acquire() as conn:
@@ -4254,7 +4254,7 @@ async def record_deposit(req: DepositRequest, x_admin_override_zuz: Optional[str
     if not req.tx_hash.strip():
         raise HTTPException(400, "tx_hash is required")
 
-    # ZUZ Guardian gate — deposit credits an on-chain tx to an internal balance.
+    # ZUZ Guardian gate � deposit credits an on-chain tx to an internal balance.
     # Block if recipient account is banned (even if the on-chain tx is real).
     try:
         from shared.guardian_gate import require_clean_zuz as _zuz_gate
@@ -4368,7 +4368,7 @@ async def wallet_send(
     if not _check_wallet_send_rate(user_id, cooldown_seconds=5):
         raise HTTPException(429, "Too many requests, wait a few seconds")
 
-    # ZUZ Guardian gate — block senders with ZUZ >= 100 or active ban
+    # ZUZ Guardian gate � block senders with ZUZ >= 100 or active ban
     try:
         from shared.guardian_gate import require_clean_zuz as _zuz_gate
         await _zuz_gate(pool, user_id, admin_override_header=x_admin_override_zuz)
@@ -4491,7 +4491,7 @@ async def admin_dashboard(
     authorization: Optional[str] = Header(None),
     x_admin_key: Optional[str] = Header(None),
 ):
-    """Aggregated admin dashboard data â€” all stats in one call.
+    """Aggregated admin dashboard data — all stats in one call.
 
     SECURITY FIX (H-1): Now requires admin authentication via JWT or X-Admin-Key header.
     """
@@ -4516,7 +4516,7 @@ async def admin_dashboard(
         total_events = await safe(conn, "SELECT COUNT(*) FROM analytics_events")
         total_visitors = await safe(conn, "SELECT COUNT(DISTINCT visitor_id) FROM analytics_events WHERE visitor_id != ''")
 
-        # Recent signups â€” real Telegram IDs only
+        # Recent signups — real Telegram IDs only
         today_signups = await safe(conn, "SELECT COUNT(*) FROM web_users WHERE last_login >= $1 AND telegram_id >= 1000000", today_start)
 
         # Referral stats
@@ -4543,7 +4543,7 @@ async def admin_dashboard(
         except Exception:
             top_pages = []
 
-        # Recent users â€” REAL users only (filter test IDs + group chats)
+        # Recent users — REAL users only (filter test IDs + group chats)
         try:
             recent = await conn.fetch(
                 "SELECT telegram_id, username, first_name, last_login FROM web_users "
@@ -4596,7 +4596,7 @@ async def auth_bot_sync(req: BotSyncRequest):
     Creates / updates the user in web_users so they can log into the
     website / mini-app using the same Telegram ID WITHOUT going through
     @userinfobot or the Telegram Login Widget. This is the core of the
-    seamless registration UX: open bot â†’ press /start â†’ you're in.
+    seamless registration UX: open bot → press /start → you're in.
 
     The bot passes a shared secret so random clients can't create users.
     Returns a short-lived JWT so the bot can generate a "login link" that
@@ -4642,14 +4642,14 @@ async def auth_bot_sync(req: BotSyncRequest):
     except Exception as e:
         print(f"[bot-sync] jwt creation failed (JWT_SECRET missing?): {e}")
 
-    # Always return a login URL â€” even without JWT, the dashboard accepts ?uid=
+    # Always return a login URL — even without JWT, the dashboard accepts ?uid=
     login_url = (
         f"https://slh-nft.com/dashboard.html?uid={req.telegram_id}&jwt={token}"
         if token else
         f"https://slh-nft.com/dashboard.html?uid={req.telegram_id}"
     )
 
-    print(f"[bot-sync] Synced user {req.telegram_id} (@{req.username}) â€” registered={is_registered}")
+    print(f"[bot-sync] Synced user {req.telegram_id} (@{req.username}) — registered={is_registered}")
     return {
         "ok": True,
         "telegram_id": req.telegram_id,
@@ -4904,7 +4904,7 @@ async def marketplace_list_item(req: MarketplaceListRequest):
     async with pool.acquire() as conn:
         exists = await conn.fetchval("SELECT 1 FROM web_users WHERE telegram_id=$1", req.seller_id)
         if not exists:
-            raise HTTPException(404, "Seller not found â€” please login first")
+            raise HTTPException(404, "Seller not found — please login first")
 
         # Admin listings are auto-approved
         initial_status = "approved" if req.seller_id == ADMIN_USER_ID else "pending"
@@ -4923,7 +4923,7 @@ async def marketplace_list_item(req: MarketplaceListRequest):
         "item_id": row["id"],
         "status": row["status"],
         "created_at": row["created_at"].isoformat() if row["created_at"] else None,
-        "message": "×¤×¨×™×˜ ×”×•×¢×œ×” ×œ××™×©×•×¨" if initial_status == "pending" else "×¤×¨×™×˜ ×¤×•×¨×¡× ×‘×”×¦×œ×—×”"
+        "message": "פריט הועלה לאישור" if initial_status == "pending" else "פריט פורסם בהצלחה"
     }
 
 
@@ -5037,7 +5037,7 @@ async def marketplace_buy(req: MarketplaceBuyRequest):
         async with conn.transaction():
             buyer = await conn.fetchval("SELECT 1 FROM web_users WHERE telegram_id=$1", req.buyer_id)
             if not buyer:
-                raise HTTPException(404, "Buyer not found â€” please login first")
+                raise HTTPException(404, "Buyer not found — please login first")
 
             item = await conn.fetchrow("""
                 SELECT id, seller_id, title, price, currency, stock, status
@@ -5082,7 +5082,7 @@ async def marketplace_buy(req: MarketplaceBuyRequest):
         "currency": item["currency"],
         "status": "pending",
         "created_at": order["created_at"].isoformat() if order["created_at"] else None,
-        "message": "×”×–×ž× ×” × ×•×¦×¨×” â€” ×ž×ž×ª×™×Ÿ ×œ×ª×©×œ×•×",
+        "message": "הזמנה נוצרה — ממתין לתשלום",
     }
 
 
@@ -5257,7 +5257,7 @@ async def admin_activity(
                 name = r["username"] or r["first_name"] or str(r["telegram_id"])
                 activities.append({
                     "type": "login",
-                    "icon": "ðŸ‘¤",
+                    "icon": "👤",
                     "text": f"User @{name} logged in",
                     "time": r["last_login"].isoformat() if r["last_login"] else ""
                 })
@@ -5274,7 +5274,7 @@ async def admin_activity(
                 status = "approved" if r["payment_status"] == "approved" else "pending"
                 activities.append({
                     "type": "payment",
-                    "icon": "ðŸ’°",
+                    "icon": "💰",
                     "text": f"Premium payment ({status}): {r['amount']} from user #{r['user_id']}",
                     "time": r["created_at"].isoformat() if r["created_at"] else ""
                 })
@@ -5287,15 +5287,15 @@ async def admin_activity(
 
 
 # ============================================================
-# TOKENOMICS â€” SLH/MNH/ZVK dual-track economy
+# TOKENOMICS — SLH/MNH/ZVK dual-track economy
 # ============================================================
 # SLH = Premium/Governance (high value, scarce, deflationary)
 # MNH = ILS-pegged stablecoin (free internal transfers)
 # ZVK = Activity rewards (low value, high volume)
 #
-# Revenue â†’ 50% â†’ Buyback SLH from DEX â†’ Burn â†’ deflationary pressure
-# Staking SLH â†’ earns ZVK+MNH yield â†’ locks supply
-# Internal MNH transfers â†’ FREE (internal ledger, no blockchain)
+# Revenue → 50% → Buyback SLH from DEX → Burn → deflationary pressure
+# Staking SLH → earns ZVK+MNH yield → locks supply
+# Internal MNH transfers → FREE (internal ledger, no blockchain)
 
 async def _ensure_tokenomics_tables(conn):
     await conn.execute("""
@@ -5395,12 +5395,12 @@ async def tokenomics_stats():
             "conversion_to_slh": "100 ZVK = 1 SLH",
         },
         "zuz": {
-            "description": "Guardian anti-fraud token â€” Mark of Cain (××•×ª ×§×™×Ÿ)",
+            "description": "Guardian anti-fraud token — Mark of Cain (אות קין)",
             "purpose": "Negative reputation marker for scammers, bots, and fraudsters",
             "mechanism": "Assigned by Guardian bot reports. Higher ZUZ = more suspicious",
             "auto_ban_threshold": ZUZ_AUTO_BAN_THRESHOLD,
             "severity_levels": ZUZ_SEVERITY,
-            "cross_group": "Shared across all SLH ecosystem groups â€” one report affects all",
+            "cross_group": "Shared across all SLH ecosystem groups — one report affects all",
         },
         "reserves": [
             {
@@ -5435,8 +5435,8 @@ class InternalTransferRequest(BaseModel):
 @app.post("/api/tokenomics/internal-transfer")
 async def internal_transfer(req: InternalTransferRequest, authorization: Optional[str] = Header(None)):
     """FREE internal transfer between users. Works for MNH/ZVK/SLH.
-    Uses the internal ledger â€” no blockchain fees. Instant.
-    SECURITY: Requires JWT auth â€” sender must be the from_user_id."""
+    Uses the internal ledger — no blockchain fees. Instant.
+    SECURITY: Requires JWT auth — sender must be the from_user_id."""
     # Verify caller is the sender (or admin)
     try:
         caller_id = get_current_user_id(authorization)
@@ -5463,7 +5463,7 @@ async def internal_transfer(req: InternalTransferRequest, authorization: Optiona
         if float(balance) < req.amount:
             raise HTTPException(400, f"Insufficient {req.token} balance: {balance}")
 
-        # Transaction â€” debit sender, credit recipient
+        # Transaction — debit sender, credit recipient
         async with conn.transaction():
             await conn.execute("""
                 UPDATE token_balances SET balance = balance - $1, updated_at = CURRENT_TIMESTAMP
@@ -5566,7 +5566,7 @@ async def add_reserve(req: ReserveRequest, authorization: Optional[str] = Header
 
 
 # ============================================================
-# STRATEGY ENGINE â€” Backtested investment strategies
+# STRATEGY ENGINE — Backtested investment strategies
 # ============================================================
 # 3 strategies with historical backtest data.
 # Each strategy has expected annual yield + max drawdown.
@@ -5642,7 +5642,7 @@ async def get_strategy(strategy_id: str):
 
 
 # ============================================================
-# BROADCAST â€” Send Telegram messages to registered users
+# BROADCAST — Send Telegram messages to registered users
 # ============================================================
 # Uses @SLH_AIR_bot to DM every registered user. Ideal for
 # presale announcements, Genesis 49 updates, system alerts.
@@ -5717,7 +5717,7 @@ async def send_broadcast(req: BroadcastRequest):
     (slh2026admin, slh_admin_2026, slh-spark-admin, slh-institutional).
     """
     if req.admin_key != ADMIN_BROADCAST_KEY and req.admin_key not in ADMIN_API_KEYS:
-        raise HTTPException(403, "Invalid admin key â€” use your admin panel password")
+        raise HTTPException(403, "Invalid admin key — use your admin panel password")
     if not req.message or len(req.message) < 5:
         raise HTTPException(400, "Message too short")
     if len(req.message) > 4000:
@@ -5827,7 +5827,7 @@ async def send_broadcast(req: BroadcastRequest):
 
 
 # ============================================================
-# GENESIS LAUNCH â€” Ultra Micro Pool ($33) with Tzvika as co-founder
+# GENESIS LAUNCH — Ultra Micro Pool ($33) with Tzvika as co-founder
 # ============================================================
 # Tracks contributions to the initial PancakeSwap SLH/BNB pool.
 # Model: Partner sends BNB to company wallet, pool is created with
@@ -5836,7 +5836,7 @@ async def send_broadcast(req: BroadcastRequest):
 COMPANY_BSC_WALLET = "0xd061de73B06d5E91bfA46b35EfB7B08b16903da4"  # Osif's Web3 wallet
 LAUNCH_TARGET_BNB = 0.05  # Ultra Micro: 0.05 BNB + 50 SLH
 LAUNCH_TARGET_SLH = 50
-LAUNCH_NAME = "Genesis Launch â€” Ultra Micro Pool"
+LAUNCH_NAME = "Genesis Launch — Ultra Micro Pool"
 
 
 async def _ensure_launch_tables(conn):
@@ -5882,7 +5882,7 @@ async def launch_contribute(req: LaunchContributionRequest):
     if not req.partner_name:
         raise HTTPException(400, "Partner name required")
 
-    # Estimate USD value (rough, BNB = $608 hardcoded â€” can replace with live price)
+    # Estimate USD value (rough, BNB = $608 hardcoded — can replace with live price)
     amount_usd = round(req.amount_bnb * 608, 2)
 
     async with pool.acquire() as conn:
@@ -5966,7 +5966,7 @@ async def launch_verify_contribution(contribution_id: int, admin_key: str):
             compliance_flags=["GENESIS_LAUNCH", "VERIFIED"],
         )
 
-        # â”€â”€ Auto-reward: credit ZVK + REP to contributor â”€â”€
+        # ── Auto-reward: credit ZVK + REP to contributor ──
         contributor_name = row["partner_name"]
         contributor_handle = row.get("partner_handle", "") or ""
         rewards_issued = False
@@ -6251,9 +6251,9 @@ async def admin_manual_credit(
 
 
 # ============================================================
-# GUARDIAN SYSTEM â€” ZUZ Token + Anti-Fraud Intelligence
+# GUARDIAN SYSTEM — ZUZ Token + Anti-Fraud Intelligence
 # ============================================================
-# ZUZ = "××•×ª ×§×™×Ÿ" (Mark of Cain) â€” negative reputation token
+# ZUZ = "אות קין" (Mark of Cain) — negative reputation token
 # Assigned by Guardian bot to mark scammers, bots, fraudsters.
 # Higher ZUZ = more suspicious. Used for cross-group intelligence.
 
@@ -6504,7 +6504,7 @@ async def guardian_scan_message(
     # Suspicious keywords (EN + HE)
     scam_words = ["guaranteed profit", "invest now", "double your money", "free crypto",
                   "send me", "click here", "limited time", "act now", "whatsapp me",
-                  "×¨×•×•×— ×ž×•×‘×˜×—", "×”×©×§×¢×” ×‘×˜×•×—×”", "×”×›× ×¡×” ×¤×¡×™×‘×™×ª", "×©×œ×— ×œ×™",
+                  "רווח מובטח", "השקעה בטוחה", "הכנסה פסיבית", "שלח לי",
                   "earn daily", "100% safe", "no risk"]
     for w in scam_words:
         if w in text_lower:
@@ -6599,7 +6599,7 @@ async def guardian_stats():
 
 
 # ============================================================
-# DYNAMIC OG IMAGE GENERATOR â€” per-page social share visuals
+# DYNAMIC OG IMAGE GENERATOR — per-page social share visuals
 # ============================================================
 # Generates 1200x630 PNG images on-the-fly with PIL.
 # Each page can point its og:image to /api/og/{slug}.png for a
@@ -6753,7 +6753,7 @@ def _generate_og_image(slug: str) -> bytes:
     try:
         draw.text((text_cx, title_y), title, font=title_font, fill=(240, 240, 248, 255), anchor="mm")
     except Exception:
-        # Hebrew or special chars unsupported by font â€” fall back
+        # Hebrew or special chars unsupported by font — fall back
         fallback_title = slug.replace("-", " ").upper()
         try:
             draw.text((text_cx, title_y), fallback_title, font=title_font, fill=(240, 240, 248, 255), anchor="mm")
@@ -6805,7 +6805,7 @@ async def og_image(slug: str):
 
 
 # ============================================================
-# SHARE TRACKING â€” count how often pages are shared
+# SHARE TRACKING — count how often pages are shared
 # ============================================================
 
 class ShareEvent(BaseModel):
@@ -6950,12 +6950,12 @@ async def broadcast_personal_cards(admin_key: str):
         image_url = f"https://slh-api-production.up.railway.app/api/member-card/image/{uid}"
 
         msg = (
-            f"ðŸŽ´ ×©×œ×•× {name}!\n\n"
-            f"×”×›×¨×˜×™×¡ ×”××™×©×™ ×©×œ×š ×‘-SLH Spark ×ž×•×›×Ÿ:\n\n"
-            f"ðŸ”— ×”×›×¨×˜×™×¡ ×©×œ×š:\n{card_url}\n\n"
-            f"ðŸ–¼ ×ª×ž×•× ×” ×œ×©×™×ª×•×£:\n{image_url}\n\n"
-            f"×©×ª×¤/×™ ××ª ×”×›×¨×˜×™×¡ ×¢× ×—×‘×¨×™× ×•×ž×©×¤×—×” â€” ×›×œ ×—×‘×¨ ×©×ž×¦×˜×¨×£ ×ž×§×‘×œ ×›×¨×˜×™×¡ ×™×™×—×•×“×™ ×ž×©×œ×•! ðŸŒ¸\n\n"
-            f"â€” Team SLH Spark"
+            f"🎴 שלום {name}!\n\n"
+            f"הכרטיס האישי שלך ב-SLH Spark מוכן:\n\n"
+            f"🔗 הכרטיס שלך:\n{card_url}\n\n"
+            f"🖼 תמונה לשיתוף:\n{image_url}\n\n"
+            f"שתפ/י את הכרטיס עם חברים ומשפחה — כל חבר שמצטרף מקבל כרטיס ייחודי משלו! 🌸\n\n"
+            f"— Team SLH Spark"
         )
 
         result = await _tg_send_message(BROADCAST_BOT_TOKEN, uid, msg)
@@ -7013,7 +7013,7 @@ async def broadcast_history(limit: int = 20):
 async def backtest_strategy(strategy_id: str, months: int = 12):
     """Return simulated monthly returns for a strategy backtest.
 
-    This is SIMULATED data based on the strategy's risk profile â€” for visualization.
+    This is SIMULATED data based on the strategy's risk profile — for visualization.
     Live trading requires full implementation + exchange API access.
     """
     strategy = None
@@ -7059,7 +7059,7 @@ async def backtest_strategy(strategy_id: str, months: int = 12):
 
 
 # ============================================================
-# REP SYSTEM â€” Personal Reputation Score per Member
+# REP SYSTEM — Personal Reputation Score per Member
 # ============================================================
 
 async def _ensure_rep_tables(conn):
@@ -7660,12 +7660,12 @@ async def list_all_member_cards(limit: int = Query(default=50, ge=1, le=500)):
     return {"ok": True, "cards": cards, "total": len(cards)}
 
 
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# ═══════════════════════════════════════════════════════════════════════════════
 # P2P ORDER BOOK
 # Table: p2p_orders
 #   (id, seller_id, token, amount, price_per_unit, currency, payment_method,
 #    status, created_at)
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# ═══════════════════════════════════════════════════════════════════════════════
 
 P2P_VALID_TOKENS = {"SLH", "ZVK", "MNH"}
 P2P_VALID_CURRENCIES = {"ILS", "USD"}
@@ -7704,7 +7704,7 @@ class P2PFillOrder(BaseModel):
     buyer_id: int
 
 
-# â”€â”€ POST /api/p2p/create-order â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ── POST /api/p2p/create-order ──────────────────────────────────────────────
 @app.post("/api/p2p/create-order")
 async def p2p_create_order(body: P2PCreateOrder):
     """Create a new P2P sell order."""
@@ -7758,7 +7758,7 @@ async def p2p_create_order(body: P2PCreateOrder):
     }
 
 
-# â”€â”€ GET /api/p2p/orders â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ── GET /api/p2p/orders ─────────────────────────────────────────────────────
 @app.get("/api/p2p/orders")
 async def p2p_list_orders(
     token: Optional[str] = Query(None, description="Filter by token: SLH, ZVK, MNH"),
@@ -7832,7 +7832,7 @@ async def p2p_list_orders(
     return {"ok": True, "orders": orders, "total": total, "limit": limit, "offset": offset}
 
 
-# â”€â”€ POST /api/p2p/fill-order â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ── POST /api/p2p/fill-order ────────────────────────────────────────────────
 @app.post("/api/p2p/fill-order")
 async def p2p_fill_order(body: P2PFillOrder):
     """Mark an active P2P order as filled by a buyer."""
@@ -7874,7 +7874,7 @@ async def p2p_fill_order(body: P2PFillOrder):
     return {"ok": True, "message": "Order filled successfully", "order_id": body.order_id}
 
 
-# â”€â”€ DELETE /api/p2p/cancel-order/{id} â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ── DELETE /api/p2p/cancel-order/{id} ────────────────────────────────────────
 @app.delete("/api/p2p/cancel-order/{order_id}")
 async def p2p_cancel_order(order_id: int, seller_id: int = Query(..., description="Seller's telegram ID")):
     """Cancel an active P2P order. Only the seller can cancel their own order."""
@@ -7914,7 +7914,7 @@ async def p2p_cancel_order(order_id: int, seller_id: int = Query(..., descriptio
 
 
 # ============================================================
-# P2P ORDER BOOK â€” JWT-Authenticated Endpoints (v2)
+# P2P ORDER BOOK — JWT-Authenticated Endpoints (v2)
 # ============================================================
 # These endpoints use JWT bearer tokens to identify the caller.
 # The seller/buyer is derived from the JWT, not from the request body.
@@ -7931,7 +7931,7 @@ class P2PFillOrderAuth(BaseModel):
     order_id: int
 
 
-# â”€â”€ POST /api/p2p/v2/create-order (JWT auth â€” seller = caller) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ── POST /api/p2p/v2/create-order (JWT auth — seller = caller) ──────────────
 @app.post("/api/p2p/v2/create-order")
 async def p2p_create_order_auth(
     body: P2PCreateOrderAuth,
@@ -7998,7 +7998,7 @@ async def p2p_create_order_auth(
     }
 
 
-# â”€â”€ GET /api/p2p/v2/orders (public â€” same as v1, no auth needed) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ── GET /api/p2p/v2/orders (public — same as v1, no auth needed) ────────────
 @app.get("/api/p2p/v2/orders")
 async def p2p_list_orders_v2(
     token: Optional[str] = Query(None, description="Filter by token: SLH, ZVK, MNH"),
@@ -8072,7 +8072,7 @@ async def p2p_list_orders_v2(
     return {"ok": True, "orders": orders, "total": total, "limit": limit, "offset": offset}
 
 
-# â”€â”€ POST /api/p2p/v2/fill-order (JWT auth â€” buyer = caller) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ── POST /api/p2p/v2/fill-order (JWT auth — buyer = caller) ─────────────────
 @app.post("/api/p2p/v2/fill-order")
 async def p2p_fill_order_auth(
     body: P2PFillOrderAuth,
@@ -8145,7 +8145,7 @@ async def p2p_fill_order_auth(
     return {"ok": True, "message": "Order filled successfully", "order_id": body.order_id}
 
 
-# â”€â”€ DELETE /api/p2p/v2/cancel-order/{id} (JWT auth â€” seller = caller) â”€â”€â”€â”€â”€â”€â”€â”€
+# ── DELETE /api/p2p/v2/cancel-order/{id} (JWT auth — seller = caller) ────────
 @app.delete("/api/p2p/v2/cancel-order/{order_id}")
 async def p2p_cancel_order_auth(
     order_id: int,
@@ -8297,27 +8297,27 @@ async def submit_bank_transfer(req: BankTransferSubmit):
     import re
     # Validate Israeli TZ
     if not validate_israeli_tz(req.id_number):
-        raise HTTPException(400, "תעודת זהות לא תקינה — בדוק את הספרות")
+        raise HTTPException(400, "????? ???? ?? ????? � ???? ?? ??????")
     # Validate phone
     if not re.match(r'^0[2-9]\d{7,8}$', req.phone):
-        raise HTTPException(400, "מספר טלפון לא תקין — דוגמה: 0584203384")
+        raise HTTPException(400, "???? ????? ?? ???? � ?????: 0584203384")
     # Validate amount
     if req.amount_ils <= 0 or req.amount_ils > 1000000:
-        raise HTTPException(400, "סכום חייב להיות בין 1 ל-1,000,000 ₪")
+        raise HTTPException(400, "???? ???? ????? ??? 1 ?-1,000,000 ?")
     # Validate date
     try:
         tx_date = datetime.strptime(req.transaction_date, "%Y-%m-%d").date()
     except ValueError:
-        raise HTTPException(400, "תאריך לא תקין — פורמט: YYYY-MM-DD")
+        raise HTTPException(400, "????? ?? ???? � ?????: YYYY-MM-DD")
     # Validate non-empty fields
     if not req.customer_name.strip():
-        raise HTTPException(400, "שם הלקוח חובה")
+        raise HTTPException(400, "?? ????? ????")
     if not req.bank_details.strip():
-        raise HTTPException(400, "פרטי חשבון בנק חובה")
+        raise HTTPException(400, "???? ????? ??? ????")
     if not req.transaction_desc.strip():
-        raise HTTPException(400, "מהות העסקה חובה")
+        raise HTTPException(400, "???? ????? ????")
     if not req.transfer_reference.strip():
-        raise HTTPException(400, "אסמכתא של העברה בנקאית חובה")
+        raise HTTPException(400, "?????? ?? ????? ?????? ????")
 
     try:
         async with pool.acquire() as conn:
@@ -8339,7 +8339,7 @@ async def submit_bank_transfer(req: BankTransferSubmit):
             except Exception:
                 pass  # Audit log failure should not block the request
         return {"ok": True, "transfer_id": row["id"],
-                "message": "הבקשה התקבלה בהצלחה. תאושר על ידי צביקה תוך 24 שעות."}
+                "message": "????? ?????? ??????. ????? ?? ??? ????? ??? 24 ????."}
     except Exception as e:
         raise HTTPException(500, f"DB error: {str(e)}")
 
@@ -8462,7 +8462,7 @@ class AdminCreateRequest(BaseModel):
 
 @app.post("/api/admin/auth/login")
 async def admin_login(req: AdminLoginRequest):
-    """Admin login — returns JWT with role."""
+    """Admin login � returns JWT with role."""
     async with pool.acquire() as conn:
         # Seed default admins on first call if table empty
         count = await conn.fetchval("SELECT COUNT(*) FROM admin_users")
@@ -8483,9 +8483,9 @@ async def admin_login(req: AdminLoginRequest):
         admin = await conn.fetchrow(
             "SELECT * FROM admin_users WHERE username=$1 AND is_active=TRUE", req.username)
         if not admin:
-            raise HTTPException(401, "שם משתמש לא נמצא")
+            raise HTTPException(401, "?? ????? ?? ????")
         if not verify_admin_password(req.password, admin["password_hash"]):
-            raise HTTPException(401, "סיסמה שגויה")
+            raise HTTPException(401, "????? ?????")
         # Update last login
         await conn.execute(
             "UPDATE admin_users SET last_login=CURRENT_TIMESTAMP WHERE id=$1", admin["id"])
@@ -8663,7 +8663,7 @@ class CampaignClickReq(BaseModel):
 
 @app.post("/api/campaign/click")
 async def campaign_click(req: CampaignClickReq, user_agent: Optional[str] = Header(None)):
-    """Anonymous click tracking — no auth required."""
+    """Anonymous click tracking � no auth required."""
     try:
         async with pool.acquire() as conn:
             await _ensure_campaign_tables(conn)
@@ -8746,7 +8746,7 @@ async def campaign_register(req: CampaignRegisterReq):
 
 @app.get("/api/campaign/affiliate/{code}")
 async def campaign_affiliate_validate(code: str):
-    """Public validation of affiliate code — returns only if it exists."""
+    """Public validation of affiliate code � returns only if it exists."""
     async with pool.acquire() as conn:
         await _ensure_campaign_tables(conn)
         row = await conn.fetchrow("""
@@ -8766,7 +8766,7 @@ async def campaign_affiliate_validate(code: str):
 
 @app.get("/api/campaign/affiliate-stats/{code}")
 async def campaign_affiliate_stats(code: str):
-    """Stats for a specific affiliate — for partner dashboard."""
+    """Stats for a specific affiliate � for partner dashboard."""
     async with pool.acquire() as conn:
         await _ensure_campaign_tables(conn)
         owner = await conn.fetchrow(
@@ -8931,9 +8931,9 @@ async def campaign_attribute_purchase(
                 "SELECT user_id FROM campaign_registrations WHERE affiliate_code=$1",
                 reg["ref_code"])
             if referrer and referrer["user_id"]:
-                # ZVK ≈ 4.4 ILS → 20% of 99 = 19.8 ILS = 4.5 ZVK × 100 precision = 450 internal
+                # ZVK � 4.4 ILS ? 20% of 99 = 19.8 ILS = 4.5 ZVK � 100 precision = 450 internal
                 zvk_reward = int((amount * 0.20 / 4.4) * 100) // 100  # rounded
-                # SLH ≈ 444 ILS → 10% of 99 = 9.9 ILS = 0.0223 SLH
+                # SLH � 444 ILS ? 10% of 99 = 9.9 ILS = 0.0223 SLH
                 slh_reward = round((amount * 0.10 / 444.0), 6)
                 await conn.execute("""
                     INSERT INTO campaign_affiliate_earnings
@@ -8955,7 +8955,7 @@ class MassGiftReq(BaseModel):
     reason: str = "campaign_gift"
     note: Optional[str] = None
     only_active_days: Optional[int] = None  # if set, only users seen in last N days
-    dry_run: bool = True  # default safe — return preview without crediting
+    dry_run: bool = True  # default safe � return preview without crediting
 
 
 @app.post("/api/admin/mass-gift")
@@ -9017,7 +9017,7 @@ async def admin_mass_gift(
                 "next_step": "Call again with dry_run=false to actually credit"
             }
 
-        # ACTUAL CREDIT — wrapped in transaction
+        # ACTUAL CREDIT � wrapped in transaction
         credited = []
         failed = []
         async with conn.transaction():
@@ -9186,7 +9186,7 @@ class ExpertCreateReq(BaseModel):
     languages: List[str] = ["he"]
     user_id: Optional[int] = None
     avatar_url: Optional[str] = None
-    # Proof-of-expertise (new 2026-04-17) — at least one is required for submission
+    # Proof-of-expertise (new 2026-04-17) � at least one is required for submission
     linkedin_url: Optional[str] = None
     website_url: Optional[str] = None
     youtube_url: Optional[str] = None
@@ -9197,7 +9197,7 @@ class ExpertCreateReq(BaseModel):
 
 @app.post("/api/experts/register")
 async def experts_register(req: ExpertCreateReq):
-    """Register as expert — requires at least one proof link. Enters pending_verification.
+    """Register as expert � requires at least one proof link. Enters pending_verification.
     Verified only after admin approval via /api/admin/experts/approve.
     Auto-credits 100 ZVK signup bonus."""
 
@@ -9212,7 +9212,7 @@ async def experts_register(req: ExpertCreateReq):
     if not proof_provided:
         raise HTTPException(
             400,
-            "נדרשת לפחות הוכחה אחת: LinkedIn, אתר, YouTube, פורטפוליו, או פירוט תעודות."
+            "????? ????? ????? ???: LinkedIn, ???, YouTube, ?????????, ?? ????? ??????."
         )
 
     async with pool.acquire() as conn:
@@ -9239,11 +9239,11 @@ async def experts_register(req: ExpertCreateReq):
             "verified": row["verified"],
             "verification_status": row["verification_status"],
             "reward": reward_info,
-            "message": "נרשמת בהצלחה! קיבלת 100 ZVK בונוס. הפרופיל בהמתנה לאימות אדמין (24-48 שעות)."
+            "message": "????? ??????! ????? 100 ZVK ?????. ??????? ?????? ?????? ????? (24-48 ????)."
         }
 
 
-# ═══════ Admin approval flow (new 2026-04-17) ═══════
+# ------- Admin approval flow (new 2026-04-17) -------
 
 @app.get("/api/admin/experts/pending")
 async def admin_experts_pending(
@@ -9325,9 +9325,9 @@ async def admin_experts_approve(
         "expert_id": req.expert_id,
         "decision": req.decision,
         "message": {
-            "approved": "✅ מומחה אושר + חשיפה בגלריה + בונוס ZVK הוענק",
-            "rejected": "❌ בקשה נדחתה",
-            "needs_info": "⚠️ נדרש מידע נוסף",
+            "approved": "? ????? ???? + ????? ?????? + ????? ZVK ?????",
+            "rejected": "? ???? ?????",
+            "needs_info": "?? ???? ???? ????",
         }[req.decision],
     }
 
@@ -9382,7 +9382,7 @@ async def experts_consult(req: ConsultationReq):
             req.requester_phone, req.topic, req.preferred_language)
         # Increment consultation count
         await conn.execute("UPDATE experts SET consultations_count = consultations_count + 1 WHERE id = $1", req.expert_id)
-        return {"ok": True, "consultation_id": row["id"], "message": "הבקשה נשלחה למומחה. תיצור איתך קשר תוך 48 שעות."}
+        return {"ok": True, "consultation_id": row["id"], "message": "????? ????? ??????. ????? ???? ??? ??? 48 ????."}
 
 
 # ===== EXPERT REWARDS + COMMUNITY DOMAINS =====
@@ -9431,13 +9431,13 @@ async def _ensure_expert_rewards_tables(conn):
 
 # REWARD RULES
 REWARD_RULES = {
-    "expert_signup": {"zvk": 100, "rep": 10, "note": "הצטרפות כמומחה"},
-    "verified": {"zvk": 500, "rep": 50, "note": "אימות פרופיל"},
-    "consultation_requested": {"zvk": 50, "rep": 5, "note": "בקשת ייעוץ התקבלה"},
-    "consultation_completed": {"zvk": 200, "rep": 20, "note": "ייעוץ הושלם"},
-    "five_star_review": {"zvk": 25, "rep": 10, "note": "דירוג 5 כוכבים"},
-    "first_consultation": {"zvk": 150, "rep": 15, "note": "בונוס ייעוץ ראשון"},
-    "vote_cast": {"zvk": 5, "rep": 1, "note": "השתתפות בהצבעה"}
+    "expert_signup": {"zvk": 100, "rep": 10, "note": "??????? ??????"},
+    "verified": {"zvk": 500, "rep": 50, "note": "????? ??????"},
+    "consultation_requested": {"zvk": 50, "rep": 5, "note": "???? ????? ??????"},
+    "consultation_completed": {"zvk": 200, "rep": 20, "note": "????? ?????"},
+    "five_star_review": {"zvk": 25, "rep": 10, "note": "????? 5 ??????"},
+    "first_consultation": {"zvk": 150, "rep": 15, "note": "????? ????? ?????"},
+    "vote_cast": {"zvk": 5, "rep": 1, "note": "??????? ??????"}
 }
 
 
@@ -9457,7 +9457,7 @@ async def _credit_expert_reward(conn, expert_id: int, event_type: str, note_extr
             INSERT INTO expert_rewards (expert_id, event_type, zvk_amount, rep_amount, note)
             VALUES ($1, $2, $3, $4, $5)
         """, expert_id, event_type, rule["zvk"], rule["rep"],
-            f"{rule['note']}{(' · ' + note_extra) if note_extra else ''}")
+            f"{rule['note']}{(' � ' + note_extra) if note_extra else ''}")
 
         # Credit ZVK to user
         if rule["zvk"] > 0:
@@ -9475,52 +9475,52 @@ async def _credit_expert_reward(conn, expert_id: int, event_type: str, note_extr
 
 # Default domains list (pre-approved)
 DEFAULT_DOMAINS = [
-    {"slug":"crypto", "name_he":"קריפטו", "name_en":"Crypto", "emoji":"₿", "category":"finance"},
-    {"slug":"security", "name_he":"אבטחת מידע", "name_en":"Security", "emoji":"🛡️", "category":"tech"},
-    {"slug":"finance", "name_he":"פיננסים", "name_en":"Finance", "emoji":"💰", "category":"finance"},
-    {"slug":"trading", "name_he":"מסחר", "name_en":"Trading", "emoji":"📈", "category":"finance"},
-    {"slug":"tech", "name_he":"פיתוח", "name_en":"Development", "emoji":"💻", "category":"tech"},
-    {"slug":"marketing", "name_he":"שיווק דיגיטלי", "name_en":"Marketing", "emoji":"📣", "category":"business"},
-    {"slug":"legal", "name_he":"משפט", "name_en":"Legal", "emoji":"⚖️", "category":"business"},
-    {"slug":"halacha", "name_he":"הלכה", "name_en":"Halacha", "emoji":"🕊️", "category":"religious"},
-    {"slug":"accounting", "name_he":"ראיית חשבון", "name_en":"Accounting", "emoji":"🧾", "category":"finance"},
-    {"slug":"tax", "name_he":"מיסים", "name_en":"Taxation", "emoji":"💸", "category":"finance"},
-    {"slug":"ai", "name_he":"AI / בינה מלאכותית", "name_en":"AI", "emoji":"🤖", "category":"tech"},
-    {"slug":"design", "name_he":"עיצוב", "name_en":"Design", "emoji":"🎨", "category":"creative"},
-    {"slug":"writing", "name_he":"כתיבה", "name_en":"Writing", "emoji":"✍️", "category":"creative"},
-    {"slug":"translation", "name_he":"תרגום", "name_en":"Translation", "emoji":"🌐", "category":"creative"},
-    {"slug":"video", "name_he":"וידאו / עריכה", "name_en":"Video", "emoji":"🎬", "category":"creative"},
-    {"slug":"photography", "name_he":"צילום", "name_en":"Photography", "emoji":"📸", "category":"creative"},
-    {"slug":"sales", "name_he":"מכירות", "name_en":"Sales", "emoji":"🤝", "category":"business"},
-    {"slug":"hr", "name_he":"משאבי אנוש", "name_en":"HR", "emoji":"👥", "category":"business"},
-    {"slug":"real_estate", "name_he":"נדל\"ן", "name_en":"Real Estate", "emoji":"🏠", "category":"business"},
-    {"slug":"medical", "name_he":"רפואה / בריאות", "name_en":"Medical", "emoji":"⚕️", "category":"health"},
-    {"slug":"therapy", "name_he":"טיפול נפשי", "name_en":"Therapy", "emoji":"💚", "category":"health"},
-    {"slug":"nutrition", "name_he":"תזונה", "name_en":"Nutrition", "emoji":"🥗", "category":"health"},
-    {"slug":"coaching", "name_he":"קואצ'ינג", "name_en":"Coaching", "emoji":"🎯", "category":"education"},
-    {"slug":"education", "name_he":"חינוך / הוראה", "name_en":"Education", "emoji":"🎓", "category":"education"},
-    {"slug":"academia", "name_he":"אקדמיה", "name_en":"Academia", "emoji":"📚", "category":"education"},
-    {"slug":"music", "name_he":"מוזיקה", "name_en":"Music", "emoji":"🎵", "category":"creative"},
-    {"slug":"fitness", "name_he":"כושר", "name_en":"Fitness", "emoji":"💪", "category":"health"},
-    {"slug":"language", "name_he":"שפות", "name_en":"Languages", "emoji":"🗣️", "category":"education"},
-    {"slug":"startup", "name_he":"סטארט-אפים", "name_en":"Startups", "emoji":"🚀", "category":"business"},
-    {"slug":"blockchain", "name_he":"בלוקצ'יין", "name_en":"Blockchain", "emoji":"⛓️", "category":"tech"},
+    {"slug":"crypto", "name_he":"??????", "name_en":"Crypto", "emoji":"?", "category":"finance"},
+    {"slug":"security", "name_he":"????? ????", "name_en":"Security", "emoji":"???", "category":"tech"},
+    {"slug":"finance", "name_he":"???????", "name_en":"Finance", "emoji":"??", "category":"finance"},
+    {"slug":"trading", "name_he":"????", "name_en":"Trading", "emoji":"??", "category":"finance"},
+    {"slug":"tech", "name_he":"?????", "name_en":"Development", "emoji":"??", "category":"tech"},
+    {"slug":"marketing", "name_he":"????? ???????", "name_en":"Marketing", "emoji":"??", "category":"business"},
+    {"slug":"legal", "name_he":"????", "name_en":"Legal", "emoji":"??", "category":"business"},
+    {"slug":"halacha", "name_he":"????", "name_en":"Halacha", "emoji":"???", "category":"religious"},
+    {"slug":"accounting", "name_he":"????? ?????", "name_en":"Accounting", "emoji":"??", "category":"finance"},
+    {"slug":"tax", "name_he":"?????", "name_en":"Taxation", "emoji":"??", "category":"finance"},
+    {"slug":"ai", "name_he":"AI / ???? ????????", "name_en":"AI", "emoji":"??", "category":"tech"},
+    {"slug":"design", "name_he":"?????", "name_en":"Design", "emoji":"??", "category":"creative"},
+    {"slug":"writing", "name_he":"?????", "name_en":"Writing", "emoji":"??", "category":"creative"},
+    {"slug":"translation", "name_he":"?????", "name_en":"Translation", "emoji":"??", "category":"creative"},
+    {"slug":"video", "name_he":"????? / ?????", "name_en":"Video", "emoji":"??", "category":"creative"},
+    {"slug":"photography", "name_he":"?????", "name_en":"Photography", "emoji":"??", "category":"creative"},
+    {"slug":"sales", "name_he":"??????", "name_en":"Sales", "emoji":"??", "category":"business"},
+    {"slug":"hr", "name_he":"????? ????", "name_en":"HR", "emoji":"??", "category":"business"},
+    {"slug":"real_estate", "name_he":"???\"?", "name_en":"Real Estate", "emoji":"??", "category":"business"},
+    {"slug":"medical", "name_he":"????? / ??????", "name_en":"Medical", "emoji":"??", "category":"health"},
+    {"slug":"therapy", "name_he":"????? ????", "name_en":"Therapy", "emoji":"??", "category":"health"},
+    {"slug":"nutrition", "name_he":"?????", "name_en":"Nutrition", "emoji":"??", "category":"health"},
+    {"slug":"coaching", "name_he":"????'???", "name_en":"Coaching", "emoji":"??", "category":"education"},
+    {"slug":"education", "name_he":"????? / ?????", "name_en":"Education", "emoji":"??", "category":"education"},
+    {"slug":"academia", "name_he":"??????", "name_en":"Academia", "emoji":"??", "category":"education"},
+    {"slug":"music", "name_he":"??????", "name_en":"Music", "emoji":"??", "category":"creative"},
+    {"slug":"fitness", "name_he":"????", "name_en":"Fitness", "emoji":"??", "category":"health"},
+    {"slug":"language", "name_he":"????", "name_en":"Languages", "emoji":"???", "category":"education"},
+    {"slug":"startup", "name_he":"?????-????", "name_en":"Startups", "emoji":"??", "category":"business"},
+    {"slug":"blockchain", "name_he":"?????'???", "name_en":"Blockchain", "emoji":"??", "category":"tech"},
     # Creative & lifestyle
-    {"slug":"art", "name_he":"אומנות", "name_en":"Art", "emoji":"🎨", "category":"creative"},
-    {"slug":"musician", "name_he":"מוסיקאי", "name_en":"Musician", "emoji":"🎸", "category":"creative"},
-    {"slug":"conductor", "name_he":"מנצח תזמורת", "name_en":"Orchestra Conductor", "emoji":"🎼", "category":"creative"},
-    {"slug":"motorcycle", "name_he":"אופנוע", "name_en":"Motorcycle", "emoji":"🏍️", "category":"sports"},
-    {"slug":"kitesurf", "name_he":"גלישת קייט", "name_en":"Kite Surfing", "emoji":"🪁", "category":"sports"},
-    {"slug":"surf", "name_he":"גלישת גלים", "name_en":"Surfing", "emoji":"🏄", "category":"sports"},
-    {"slug":"ski", "name_he":"סקי", "name_en":"Skiing", "emoji":"⛷️", "category":"sports"},
-    {"slug":"climb", "name_he":"טיפוס", "name_en":"Climbing", "emoji":"🧗", "category":"sports"},
-    {"slug":"yoga", "name_he":"יוגה", "name_en":"Yoga", "emoji":"🧘", "category":"health"},
-    {"slug":"meditation", "name_he":"מדיטציה", "name_en":"Meditation", "emoji":"🕉️", "category":"health"},
-    {"slug":"chef", "name_he":"שף", "name_en":"Chef", "emoji":"👨‍🍳", "category":"creative"},
-    {"slug":"travel", "name_he":"תיירות", "name_en":"Travel", "emoji":"✈️", "category":"lifestyle"},
-    {"slug":"parenting", "name_he":"הורות", "name_en":"Parenting", "emoji":"👨‍👩‍👧", "category":"lifestyle"},
-    {"slug":"gaming", "name_he":"גיימינג", "name_en":"Gaming", "emoji":"🎮", "category":"entertainment"},
-    {"slug":"podcast", "name_he":"פודקאסטים", "name_en":"Podcasting", "emoji":"🎙️", "category":"creative"}
+    {"slug":"art", "name_he":"??????", "name_en":"Art", "emoji":"??", "category":"creative"},
+    {"slug":"musician", "name_he":"???????", "name_en":"Musician", "emoji":"??", "category":"creative"},
+    {"slug":"conductor", "name_he":"???? ??????", "name_en":"Orchestra Conductor", "emoji":"??", "category":"creative"},
+    {"slug":"motorcycle", "name_he":"??????", "name_en":"Motorcycle", "emoji":"???", "category":"sports"},
+    {"slug":"kitesurf", "name_he":"????? ????", "name_en":"Kite Surfing", "emoji":"??", "category":"sports"},
+    {"slug":"surf", "name_he":"????? ????", "name_en":"Surfing", "emoji":"??", "category":"sports"},
+    {"slug":"ski", "name_he":"???", "name_en":"Skiing", "emoji":"??", "category":"sports"},
+    {"slug":"climb", "name_he":"?????", "name_en":"Climbing", "emoji":"??", "category":"sports"},
+    {"slug":"yoga", "name_he":"????", "name_en":"Yoga", "emoji":"??", "category":"health"},
+    {"slug":"meditation", "name_he":"???????", "name_en":"Meditation", "emoji":"???", "category":"health"},
+    {"slug":"chef", "name_he":"??", "name_en":"Chef", "emoji":"?????", "category":"creative"},
+    {"slug":"travel", "name_he":"??????", "name_en":"Travel", "emoji":"??", "category":"lifestyle"},
+    {"slug":"parenting", "name_he":"?????", "name_en":"Parenting", "emoji":"????????", "category":"lifestyle"},
+    {"slug":"gaming", "name_he":"???????", "name_en":"Gaming", "emoji":"??", "category":"entertainment"},
+    {"slug":"podcast", "name_he":"?????????", "name_en":"Podcasting", "emoji":"???", "category":"creative"}
 ]
 
 
@@ -9579,7 +9579,7 @@ async def experts_domains_propose(req: DomainProposeReq):
                 VALUES ($1, $2, $3, $4, $5, FALSE, $6)
                 ON CONFLICT (slug) DO NOTHING
                 RETURNING id
-            """, req.slug, req.name_he, req.name_en, req.emoji or "🎯", req.category or "other", req.proposer_user_id)
+            """, req.slug, req.name_he, req.name_en, req.emoji or "??", req.category or "other", req.proposer_user_id)
             if not row:
                 raise HTTPException(409, "Domain slug already exists")
             return {"ok": True, "domain_id": row["id"], "status": "pending_votes", "needs_votes": 10}
@@ -9616,7 +9616,7 @@ async def experts_domains_vote(req: DomainVoteReq):
                 raise HTTPException(409, "Already voted on this proposal")
             raise
         # Update counter
-        # SECURITY: whitelisted — 'col' is chosen between two hardcoded literals ('votes_for' / 'votes_against') via req.vote which is validated at line 9127
+        # SECURITY: whitelisted � 'col' is chosen between two hardcoded literals ('votes_for' / 'votes_against') via req.vote which is validated at line 9127
         col = "votes_for" if req.vote == "for" else "votes_against"
         await conn.execute(f"UPDATE expert_domains SET {col} = {col} + 1 WHERE id=$1", req.domain_id)
         # Check if auto-approve (for adds: 10+ for-votes, 2x against threshold)
@@ -9742,7 +9742,7 @@ class BugReportReq(BaseModel):
 
 @app.post("/api/bugs/report")
 async def bugs_report(req: BugReportReq, user_agent: Optional[str] = Header(None)):
-    """Anyone can report a bug — anonymous or with details."""
+    """Anyone can report a bug � anonymous or with details."""
     if not req.title or not req.description:
         raise HTTPException(400, "title and description required")
     severity = req.severity if req.severity in ("low", "medium", "high", "critical") else "medium"
@@ -9756,31 +9756,31 @@ async def bugs_report(req: BugReportReq, user_agent: Optional[str] = Header(None
         """, req.reporter_user_id, req.reporter_name, req.reporter_email, req.page_url,
             req.ai_session_id, severity, req.category, req.title, req.description,
             req.steps_to_reproduce, req.screenshot_url, (user_agent or "")[:200])
-    # Telegram alert to admin — rate-limited + kill-switch
-    # SILENT_MODE=1 on Railway → no alerts at all
+    # Telegram alert to admin � rate-limited + kill-switch
+    # SILENT_MODE=1 on Railway ? no alerts at all
     # Otherwise: max 1 alert per 5 min for non-critical; critical always sent
     try:
         import time as _t
         _silent = os.getenv("SILENT_MODE", "").strip() == "1"
-        _is_auto = req.title.startswith("[AUTO]")  # auto-captured — never alert, just log
+        _is_auto = req.title.startswith("[AUTO]")  # auto-captured � never alert, just log
         _now = _t.time()
         _last_key = "_last_bug_alert_ts"
         _last = getattr(app.state, _last_key, 0) if hasattr(app, "state") else 0
         _min_gap = 300  # 5 minutes
         should_alert = not _silent and not _is_auto and (severity == "critical" or (_now - _last) >= _min_gap)
         if should_alert and BROADCAST_BOT_TOKEN:
-            sev_emoji = {"critical": "🚨", "high": "⚠️", "medium": "🐛", "low": "💡"}.get(severity, "🐛")
-            cat = req.category or "כללי"
-            reporter = req.reporter_name or (f"ID {req.reporter_user_id}" if req.reporter_user_id else "אנונימי")
-            page = req.page_url or "—"
+            sev_emoji = {"critical": "??", "high": "??", "medium": "??", "low": "??"}.get(severity, "??")
+            cat = req.category or "????"
+            reporter = req.reporter_name or (f"ID {req.reporter_user_id}" if req.reporter_user_id else "???????")
+            page = req.page_url or "�"
             alert_text = (
-                f"{sev_emoji} <b>באג חדש #{row['id']}</b>\n"
-                f"<b>חומרה:</b> {severity} | <b>קטגוריה:</b> {cat}\n"
-                f"<b>מדווח:</b> {reporter}\n"
-                f"<b>כותרת:</b> {req.title[:150]}\n\n"
+                f"{sev_emoji} <b>??? ??? #{row['id']}</b>\n"
+                f"<b>?????:</b> {severity} | <b>???????:</b> {cat}\n"
+                f"<b>?????:</b> {reporter}\n"
+                f"<b>?????:</b> {req.title[:150]}\n\n"
                 f"{req.description[:400]}\n\n"
-                f"📄 {page}\n"
-                f"🔗 https://slh-nft.com/admin-bugs.html"
+                f"?? {page}\n"
+                f"?? https://slh-nft.com/admin-bugs.html"
             )
             await _tg_send_message(BROADCAST_BOT_TOKEN, ADMIN_USER_ID, alert_text)
             if hasattr(app, "state"):
@@ -9790,7 +9790,7 @@ async def bugs_report(req: BugReportReq, user_agent: Optional[str] = Header(None
     return {
         "ok": True,
         "bug_id": row["id"],
-        "message": "תודה! הדיווח נקלט. נטפל בו בהקדם.",
+        "message": "????! ?????? ????. ???? ?? ?????.",
         "tracking": f"bug-{row['id']}"
     }
 
@@ -9824,17 +9824,17 @@ async def bugs_update_status(
             pass  # no outbound telegram while in silent mode
         elif req.status == "resolved" and bug["reporter_user_id"] and BROADCAST_BOT_TOKEN:
             msg = (
-                f"✅ <b>הבאג שדיווחת נפתר!</b>\n"
+                f"? <b>???? ??????? ????!</b>\n"
                 f"<b>#{bug_id}:</b> {bug['title']}\n\n"
-                f"{(req.resolution or 'הבעיה תוקנה. תודה על הדיווח!')[:800]}\n\n"
-                f"💙 תודה שעזרת לנו לשפר את SLH"
+                f"{(req.resolution or '????? ?????. ???? ?? ??????!')[:800]}\n\n"
+                f"?? ???? ????? ??? ???? ?? SLH"
             )
             await _tg_send_message(BROADCAST_BOT_TOKEN, bug["reporter_user_id"], msg)
         elif req.status == "in_progress" and bug["reporter_user_id"] and BROADCAST_BOT_TOKEN:
             msg = (
-                f"🔧 <b>הדיווח שלך התקבל ומטופל</b>\n"
+                f"?? <b>?????? ??? ????? ??????</b>\n"
                 f"<b>#{bug_id}:</b> {bug['title']}\n\n"
-                f"נעדכן אותך ברגע שהבעיה תיפתר."
+                f"????? ???? ???? ?????? ?????."
             )
             await _tg_send_message(BROADCAST_BOT_TOKEN, bug["reporter_user_id"], msg)
     except Exception:
@@ -9896,9 +9896,9 @@ async def bugs_ai_analyze(
     """Request AI analysis of a bug. Stores the suggestion in bug_reports.ai_analysis.
 
     Three agents supported:
-    - 'claude_code' — for executor agents with git/docker access (returns structured TODO)
-    - 'advisor'     — for chat-only AIs (returns diagnostic steps)
-    - 'human_only'  — no AI; just marks the bug as 'human_only' triage
+    - 'claude_code' � for executor agents with git/docker access (returns structured TODO)
+    - 'advisor'     � for chat-only AIs (returns diagnostic steps)
+    - 'human_only'  � no AI; just marks the bug as 'human_only' triage
 
     The actual AI call uses the internal /api/ai/chat endpoint chain (groq/gemini/openai).
     """
@@ -9941,10 +9941,10 @@ async def bugs_ai_analyze(
             f"BUG #{bug['id']}\n"
             f"Title: {bug['title']}\n"
             f"Severity: {bug['severity']}\n"
-            f"Category: {bug.get('category') or '—'}\n"
-            f"Page: {bug.get('page_url') or '—'}\n"
+            f"Category: {bug.get('category') or '�'}\n"
+            f"Page: {bug.get('page_url') or '�'}\n"
             f"Description:\n{bug['description']}\n"
-            f"Steps to reproduce:\n{bug.get('steps_to_reproduce') or '—'}\n"
+            f"Steps to reproduce:\n{bug.get('steps_to_reproduce') or '�'}\n"
         )
         if req.context_hint:
             bug_context += f"\nAdditional context: {req.context_hint}"
@@ -10020,11 +10020,11 @@ async def guardian_audit(limit: int = 100, authorization: Optional[str] = Header
 
 # ============================================================
 # BROKER ACCOUNTS + DEPOSITS + EXPENSES + ESP PREORDERS
-# Critical financial infrastructure — April 15, 2026
+# Critical financial infrastructure � April 15, 2026
 # ============================================================
 
 async def _ensure_financial_tables(conn):
-    # Broker accounts — Tzvika, Elazar + future brokers with LIMITED admin access
+    # Broker accounts � Tzvika, Elazar + future brokers with LIMITED admin access
     await conn.execute("""
         CREATE TABLE IF NOT EXISTS broker_accounts (
             id SERIAL PRIMARY KEY,
@@ -10046,7 +10046,7 @@ async def _ensure_financial_tables(conn):
         )
     """)
 
-    # ESP preorders — auto-gift 2 SLH from Tzvika's wallet
+    # ESP preorders � auto-gift 2 SLH from Tzvika's wallet
     await conn.execute("""
         CREATE TABLE IF NOT EXISTS esp_preorders (
             id SERIAL PRIMARY KEY,
@@ -10067,7 +10067,7 @@ async def _ensure_financial_tables(conn):
         )
     """)
 
-    # Deposits — with compound interest tracking
+    # Deposits � with compound interest tracking
     await conn.execute("""
         CREATE TABLE IF NOT EXISTS deposits (
             id SERIAL PRIMARY KEY,
@@ -10116,7 +10116,7 @@ async def _ensure_financial_tables(conn):
         )
     """)
 
-    # Credit card transactions — for ₪888 kosher wallet + future
+    # Credit card transactions � for ?888 kosher wallet + future
     await conn.execute("""
         CREATE TABLE IF NOT EXISTS credit_card_payments (
             id SERIAL PRIMARY KEY,
@@ -10209,14 +10209,14 @@ async def brokers_list(
 
 @app.get("/api/brokers/{broker_id}/dashboard")
 async def brokers_dashboard(broker_id: int, user_id: Optional[int] = None):
-    """Broker's own dashboard — limited data only they can see."""
+    """Broker's own dashboard � limited data only they can see."""
     async with pool.acquire() as conn:
         await _ensure_financial_tables(conn)
         broker = await conn.fetchrow("SELECT * FROM broker_accounts WHERE id=$1", broker_id)
         if not broker:
             raise HTTPException(404, "Broker not found")
 
-        # Visibility check — only self, admin, or approved viewers
+        # Visibility check � only self, admin, or approved viewers
         if user_id and user_id != broker["user_id"] and user_id not in (broker["owner_visible_to"] or []):
             if user_id != ADMIN_USER_ID:
                 raise HTTPException(403, "Not authorized")
@@ -10386,7 +10386,7 @@ async def deposits_user_list(user_id: int):
                 result.append({**dict(d), **calc, "deposited_at": deposited.isoformat()})
             return {"user_id": user_id, "deposits": result}
         else:
-            # Legacy schema — map to compatible shape with zero interest
+            # Legacy schema � map to compatible shape with zero interest
             rows = await conn.fetch(
                 "SELECT id, amount, currency, tx_hash, status, created_at FROM deposits WHERE user_id=$1 ORDER BY id DESC",
                 user_id
@@ -10436,7 +10436,7 @@ async def esp_preorder(req: ESPPreorderReq):
         return {
             "ok": True,
             "preorder_id": row["id"],
-            "message": "ההזמנה התקבלה! 2 SLH יועברו מצביקה לאחר אישור התשלום.",
+            "message": "?????? ??????! 2 SLH ?????? ?????? ???? ????? ??????.",
             "next_step": "payment confirmation + 2 SLH gift + shipping schedule"
         }
 
@@ -10447,7 +10447,7 @@ async def esp_preorder_approve(
     authorization: Optional[str] = Header(None),
     x_admin_key: Optional[str] = Header(None)
 ):
-    """Admin approves → auto-credits 2 SLH to buyer."""
+    """Admin approves ? auto-credits 2 SLH to buyer."""
     _require_admin(authorization, x_admin_key)
     async with pool.acquire() as conn:
         await _ensure_financial_tables(conn)
@@ -10570,7 +10570,7 @@ async def expenses_list(
 
 
 # ============================================================
-# CREDIT CARD PAYMENTS (₪888 kosher wallet + future)
+# CREDIT CARD PAYMENTS (?888 kosher wallet + future)
 # ============================================================
 
 class CreditCardReq(BaseModel):
@@ -10594,7 +10594,7 @@ class CreditCardReq(BaseModel):
 async def card_payment_submit(req: CreditCardReq):
     """Submit a credit card payment request. Actual charging happens via provider integration (future)."""
     if req.amount_ils < 1 or req.amount_ils > 50000:
-        raise HTTPException(400, "Amount must be between ₪1 and ₪50,000")
+        raise HTTPException(400, "Amount must be between ?1 and ?50,000")
     if not req.card_last4 or len(req.card_last4) != 4 or not req.card_last4.isdigit():
         raise HTTPException(400, "Invalid card last 4 digits")
     async with pool.acquire() as conn:
@@ -10614,7 +10614,7 @@ async def card_payment_submit(req: CreditCardReq):
             "ok": True,
             "payment_id": row["id"],
             "status": "pending",
-            "message": "התשלום נקלט. יעובד תוך 24 שעות. תקבל אישור/דחייה במייל/SMS.",
+            "message": "?????? ????. ????? ??? 24 ????. ???? ?????/????? ?????/SMS.",
             "next_step": "Manual review by admin + provider integration when available"
         }
 
@@ -10645,7 +10645,7 @@ async def admin_payments_list(
 # ===== END FINANCIAL SYSTEM =====
 
 
-# ===== DEVICE ONBOARDING (phone → user_id → device_id → signing_token) =====
+# ===== DEVICE ONBOARDING (phone ? user_id ? device_id ? signing_token) =====
 
 async def _ensure_device_tables(conn):
     """Create users_by_phone, devices, device_verify_codes, device_events tables."""
@@ -10704,7 +10704,7 @@ class DeviceVerifyReq(BaseModel):
 
 
 def _normalize_phone(p: str) -> str:
-    """Normalize Israeli phone to digits-only: 0501234567 or +972501234567 → 972501234567."""
+    """Normalize Israeli phone to digits-only: 0501234567 or +972501234567 ? 972501234567."""
     import re as _re
     digits = _re.sub(r"\D", "", p or "")
     if digits.startswith("0"):
@@ -10714,7 +10714,7 @@ def _normalize_phone(p: str) -> str:
 
 @app.post("/api/device/register")
 async def device_register(req: DeviceRegisterReq, request: Request):
-    """Step 1: device sends phone + device_id → we generate 6-digit code, send via Telegram (if linked)
+    """Step 1: device sends phone + device_id ? we generate 6-digit code, send via Telegram (if linked)
     or SMS fallback (stub). Code valid 5 min."""
     phone = _normalize_phone(req.phone)
     if len(phone) < 10:
@@ -10744,7 +10744,7 @@ async def device_register(req: DeviceRegisterReq, request: Request):
         u = await conn.fetchrow("SELECT telegram_id FROM users_by_phone WHERE phone = $1", phone)
         if u and u["telegram_id"] and BROADCAST_BOT_TOKEN:
             try:
-                msg = f"🔐 קוד אימות SLH: <b>{code}</b>\nמכשיר: {req.device_name or req.device_id}\nתקף ל-5 דקות."
+                msg = f"?? ??? ????? SLH: <b>{code}</b>\n?????: {req.device_name or req.device_id}\n??? ?-5 ????."
                 r = await _tg_send_message(BROADCAST_BOT_TOKEN, u["telegram_id"], msg)
                 tg_sent = bool(r.get("ok"))
             except Exception:
@@ -10757,7 +10757,7 @@ async def device_register(req: DeviceRegisterReq, request: Request):
     if not tg_sent:
         try:
             # On Railway: sms_provider.py is at /app/sms_provider.py (api/ is the build root)
-            # On local dev: file is at api/sms_provider.py — fall back if Railway-style fails
+            # On local dev: file is at api/sms_provider.py � fall back if Railway-style fails
             try:
                 from sms_provider import send_otp as _send_otp
             except ImportError:
@@ -10773,7 +10773,7 @@ async def device_register(req: DeviceRegisterReq, request: Request):
 
     # Expose the dev code in the web response ONLY when no real delivery channel
     # is configured. If an admin wired a real SMS provider and it fails, we
-    # don't fall through — we surface the error instead (forces admin to fix).
+    # don't fall through � we surface the error instead (forces admin to fix).
     # stub/disabled/none = nothing real is configured, so it's safe to expose.
     expose_dev_code = (
         (not tg_sent)
@@ -10787,9 +10787,9 @@ async def device_register(req: DeviceRegisterReq, request: Request):
         "expires_in": 300,
         "sms_provider": sms_provider,
         "message": (
-            "קוד אימות נשלח לטלגרם שלך" if tg_sent
-            else f"קוד אימות נשלח ב-SMS ({sms_provider})" if sms_sent
-            else "SMS עדיין לא מחובר — הקוד מוצג לבדיקה"
+            "??? ????? ???? ?????? ???" if tg_sent
+            else f"??? ????? ???? ?-SMS ({sms_provider})" if sms_sent
+            else "SMS ????? ?? ????? � ???? ???? ??????"
         ),
         "sms_error": sms_error if not sms_sent else None,
         "_dev_code": code if expose_dev_code else None,
@@ -10798,7 +10798,7 @@ async def device_register(req: DeviceRegisterReq, request: Request):
 
 @app.post("/api/device/verify")
 async def device_verify(req: DeviceVerifyReq):
-    """Step 2: device sends code → we validate, create user (if new), create device, return signing_token."""
+    """Step 2: device sends code ? we validate, create user (if new), create device, return signing_token."""
     phone = _normalize_phone(req.phone)
     if len(phone) < 10:
         raise HTTPException(400, "invalid phone")
@@ -10857,7 +10857,7 @@ async def device_verify(req: DeviceVerifyReq):
         "user_id": user_id,
         "device_id": req.device_id,
         "signing_token": token,
-        "message": "מכשיר רשום בהצלחה"
+        "message": "????? ???? ??????"
     }
 
 
@@ -10877,12 +10877,12 @@ class EspHeartbeatReq(BaseModel):
 async def device_claim(device_id: str, request: Request):
     """Device-side companion to web pairing. Once the web page calls /api/device/verify
     for this device_id, the token is in devices table. This endpoint lets the device
-    fetch its signing_token by polling — single-use, device clears local pending-pair
+    fetch its signing_token by polling � single-use, device clears local pending-pair
     state after success.
 
     Response shapes:
-      { "paired": false }                                       — not paired yet
-      { "paired": true, "user_id": int, "signing_token": str }  — paired, consume it
+      { "paired": false }                                       � not paired yet
+      { "paired": true, "user_id": int, "signing_token": str }  � paired, consume it
     """
     if not device_id or len(device_id) > 64:
         raise HTTPException(400, "device_id required")
@@ -10900,7 +10900,7 @@ async def device_claim(device_id: str, request: Request):
         """, device_id)
         if not row:
             return {"paired": False}
-        # Heuristic: if last_seen > registered_at + 1 min, the device has already claimed → deny
+        # Heuristic: if last_seen > registered_at + 1 min, the device has already claimed ? deny
         reg = row["registered_at"]
         seen = row["last_seen"]
         if reg and seen and (seen - reg).total_seconds() > 60:
@@ -10944,7 +10944,7 @@ async def esp_heartbeat(
 ):
     """ESP32/CYD heartbeat. Requires `Authorization: Bearer <signing_token>` from device verify.
     Updates devices.last_seen + appends to device_heartbeats audit log.
-    Emits `device.heartbeat` event (throttled — first of day + every 100 heartbeats per device)."""
+    Emits `device.heartbeat` event (throttled � first of day + every 100 heartbeats per device)."""
     if not authorization or not authorization.lower().startswith("bearer "):
         raise HTTPException(401, "missing bearer signing_token")
     token = authorization[7:].strip()
@@ -11104,7 +11104,7 @@ async def admin_events_list(
     """Admin: read event_log (ring buffer for chain-status page + debugging).
 
     Returns newest events first by default. Use after_id=<n> for a cursor-style
-    read (events with id > n, oldest first — good for tailing).
+    read (events with id > n, oldest first � good for tailing).
 
     Types can filter to a subset: e.g. `types=payment.cleared,stake.opened`.
     """
@@ -11263,7 +11263,7 @@ async def devices_list_admin(
 
 
 
-# ===== OPS REALITY ENDPOINT — auth via ADMIN_BROADCAST_KEY =====
+# ===== OPS REALITY ENDPOINT � auth via ADMIN_BROADCAST_KEY =====
 # Osif's "single source of truth" admin snapshot. Accepts ADMIN_BROADCAST_KEY
 # (default: slh-broadcast-2026-change-me) because ADMIN_API_KEYS is often
 # empty on Railway (chicken-and-egg with rotation). Read-only; no mutations.
@@ -11756,8 +11756,8 @@ async def performance_digest():
     ]
     for i, t in enumerate(top, 1):
         lines.append(
-            f"  {i}. <code>{t['symbol']}</code>  ·  "
-            f"${t['price']:.4f}  ·  Vol {_fmt_usd(t['vol'])}  ·  Liq {_fmt_usd(t['liq'])}"
+            f"  {i}. <code>{t['symbol']}</code>  �  "
+            f"${t['price']:.4f}  �  Vol {_fmt_usd(t['vol'])}  �  Liq {_fmt_usd(t['liq'])}"
         )
     lines += [
         "",
@@ -11772,5 +11772,6 @@ async def performance_digest():
         "source_file": _P(latest).name,
         "token_count": len(tokens),
     }
+
 
 

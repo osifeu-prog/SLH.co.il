@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """create feature_flags and seed AIRDROP_ENABLED
 
 Revision ID: 20260127163015
@@ -49,5 +49,6 @@ def upgrade() -> None:
 def downgrade() -> None:
     op.execute(sa.text("DELETE FROM feature_flags WHERE key = :k").bindparams(k="AIRDROP_ENABLED"))
     op.drop_table("feature_flags")
+
 
 

@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from pathlib import Path
 import re
 
@@ -89,5 +89,6 @@ for i,l in enumerate(lines):
 
 mp.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 print("OK: main.py heartbeat ensured")
+
 
 

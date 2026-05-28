@@ -98,3 +98,4 @@ def ensure_schema(engine: Engine) -> None:
             except Exception as e:  # noqa: BLE001
                 logger.warning("DDL failed (but continuing): %s", e)
     logger.info("DB schema ensured.")
+

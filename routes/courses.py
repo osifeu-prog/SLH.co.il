@@ -1,13 +1,13 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
-SLH Content Marketplace — Courses + Premium Content + Creator Revenue Share
+SLH Content Marketplace � Courses + Premium Content + Creator Revenue Share
 ============================================================================
 
 A creator marketplace where:
   - Creators (Osif + friends/family) upload content (courses, videos, images)
-  - Buyers pay → revenue automatically logged to revenue_ledger
+  - Buyers pay ? revenue automatically logged to revenue_ledger
   - Platform takes its cut (default 25%); creator keeps the rest (default 75%)
-  - The platform's cut feeds the Distribution Engine → goes to investors per existing rules
+  - The platform's cut feeds the Distribution Engine ? goes to investors per existing rules
 
 Why this matters legally:
   This is COMMERCE, not securities. Selling courses/content is plain business.
@@ -16,22 +16,22 @@ Why this matters legally:
 
 Endpoints:
   Catalog:
-    GET    /api/courses/                       — public catalog of available items
-    GET    /api/courses/{slug}                 — public item detail
-    POST   /api/courses/                       — admin: create new item
-    PATCH  /api/courses/{id}                   — admin: edit item
+    GET    /api/courses/                       � public catalog of available items
+    GET    /api/courses/{slug}                 � public item detail
+    POST   /api/courses/                       � admin: create new item
+    PATCH  /api/courses/{id}                   � admin: edit item
 
   Creators:
-    POST   /api/courses/creators               — admin: register a creator (friend/family)
-    GET    /api/courses/creators               — list all creators
+    POST   /api/courses/creators               � admin: register a creator (friend/family)
+    GET    /api/courses/creators               � list all creators
 
   Sales:
-    POST   /api/courses/checkout               — start a checkout session (returns payment instructions)
-    POST   /api/courses/confirm-payment        — admin: confirm a payment was received → triggers revenue split
-    GET    /api/courses/sales                  — admin: list all sales
+    POST   /api/courses/checkout               � start a checkout session (returns payment instructions)
+    POST   /api/courses/confirm-payment        � admin: confirm a payment was received ? triggers revenue split
+    GET    /api/courses/sales                  � admin: list all sales
 
   My library (per buyer):
-    GET    /api/courses/my-library             — what the buyer purchased
+    GET    /api/courses/my-library             � what the buyer purchased
 
 Author: Claude (Cowork mode, 2026-04-27)
 """
@@ -52,9 +52,9 @@ def set_pool(pool: asyncpg.Pool):
     global _pool
     _pool = pool
 
-# ─────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------
 # Auth
-# ─────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------
 def _verify_admin(k: Optional[str]) -> bool:
     if not k or k == "slh_admin_2026": return False
     return k in [x.strip() for x in os.getenv("ADMIN_API_KEYS", "").split(",") if x.strip()]
@@ -64,9 +64,9 @@ def _require_admin(k: Optional[str]) -> str:
         raise HTTPException(403, "Admin key required (X-Admin-Key)")
     return k
 
-# ─────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------
 # Schema
-# ─────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------
 _INIT = False
 async def _ensure_schema(conn):
     global _INIT
@@ -132,9 +132,9 @@ async def _ensure_schema(conn):
     """)
     _INIT = True
 
-# ─────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------
 # Models
-# ─────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------
 class CreatorCreate(BaseModel):
     display_name: str = Field(..., min_length=2, max_length=80)
     telegram_id: Optional[int] = None
@@ -173,9 +173,9 @@ class ConfirmPaymentRequest(BaseModel):
     order_ref: str
     payment_ref: Optional[str] = None
 
-# ─────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------
 # CREATORS
-# ─────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------
 @router.post("/creators")
 async def create_creator(req: CreatorCreate, x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key")):
     _require_admin(x_admin_key)
@@ -200,12 +200,12 @@ async def list_creators(x_admin_key: Optional[str] = Header(None, alias="X-Admin
         """)
     return {"creators": [dict(r) for r in rows]}
 
-# ─────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------
 # ITEMS (catalog)
-# ─────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------
 @router.get("/")
 async def public_catalog(kind: Optional[str] = Query(None), language: Optional[str] = Query(None)):
-    """Public catalog — only published items. No auth required."""
+    """Public catalog � only published items. No auth required."""
     if not _pool: raise HTTPException(503, "DB pool not initialized")
     async with _pool.acquire() as conn:
         await _ensure_schema(conn)
@@ -238,7 +238,7 @@ async def item_detail(slug: str):
              WHERE i.slug = $1 AND i.published = TRUE
         """, slug)
     if not row: raise HTTPException(404, "Item not found")
-    # Don't expose content_url to public — only after purchase
+    # Don't expose content_url to public � only after purchase
     out = dict(row)
     out.pop("content_url", None)
     return out
@@ -261,9 +261,9 @@ async def create_item(req: ItemCreate, x_admin_key: Optional[str] = Header(None,
             raise HTTPException(400, f"Slug '{req.slug}' already exists")
     return {"ok": True, "item_id": iid, "slug": req.slug}
 
-# ─────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------
 # CHECKOUT + PAYMENT FLOW
-# ─────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------
 @router.post("/checkout")
 async def checkout(req: CheckoutRequest):
     """Start a checkout. Returns order_ref + payment instructions.
@@ -296,7 +296,7 @@ async def checkout(req: CheckoutRequest):
         "next_steps": [
             "1. Complete payment using the instructions above",
             "2. Send proof of payment to @osifeu_prog (Telegram) with order_ref",
-            "3. Admin confirms → access granted",
+            "3. Admin confirms ? access granted",
         ],
     }
 
@@ -325,7 +325,7 @@ def _payment_instructions(method: str, amount: float, order_ref: str) -> Dict[st
 
 @router.post("/confirm-payment")
 async def confirm_payment(req: ConfirmPaymentRequest, x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key")):
-    """Admin confirms a payment was received → splits revenue + logs to revenue_ledger."""
+    """Admin confirms a payment was received ? splits revenue + logs to revenue_ledger."""
     actor = _require_admin(x_admin_key)
     async with _pool.acquire() as conn:
         await _ensure_schema(conn)
@@ -343,7 +343,7 @@ async def confirm_payment(req: ConfirmPaymentRequest, x_admin_key: Optional[str]
                 "SELECT default_split_pct FROM course_creators WHERE id=$1", item["creator_id"])
             creator_split = float(creator_default) if creator_default else 0.75
         if creator_split is None:
-            creator_split = 0.0  # No external creator → 100% to platform
+            creator_split = 0.0  # No external creator ? 100% to platform
 
         amount = float(sale["amount_ils"])
         creator_amt = round(amount * creator_split, 2)
@@ -378,7 +378,7 @@ async def confirm_payment(req: ConfirmPaymentRequest, x_admin_key: Optional[str]
         "platform_share_ils": platform_amt,
         "creator_split_pct": creator_split,
         "revenue_ledger_id": revenue_id,
-        "message": f"Payment confirmed. Creator gets ₪{creator_amt}, platform gets ₪{platform_amt} (logged to {period_ym} revenue).",
+        "message": f"Payment confirmed. Creator gets ?{creator_amt}, platform gets ?{platform_amt} (logged to {period_ym} revenue).",
     }
 
 @router.get("/sales")
@@ -415,4 +415,5 @@ async def my_library(telegram_id: int = Query(..., gt=0)):
              ORDER BY s.paid_at DESC
         """, telegram_id)
     return {"library": [dict(r) for r in rows], "count": len(rows)}
+
 

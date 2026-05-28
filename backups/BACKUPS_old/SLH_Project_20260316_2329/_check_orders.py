@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import os, asyncio, asyncpg
 
 async def main():
@@ -21,5 +21,6 @@ async def main():
         await conn.close()
 
 asyncio.run(main())
+
 
 

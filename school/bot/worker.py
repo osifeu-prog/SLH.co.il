@@ -1,6 +1,6 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
-Worker process לבוט - מריץ את הבוט בפולינג (לגיבוי)
+Worker process ???? - ???? ?? ???? ??????? (??????)
 """
 
 import os
@@ -8,7 +8,7 @@ import sys
 import logging
 from bot.main import setup_bot
 
-# הגדרת לוגים
+# ????? ?????
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
@@ -16,21 +16,22 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 def main():
-    """הרצת worker בפולינג"""
-    logger.info("🚀 מפעיל worker בפולינג...")
+    """???? worker ???????"""
+    logger.info("?? ????? worker ???????...")
     
-    # אתחול הבוט
+    # ????? ????
     bot_app = setup_bot()
     if bot_app:
         try:
             bot_app.run_polling(allowed_updates=None, drop_pending_updates=True)
         except Exception as e:
-            logger.error(f"❌ שגיאה ב-worker: {e}")
+            logger.error(f"? ????? ?-worker: {e}")
             sys.exit(1)
     else:
-        logger.error("❌ לא ניתן לאתחל את הבוט")
+        logger.error("? ?? ???? ????? ?? ????")
         sys.exit(1)
 
 if __name__ == '__main__':
     main()
+
 

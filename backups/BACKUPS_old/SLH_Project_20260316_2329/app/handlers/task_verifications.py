@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import re
 
 from aiogram import Router, F, types
@@ -161,4 +161,5 @@ async def reject_task_cmd(message: types.Message):
         review_note=note,
     )
     await message.answer(_render_review_result(res))
+
 

@@ -200,3 +200,4 @@ class PromoEngine:
 
 # Global singleton
 promo_engine = PromoEngine()
+

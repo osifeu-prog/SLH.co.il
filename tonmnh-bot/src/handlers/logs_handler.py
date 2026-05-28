@@ -1,4 +1,4 @@
-﻿# handlers/logs_handler.py
+# handlers/logs_handler.py
 from telegram import Update
 from telegram.ext import ContextTypes
 from config import ADMIN_ID
@@ -45,3 +45,4 @@ async def logs_raw(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text(f"`\n{log_text}\n`", parse_mode='Markdown')
     except Exception as e:
         await update.message.reply_text(f"Error: {e}")
+

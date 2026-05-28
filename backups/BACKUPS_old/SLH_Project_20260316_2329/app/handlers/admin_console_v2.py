@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from aiogram import Router, types, F
 from aiogram.filters import Command
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
@@ -147,4 +147,5 @@ async def admin_logs(callback: types.CallbackQuery):
     await callback.answer()
     if callback.message:
         await callback.message.answer("Use /admin to access tail logs in the current console.")
+
 

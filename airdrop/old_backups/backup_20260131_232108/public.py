@@ -1,10 +1,10 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 import logging
 import os
 
-# Logging ×ž×ª×§×“×
+# Logging מתקדם
 log_folder = os.path.join(os.getcwd(), 'logs')
 os.makedirs(log_folder, exist_ok=True)
 logging.basicConfig(
@@ -32,12 +32,13 @@ def send_airdrop(request: AirdropRequest):
     print(message)
     logging.info(message)
 
-    # Mock ×©×œ×™×—×ª token
+    # Mock שליחת token
     return {
         'user_id': request.user_id,
         'amount': request.amount,
         'status': 'success',
-        'note': 'mock send - × ×™×¡×•×™'
+        'note': 'mock send - ניסוי'
     }
+
 
 

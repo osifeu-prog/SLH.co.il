@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import os, sys, glob
 
 print("PY:", sys.version)
@@ -32,7 +32,7 @@ for f in sorted(files)[-10:]:
 print("\n== alembic.ini script_location (RAW, no interpolation) ==")
 try:
     import configparser
-    cp = configparser.RawConfigParser()  # <— disables %(here)s interpolation entirely
+    cp = configparser.RawConfigParser()  # <� disables %(here)s interpolation entirely
     cp.read("alembic.ini")
     print("script_location:", cp.get("alembic", "script_location", fallback=None))
 except Exception as e:
@@ -53,4 +53,5 @@ try:
         print("alembic_version query ERROR:", repr(e))
 except Exception as e:
     print("DB inspect ERROR:", repr(e))
+
 

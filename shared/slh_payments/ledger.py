@@ -171,3 +171,4 @@ async def get_leaderboard(token: str = "SLH", limit: int = 10) -> list:
             token, limit,
         )
     return [dict(r) for r in rows]
+
