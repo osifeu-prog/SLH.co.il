@@ -1,17 +1,18 @@
 ﻿import json, os, datetime
 
 DB_FILE = "daily_tasks.json"
+CONTACTS_FILE = "contacts.json"
 
-def load_db():
-    if not os.path.exists(DB_FILE):
-        with open(DB_FILE, "w") as f:
+def load_db(file=DB_FILE):
+    if not os.path.exists(file):
+        with open(file, "w") as f:
             json.dump({}, f)
-    with open(DB_FILE, "r") as f:
+    with open(file, "r") as f:
         return json.load(f)
 
-def save_db(db):
-    with open(DB_FILE, "w") as f:
-        json.dump(db, f, indent=2)
+def save_db(data, file=DB_FILE):
+    with open(file, "w") as f:
+        json.dump(data, f, indent=2)
 
 def checkin(user_id):
     db = load_db()
@@ -35,3 +36,16 @@ def leaderboard(limit=5):
     db = load_db()
     sorted_users = sorted(db.items(), key=lambda x: x[1]["points"], reverse=True)[:limit]
     return [{"user_id": uid, "points": data["points"], "streak": data["streak"]} for uid, data in sorted_users]
+
+# ---- Contact List ----
+def register_contact(user_id, username, full_name):
+    contacts = load_db(CONTACTS_FILE)
+    contacts[user_id] = {
+        "username": username,
+        "full_name": full_name,
+        "joined": datetime.datetime.now().isoformat()
+    }
+    save_db(contacts, CONTACTS_FILE)
+
+def get_contacts():
+    return load_db(CONTACTS_FILE)
