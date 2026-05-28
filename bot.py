@@ -1,4 +1,4 @@
-﻿"""@SLH_Claude_bot Ã¢â‚¬â€ aiogram entrypoint.
+"""@SLH_Claude_bot Ã¢â‚¬â€ aiogram entrypoint.
 
 Routes every text message from Osif to Claude with workspace tools.
 Guards with Telegram ID allowlist. Persists conversation per chat.
