@@ -73,7 +73,7 @@ if not TOKEN:
 
 bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN))
 dp = Dispatcher()
-# === STABLE COMMANDS ===
+# === FINAL STABLE COMMANDS ===
 try:
     import points_system
 except ImportError:
