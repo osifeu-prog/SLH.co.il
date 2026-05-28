@@ -73,6 +73,44 @@ if not TOKEN:
 
 bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN))
 dp = Dispatcher()
+# === NEW COMMANDS ===
+@dp.message(Command("dashboard"))
+async def cmd_dashboard(msg: Message):
+    await msg.reply(
+        "?? SLH Autonomous Dashboard\n\n"
+        "? FastAPI: ONLINE\n"
+        "? Bot: ONLINE (@SLH_Claude_bot)\n"
+        "? Agents: Scan, Plan, Code\n"
+        "? Docker: postgres + redis + admin-bot\n\n"
+        "Commands: /scan /plan /auto /dashboard /crowdfunding"
+    )
+
+@dp.message(Command("crowdfunding"))
+async def cmd_crowdfunding(msg: Message):
+    await msg.reply(
+        "?? SLH Crowdfunding Campaign\n\n"
+        "We're building an AI that builds itself  and you can be part of it.\n"
+        "https://slh-nft.com/crowdfunding\n\n"
+        "?? Rewards:\n"
+        "� Supporter ($1)  Name on website\n"
+        "� Builder ($5)  Early access + badge\n"
+        "� Founder ($20)  Vote on features + private Telegram group\n"
+        "� Visionary ($50)  1-on-1 call + founding member status\n\n"
+        "Send TON to:\nUQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp\n"
+        "Include TX hash via bot to receive rewards."
+    )
+
+@dp.message(Command("scan"))
+async def cmd_scan(msg: Message):
+    await msg.reply("Scanning requires local agent running. Use dashboard or local machine.")
+
+@dp.message(Command("plan"))
+async def cmd_plan(msg: Message):
+    await msg.reply("Planning requires local agent. Use dashboard or local machine.")
+
+@dp.message(Command("auto"))
+async def cmd_auto(msg: Message):
+    await msg.reply("Auto mode requires local agent. Use dashboard or local machine.")
 
 
 # ---------- Cross-bot coordination (shared agents group) ----------
@@ -861,7 +899,3 @@ async def cmd_auto(msg: Message):
     result = run_auto(goal)
     await msg.reply(result[:4000])
 
-from new_commands import router as new_cmd_router
-dp.include_router(new_cmd_router)
-from new_commands import router as new_cmd_router
-dp.include_router(new_cmd_router)
