@@ -1,4 +1,4 @@
-﻿×³Â³Ö²ÂŸ×²Â²Ö²Â»×²Â²Ö²Â¿"""
+﻿Ã—Â³Ã‚Â³Ã–Â²Ã‚Å¸Ã—Â²Ã‚Â²Ã–Â²Ã‚Â»Ã—Â²Ã‚Â²Ã–Â²Ã‚Â¿"""
 Bridge between Telegram bot and Autonomous Agents
 Commands: /scan, /plan, /auto
 """
@@ -39,3 +39,5 @@ def run_auto(goal: str) -> str:
     scan_result = run_scan(r"D:\slh-website")
     plan_result = run_plan(goal)
     return f"== SCAN ==\n{scan_result}\n\n== PLAN ==\n{plan_result}"
+
+

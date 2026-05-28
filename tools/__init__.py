@@ -1,7 +1,7 @@
-"""Tool registry exposed to Claude via the Anthropic tool-use API."""
+﻿"""Tool registry exposed to Claude via the Anthropic tool-use API."""
 from . import filesystem, git_ops, bash_ops, http_ops
 
-# Anthropic tool schemas ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ sent in every API call
+# Anthropic tool schemas ×³Â³×’â‚¬â„¢×³â€™×’â‚¬ÂšÖ²Â¬×³â€™×’â€šÂ¬Ö²Â sent in every API call
 TOOLS = [
     {
         "name": "read_file",
@@ -77,7 +77,7 @@ TOOLS = [
 ]
 
 # Dispatcher: tool name -> callable.
-# filesystem.* and git/bash/http are sync or async ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ the runner awaits if needed.
+# filesystem.* and git/bash/http are sync or async ×³Â³×’â‚¬â„¢×³â€™×’â‚¬ÂšÖ²Â¬×³â€™×’â€šÂ¬Ö²Â the runner awaits if needed.
 HANDLERS = {
     "read_file": filesystem.read_file,
     "write_file": filesystem.write_file,
@@ -101,4 +101,6 @@ async def execute(name: str, args: dict) -> str:
         return str(result)
     except Exception as e:  # never crash the bot on tool error
         return f"[error] {type(e).__name__}: {e}"
+
+
 

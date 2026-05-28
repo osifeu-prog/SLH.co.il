@@ -1,4 +1,4 @@
-"""Git operations ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ thin wrapper over bash with extra safety."""
+﻿"""Git operations ×³Â³×’â‚¬â„¢×³â€™×’â‚¬ÂšÖ²Â¬×³â€™×’â€šÂ¬Ö²Â thin wrapper over bash with extra safety."""
 import os
 from pathlib import Path
 from . import bash_ops
@@ -30,7 +30,9 @@ async def run(subcommand: str, cwd: str = "") -> str:
         low = subcommand.lower()
         for bad in FORBIDDEN_SUBSTRINGS:
             if bad in low:
-                return f"[blocked] destructive git pattern: {bad!r} ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ set ALLOW_DESTRUCTIVE=true"
+                return f"[blocked] destructive git pattern: {bad!r} ×³Â³×’â‚¬â„¢×³â€™×’â‚¬ÂšÖ²Â¬×³â€™×’â€šÂ¬Ö²Â set ALLOW_DESTRUCTIVE=true"
 
     return await bash_ops.run(f"git {subcommand}", cwd=cwd, timeout=120)
+
+
 

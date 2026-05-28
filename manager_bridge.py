@@ -1,4 +1,4 @@
-﻿×ŸÂ»Â¿import requests
+﻿Ã—Å¸Ã‚Â»Ã‚Â¿import requests
 MANAGER_URL = "http://localhost:9000"
 
 def send_to_manager(endpoint, params=None):
@@ -10,3 +10,5 @@ def send_to_manager(endpoint, params=None):
         return r.json() if r.ok else {"error": r.status_code}
     except Exception as e:
         return {"error": str(e)}
+
+

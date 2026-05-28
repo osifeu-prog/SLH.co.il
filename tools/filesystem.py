@@ -1,4 +1,4 @@
-"""Filesystem tool ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ read, write, list files under the workspace."""
+﻿"""Filesystem tool ×³Â³×’â‚¬â„¢×³â€™×’â‚¬ÂšÖ²Â¬×³â€™×’â€šÂ¬Ö²Â read, write, list files under the workspace."""
 import os
 from pathlib import Path
 
@@ -63,4 +63,6 @@ def list_dir(path: str = ".") -> str:
         size = child.stat().st_size if child.is_file() else 0
         entries.append(f"{kind}\t{size}\t{child.name}")
     return "\n".join(entries) if entries else "(empty)"
+
+
 

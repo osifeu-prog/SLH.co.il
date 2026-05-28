@@ -31,14 +31,14 @@ async def cmd_start(msg: Message):
         db[user_id] = {"joined": datetime.datetime.now().isoformat()}
         save_db(db)
     await msg.answer(
-        "🚀 **SLH Crowdfunding**\n\n"
-        "אנחנו בונים AI אוטונומי  וצריכים אותך!\n\n"
-        "💎 **פקודות:**\n"
-        "/register  הרשמה לעדכונים\n"
-        "/donate  תרומה והשקעה\n"
-        "/status  סטטוס פרויקט\n"
-        "/referral  הפנה חברים וקבל בונוס\n"
-        "/leaderboard  טבלת מובילים",
+        "ðŸš€ **SLH Crowdfunding**\n\n"
+        "×× ×—× ×• ×‘×•× ×™× AI ××•×˜×•× ×•×ž×™  ×•×¦×¨×™×›×™× ××•×ª×š!\n\n"
+        "ðŸ’Ž **×¤×§×•×“×•×ª:**\n"
+        "/register  Register for updates\n"
+        "/donate  Donate & Invest\n"
+        "/status  Project Status\n"
+        "/referral  ×”×¤× ×” ×—×‘×¨×™× ×•×§×‘×œ ×‘×•× ×•×¡\n"
+        "/leaderboard  Leaderboard",
         parse_mode="Markdown"
     )
 
@@ -53,60 +53,60 @@ async def cmd_register(msg: Message):
         "joined": datetime.datetime.now().isoformat()
     }
     save_db(db)
-    await msg.answer("✅ נרשמת בהצלחה! תקבל/י עדכונים על הקמפיין.")
+    await msg.answer("âœ… × ×¨×©×ž×ª ×‘×”×¦×œ×—×”! ×ª×§×‘×œ/×™ ×¢×“×›×•× ×™× ×¢×œ ×”×§×ž×¤×™×™×Ÿ.")
 
 # ---- /donate ----
 @dp.message(Command("donate"))
 async def cmd_donate(msg: Message):
     await msg.answer(
-        "💰 **תרמו לקמפיין:**\n\n"
-        "שלחו TON לכתובת:\n"
+        "ðŸ’° **×ª×¨×ž×• ×œ×§×ž×¤×™×™×Ÿ:**\n\n"
+        "×©×œ×—×• TON ×œ×›×ª×•×‘×ª:\n"
         "`UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp`\n\n"
-        "📊 **רמות תמיכה:**\n"
-        "• Supporter ($1)  שם באתר\n"
-        "• Builder ($5)  Early access + באדג'\n"
-        "• Founder ($20)  הצבעה על פיצ'רים\n"
-        "• Visionary ($50)  שיחה אישית + סטטוס מייסד",
+        "ðŸ“Š **×¨×ž×•×ª ×ª×ž×™×›×”:**\n"
+        "â€¢ Supporter ($1)  ×©× ×‘××ª×¨\n"
+        "â€¢ Builder ($5)  Early access + ×‘××“×’'\n"
+        "â€¢ Founder ($20)  ×”×¦×‘×¢×” ×¢×œ ×¤×™×¦'×¨×™×\n"
+        "â€¢ Visionary ($50)  ×©×™×—×” ××™×©×™×ª + ×¡×˜×˜×•×¡ ×ž×™×™×¡×“",
         parse_mode="Markdown"
     )
 
 # ---- /status ----
 @dp.message(Command("status"))
 async def cmd_status(msg: Message):
-    await msg.answer("📊 **סטטוס פרויקט:**\n"
-                     "✅ Bot: Online\n✅ Crowdfunding: Active\n"
-                     "✅ Mini App: [slh-nft.com](https://slh-nft.com)")
+    await msg.answer("ðŸ“Š **Project Status:**\n"
+                     "âœ… Bot: Online\nâœ… Crowdfunding: Active\n"
+                     "âœ… Mini App: [slh-nft.com](https://slh-nft.com)")
 
-# ---- /admin (רשימת משתמשים) ----
+# ---- /admin (×¨×©×™×ž×ª ×ž×©×ª×ž×©×™×) ----
 @dp.message(Command("users"))
 async def cmd_users(msg: Message):
     if msg.from_user.id != ADMIN_ID:
-        await msg.answer("⛔ אדמין בלבד")
+        await msg.answer("â›” ××“×ž×™×Ÿ ×‘×œ×‘×“")
         return
     db = load_db()
-    text = f"📋 **{len(db)} משתמשים רשומים:**\n"
+    text = f"ðŸ“‹ **{len(db)} ×ž×©×ª×ž×©×™× ×¨×©×•×ž×™×:**\n"
     for uid, data in db.items():
-        text += f"• {data.get('full_name','?')} (@{data.get('username','?')})\n"
+        text += f"â€¢ {data.get('full_name','?')} (@{data.get('username','?')})\n"
     await msg.answer(text)
 
-# ---- /broadcast (שידור) ----
+# ---- /broadcast (×©×™×“×•×¨) ----
 @dp.message(Command("broadcast"))
 async def cmd_broadcast(msg: Message):
     if msg.from_user.id != ADMIN_ID:
-        await msg.answer("⛔ אדמין בלבד")
+        await msg.answer("â›” ××“×ž×™×Ÿ ×‘×œ×‘×“")
         return
     parts = msg.text.split(" ", 1)
     if len(parts) < 2:
-        await msg.answer("שימוש: /broadcast <הודעה>")
+        await msg.answer("×©×™×ž×•×©: /broadcast <×”×•×“×¢×”>")
         return
     db = load_db()
     sent = 0
     for uid in db:
         try:
-            await msg.bot.send_message(int(uid), f"📢 {parts[1]}")
+            await msg.bot.send_message(int(uid), f"ðŸ“¢ {parts[1]}")
             sent += 1
         except: pass
-    await msg.answer(f"📤 נשלח ל‑{sent}/{len(db)} משתמשים.")
+    await msg.answer(f"ðŸ“¤ × ×©×œ×— ×œâ€‘{sent}/{len(db)} ×ž×©×ª×ž×©×™×.")
 
 # ---- Main ----
 async def main():
@@ -115,3 +115,5 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
+

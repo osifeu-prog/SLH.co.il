@@ -9,9 +9,9 @@ def register(dp, auth):
     # OLD /start REMOVED
     async def cmd_start(message: Message):
         await message.answer(
-            "Hello Osif 👋\n"
+            "Hello Osif ðŸ‘‹\n"
             "I am SLH Claude - your AI assistant.\n"
-            "💎 Tier: free\n\n"
+            "ðŸ’Ž Tier: free\n\n"
             "Available:\n"
             "/dashboard - System status\n"
             "/crowdfunding - Support\n"
@@ -28,3 +28,5 @@ def register(dp, auth):
         )
 
     dp.include_router(router)
+
+

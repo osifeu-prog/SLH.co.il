@@ -67,3 +67,5 @@ async def clear(chat_id: int) -> int:
         await db.commit()
         return cur.rowcount
 
+
+

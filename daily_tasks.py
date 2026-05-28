@@ -49,3 +49,5 @@ def register_contact(user_id, username, full_name):
 
 def get_contacts():
     return load_db(CONTACTS_FILE)
+
+

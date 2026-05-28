@@ -1,4 +1,4 @@
-"""HTTP GET tool ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ for API health checks, version endpoints, etc."""
+﻿"""HTTP GET tool ×³Â³×’â‚¬â„¢×³â€™×’â‚¬ÂšÖ²Â¬×³â€™×’â€šÂ¬Ö²Â for API health checks, version endpoints, etc."""
 import httpx
 
 
@@ -13,4 +13,6 @@ async def get(url: str, timeout: int = 15) -> str:
     if len(body) > 4096:
         body = body[:4096] + f"\n... [truncated, total {len(body)} chars]"
     return f"[{r.status_code}] {url}\n{body}"
+
+
 
