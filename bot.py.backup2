@@ -831,32 +831,3 @@ async def main() -> None:
 if __name__ == "__main__":
     asyncio.run(main())
 
-
-
-# === AUTONOMOUS AGENTS ===
-@dp.message(Command("scan"))
-async def cmd_scan(msg: Message):
-    target = msg.text.replace("/scan", "").strip() or r"D:\slh-website"
-    await msg.reply("Scanning...")
-    result = run_scan(target)
-    await msg.reply(result)
-
-@dp.message(Command("plan"))
-async def cmd_plan(msg: Message):
-    goal = msg.text.replace("/plan", "").strip()
-    if not goal:
-        await msg.reply("Usage: /plan <goal in English>")
-        return
-    await msg.reply("Planning...")
-    result = run_plan(goal)
-    await msg.reply(result)
-
-@dp.message(Command("auto"))
-async def cmd_auto(msg: Message):
-    goal = msg.text.replace("/auto", "").strip()
-    if not goal:
-        await msg.reply("Usage: /auto <goal>")
-        return
-    await msg.reply("Running full auto pipeline...")
-    result = run_auto(goal)
-    await msg.reply(result[:4000])
