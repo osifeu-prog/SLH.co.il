@@ -1,4 +1,4 @@
-"""Editor commands for @SLH_Claude_bot — full website-building control from Telegram.
+"""Editor commands for @SLH_Claude_bot ג€” full website-building control from Telegram.
 
 This module defines slash commands that let Osif (admin allowlist) inspect, edit,
 commit, and deploy files in the SLH_ECOSYSTEM workspace from Telegram.
@@ -11,27 +11,27 @@ Security:
 
 Available commands (all from Telegram):
   Inspection:
-    /cat <file>            — read file (masked secrets, 4000 chars)
-    /ls [dir]              — list directory
-    /grep <pat> [file]     — search in file/dir
-    /find <pat> [dir]      — find files by name pattern
+    /cat <file>            ג€” read file (masked secrets, 4000 chars)
+    /ls [dir]              ג€” list directory
+    /grep <pat> [file]     ג€” search in file/dir
+    /find <pat> [dir]      ג€” find files by name pattern
 
   Edit (direct):
-    /append <file> <text>  — append a line
-    /replace <file> :: <old> :: <new>   — find/replace (use :: as separator)
-    /newpage <name>        — scaffold a new website/<name>.html from template
+    /append <file> <text>  ג€” append a line
+    /replace <file> :: <old> :: <new>   ג€” find/replace (use :: as separator)
+    /newpage <name>        ג€” scaffold a new website/<name>.html from template
 
   Git:
-    /commit <msg>          — git add -A + commit (uses Osif's name/email)
-    /push                  — git push current branch (after commit)
-    /sync <msg>            — commit + push in one step
+    /commit <msg>          ג€” git add -A + commit (uses Osif's name/email)
+    /push                  ג€” git push current branch (after commit)
+    /sync <msg>            ג€” commit + push in one step
 
   AI-assisted:
-    /draft <file> <instruction>  — AI generates a diff plan; bot shows preview
-    /apply                 — apply last draft + commit + push
-    /reject                — discard last draft
+    /draft <file> <instruction>  ג€” AI generates a diff plan; bot shows preview
+    /apply                 ג€” apply last draft + commit + push
+    /reject                ג€” discard last draft
 
-Public surface: register(dp, bot, auth, _chunks, _escape_md) — call from bot.py
+Public surface: register(dp, bot, auth, _chunks, _escape_md) ג€” call from bot.py
 """
 from __future__ import annotations
 
@@ -64,7 +64,7 @@ GIT_AUTHOR_EMAIL = os.getenv("GIT_AUTHOR_EMAIL", "osif.erez.ungar@gmail.com")
 _DRAFTS: dict[int, dict] = {}
 
 
-# ──────────────── Safety ────────────────
+# ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ Safety ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
 
 def _safe_path(rel: str) -> Optional[Path]:
     """Resolve a path inside WORKSPACE, return None if it escapes."""
@@ -118,29 +118,29 @@ def _run(cmd: list[str] | str, cwd: Optional[Path] = None, timeout: int = 30) ->
         out = (result.stdout or "") + (result.stderr or "")
         return result.returncode, out[:3500]
     except subprocess.TimeoutExpired:
-        return 124, f"⏱ command timed out after {timeout}s"
+        return 124, f"ג± command timed out after {timeout}s"
     except Exception as e:
-        return 1, f"⚠️ {type(e).__name__}: {e}"
+        return 1, f"ג ן¸ {type(e).__name__}: {e}"
 
 
-# ──────────────── Inspection commands ────────────────
+# ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ Inspection commands ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
 
 async def _cmd_cat(msg: Message, parts: list[str], _chunks) -> None:
     if len(parts) < 2:
-        await msg.answer("שימוש: `/cat \\<קובץ\\>`")
+        await msg.answer("׳©׳™׳׳•׳©: `/cat \\<׳§׳•׳‘׳¥\\>`")
         return
     p = _safe_path(parts[1])
     if not p or not p.is_file():
-        await msg.answer(f"קובץ לא נמצא: `{_md_escape(parts[1])}`")
+        await msg.answer(f"׳§׳•׳‘׳¥ ׳׳ ׳ ׳׳¦׳: `{_md_escape(parts[1])}`")
         return
     try:
         content = p.read_text(encoding="utf-8", errors="replace")[:4000]
         content = _mask(content)
     except Exception as e:
-        await msg.answer(f"שגיאה: `{_md_escape(str(e))}`")
+        await msg.answer(f"׳©׳’׳™׳׳”: `{_md_escape(str(e))}`")
         return
     rel = p.relative_to(WORKSPACE)
-    header = f"📄 *{_md_escape(str(rel))}* \\({len(content)} chars\\)"
+    header = f"נ“„ *{_md_escape(str(rel))}* \\({len(content)} chars\\)"
     body = f"```\n{content}\n```"
     for chunk in _chunks(header + "\n" + body):
         await msg.answer(chunk)
@@ -150,135 +150,135 @@ async def _cmd_ls(msg: Message, parts: list[str]) -> None:
     target = parts[1] if len(parts) >= 2 else "."
     p = _safe_path(target)
     if not p or not p.is_dir():
-        await msg.answer(f"לא תיקייה: `{_md_escape(target)}`")
+        await msg.answer(f"׳׳ ׳×׳™׳§׳™׳™׳”: `{_md_escape(target)}`")
         return
     try:
         entries = sorted(p.iterdir(), key=lambda x: (x.is_file(), x.name.lower()))
     except Exception as e:
-        await msg.answer(f"שגיאה: `{_md_escape(str(e))}`")
+        await msg.answer(f"׳©׳’׳™׳׳”: `{_md_escape(str(e))}`")
         return
-    lines = [f"📁 *{_md_escape(str(p.relative_to(WORKSPACE)) or '.')}*"]
+    lines = [f"נ“ *{_md_escape(str(p.relative_to(WORKSPACE)) or '.')}*"]
     for e in entries[:60]:
-        icon = "📁" if e.is_dir() else "📄"
+        icon = "נ“" if e.is_dir() else "נ“„"
         lines.append(f"{icon} `{_md_escape(e.name)}`")
     if len(entries) > 60:
-        lines.append(f"_\\+ {len(entries) - 60} נוספים_")
+        lines.append(f"_\\+ {len(entries) - 60} ׳ ׳•׳¡׳₪׳™׳_")
     await msg.answer("\n".join(lines))
 
 
 async def _cmd_grep(msg: Message, parts: list[str]) -> None:
     if len(parts) < 2:
-        await msg.answer("שימוש: `/grep \\<תבנית\\> \\[קובץ\\|תיקייה\\]`")
+        await msg.answer("׳©׳™׳׳•׳©: `/grep \\<׳×׳‘׳ ׳™׳×\\> \\[׳§׳•׳‘׳¥\\|׳×׳™׳§׳™׳™׳”\\]`")
         return
     args = parts[1].strip().split(maxsplit=1)
     pattern = args[0]
     target = args[1] if len(args) >= 2 else "website"
     p = _safe_path(target)
     if not p or not p.exists():
-        await msg.answer(f"לא נמצא: `{_md_escape(target)}`")
+        await msg.answer(f"׳׳ ׳ ׳׳¦׳: `{_md_escape(target)}`")
         return
     cmd = ["grep", "-rn", "-m", "20", "--include=*.html", "--include=*.js", "--include=*.css", "--include=*.md", pattern, str(p)]
     rc, out = _run(cmd, timeout=15)
     out = _mask(out)
     if not out.strip():
-        await msg.answer(f"אין התאמות ל\\-`{_md_escape(pattern)}` ב\\-`{_md_escape(target)}`")
+        await msg.answer(f"׳׳™׳ ׳”׳×׳׳׳•׳× ׳\\-`{_md_escape(pattern)}` ׳‘\\-`{_md_escape(target)}`")
         return
-    await msg.answer(f"🔍 *grep* `{_md_escape(pattern)}` @ `{_md_escape(target)}`\n```\n{out[:3500]}\n```")
+    await msg.answer(f"נ” *grep* `{_md_escape(pattern)}` @ `{_md_escape(target)}`\n```\n{out[:3500]}\n```")
 
 
 async def _cmd_find(msg: Message, parts: list[str]) -> None:
     if len(parts) < 2:
-        await msg.answer("שימוש: `/find \\<דפוס\\> \\[תיקייה\\]`")
+        await msg.answer("׳©׳™׳׳•׳©: `/find \\<׳“׳₪׳•׳¡\\> \\[׳×׳™׳§׳™׳™׳”\\]`")
         return
     args = parts[1].strip().split(maxsplit=1)
     pattern = args[0]
     target = args[1] if len(args) >= 2 else "website"
     p = _safe_path(target)
     if not p or not p.exists():
-        await msg.answer(f"לא נמצא: `{_md_escape(target)}`")
+        await msg.answer(f"׳׳ ׳ ׳׳¦׳: `{_md_escape(target)}`")
         return
     cmd = ["find", str(p), "-type", "f", "-name", pattern, "-not", "-path", "*/node_modules/*", "-not", "-path", "*/.git/*"]
     rc, out = _run(cmd, timeout=10)
     if not out.strip():
-        await msg.answer(f"אין קבצים תואמים ל\\-`{_md_escape(pattern)}`")
+        await msg.answer(f"׳׳™׳ ׳§׳‘׳¦׳™׳ ׳×׳•׳׳׳™׳ ׳\\-`{_md_escape(pattern)}`")
         return
     files = out.strip().split("\n")[:30]
     rels = [str(Path(f).relative_to(WORKSPACE)) for f in files if f]
-    await msg.answer(f"📂 נמצאו {len(rels)} קבצים:\n```\n" + "\n".join(rels) + "\n```")
+    await msg.answer(f"נ“‚ ׳ ׳׳¦׳׳• {len(rels)} ׳§׳‘׳¦׳™׳:\n```\n" + "\n".join(rels) + "\n```")
 
 
-# ──────────────── Edit commands ────────────────
+# ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ Edit commands ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
 
 async def _cmd_append(msg: Message, parts: list[str]) -> None:
     if len(parts) < 2:
-        await msg.answer("שימוש: `/append \\<קובץ\\> \\<טקסט\\>`")
+        await msg.answer("׳©׳™׳׳•׳©: `/append \\<׳§׳•׳‘׳¥\\> \\<׳˜׳§׳¡׳˜\\>`")
         return
     args = parts[1].strip().split(maxsplit=1)
     if len(args) < 2:
-        await msg.answer("�-סר טקסט להוספה")
+        await msg.answer("ן¿½-׳¡׳¨ ׳˜׳§׳¡׳˜ ׳׳”׳•׳¡׳₪׳”")
         return
     p = _safe_path(args[0])
     if not p or not p.is_file():
-        await msg.answer(f"קובץ לא קיים: `{_md_escape(args[0])}`")
+        await msg.answer(f"׳§׳•׳‘׳¥ ׳׳ ׳§׳™׳™׳: `{_md_escape(args[0])}`")
         return
     text = args[1]
     try:
         with p.open("a", encoding="utf-8") as f:
             f.write(("\n" if not p.read_text(encoding="utf-8", errors="replace").endswith("\n") else "") + text + "\n")
     except Exception as e:
-        await msg.answer(f"שגיאה: `{_md_escape(str(e))}`")
+        await msg.answer(f"׳©׳’׳™׳׳”: `{_md_escape(str(e))}`")
         return
-    await msg.answer(f"✅ נוסף ל\\-`{_md_escape(str(p.relative_to(WORKSPACE)))}`:\n`{_md_escape(text[:200])}`")
+    await msg.answer(f"ג… ׳ ׳•׳¡׳£ ׳\\-`{_md_escape(str(p.relative_to(WORKSPACE)))}`:\n`{_md_escape(text[:200])}`")
 
 
 async def _cmd_replace(msg: Message, parts: list[str]) -> None:
     if len(parts) < 2 or "::" not in parts[1]:
-        await msg.answer("שימוש: `/replace \\<קובץ\\> :: \\<old\\> :: \\<new\\>`")
+        await msg.answer("׳©׳™׳׳•׳©: `/replace \\<׳§׳•׳‘׳¥\\> :: \\<old\\> :: \\<new\\>`")
         return
     chunks = parts[1].split("::")
     if len(chunks) < 3:
-        await msg.answer("�-סר :: \\(צריך שני\\)")
+        await msg.answer("ן¿½-׳¡׳¨ :: \\(׳¦׳¨׳™׳ ׳©׳ ׳™\\)")
         return
     file_part = chunks[0].strip()
     old = chunks[1].strip()
     new = "::".join(chunks[2:]).strip()
     p = _safe_path(file_part)
     if not p or not p.is_file():
-        await msg.answer(f"קובץ לא קיים: `{_md_escape(file_part)}`")
+        await msg.answer(f"׳§׳•׳‘׳¥ ׳׳ ׳§׳™׳™׳: `{_md_escape(file_part)}`")
         return
     try:
         content = p.read_text(encoding="utf-8")
         if old not in content:
-            await msg.answer(f"לא נמצא טקסט: `{_md_escape(old[:80])}`")
+            await msg.answer(f"׳׳ ׳ ׳׳¦׳ ׳˜׳§׳¡׳˜: `{_md_escape(old[:80])}`")
             return
         count = content.count(old)
         new_content = content.replace(old, new)
         p.write_text(new_content, encoding="utf-8")
     except Exception as e:
-        await msg.answer(f"שגיאה: `{_md_escape(str(e))}`")
+        await msg.answer(f"׳©׳’׳™׳׳”: `{_md_escape(str(e))}`")
         return
-    await msg.answer(f"✅ הו�-לף ב\\-`{_md_escape(file_part)}`: {count} מופעים")
+    await msg.answer(f"ג… ׳”׳•ן¿½-׳׳£ ׳‘\\-`{_md_escape(file_part)}`: {count} ׳׳•׳₪׳¢׳™׳")
 
 
 async def _cmd_newpage(msg: Message, parts: list[str]) -> None:
     if len(parts) < 2:
-        await msg.answer("שימוש: `/newpage \\<שם\\>` \\(ללא \\.html\\)")
+        await msg.answer("׳©׳™׳׳•׳©: `/newpage \\<׳©׳\\>` \\(׳׳׳ \\.html\\)")
         return
     name = parts[1].strip().split()[0]
     name = re.sub(r"[^a-z0-9_-]", "", name.lower())
     if not name:
-        await msg.answer("שם לא �-וקי \\(אנגלית בלבד\\)")
+        await msg.answer("׳©׳ ׳׳ ן¿½-׳•׳§׳™ \\(׳׳ ׳’׳׳™׳× ׳‘׳׳‘׳“\\)")
         return
     target = WEBSITE_DIR / f"{name}.html"
     if target.exists():
-        await msg.answer(f"קיים: `{name}.html`")
+        await msg.answer(f"׳§׳™׳™׳: `{name}.html`")
         return
     template = f"""<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SLH · {name.title()}</title>
+<title>SLH ֲ· {name.title()}</title>
 <link rel="icon" type="image/png" href="/favicon-32.png">
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/shared.css?v=20260424a">
@@ -293,7 +293,7 @@ async def _cmd_newpage(msg: Message, parts: list[str]) -> None:
 
 <main class="wrap">
   <h1>{name.title()}</h1>
-  <p>תוכן �-דש — נוצר דרך @SLH_Claude_bot</p>
+  <p>׳×׳•׳›׳ ן¿½-׳“׳© ג€” ׳ ׳•׳¦׳¨ ׳“׳¨׳ @SLH_Claude_bot</p>
 </main>
 
 <div id="bottomnav-root"></div>
@@ -308,33 +308,33 @@ async def _cmd_newpage(msg: Message, parts: list[str]) -> None:
     try:
         target.write_text(template, encoding="utf-8")
     except Exception as e:
-        await msg.answer(f"שגיאה: `{_md_escape(str(e))}`")
+        await msg.answer(f"׳©׳’׳™׳׳”: `{_md_escape(str(e))}`")
         return
     await msg.answer(
-        f"✅ נוצר `website/{name}.html` \\({len(template)} chars\\)\n\n"
-        f"לראות: `/cat website/{name}.html`\n"
-        f"להוסיף לגיט: `/sync \"feat: add {name} page\"`\n"
-        f"א�-רי push יראה ב\\-https://slh\\-nft\\.com/{name}\\.html"
+        f"ג… ׳ ׳•׳¦׳¨ `website/{name}.html` \\({len(template)} chars\\)\n\n"
+        f"׳׳¨׳׳•׳×: `/cat website/{name}.html`\n"
+        f"׳׳”׳•׳¡׳™׳£ ׳׳’׳™׳˜: `/sync \"feat: add {name} page\"`\n"
+        f"׳ן¿½-׳¨׳™ push ׳™׳¨׳׳” ׳‘\\-https://slh\\-nft\\.com/{name}\\.html"
     )
 
 
-# ──────────────── Git commands ────────────────
+# ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ Git commands ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
 
 async def _cmd_commit(msg: Message, parts: list[str]) -> None:
     if len(parts) < 2:
-        await msg.answer("שימוש: `/commit \\<הודעה\\>`")
+        await msg.answer("׳©׳™׳׳•׳©: `/commit \\<׳”׳•׳“׳¢׳”\\>`")
         return
     commit_msg = parts[1].strip()
     cwd = WEBSITE_DIR if (WEBSITE_DIR / ".git").exists() else WORKSPACE
 
     rc1, status = _run(["git", "status", "--short"], cwd=cwd, timeout=10)
     if not status.strip():
-        await msg.answer("אין שינויים לcommit")
+        await msg.answer("׳׳™׳ ׳©׳™׳ ׳•׳™׳™׳ ׳commit")
         return
 
     rc2, _ = _run(["git", "add", "-A"], cwd=cwd, timeout=15)
     if rc2 != 0:
-        await msg.answer(f"git add נכשל")
+        await msg.answer(f"git add ׳ ׳›׳©׳")
         return
 
     env_args = [
@@ -343,14 +343,14 @@ async def _cmd_commit(msg: Message, parts: list[str]) -> None:
     ]
     rc3, out = _run(["git"] + env_args + ["commit", "-m", commit_msg], cwd=cwd, timeout=20)
     if rc3 != 0:
-        await msg.answer(f"commit נכשל:\n```\n{out[-2000:]}\n```")
+        await msg.answer(f"commit ׳ ׳›׳©׳:\n```\n{out[-2000:]}\n```")
         return
 
     rc4, sha_line = _run(["git", "log", "-1", "--oneline"], cwd=cwd, timeout=5)
     await msg.answer(
-        f"✅ commit הוצל�- ב\\-`{cwd.name}`\n"
+        f"ג… commit ׳”׳•׳¦׳ן¿½- ׳‘\\-`{cwd.name}`\n"
         f"```\n{sha_line.strip()[:300]}\n```\n"
-        f"להעלות לגיט\\-האב: `/push`"
+        f"׳׳”׳¢׳׳•׳× ׳׳’׳™׳˜\\-׳”׳׳‘: `/push`"
     )
 
 
@@ -358,15 +358,15 @@ async def _cmd_push(msg: Message, parts: list[str]) -> None:
     cwd = WEBSITE_DIR if (WEBSITE_DIR / ".git").exists() else WORKSPACE
     rc, out = _run(["git", "push"], cwd=cwd, timeout=60)
     if rc != 0:
-        await msg.answer(f"push נכשל:\n```\n{_md_escape(out[-2000:])}\n```")
+        await msg.answer(f"push ׳ ׳›׳©׳:\n```\n{_md_escape(out[-2000:])}\n```")
         return
-    await msg.answer(f"✅ push הוצל�- \\(`{cwd.name}`\\)\nGitHub Pages יעדכן בעוד 30\\-60 שניות.")
+    await msg.answer(f"ג… push ׳”׳•׳¦׳ן¿½- \\(`{cwd.name}`\\)\nGitHub Pages ׳™׳¢׳“׳›׳ ׳‘׳¢׳•׳“ 30\\-60 ׳©׳ ׳™׳•׳×.")
 
 
 async def _cmd_sync(msg: Message, parts: list[str]) -> None:
     """Combined commit + push in one step."""
     if len(parts) < 2:
-        await msg.answer("שימוש: `/sync \\<הודעה\\>`")
+        await msg.answer("׳©׳™׳׳•׳©: `/sync \\<׳”׳•׳“׳¢׳”\\>`")
         return
     # Reuse commit logic
     await _cmd_commit(msg, parts)
@@ -375,7 +375,7 @@ async def _cmd_sync(msg: Message, parts: list[str]) -> None:
     await _cmd_push(msg, parts)
 
 
-# ──────────────── AI-assisted draft flow ────────────────
+# ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ AI-assisted draft flow ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
 
 async def _cmd_draft(msg: Message, parts: list[str]) -> None:
     """User: /draft <file> <instruction in Hebrew/English>
@@ -383,34 +383,34 @@ async def _cmd_draft(msg: Message, parts: list[str]) -> None:
     in _DRAFTS[chat_id]. User then runs /apply or /reject."""
     if len(parts) < 2:
         await msg.answer(
-            "שימוש: `/draft \\<קובץ\\> \\<הוראה\\>`\n"
-            "לדוגמה: `/draft website/voice\\.html שנה את הכותרת לMicroskick`"
+            "׳©׳™׳׳•׳©: `/draft \\<׳§׳•׳‘׳¥\\> \\<׳”׳•׳¨׳׳”\\>`\n"
+            "׳׳“׳•׳’׳׳”: `/draft website/voice\\.html ׳©׳ ׳” ׳׳× ׳”׳›׳•׳×׳¨׳× ׳Microskick`"
         )
         return
     args = parts[1].strip().split(maxsplit=1)
     if len(args) < 2:
-        await msg.answer("�-סרה הוראה")
+        await msg.answer("ן¿½-׳¡׳¨׳” ׳”׳•׳¨׳׳”")
         return
     file_arg, instruction = args
     p = _safe_path(file_arg)
     if not p or not p.is_file():
-        await msg.answer(f"קובץ לא קיים: `{_md_escape(file_arg)}`")
+        await msg.answer(f"׳§׳•׳‘׳¥ ׳׳ ׳§׳™׳™׳: `{_md_escape(file_arg)}`")
         return
 
     content = p.read_text(encoding="utf-8", errors="replace")
     if len(content) > 8000:
         await msg.answer(
-            f"⚠️ הקובץ גדול \\({len(content)} chars\\) \\— תאר בדיוק *איזה �-לק* לשנות, "
-            "או השתמש ב\\-`/replace` לשינוי מדויק במקום AI draft\\."
+            f"ג ן¸ ׳”׳§׳•׳‘׳¥ ׳’׳“׳•׳ \\({len(content)} chars\\) \\ג€” ׳×׳׳¨ ׳‘׳“׳™׳•׳§ *׳׳™׳–׳” ן¿½-׳׳§* ׳׳©׳ ׳•׳×, "
+            "׳׳• ׳”׳©׳×׳׳© ׳‘\\-`/replace` ׳׳©׳™׳ ׳•׳™ ׳׳“׳•׳™׳§ ׳‘׳׳§׳•׳ AI draft\\."
         )
         return
 
     await msg.bot.send_chat_action(msg.chat.id, "typing")
 
     prompt = (
-        "אתה עוזר עריכה לאתר. תקבל קובץ HTML/JS/CSS וההוראה לשינוי. "
-        "ת�-זיר בדיוק את הזוג: OLD: (טקסט קיים מהקובץ) ו-NEW: (ה�-לפה). "
-        "ללא הסברים מסביב. ללא תגיות markdown. רק 2 בלוקים: OLD: ... NEW: ...\n\n"
+        "׳׳×׳” ׳¢׳•׳–׳¨ ׳¢׳¨׳™׳›׳” ׳׳׳×׳¨. ׳×׳§׳‘׳ ׳§׳•׳‘׳¥ HTML/JS/CSS ׳•׳”׳”׳•׳¨׳׳” ׳׳©׳™׳ ׳•׳™. "
+        "׳×ן¿½-׳–׳™׳¨ ׳‘׳“׳™׳•׳§ ׳׳× ׳”׳–׳•׳’: OLD: (׳˜׳§׳¡׳˜ ׳§׳™׳™׳ ׳׳”׳§׳•׳‘׳¥) ׳•-NEW: (׳”ן¿½-׳׳₪׳”). "
+        "׳׳׳ ׳”׳¡׳‘׳¨׳™׳ ׳׳¡׳‘׳™׳‘. ׳׳׳ ׳×׳’׳™׳•׳× markdown. ׳¨׳§ 2 ׳‘׳׳•׳§׳™׳: OLD: ... NEW: ...\n\n"
         f"--- INSTRUCTION ---\n{instruction}\n\n"
         f"--- FILE: {file_arg} ---\n{content}\n--- END FILE ---"
     )
@@ -423,7 +423,7 @@ async def _cmd_draft(msg: Message, parts: list[str]) -> None:
             data = resp.json()
             reply = data.get("reply", "")
     except Exception as e:
-        await msg.answer(f"AI נכשל: `{_md_escape(str(e))}`")
+        await msg.answer(f"AI ׳ ׳›׳©׳: `{_md_escape(str(e))}`")
         return
 
     # Parse OLD: / NEW: blocks
@@ -431,8 +431,8 @@ async def _cmd_draft(msg: Message, parts: list[str]) -> None:
     new_match = re.search(r"NEW:\s*(.+?)$", reply, re.DOTALL)
     if not old_match or not new_match:
         await msg.answer(
-            f"AI לא ה�-זיר OLD:/NEW: בפורמט תקין:\n```\n{reply[:800]}\n```\n"
-            "נסה הוראה ספציפית יותר."
+            f"AI ׳׳ ׳”ן¿½-׳–׳™׳¨ OLD:/NEW: ׳‘׳₪׳•׳¨׳׳˜ ׳×׳§׳™׳:\n```\n{reply[:800]}\n```\n"
+            "׳ ׳¡׳” ׳”׳•׳¨׳׳” ׳¡׳₪׳¦׳™׳₪׳™׳× ׳™׳•׳×׳¨."
         )
         return
 
@@ -441,9 +441,9 @@ async def _cmd_draft(msg: Message, parts: list[str]) -> None:
 
     if old not in content:
         await msg.answer(
-            f"⚠️ ה-OLD שה-AI הציע לא נמצא בקובץ. אולי הוא המציא טקסט\\.\n"
+            f"ג ן¸ ׳”-OLD ׳©׳”-AI ׳”׳¦׳™׳¢ ׳׳ ׳ ׳׳¦׳ ׳‘׳§׳•׳‘׳¥. ׳׳•׳׳™ ׳”׳•׳ ׳”׳׳¦׳™׳ ׳˜׳§׳¡׳˜\\.\n"
             f"AI proposed OLD:\n```\n{old[:500]}\n```\n"
-            "נסה הוראה מדויקת יותר \\(ציין את הטקסט המדויק\\)."
+            "׳ ׳¡׳” ׳”׳•׳¨׳׳” ׳׳“׳•׳™׳§׳× ׳™׳•׳×׳¨ \\(׳¦׳™׳™׳ ׳׳× ׳”׳˜׳§׳¡׳˜ ׳”׳׳“׳•׳™׳§\\)."
         )
         return
 
@@ -456,11 +456,11 @@ async def _cmd_draft(msg: Message, parts: list[str]) -> None:
     }
 
     preview = (
-        f"📋 *Draft מוכן ל\\-{_md_escape(file_arg)}:*\n\n"
+        f"נ“‹ *Draft ׳׳•׳›׳ ׳\\-{_md_escape(file_arg)}:*\n\n"
         f"*OLD:*\n```\n{old[:600]}\n```\n\n"
         f"*NEW:*\n```\n{new[:600]}\n```\n\n"
-        f"לאשר ולעלות: `/apply`\n"
-        f"לבטל: `/reject`"
+        f"׳׳׳©׳¨ ׳•׳׳¢׳׳•׳×: `/apply`\n"
+        f"׳׳‘׳˜׳: `/reject`"
     )
     await msg.answer(preview)
 
@@ -468,22 +468,22 @@ async def _cmd_draft(msg: Message, parts: list[str]) -> None:
 async def _cmd_apply(msg: Message, parts: list[str]) -> None:
     draft = _DRAFTS.get(msg.chat.id)
     if not draft:
-        await msg.answer("אין draft פתו�-. הרץ `/draft` קודם.")
+        await msg.answer("׳׳™׳ draft ׳₪׳×׳•ן¿½-. ׳”׳¨׳¥ `/draft` ׳§׳•׳“׳.")
         return
     if time.time() - draft["ts"] > 600:
-        await msg.answer("Draft פג תוקף \\(>10 דק'\\). הרץ `/draft` שוב.")
+        await msg.answer("Draft ׳₪׳’ ׳×׳•׳§׳£ \\(>10 ׳“׳§'\\). ׳”׳¨׳¥ `/draft` ׳©׳•׳‘.")
         _DRAFTS.pop(msg.chat.id, None)
         return
 
     p = _safe_path(draft["file"])
     if not p or not p.is_file():
-        await msg.answer(f"קובץ נעלם: `{_md_escape(draft['file'])}`")
+        await msg.answer(f"׳§׳•׳‘׳¥ ׳ ׳¢׳׳: `{_md_escape(draft['file'])}`")
         _DRAFTS.pop(msg.chat.id, None)
         return
 
     content = p.read_text(encoding="utf-8")
     if draft["old"] not in content:
-        await msg.answer("הקובץ השתנה מאז ה\\-draft. הרץ שוב\\.")
+        await msg.answer("׳”׳§׳•׳‘׳¥ ׳”׳©׳×׳ ׳” ׳׳׳– ׳”\\-draft. ׳”׳¨׳¥ ׳©׳•׳‘\\.")
         _DRAFTS.pop(msg.chat.id, None)
         return
 
@@ -491,7 +491,7 @@ async def _cmd_apply(msg: Message, parts: list[str]) -> None:
     p.write_text(new_content, encoding="utf-8")
     _DRAFTS.pop(msg.chat.id, None)
 
-    await msg.answer(f"✅ הו�-ל\\. עכשיו commit\\+push:")
+    await msg.answer(f"ג… ׳”׳•ן¿½-׳\\. ׳¢׳›׳©׳™׳• commit\\+push:")
     # Auto commit + push
     fake_parts = ["/sync", f"edit({draft['file']}): {draft['instruction'][:60]}"]
     await _cmd_sync(msg, fake_parts)
@@ -500,40 +500,40 @@ async def _cmd_apply(msg: Message, parts: list[str]) -> None:
 async def _cmd_reject(msg: Message, parts: list[str]) -> None:
     draft = _DRAFTS.pop(msg.chat.id, None)
     if not draft:
-        await msg.answer("אין draft פתו�-\\.")
+        await msg.answer("׳׳™׳ draft ׳₪׳×׳•ן¿½-\\.")
         return
-    await msg.answer(f"❌ Draft ל\\-`{_md_escape(draft['file'])}` בוטל\\.")
+    await msg.answer(f"ג Draft ׳\\-`{_md_escape(draft['file'])}` ׳‘׳•׳˜׳\\.")
 
 
-# ──────────────── Help ────────────────
+# ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ Help ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
 
 EDITOR_HELP = (
-    "*🛠 פקודות עורך \\(שליטה מלאה באתר\\):*\n\n"
+    "*נ›  ׳₪׳§׳•׳“׳•׳× ׳¢׳•׳¨׳ \\(׳©׳׳™׳˜׳” ׳׳׳׳” ׳‘׳׳×׳¨\\):*\n\n"
     "*Inspection:*\n"
-    "`/cat <file>` \\- קרא קובץ\n"
-    "`/ls [dir]` \\- רשימת תיקייה\n"
-    "`/grep <pat> [target]` \\- �-יפוש בתוכן\n"
-    "`/find <pat> [dir]` \\- �-יפוש שמות קבצים\n\n"
+    "`/cat <file>` \\- ׳§׳¨׳ ׳§׳•׳‘׳¥\n"
+    "`/ls [dir]` \\- ׳¨׳©׳™׳׳× ׳×׳™׳§׳™׳™׳”\n"
+    "`/grep <pat> [target]` \\- ן¿½-׳™׳₪׳•׳© ׳‘׳×׳•׳›׳\n"
+    "`/find <pat> [dir]` \\- ן¿½-׳™׳₪׳•׳© ׳©׳׳•׳× ׳§׳‘׳¦׳™׳\n\n"
     "*Edit:*\n"
-    "`/append <file> <text>` \\- הוסף שורה\n"
-    "`/replace <file> :: <old> :: <new>` \\- ה�-לף\n"
-    "`/newpage <name>` \\- צור דף �-דש\n\n"
+    "`/append <file> <text>` \\- ׳”׳•׳¡׳£ ׳©׳•׳¨׳”\n"
+    "`/replace <file> :: <old> :: <new>` \\- ׳”ן¿½-׳׳£\n"
+    "`/newpage <name>` \\- ׳¦׳•׳¨ ׳“׳£ ן¿½-׳“׳©\n\n"
     "*Git:*\n"
-    "`/commit <msg>` \\- commit שינויים\n"
-    "`/push` \\- push לגיט\\-האב\n"
-    "`/sync <msg>` \\- commit \\+ push בבת א�-ת\n\n"
+    "`/commit <msg>` \\- commit ׳©׳™׳ ׳•׳™׳™׳\n"
+    "`/push` \\- push ׳׳’׳™׳˜\\-׳”׳׳‘\n"
+    "`/sync <msg>` \\- commit \\+ push ׳‘׳‘׳× ׳ן¿½-׳×\n\n"
     "*AI\\-assisted:*\n"
-    "`/draft <file> <instruction>` \\- AI מציע שינוי\n"
-    "`/apply` \\- אשר \\+ commit \\+ push\n"
-    "`/reject` \\- בטל draft\n\n"
-    "*דוגמה מלאה:*\n"
-    "1\\. `/draft website/voice\\.html שנה את הכותרת ל\\-Voice 2025`\n"
-    "2\\. בדוק את הdiff\n"
-    "3\\. `/apply` → אוטומטי עולה לפרודקשן"
+    "`/draft <file> <instruction>` \\- AI ׳׳¦׳™׳¢ ׳©׳™׳ ׳•׳™\n"
+    "`/apply` \\- ׳׳©׳¨ \\+ commit \\+ push\n"
+    "`/reject` \\- ׳‘׳˜׳ draft\n\n"
+    "*׳“׳•׳’׳׳” ׳׳׳׳”:*\n"
+    "1\\. `/draft website/voice\\.html ׳©׳ ׳” ׳׳× ׳”׳›׳•׳×׳¨׳× ׳\\-Voice 2025`\n"
+    "2\\. ׳‘׳“׳•׳§ ׳׳× ׳”diff\n"
+    "3\\. `/apply` ג†’ ׳׳•׳˜׳•׳׳˜׳™ ׳¢׳•׳׳” ׳׳₪׳¨׳•׳“׳§׳©׳"
 )
 
 
-# ──────────────── Public registration ────────────────
+# ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ Public registration ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
 
 def register(dp: Dispatcher, auth_module, _chunks_fn) -> None:
     """Wire up all editor commands. Call from bot.py main()."""

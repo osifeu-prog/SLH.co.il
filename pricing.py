@@ -1,18 +1,18 @@
 """
-SLH AI Spark — Pricing Single Source of Truth
+SLH AI Spark ג€” Pricing Single Source of Truth
 ==============================================
 
 Edit numbers HERE, not anywhere else. Anything that displays a price,
 counts a quota, or calculates margin must import from this module.
 
-Legal framing: this is SaaS — software service revenue. NOT a token sale,
+Legal framing: this is SaaS ג€” software service revenue. NOT a token sale,
 NOT a security. Customers pay for AI access; SLH provides the integration.
 Israeli VAT applies (17%, charged separately at invoicing).
 
 Cost basis (Anthropic Claude Sonnet 4.5, current pricing):
 - Input:  $3.00 / 1M tokens
 - Output: $15.00 / 1M tokens
-- Avg conversation: ~5K input + 1.5K output ≈ $0.038 ≈ ₪0.137
+- Avg conversation: ~5K input + 1.5K output ג‰ˆ $0.038 ג‰ˆ ג‚×0.137
 
 Fee model (Telegram Stars, withdrawal to fiat):
 - Apple/Google IAP fee: 30% (mobile only, web is fee-free)
@@ -65,23 +65,23 @@ class TierSpec:
 TIERS: dict[Tier, TierSpec] = {
     "free": TierSpec(
         name="free",
-        name_he="�-ינם",
+        name_he="ן¿½-׳™׳ ׳",
         price_ils=0,
         price_stars=0,
         monthly_quota=10,
         fair_use_cap=10,
         ai_provider="free",  # Groq/Gemini via free_ai_client
-        description_he="10 הודעות/�-ודש · AI �-ינם (Groq/Gemini) · ללא tools",
+        description_he="10 ׳”׳•׳“׳¢׳•׳×/ן¿½-׳•׳“׳© ֲ· AI ן¿½-׳™׳ ׳ (Groq/Gemini) ֲ· ׳׳׳ tools",
     ),
     "pro": TierSpec(
         name="pro",
         name_he="Pro",
         price_ils=29,
         price_stars=500,
-        monthly_quota=70,           # tuned 2026-04-25: 100 → 70 to keep ~50% margin
+        monthly_quota=70,           # tuned 2026-04-25: 100 ג†’ 70 to keep ~50% margin
         fair_use_cap=70,
         ai_provider="anthropic",
-        description_he="70 הודעות/�-ודש · Claude Sonnet 4.5 + tools · עדיפות בתור",
+        description_he="70 ׳”׳•׳“׳¢׳•׳×/ן¿½-׳•׳“׳© ֲ· Claude Sonnet 4.5 + tools ֲ· ׳¢׳“׳™׳₪׳•׳× ׳‘׳×׳•׳¨",
     ),
     "vip": TierSpec(
         name="vip",
@@ -89,9 +89,9 @@ TIERS: dict[Tier, TierSpec] = {
         price_ils=99,
         price_stars=1500,
         monthly_quota=0,            # 0 = unlimited subject to fair_use_cap
-        fair_use_cap=350,           # tuned 2026-04-25: 1000 → 350 for positive margin
+        fair_use_cap=350,           # tuned 2026-04-25: 1000 ג†’ 350 for positive margin
         ai_provider="anthropic",
-        description_he="ללא מכסה (fair-use 350) · Claude + tools · תמיכה ישירה",
+        description_he="׳׳׳ ׳׳›׳¡׳” (fair-use 350) ֲ· Claude + tools ֲ· ׳×׳׳™׳›׳” ׳™׳©׳™׳¨׳”",
     ),
     "zvk": TierSpec(
         name="zvk",
@@ -101,7 +101,7 @@ TIERS: dict[Tier, TierSpec] = {
         monthly_quota=0,
         fair_use_cap=0,
         ai_provider="anthropic",
-        description_he="הודעה = 1 ZVK · רק earned-via-activity (Academia/quests)",
+        description_he="׳”׳•׳“׳¢׳” = 1 ZVK ֲ· ׳¨׳§ earned-via-activity (Academia/quests)",
     ),
 }
 
@@ -136,30 +136,30 @@ def margin_pct(tier: Tier, telegram_realization: float = 0.70) -> float:
 def tier_summary_he(tier: Tier) -> str:
     spec = TIERS[tier]
     if tier == "free":
-        return f"🆓 *{spec.name_he}* — �-ינם · {spec.description_he}"
+        return f"נ†“ *{spec.name_he}* ג€” ן¿½-׳™׳ ׳ ֲ· {spec.description_he}"
     if tier == "zvk":
-        return f"🪙 *{spec.name_he}* — utility · {spec.description_he}"
+        return f"נ×™ *{spec.name_he}* ג€” utility ֲ· {spec.description_he}"
     margin = expected_margin_ils(tier)
     return (
-        f"💎 *{spec.name_he}* — ₪{spec.price_ils}/�-ודש ({spec.price_stars} ⭐)\n"
+        f"נ’ *{spec.name_he}* ג€” ג‚×{spec.price_ils}/ן¿½-׳•׳“׳© ({spec.price_stars} ג­)\n"
         f"   {spec.description_he}\n"
-        f"   _Margin צפוי: ₪{margin:.0f}/לקו�-/�-ודש_"
+        f"   _Margin ׳¦׳₪׳•׳™: ג‚×{margin:.0f}/׳׳§׳•ן¿½-/ן¿½-׳•׳“׳©_"
     )
 
 
 def all_tiers_summary_he() -> str:
-    lines = ["*SLH AI Spark — �-בילות:*\n"]
+    lines = ["*SLH AI Spark ג€” ן¿½-׳‘׳™׳׳•׳×:*\n"]
     for tier in ("free", "pro", "vip", "zvk"):
         lines.append(tier_summary_he(tier))
         lines.append("")
     lines.append(
-        "_Forward-looking projection. ביצועי AI תלויים בעומס. לא ייעוץ השקעות._"
+        "_Forward-looking projection. ׳‘׳™׳¦׳•׳¢׳™ AI ׳×׳׳•׳™׳™׳ ׳‘׳¢׳•׳׳¡. ׳׳ ׳™׳™׳¢׳•׳¥ ׳”׳©׳§׳¢׳•׳×._"
     )
     return "\n".join(lines)
 
 
 if __name__ == "__main__":
-    # Quick sanity check — `python pricing.py`. ASCII-only for Windows cp1252.
+    # Quick sanity check ג€” `python pricing.py`. ASCII-only for Windows cp1252.
     print(f"Cost / message: ILS {cost_per_message_ils():.3f}")
     for t in ("free", "pro", "vip"):
         print(f"  {t}: margin ILS {expected_margin_ils(t):+.2f} ({margin_pct(t):+.1f}%)")

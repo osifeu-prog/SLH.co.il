@@ -1,5 +1,5 @@
 """
-SLH AI Spark — Quota middleware.
+SLH AI Spark ג€” Quota middleware.
 
 Sits between the Telegram message handler and the AI client. Decides:
 1. Does this user have quota left this month?
@@ -29,7 +29,7 @@ import subscriptions
 class QuotaDecision:
     allowed: bool
     tier: str                       # 'free' | 'pro' | 'vip' | 'zvk'
-    use_anthropic: bool             # True → claude_client, False → free_ai_client
+    use_anthropic: bool             # True ג†’ claude_client, False ג†’ free_ai_client
     refusal_he: Optional[str]       # message to send the user if not allowed
     quota_remaining: int            # informational; for /credits command
     quota_total: int
@@ -87,24 +87,24 @@ def _quota_exhausted_message(tier: str, used: int, cap: int) -> str:
     spec = pricing.TIERS.get(tier, pricing.TIERS["free"])
     if tier == "free":
         return (
-            f"📊 *מכסת �-ודש נגמרה* — השתמשת ב-{used}/{cap} הודעות.\n\n"
-            f"שדרוג ל-Pro: 100 הודעות/�-ודש + Claude Sonnet 4.5 + tools.\n"
-            f"💎 *Pro — ₪29/�-ודש* (500 ⭐)\n\n"
-            f"של�-: `/upgrade pro`"
+            f"נ“ *׳׳›׳¡׳× ן¿½-׳•׳“׳© ׳ ׳’׳׳¨׳”* ג€” ׳”׳©׳×׳׳©׳× ׳‘-{used}/{cap} ׳”׳•׳“׳¢׳•׳×.\n\n"
+            f"׳©׳“׳¨׳•׳’ ׳-Pro: 100 ׳”׳•׳“׳¢׳•׳×/ן¿½-׳•׳“׳© + Claude Sonnet 4.5 + tools.\n"
+            f"נ’ *Pro ג€” ג‚×29/ן¿½-׳•׳“׳©* (500 ג­)\n\n"
+            f"׳©׳ן¿½-: `/upgrade pro`"
         )
     if tier == "vip":
         return (
-            f"⚠️ הגעת ל-fair-use cap של {cap} הודעות ה�-ודש (VIP unlimited).\n"
-            f"זה מקרה נדיר — צור קשר עם @osifeu_prog להעלאה."
+            f"ג ן¸ ׳”׳’׳¢׳× ׳-fair-use cap ׳©׳ {cap} ׳”׳•׳“׳¢׳•׳× ׳”ן¿½-׳•׳“׳© (VIP unlimited).\n"
+            f"׳–׳” ׳׳§׳¨׳” ׳ ׳“׳™׳¨ ג€” ׳¦׳•׳¨ ׳§׳©׳¨ ׳¢׳ @osifeu_prog ׳׳”׳¢׳׳׳”."
         )
     return (
-        f"📊 מכסת ה-{spec.name_he} שלך נגמרה ({used}/{cap}).\n"
-        f"מת�-דש ב-1 ל�-ודש הבא, או שדרג עם `/upgrade vip`."
+        f"נ“ ׳׳›׳¡׳× ׳”-{spec.name_he} ׳©׳׳ ׳ ׳’׳׳¨׳” ({used}/{cap}).\n"
+        f"׳׳×ן¿½-׳“׳© ׳‘-1 ׳ן¿½-׳•׳“׳© ׳”׳‘׳, ׳׳• ׳©׳“׳¨׳’ ׳¢׳ `/upgrade vip`."
     )
 
 
 async def quota_status_he(user_id: int) -> str:
-    """For /credits command — show remaining quota."""
+    """For /credits command ג€” show remaining quota."""
     sub = await subscriptions.get_or_create(user_id)
     spec = pricing.TIERS.get(sub.tier, pricing.TIERS["free"])
     cap = spec.monthly_quota if spec.monthly_quota > 0 else spec.fair_use_cap
@@ -113,12 +113,12 @@ async def quota_status_he(user_id: int) -> str:
     pct = (used / cap * 100) if cap else 0
     bar_len = 20
     filled = int(used / cap * bar_len) if cap else 0
-    bar = "█" * filled + "░" * (bar_len - filled)
+    bar = "ג–ˆ" * filled + "ג–‘" * (bar_len - filled)
     return (
-        f"📊 *Tier: {spec.name_he}*\n\n"
+        f"נ“ *Tier: {spec.name_he}*\n\n"
         f"`{bar}`\n"
-        f"השתמשת ב-{used}/{cap} ({pct:.0f}%)\n"
-        f"נותרו: *{remaining}* הודעות\n\n"
-        f"מת�-דש: `{sub.current_period_end[:10]}`"
+        f"׳”׳©׳×׳׳©׳× ׳‘-{used}/{cap} ({pct:.0f}%)\n"
+        f"׳ ׳•׳×׳¨׳•: *{remaining}* ׳”׳•׳“׳¢׳•׳×\n\n"
+        f"׳׳×ן¿½-׳“׳©: `{sub.current_period_end[:10]}`"
     )
 

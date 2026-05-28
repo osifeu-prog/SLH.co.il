@@ -1,8 +1,8 @@
-"""Free AI client — drop-in replacement for claude_client.
+"""Free AI client ג€” drop-in replacement for claude_client.
 
 Instead of calling Anthropic directly (paid), this routes through the SLH API's
 `/api/ai/chat` endpoint which has a multi-provider fallback chain:
-  groq (free Llama 3.3 70B) → gemini → together → openai
+  groq (free Llama 3.3 70B) ג†’ gemini ג†’ together ג†’ openai
 
 This means @SLH_Claude_bot works at zero cost per message.
 
@@ -27,24 +27,24 @@ DEFAULT_LANG = os.getenv("SLH_AI_LANG", "he")
 TIMEOUT = float(os.getenv("SLH_AI_TIMEOUT", "45"))
 
 _SYSTEM_PROMPT_FREE = (
-    "אתה SLH Claude — עוזר אישי של אוסיף ומשתמשי SLH Spark. "
-    "**אל תציג את עצמך בכל תשובה.** ענה ישר לשאלה. עברית, קצר.\n"
-    "אם נשאלת על פעולות מערכת (docker/git/קבצים) — הציע slash commands: "
+    "׳׳×׳” SLH Claude ג€” ׳¢׳•׳–׳¨ ׳׳™׳©׳™ ׳©׳ ׳׳•׳¡׳™׳£ ׳•׳׳©׳×׳׳©׳™ SLH Spark. "
+    "**׳׳ ׳×׳¦׳™׳’ ׳׳× ׳¢׳¦׳׳ ׳‘׳›׳ ׳×׳©׳•׳‘׳”.** ׳¢׳ ׳” ׳™׳©׳¨ ׳׳©׳׳׳”. ׳¢׳‘׳¨׳™׳×, ׳§׳¦׳¨.\n"
+    "׳׳ ׳ ׳©׳׳׳× ׳¢׳ ׳₪׳¢׳•׳׳•׳× ׳׳¢׳¨׳›׳× (docker/git/׳§׳‘׳¦׳™׳) ג€” ׳”׳¦׳™׳¢ slash commands: "
     "/ps /logs <bot> /git /health /price /devices /credits.\n"
-    "לא �-ורג מנושאי SLH אלא אם ברור. רקע: website (slh-nft.com), "
+    "׳׳ ן¿½-׳•׳¨׳’ ׳׳ ׳•׳©׳׳™ SLH ׳׳׳ ׳׳ ׳‘׳¨׳•׳¨. ׳¨׳§׳¢: website (slh-nft.com), "
     "API (Railway), 25 Telegram bots, SLH token (BSC), Phase 2 (Voice/Swarm)."
 )
 
 _SYSTEM_PROMPT_PRO_FALLBACK = (
-    "אתה SLH Claude (Pro mode · fallback). "
-    "**אל תציג את עצמך בכל תשובה.** ענה ישירות, בעברית, קצר ופרקטי.\n"
-    "המשתמש שילם על �-בילת Pro עם Claude + tools, אבל כעת Anthropic balance ריק "
-    "ואתה רץ דרך Groq Llama 3.3 70B ללא יכולת לבצע tools. "
-    "אם נשאלת לבצע פעולה (קריאת קובץ, git, deploy) — הסבר שזה ידרוש את ה-Anthropic "
-    "balance ושפעולות ידניות אפשריות עם slash commands: /ps /logs <bot> /git /health "
+    "׳׳×׳” SLH Claude (Pro mode ֲ· fallback). "
+    "**׳׳ ׳×׳¦׳™׳’ ׳׳× ׳¢׳¦׳׳ ׳‘׳›׳ ׳×׳©׳•׳‘׳”.** ׳¢׳ ׳” ׳™׳©׳™׳¨׳•׳×, ׳‘׳¢׳‘׳¨׳™׳×, ׳§׳¦׳¨ ׳•׳₪׳¨׳§׳˜׳™.\n"
+    "׳”׳׳©׳×׳׳© ׳©׳™׳׳ ׳¢׳ ן¿½-׳‘׳™׳׳× Pro ׳¢׳ Claude + tools, ׳׳‘׳ ׳›׳¢׳× Anthropic balance ׳¨׳™׳§ "
+    "׳•׳׳×׳” ׳¨׳¥ ׳“׳¨׳ Groq Llama 3.3 70B ׳׳׳ ׳™׳›׳•׳׳× ׳׳‘׳¦׳¢ tools. "
+    "׳׳ ׳ ׳©׳׳׳× ׳׳‘׳¦׳¢ ׳₪׳¢׳•׳׳” (׳§׳¨׳™׳׳× ׳§׳•׳‘׳¥, git, deploy) ג€” ׳”׳¡׳‘׳¨ ׳©׳–׳” ׳™׳“׳¨׳•׳© ׳׳× ׳”-Anthropic "
+    "balance ׳•׳©׳₪׳¢׳•׳׳•׳× ׳™׳“׳ ׳™׳•׳× ׳׳₪׳©׳¨׳™׳•׳× ׳¢׳ slash commands: /ps /logs <bot> /git /health "
     "/devices /control /swarm /credits /upgrade.\n"
-    "לעומת זאת, אתה כן יכול: לתת ייעוץ, לכתוב טקסטים, לעשות research, לסכם, לתרגם, "
-    "לתכנן ארכיטקטורה, לעזור עם debug היפותטי. הצע ערך גם בלי tools."
+    "׳׳¢׳•׳׳× ׳–׳׳×, ׳׳×׳” ׳›׳ ׳™׳›׳•׳: ׳׳×׳× ׳™׳™׳¢׳•׳¥, ׳׳›׳×׳•׳‘ ׳˜׳§׳¡׳˜׳™׳, ׳׳¢׳©׳•׳× research, ׳׳¡׳›׳, ׳׳×׳¨׳’׳, "
+    "׳׳×׳›׳ ׳ ׳׳¨׳›׳™׳˜׳§׳˜׳•׳¨׳”, ׳׳¢׳–׳•׳¨ ׳¢׳ debug ׳”׳™׳₪׳•׳×׳˜׳™. ׳”׳¦׳¢ ׳¢׳¨׳ ׳’׳ ׳‘׳׳™ tools."
 )
 
 # Backwards compat default
@@ -60,7 +60,7 @@ async def converse(history: List[dict], user_text: str,
     Args:
         history: list of {"role": "user"|"assistant", "content": str}
         user_text: the new user message
-        tier_mode: 'free' or 'pro_fallback' — selects appropriate system prompt
+        tier_mode: 'free' or 'pro_fallback' ג€” selects appropriate system prompt
                    so Pro users in fallback get a more capable / honest persona.
 
     Returns:
@@ -73,7 +73,7 @@ async def converse(history: List[dict], user_text: str,
         role = m.get("role", "user")
         content = m.get("content", "")
         if isinstance(content, list):
-            # Legacy anthropic format — extract text
+            # Legacy anthropic format ג€” extract text
             content = " ".join(
                 block.get("text", "") if isinstance(block, dict) else str(block)
                 for block in content
@@ -86,8 +86,8 @@ async def converse(history: List[dict], user_text: str,
     else:
         composed = _SYSTEM_PROMPT_FREE
     if context_block:
-        composed += "\n\n--- שי�-ה קודמת ---\n" + context_block
-    composed += f"\n\n--- הודעה נוכ�-ית ---\n{user_text}"
+        composed += "\n\n--- ׳©׳™ן¿½-׳” ׳§׳•׳“׳׳× ---\n" + context_block
+    composed += f"\n\n--- ׳”׳•׳“׳¢׳” ׳ ׳•׳›ן¿½-׳™׳× ---\n{user_text}"
 
     payload = {
         "message": composed,
@@ -102,15 +102,15 @@ async def converse(history: List[dict], user_text: str,
             resp.raise_for_status()
             data = resp.json()
     except httpx.TimeoutException:
-        reply = "⏱ ה-AI השתהה (timeout). נסה שוב או פצל לשאלה קצרה יותר."
+        reply = "ג± ׳”-AI ׳”׳©׳×׳”׳” (timeout). ׳ ׳¡׳” ׳©׳•׳‘ ׳׳• ׳₪׳¦׳ ׳׳©׳׳׳” ׳§׳¦׳¨׳” ׳™׳•׳×׳¨."
     except httpx.HTTPStatusError as e:
         log.error(f"AI endpoint returned {e.response.status_code}: {e.response.text[:200]}")
-        reply = f"⚠️ ה-AI endpoint ה�-זיר {e.response.status_code}. נסה שוב בעוד רגע."
+        reply = f"ג ן¸ ׳”-AI endpoint ׳”ן¿½-׳–׳™׳¨ {e.response.status_code}. ׳ ׳¡׳” ׳©׳•׳‘ ׳‘׳¢׳•׳“ ׳¨׳’׳¢."
     except Exception as e:
         log.exception("AI call failed")
-        reply = f"⚠️ שגיאה: {type(e).__name__}: {str(e)[:120]}"
+        reply = f"ג ן¸ ׳©׳’׳™׳׳”: {type(e).__name__}: {str(e)[:120]}"
     else:
-        reply = data.get("reply") or data.get("detail") or "(התגובה הייתה ריקה)"
+        reply = data.get("reply") or data.get("detail") or "(׳”׳×׳’׳•׳‘׳” ׳”׳™׳™׳×׳” ׳¨׳™׳§׳”)"
         model = data.get("model", "unknown")
         # Append provider tag for transparency
         if model and model != "unknown":

@@ -1,4 +1,4 @@
-"""Filesystem tool — read, write, list files under the workspace."""
+"""Filesystem tool ג€” read, write, list files under the workspace."""
 import os
 from pathlib import Path
 

@@ -1,4 +1,4 @@
-"""HTTP GET tool — for API health checks, version endpoints, etc."""
+"""HTTP GET tool ג€” for API health checks, version endpoints, etc."""
 import httpx
 
 

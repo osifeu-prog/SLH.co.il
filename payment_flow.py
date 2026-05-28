@@ -1,12 +1,12 @@
 """
-SLH AI Spark — Telegram Stars payment flow.
+SLH AI Spark ג€” Telegram Stars payment flow.
 
 Handlers:
-- /upgrade [tier]  → show prices or send invoice for the chosen tier
-- /credits         → show remaining quota
-- /pricing         → show full price table
-- pre_checkout_query handler → approve all (or refuse with reason)
-- successful_payment handler → activate subscription + log
+- /upgrade [tier]  ג†’ show prices or send invoice for the chosen tier
+- /credits         ג†’ show remaining quota
+- /pricing         ג†’ show full price table
+- pre_checkout_query handler ג†’ approve all (or refuse with reason)
+- successful_payment handler ג†’ activate subscription + log
 
 Wired into bot.py via `payment_flow.register(dp, auth)`.
 """
@@ -59,12 +59,12 @@ def register(dp: Dispatcher, auth_module) -> None:
             await msg.answer(auth_module.unauthorized_reply_he(msg.from_user.id))
             return
         await msg.answer(
-            pricing.all_tiers_summary_he() + "\n\nלשדרוג: `/upgrade pro` או `/upgrade vip`"
+            pricing.all_tiers_summary_he() + "\n\n׳׳©׳“׳¨׳•׳’: `/upgrade pro` ׳׳• `/upgrade vip`"
         )
 
     @dp.message(Command("credits"))
     async def cmd_credits(msg: Message) -> None:
-        # Anyone can check their own credits — no auth gate (helpful for support)
+        # Anyone can check their own credits ג€” no auth gate (helpful for support)
         text = await quota.quota_status_he(msg.from_user.id)
         await msg.answer(text)
 
@@ -77,20 +77,20 @@ def register(dp: Dispatcher, auth_module) -> None:
         tier_arg = parts[1].strip().lower() if len(parts) > 1 else ""
 
         if tier_arg not in ("pro", "vip"):
-            # No tier specified — show menu with buttons
+            # No tier specified ג€” show menu with buttons
             kb = InlineKeyboardMarkup(inline_keyboard=[
                 [InlineKeyboardButton(
-                    text=f"💎 Pro — ₪{pricing.TIERS['pro'].price_ils}/�-ודש",
+                    text=f"נ’ Pro ג€” ג‚×{pricing.TIERS['pro'].price_ils}/ן¿½-׳•׳“׳©",
                     callback_data="upgrade:pro",
                 )],
                 [InlineKeyboardButton(
-                    text=f"👑 VIP — ₪{pricing.TIERS['vip'].price_ils}/�-ודש",
+                    text=f"נ‘‘ VIP ג€” ג‚×{pricing.TIERS['vip'].price_ils}/ן¿½-׳•׳“׳©",
                     callback_data="upgrade:vip",
                 )],
-                [InlineKeyboardButton(text="📊 השוואת �-בילות", callback_data="show_pricing")],
+                [InlineKeyboardButton(text="נ“ ׳”׳©׳•׳•׳׳× ן¿½-׳‘׳™׳׳•׳×", callback_data="show_pricing")],
             ])
             await msg.answer(
-                "*ב�-ר �-בילה לשדרוג:*\n\n"
+                "*׳‘ן¿½-׳¨ ן¿½-׳‘׳™׳׳” ׳׳©׳“׳¨׳•׳’:*\n\n"
                 + pricing.tier_summary_he("pro") + "\n\n"
                 + pricing.tier_summary_he("vip"),
                 reply_markup=kb,
@@ -102,11 +102,11 @@ def register(dp: Dispatcher, auth_module) -> None:
     @dp.callback_query(F.data.startswith("upgrade:"))
     async def cb_upgrade(cb, bot: Bot):
         if not auth_module.is_authorized(cb.from_user.id):
-            await cb.answer("אין הרשאה", show_alert=True)
+            await cb.answer("׳׳™׳ ׳”׳¨׳©׳׳”", show_alert=True)
             return
         tier = cb.data.split(":", 1)[1]
         if tier not in ("pro", "vip"):
-            await cb.answer("�-בילה לא קיימת", show_alert=True)
+            await cb.answer("ן¿½-׳‘׳™׳׳” ׳׳ ׳§׳™׳™׳׳×", show_alert=True)
             return
         await cb.answer()
         await _send_invoice(bot, cb.message.chat.id, cb.from_user.id, tier)
@@ -123,13 +123,13 @@ def register(dp: Dispatcher, auth_module) -> None:
         if tier is None or uid != query.from_user.id:
             await bot.answer_pre_checkout_query(
                 query.id, ok=False,
-                error_message="�-בילה לא תקפה. נסה שוב מ-/upgrade.",
+                error_message="ן¿½-׳‘׳™׳׳” ׳׳ ׳×׳§׳₪׳”. ׳ ׳¡׳” ׳©׳•׳‘ ׳-/upgrade.",
             )
             return
         if tier not in pricing.TIERS or pricing.TIERS[tier].price_stars == 0:
             await bot.answer_pre_checkout_query(
                 query.id, ok=False,
-                error_message="�-בילה לא קיימת.",
+                error_message="ן¿½-׳‘׳™׳׳” ׳׳ ׳§׳™׳™׳׳×.",
             )
             return
         await bot.answer_pre_checkout_query(query.id, ok=True)
@@ -143,7 +143,7 @@ def register(dp: Dispatcher, auth_module) -> None:
             log.error(f"payment payload mismatch: {sp.invoice_payload}")
             return
 
-        # ILS conversion (stars → ils): use the tier's nominal ILS price as "received"
+        # ILS conversion (stars ג†’ ils): use the tier's nominal ILS price as "received"
         # Real settlement happens on Telegram's side; we're tracking nominal here.
         ils_cents = pricing.TIERS[tier].price_ils * 100
 
@@ -173,11 +173,11 @@ def register(dp: Dispatcher, auth_module) -> None:
 
         spec = pricing.TIERS[tier]
         await msg.answer(
-            f"✅ *תשלום אושר!*\n\n"
-            f"שודרגת ל-*{spec.name_he}* — ₪{spec.price_ils}/�-ודש.\n"
-            f"מכסה: {spec.monthly_quota or 'unlimited (fair-use ' + str(spec.fair_use_cap) + ')'} הודעות\n"
+            f"ג… *׳×׳©׳׳•׳ ׳׳•׳©׳¨!*\n\n"
+            f"׳©׳•׳“׳¨׳’׳× ׳-*{spec.name_he}* ג€” ג‚×{spec.price_ils}/ן¿½-׳•׳“׳©.\n"
+            f"׳׳›׳¡׳”: {spec.monthly_quota or 'unlimited (fair-use ' + str(spec.fair_use_cap) + ')'} ׳”׳•׳“׳¢׳•׳×\n"
             f"AI: Claude Sonnet 4.5 + tools\n\n"
-            f"של�- /credits לראות מצב, או פשוט של�- שאלה."
+            f"׳©׳ן¿½- /credits ׳׳¨׳׳•׳× ׳׳¦׳‘, ׳׳• ׳₪׳©׳•׳˜ ׳©׳ן¿½- ׳©׳׳׳”."
         )
 
     log.info("payment_flow handlers registered")
@@ -186,15 +186,15 @@ def register(dp: Dispatcher, auth_module) -> None:
 async def _send_invoice(bot: Bot, chat_id: int, user_id: int, tier: str) -> None:
     spec = pricing.TIERS[tier]
     if spec.price_stars == 0:
-        await bot.send_message(chat_id, f"�-בילת {spec.name_he} לא ניתנת לרכישה ישירה.")
+        await bot.send_message(chat_id, f"ן¿½-׳‘׳™׳׳× {spec.name_he} ׳׳ ׳ ׳™׳×׳ ׳× ׳׳¨׳›׳™׳©׳” ׳™׳©׳™׳¨׳”.")
         return
     await bot.send_invoice(
         chat_id=chat_id,
-        title=f"SLH AI Spark — {spec.name_he}",
+        title=f"SLH AI Spark ג€” {spec.name_he}",
         description=spec.description_he,
         payload=_payload_for_tier(tier, user_id),
         currency=STARS_CURRENCY,
-        prices=[LabeledPrice(label=f"{spec.name_he} �-30 ימים", amount=spec.price_stars)],
-        # provider_token left empty — Telegram Stars don't need a provider
+        prices=[LabeledPrice(label=f"{spec.name_he} ן¿½-30 ׳™׳׳™׳", amount=spec.price_stars)],
+        # provider_token left empty ג€” Telegram Stars don't need a provider
     )
 

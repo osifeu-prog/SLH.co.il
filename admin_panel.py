@@ -1,11 +1,11 @@
 """
-SLH AI Spark — Admin commands. Only admins (auth.is_authorized) may run these.
+SLH AI Spark ג€” Admin commands. Only admins (auth.is_authorized) may run these.
 
-- /revenue                 → MRR + last 30d revenue + cost + net
-- /quota_user <user_id>    → see/set quota for a user
-- /set_tier <user_id> <tier> → manual tier upgrade (e.g., for grandfathered users)
-- /anthropic_spend         → estimated Anthropic spend last 7/30 days
-- /top_users               → top 10 users by AI message count this month
+- /revenue                 ג†’ MRR + last 30d revenue + cost + net
+- /quota_user <user_id>    ג†’ see/set quota for a user
+- /set_tier <user_id> <tier> ג†’ manual tier upgrade (e.g., for grandfathered users)
+- /anthropic_spend         ג†’ estimated Anthropic spend last 7/30 days
+- /top_users               ג†’ top 10 users by AI message count this month
 """
 from __future__ import annotations
 
@@ -40,24 +40,24 @@ def register(dp: Dispatcher, auth_module) -> None:
         net_ils = revenue_ils - anthropic_cost_ils
 
         tiers_str = "\n".join(
-            f"  • {tier}: {count}"
+            f"  ג€¢ {tier}: {count}"
             for tier, count in sorted(stats["tier_counts"].items())
-        ) or "  (אין מנויים)"
+        ) or "  (׳׳™׳ ׳׳ ׳•׳™׳™׳)"
 
         await msg.answer(
-            f"💰 *Revenue Report — 30 ימים א�-רונים*\n\n"
-            f"*MRR:* `₪{mrr:,.2f}`\n"
-            f"*Revenue 30d:* `₪{revenue_ils:,.2f}`\n"
-            f"*Anthropic cost 30d:* `₪{anthropic_cost_ils:,.2f}` (${anthropic_cost_usd:,.2f})\n"
-            f"*Net profit 30d:* `₪{net_ils:,.2f}`\n\n"
-            f"*מנויים פעילים:*\n{tiers_str}\n\n"
+            f"נ’° *Revenue Report ג€” 30 ׳™׳׳™׳ ׳ן¿½-׳¨׳•׳ ׳™׳*\n\n"
+            f"*MRR:* `ג‚×{mrr:,.2f}`\n"
+            f"*Revenue 30d:* `ג‚×{revenue_ils:,.2f}`\n"
+            f"*Anthropic cost 30d:* `ג‚×{anthropic_cost_ils:,.2f}` (${anthropic_cost_usd:,.2f})\n"
+            f"*Net profit 30d:* `ג‚×{net_ils:,.2f}`\n\n"
+            f"*׳׳ ׳•׳™׳™׳ ׳₪׳¢׳™׳׳™׳:*\n{tiers_str}\n\n"
             f"*Messages 30d:*\n"
-            + "\n".join(f"  • {p}: {d['messages']}" for p, d in stats["usage_by_provider"].items())
+            + "\n".join(f"  ג€¢ {p}: {d['messages']}" for p, d in stats["usage_by_provider"].items())
         )
 
     @dp.message(Command("anthropic_status"))
     async def cmd_anthropic_status(msg: Message):
-        """Probe Anthropic key state: auth + balance — without printing the key."""
+        """Probe Anthropic key state: auth + balance ג€” without printing the key."""
         if not auth_module.is_authorized(msg.from_user.id):
             await msg.answer(auth_module.unauthorized_reply_he(msg.from_user.id))
             return
@@ -65,8 +65,8 @@ def register(dp: Dispatcher, auth_module) -> None:
         key = os.getenv("ANTHROPIC_API_KEY", "")
         if not key.startswith("sk-"):
             await msg.answer(
-                "🔴 *ANTHROPIC_API_KEY*\nלא טעון או לא מת�-יל ב-sk-.\n"
-                "הוסף ב-`slh-claude-bot/.env` ועשה `docker compose up -d --force-recreate claude-bot`.")
+                "נ”´ *ANTHROPIC_API_KEY*\n׳׳ ׳˜׳¢׳•׳ ׳׳• ׳׳ ׳׳×ן¿½-׳™׳ ׳‘-sk-.\n"
+                "׳”׳•׳¡׳£ ׳‘-`slh-claude-bot/.env` ׳•׳¢׳©׳” `docker compose up -d --force-recreate claude-bot`.")
             return
         # Step 1: auth check via /v1/models (free, doesn't consume credit)
         try:
@@ -79,7 +79,7 @@ def register(dp: Dispatcher, auth_module) -> None:
         except Exception as e:
             auth_ok = False
             r_text = f"err: {type(e).__name__}"
-        # Step 2: tiny balance probe — 1-token call. If it 400s with "credit balance",
+        # Step 2: tiny balance probe ג€” 1-token call. If it 400s with "credit balance",
         # we know there's $0; if it 200s, balance exists.
         try:
             from anthropic import Anthropic
@@ -90,19 +90,19 @@ def register(dp: Dispatcher, auth_module) -> None:
                 messages=[{"role": "user", "content": "."}],
             )
             balance_ok = True
-            balance_note = "יש balance — Pro tier יעבוד באופן ישיר"
+            balance_note = "׳™׳© balance ג€” Pro tier ׳™׳¢׳‘׳•׳“ ׳‘׳׳•׳₪׳ ׳™׳©׳™׳¨"
         except Exception as e:
             err = str(e).lower()
             balance_ok = False
             if "credit balance" in err or "credit_balance" in err or "billing" in err:
-                balance_note = "$0 balance — Pro tier י�-זור ל-Groq fallback אוטומטית"
+                balance_note = "$0 balance ג€” Pro tier ׳™ן¿½-׳–׳•׳¨ ׳-Groq fallback ׳׳•׳˜׳•׳׳˜׳™׳×"
             else:
                 balance_note = f"err: {type(e).__name__}: {str(e)[:80]}"
         await msg.answer(
-            f"🔑 *Anthropic Status*\n"
-            f"  auth: {'✅' if auth_ok else '❌'}\n"
-            f"  balance: {'✅' if balance_ok else '⚠️'}\n"
-            f"  → {balance_note}"
+            f"נ”‘ *Anthropic Status*\n"
+            f"  auth: {'ג…' if auth_ok else 'ג'}\n"
+            f"  balance: {'ג…' if balance_ok else 'ג ן¸'}\n"
+            f"  ג†’ {balance_note}"
         )
 
     @dp.message(Command("anthropic_spend"))
@@ -117,10 +117,10 @@ def register(dp: Dispatcher, auth_module) -> None:
             tin = anthropic.get("tokens_in", 0)
             tout = anthropic.get("tokens_out", 0)
             await msg.answer(
-                f"📊 *Anthropic Spend — {window}d*\n"
-                f"  💵 ${cost_usd:,.2f} (~₪{cost_usd * pricing.USD_ILS_RATE:,.2f})\n"
-                f"  📥 {tin:,} input tokens\n"
-                f"  📤 {tout:,} output tokens"
+                f"נ“ *Anthropic Spend ג€” {window}d*\n"
+                f"  נ’µ ${cost_usd:,.2f} (~ג‚×{cost_usd * pricing.USD_ILS_RATE:,.2f})\n"
+                f"  נ“¥ {tin:,} input tokens\n"
+                f"  נ“₪ {tout:,} output tokens"
             )
 
     @dp.message(Command("quota_user"))
@@ -130,21 +130,21 @@ def register(dp: Dispatcher, auth_module) -> None:
             return
         parts = (msg.text or "").split()
         if len(parts) < 2:
-            await msg.answer("שימוש: `/quota_user <user_id>`")
+            await msg.answer("׳©׳™׳׳•׳©: `/quota_user <user_id>`")
             return
         try:
             target_uid = int(parts[1])
         except ValueError:
-            await msg.answer("user_id �-ייב להיות מספר.")
+            await msg.answer("user_id ן¿½-׳™׳™׳‘ ׳׳”׳™׳•׳× ׳׳¡׳₪׳¨.")
             return
         sub = await subscriptions.get_or_create(target_uid)
         spec = pricing.TIERS.get(sub.tier, pricing.TIERS["free"])
         cap = spec.monthly_quota or spec.fair_use_cap
         await msg.answer(
-            f"👤 *User {target_uid}*\n"
-            f"  Tier: `{sub.tier}` · {spec.name_he}\n"
+            f"נ‘₪ *User {target_uid}*\n"
+            f"  Tier: `{sub.tier}` ֲ· {spec.name_he}\n"
             f"  Used: {sub.messages_used_this_period}/{cap}\n"
-            f"  Period: `{sub.current_period_start[:10]}` → `{sub.current_period_end[:10]}`\n"
+            f"  Period: `{sub.current_period_start[:10]}` ג†’ `{sub.current_period_end[:10]}`\n"
             f"  Provider: `{sub.payment_provider or 'none'}`"
         )
 
@@ -152,7 +152,7 @@ def register(dp: Dispatcher, auth_module) -> None:
     async def cmd_grandfather(msg: Message):
         """
         Bulk-grant Pro to a user with custom duration. Same effect as /set_tier
-        but semantic — for early-access promos to community members.
+        but semantic ג€” for early-access promos to community members.
 
         Usage: /grandfather <user_id> [days=30] [tier=pro]
         """
@@ -162,17 +162,17 @@ def register(dp: Dispatcher, auth_module) -> None:
         parts = (msg.text or "").split()
         if len(parts) < 2:
             await msg.answer(
-                "שימוש: `/grandfather <user_id> [days=30] [tier=pro]`\n\n"
-                "דוגמאות:\n"
-                "  `/grandfather 224223270` — Pro 30 ימים\n"
-                "  `/grandfather 224223270 90` — Pro 90 ימים\n"
-                "  `/grandfather 224223270 30 vip` — VIP 30 ימים"
+                "׳©׳™׳׳•׳©: `/grandfather <user_id> [days=30] [tier=pro]`\n\n"
+                "׳“׳•׳’׳׳׳•׳×:\n"
+                "  `/grandfather 224223270` ג€” Pro 30 ׳™׳׳™׳\n"
+                "  `/grandfather 224223270 90` ג€” Pro 90 ׳™׳׳™׳\n"
+                "  `/grandfather 224223270 30 vip` ג€” VIP 30 ׳™׳׳™׳"
             )
             return
         try:
             target_uid = int(parts[1])
         except ValueError:
-            await msg.answer("user_id �-ייב להיות מספר.")
+            await msg.answer("user_id ן¿½-׳™׳™׳‘ ׳׳”׳™׳•׳× ׳׳¡׳₪׳¨.")
             return
         try:
             days = int(parts[2]) if len(parts) > 2 else 30
@@ -180,10 +180,10 @@ def register(dp: Dispatcher, auth_module) -> None:
             days = 30
         tier = parts[3].lower() if len(parts) > 3 else "pro"
         if tier not in pricing.TIERS:
-            await msg.answer(f"Tier לא תקף: {tier}. אפשרי: {', '.join(pricing.TIERS.keys())}")
+            await msg.answer(f"Tier ׳׳ ׳×׳§׳£: {tier}. ׳׳₪׳©׳¨׳™: {', '.join(pricing.TIERS.keys())}")
             return
         if days < 1 or days > 365:
-            await msg.answer("days בטוו�- 1-365.")
+            await msg.answer("days ׳‘׳˜׳•׳•ן¿½- 1-365.")
             return
 
         sub = await subscriptions.upgrade(
@@ -195,14 +195,14 @@ def register(dp: Dispatcher, auth_module) -> None:
         )
         spec = pricing.TIERS[tier]
         await msg.answer(
-            f"✅ *Grandfathered*\n\n"
+            f"ג… *Grandfathered*\n\n"
             f"User: `{target_uid}`\n"
             f"Tier: *{spec.name_he}* ({tier})\n"
-            f"מכסה: {spec.monthly_quota or 'unlimited'} הודעות\n"
-            f"תקופה: {days} ימים\n"
-            f"מסתיים: `{sub.current_period_end[:10]}`\n\n"
-            f"_של�- לו: יש לך עכשיו Pro �-ינם עד {sub.current_period_end[:10]}. "
-            f"של�- /credits לבדוק._"
+            f"׳׳›׳¡׳”: {spec.monthly_quota or 'unlimited'} ׳”׳•׳“׳¢׳•׳×\n"
+            f"׳×׳§׳•׳₪׳”: {days} ׳™׳׳™׳\n"
+            f"׳׳¡׳×׳™׳™׳: `{sub.current_period_end[:10]}`\n\n"
+            f"_׳©׳ן¿½- ׳׳•: ׳™׳© ׳׳ ׳¢׳›׳©׳™׳• Pro ן¿½-׳™׳ ׳ ׳¢׳“ {sub.current_period_end[:10]}. "
+            f"׳©׳ן¿½- /credits ׳׳‘׳“׳•׳§._"
         )
 
     @dp.message(Command("set_tier"))
@@ -212,16 +212,16 @@ def register(dp: Dispatcher, auth_module) -> None:
             return
         parts = (msg.text or "").split()
         if len(parts) < 3:
-            await msg.answer("שימוש: `/set_tier <user_id> <free|pro|vip|zvk>`")
+            await msg.answer("׳©׳™׳׳•׳©: `/set_tier <user_id> <free|pro|vip|zvk>`")
             return
         try:
             target_uid = int(parts[1])
         except ValueError:
-            await msg.answer("user_id �-ייב להיות מספר.")
+            await msg.answer("user_id ן¿½-׳™׳™׳‘ ׳׳”׳™׳•׳× ׳׳¡׳₪׳¨.")
             return
         tier = parts[2].lower()
         if tier not in pricing.TIERS:
-            await msg.answer(f"Tier לא תקף. אפשרויות: {', '.join(pricing.TIERS.keys())}")
+            await msg.answer(f"Tier ׳׳ ׳×׳§׳£. ׳׳₪׳©׳¨׳•׳™׳•׳×: {', '.join(pricing.TIERS.keys())}")
             return
         await subscriptions.upgrade(
             user_id=target_uid,
@@ -229,7 +229,7 @@ def register(dp: Dispatcher, auth_module) -> None:
             provider="manual",
             payment_id=f"admin_grant_by_{msg.from_user.id}",
         )
-        await msg.answer(f"✅ User {target_uid} עודכן ל-{tier}")
+        await msg.answer(f"ג… User {target_uid} ׳¢׳•׳“׳›׳ ׳-{tier}")
 
     @dp.message(Command("top_users"))
     async def cmd_top(msg: Message):
@@ -246,12 +246,12 @@ def register(dp: Dispatcher, auth_module) -> None:
             )
             rows = await cur.fetchall()
         if not rows:
-            await msg.answer("אין שימוש ב�-ודש הא�-רון.")
+            await msg.answer("׳׳™׳ ׳©׳™׳׳•׳© ׳‘ן¿½-׳•׳“׳© ׳”׳ן¿½-׳¨׳•׳.")
             return
-        lines = ["📊 *Top 10 משתמשים — 30 ימים*\n"]
+        lines = ["נ“ *Top 10 ׳׳©׳×׳׳©׳™׳ ג€” 30 ׳™׳׳™׳*\n"]
         for i, (uid, msgs, cost_cents) in enumerate(rows, 1):
             cost_ils = (cost_cents or 0) / 100 * pricing.USD_ILS_RATE
-            lines.append(f"{i}. `{uid}` — {msgs} הודעות (₪{cost_ils:.2f})")
+            lines.append(f"{i}. `{uid}` ג€” {msgs} ׳”׳•׳“׳¢׳•׳× (ג‚×{cost_ils:.2f})")
         await msg.answer("\n".join(lines))
 
     log.info("admin_panel handlers registered")

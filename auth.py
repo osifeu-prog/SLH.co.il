@@ -25,8 +25,8 @@ def is_authorized(telegram_id: int) -> bool:
 def unauthorized_reply_he(telegram_id: int) -> str:
     allowed = ", ".join(str(i) for i in sorted(ADMIN_IDS))
     return (
-        "אין לך הרשאה להפעיל את הבוט הזה.\n"
-        f"הבוט מוגדר עבור: {allowed}\n"
-        f"ה-ID שלך: {telegram_id}"
+        "׳׳™׳ ׳׳ ׳”׳¨׳©׳׳” ׳׳”׳₪׳¢׳™׳ ׳׳× ׳”׳‘׳•׳˜ ׳”׳–׳”.\n"
+        f"׳”׳‘׳•׳˜ ׳׳•׳’׳“׳¨ ׳¢׳‘׳•׳¨: {allowed}\n"
+        f"׳”-ID ׳©׳׳: {telegram_id}"
     )
 
