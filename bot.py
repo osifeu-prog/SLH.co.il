@@ -884,3 +884,15 @@ async def cmd_auto(msg: Message):
 
 
 
+
+@dp.message(Command("ai_manager"))
+async def cmd_ai_manager(msg: Message):
+    goal = msg.text.replace("/ai_manager", "").strip() or "System health check"
+    result = send_to_manager("pipeline", {"goal": goal})
+    await msg.reply(f"AI Manager Pipeline:\n{json.dumps(result, indent=2)}"[:4000])
+
+@dp.message(Command("audit"))
+async def cmd_audit(msg: Message):
+    audit = send_to_manager("audit")
+    lines = audit if isinstance(audit, list) else audit.get("error", "unavailable")
+    await msg.reply(f"Audit Trail (last 20):\n{json.dumps(lines[-20:], indent=2)}"[:4000])
