@@ -1,0 +1,10 @@
+# Never commit real secrets or local DB
+.env
+.env.*
+!.env.example
+sessions.db
+audit.log
+__pycache__/
+*.pyc
+.venv/
+venv/
