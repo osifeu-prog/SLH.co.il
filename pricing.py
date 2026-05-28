@@ -1,18 +1,18 @@
 """
-SLH AI Spark ׳’ג‚¬ג€ Pricing Single Source of Truth
+SLH AI Spark ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ Pricing Single Source of Truth
 ==============================================
 
 Edit numbers HERE, not anywhere else. Anything that displays a price,
 counts a quota, or calculates margin must import from this module.
 
-Legal framing: this is SaaS ׳’ג‚¬ג€ software service revenue. NOT a token sale,
+Legal framing: this is SaaS ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ software service revenue. NOT a token sale,
 NOT a security. Customers pay for AI access; SLH provides the integration.
 Israeli VAT applies (17%, charged separately at invoicing).
 
 Cost basis (Anthropic Claude Sonnet 4.5, current pricing):
 - Input:  $3.00 / 1M tokens
 - Output: $15.00 / 1M tokens
-- Avg conversation: ~5K input + 1.5K output ׳’ג€°ֻ† $0.038 ׳’ג€°ֻ† ׳’ג€ֳ—0.137
+- Avg conversation: ~5K input + 1.5K output ׳³ג€™׳’ג‚¬ֲ°ײ»ג€  $0.038 ׳³ג€™׳’ג‚¬ֲ°ײ»ג€  ׳³ג€™׳’ג‚¬ֲײ³ג€”0.137
 
 Fee model (Telegram Stars, withdrawal to fiat):
 - Apple/Google IAP fee: 30% (mobile only, web is fee-free)
@@ -65,23 +65,23 @@ class TierSpec:
 TIERS: dict[Tier, TierSpec] = {
     "free": TierSpec(
         name="free",
-        name_he="׳ֲ¿ֲ½-׳³ג„¢׳³ֲ ׳³ֲ",
+        name_he="׳³ֲײ²ֲ¿ײ²ֲ½-׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ",
         price_ils=0,
         price_stars=0,
         monthly_quota=10,
         fair_use_cap=10,
         ai_provider="free",  # Groq/Gemini via free_ai_client
-        description_he="10 ׳³ג€׳³ג€¢׳³ג€׳³ֲ¢׳³ג€¢׳³ֳ—/׳ֲ¿ֲ½-׳³ג€¢׳³ג€׳³ֲ© ײ²ֲ· AI ׳ֲ¿ֲ½-׳³ג„¢׳³ֲ ׳³ֲ (Groq/Gemini) ײ²ֲ· ׳³ֲ׳³ֲ׳³ֲ tools",
+        description_he="10 ׳³ֲ³׳’ג‚¬ֲ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ²ֲ¢׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ³ג€”/׳³ֲײ²ֲ¿ײ²ֲ½-׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ²ֲ© ׳²ֲ²ײ²ֲ· AI ׳³ֲײ²ֲ¿ײ²ֲ½-׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ (Groq/Gemini) ׳²ֲ²ײ²ֲ· ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ tools",
     ),
     "pro": TierSpec(
         name="pro",
         name_he="Pro",
         price_ils=29,
         price_stars=500,
-        monthly_quota=70,           # tuned 2026-04-25: 100 ׳’ג€ ג€™ 70 to keep ~50% margin
+        monthly_quota=70,           # tuned 2026-04-25: 100 ׳³ג€™׳’ג‚¬ֲ ׳’ג‚¬ג„¢ 70 to keep ~50% margin
         fair_use_cap=70,
         ai_provider="anthropic",
-        description_he="70 ׳³ג€׳³ג€¢׳³ג€׳³ֲ¢׳³ג€¢׳³ֳ—/׳ֲ¿ֲ½-׳³ג€¢׳³ג€׳³ֲ© ײ²ֲ· Claude Sonnet 4.5 + tools ײ²ֲ· ׳³ֲ¢׳³ג€׳³ג„¢׳³ג‚×׳³ג€¢׳³ֳ— ׳³ג€˜׳³ֳ—׳³ג€¢׳³ֲ¨",
+        description_he="70 ׳³ֲ³׳’ג‚¬ֲ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ²ֲ¢׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ³ג€”/׳³ֲײ²ֲ¿ײ²ֲ½-׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ²ֲ© ׳²ֲ²ײ²ֲ· Claude Sonnet 4.5 + tools ׳²ֲ²ײ²ֲ· ׳³ֲ³ײ²ֲ¢׳³ֲ³׳’ג‚¬ֲ׳³ֲ³׳’ג€ֲ¢׳³ֲ³׳’ג€ֳ-׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ³ג€” ׳³ֲ³׳’ג‚¬ֻ׳³ֲ³ײ³ג€”׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ¨",
     ),
     "vip": TierSpec(
         name="vip",
@@ -89,9 +89,9 @@ TIERS: dict[Tier, TierSpec] = {
         price_ils=99,
         price_stars=1500,
         monthly_quota=0,            # 0 = unlimited subject to fair_use_cap
-        fair_use_cap=350,           # tuned 2026-04-25: 1000 ׳’ג€ ג€™ 350 for positive margin
+        fair_use_cap=350,           # tuned 2026-04-25: 1000 ׳³ג€™׳’ג‚¬ֲ ׳’ג‚¬ג„¢ 350 for positive margin
         ai_provider="anthropic",
-        description_he="׳³ֲ׳³ֲ׳³ֲ ׳³ֲ׳³ג€÷׳³ֲ¡׳³ג€ (fair-use 350) ײ²ֲ· Claude + tools ײ²ֲ· ׳³ֳ—׳³ֲ׳³ג„¢׳³ג€÷׳³ג€ ׳³ג„¢׳³ֲ©׳³ג„¢׳³ֲ¨׳³ג€",
+        description_he="׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֳ·׳³ֲ³ײ²ֲ¡׳³ֲ³׳’ג‚¬ֲ (fair-use 350) ׳²ֲ²ײ²ֲ· Claude + tools ׳²ֲ²ײ²ֲ· ׳³ֲ³ײ³ג€”׳³ֲ³ײ²ֲ׳³ֲ³׳’ג€ֲ¢׳³ֲ³׳’ג‚¬ֳ·׳³ֲ³׳’ג‚¬ֲ ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ©׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ¨׳³ֲ³׳’ג‚¬ֲ",
     ),
     "zvk": TierSpec(
         name="zvk",
@@ -101,7 +101,7 @@ TIERS: dict[Tier, TierSpec] = {
         monthly_quota=0,
         fair_use_cap=0,
         ai_provider="anthropic",
-        description_he="׳³ג€׳³ג€¢׳³ג€׳³ֲ¢׳³ג€ = 1 ZVK ײ²ֲ· ׳³ֲ¨׳³ֲ§ earned-via-activity (Academia/quests)",
+        description_he="׳³ֲ³׳’ג‚¬ֲ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ²ֲ¢׳³ֲ³׳’ג‚¬ֲ = 1 ZVK ׳²ֲ²ײ²ֲ· ׳³ֲ³ײ²ֲ¨׳³ֲ³ײ²ֲ§ earned-via-activity (Academia/quests)",
     ),
 }
 
@@ -136,30 +136,30 @@ def margin_pct(tier: Tier, telegram_realization: float = 0.70) -> float:
 def tier_summary_he(tier: Tier) -> str:
     spec = TIERS[tier]
     if tier == "free":
-        return f"׳ ֲג€ ג€ *{spec.name_he}* ׳’ג‚¬ג€ ׳ֲ¿ֲ½-׳³ג„¢׳³ֲ ׳³ֲ ײ²ֲ· {spec.description_he}"
+        return f"׳³ֲ ײ²ֲ׳’ג‚¬ֲ ׳’ג‚¬ֲ *{spec.name_he}* ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ ׳³ֲײ²ֲ¿ײ²ֲ½-׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ ׳²ֲ²ײ²ֲ· {spec.description_he}"
     if tier == "zvk":
-        return f"׳ ֲֳ—ג„¢ *{spec.name_he}* ׳’ג‚¬ג€ utility ײ²ֲ· {spec.description_he}"
+        return f"׳³ֲ ײ²ֲײ³ג€”׳’ג€ֲ¢ *{spec.name_he}* ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ utility ׳²ֲ²ײ²ֲ· {spec.description_he}"
     margin = expected_margin_ils(tier)
     return (
-        f"׳ ֲג€™ֲ *{spec.name_he}* ׳’ג‚¬ג€ ׳’ג€ֳ—{spec.price_ils}/׳ֲ¿ֲ½-׳³ג€¢׳³ג€׳³ֲ© ({spec.price_stars} ׳’ֲ­ֲ)\n"
+        f"׳³ֲ ײ²ֲ׳’ג‚¬ג„¢ײ²ֲ *{spec.name_he}* ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ ׳³ג€™׳’ג‚¬ֲײ³ג€”{spec.price_ils}/׳³ֲײ²ֲ¿ײ²ֲ½-׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ²ֲ© ({spec.price_stars} ׳³ג€™ײ²ֲ­ײ²ֲ)\n"
         f"   {spec.description_he}\n"
-        f"   _Margin ׳³ֲ¦׳³ג‚×׳³ג€¢׳³ג„¢: ׳’ג€ֳ—{margin:.0f}/׳³ֲ׳³ֲ§׳³ג€¢׳ֲ¿ֲ½-/׳ֲ¿ֲ½-׳³ג€¢׳³ג€׳³ֲ©_"
+        f"   _Margin ׳³ֲ³ײ²ֲ¦׳³ֲ³׳’ג€ֳ-׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג€ֲ¢: ׳³ג€™׳’ג‚¬ֲײ³ג€”{margin:.0f}/׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ§׳³ֲ³׳’ג‚¬ֲ¢׳³ֲײ²ֲ¿ײ²ֲ½-/׳³ֲײ²ֲ¿ײ²ֲ½-׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ²ֲ©_"
     )
 
 
 def all_tiers_summary_he() -> str:
-    lines = ["*SLH AI Spark ׳’ג‚¬ג€ ׳ֲ¿ֲ½-׳³ג€˜׳³ג„¢׳³ֲ׳³ג€¢׳³ֳ—:*\n"]
+    lines = ["*SLH AI Spark ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ ׳³ֲײ²ֲ¿ײ²ֲ½-׳³ֲ³׳’ג‚¬ֻ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ³ג€”:*\n"]
     for tier in ("free", "pro", "vip", "zvk"):
         lines.append(tier_summary_he(tier))
         lines.append("")
     lines.append(
-        "_Forward-looking projection. ׳³ג€˜׳³ג„¢׳³ֲ¦׳³ג€¢׳³ֲ¢׳³ג„¢ AI ׳³ֳ—׳³ֲ׳³ג€¢׳³ג„¢׳³ג„¢׳³ֲ ׳³ג€˜׳³ֲ¢׳³ג€¢׳³ֲ׳³ֲ¡. ׳³ֲ׳³ֲ ׳³ג„¢׳³ג„¢׳³ֲ¢׳³ג€¢׳³ֲ¥ ׳³ג€׳³ֲ©׳³ֲ§׳³ֲ¢׳³ג€¢׳³ֳ—._"
+        "_Forward-looking projection. ׳³ֲ³׳’ג‚¬ֻ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ¦׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ¢׳³ֲ³׳’ג€ֲ¢ AI ׳³ֲ³ײ³ג€”׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג€ֲ¢׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ ׳³ֲ³׳’ג‚¬ֻ׳³ֲ³ײ²ֲ¢׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ¡. ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ ׳³ֲ³׳’ג€ֲ¢׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ¢׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ¥ ׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ²ֲ©׳³ֲ³ײ²ֲ§׳³ֲ³ײ²ֲ¢׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ³ג€”._"
     )
     return "\n".join(lines)
 
 
 if __name__ == "__main__":
-    # Quick sanity check ׳’ג‚¬ג€ `python pricing.py`. ASCII-only for Windows cp1252.
+    # Quick sanity check ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ `python pricing.py`. ASCII-only for Windows cp1252.
     print(f"Cost / message: ILS {cost_per_message_ils():.3f}")
     for t in ("free", "pro", "vip"):
         print(f"  {t}: margin ILS {expected_margin_ils(t):+.2f} ({margin_pct(t):+.1f}%)")

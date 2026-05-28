@@ -49,7 +49,7 @@ def _validate(cmd: str) -> str | None:
     if not ALLOW_DESTRUCTIVE:
         for bad in SOFT_BLOCK:
             if bad in low:
-                return f"[blocked] destructive pattern {bad!r} ׳’ג‚¬ג€ set ALLOW_DESTRUCTIVE=true to enable"
+                return f"[blocked] destructive pattern {bad!r} ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ set ALLOW_DESTRUCTIVE=true to enable"
     first = cmd.strip().split(maxsplit=1)[0] if cmd.strip() else ""
     if not any(first == p or first.startswith(p + " ") or first == p for p in ALLOWED_PREFIXES):
         if ALLOW_DESTRUCTIVE:

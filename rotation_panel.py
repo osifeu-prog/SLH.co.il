@@ -1,26 +1,26 @@
-"""SLH Token Rotation ׳’ג‚¬ג€ Telegram admin panel for @SLH_Claude_bot.
+"""SLH Token Rotation ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ Telegram admin panel for @SLH_Claude_bot.
 
 Mirrors /admin/tokens.html on Telegram with inline keyboards. Same backend
-endpoint (POST /api/admin/rotate-bot-token-pipeline) ׳’ג‚¬ג€ bot is just a wrapper.
+endpoint (POST /api/admin/rotate-bot-token-pipeline) ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ bot is just a wrapper.
 
 Commands:
-    /admin              ׳’ג€ ג€™ main menu (Tokens / Railway / Status / Audit)
+    /admin              ׳³ג€™׳’ג‚¬ֲ ׳’ג‚¬ג„¢ main menu (Tokens / Railway / Status / Audit)
 
 Callbacks (data prefixes):
-    adm:home            ׳’ג€ ג€™ show main menu
-    adm:tokens:<page>   ׳’ג€ ג€™ show paginated bot list
-    adm:bot:<id>        ׳’ג€ ג€™ show bot detail card
-    adm:rot:<id>        ׳’ג€ ג€™ start rotate flow for bot
-    adm:swap:<id>       ׳’ג€ ג€™ start rotate flow with swap_mode=true
-    adm:hist            ׳’ג€ ג€™ show last 10 audit events
-    adm:status          ׳’ג€ ג€™ pipeline-health snapshot
-    adm:railway         ׳’ג€ ג€™ bridge to railway_ops dashboard
-    adm:cancel          ׳’ג€ ג€™ cancel pending token-input flow
+    adm:home            ׳³ג€™׳’ג‚¬ֲ ׳’ג‚¬ג„¢ show main menu
+    adm:tokens:<page>   ׳³ג€™׳’ג‚¬ֲ ׳’ג‚¬ג„¢ show paginated bot list
+    adm:bot:<id>        ׳³ג€™׳’ג‚¬ֲ ׳’ג‚¬ג„¢ show bot detail card
+    adm:rot:<id>        ׳³ג€™׳’ג‚¬ֲ ׳’ג‚¬ג„¢ start rotate flow for bot
+    adm:swap:<id>       ׳³ג€™׳’ג‚¬ֲ ׳’ג‚¬ג„¢ start rotate flow with swap_mode=true
+    adm:hist            ׳³ג€™׳’ג‚¬ֲ ׳’ג‚¬ג„¢ show last 10 audit events
+    adm:status          ׳³ג€™׳’ג‚¬ֲ ׳’ג‚¬ג„¢ pipeline-health snapshot
+    adm:railway         ׳³ג€™׳’ג‚¬ֲ ׳’ג‚¬ג„¢ bridge to railway_ops dashboard
+    adm:cancel          ׳³ג€™׳’ג‚¬ֲ ׳’ג‚¬ג„¢ cancel pending token-input flow
 
-Auth: shared with bot.py via auth.is_authorized ׳’ג‚¬ג€ only Osif's IDs reach here.
+Auth: shared with bot.py via auth.is_authorized ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ only Osif's IDs reach here.
 
 In-memory state: pending token-input requests per user (TTL 5 min). Resets on
-restart, which is fine ׳’ג‚¬ג€ a stale flow just times out and the user retries.
+restart, which is fine ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ a stale flow just times out and the user retries.
 """
 from __future__ import annotations
 
@@ -48,7 +48,7 @@ API_BASE = os.getenv("SLH_API_BASE", "https://slh-api-production.up.railway.app"
 ADMIN_KEY = os.getenv("ADMIN_API_KEY", "")
 
 PAGE_SIZE = 8
-TIER_EMOJI = {"critical": "׳ ֲֲֲ¨", "high": "׳’ֲֲ ׳ֲ¸ֲ", "medium": "׳ ֲג€ֲ¹", "low": "׳’ֲֳ—"}
+TIER_EMOJI = {"critical": "׳³ֲ ײ²ֲײ²ֲײ²ֲ¨", "high": "׳³ג€™ײ²ֲײ²ֲ ׳³ֲײ²ֲ¸ײ²ֲ", "medium": "׳³ֲ ײ²ֲ׳’ג‚¬ֲײ²ֲ¹", "low": "׳³ג€™ײ²ֲײ³ג€”"}
 TIER_ORDER = {"critical": 0, "high": 1, "medium": 2, "low": 3}
 PENDING_TTL_SECONDS = 300  # 5 min for user to send the new token
 
@@ -57,7 +57,7 @@ PENDING_TTL_SECONDS = 300  # 5 min for user to send the new token
 _PENDING: dict[int, dict] = {}
 
 
-# ׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬ HTTP helpers ׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬
+# ׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬ HTTP helpers ׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬
 
 
 async def _api_get(path: str) -> dict:
@@ -98,60 +98,60 @@ def _days_since(iso: Optional[str]) -> Optional[int]:
 
 def _stale_label(days: Optional[int]) -> str:
     if days is None:
-        return "׳’ֲג€ never"
+        return "׳³ג€™ײ²ֲ׳’ג‚¬ֲ never"
     if days > 180:
-        return f"׳ ֲֲֲ¨ {days}d"
+        return f"׳³ֲ ײ²ֲײ²ֲײ²ֲ¨ {days}d"
     if days > 90:
-        return f"׳’ֲֲ ׳ֲ¸ֲ {days}d"
-    return f"׳’ֲג€¦ {days}d"
+        return f"׳³ג€™ײ²ֲײ²ֲ ׳³ֲײ²ֲ¸ײ²ֲ {days}d"
+    return f"׳³ג€™ײ²ֲ׳’ג‚¬ֲ¦ {days}d"
 
 
-# ׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬ Keyboards ׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬
+# ׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬ Keyboards ׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬
 
 
 def _kb_main() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="׳ ֲג€ֲ Tokens",  callback_data="adm:tokens:0"),
-         InlineKeyboardButton(text="׳ ֲֲג€ Railway", callback_data="adm:railway")],
-        [InlineKeyboardButton(text="׳ ֲג€ֲ Pipeline status", callback_data="adm:status"),
-         InlineKeyboardButton(text="׳ ֲג€ֲ Audit",   callback_data="adm:hist")],
+        [InlineKeyboardButton(text="׳³ֲ ײ²ֲ׳’ג‚¬ֲײ²ֲ Tokens",  callback_data="adm:tokens:0"),
+         InlineKeyboardButton(text="׳³ֲ ײ²ֲײ²ֲ׳’ג‚¬ֲ Railway", callback_data="adm:railway")],
+        [InlineKeyboardButton(text="׳³ֲ ײ²ֲ׳’ג‚¬ֲײ²ֲ Pipeline status", callback_data="adm:status"),
+         InlineKeyboardButton(text="׳³ֲ ײ²ֲ׳’ג‚¬ֲײ²ֲ Audit",   callback_data="adm:hist")],
     ])
 
 
 def _kb_back_home() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="׳’ֲ¬ג€¦ ׳ֲ¿ֲ½-׳³ג€“׳³ֲ¨׳³ג€ ׳³ֲ׳³ֳ—׳³ג‚×׳³ֲ¨׳³ג„¢׳³ֻ", callback_data="adm:home")],
+        [InlineKeyboardButton(text="׳³ג€™ײ²ֲ¬׳’ג‚¬ֲ¦ ׳³ֲײ²ֲ¿ײ²ֲ½-׳³ֲ³׳’ג‚¬ג€׳³ֲ³ײ²ֲ¨׳³ֲ³׳’ג‚¬ֲ ׳³ֲ³ײ²ֲ׳³ֲ³ײ³ג€”׳³ֲ³׳’ג€ֳ-׳³ֲ³ײ²ֲ¨׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ»ֲ", callback_data="adm:home")],
     ])
 
 
 def _kb_bot_detail(bot: dict) -> InlineKeyboardMarkup:
     bot_id = bot["id"]
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="׳ ֲג€ג€ ׳³ֲ¡׳³ג€¢׳³ג€˜׳³ג€˜ ׳³ֻ׳³ג€¢׳³ֲ§׳³ֲ", callback_data=f"adm:rot:{bot_id}")],
-        [InlineKeyboardButton(text="׳ ֲג€ֲ Swap mode (׳³ֻ׳³ג€¢׳³ֲ§׳³ֲ ׳³ֲ©׳³ֲ ׳³ג€˜׳³ג€¢׳³ֻ ׳³ֲ׳ֲ¿ֲ½-׳³ֲ¨)", callback_data=f"adm:swap:{bot_id}")],
-        [InlineKeyboardButton(text="׳’ֲ¬ג€¦ ׳³ֲ׳³ֲ¨׳³ֲ©׳³ג„¢׳³ֲ׳³ֳ— ׳³ג€˜׳³ג€¢׳³ֻ׳³ג„¢׳³ֲ", callback_data="adm:tokens:0"),
-         InlineKeyboardButton(text="׳ ֲֲֲ  ׳³ֳ—׳³ג‚×׳³ֲ¨׳³ג„¢׳³ֻ", callback_data="adm:home")],
+        [InlineKeyboardButton(text="׳³ֲ ײ²ֲ׳’ג‚¬ֲ׳’ג‚¬ֲ ׳³ֲ³ײ²ֲ¡׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ֻ׳³ֲ³׳’ג‚¬ֻ ׳³ֲ³ײ»ֲ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ§׳³ֲ³ײ²ֲ", callback_data=f"adm:rot:{bot_id}")],
+        [InlineKeyboardButton(text="׳³ֲ ײ²ֲ׳’ג‚¬ֲײ²ֲ Swap mode (׳³ֲ³ײ»ֲ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ§׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ©׳³ֲ³ײ²ֲ ׳³ֲ³׳’ג‚¬ֻ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ»ֲ ׳³ֲ³ײ²ֲ׳³ֲײ²ֲ¿ײ²ֲ½-׳³ֲ³ײ²ֲ¨)", callback_data=f"adm:swap:{bot_id}")],
+        [InlineKeyboardButton(text="׳³ג€™ײ²ֲ¬׳’ג‚¬ֲ¦ ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ¨׳³ֲ³ײ²ֲ©׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ׳³ֲ³ײ³ג€” ׳³ֲ³׳’ג‚¬ֻ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ»ֲ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ", callback_data="adm:tokens:0"),
+         InlineKeyboardButton(text="׳³ֲ ײ²ֲײ²ֲײ²ֲ  ׳³ֲ³ײ³ג€”׳³ֲ³׳’ג€ֳ-׳³ֲ³ײ²ֲ¨׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ»ֲ", callback_data="adm:home")],
     ])
 
 
 def _kb_cancel() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="׳’ֲֲ ׳³ג€˜׳³ֻ׳³ֲ", callback_data="adm:cancel")],
+        [InlineKeyboardButton(text="׳³ג€™ײ²ֲײ²ֲ ׳³ֲ³׳’ג‚¬ֻ׳³ֲ³ײ»ֲ׳³ֲ³ײ²ֲ", callback_data="adm:cancel")],
     ])
 
 
 def _kb_confirm_critical(bot_id: int) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="׳’ֲג€¦ ׳³ֲ׳³ֲ©׳³ֲ¨ ׳³ג€¢׳³ֲ¡׳³ג€¢׳³ג€˜׳³ג€˜ (60s)", callback_data=f"adm:confirm:{bot_id}")],
-        [InlineKeyboardButton(text="׳’ֲֲ ׳³ג€˜׳³ֻ׳³ֲ", callback_data="adm:cancel")],
+        [InlineKeyboardButton(text="׳³ג€™ײ²ֲ׳’ג‚¬ֲ¦ ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ©׳³ֲ³ײ²ֲ¨ ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ¡׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ֻ׳³ֲ³׳’ג‚¬ֻ (60s)", callback_data=f"adm:confirm:{bot_id}")],
+        [InlineKeyboardButton(text="׳³ג€™ײ²ֲײ²ֲ ׳³ֲ³׳’ג‚¬ֻ׳³ֲ³ײ»ֲ׳³ֲ³ײ²ֲ", callback_data="adm:cancel")],
     ])
 
 
-# ׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬ Render helpers ׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬
+# ׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬ Render helpers ׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬
 
 
 def _sort_bots(bots: list[dict]) -> list[dict]:
-    """Critical׳’ג€ ג€™Low, then by stale-days desc (most stale first)."""
+    """Critical׳³ג€™׳’ג‚¬ֲ ׳’ג‚¬ג„¢Low, then by stale-days desc (most stale first)."""
     def key(b):
         tier_rank = TIER_ORDER.get((b.get("tier") or "medium"), 9)
         days = _days_since(b.get("last_rotated_at")) or 9999
@@ -164,21 +164,21 @@ def _render_bot_detail(bot: dict) -> str:
     emoji = TIER_EMOJI.get(tier, "")
     days = _days_since(bot.get("last_rotated_at"))
     stale = _stale_label(days)
-    last_iso = (bot.get("last_rotated_at") or "")[:10] or "׳’ג‚¬ג€"
+    last_iso = (bot.get("last_rotated_at") or "")[:10] or "׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ"
     note = bot.get("notes") or ""
-    confirm_note = " (׳³ג„¢׳³ֲ© ׳³ֲ׳³ג€׳³ג€™׳³ג„¢׳³ג€˜ ׳³ֲ׳³ג€÷׳³ג‚×׳³ֳ—׳³ג€¢׳³ֲ¨ confirm 60s)" if tier == "critical" else ""
+    confirm_note = " (׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ© ׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֲ׳³ֲ³׳’ג‚¬ג„¢׳³ֲ³׳’ג€ֲ¢׳³ֲ³׳’ג‚¬ֻ ׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֳ·׳³ֲ³׳’ג€ֳ-׳³ֲ³ײ³ג€”׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ¨ confirm 60s)" if tier == "critical" else ""
     return (
-        f"׳ ֲג‚×ג€“ *{bot['name']}*\n"
+        f"׳³ֲ ײ²ֲ׳’ג€ֳ-׳’ג‚¬ג€ *{bot['name']}*\n"
         f"Handle: `{bot['handle']}`\n"
         f"Env: `{bot['env_var']}`\n"
-        f"Service: `{bot.get('service') or '׳’ג‚¬ג€'}`\n"
+        f"Service: `{bot.get('service') or '׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ'}`\n"
         f"Tier: {emoji} *{tier.upper()}*{confirm_note}\n"
-        f"Last rotated: `{last_iso}` ײ²ֲ· {stale}\n"
+        f"Last rotated: `{last_iso}` ׳²ֲ²ײ²ֲ· {stale}\n"
         + (f"Notes: _{note}_\n" if note else "")
     )
 
 
-# ׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬ Handlers ׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬
+# ׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬ Handlers ׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬
 
 
 def register(dp: Dispatcher, auth_module) -> None:
@@ -189,7 +189,7 @@ def register(dp: Dispatcher, auth_module) -> None:
             await msg.answer(auth_module.unauthorized_reply_he(msg.from_user.id))
             return
         await msg.answer(
-            "׳ ֲֲג€÷ *׳³ג‚×׳³ֲ׳³ֲ ׳³ֲ ׳³ֲ׳³ג€׳³ֲ׳³ג„¢׳³ֲ SLH Spark*\n_׳³ג€˜׳ֲ¿ֲ½-׳³ֲ¨ ׳³ֲ׳³ג€“׳³ג€¢׳³ֲ¨:_",
+            "׳³ֲ ײ²ֲײ²ֲ׳’ג‚¬ֳ· *׳³ֲ³׳’ג€ֳ-׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ²ֲ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ SLH Spark*\n_׳³ֲ³׳’ג‚¬ֻ׳³ֲײ²ֲ¿ײ²ֲ½-׳³ֲ³ײ²ֲ¨ ׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ג€׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ¨:_",
             reply_markup=_kb_main(),
         )
 
@@ -199,10 +199,10 @@ def register(dp: Dispatcher, auth_module) -> None:
             await cb.answer("Unauthorized", show_alert=True)
             return
         try:
-            await cb.message.edit_text("׳ ֲֲג€÷ *׳³ג‚×׳³ֲ׳³ֲ ׳³ֲ ׳³ֲ׳³ג€׳³ֲ׳³ג„¢׳³ֲ SLH Spark*\n_׳³ג€˜׳ֲ¿ֲ½-׳³ֲ¨ ׳³ֲ׳³ג€“׳³ג€¢׳³ֲ¨:_",
+            await cb.message.edit_text("׳³ֲ ײ²ֲײ²ֲ׳’ג‚¬ֳ· *׳³ֲ³׳’ג€ֳ-׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ²ֲ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ SLH Spark*\n_׳³ֲ³׳’ג‚¬ֻ׳³ֲײ²ֲ¿ײ²ֲ½-׳³ֲ³ײ²ֲ¨ ׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ג€׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ¨:_",
                                        reply_markup=_kb_main())
         except Exception:
-            await cb.message.answer("׳ ֲֲג€÷ *׳³ג‚×׳³ֲ׳³ֲ ׳³ֲ ׳³ֲ׳³ג€׳³ֲ׳³ג„¢׳³ֲ SLH Spark*\n_׳³ג€˜׳ֲ¿ֲ½-׳³ֲ¨ ׳³ֲ׳³ג€“׳³ג€¢׳³ֲ¨:_",
+            await cb.message.answer("׳³ֲ ײ²ֲײ²ֲ׳’ג‚¬ֳ· *׳³ֲ³׳’ג€ֳ-׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ²ֲ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ SLH Spark*\n_׳³ֲ³׳’ג‚¬ֻ׳³ֲײ²ֲ¿ײ²ֲ½-׳³ֲ³ײ²ֲ¨ ׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ג€׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ¨:_",
                                     reply_markup=_kb_main())
         await cb.answer()
 
@@ -215,7 +215,7 @@ def register(dp: Dispatcher, auth_module) -> None:
         try:
             j = await _api_get("/api/admin/bots")
         except Exception as e:
-            await cb.message.edit_text(f"׳’ֲֲ ׳³ֲ©׳³ג€™׳³ג„¢׳³ֲ׳³ג€ ׳³ג€˜׳³ֻ׳³ֲ¢׳³ג„¢׳³ֲ ׳³ֳ— ׳³ג€˜׳³ג€¢׳³ֻ׳³ג„¢׳³ֲ:\n`{str(e)[:300]}`",
+            await cb.message.edit_text(f"׳³ג€™ײ²ֲײ²ֲ ׳³ֲ³ײ²ֲ©׳³ֲ³׳’ג‚¬ג„¢׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֲ ׳³ֲ³׳’ג‚¬ֻ׳³ֲ³ײ»ֲ׳³ֲ³ײ²ֲ¢׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ ׳³ֲ³ײ³ג€” ׳³ֲ³׳’ג‚¬ֻ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ»ֲ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ:\n`{str(e)[:300]}`",
                                        reply_markup=_kb_back_home())
             await cb.answer()
             return
@@ -230,24 +230,24 @@ def register(dp: Dispatcher, auth_module) -> None:
             emoji = TIER_EMOJI.get(tier, "")
             days = _days_since(b.get("last_rotated_at"))
             stale = _stale_label(days)
-            label = f"{emoji} {b['handle']} ײ²ֲ· {stale}"
+            label = f"{emoji} {b['handle']} ׳²ֲ²ײ²ֲ· {stale}"
             if len(label) > 60:
-                label = label[:58] + "׳’ג‚¬ֲ¦"
+                label = label[:58] + "׳³ג€™׳’ג€ֲ¬ײ²ֲ¦"
             rows.append([InlineKeyboardButton(text=label, callback_data=f"adm:bot:{b['id']}")])
         nav: list[InlineKeyboardButton] = []
         if page > 0:
-            nav.append(InlineKeyboardButton(text="׳’ֲ¬ג€¦ prev", callback_data=f"adm:tokens:{page-1}"))
+            nav.append(InlineKeyboardButton(text="׳³ג€™ײ²ֲ¬׳’ג‚¬ֲ¦ prev", callback_data=f"adm:tokens:{page-1}"))
         if start + PAGE_SIZE < total:
-            nav.append(InlineKeyboardButton(text="next ׳’ֲֲ¡", callback_data=f"adm:tokens:{page+1}"))
+            nav.append(InlineKeyboardButton(text="next ׳³ג€™ײ²ֲײ²ֲ¡", callback_data=f"adm:tokens:{page+1}"))
         if nav:
             rows.append(nav)
-        rows.append([InlineKeyboardButton(text="׳ ֲֲֲ  ׳³ֳ—׳³ג‚×׳³ֲ¨׳³ג„¢׳³ֻ", callback_data="adm:home")])
+        rows.append([InlineKeyboardButton(text="׳³ֲ ײ²ֲײ²ֲײ²ֲ  ׳³ֲ³ײ³ג€”׳³ֲ³׳’ג€ֳ-׳³ֲ³ײ²ֲ¨׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ»ֲ", callback_data="adm:home")])
 
         last_page = max(0, (total - 1) // PAGE_SIZE)
         text = (
-            f"׳ ֲג€ֲ *Bots {start+1}׳’ג‚¬ג€{min(start+PAGE_SIZE, total)} ׳³ֲ׳³ֳ—׳³ג€¢׳³ֲ {total}* "
-            f"(׳³ֲ¢׳³ֲ׳³ג€¢׳³ג€ {page+1}/{last_page+1})\n"
-            f"_׳³ֲ׳³ג„¢׳³ג€¢׳³ֲ: tier ׳’ג€ ג€ ׳³ג€¢׳³ֲ׳³ג€“ staleness ׳’ג€ ג€_"
+            f"׳³ֲ ײ²ֲ׳’ג‚¬ֲײ²ֲ *Bots {start+1}׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ{min(start+PAGE_SIZE, total)} ׳³ֲ³ײ²ֲ׳³ֲ³ײ³ג€”׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ {total}* "
+            f"(׳³ֲ³ײ²ֲ¢׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ֲ {page+1}/{last_page+1})\n"
+            f"_׳³ֲ³ײ²ֲ׳³ֲ³׳’ג€ֲ¢׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ: tier ׳³ג€™׳’ג‚¬ֲ ׳’ג‚¬ֲ ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ג€ staleness ׳³ג€™׳’ג‚¬ֲ ׳’ג‚¬ֲ_"
         )
         try:
             await cb.message.edit_text(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=rows))
@@ -264,12 +264,12 @@ def register(dp: Dispatcher, auth_module) -> None:
         try:
             j = await _api_get("/api/admin/bots")
         except Exception as e:
-            await cb.message.edit_text(f"׳’ֲֲ {str(e)[:300]}", reply_markup=_kb_back_home())
+            await cb.message.edit_text(f"׳³ג€™ײ²ֲײ²ֲ {str(e)[:300]}", reply_markup=_kb_back_home())
             await cb.answer()
             return
         bot = next((b for b in (j.get("bots") or []) if b.get("id") == bot_id), None)
         if not bot:
-            await cb.answer("׳³ג€׳³ג€˜׳³ג€¢׳³ֻ ׳³ֲ׳³ֲ ׳³ֲ ׳³ֲ׳³ֲ¦׳³ֲ", show_alert=True)
+            await cb.answer("׳³ֲ³׳’ג‚¬ֲ׳³ֲ³׳’ג‚¬ֻ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ»ֲ ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ¦׳³ֲ³ײ²ֲ", show_alert=True)
             return
         await cb.message.edit_text(_render_bot_detail(bot), reply_markup=_kb_bot_detail(bot))
         await cb.answer()
@@ -279,12 +279,12 @@ def register(dp: Dispatcher, auth_module) -> None:
         try:
             j = await _api_get("/api/admin/bots")
         except Exception as e:
-            await cb.message.edit_text(f"׳’ֲֲ {str(e)[:300]}", reply_markup=_kb_back_home())
+            await cb.message.edit_text(f"׳³ג€™ײ²ֲײ²ֲ {str(e)[:300]}", reply_markup=_kb_back_home())
             await cb.answer()
             return
         bot = next((b for b in (j.get("bots") or []) if b.get("id") == bot_id), None)
         if not bot:
-            await cb.answer("׳³ג€׳³ג€˜׳³ג€¢׳³ֻ ׳³ֲ׳³ֲ ׳³ֲ ׳³ֲ׳³ֲ¦׳³ֲ", show_alert=True)
+            await cb.answer("׳³ֲ³׳’ג‚¬ֲ׳³ֲ³׳’ג‚¬ֻ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ»ֲ ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ¦׳³ֲ³ײ²ֲ", show_alert=True)
             return
         # GC stale pending
         now = time.time()
@@ -299,11 +299,11 @@ def register(dp: Dispatcher, auth_module) -> None:
             "menu_msg_id": cb.message.message_id,
         }
         prompt = (
-            f"׳ ֲג€ֲ¨ *׳³ֲ¡׳³ג„¢׳³ג€˜׳³ג€¢׳³ג€˜ {bot['handle']}*\n\n"
-            f"׳³ֲ©׳³ֲ׳ֲ¿ֲ½- ׳³ֲ׳³ֳ— *׳³ג€׳³ֻ׳³ג€¢׳³ֲ§׳³ֲ ׳³ג€׳ֲ¿ֲ½-׳³ג€׳³ֲ© ׳³ֲ-BotFather* ׳³ג€˜׳³ג€׳³ג€¢׳³ג€׳³ֲ¢׳³ג€ ׳³ג€׳³ג€˜׳³ֲ׳³ג€.\n"
-            f"׳’ֲֲ ׳ֲ¸ֲ ׳³ג€׳³ג€׳³ג€¢׳³ג€׳³ֲ¢׳³ג€ ׳³ֲ©׳³ֲ׳³ֲ ׳³ֳ—׳³ג„¢׳³ֲ׳ֲ¿ֲ½-׳³ֲ§ ׳³ֲ׳³ג€¢׳³ֻ׳³ג€¢׳³ֲ׳³ֻ׳³ג„¢׳³ֳ— ׳³ֲ׳³ג„¢׳³ג€ ׳³ֲ׳ֲ¿ֲ½-׳³ֲ¨׳³ג„¢ ׳³ֲ§׳³ג€˜׳³ֲ׳³ג€ (׳³ֲ׳³ג€˜׳³ֻ׳ֲ¿ֲ½-׳³ג€).\n"
-            f"׳’ֲֲ± ׳³ג„¢׳³ֲ© ׳³ֲ׳³ֲ {PENDING_TTL_SECONDS // 60} ׳³ג€׳³ֲ§׳³ג€¢׳³ֳ—.\n"
-            + ("\n׳ ֲג€ֲ *Swap mode:* ׳³ג€׳³ֻ׳³ג€¢׳³ֲ§׳³ֲ ׳³ג„¢׳³ג€÷׳³ג€¢׳³ֲ ׳³ֲ׳³ג€׳³ג„¢׳³ג€¢׳³ֳ— ׳³ֲ©׳³ֲ ׳³ג€˜׳³ג€¢׳³ֻ ׳³ֲ׳ֲ¿ֲ½-׳³ֲ¨ ׳’ג‚¬ג€ ׳³ג€׳³ֲ©׳³ג„¢׳³ֲ¨׳³ג€¢׳³ֳ— ׳³ג„¢׳³ֲ¢׳³ג€˜׳³ג€¢׳³ֲ¨ ׳³ֲ׳³ֲ׳³ג„¢׳³ג€¢." if swap else "")
+            f"׳³ֲ ײ²ֲ׳’ג‚¬ֲײ²ֲ¨ *׳³ֲ³ײ²ֲ¡׳³ֲ³׳’ג€ֲ¢׳³ֲ³׳’ג‚¬ֻ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ֻ {bot['handle']}*\n\n"
+            f"׳³ֲ³ײ²ֲ©׳³ֲ³ײ²ֲ׳³ֲײ²ֲ¿ײ²ֲ½- ׳³ֲ³ײ²ֲ׳³ֲ³ײ³ג€” *׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ»ֲ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ§׳³ֲ³ײ²ֲ ׳³ֲ³׳’ג‚¬ֲ׳³ֲײ²ֲ¿ײ²ֲ½-׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ²ֲ© ׳³ֲ³ײ²ֲ-BotFather* ׳³ֲ³׳’ג‚¬ֻ׳³ֲ³׳’ג‚¬ֲ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ²ֲ¢׳³ֲ³׳’ג‚¬ֲ ׳³ֲ³׳’ג‚¬ֲ׳³ֲ³׳’ג‚¬ֻ׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֲ.\n"
+            f"׳³ג€™ײ²ֲײ²ֲ ׳³ֲײ²ֲ¸ײ²ֲ ׳³ֲ³׳’ג‚¬ֲ׳³ֲ³׳’ג‚¬ֲ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ²ֲ¢׳³ֲ³׳’ג‚¬ֲ ׳³ֲ³ײ²ֲ©׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ ׳³ֲ³ײ³ג€”׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ׳³ֲײ²ֲ¿ײ²ֲ½-׳³ֲ³ײ²ֲ§ ׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ»ֲ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ׳³ֲ³ײ»ֲ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ³ג€” ׳³ֲ³ײ²ֲ׳³ֲ³׳’ג€ֲ¢׳³ֲ³׳’ג‚¬ֲ ׳³ֲ³ײ²ֲ׳³ֲײ²ֲ¿ײ²ֲ½-׳³ֲ³ײ²ֲ¨׳³ֲ³׳’ג€ֲ¢ ׳³ֲ³ײ²ֲ§׳³ֲ³׳’ג‚¬ֻ׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֲ (׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֻ׳³ֲ³ײ»ֲ׳³ֲײ²ֲ¿ײ²ֲ½-׳³ֲ³׳’ג‚¬ֲ).\n"
+            f"׳³ג€™ײ²ֲײ²ֲ± ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ© ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ {PENDING_TTL_SECONDS // 60} ׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ²ֲ§׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ³ג€”.\n"
+            + ("\n׳³ֲ ײ²ֲ׳’ג‚¬ֲײ²ֲ *Swap mode:* ׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ»ֲ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ§׳³ֲ³ײ²ֲ ׳³ֲ³׳’ג€ֲ¢׳³ֲ³׳’ג‚¬ֳ·׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֲ׳³ֲ³׳’ג€ֲ¢׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ³ג€” ׳³ֲ³ײ²ֲ©׳³ֲ³ײ²ֲ ׳³ֲ³׳’ג‚¬ֻ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ»ֲ ׳³ֲ³ײ²ֲ׳³ֲײ²ֲ¿ײ²ֲ½-׳³ֲ³ײ²ֲ¨ ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ ׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ²ֲ©׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ¨׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ³ג€” ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ¢׳³ֲ³׳’ג‚¬ֻ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ¨ ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ׳³ֲ³׳’ג€ֲ¢׳³ֲ³׳’ג‚¬ֲ¢." if swap else "")
         )
         try:
             await cb.message.edit_text(prompt, reply_markup=_kb_cancel())
@@ -332,10 +332,10 @@ def register(dp: Dispatcher, auth_module) -> None:
             return
         _PENDING.pop(cb.from_user.id, None)
         try:
-            await cb.message.edit_text("׳’ֲֲ ׳³ג€˜׳³ג€¢׳³ֻ׳³ֲ. ׳ֲ¿ֲ½-׳³ג€¢׳³ג€“׳³ֲ¨ ׳³ֲ׳³ֳ—׳³ג‚×׳³ֲ¨׳³ג„¢׳³ֻ.", reply_markup=_kb_main())
+            await cb.message.edit_text("׳³ג€™ײ²ֲײ²ֲ ׳³ֲ³׳’ג‚¬ֻ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ»ֲ׳³ֲ³ײ²ֲ. ׳³ֲײ²ֲ¿ײ²ֲ½-׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ג€׳³ֲ³ײ²ֲ¨ ׳³ֲ³ײ²ֲ׳³ֲ³ײ³ג€”׳³ֲ³׳’ג€ֳ-׳³ֲ³ײ²ֲ¨׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ»ֲ.", reply_markup=_kb_main())
         except Exception:
-            await cb.message.answer("׳’ֲֲ ׳³ג€˜׳³ג€¢׳³ֻ׳³ֲ.", reply_markup=_kb_main())
-        await cb.answer("׳³ג€˜׳³ג€¢׳³ֻ׳³ֲ")
+            await cb.message.answer("׳³ג€™ײ²ֲײ²ֲ ׳³ֲ³׳’ג‚¬ֻ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ»ֲ׳³ֲ³ײ²ֲ.", reply_markup=_kb_main())
+        await cb.answer("׳³ֲ³׳’ג‚¬ֻ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ»ֲ׳³ֲ³ײ²ֲ")
 
     @dp.callback_query(F.data.startswith("adm:confirm:"))
     async def cb_confirm(cb: CallbackQuery):
@@ -344,10 +344,10 @@ def register(dp: Dispatcher, auth_module) -> None:
             return
         state = _PENDING.get(cb.from_user.id)
         if not state or not state.get("confirm_token") or not state.get("pending_token"):
-            await cb.answer("׳³ֲ׳³ג„¢׳³ֲ ׳³ֲ¡׳³ג„¢׳³ג€˜׳³ג€¢׳³ג€˜ ׳³ֲ׳³ֲ׳³ֳ—׳³ג„¢׳³ֲ ׳³ֲ׳³ֲ׳³ג„¢׳³ֲ©׳³ג€¢׳³ֲ¨ (׳³ג‚×׳³ג€™ ׳³ֳ—׳³ג€¢׳³ֲ§׳³ֲ£?)", show_alert=True)
+            await cb.answer("׳³ֲ³ײ²ֲ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ¡׳³ֲ³׳’ג€ֲ¢׳³ֲ³׳’ג‚¬ֻ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ֻ ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ׳³ֲ³ײ³ג€”׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ©׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ¨ (׳³ֲ³׳’ג€ֳ-׳³ֲ³׳’ג‚¬ג„¢ ׳³ֲ³ײ³ג€”׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ§׳³ֲ³ײ²ֲ£?)", show_alert=True)
             _PENDING.pop(cb.from_user.id, None)
             return
-        await cb.answer("׳’ֲֲ³ ׳³ֲ׳³ֲ׳³ֲ©׳³ֲ¨ ׳³ג€¢׳³ֲ׳³ג€˜׳³ֲ¦׳³ֲ¢...")
+        await cb.answer("׳³ג€™ײ²ֲײ²ֲ³ ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ©׳³ֲ³ײ²ֲ¨ ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֻ׳³ֲ³ײ²ֲ¦׳³ֲ³ײ²ֲ¢...")
         await _execute_pipeline(cb.message, cb.from_user.id, state)
 
     @dp.callback_query(F.data == "adm:status")
@@ -359,23 +359,23 @@ def register(dp: Dispatcher, auth_module) -> None:
             h = await _api_get("/api/admin/rotation-pipeline/health")
             stats = await _api_get("/api/admin/bots/stats")
         except Exception as e:
-            await cb.message.edit_text(f"׳’ֲֲ {str(e)[:300]}", reply_markup=_kb_back_home())
+            await cb.message.edit_text(f"׳³ג€™ײ²ֲײ²ֲ {str(e)[:300]}", reply_markup=_kb_back_home())
             await cb.answer()
             return
         by_tier = stats.get("by_tier") or {}
         text = (
-            "׳ ֲג€ֲ *׳³ֲ׳³ֲ¦׳³ג€˜ Pipeline*\n"
-            f"Config loaded: {'׳’ֲג€¦' if h.get('config_loaded') else '׳’ֲֲ'} "
+            "׳³ֲ ײ²ֲ׳’ג‚¬ֲײ²ֲ *׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ¦׳³ֲ³׳’ג‚¬ֻ Pipeline*\n"
+            f"Config loaded: {'׳³ג€™ײ²ֲ׳’ג‚¬ֲ¦' if h.get('config_loaded') else '׳³ג€™ײ²ֲײ²ֲ'} "
             f"({h.get('config_entries')} entries)\n"
-            f"Railway token: {'׳’ֲג€¦' if h.get('railway_token_ok') else '׳’ֲֲ'} "
-            f"({h.get('railway_me_email') or h.get('railway_error') or '׳’ג‚¬ג€'})\n"
-            f"Broadcast bot: {'׳’ֲג€¦' if h.get('broadcast_bot_token_set') else '׳’ֲֲ'}\n"
+            f"Railway token: {'׳³ג€™ײ²ֲ׳’ג‚¬ֲ¦' if h.get('railway_token_ok') else '׳³ג€™ײ²ֲײ²ֲ'} "
+            f"({h.get('railway_me_email') or h.get('railway_error') or '׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ'})\n"
+            f"Broadcast bot: {'׳³ג€™ײ²ֲ׳’ג‚¬ֲ¦' if h.get('broadcast_bot_token_set') else '׳³ג€™ײ²ֲײ²ֲ'}\n"
             f"Admin Telegrams: {h.get('admin_telegram_ids_count')}\n\n"
-            f"׳ ֲג€ג€¹ *Bot fleet:* total={stats.get('total')}\n"
-            f"  ׳ ֲֲֲ¨ critical={by_tier.get('critical', 0)} ײ²ֲ· "
-            f"׳’ֲֲ ׳ֲ¸ֲ high={by_tier.get('high', 0)} ײ²ֲ· "
-            f"׳ ֲג€ֲ¹ medium={by_tier.get('medium', 0)} ײ²ֲ· "
-            f"׳’ֲֳ— low={by_tier.get('low', 0)}\n"
+            f"׳³ֲ ײ²ֲ׳’ג‚¬ֲ׳’ג‚¬ֲ¹ *Bot fleet:* total={stats.get('total')}\n"
+            f"  ׳³ֲ ײ²ֲײ²ֲײ²ֲ¨ critical={by_tier.get('critical', 0)} ׳²ֲ²ײ²ֲ· "
+            f"׳³ג€™ײ²ֲײ²ֲ ׳³ֲײ²ֲ¸ײ²ֲ high={by_tier.get('high', 0)} ׳²ֲ²ײ²ֲ· "
+            f"׳³ֲ ײ²ֲ׳’ג‚¬ֲײ²ֲ¹ medium={by_tier.get('medium', 0)} ׳²ֲ²ײ²ֲ· "
+            f"׳³ג€™ײ²ֲײ³ג€” low={by_tier.get('low', 0)}\n"
             f"  never_rotated={stats.get('never_rotated')}, "
             f"stale 90d={stats.get('stale_90d')}, "
             f"stale 180d={stats.get('stale_180d')}"
@@ -391,22 +391,22 @@ def register(dp: Dispatcher, auth_module) -> None:
         try:
             j = await _api_get("/api/admin/rotation-history?limit=10")
         except Exception as e:
-            await cb.message.edit_text(f"׳’ֲֲ {str(e)[:300]}", reply_markup=_kb_back_home())
+            await cb.message.edit_text(f"׳³ג€™ײ²ֲײ²ֲ {str(e)[:300]}", reply_markup=_kb_back_home())
             await cb.answer()
             return
         events = j.get("events") or []
         if not events:
-            text = "׳ ֲג€ֲ *Audit log*\n_׳³ֲ¢׳³ג€׳³ג„¢׳³ג„¢׳³ֲ ׳³ֲ׳³ג„¢׳³ֲ ׳³ֲ¡׳³ג„¢׳³ג€˜׳³ג€¢׳³ג€˜׳³ג„¢׳³ֲ ׳³ֲ׳³ֳ—׳³ג€¢׳³ֲ¢׳³ג€׳³ג„¢׳³ֲ._"
+            text = "׳³ֲ ײ²ֲ׳’ג‚¬ֲײ²ֲ *Audit log*\n_׳³ֲ³ײ²ֲ¢׳³ֲ³׳’ג‚¬ֲ׳³ֲ³׳’ג€ֲ¢׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ¡׳³ֲ³׳’ג€ֲ¢׳³ֲ³׳’ג‚¬ֻ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ֻ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ׳³ֲ³ײ³ג€”׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ¢׳³ֲ³׳’ג‚¬ֲ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ._"
         else:
-            lines = ["׳ ֲג€ֲ *10 ׳³ֲ׳³ג„¢׳³ֲ¨׳³ג€¢׳³ֲ¢׳³ג„¢׳³ֲ ׳³ֲ׳ֲ¿ֲ½-׳³ֲ¨׳³ג€¢׳³ֲ ׳³ג„¢׳³ֲ:*"]
+            lines = ["׳³ֲ ײ²ֲ׳’ג‚¬ֲײ²ֲ *10 ׳³ֲ³ײ²ֲ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ¨׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ¢׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ׳³ֲײ²ֲ¿ײ²ֲ½-׳³ֲ³ײ²ֲ¨׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ:*"]
             for ev in events:
                 t = (ev.get("created_at") or "")[:19].replace("T", " ")
                 action = (ev.get("action") or "").replace("secret.rotate.", "")
-                rid = ev.get("resource_id") or "׳’ג‚¬ג€"
+                rid = ev.get("resource_id") or "׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ"
                 meta = ev.get("metadata") or {}
                 tier = meta.get("tier") or ""
-                emoji = "׳’ֲג€¦" if action == "pushed" else ("׳’ֲֲ" if "fail" in action else "׳’ג‚¬ֲ¢")
-                lines.append(f"{emoji} `{t}` ײ²ֲ· `{action}` ײ²ֲ· `{rid}` ײ²ֲ· {tier}")
+                emoji = "׳³ג€™ײ²ֲ׳’ג‚¬ֲ¦" if action == "pushed" else ("׳³ג€™ײ²ֲײ²ֲ" if "fail" in action else "׳³ג€™׳’ג€ֲ¬ײ²ֲ¢")
+                lines.append(f"{emoji} `{t}` ׳²ֲ²ײ²ֲ· `{action}` ׳²ֲ²ײ²ֲ· `{rid}` ׳²ֲ²ײ²ֲ· {tier}")
             text = "\n".join(lines)
         await cb.message.edit_text(text, reply_markup=_kb_back_home())
         await cb.answer()
@@ -417,21 +417,21 @@ def register(dp: Dispatcher, auth_module) -> None:
             await cb.answer("Unauthorized", show_alert=True)
             return
         text = (
-            "׳ ֲֲג€ *Railway*\n"
-            "׳³ג‚×׳³ֲ§׳³ג€¢׳³ג€׳³ג€¢׳³ֳ— ׳³ג€“׳³ֲ׳³ג„¢׳³ֲ ׳³ג€¢׳³ֳ— (׳³ֻ׳³ֲ§׳³ֲ¡׳³ֻ ׳³ֲ¨׳³ג€™׳³ג„¢׳³ֲ, ׳³ֲ׳³ֲ inline):\n"
-            "׳’ג‚¬ֲ¢ `/railway_status` ׳’ג‚¬ג€ ׳³ֲ׳³ֲ¦׳³ג€˜ ׳³ג€׳³ג‚×׳³ֲ¨׳³ג€¢׳³ג„¢׳³ֲ§׳³ֻ\n"
-            "׳’ג‚¬ֲ¢ `/railway_list`   ׳’ג‚¬ג€ ׳³ג€÷׳³ֲ ׳³ג€׳³ג‚×׳³ֲ¨׳³ג€¢׳³ג„¢׳³ֲ§׳³ֻ׳³ג„¢׳³ֲ\n"
-            "׳’ג‚¬ֲ¢ `/railway_vars <service>` ׳’ג‚¬ג€ ׳³ֲ©׳³ֲ׳³ג€¢׳³ֳ— ׳³ֲ׳³ֲ©׳³ֳ—׳³ֲ ׳³ג„¢׳³ֲ\n"
-            "׳’ג‚¬ֲ¢ `/railway_logs <service>` ׳’ג‚¬ג€ ׳³ֲ׳³ג€¢׳³ג€™׳³ג„¢׳³ֲ\n"
-            "׳’ג‚¬ֲ¢ `/railway_redeploy <service>` ׳’ג‚¬ג€ redeploy ׳³ג„¢׳³ג€׳³ֲ ׳³ג„¢"
+            "׳³ֲ ײ²ֲײ²ֲ׳’ג‚¬ֲ *Railway*\n"
+            "׳³ֲ³׳’ג€ֳ-׳³ֲ³ײ²ֲ§׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ֲ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ³ג€” ׳³ֲ³׳’ג‚¬ג€׳³ֲ³ײ²ֲ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ³ג€” (׳³ֲ³ײ»ֲ׳³ֲ³ײ²ֲ§׳³ֲ³ײ²ֲ¡׳³ֲ³ײ»ֲ ׳³ֲ³ײ²ֲ¨׳³ֲ³׳’ג‚¬ג„¢׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ, ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ inline):\n"
+            "׳³ג€™׳’ג€ֲ¬ײ²ֲ¢ `/railway_status` ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ¦׳³ֲ³׳’ג‚¬ֻ ׳³ֲ³׳’ג‚¬ֲ׳³ֲ³׳’ג€ֳ-׳³ֲ³ײ²ֲ¨׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ§׳³ֲ³ײ»ֲ\n"
+            "׳³ג€™׳’ג€ֲ¬ײ²ֲ¢ `/railway_list`   ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ ׳³ֲ³׳’ג‚¬ֳ·׳³ֲ³ײ²ֲ ׳³ֲ³׳’ג‚¬ֲ׳³ֲ³׳’ג€ֳ-׳³ֲ³ײ²ֲ¨׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ§׳³ֲ³ײ»ֲ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ\n"
+            "׳³ג€™׳’ג€ֲ¬ײ²ֲ¢ `/railway_vars <service>` ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ ׳³ֲ³ײ²ֲ©׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ³ג€” ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ©׳³ֲ³ײ³ג€”׳³ֲ³ײ²ֲ ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ\n"
+            "׳³ג€™׳’ג€ֲ¬ײ²ֲ¢ `/railway_logs <service>` ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ ׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ג„¢׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ\n"
+            "׳³ג€™׳’ג€ֲ¬ײ²ֲ¢ `/railway_redeploy <service>` ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ redeploy ׳³ֲ³׳’ג€ֲ¢׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ²ֲ ׳³ֲ³׳’ג€ֲ¢"
         )
         await cb.message.edit_text(text, reply_markup=_kb_back_home())
         await cb.answer()
 
-    # ׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬ Token reception (text message handler) ׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬׳’ג€ג‚¬
+    # ׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬ Token reception (text message handler) ׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬׳³ג€™׳’ג‚¬ֲ׳’ג€ֲ¬
     # CRITICAL: this handler must ONLY match when a rotation flow is pending
     # for the sender. In aiogram 3.x, a matched handler consumes the message
-    # ׳’ג‚¬ג€ it does NOT cascade to the next handler. So if we matched every text
+    # ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ it does NOT cascade to the next handler. So if we matched every text
     # message and returned early when no pending state exists, the AI text
     # handler in bot.py would never run.
     #
@@ -456,14 +456,14 @@ def register(dp: Dispatcher, auth_module) -> None:
             return
         state = _PENDING.get(msg.from_user.id)
         if not state:
-            return  # race-defensive ׳’ג‚¬ג€ filter already checked
+            return  # race-defensive ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ filter already checked
         text = (msg.text or "").strip()
         if not re.match(r"^\d+:[A-Za-z0-9_-]{30,}$", text):
-            # Token-format check failed but flow is active ׳’ג‚¬ג€ guide the user
+            # Token-format check failed but flow is active ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ guide the user
             # rather than silently swallowing or forwarding to the AI handler.
             await msg.answer(
-                "׳’ֲֲ ׳ֲ¸ֲ ׳³ג€“׳³ג€ ׳³ֲ׳³ֲ ׳³ֲ ׳³ֲ¨׳³ֲ׳³ג€ ׳³ג€÷׳³ֲ׳³ג€¢ ׳³ֻ׳³ג€¢׳³ֲ§׳³ֲ BotFather (׳³ג‚×׳³ג€¢׳³ֲ¨׳³ֲ׳³ֻ: `<digits>:<hash>`).\n"
-                "׳³ֲ©׳³ֲ׳ֲ¿ֲ½- ׳³ֲ׳³ֳ— ׳³ג€׳³ֻ׳³ג€¢׳³ֲ§׳³ֲ ׳³ֲ©׳³ג€¢׳³ג€˜, ׳³ֲ׳³ג€¢ ׳³ֲ׳ֲ¿ֲ½-׳³ֲ¥ ׳’ֲֲ ׳³ג€˜׳³ֻ׳³ֲ ׳³ג€˜׳³ֳ—׳³ג‚×׳³ֲ¨׳³ג„¢׳³ֻ."
+                "׳³ג€™ײ²ֲײ²ֲ ׳³ֲײ²ֲ¸ײ²ֲ ׳³ֲ³׳’ג‚¬ג€׳³ֲ³׳’ג‚¬ֲ ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ¨׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֲ ׳³ֲ³׳’ג‚¬ֳ·׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֲ¢ ׳³ֲ³ײ»ֲ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ§׳³ֲ³ײ²ֲ BotFather (׳³ֲ³׳’ג€ֳ-׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ¨׳³ֲ³ײ²ֲ׳³ֲ³ײ»ֲ: `<digits>:<hash>`).\n"
+                "׳³ֲ³ײ²ֲ©׳³ֲ³ײ²ֲ׳³ֲײ²ֲ¿ײ²ֲ½- ׳³ֲ³ײ²ֲ׳³ֲ³ײ³ג€” ׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ»ֲ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ§׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ©׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ֻ, ׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֲ¢ ׳³ֲ³ײ²ֲ׳³ֲײ²ֲ¿ײ²ֲ½-׳³ֲ³ײ²ֲ¥ ׳³ג€™ײ²ֲײ²ֲ ׳³ֲ³׳’ג‚¬ֻ׳³ֲ³ײ»ֲ׳³ֲ³ײ²ֲ ׳³ֲ³׳’ג‚¬ֻ׳³ֲ³ײ³ג€”׳³ֲ³׳’ג€ֳ-׳³ֲ³ײ²ֲ¨׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ»ֲ."
             )
             return
 
@@ -486,9 +486,9 @@ async def _execute_pipeline(host_msg: Message, user_id: int, state: dict) -> Non
     swap = state.get("swap", False)
     confirm = state.get("confirm_token")
 
-    # Status message ׳’ג‚¬ג€ start fresh, edit as we go
+    # Status message ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ start fresh, edit as we go
     progress = await host_msg.answer(
-        f"׳’ֲֲ³ {('׳³ֲ׳³ֲ׳³ֲ©׳³ֲ¨ ׳³ג€¢' if confirm else '')}׳³ֲ©׳³ג€¢׳³ֲ׳ֲ¿ֲ½- ׳³ֲ׳³ֳ— ׳³ג€׳³ֻ׳³ג€¢׳³ֲ§׳³ֲ ׳³ֲ-pipeline׳’ג‚¬ֲ¦",
+        f"׳³ג€™ײ²ֲײ²ֲ³ {('׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ©׳³ֲ³ײ²ֲ¨ ׳³ֲ³׳’ג‚¬ֲ¢' if confirm else '')}׳³ֲ³ײ²ֲ©׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ׳³ֲײ²ֲ¿ײ²ֲ½- ׳³ֲ³ײ²ֲ׳³ֲ³ײ³ג€” ׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ»ֲ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ§׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ-pipeline׳³ג€™׳’ג€ֲ¬ײ²ֲ¦",
         reply_markup=_kb_cancel(),
     )
 
@@ -513,9 +513,9 @@ async def _execute_pipeline(host_msg: Message, user_id: int, state: dict) -> Non
         state["confirm_token"] = j.get("confirm_token")
         # Don't keep the pending token in memory longer than necessary
         await _edit(
-            f"׳ ֲג€ֲ *Critical tier ׳’ג‚¬ג€ ׳³ֲ׳³ג„¢׳³ֲ©׳³ג€¢׳³ֲ¨ ׳³ֲ ׳³ג€׳³ֲ¨׳³ֲ©*\n\n"
-            f"`{bot['handle']}` ׳³ג€׳³ג€¢׳³ֲ tier=*critical*. "
-            f"׳³ֲ׳ֲ¿ֲ½-׳³ֲ¥ ׳³ֲ¢׳³ֲ ׳³ג€׳³ג€÷׳³ג‚×׳³ֳ—׳³ג€¢׳³ֲ¨ ׳³ֳ—׳³ג€¢׳³ֲ {j.get('expires_in_seconds', 60)} ׳³ֲ©׳³ֲ ׳³ג„¢׳³ג€¢׳³ֳ— ׳³ֲ׳³ֲ׳³ג„¢׳³ֲ©׳³ג€¢׳³ֲ¨ ׳³ג€׳³ֲ¡׳³ג„¢׳³ג€˜׳³ג€¢׳³ג€˜.",
+            f"׳³ֲ ײ²ֲ׳’ג‚¬ֲײ²ֲ *Critical tier ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ ׳³ֲ³ײ²ֲ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ©׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ¨ ׳³ֲ³ײ²ֲ ׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ²ֲ¨׳³ֲ³ײ²ֲ©*\n\n"
+            f"`{bot['handle']}` ׳³ֲ³׳’ג‚¬ֲ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ tier=*critical*. "
+            f"׳³ֲ³ײ²ֲ׳³ֲײ²ֲ¿ײ²ֲ½-׳³ֲ³ײ²ֲ¥ ׳³ֲ³ײ²ֲ¢׳³ֲ³ײ²ֲ ׳³ֲ³׳’ג‚¬ֲ׳³ֲ³׳’ג‚¬ֳ·׳³ֲ³׳’ג€ֳ-׳³ֲ³ײ³ג€”׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ¨ ׳³ֲ³ײ³ג€”׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ {j.get('expires_in_seconds', 60)} ׳³ֲ³ײ²ֲ©׳³ֲ³ײ²ֲ ׳³ֲ³׳’ג€ֲ¢׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ³ג€” ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ©׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ¨ ׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ²ֲ¡׳³ֲ³׳’ג€ֲ¢׳³ֲ³׳’ג‚¬ֻ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ֻ.",
             _kb_confirm_critical(bot["id"]),
         )
         return
@@ -525,16 +525,16 @@ async def _execute_pipeline(host_msg: Message, user_id: int, state: dict) -> Non
         # Scrub any token-shaped substring from server error text
         detail = re.sub(r"\d{8,12}:[A-Za-z0-9_\-]{30,}", "<TOKEN>", detail)
         _PENDING.pop(user_id, None)
-        await _edit(f"׳’ֲֲ *׳³ֲ¡׳³ג„¢׳³ג€˜׳³ג€¢׳³ג€˜ ׳³ֲ ׳³ג€÷׳³ֲ©׳³ֲ*\nHTTP {status}\n`{detail[:300]}`")
+        await _edit(f"׳³ג€™ײ²ֲײ²ֲ *׳³ֲ³ײ²ֲ¡׳³ֲ³׳’ג€ֲ¢׳³ֲ³׳’ג‚¬ֻ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ֻ ׳³ֲ³ײ²ֲ ׳³ֲ³׳’ג‚¬ֳ·׳³ֲ³ײ²ֲ©׳³ֲ³ײ²ֲ*\nHTTP {status}\n`{detail[:300]}`")
         return
 
     if j.get("phase") == "healthcheck_failed":
         _PENDING.pop(user_id, None)
         await _edit(
-            f"׳ ֲֲֲ¨ *Healthcheck ׳³ֲ ׳³ג€÷׳³ֲ©׳³ֲ*\n"
-            f"Variable + redeploy ׳³ג€˜׳³ג€¢׳³ֲ¦׳³ֲ¢׳³ג€¢ ׳³ֲ׳³ֲ ׳³ג€׳³ג€˜׳³ג€¢׳³ֻ ׳³ֲ׳³ֲ ׳³ֲ׳³ג€™׳³ג„¢׳³ג€˜ ׳³ֲ-getMe.\n"
+            f"׳³ֲ ײ²ֲײ²ֲײ²ֲ¨ *Healthcheck ׳³ֲ³ײ²ֲ ׳³ֲ³׳’ג‚¬ֳ·׳³ֲ³ײ²ֲ©׳³ֲ³ײ²ֲ*\n"
+            f"Variable + redeploy ׳³ֲ³׳’ג‚¬ֻ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ¦׳³ֲ³ײ²ֲ¢׳³ֲ³׳’ג‚¬ֲ¢ ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ ׳³ֲ³׳’ג‚¬ֲ׳³ֲ³׳’ג‚¬ֻ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ»ֲ ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ג„¢׳³ֲ³׳’ג€ֲ¢׳³ֲ³׳’ג‚¬ֻ ׳³ֲ³ײ²ֲ-getMe.\n"
             f"Deploy: `{(j.get('deploy_id') or '')[:16]}`\n\n"
-            f"_׳³ֲ ׳³ג€׳³ֲ¨׳³ֲ© ׳³ג€˜׳³ג„¢׳³ֲ¨׳³ג€¢׳³ֲ¨ ׳³ג„¢׳³ג€׳³ֲ ׳³ג„¢ ׳³ג€˜-Railway logs._"
+            f"_׳³ֲ³ײ²ֲ ׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ²ֲ¨׳³ֲ³ײ²ֲ© ׳³ֲ³׳’ג‚¬ֻ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ¨׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ¨ ׳³ֲ³׳’ג€ֲ¢׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ²ֲ ׳³ֲ³׳’ג€ֲ¢ ׳³ֲ³׳’ג‚¬ֻ-Railway logs._"
         )
         return
 
@@ -545,21 +545,21 @@ async def _execute_pipeline(host_msg: Message, user_id: int, state: dict) -> Non
         tg_username = j.get("tg_username") or "?"
         tier = j.get("tier") or "?"
         await _edit(
-            f"׳’ֲג€¦ *׳³ֲ¡׳³ג„¢׳³ג€˜׳³ג€¢׳³ג€˜ ׳³ג€׳³ג€¢׳³ֲ©׳³ֲ׳³ֲ*\n\n"
+            f"׳³ג€™ײ²ֲ׳’ג‚¬ֲ¦ *׳³ֲ³ײ²ֲ¡׳³ֲ³׳’ג€ֲ¢׳³ֲ³׳’ג‚¬ֻ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ֻ ׳³ֲ³׳’ג‚¬ֲ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ©׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ*\n\n"
             f"`{bot['handle']}` (env: `{bot['env_var']}`)\n"
-            f"Tier: *{tier}* ײ²ֲ· Last4: `׳’ג‚¬ֲ¦{last4}`\n"
+            f"Tier: *{tier}* ׳²ֲ²ײ²ֲ· Last4: `׳³ג€™׳’ג€ֲ¬ײ²ֲ¦{last4}`\n"
             f"Deploy: `{deploy}`\n"
             f"Verified: @{tg_username}\n\n"
-            f"׳’ֲג€ Variable ׳³ֲ¢׳³ג€¢׳³ג€׳³ג€÷׳³ֲ ׳³ג€˜-Railway\n"
-            f"׳’ֲג€ Redeploy ׳³ג€׳³ג€¢׳³ג‚×׳³ֲ¢׳³ֲ\n"
-            f"׳’ֲג€ Healthcheck ׳³ֲ¢׳³ג€˜׳³ֲ¨\n"
-            f"׳’ֲג€ setMyCommands ׳³ֲ¡׳³ג€¢׳³ֲ ׳³ג€÷׳³ֲ¨׳³ֲ\n"
-            f"׳’ֲג€ Broadcast ׳³ֲ׳³ֲ׳³ג€׳³ֲ׳³ג„¢׳³ֲ ׳³ג„¢׳³ֲ ׳³ֲ ׳³ֲ©׳³ֲ׳ֲ¿ֲ½-"
+            f"׳³ג€™ײ²ֲ׳’ג‚¬ֲ Variable ׳³ֲ³ײ²ֲ¢׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ֲ׳³ֲ³׳’ג‚¬ֳ·׳³ֲ³ײ²ֲ ׳³ֲ³׳’ג‚¬ֻ-Railway\n"
+            f"׳³ג€™ײ²ֲ׳’ג‚¬ֲ Redeploy ׳³ֲ³׳’ג‚¬ֲ׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג€ֳ-׳³ֲ³ײ²ֲ¢׳³ֲ³ײ²ֲ\n"
+            f"׳³ג€™ײ²ֲ׳’ג‚¬ֲ Healthcheck ׳³ֲ³ײ²ֲ¢׳³ֲ³׳’ג‚¬ֻ׳³ֲ³ײ²ֲ¨\n"
+            f"׳³ג€™ײ²ֲ׳’ג‚¬ֲ setMyCommands ׳³ֲ³ײ²ֲ¡׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³ײ²ֲ ׳³ֲ³׳’ג‚¬ֳ·׳³ֲ³ײ²ֲ¨׳³ֲ³ײ²ֲ\n"
+            f"׳³ג€™ײ²ֲ׳’ג‚¬ֲ Broadcast ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ׳³ֲ³׳’ג‚¬ֲ׳³ֲ³ײ²ֲ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ ׳³ֲ³׳’ג€ֲ¢׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ©׳³ֲ³ײ²ֲ׳³ֲײ²ֲ¿ײ²ֲ½-"
         )
         return
 
     _PENDING.pop(user_id, None)
-    await _edit(f"׳’ֲֲ ׳ֲ¸ֲ ׳³ֳ—׳³ֲ©׳³ג€¢׳³ג€˜׳³ג€ ׳³ֲ׳³ֲ ׳³ֲ¦׳³ג‚×׳³ג€¢׳³ג„¢׳³ג€:\n`{json.dumps(j)[:300]}`")
+    await _edit(f"׳³ג€™ײ²ֲײ²ֲ ׳³ֲײ²ֲ¸ײ²ֲ ׳³ֲ³ײ³ג€”׳³ֲ³ײ²ֲ©׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג‚¬ֻ׳³ֲ³׳’ג‚¬ֲ ׳³ֲ³ײ²ֲ׳³ֲ³ײ²ֲ ׳³ֲ³ײ²ֲ¦׳³ֲ³׳’ג€ֳ-׳³ֲ³׳’ג‚¬ֲ¢׳³ֲ³׳’ג€ֲ¢׳³ֲ³׳’ג‚¬ֲ:\n`{json.dumps(j)[:300]}`")
 
 
 # Convenience export so bot.py can `import rotation_panel; rotation_panel.register(dp, auth)`

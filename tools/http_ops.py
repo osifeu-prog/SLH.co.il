@@ -1,4 +1,4 @@
-"""HTTP GET tool ׳’ג‚¬ג€ for API health checks, version endpoints, etc."""
+"""HTTP GET tool ׳³ג€™׳’ג€ֲ¬׳’ג‚¬ֲ for API health checks, version endpoints, etc."""
 import httpx
 
 
