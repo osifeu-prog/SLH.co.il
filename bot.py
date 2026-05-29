@@ -1,8 +1,4 @@
-import asyncio
-import os
-import json
-import datetime
-import requests
+import asyncio, os, json, datetime, requests
 from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher, F
 from aiogram.types import Message
@@ -28,14 +24,27 @@ def save_db(data, file):
 
 ADMIN_IDS = [int(x) for x in os.getenv("ADMIN_ID", "").split(",") if x]
 
+# ---- ASCII Logo ----
+SLH_LOGO = r"""
+   ███████╗██╗  ██╗██╗  ██╗
+   ██╔════╝██║  ██║██║  ██║
+   ███████╗███████║███████║
+   ╚════██║██╔══██║██╔══██║
+   ███████║██║  ██║██║  ██║
+   ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝
+   SLH AUTONOMOUS SYSTEM
+"""
+
 # ---- /start ----
 @dp.message(Command("start"))
 async def cmd_start(msg: Message):
-    await msg.answer(
+    text = (
+        f"{SLH_LOGO}\n\n"
+        "🚀 **SLH Crowdfunding**\n\n"
         "Hello Osif! 👋\n"
         "I am SLH Claude  your AI assistant.\n"
         "💎 Tier: free\n\n"
-        "Available commands:\n"
+        "**Available commands:**\n"
         "/register  Subscribe to updates\n"
         "/donate  Support the project\n"
         "/status  Project status\n"
@@ -45,9 +54,36 @@ async def cmd_start(msg: Message):
         "/daily  Daily missions\n"
         "/backup  Create backup\n"
         "/broadcast <msg>  (Admin) Send message to all\n"
-        "/help  All commands",
-        parse_mode=None
+        "/users  (Admin) Registered users\n"
+        "/myid  Your Telegram ID\n"
+        "/help  All commands\n"
+        "/commands  Full command list\n\n"
+        "🌐 Campaign page: https://slh-nft.com/campaign/"
     )
+    await msg.answer(text, parse_mode=None)
+
+# ---- /commands (full list) ----
+@dp.message(Command("commands"))
+async def cmd_commands(msg: Message):
+    text = (
+        "📋 **Full Command Reference:**\n\n"
+        "/start  Main menu with logo\n"
+        "/register  Subscribe to updates\n"
+        "/donate  Donation info & TON address\n"
+        "/status  System status\n"
+        "/checkin  Daily check-in (+5 pts, streak)\n"
+        "/leaderboard  Top 5 users\n"
+        "/points  Your points\n"
+        "/daily  Daily missions\n"
+        "/backup  Save data to cloud\n"
+        "/broadcast <msg>  (Admin) Send message to all subscribers\n"
+        "/users  (Admin) List all registered users\n"
+        "/myid  Show your Telegram ID\n"
+        "/help  Quick command list\n"
+        "/commands  This full reference\n"
+        "Any other text → AI chat (Groq)"
+    )
+    await msg.answer(text, parse_mode=None)
 
 # ---- /register ----
 @dp.message(Command("register"))
@@ -184,7 +220,8 @@ async def cmd_help(msg: Message):
         "📋 **Commands:**\n"
         "/start /register /donate /status\n"
         "/checkin /leaderboard /points /daily\n"
-        "/users /broadcast /backup /myid /help",
+        "/users /broadcast /backup /myid /help\n"
+        "/commands  Full command list",
         parse_mode="Markdown"
     )
 
