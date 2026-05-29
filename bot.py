@@ -24,7 +24,7 @@ def save_db(data, file):
 
 ADMIN_IDS = [int(x) for x in os.getenv("ADMIN_ID", "").split(",") if x]
 
-# ---- ASCII Logo (safe) ----
+# ---- ASCII Logo ----
 SLH_LOGO = r"""
    SLH - AUTONOMOUS SYSTEM
    crowdfunding & AI assistant
@@ -51,7 +51,14 @@ async def cmd_start(msg: Message):
         "/users - (Admin) Registered users\n"
         "/myid - Your Telegram ID\n"
         "/help - All commands\n"
-        "/commands - Full command list\n\n"
+        "/commands - Full command list\n"
+        "/referral - Your personal referral link\n"
+        "/stats - Campaign statistics\n"
+        "/roadmap - SLH Roadmap\n"
+        "/support - Join our community\n"
+        "/feedback <msg> - Send feedback\n"
+        "/tasks - Your weekend tasks\n"
+        "/morning - Daily report (Admin)\n\n"
         "Campaign page: https://slh-nft.com/campaign/"
     )
     await msg.answer(text, parse_mode=None)
@@ -75,6 +82,13 @@ async def cmd_commands(msg: Message):
         "/myid - Show your Telegram ID\n"
         "/help - Quick command list\n"
         "/commands - This full reference\n"
+        "/referral - Your personal referral link\n"
+        "/stats - Campaign statistics\n"
+        "/roadmap - SLH Roadmap\n"
+        "/support - Join our community\n"
+        "/feedback <msg> - Send feedback\n"
+        "/tasks - Your weekend tasks\n"
+        "/morning - Daily report (Admin)\n"
         "Any other text -> AI chat (Groq)"
     )
     await msg.answer(text, parse_mode=None)
@@ -100,10 +114,10 @@ async def cmd_donate(msg: Message):
         "Send TON to:\n"
         "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp\n\n"
         "Support Levels:\n"
-        "Supporter ($1) - Name on website\n"
-        "Builder ($5) - Early access + badge\n"
-        "Founder ($20) - Vote on features\n"
-        "Visionary ($50) - Personal call + Founder status",
+        "Supporter () - Name on website\n"
+        "Builder () - Early access + badge\n"
+        "Founder () - Vote on features\n"
+        "Visionary () - Personal call + Founder status",
         parse_mode=None
     )
 
@@ -215,9 +229,79 @@ async def cmd_help(msg: Message):
         "/start /register /donate /status\n"
         "/checkin /leaderboard /points /daily\n"
         "/users /broadcast /backup /myid /help\n"
+        "/referral /stats /roadmap /support /feedback /tasks\n"
         "/commands - Full command list",
         parse_mode=None
     )
+
+# ---- /referral ----
+@dp.message(Command("referral"))
+async def cmd_referral(msg: Message):
+    ref_link = f"https://t.me/SLH_Claude_bot?start=ref{msg.from_user.id}"
+    await msg.answer(f"Your personal referral link:\n{ref_link}\n\nShare it with friends to grow the community!", parse_mode=None)
+
+# ---- /stats ----
+@dp.message(Command("stats"))
+async def cmd_stats(msg: Message):
+    contacts = load_db(CONTACTS_FILE)
+    points_db = load_db(POINTS_FILE)
+    total_users = len(contacts)
+    checked_in_today = sum(1 for u in points_db.values() if u.get("last_checkin") == datetime.date.today().isoformat())
+    total_points = sum(u.get("points", 0) for u in points_db.values())
+    text = (
+        f"Campaign Stats:\n\n"
+        f"Registered supporters: {total_users}\n"
+        f"Check-ins today: {checked_in_today}\n"
+        f"Total points earned: {total_points}\n"
+        f"Campaign page: https://slh-nft.com/campaign/"
+    )
+    await msg.answer(text, parse_mode=None)
+
+# ---- /roadmap ----
+@dp.message(Command("roadmap"))
+async def cmd_roadmap(msg: Message):
+    text = (
+        "SLH Roadmap:\n\n"
+        "Q1 - Crowdfunding launch\n"
+        "Q2 - Autonomous AI agents\n"
+        "Q3 - Community governance\n"
+        "Q4 - Token & marketplace\n\n"
+        "Stay tuned! /register for updates."
+    )
+    await msg.answer(text, parse_mode=None)
+
+# ---- /support ----
+@dp.message(Command("support"))
+async def cmd_support(msg: Message):
+    await msg.answer(
+        "Join our support community:\nhttps://t.me/SLH_Claude_bot\n\nOr contact admin: /users",
+        parse_mode=None
+    )
+
+# ---- /feedback ----
+@dp.message(Command("feedback"))
+async def cmd_feedback(msg: Message):
+    feedback_text = msg.text.split(" ", 1)
+    if len(feedback_text) < 2:
+        await msg.answer("Usage: /feedback <your message>", parse_mode=None)
+        return
+    with open("feedback.txt", "a", encoding="utf-8") as f:
+        f.write(f"{datetime.datetime.now().isoformat()} | {msg.from_user.id} | {feedback_text[1]}\n")
+    await msg.answer("Thank you for your feedback!", parse_mode=None)
+
+# ---- /tasks ----
+@dp.message(Command("tasks"))
+async def cmd_tasks(msg: Message):
+    text = (
+        "Your tasks for the weekend:\n\n"
+        "1. /broadcast - Share campaign update\n"
+        "2. /stats - Check supporter growth\n"
+        "3. /backup - Secure data\n"
+        "4. Reply to supporter questions (AI chat)\n"
+        "5. Share referral link: /referral\n\n"
+        "Use /morning every day for a full report."
+    )
+    await msg.answer(text, parse_mode=None)
 
 # ---- /morning (daily report) ----
 @dp.message(Command("morning"))
