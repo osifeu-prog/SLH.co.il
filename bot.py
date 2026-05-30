@@ -538,11 +538,13 @@ async def handle_callback(callback: CallbackQuery):
 @dp.message(Command("wallet"))
 async def cmd_wallet(msg: Message):
     try:
-        user_id = msg.from_user.id
-        bal = get_balance(user_id)
+        bal = get_balance(msg.from_user.id)
         await msg.answer(f"Wallet balance: ${bal:.2f}", parse_mode=None)
     except Exception as e:
-        await msg.answer(f"Wallet error: {str(e)[:200]}", parse_mode=None)@dp.message(Command("transfer"))
+        await msg.answer(f"Wallet error: {str(e)[:200]}", parse_mode=None)
+
+# ---- /transfer ----
+@dp.message(Command("transfer"))
 async def cmd_transfer(msg: Message):
     try:
         parts = msg.text.split()
@@ -560,11 +562,13 @@ async def cmd_transfer(msg: Message):
         else:
             await msg.answer("Transfer failed. Insufficient balance.", parse_mode=None)
     except Exception as e:
-        await msg.answer(f"Transfer error: {str(e)[:200]}", parse_mode=None)@dp.message(Command("deposit"))
-async def cmd_deposit(msg: Message):
-    ton_wallet = os.getenv("TON_WALLET", "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp")
-    await msg.answer(f"Send TON to:\n{ton_wallet}\n\nAfter sending, contact admin to credit your account.", parse_mode=None)
+        await msg.answer(f"Transfer error: {str(e)[:200]}", parse_mode=None)
 
+# ---- /deposit ----
+@dp.message(Command("deposit"))
+async def cmd_deposit(msg: Message):
+    ton = os.getenv("TON_WALLET", "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp")
+    await msg.answer(f"Send TON to:\n{ton}\n\nAfter sending, contact admin to credit your account.", parse_mode=None)
 
 # ---- /create_tables (admin) ----
 @dp.message(Command("create_tables"))
@@ -577,6 +581,33 @@ async def cmd_create_tables(msg: Message):
         await msg.answer("Tables created successfully.", parse_mode=None)
     except Exception as e:
         await msg.answer(f"Create tables error: {str(e)[:200]}", parse_mode=None)
+
+# ---- AI (Groq only) ----
+@dp.message(F.text & ~F.text.startswith("/"))
+async def ai_chat(msg: Message):
+    groq_key = os.getenv("GROQ_API_KEY")
+    if not groq_key:
+        await msg.answer("AI not configured.", parse_mode=None)
+        return
+    try:
+        resp = requests.post(
+            "https://api.groq.com/openai/v1/chat/completions",
+            headers={"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"},
+            json={
+                "model": "llama-3.3-70b-versatile",
+                "messages": [
+                    {"role": "system", "content": "You are SLH AI assistant. Rules: 1) Never summarize 2) Give ONE decision 3) Max 4 lines 4) End with next action 5) Hebrew first."},
+                    {"role": "user", "content": msg.text}
+                ],
+                "max_tokens": 500
+            },
+            timeout=15
+        )
+        reply = resp.json()["choices"][0]["message"]["content"]
+        await msg.answer(reply[:4000])
+    except Exception as e:
+        await msg.answer(f"AI error: {e}", parse_mode=None)
+
 # ---- Main ----
 async def main():
     bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
