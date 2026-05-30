@@ -5,6 +5,10 @@ from aiogram.types import Message
 from aiogram.filters import Command
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
+import sys
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+from ai.slh_ai_core import ask_slh_ai, memory
+from commands.slh_doctor import build_report, check_railway, check_database, check_redis, check_ai_key
 
 load_dotenv()
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN") or os.getenv("BOT_TOKEN")
@@ -334,31 +338,65 @@ async def cmd_morning(msg: Message):
     )
     await msg.answer(text, parse_mode=None)
 
-# ---- AI (Groq) ----
+
+# ---- AI (Claude core + Groq fallback) ----
 @dp.message()
 async def ai_chat(msg: Message):
     if msg.text.startswith("/"):
         return
-    api_key = os.getenv("GROQ_API_KEY")
-    if not api_key:
-        await msg.answer("AI not configured.", parse_mode=None)
+    anthropic_key = os.getenv("ANTHROPIC_API_KEY")
+    if not anthropic_key:
+        # Fallback to Groq
+        groq_key = os.getenv("GROQ_API_KEY")
+        if not groq_key:
+            await msg.answer("AI not configured.", parse_mode=None)
+            return
+        try:
+            resp = requests.post(
+                "https://api.groq.com/openai/v1/chat/completions",
+                headers={"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"},
+                json={
+                    "model": "llama-3.3-70b-versatile",
+                    "messages": [
+                        {"role": "system", "content": "You are SLH AI assistant for a Telegram crowdfunding bot. Rules: 1) Never summarize what the user said 2) Give ONE clear decision, not multiple options 3) Max 4 lines per response 4) Always end with one next action 5) Hebrew first, code in English. Context: SLH bot on Railway, aiogram, crowdfunding campaign at slh-nft.com"},
+                        {"role": "user", "content": msg.text}
+                    ],
+                    "max_tokens": 500
+                },
+                timeout=15
+            )
+            reply = resp.json()["choices"][0]["message"]["content"]
+            await msg.answer(reply[:4000])
+        except Exception as e:
+            await msg.answer(f"AI error: {e}", parse_mode=None)
         return
-    try:
-        resp = requests.post(
-            "https://api.groq.com/openai/v1/chat/completions",
-            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
-            json={
-                "model": "llama-3.3-70b-versatile",
-                "messages": [{"role": "system", "content": "You are SLH AI assistant for a Telegram crowdfunding bot. Rules: 1) Never summarize what the user said 2) Give ONE clear decision, not multiple options 3) Max 4 lines per response 4) Always end with one next action 5) Hebrew first, code in English. Context: SLH bot on Railway, aiogram, crowdfunding campaign at slh-nft.com"}, {"role": "user", "content": msg.text}],
-                "max_tokens": 500
-            },
-            timeout=15
-        )
-        data = resp.json()
-        reply = data["choices"][0]["message"]["content"]
-        await msg.answer(reply[:4000])
-    except Exception as e:
-        await msg.answer(f"AI error: {e}", parse_mode=None)
+
+    # Use Claude core
+    user_id = msg.from_user.id
+    user_ctx = {"username": msg.from_user.username or "unknown", "tier": "free", "points": 0, "streak": 0}
+    hist = memory.get(user_id)
+    reply = ask_slh_ai(msg.text, history=hist, user_context=user_ctx)
+    memory.add(user_id, "user", msg.text)
+    memory.add(user_id, "assistant", reply)
+    await msg.answer(reply[:4000], parse_mode=None)
+
+# ---- /doctor (admin) ----
+@dp.message(Command("doctor"))
+async def cmd_doctor_handler(msg: Message):
+    user_id = msg.from_user.id
+    if ADMIN_IDS and user_id not in ADMIN_IDS:
+        await msg.answer("Admin only", parse_mode=None)
+        return
+    railway_result, redis_result, ai_result = await asyncio.gather(
+        check_railway(),
+        check_redis(),
+        check_ai_key(),
+    )
+    loop = asyncio.get_event_loop()
+    db_result = await loop.run_in_executor(None, check_database)
+    report = build_report(railway_result, db_result, redis_result, ai_result)
+    await msg.answer(report, parse_mode=None)
+
 
 # ---- Main ----
 async def main():
