@@ -339,7 +339,8 @@ async def cmd_morning(msg: Message):
     await msg.answer(text, parse_mode=None)
 
 
-# ---- AI (Groq only, no Anthropic) ----
+
+# ---- AI (Groq only) ----
 @dp.message()
 async def ai_chat(msg: Message):
     if msg.text.startswith("/"):
@@ -355,7 +356,7 @@ async def ai_chat(msg: Message):
             json={
                 "model": "llama-3.3-70b-versatile",
                 "messages": [
-                    {"role": "system", "content": "You are SLH AI assistant for a Telegram crowdfunding bot. Rules: 1) Never summarize what the user said 2) Give ONE clear decision, not multiple options 3) Max 4 lines per response 4) Always end with one next action 5) Hebrew first, code in English. Context: SLH bot on Railway, aiogram, crowdfunding campaign at slh-nft.com"},
+                    {"role": "system", "content": "You are SLH AI assistant. Rules: 1) Never summarize 2) Give ONE decision 3) Max 4 lines 4) End with next action 5) Hebrew first."},
                     {"role": "user", "content": msg.text}
                 ],
                 "max_tokens": 500
