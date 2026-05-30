@@ -539,38 +539,46 @@ async def handle_callback(callback: CallbackQuery):
 # ---- /wallet ----
 @dp.message(Command("wallet"))
 async def cmd_wallet(msg: Message):
-    user_id = msg.from_user.id
-    bal = get_balance(user_id)
-    await msg.answer(f"Wallet balance: ${bal:.2f}", parse_mode=None)
-
-# ---- /transfer <recipient_id> <amount> ----
-@dp.message(Command("transfer"))
-async def cmd_transfer(msg: Message):
-    parts = msg.text.split()
-    if len(parts) != 3:
-        await msg.answer("Usage: /transfer <recipient_id> <amount>", parse_mode=None)
-        return
     try:
+        user_id = msg.from_user.id
+        bal = get_balance(user_id)
+        await msg.answer(f"Wallet balance: ${bal:.2f}", parse_mode=None)
+    except Exception as e:
+        await msg.answer(f"Wallet error: {str(e)[:200]}", parse_mode=None)@dp.message(Command("transfer"))
+async def cmd_transfer(msg: Message):
+    try:
+        parts = msg.text.split()
+        if len(parts) != 3:
+            await msg.answer("Usage: /transfer <recipient_id> <amount>", parse_mode=None)
+            return
         to_user = int(parts[1])
         amount = float(parts[2])
-    except:
-        await msg.answer("Invalid arguments.", parse_mode=None)
-        return
-    if transfer(msg.from_user.id, to_user, amount):
-        log_transaction(msg.from_user.id, "debit", "transfer", amount, reference=f"to_{to_user}")
-        log_transaction(to_user, "credit", "transfer", amount, reference=f"from_{msg.from_user.id}")
-        emit_event(msg.from_user.id, "transfer_sent", metadata={"to": to_user, "amount": amount})
-        emit_event(to_user, "transfer_received", metadata={"from": msg.from_user.id, "amount": amount})
-        await msg.answer(f"Transfer of ${amount:.2f} to {to_user} successful!", parse_mode=None)
-    else:
-        await msg.answer("Transfer failed. Insufficient balance.", parse_mode=None)
-
-# ---- /deposit (show TON address + simulate if needed) ----
-@dp.message(Command("deposit"))
+        if transfer(msg.from_user.id, to_user, amount):
+            log_transaction(msg.from_user.id, "debit", "transfer", amount, reference=f"to_{to_user}")
+            log_transaction(to_user, "credit", "transfer", amount, reference=f"from_{msg.from_user.id}")
+            emit_event(msg.from_user.id, "transfer_sent", metadata={"to": to_user, "amount": amount})
+            emit_event(to_user, "transfer_received", metadata={"from": msg.from_user.id, "amount": amount})
+            await msg.answer(f"Transfer of ${amount:.2f} to {to_user} successful!", parse_mode=None)
+        else:
+            await msg.answer("Transfer failed. Insufficient balance.", parse_mode=None)
+    except Exception as e:
+        await msg.answer(f"Transfer error: {str(e)[:200]}", parse_mode=None)@dp.message(Command("deposit"))
 async def cmd_deposit(msg: Message):
     ton_wallet = os.getenv("TON_WALLET", "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp")
     await msg.answer(f"Send TON to:\n{ton_wallet}\n\nAfter sending, contact admin to credit your account.", parse_mode=None)
 
+
+# ---- /create_tables (admin) ----
+@dp.message(Command("create_tables"))
+async def cmd_create_tables(msg: Message):
+    if ADMIN_IDS and msg.from_user.id not in ADMIN_IDS:
+        await msg.answer("Admin only", parse_mode=None)
+        return
+    try:
+        init_db()
+        await msg.answer("Tables created successfully.", parse_mode=None)
+    except Exception as e:
+        await msg.answer(f"Create tables error: {str(e)[:200]}", parse_mode=None)
 # ---- Main ----
 async def main():
     bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
