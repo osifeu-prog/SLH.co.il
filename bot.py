@@ -1,4 +1,4 @@
-﻿import asyncio, os, json, datetime, requests
+import asyncio, os, json, datetime, requests
 from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher, F
 from aiogram.types import Message
@@ -381,6 +381,27 @@ async def ai_chat(msg: Message):
     await msg.answer(reply[:4000], parse_mode=None)
 
 # ---- /doctor (admin) ----
+@dp.message(Command("doctor"))
+async def cmd_doctor_handler(msg: Message):
+    user_id = msg.from_user.id
+    if ADMIN_IDS and user_id not in ADMIN_IDS:
+        await msg.answer("Admin only")
+        return
+    import aiohttp, asyncio, os, time
+    # בדיקת Railway
+    railway_ok = "❌"
+    try:
+        async with aiohttp.ClientSession() as s:
+            h = {"Authorization": f"Bearer {os.getenv('RAILWAY_API_TOKEN')}"}
+            async with s.post("https://backboard.railway.app/graphql/v2", json={"query": "{me {email}}"}, headers=h, timeout=aiohttp.ClientTimeout(total=5)) as r:
+                railway_ok = "✅" if r.status == 200 else "❌"
+    except: pass
+    # בדיקת AI
+    ai_key = os.getenv("ANTHROPIC_API_KEY") or os.getenv("GROQ_API_KEY")
+    ai_ok = "✅" if ai_key and len(ai_key) > 10 else "❌"
+    report = f"Doctor Report:\nRailway: {railway_ok}\nAI Key: {ai_ok}\nBot: ✅"
+    await msg.answer(report)
+
 @dp.message(Command("doctor"))
 async def cmd_doctor_handler(msg: Message):
     user_id = msg.from_user.id
