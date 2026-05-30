@@ -1,3 +1,5 @@
+import time
+import aiohttp
 import asyncio, os, json, datetime, requests
 from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher, F
