@@ -1,4 +1,5 @@
-﻿from services.db import get_db
+import json
+from services.db import get_db
 
 def add_product(store_id: int, name: str, price: float, metadata: dict = None) -> int:
     conn = get_db()
