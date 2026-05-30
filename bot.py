@@ -885,6 +885,76 @@ async def cmd_events(msg: Message):
         text = "No data available."
     await msg.answer(text, parse_mode=None)
 
+
+# ---- /health ----
+@dp.message(Command("health"))
+async def cmd_health(msg: Message):
+    try:
+        db_ok = "✅" if get_db() else "❌"
+    except:
+        db_ok = "❌"
+    try:
+        redis_ok = "✅" if os.getenv("REDIS_URL") else "⚪"
+    except:
+        redis_ok = "❌"
+    await msg.answer(f"Bot: ✅\nDatabase: {db_ok}\nRedis: {redis_ok}", parse_mode=None)
+
+# ---- /health ----
+@dp.message(Command("health"))
+async def cmd_health(msg: Message):
+    try:
+        db_ok = "✅" if get_db() else "❌"
+    except:
+        db_ok = "❌"
+    try:
+        redis_ok = "✅" if os.getenv("REDIS_URL") else "⚪"
+    except:
+        redis_ok = "❌"
+    await msg.answer(f"Bot: ✅\nDatabase: {db_ok}\nRedis: {redis_ok}", parse_mode=None)
+
+
+# ---- /status (enhanced) ----
+@dp.message(Command("status"))
+async def cmd_status_enhanced(msg: Message):
+    text = (
+        "Project Status:\n"
+        "Bot: Online\n"
+        "Crowdfunding: Active\n"
+        "Mini App: slh-nft.com\n\n"
+        "Next steps:\n"
+        "1. /upgrade — monetize\n"
+        "2. /store create — open shop\n"
+        "3. /broadcast — promote\n"
+        "4. /dashboard — track growth"
+    )
+    await msg.answer(text, parse_mode=None)
+# ---- /upgrade ----
+@dp.message(Command("upgrade"))
+async def cmd_upgrade(msg: Message):
+    await msg.answer(
+        "Premium Plans:\n\n"
+        "⭐ Pro — $9.99/month\n"
+        "  • AI priority access\n"
+        "  • Create unlimited stores\n"
+        "  • Advanced analytics\n\n"
+        "💼 Business — $29.99/month\n"
+        "  • All Pro features\n"
+        "  • Custom branding\n"
+        "  • Priority support\n\n"
+        "To upgrade, send TON to:\n"
+        f"{os.getenv('TON_WALLET', 'UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp')}\n\n"
+        "Contact admin after payment.",
+        parse_mode=None
+    )
+
+# ---- /commission (admin) ----
+@dp.message(Command("commission"))
+async def cmd_commission(msg: Message):
+    if msg.from_user.id not in ADMIN_IDS:
+        await msg.answer("Admin only", parse_mode=None)
+        return
+    await msg.answer("Commission rate: 5% per marketplace transaction.\nSet via /set_commission <rate>", parse_mode=None)
+
 # ---- Main ----
 async def main():
     bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
