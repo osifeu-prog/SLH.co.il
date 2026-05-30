@@ -7,10 +7,10 @@ def get_db():
 def init_db():
     conn = get_db()
     cur = conn.cursor()
-    
-    # Create users table first
+    cur.execute("DROP TABLE IF EXISTS wallet_balances CASCADE")
+    cur.execute("DROP TABLE IF EXISTS users CASCADE")
     cur.execute("""
-        CREATE TABLE IF NOT EXISTS users (
+        CREATE TABLE users (
             id BIGSERIAL PRIMARY KEY,
             telegram_id BIGINT UNIQUE NOT NULL,
             username TEXT,
@@ -19,9 +19,6 @@ def init_db():
             last_seen TIMESTAMP DEFAULT NOW()
         )
     """)
-    
-    # Drop old wallet_balances if columns wrong, then create fresh
-    cur.execute("DROP TABLE IF EXISTS wallet_balances CASCADE")
     cur.execute("""
         CREATE TABLE wallet_balances (
             user_id BIGINT PRIMARY KEY REFERENCES users(id),
@@ -29,7 +26,6 @@ def init_db():
             updated_at TIMESTAMP DEFAULT NOW()
         )
     """)
-    
     cur.execute("""
         CREATE TABLE IF NOT EXISTS ledger_transactions (
             id BIGSERIAL PRIMARY KEY,
@@ -44,7 +40,6 @@ def init_db():
             created_at TIMESTAMP DEFAULT NOW()
         )
     """)
-    
     cur.execute("""
         CREATE TABLE IF NOT EXISTS events (
             id BIGSERIAL PRIMARY KEY,
@@ -57,6 +52,5 @@ def init_db():
             created_at TIMESTAMP DEFAULT NOW()
         )
     """)
-    
     conn.commit()
     conn.close()
