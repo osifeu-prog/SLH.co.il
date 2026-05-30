@@ -641,14 +641,12 @@ async def cmd_store(msg: Message):
 # ---- /add_product <store_id> <name> <price> ----
 @dp.message(Command("add_product"))
 async def cmd_add_product(msg: Message):
-    text = msg.text
+    # Use only the first line of the message (ignore pasted multi-command)
+    text = msg.text.split('\n')[0]
     try:
         if '"' in text:
             # Format: /add_product <store_id> "<name>" <price>
             parts = text.split('"')
-            # parts[0] = "/add_product store_id "
-            # parts[1] = "name"
-            # parts[2] = " price"
             prefix = parts[0].split()
             store_id = int(prefix[1])
             name = parts[1].strip()
@@ -664,7 +662,7 @@ async def cmd_add_product(msg: Message):
     except Exception as e:
         await msg.answer(f"Add product error: {str(e)[:200]}", parse_mode=None)
 
-# ---- /products@dp.message(Command("products"))
+# ---- /products# ---- /products@dp.message(Command("products"))
 async def cmd_products(msg: Message):
     parts = msg.text.split()
     if len(parts) < 2:
