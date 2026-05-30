@@ -379,7 +379,7 @@ async def check_railway():
                     "url": latest.get("staticUrl", "")
                 }
     except Exception as e:
-        return {"ok": False, "status": "ERROR", "detail": str(e)[:80]}
+        return {"ok": False, "status": "ERROR", "detail": str(e)[:200]}
 
 async def check_database():
     """Ping PostgreSQL if DATABASE_URL is set."""
