@@ -3,7 +3,7 @@ import aiohttp
 import asyncio, os, json, datetime, requests
 from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher, F
-from aiogram.types import Message
+from aiogram.types import Message, CallbackQuery
 from aiogram.filters import Command
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
@@ -500,6 +500,35 @@ async def cmd_doctor_handler(msg: Message):
         "yes" if os.getenv("RAILWAY_API_TOKEN") else "no",
         "yes" if os.getenv("GROQ_API_KEY") else "no"
     ))
+
+
+# ---- Callback Query Handler (inline buttons) ----
+@dp.callback_query()
+async def handle_callback(callback: CallbackQuery):
+    data = callback.data
+    await callback.answer()  # acknowledge the click
+    msg = callback.message
+
+    # Map callback_data to existing command handlers
+    handlers = {
+        "cmd_status":      cmd_status,
+        "cmd_points":      cmd_points,
+        "cmd_checkin":     cmd_checkin,
+        "cmd_daily":       cmd_daily,
+        "cmd_leaderboard": cmd_leaderboard,
+        "cmd_referral":    cmd_referral,
+        "cmd_donate":      cmd_donate,
+        "cmd_help":        cmd_help,
+        "cmd_roadmap":     cmd_roadmap,
+        "cmd_menu":        cmd_start,
+        "cmd_stats":       cmd_stats,
+    }
+
+    handler = handlers.get(data)
+    if handler:
+        await handler(msg)
+    else:
+        await msg.answer(f"Unknown action: {data}", parse_mode=None)
 
 # ---- Main ----
 async def main():
