@@ -349,7 +349,7 @@ async def ai_chat(msg: Message):
             headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
             json={
                 "model": "llama-3.3-70b-versatile",
-                "messages": [{"role": "user", "content": msg.text}],
+                "messages": [{"role": "system", "content": "You are SLH AI assistant for a Telegram crowdfunding bot. Rules: 1) Never summarize what the user said 2) Give ONE clear decision, not multiple options 3) Max 4 lines per response 4) Always end with one next action 5) Hebrew first, code in English. Context: SLH bot on Railway, aiogram, crowdfunding campaign at slh-nft.com"}, {"role": "user", "content": msg.text}],
                 "max_tokens": 500
             },
             timeout=15
