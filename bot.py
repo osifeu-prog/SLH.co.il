@@ -85,17 +85,22 @@ async def cmd_commands(msg: Message):
 # ---- /register ----
 @dp.message(Command("register"))
 async def cmd_register(msg: Message):
-    db = load_db(CONTACTS_FILE)
-    uid = str(msg.from_user.id)
-    db[uid] = {
-        "username": msg.from_user.username or "",
-        "full_name": msg.from_user.full_name,
-        "joined": datetime.datetime.now().isoformat()
-    }
-    save_db(db, CONTACTS_FILE)
-    await msg.answer("You are now registered for updates!", parse_mode=None)
-
-# ---- /donate ----
+    user_id = msg.from_user.id
+    username = msg.from_user.username or "unknown"
+    conn = get_db()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "INSERT INTO users (telegram_id, username, tier) VALUES (%s,%s,'free') ON CONFLICT (telegram_id) DO UPDATE SET username=%s, last_seen=NOW()",
+            (user_id, username, username)
+        )
+        conn.commit()
+        await msg.answer("You are now registered for updates!", parse_mode=None)
+    except Exception as e:
+        conn.rollback()
+        await msg.answer(f"Registration error: {str(e)[:100]}", parse_mode=None)
+    finally:
+        conn.close()
 @dp.message(Command("donate"))
 async def cmd_donate(msg: Message):
     await msg.answer(
