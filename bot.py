@@ -370,41 +370,10 @@ async def ai_chat(msg: Message):
 # ---- /doctor (admin) ----
 @dp.message(Command("doctor"))
 async def cmd_doctor_handler(msg: Message):
-    user_id = msg.from_user.id
-    if ADMIN_IDS and user_id not in ADMIN_IDS:
-        await msg.answer("Admin only")
-        return
-    import aiohttp, asyncio, os, time
-    # בדיקת Railway
-    railway_ok = "❌"
-    try:
-        async with aiohttp.ClientSession() as s:
-            h = {"Authorization": f"Bearer {os.getenv('RAILWAY_API_TOKEN')}"}
-            async with s.post("https://backboard.railway.app/graphql/v2", json={"query": "{me {email}}"}, headers=h, timeout=aiohttp.ClientTimeout(total=5)) as r:
-                railway_ok = "✅" if r.status == 200 else "❌"
-    except: pass
-    # בדיקת AI
-    ai_key = os.getenv("ANTHROPIC_API_KEY") or os.getenv("GROQ_API_KEY")
-    ai_ok = "✅" if ai_key and len(ai_key) > 10 else "❌"
-    report = f"Doctor Report:\nRailway: {railway_ok}\nAI Key: {ai_ok}\nBot: ✅"
-    await msg.answer(report)
-
-@dp.message(Command("doctor"))
-async def cmd_doctor_handler(msg: Message):
-    user_id = msg.from_user.id
-    if ADMIN_IDS and user_id not in ADMIN_IDS:
-        await msg.answer("Admin only", parse_mode=None)
-        return
-    railway_result, redis_result, ai_result = await asyncio.gather(
-        check_railway(),
-        check_redis(),
-        check_ai_key(),
-    )
-    loop = asyncio.get_event_loop()
-    db_result = await loop.run_in_executor(None, check_database)
-    report = build_report(railway_result, db_result, redis_result, ai_result)
-    await msg.answer(report, parse_mode=None)
-
+    await msg.answer("Doctor works! Railway token present: {0}, AI key present: {1}".format(
+        "yes" if os.getenv("RAILWAY_API_TOKEN") else "no",
+        "yes" if os.getenv("GROQ_API_KEY") else "no"
+    ))
 
 # ---- Main ----
 async def main():
