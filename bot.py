@@ -704,6 +704,94 @@ async def cmd_buy(msg: Message):
     else:
         await msg.answer("Purchase failed. Insufficient balance.", parse_mode=None)
 
+
+# ---- /profile ----
+@dp.message(Command("profile"))
+async def cmd_profile(msg: Message):
+    user_id = msg.from_user.id
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("SELECT username, tier, created_at FROM users WHERE telegram_id=%s", (user_id,))
+    user = cur.fetchone()
+    bal = get_balance(user_id)
+    conn.close()
+    if user:
+        await msg.answer(f"User: {user[0]}\nTier: {user[1]}\nBalance: ${bal:.2f}\nJoined: {user[2]}", parse_mode=None)
+    else:
+        await msg.answer("Profile not found. Use /register first.", parse_mode=None)
+
+# ---- /leaders (top 10 by points) ----
+@dp.message(Command("leaders"))
+async def cmd_leaders(msg: Message):
+    conn = get_db()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT username, points FROM users ORDER BY points DESC LIMIT 10")
+        rows = cur.fetchall()
+        conn.close()
+        if rows:
+            text = "Top 10 Users:\n" + "\n".join(f"{i+1}. {r[0]} - {r[1]} pts" for i, r in enumerate(rows))
+        else:
+            text = "No users yet."
+    except:
+        text = "No data available."
+    await msg.answer(text, parse_mode=None)
+
+# ---- /segments ----
+@dp.message(Command("segments"))
+async def cmd_segments(msg: Message):
+    conn = get_db()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT tier, COUNT(*) FROM users GROUP BY tier")
+        rows = cur.fetchall()
+        conn.close()
+        text = "User Segments:\n" + "\n".join(f"{r[0]}: {r[1]}" for r in rows)
+    except:
+        text = "No data available."
+    await msg.answer(text, parse_mode=None)
+
+# ---- /dashboard ----
+@dp.message(Command("dashboard"))
+async def cmd_dashboard(msg: Message):
+    conn = get_db()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT COUNT(*) FROM users")
+        total_users = cur.fetchone()[0]
+        cur.execute("SELECT COUNT(*) FROM stores")
+        total_stores = cur.fetchone()[0]
+        cur.execute("SELECT COUNT(*) FROM products")
+        total_products = cur.fetchone()[0]
+        cur.execute("SELECT COUNT(*) FROM events")
+        total_events = cur.fetchone()[0]
+        conn.close()
+        text = (f"Dashboard:\n"
+                f"Users: {total_users}\n"
+                f"Stores: {total_stores}\n"
+                f"Products: {total_products}\n"
+                f"Events: {total_events}")
+    except:
+        text = "No data available."
+    await msg.answer(text, parse_mode=None)
+
+# ---- /events (last 10) ----
+@dp.message(Command("events"))
+async def cmd_events(msg: Message):
+    conn = get_db()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT event_type, created_at FROM events ORDER BY created_at DESC LIMIT 10")
+        rows = cur.fetchall()
+        conn.close()
+        if rows:
+            text = "Recent Events:\n" + "\n".join(f"{r[0]} at {r[1]}" for r in rows)
+        else:
+            text = "No events yet."
+    except:
+        text = "No data available."
+    await msg.answer(text, parse_mode=None)
+
 # ---- Main ----
 async def main():
     bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
