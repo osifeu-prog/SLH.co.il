@@ -336,13 +336,126 @@ async def cmd_morning(msg: Message):
 
 
 
+
 # ---- /doctor (admin) ----
+async def check_railway():
+    """Query Railway GraphQL API for latest deployment status."""
+    try:
+        query = """
+        query GetDeployments($projectId: String!, $serviceId: String) {
+          deployments(input: { projectId: $projectId, serviceId: $serviceId }, first: 3) {
+            edges { node { id status createdAt staticUrl service { name } } }
+          }
+        }
+        """
+        token = os.getenv("RAILWAY_API_TOKEN", "")
+        project_id = os.getenv("RAILWAY_PROJECT_ID", "")
+        service_id = os.getenv("RAILWAY_SERVICE_ID", "")
+        if not token or not project_id:
+            return {"ok": False, "status": "NOT_CONFIGURED", "detail": "Missing RAILWAY_API_TOKEN or PROJECT_ID"}
+        variables = {"projectId": project_id}
+        if service_id: variables["serviceId"] = service_id
+        headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+        async with aiohttp.ClientSession() as session:
+            async with session.post(
+                "https://backboard.railway.app/graphql/v2",
+                json={"query": query, "variables": variables},
+                headers=headers,
+                timeout=aiohttp.ClientTimeout(total=8)
+            ) as resp:
+                if resp.status != 200:
+                    return {"ok": False, "status": "HTTP_ERROR", "detail": str(resp.status)}
+                data = await resp.json()
+                edges = data.get("data", {}).get("deployments", {}).get("edges", [])
+                if not edges:
+                    return {"ok": False, "status": "NO_DEPLOYMENTS", "detail": "No deployments found"}
+                latest = edges[0]["node"]
+                status = latest.get("status", "UNKNOWN")
+                return {
+                    "ok": status == "SUCCESS",
+                    "status": status,
+                    "service": latest.get("service", {}).get("name", "?"),
+                    "deploy_id": latest.get("id", "?")[:8],
+                    "url": latest.get("staticUrl", "")
+                }
+    except Exception as e:
+        return {"ok": False, "status": "ERROR", "detail": str(e)[:80]}
+
+async def check_database():
+    """Ping PostgreSQL if DATABASE_URL is set."""
+    db_url = os.getenv("DATABASE_URL", "")
+    if not db_url:
+        return {"ok": None, "detail": "not configured"}
+    try:
+        import psycopg2
+        t0 = time.perf_counter()
+        conn = psycopg2.connect(db_url, connect_timeout=5)
+        cur = conn.cursor()
+        cur.execute("SELECT 1")
+        conn.close()
+        ms = int((time.perf_counter() - t0) * 1000)
+        return {"ok": True, "latency_ms": ms}
+    except Exception as e:
+        return {"ok": False, "detail": str(e)[:80]}
+
+async def check_redis():
+    """Ping Redis if REDIS_URL is set."""
+    redis_url = os.getenv("REDIS_URL", "")
+    if not redis_url:
+        return {"ok": None, "detail": "not configured"}
+    try:
+        import redis.asyncio as aioredis
+        t0 = time.perf_counter()
+        r = aioredis.from_url(redis_url, socket_timeout=3)
+        await r.ping()
+        await r.aclose()
+        ms = int((time.perf_counter() - t0) * 1000)
+        return {"ok": True, "latency_ms": ms}
+    except ImportError:
+        return {"ok": None, "detail": "redis package not installed"}
+    except Exception as e:
+        return {"ok": False, "detail": str(e)[:80]}
+
+async def check_ai_key():
+    """Check that at least one AI key is present."""
+    for key in ["ANTHROPIC_API_KEY", "GROQ_API_KEY"]:
+        val = os.getenv(key, "")
+        if val:
+            return {"ok": True, "provider": key.replace("_API_KEY",""), "detail": "key present"}
+    return {"ok": False, "detail": "No AI API key found"}
+
+def build_full_report(railway, db, redis, ai):
+    def icon(r): return "✅" if r.get("ok") is True else ("⚪" if r.get("ok") is None else "❌")
+    lines = ["🩺 *SLH System Doctor*", "━━━━━━━━━━━━━━━━━━━━━", ""]
+    lines.append(f"{icon(railway)} *Railway* — {railway.get('status','?')}")
+    if railway.get("service"): lines.append(f"   service: {railway['service']} | deploy: {railway.get('deploy_id','')}")
+    lines.append("")
+    lines.append(f"{icon(db)} *Database* — {db.get('latency_ms','?')}ms" if db.get("ok") else f"{icon(db)} *Database* — {db.get('detail','error')}")
+    lines.append(f"{icon(redis)} *Redis* — {redis.get('detail','skip')}" if redis.get("ok") is None else f"{icon(redis)} *Redis* — {redis.get('latency_ms','?')}ms")
+    lines.append(f"{icon(ai)} *{ai.get('provider','AI')}* — {ai.get('detail','?')}")
+    lines.append("")
+    lines.append("━━━━━━━━━━━━━━━━━━━━━")
+    checks = [railway["ok"], db["ok"], ai["ok"]]
+    if all(c is True for c in checks): lines.append("🟢 *All systems operational*")
+    elif any(c is False for c in checks): lines.append("🔴 *Issues detected — check logs*")
+    else: lines.append("🟡 *Partial — some checks skipped*")
+    return "\n".join(lines)
+
 @dp.message(Command("doctor"))
 async def cmd_doctor_handler(msg: Message):
-    await msg.answer("Doctor works! Railway token present: {0}, AI key present: {1}".format(
-        "yes" if os.getenv("RAILWAY_API_TOKEN") else "no",
-        "yes" if os.getenv("GROQ_API_KEY") else "no"
-    ))
+    user_id = msg.from_user.id
+    if ADMIN_IDS and user_id not in ADMIN_IDS:
+        await msg.answer("Admin only", parse_mode=None)
+        return
+    await msg.bot.send_chat_action(chat_id=msg.chat.id, action="typing")
+    railway_result, redis_result, ai_result = await asyncio.gather(
+        check_railway(), check_redis(), check_ai_key()
+    )
+    db_result = await asyncio.get_event_loop().run_in_executor(None, lambda: asyncio.run(check_database()))
+    # check_database is async, but we can run it directly
+    db_result = await check_database()
+    report = build_full_report(railway_result, db_result, redis_result, ai_result)
+    await msg.answer(report, parse_mode=None)
 
 # ---- AI (Groq only) ----
 @dp.message()
