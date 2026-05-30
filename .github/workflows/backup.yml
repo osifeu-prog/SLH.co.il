@@ -1,0 +1,17 @@
+﻿name: Backup
+on:
+  schedule:
+    - cron: '0 4 * * *'
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Create backup
+        run: |
+          mkdir -p backups/$(date +%Y%m%d)
+          cp bot.py services/*.py backups/$(date +%Y%m%d)/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: slh-backup
+          path: backups/
