@@ -37,37 +37,14 @@ SLH_LOGO = r"""
 # ---- /start ----
 @dp.message(Command("start"))
 async def cmd_start(msg: Message):
-    text = (
-        f"{SLH_LOGO}\n\n"
-        "Hello Osif!\n"
-        "I am SLH Claude - your AI assistant.\n"
-        "Tier: free\n\n"
-        "Available commands:\n"
-        "/register - Subscribe to updates\n"
-        "/donate - Support the project\n"
-        "/status - Project status\n"
-        "/checkin - Daily check-in (+5 points)\n"
-        "/leaderboard - Top 5\n"
-        "/points - My points\n"
-        "/daily - Daily missions\n"
-        "/backup - Create backup\n"
-        "/broadcast <msg> - (Admin) Send message to all\n"
-        "/users - (Admin) Registered users\n"
-        "/myid - Your Telegram ID\n"
-        "/help - All commands\n"
-        "/commands - Full command list\n"
-        "/referral - Your personal referral link\n"
-        "/stats - Campaign statistics\n"
-        "/roadmap - SLH Roadmap\n"
-        "/support - Join our community\n"
-        "/feedback <msg> - Send feedback\n"
-        "/tasks - Your weekend tasks\n"
-        "/morning - Daily report (Admin)\n\n"
-        "Campaign page: https://slh-nft.com/campaign/"
-    )
-    await msg.answer(text, parse_mode=None)
-
-# ---- /commands ----
+    text = msg_welcome(msg.from_user.username or "friend", "free")
+    # Build inline keyboard (aiogram-compatible)
+    kb = kb_main_menu()
+    # Convert to aiogram InlineKeyboardMarkup
+    from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+    buttons = [[InlineKeyboardButton(**btn) for btn in row] for row in kb]
+    markup = InlineKeyboardMarkup(inline_keyboard=buttons)
+    await msg.answer(text, parse_mode=None, reply_markup=markup)
 @dp.message(Command("commands"))
 async def cmd_commands(msg: Message):
     text = (
