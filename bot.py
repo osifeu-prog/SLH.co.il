@@ -26,7 +26,7 @@ def load_db(file):
 def save_db(data, file):
     with open(file, "w", encoding="utf-8") as f: json.dump(data, f, indent=2, ensure_ascii=False)
 
-ADMIN_IDS = [int(x.strip()) for x in os.getenv("ADMIN_ID", "").split(",") if x.strip()]
+ADMIN_IDS = [int(x.strip()) for x in os.getenv("ADMIN_ID", "").replace(" ", ",").split(",") if x.strip()]
 
 # ---- ASCII Logo ----
 SLH_LOGO = r"""
