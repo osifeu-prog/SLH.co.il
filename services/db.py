@@ -4,13 +4,14 @@ import psycopg2
 
 def get_db():
     db_url = os.getenv("DATABASE_URL", "")
-    # Use SQLite if DATABASE_URL is not set, or if it's an internal Railway host (can't access locally)
-    if not db_url or "railway.internal" in db_url:
+    if db_url:
+        # Railway provides a full PostgreSQL URL  use it
+        return psycopg2.connect(db_url)
+    else:
+        # Local development  use SQLite
         conn = sqlite3.connect("slh_local.db")
         conn.execute("PRAGMA journal_mode=WAL")
         return conn
-    else:
-        return psycopg2.connect(db_url)
 
 def init_db():
     conn = get_db()
