@@ -15,7 +15,7 @@ from services.event import emit_event
 from services.store import create_store, get_store
 from services.product import add_product, list_products
 from services.order import create_order
-from services.db import init_db
+from services.db import init_db, get_db
 
 load_dotenv()
 init_db()
