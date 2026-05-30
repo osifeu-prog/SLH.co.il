@@ -12,6 +12,9 @@ from ux.keyboards import kb_main_menu, kb_after_checkin, kb_after_points, kb_don
 from services.wallet import get_balance, add_balance, transfer
 from services.ledger import log_transaction
 from services.event import emit_event
+from services.store import create_store, get_store
+from services.product import add_product, list_products
+from services.order import create_order
 from services.db import init_db
 
 load_dotenv()
@@ -607,6 +610,89 @@ async def ai_chat(msg: Message):
         await msg.answer(reply[:4000])
     except Exception as e:
         await msg.answer(f"AI error: {e}", parse_mode=None)
+
+
+# ---- /store create <name> <description> ----
+@dp.message(Command("store"))
+async def cmd_store(msg: Message):
+    parts = msg.text.split(" ", 2)
+    if len(parts) < 2:
+        await msg.answer("Usage: /store create <name> <description>", parse_mode=None)
+        return
+    sub = parts[1]
+    if sub == "create":
+        if len(parts) < 3:
+            await msg.answer("Usage: /store create <name> <description>", parse_mode=None)
+            return
+        name = parts[2]
+        desc = parts[3] if len(parts) > 3 else ""
+        sid = create_store(msg.from_user.id, name, desc)
+        await msg.answer(f"Store created! ID: {sid}", parse_mode=None)
+    elif sub == "view":
+        try:
+            sid = int(parts[2])
+            store = get_store(sid)
+            await msg.answer(f"Store: {store['name']}\n{store['description']}", parse_mode=None)
+        except:
+            await msg.answer("Usage: /store view <id>", parse_mode=None)
+    else:
+        await msg.answer("Usage: /store create/view", parse_mode=None)
+
+# ---- /add_product <store_id> <name> <price> ----
+@dp.message(Command("add_product"))
+async def cmd_add_product(msg: Message):
+    parts = msg.text.split()
+    if len(parts) < 4:
+        await msg.answer("Usage: /add_product <store_id> <name> <price>", parse_mode=None)
+        return
+    store_id = int(parts[1])
+    name = parts[2]
+    price = float(parts[3])
+    pid = add_product(store_id, name, price)
+    await msg.answer(f"Product added! ID: {pid}", parse_mode=None)
+
+# ---- /products <store_id> ----
+@dp.message(Command("products"))
+async def cmd_products(msg: Message):
+    parts = msg.text.split()
+    if len(parts) < 2:
+        await msg.answer("Usage: /products <store_id>", parse_mode=None)
+        return
+    store_id = int(parts[1])
+    prods = list_products(store_id)
+    if not prods:
+        await msg.answer("No products yet.", parse_mode=None)
+        return
+    lines = ["Products:"]
+    for p in prods:
+        lines.append(f"{p['id']}. {p['name']} - ${p['price']:.2f}")
+    await msg.answer("\n".join(lines), parse_mode=None)
+
+# ---- /buy <product_id> ----
+@dp.message(Command("buy"))
+async def cmd_buy(msg: Message):
+    parts = msg.text.split()
+    if len(parts) < 2:
+        await msg.answer("Usage: /buy <product_id>", parse_mode=None)
+        return
+    product_id = int(parts[1])
+    # Get product info
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("SELECT p.price, s.owner_id FROM products p JOIN stores s ON p.store_id=s.id WHERE p.id=%s", (product_id,))
+    row = cur.fetchone()
+    conn.close()
+    if not row:
+        await msg.answer("Product not found.", parse_mode=None)
+        return
+    price, seller_id = row
+    if create_order(msg.from_user.id, product_id, price, seller_id):
+        log_transaction(msg.from_user.id, "debit", "purchase", price, reference=f"product_{product_id}")
+        log_transaction(seller_id, "credit", "sale", price, reference=f"product_{product_id}")
+        emit_event(msg.from_user.id, "purchase", metadata={"product_id": product_id, "amount": price})
+        await msg.answer(f"Purchase successful! ${price:.2f} paid.", parse_mode=None)
+    else:
+        await msg.answer("Purchase failed. Insufficient balance.", parse_mode=None)
 
 # ---- Main ----
 async def main():
