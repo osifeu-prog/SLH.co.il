@@ -8,9 +8,14 @@ from aiogram.filters import Command
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from ux.responses import msg_welcome, msg_help, msg_checkin_success, msg_checkin_already, msg_points, msg_leaderboard, msg_status, msg_daily, msg_referral, msg_donate, msg_register_success, msg_register_already, msg_feedback_success, msg_roadmap, msg_error_generic
-from ux.keyboards import kb_main_menu, kb_after_checkin, kb_after_points, kb_donate, kb_status, kb_leaderboard, kb_daily, kb_help, kb_referral, kb_roadmap, kb_back_to_menu, kb_admin_panel
+from ux.keyboards import kb_main_menu, kb_after_checkin, kb_after_points, kb_donate, kb_status, kb_leaderboard, kb_daily, kb_help, kb_referral, kb_roadmap, kb_back_to_menu, kb_admin_panel
+from services.wallet import get_balance, add_balance, transfer
+from services.ledger import log_transaction
+from services.event import emit_event
+from services.db import init_db
 
 load_dotenv()
+init_db()
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN") or os.getenv("BOT_TOKEN")
 dp = Dispatcher()
 
@@ -529,6 +534,42 @@ async def handle_callback(callback: CallbackQuery):
         await handler(msg)
     else:
         await msg.answer(f"Unknown action: {data}", parse_mode=None)
+
+
+# ---- /wallet ----
+@dp.message(Command("wallet"))
+async def cmd_wallet(msg: Message):
+    user_id = msg.from_user.id
+    bal = get_balance(user_id)
+    await msg.answer(f"Wallet balance: ${bal:.2f}", parse_mode=None)
+
+# ---- /transfer <recipient_id> <amount> ----
+@dp.message(Command("transfer"))
+async def cmd_transfer(msg: Message):
+    parts = msg.text.split()
+    if len(parts) != 3:
+        await msg.answer("Usage: /transfer <recipient_id> <amount>", parse_mode=None)
+        return
+    try:
+        to_user = int(parts[1])
+        amount = float(parts[2])
+    except:
+        await msg.answer("Invalid arguments.", parse_mode=None)
+        return
+    if transfer(msg.from_user.id, to_user, amount):
+        log_transaction(msg.from_user.id, "debit", "transfer", amount, reference=f"to_{to_user}")
+        log_transaction(to_user, "credit", "transfer", amount, reference=f"from_{msg.from_user.id}")
+        emit_event(msg.from_user.id, "transfer_sent", metadata={"to": to_user, "amount": amount})
+        emit_event(to_user, "transfer_received", metadata={"from": msg.from_user.id, "amount": amount})
+        await msg.answer(f"Transfer of ${amount:.2f} to {to_user} successful!", parse_mode=None)
+    else:
+        await msg.answer("Transfer failed. Insufficient balance.", parse_mode=None)
+
+# ---- /deposit (show TON address + simulate if needed) ----
+@dp.message(Command("deposit"))
+async def cmd_deposit(msg: Message):
+    ton_wallet = os.getenv("TON_WALLET", "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp")
+    await msg.answer(f"Send TON to:\n{ton_wallet}\n\nAfter sending, contact admin to credit your account.", parse_mode=None)
 
 # ---- Main ----
 async def main():
