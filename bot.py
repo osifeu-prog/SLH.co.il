@@ -444,7 +444,7 @@ async def cmd_doctor_handler(msg: Message):
     await msg.answer(report, parse_mode=None)
 
 # ---- AI (Groq only) ----
-@dp.message()
+@dp.message(F.text & ~F.text.startswith("/"))
 async def ai_chat(msg: Message):
     if msg.text.startswith("/"):
         return
@@ -471,10 +471,8 @@ async def ai_chat(msg: Message):
     except Exception as e:
         await msg.answer(f"AI error: {e}", parse_mode=None)
 
-@dp.message()
+@dp.message(F.text & ~F.text.startswith("/"))
 async def ai_chat(msg: Message):
-    if msg.text.startswith("/"):
-        return
     groq_key = os.getenv("GROQ_API_KEY")
     if not groq_key:
         await msg.answer("AI not configured.", parse_mode=None)
