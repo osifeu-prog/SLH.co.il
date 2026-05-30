@@ -641,14 +641,24 @@ async def cmd_store(msg: Message):
 # ---- /add_product <store_id> <name> <price> ----
 @dp.message(Command("add_product"))
 async def cmd_add_product(msg: Message):
-    parts = msg.text.split(maxsplit=3)
-    if len(parts) < 4:
-        await msg.answer("Usage: /add_product <store_id> <name> <price>", parse_mode=None)
-        return
+    text = msg.text
     try:
-        store_id = int(parts[1])
-        name = parts[2].strip('"')
-        price = float(parts[3])
+        if '"' in text:
+            # Format: /add_product <store_id> "<name>" <price>
+            parts = text.split('"')
+            # parts[0] = "/add_product store_id "
+            # parts[1] = "name"
+            # parts[2] = " price"
+            prefix = parts[0].split()
+            store_id = int(prefix[1])
+            name = parts[1].strip()
+            price = float(parts[2].strip())
+        else:
+            # Format: /add_product <store_id> <name> <price>
+            parts = text.split()
+            store_id = int(parts[1])
+            name = parts[2]
+            price = float(parts[3])
         pid = add_product(store_id, name, price)
         await msg.answer(f"Product added! ID: {pid}", parse_mode=None)
     except Exception as e:
