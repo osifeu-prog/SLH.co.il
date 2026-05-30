@@ -5,10 +5,6 @@ from aiogram.types import Message
 from aiogram.filters import Command
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
-import sys
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-from ai.slh_ai_core import ask_slh_ai, memory
-from commands.slh_doctor import build_report, check_railway, check_database, check_redis, check_ai_key
 
 load_dotenv()
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN") or os.getenv("BOT_TOKEN")
@@ -340,7 +336,42 @@ async def cmd_morning(msg: Message):
 
 
 
+# ---- /doctor (admin) ----
+@dp.message(Command("doctor"))
+async def cmd_doctor_handler(msg: Message):
+    await msg.answer("Doctor works! Railway token present: {0}, AI key present: {1}".format(
+        "yes" if os.getenv("RAILWAY_API_TOKEN") else "no",
+        "yes" if os.getenv("GROQ_API_KEY") else "no"
+    ))
+
 # ---- AI (Groq only) ----
+@dp.message()
+async def ai_chat(msg: Message):
+    if msg.text.startswith("/"):
+        return
+    groq_key = os.getenv("GROQ_API_KEY")
+    if not groq_key:
+        await msg.answer("AI not configured.", parse_mode=None)
+        return
+    try:
+        resp = requests.post(
+            "https://api.groq.com/openai/v1/chat/completions",
+            headers={"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"},
+            json={
+                "model": "llama-3.3-70b-versatile",
+                "messages": [
+                    {"role": "system", "content": "You are SLH AI assistant. Rules: 1) Never summarize 2) Give ONE decision 3) Max 4 lines 4) End with next action 5) Hebrew first."},
+                    {"role": "user", "content": msg.text}
+                ],
+                "max_tokens": 500
+            },
+            timeout=15
+        )
+        reply = resp.json()["choices"][0]["message"]["content"]
+        await msg.answer(reply[:4000])
+    except Exception as e:
+        await msg.answer(f"AI error: {e}", parse_mode=None)
+
 @dp.message()
 async def ai_chat(msg: Message):
     if msg.text.startswith("/"):
