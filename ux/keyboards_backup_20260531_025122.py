@@ -1,4 +1,4 @@
-from typing import Any
+﻿from typing import Any
 
 def kb_build(rows):
     return rows

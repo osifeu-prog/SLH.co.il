@@ -1,0 +1,9 @@
+﻿{
+    "welcome": "Добро пожаловать",
+    "points": "очки",
+    "streak": "серия",
+    "leaderboard_title": "Таблица лидеров",
+    "checkin_success": "Регистрация успешна",
+    "checkin_already": "Уже сегодня отмечались",
+    "donate_prompt": "Поддержать проект"
+}

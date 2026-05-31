@@ -1,4 +1,4 @@
-# SLH Bot — responses.py
+﻿# SLH Bot — responses.py
 import re
 from typing import Optional
 
