@@ -1,0 +1,52 @@
+#include <Arduino.h>
+#include <WiFi.h>
+
+#define WIFI_SSID "Beynoni"
+#define WIFI_PASS "12345678"
+
+unsigned long lastPrint = 0;
+
+void setup() {
+  Serial.begin(115200);
+  delay(1500);
+  Serial.println();
+  Serial.println("=== SLH MINIMAL DIAG START ===");
+  Serial.printf("Chip model: %s`n", ESP.getChipModel());
+  Serial.printf("CPU MHz: %u`n", ESP.getCpuFreqMHz());
+  Serial.printf("Free heap: %u`n", ESP.getFreeHeap());
+
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(WIFI_SSID, WIFI_PASS);
+  Serial.printf("Connecting to WiFi SSID=%s`n", WIFI_SSID);
+
+  unsigned long start = millis();
+  while (WiFi.status() != WL_CONNECTED && millis() - start < 15000) {
+    Serial.printf("WiFi status=%d elapsed=%lu`n", WiFi.status(), millis() - start);
+    delay(500);
+  }
+
+  if (WiFi.status() == WL_CONNECTED) {
+    Serial.println("WiFi connected");
+    Serial.print("IP: ");
+    Serial.println(WiFi.localIP());
+    Serial.print("RSSI: ");
+    Serial.println(WiFi.RSSI());
+  } else {
+    Serial.println("WiFi connect FAILED");
+  }
+
+  Serial.println("=== SETUP DONE ===");
+}
+
+void loop() {
+  if (millis() - lastPrint > 2000) {
+    lastPrint = millis();
+    Serial.printf("alive uptime_ms=%lu heap=%u wifi=%d ip=%s`n",
+      millis(),
+      ESP.getFreeHeap(),
+      WiFi.status(),
+      WiFi.localIP().toString().c_str()
+    );
+  }
+  delay(50);
+}

@@ -1,0 +1,564 @@
+﻿=== GUARDIAN TOKENOMICS AUDIT ===
+D:\SLH_ECOSYSTEM\admin-bot\shared\slh_payments\config.py:62: "guardian": BotPricing(
+D:\SLH_ECOSYSTEM\admin-bot\shared\slh_payments\config.py:63: bot_name="SLH Guardian",
+D:\SLH_ECOSYSTEM\admin-bot\shared\slh_payments\ledger.py:111: async def mint(user_id: int, token: str, amount: float, memo: str = "mint"):
+D:\SLH_ECOSYSTEM\admin-bot\shared\slh_payments\ledger.py:120: "INSERT INTO token_transfers (from_user_id, to_user_id, token, amount, memo, tx_type) VALUES (0, $1, $2, $3, $4, 'mint')",
+D:\SLH_ECOSYSTEM\admin-bot\shared\slh_payments\ledger.py:125: async def burn(user_id: int, token: str, amount: float, memo: str = "burn"):
+D:\SLH_ECOSYSTEM\admin-bot\shared\slh_payments\ledger.py:139: "INSERT INTO token_transfers (from_user_id, to_user_id, token, amount, memo, tx_type) VALUES ($1, 0, $2, $3, $4, 'burn')",
+D:\SLH_ECOSYSTEM\admin-bot\shared\group_config.json:7: "guardian": {"name": "SLH Guardian Ops", "invite_link": "https://t.me/+_l9XZ77Bbb5kZTM0", "price_ils": 59, "price_ton": 3.0},
+D:\SLH_ECOSYSTEM\admin-bot\main.py:32: "guardian": {"name": "SLH Guardian", "username": "Grdian_bot", "container": "slh-guardian-bot"},
+D:\SLH_ECOSYSTEM\airdrop\app\bot_server.py:120: {"id": "join_channel", "title": "📢 הצטרף לערוץ @SLH_Community", "reward": 50},
+D:\SLH_ECOSYSTEM\airdrop\app\bot_server.py:121: {"id": "share_bot", "title": "📤 שתף את הבוט עם חבר", "reward": 100},
+D:\SLH_ECOSYSTEM\airdrop\app\bot_server.py:122: {"id": "visit_site", "title": "🌐 בקר באתר slh-nft.com", "reward": 30},
+D:\SLH_ECOSYSTEM\airdrop\app\bot_server.py:123: {"id": "follow_fb", "title": "👍 עקוב אחרי Facebook SLH", "reward": 40},
+D:\SLH_ECOSYSTEM\airdrop\app\bot_server.py:124: {"id": "daily_login", "title": "✅ כניסה יומית", "reward": 10},
+D:\SLH_ECOSYSTEM\airdrop\app\bot_server.py:230: rows.append([{"text": f"{t['title']} (+{t['reward']})", "callback_data": f"task_{t['id']}"}])
+D:\SLH_ECOSYSTEM\airdrop\app\bot_server.py:935: "  💰 Guardian + Wallet = <b>99₪</b>\n\n"
+D:\SLH_ECOSYSTEM\airdrop\app\bot_server.py:1126: total_reward = sum(t["reward"] for t in _daily_tasks)
+D:\SLH_ECOSYSTEM\airdrop\app\bot_server.py:1127: done_reward = sum(t["reward"] for t in _daily_tasks if t["id"] in user["tasks_done"])
+D:\SLH_ECOSYSTEM\airdrop\app\bot_server.py:1131: f"💎 שנצבר היום: {done_reward}/{total_reward} נקודות\n"
+D:\SLH_ECOSYSTEM\airdrop\app\bot_server.py:1150: user["hub_points"] += task["reward"]
+D:\SLH_ECOSYSTEM\airdrop\app\bot_server.py:1151: user["total_earned"] += task["reward"]
+D:\SLH_ECOSYSTEM\airdrop\app\bot_server.py:1152: self.answer_callback(callback_id, f"✅ +{task['reward']} נקודות!", True)
+D:\SLH_ECOSYSTEM\airdrop\app\bot_server.py:1252: f"• 🛡️ Guardian: <code>https://t.me/Grdian_bot?start=ref_{chat_id}</code>\n"
+D:\SLH_ECOSYSTEM\airdrop\app\bot_server.py:1300: "🛡️ <b>חבילת אבטחה</b>\n  💰 Guardian + Wallet = <b>99₪</b>\n\n"
+D:\SLH_ECOSYSTEM\airdrop\ROADMAP.md:44: - Referral system + rewards
+D:\SLH_ECOSYSTEM\api\routes\ai_chat.py:29: - 12 tokens in the ecosystem, 176 holders, 111M supply
+D:\SLH_ECOSYSTEM\api\main.py:321: nft_reward TEXT DEFAULT 'SLH Genesis Member #',
+D:\SLH_ECOSYSTEM\api\main.py:343: INSERT INTO beta_coupons (code, max_uses, used_count, nft_reward, slh_bonus)
+D:\SLH_ECOSYSTEM\api\main.py:859: SELECT code, max_uses, used_count, nft_reward, slh_bonus, active
+D:\SLH_ECOSYSTEM\api\main.py:911: # Credit coupon bonus in ZVK (cheap reward token, NOT SLH which is scarce premium)
+D:\SLH_ECOSYSTEM\api\main.py:935: "nft_name": f"{coupon['nft_reward']}{nft_number}",
+D:\SLH_ECOSYSTEM\api\main.py:993: # CASHBACK ENGINE — distribution rewards for Genesis users
+D:\SLH_ECOSYSTEM\api\main.py:1925: total_supply = 111186328
+D:\SLH_ECOSYSTEM\api\main.py:1930: pct = (balance / total_supply * 100) if total_supply else 0
+D:\SLH_ECOSYSTEM\api\main.py:1992: # We'll use tokensupply + tokenbalance for the contract to get top holders
+D:\SLH_ECOSYSTEM\api\main.py:2009: # Fallback to free-tier tokensupply + manual holder query
+D:\SLH_ECOSYSTEM\api\main.py:2014: "hint": "tokenholderlist may require Etherscan PRO tier. Falling back to tokensupply...",
+D:\SLH_ECOSYSTEM\api\main.py:2020: total_supply = 111186328 * (10 ** 15)  # 111M with 15 decimals
+D:\SLH_ECOSYSTEM\api\main.py:2027: pct = (balance_raw / total_supply * 100) if total_supply else 0
+D:\SLH_ECOSYSTEM\api\main.py:3176: ("NoaInvest", "\u05e9\u05de\u05e2\u05ea\u05dd \u05e2\u05dc \u05d4\u05d1\u05d5\u05d8 \u05d4\u05d7\u05d3\u05e9? Guardian Bot \u05de\u05d2\u05df \u05e2\u05dc \u05d4\u05e7\u05d1\u05d5\u05e6\u05d5\u05ea \u05e9\u05dc\u05db\u05dd! \U0001f6e1\ufe0f", "slh", 18),
+D:\SLH_ECOSYSTEM\api\main.py:4513: # TOKENOMICS — SLH/MNH/ZVK dual-track economy
+D:\SLH_ECOSYSTEM\api\main.py:4517: # ZVK = Activity rewards (low value, high volume)
+D:\SLH_ECOSYSTEM\api\main.py:4519: # Revenue → 50% → Buyback SLH from DEX → Burn → deflationary pressure
+D:\SLH_ECOSYSTEM\api\main.py:4520: # Staking SLH → earns ZVK+MNH yield → locks supply
+D:\SLH_ECOSYSTEM\api\main.py:4523: async def _ensure_tokenomics_tables(conn):
+D:\SLH_ECOSYSTEM\api\main.py:4525: CREATE TABLE IF NOT EXISTS token_burns (
+D:\SLH_ECOSYSTEM\api\main.py:4529: source TEXT NOT NULL,  -- 'revenue_buyback' | 'fee_burn' | 'manual'
+D:\SLH_ECOSYSTEM\api\main.py:4533: burned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+D:\SLH_ECOSYSTEM\api\main.py:4535: CREATE INDEX IF NOT EXISTS idx_token_burns_token_time ON token_burns(token, burned_at DESC);
+D:\SLH_ECOSYSTEM\api\main.py:4563: @app.get("/api/tokenomics/stats")
+D:\SLH_ECOSYSTEM\api\main.py:4564: async def tokenomics_stats():
+D:\SLH_ECOSYSTEM\api\main.py:4565: """Full tokenomics overview: supply, burned, staked, reserves."""
+D:\SLH_ECOSYSTEM\api\main.py:4567: await _ensure_tokenomics_tables(conn)
+D:\SLH_ECOSYSTEM\api\main.py:4570: slh_burned = await conn.fetchval(
+D:\SLH_ECOSYSTEM\api\main.py:4571: "SELECT COALESCE(SUM(amount), 0) FROM token_burns WHERE token='SLH'"
+D:\SLH_ECOSYSTEM\api\main.py:4587: # Recent burns
+D:\SLH_ECOSYSTEM\api\main.py:4588: recent_burns = await conn.fetch("""
+D:\SLH_ECOSYSTEM\api\main.py:4589: SELECT token, amount, source, usd_value, burned_at
+D:\SLH_ECOSYSTEM\api\main.py:4590: FROM token_burns
+D:\SLH_ECOSYSTEM\api\main.py:4591: ORDER BY burned_at DESC LIMIT 10
+D:\SLH_ECOSYSTEM\api\main.py:4594: TOTAL_SUPPLY = 111186328  # SLH fixed supply
+D:\SLH_ECOSYSTEM\api\main.py:4595: MAX_SUPPLY = 111186328
+D:\SLH_ECOSYSTEM\api\main.py:4596: circulating = TOTAL_SUPPLY - float(slh_burned)
+D:\SLH_ECOSYSTEM\api\main.py:4600: "max_supply": MAX_SUPPLY,
+D:\SLH_ECOSYSTEM\api\main.py:4601: "circulating_supply": circulating,
+D:\SLH_ECOSYSTEM\api\main.py:4602: "burned": float(slh_burned),
+D:\SLH_ECOSYSTEM\api\main.py:4603: "burn_pct": round(float(slh_burned) / MAX_SUPPLY * 100, 4),
+D:\SLH_ECOSYSTEM\api\main.py:4616: "description": "Activity rewards token",
+D:\SLH_ECOSYSTEM\api\main.py:4621: "description": "Guardian anti-fraud token — Mark of Cain (אות קין)",
+D:\SLH_ECOSYSTEM\api\main.py:4623: "mechanism": "Assigned by Guardian bot reports. Higher ZUZ = more suspicious",
+D:\SLH_ECOSYSTEM\api\main.py:4637: "recent_burns": [
+D:\SLH_ECOSYSTEM\api\main.py:4643: "burned_at": r["burned_at"].isoformat() if r["burned_at"] else None,
+D:\SLH_ECOSYSTEM\api\main.py:4645: for r in recent_burns
+D:\SLH_ECOSYSTEM\api\main.py:4658: @app.post("/api/tokenomics/internal-transfer")
+D:\SLH_ECOSYSTEM\api\main.py:4678: await _ensure_tokenomics_tables(conn)
+D:\SLH_ECOSYSTEM\api\main.py:4722: class BurnRequest(BaseModel):
+D:\SLH_ECOSYSTEM\api\main.py:4725: source: str  # 'revenue_buyback', 'fee_burn', 'manual'
+D:\SLH_ECOSYSTEM\api\main.py:4731: @app.post("/api/tokenomics/burn")
+D:\SLH_ECOSYSTEM\api\main.py:4732: async def burn_tokens(req: BurnRequest, authorization: Optional[str] = Header(None), x_admin_key: Optional[str] = Header(None)):
+D:\SLH_ECOSYSTEM\api\main.py:4733: """Record a token burn. Admin-only. For audit trail + supply accounting."""
+D:\SLH_ECOSYSTEM\api\main.py:4738: await _ensure_tokenomics_tables(conn)
+D:\SLH_ECOSYSTEM\api\main.py:4739: burn_id = await conn.fetchval("""
+D:\SLH_ECOSYSTEM\api\main.py:4740: INSERT INTO token_burns (token, amount, source, tx_hash, usd_value, notes)
+D:\SLH_ECOSYSTEM\api\main.py:4746: action="token.burn",
+D:\SLH_ECOSYSTEM\api\main.py:4748: resource_type="token_burn",
+D:\SLH_ECOSYSTEM\api\main.py:4749: resource_id=str(burn_id),
+D:\SLH_ECOSYSTEM\api\main.py:4755: return {"ok": True, "burn_id": burn_id}
+D:\SLH_ECOSYSTEM\api\main.py:4767: @app.post("/api/tokenomics/reserves/add")
+D:\SLH_ECOSYSTEM\api\main.py:4772: await _ensure_tokenomics_tables(conn)
+D:\SLH_ECOSYSTEM\api\main.py:5057: # that BNB + SLH from treasury. Contributors get credit + rewards.
+D:\SLH_ECOSYSTEM\api\main.py:5077: rewards_issued BOOLEAN DEFAULT FALSE,
+D:\SLH_ECOSYSTEM\api\main.py:5101: via BSC RPC lookup of tx_hash). After verification, rewards are issued.
+D:\SLH_ECOSYSTEM\api\main.py:5157: "message": "Contribution recorded. Will be verified on-chain + rewards issued within 24h.",
+D:\SLH_ECOSYSTEM\api\main.py:5163: """Admin: mark a contribution as verified + issue rewards.
+D:\SLH_ECOSYSTEM\api\main.py:5178: SET status='verified', verified_at=CURRENT_TIMESTAMP, rewards_issued=TRUE
+D:\SLH_ECOSYSTEM\api\main.py:5192: # ── Auto-reward: credit ZVK + REP to contributor ──
+D:\SLH_ECOSYSTEM\api\main.py:5195: rewards_issued = False
+D:\SLH_ECOSYSTEM\api\main.py:5235: # Audit the reward
+D:\SLH_ECOSYSTEM\api\main.py:5238: action="launch.reward",
+D:\SLH_ECOSYSTEM\api\main.py:5241: resource_type="launch_reward",
+D:\SLH_ECOSYSTEM\api\main.py:5247: rewards_issued = True
+D:\SLH_ECOSYSTEM\api\main.py:5253: "rewards_issued": rewards_issued,
+D:\SLH_ECOSYSTEM\api\main.py:5292: @app.post("/api/admin/credit-rewards")
+D:\SLH_ECOSYSTEM\api\main.py:5293: async def admin_credit_rewards(
+D:\SLH_ECOSYSTEM\api\main.py:5297: """Find all verified contributors missing ZVK rewards and credit them.
+D:\SLH_ECOSYSTEM\api\main.py:5358: # Check if already has ZVK from genesis reward
+D:\SLH_ECOSYSTEM\api\main.py:5365: prior_reward = float(existing_zvk) >= 500
+D:\SLH_ECOSYSTEM\api\main.py:5367: if prior_reward:
+D:\SLH_ECOSYSTEM\api\main.py:5396: action="launch.reward",
+D:\SLH_ECOSYSTEM\api\main.py:5399: resource_type="launch_reward",
+D:\SLH_ECOSYSTEM\api\main.py:5417: "summary": f"Credited {len(credited)} users, {len(already_had)} already had rewards, {len(not_matched)} unmatched",
+D:\SLH_ECOSYSTEM\api\main.py:5477: # GUARDIAN SYSTEM — ZUZ Token + Anti-Fraud Intelligence
+D:\SLH_ECOSYSTEM\api\main.py:5480: # Assigned by Guardian bot to mark scammers, bots, fraudsters.
+D:\SLH_ECOSYSTEM\api\main.py:5483: async def _ensure_guardian_tables(conn):
+D:\SLH_ECOSYSTEM\api\main.py:5484: """Create Guardian system tables."""
+D:\SLH_ECOSYSTEM\api\main.py:5486: CREATE TABLE IF NOT EXISTS guardian_reports (
+D:\SLH_ECOSYSTEM\api\main.py:5505: CREATE TABLE IF NOT EXISTS guardian_blacklist (
+D:\SLH_ECOSYSTEM\api\main.py:5520: CREATE TABLE IF NOT EXISTS guardian_group_intel (
+D:\SLH_ECOSYSTEM\api\main.py:5527: guardian_active BOOLEAN DEFAULT TRUE,
+D:\SLH_ECOSYSTEM\api\main.py:5533: CREATE TABLE IF NOT EXISTS guardian_message_log (
+D:\SLH_ECOSYSTEM\api\main.py:5544: await conn.execute("CREATE INDEX IF NOT EXISTS idx_guardian_blacklist_user ON guardian_blacklist(user_id)")
+D:\SLH_ECOSYSTEM\api\main.py:5545: await conn.execute("CREATE INDEX IF NOT EXISTS idx_guardian_reports_user ON guardian_reports(reported_user_id)")
+D:\SLH_ECOSYSTEM\api\main.py:5546: await conn.execute("CREATE INDEX IF NOT EXISTS idx_guardian_msg_user ON guardian_message_log(user_id)")
+D:\SLH_ECOSYSTEM\api\main.py:5549: class GuardianReportRequest(BaseModel):
+D:\SLH_ECOSYSTEM\api\main.py:5566: @app.post("/api/guardian/report")
+D:\SLH_ECOSYSTEM\api\main.py:5567: async def guardian_report(req: GuardianReportRequest):
+D:\SLH_ECOSYSTEM\api\main.py:5572: await _ensure_guardian_tables(conn)
+D:\SLH_ECOSYSTEM\api\main.py:5576: INSERT INTO guardian_reports
+D:\SLH_ECOSYSTEM\api\main.py:5586: "SELECT id, zuz_score, total_reports FROM guardian_blacklist WHERE user_id=$1",
+D:\SLH_ECOSYSTEM\api\main.py:5597: UPDATE guardian_blacklist
+D:\SLH_ECOSYSTEM\api\main.py:5609: INSERT INTO guardian_blacklist
+D:\SLH_ECOSYSTEM\api\main.py:5628: conn, action="guardian.report", actor_type="guardian",
+D:\SLH_ECOSYSTEM\api\main.py:5635: compliance_flags=["GUARDIAN", "ANTI_FRAUD"],
+D:\SLH_ECOSYSTEM\api\main.py:5649: @app.get("/api/guardian/check/{user_id}")
+D:\SLH_ECOSYSTEM\api\main.py:5650: async def guardian_check_user(user_id: int):
+D:\SLH_ECOSYSTEM\api\main.py:5651: """Check if a user is flagged/banned by Guardian. Used by all bots."""
+D:\SLH_ECOSYSTEM\api\main.py:5653: await _ensure_guardian_tables(conn)
+D:\SLH_ECOSYSTEM\api\main.py:5655: "SELECT * FROM guardian_blacklist WHERE user_id=$1", user_id
+D:\SLH_ECOSYSTEM\api\main.py:5661: "SELECT reason, severity, group_name, created_at FROM guardian_reports "
+D:\SLH_ECOSYSTEM\api\main.py:5684: @app.get("/api/guardian/blacklist")
+D:\SLH_ECOSYSTEM\api\main.py:5685: async def guardian_blacklist(
+D:\SLH_ECOSYSTEM\api\main.py:5694: await _ensure_guardian_tables(conn)
+D:\SLH_ECOSYSTEM\api\main.py:5698: "FROM guardian_blacklist WHERE zuz_score >= $1 "
+D:\SLH_ECOSYSTEM\api\main.py:5716: @app.post("/api/guardian/scan-message")
+D:\SLH_ECOSYSTEM\api\main.py:5717: async def guardian_scan_message(
+D:\SLH_ECOSYSTEM\api\main.py:5720: """Scan a message for scam risk. Returns risk score + factors.
+D:\SLH_ECOSYSTEM\api\main.py:5721: Used by Guardian bot in real-time for every group message."""
+D:\SLH_ECOSYSTEM\api\main.py:5765: await _ensure_guardian_tables(conn)
+D:\SLH_ECOSYSTEM\api\main.py:5767: "SELECT zuz_score, ban_active FROM guardian_blacklist WHERE user_id=$1", user_id
+D:\SLH_ECOSYSTEM\api\main.py:5779: INSERT INTO guardian_message_log (user_id, group_id, message_hash, risk_score, risk_factors, flagged)
+D:\SLH_ECOSYSTEM\api\main.py:5797: @app.get("/api/guardian/stats")
+D:\SLH_ECOSYSTEM\api\main.py:5798: async def guardian_stats():
+D:\SLH_ECOSYSTEM\api\main.py:5799: """Guardian system statistics."""
+D:\SLH_ECOSYSTEM\api\main.py:5801: await _ensure_guardian_tables(conn)
+D:\SLH_ECOSYSTEM\api\main.py:5802: total_reports = await conn.fetchval("SELECT COUNT(*) FROM guardian_reports") or 0
+D:\SLH_ECOSYSTEM\api\main.py:5803: total_flagged = await conn.fetchval("SELECT COUNT(*) FROM guardian_blacklist") or 0
+D:\SLH_ECOSYSTEM\api\main.py:5804: total_banned = await conn.fetchval("SELECT COUNT(*) FROM guardian_blacklist WHERE ban_active=TRUE") or 0
+D:\SLH_ECOSYSTEM\api\main.py:5805: total_auto_banned = await conn.fetchval("SELECT COUNT(*) FROM guardian_blacklist WHERE auto_banned=TRUE") or 0
+D:\SLH_ECOSYSTEM\api\main.py:5806: total_scans = await conn.fetchval("SELECT COUNT(*) FROM guardian_message_log") or 0
+D:\SLH_ECOSYSTEM\api\main.py:5807: total_flagged_msgs = await conn.fetchval("SELECT COUNT(*) FROM guardian_message_log WHERE flagged=TRUE") or 0
+D:\SLH_ECOSYSTEM\api\main.py:5808: total_zuz = await conn.fetchval("SELECT COALESCE(SUM(zuz_score),0) FROM guardian_blacklist") or 0
+D:\SLH_ECOSYSTEM\api\main.py:5809: groups_protected = await conn.fetchval("SELECT COUNT(*) FROM guardian_group_intel WHERE guardian_active=TRUE") or 0
+D:\SLH_ECOSYSTEM\api\main.py:5855: "whitepaper":   {"title": "SLH Whitepaper", "subtitle": "Architecture \u00b7 Tokenomics \u00b7 Vision", "accent": "#6c5ce7", "icon": "WP"},
+D:\SLH_ECOSYSTEM\api\main.py:5860: "partner":      {"title": "SLH Partner Dashboard", "subtitle": "Genesis Contributors \u00b7 Rewards \u00b7 Status", "accent": "#ffd700", "icon": "PTR"},
+D:\SLH_ECOSYSTEM\api\main.py:5861: "invite":       {"title": "SLH Invite", "subtitle": "Invite friends \u00b7 Earn ZVK rewards", "accent": "#a855f7", "icon": "INV"},
+D:\SLH_ECOSYSTEM\assets\ascii_branding.txt:59: ── SLH GUARDIAN ─────────────
+D:\SLH_ECOSYSTEM\backups\20260405_160808\.env:14: # Guardian Bot
+D:\SLH_ECOSYSTEM\backups\20260405_160808\.env:15: GUARDIAN_BOT_TOKEN=8521882513:AAFpDj4Z4TyT7T1Gw54NZArhku7WkA17wKI
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\docs\README.md:10: - Admin credit tool for allocations
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\docs\README.md:177: תשואה שנתית (בשלב זה סימולציה – ללא on-chain mint)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\app\routers\investments.py:100: minted = (d.amount_ils * req.slh_per_ils)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\app\routers\investments.py:103: amount_slh=minted,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\app\routers\investments.py:104: reason="deposit_reward",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\app\routers\investments.py:110: return {"status": "ok", "deposit_id": d.id, "minted_slh": str(minted)}
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\app\models_investments.py:46: reason: Mapped[str] = mapped_column(String(32), nullable=False)  # deposit_reward/redeem/admin_adjust/...
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\README.md:10: - Admin credit tool for allocations
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\README.md:177: תשואה שנתית (בשלב זה סימולציה – ללא on-chain mint)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\conversionService.ts:22: rewardRate: number;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\conversionService.ts:97: rewardRate: CONVERSION_RATES.STAKE_REWARD_RATE,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\conversionService.ts:109: this.startRewardTimer(stakeInfo);
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\conversionService.ts:119: async claimStakingRewards(): Promise<number> {
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\conversionService.ts:128: const rewards = stakeInfo.amount * stakeInfo.rewardRate * (daysStaked / 365);
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\conversionService.ts:132: stakeInfo.earned += rewards;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\conversionService.ts:139: return rewards;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\conversionService.ts:152: pendingRewards: number;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\conversionService.ts:162: pendingRewards: 25.6,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\conversionService.ts:171: pendingRewards: 0,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\conversionService.ts:215: private startRewardTimer(stakeInfo: StakeInfo): void {
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\conversionService.ts:217: console.log("Reward timer started for stake:", stakeInfo);
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\conversionService.ts:264: async calculateRewards(amount: number, duration: number, apy: number) {
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\conversionService.ts:266: const totalRewards = amount * dailyRate * duration;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\conversionService.ts:267: return totalRewards;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\referralService.ts:8: pendingRewards: number;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\referralService.ts:9: lastRewardDate: string | null;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\referralService.ts:15: meahReward: number;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\referralService.ts:69: pendingRewards: 0,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\referralService.ts:70: lastRewardDate: null,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\referralService.ts:85: data.pendingRewards += REFERRAL_CONFIG.REWARD_AMOUNT;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\referralService.ts:86: data.lastRewardDate = new Date().toISOString();
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\referralService.ts:94: meahReward: REFERRAL_CONFIG.REWARD_AMOUNT,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\referralService.ts:137: static async claimRewards(): Promise<number> {
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\referralService.ts:140: if (!data || data.pendingRewards === 0) return 0;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\referralService.ts:142: const rewards = data.pendingRewards;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\referralService.ts:143: data.totalMeahEarned += rewards;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\referralService.ts:144: data.pendingRewards = 0;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\referralService.ts:147: return rewards;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\referralService.ts:149: console.error("❌ Error claiming rewards:", error);
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\referralService.ts:165: pendingRewards: data?.pendingRewards || 0,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\utils\constants.ts:37: STAKE_REWARD_RATE: 0.15, // 15% APY
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\utils\constants.ts:38: REFERRAL_REWARD: 100, // 100 MEAH להזמנה
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\conversionService.ts:22: rewardRate: number;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\conversionService.ts:97: rewardRate: CONVERSION_RATES.STAKE_REWARD_RATE,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\conversionService.ts:109: this.startRewardTimer(stakeInfo);
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\conversionService.ts:119: async claimStakingRewards(): Promise<number> {
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\conversionService.ts:128: const rewards = stakeInfo.amount * stakeInfo.rewardRate * (daysStaked / 365);
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\conversionService.ts:132: stakeInfo.earned += rewards;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\conversionService.ts:139: return rewards;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\conversionService.ts:152: pendingRewards: number;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\conversionService.ts:162: pendingRewards: 25.6,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\conversionService.ts:171: pendingRewards: 0,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\conversionService.ts:215: private startRewardTimer(stakeInfo: StakeInfo): void {
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\conversionService.ts:217: console.log("Reward timer started for stake:", stakeInfo);
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\conversionService.ts:264: async calculateRewards(amount: number, duration: number, apy: number) {
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\conversionService.ts:266: const totalRewards = amount * dailyRate * duration;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\conversionService.ts:267: return totalRewards;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\referralService.ts:8: pendingRewards: number;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\referralService.ts:9: lastRewardDate: string | null;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\referralService.ts:15: meahReward: number;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\referralService.ts:69: pendingRewards: 0,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\referralService.ts:70: lastRewardDate: null,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\referralService.ts:85: data.pendingRewards += REFERRAL_CONFIG.REWARD_AMOUNT;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\referralService.ts:86: data.lastRewardDate = new Date().toISOString();
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\referralService.ts:94: meahReward: REFERRAL_CONFIG.REWARD_AMOUNT,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\referralService.ts:137: static async claimRewards(): Promise<number> {
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\referralService.ts:140: if (!data || data.pendingRewards === 0) return 0;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\referralService.ts:142: const rewards = data.pendingRewards;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\referralService.ts:143: data.totalMeahEarned += rewards;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\referralService.ts:144: data.pendingRewards = 0;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\referralService.ts:147: return rewards;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\referralService.ts:149: console.error("❌ Error claiming rewards:", error);
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\referralService.ts:165: pendingRewards: data?.pendingRewards || 0,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\utils\constants.ts:37: STAKE_REWARD_RATE: 0.15, // 15% APY
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\utils\constants.ts:38: REFERRAL_REWARD: 100, // 100 MEAH להזמנה
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\conversionService.ts:22: rewardRate: number;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\conversionService.ts:97: rewardRate: CONVERSION_RATES.STAKE_REWARD_RATE,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\conversionService.ts:109: this.startRewardTimer(stakeInfo);
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\conversionService.ts:119: async claimStakingRewards(): Promise<number> {
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\conversionService.ts:128: const rewards = stakeInfo.amount * stakeInfo.rewardRate * (daysStaked / 365);
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\conversionService.ts:132: stakeInfo.earned += rewards;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\conversionService.ts:139: return rewards;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\conversionService.ts:152: pendingRewards: number;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\conversionService.ts:162: pendingRewards: 25.6,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\conversionService.ts:171: pendingRewards: 0,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\conversionService.ts:215: private startRewardTimer(stakeInfo: StakeInfo): void {
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\conversionService.ts:217: console.log("Reward timer started for stake:", stakeInfo);
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\conversionService.ts:264: async calculateRewards(amount: number, duration: number, apy: number) {
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\conversionService.ts:266: const totalRewards = amount * dailyRate * duration;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\conversionService.ts:267: return totalRewards;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\referralService.ts:8: pendingRewards: number;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\referralService.ts:9: lastRewardDate: string | null;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\referralService.ts:15: meahReward: number;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\referralService.ts:69: pendingRewards: 0,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\referralService.ts:70: lastRewardDate: null,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\referralService.ts:85: data.pendingRewards += REFERRAL_CONFIG.REWARD_AMOUNT;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\referralService.ts:86: data.lastRewardDate = new Date().toISOString();
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\referralService.ts:94: meahReward: REFERRAL_CONFIG.REWARD_AMOUNT,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\referralService.ts:137: static async claimRewards(): Promise<number> {
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\referralService.ts:140: if (!data || data.pendingRewards === 0) return 0;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\referralService.ts:142: const rewards = data.pendingRewards;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\referralService.ts:143: data.totalMeahEarned += rewards;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\referralService.ts:144: data.pendingRewards = 0;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\referralService.ts:147: return rewards;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\referralService.ts:149: console.error("❌ Error claiming rewards:", error);
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\referralService.ts:165: pendingRewards: data?.pendingRewards || 0,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\utils\constants.ts:37: STAKE_REWARD_RATE: 0.15, // 15% APY
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\utils\constants.ts:38: REFERRAL_REWARD: 100, // 100 MEAH להזמנה
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\handlers\claim.py:7: from app.services.bootstrap import grant_referral_reward_for_user
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\handlers\claim.py:17: "Daily reward already claimed.\n\n"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\handlers\claim.py:24: reward = float(res["reward"])
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\handlers\claim.py:26: "Daily reward claimed.\n\n"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\handlers\claim.py:27: f"Reward: {reward:.4f} SLH\n"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\handlers\claim.py:38: @router.message(F.text == "Daily Reward")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\handlers\claim.py:54: return await message.answer("Daily reward failed. Please try again.")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\handlers\claim.py:56: referral_reward_granted = await grant_referral_reward_for_user(user_id)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\handlers\claim.py:58: "HANDLER: daily referral reward check by %s granted=%s",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\handlers\claim.py:60: referral_reward_granted,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\handlers\tasks.py:7: from app.services.tasks import get_tasks_overview, claim_task_reward
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\handlers\tasks.py:23: reward = float(t["reward"])
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\handlers\tasks.py:26: lines.append(f"{task_id}. {title} | {reward:.4f} SLH | {status}")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\handlers\tasks.py:55: "Task reward claimed.\n\n"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\handlers\tasks.py:57: f"Reward: {float(res['reward']):.4f} SLH\n"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\handlers\tasks.py:83: res = await claim_task_reward(user_id, task_id)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\handlers\tasks.py:97: res = await claim_task_reward(user_id, task_id)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\handlers\tasks.py:111: res = await claim_task_reward(user_id, task_id)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\handlers\task_verifications.py:39: f"reward={float(row['reward'] or 0):.4f} SLH | "
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\handlers\task_verifications.py:55: f"Reward: {float(res['reward']):.4f} SLH\n"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\bootstrap.py:6: REFERRAL_REWARD = 3.0
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\bootstrap.py:107: async def grant_referral_reward_for_user(user_id: int) -> bool:
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\bootstrap.py:112: SELECT id, inviter_user_id, invited_user_id, reward_granted
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\bootstrap.py:123: if invite["reward_granted"]:
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\bootstrap.py:155: SET reward_granted = TRUE
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\bootstrap.py:157: AND reward_granted = FALSE
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\bootstrap.py:165: reward_metadata = json.dumps(
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\bootstrap.py:167: "kind": "referral_reward",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\bootstrap.py:170: "amount": REFERRAL_REWARD,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\bootstrap.py:176: ref_key = f"invite:reward:{invite_id}:v2"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\bootstrap.py:180: SELECT finance_post_user_reward(
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\bootstrap.py:186: REFERRAL_REWARD,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\bootstrap.py:187: "referral_reward",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\bootstrap.py:188: "Referral reward posted via finance ledger",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\bootstrap.py:191: reward_metadata,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\bootstrap.py:213: "invite.reward_granted",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\bootstrap.py:215: % (user_id, REFERRAL_REWARD, REFERRAL_XP, ref_key),
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\bootstrap.py:221: "amount": REFERRAL_REWARD,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\bootstrap.py:233: "xp.referral_reward",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\daily.py:9: DAILY_REWARDS = [
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\daily.py:25: def _reward_for_streak(streak: int) -> Decimal:
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\daily.py:26: idx = max(1, min(streak, len(DAILY_REWARDS))) - 1
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\daily.py:27: return DAILY_REWARDS[idx]
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\daily.py:75: SELECT streak, last_claim_at, last_reward
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\daily.py:100: next_streak = min(current_streak + 1, len(DAILY_REWARDS)) if current_streak > 0 else 1
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\daily.py:104: reward = _reward_for_streak(next_streak)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\daily.py:119: INSERT INTO daily_claims (user_id, streak, last_claim_at, last_reward, updated_at)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\daily.py:124: last_reward = EXCLUDED.last_reward,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\daily.py:129: reward,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\daily.py:139: reward,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\daily.py:148: "reward": str(reward),
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\daily.py:156: SELECT finance_post_user_reward(
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\daily.py:162: reward,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\daily.py:163: "daily_claim_reward",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\daily.py:164: "Daily claim reward posted via finance ledger",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\daily.py:174: "reward": str(reward),
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\daily.py:175: "mnh_units": int(reward * Decimal("10000")),
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\daily.py:199: "reward": str(reward),
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\daily.py:205: "reward": reward,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\daily.py:210: "mnh_units": int(reward * Decimal("10000")),
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\profile.py:36: SELECT inviter_user_id, invite_code, reward_granted, created_at
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\profile.py:50: SELECT streak, last_claim_at, last_reward, updated_at
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\tasks.py:7: TASK_XP_REWARDS = {
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\tasks.py:17: SELECT id, title, reward, type
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\tasks.py:73: reward = float(row["reward"] or 0)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\tasks.py:99: "reward": reward,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\tasks.py:108: async def claim_task_reward(user_id: int, task_id: int) -> dict:
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\tasks.py:126: SELECT id, title, reward, type
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\tasks.py:192: reward = float(task["reward"] or 0)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\tasks.py:193: xp_delta = int(TASK_XP_REWARDS.get(task_id, 0))
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\tasks.py:217: reward_metadata = json.dumps(
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\tasks.py:222: "reward": reward,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\tasks.py:223: "kind": "task_reward",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\tasks.py:229: ref_key = f"task:reward:{int(user_id)}:{int(task_id)}:v2"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\tasks.py:233: SELECT finance_post_user_reward(
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\tasks.py:239: reward,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\tasks.py:240: "task_reward",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\tasks.py:241: "Task reward posted via finance ledger",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\tasks.py:244: reward_metadata,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\tasks.py:264: "reward": reward,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\tasks.py:285: "reward": reward,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\tasks.py:300: "task.reward_claimed",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\tasks.py:307: "reward": reward,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\task_verifications.py:25: SELECT id, title, reward, type
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\task_verifications.py:148: t.reward,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\task_verifications.py:187: SELECT id, title, reward, type
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\task_verifications.py:244: reward = float(task["reward"] or 0)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\task_verifications.py:268: reward_metadata = json.dumps(
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\task_verifications.py:273: "reward": reward,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\task_verifications.py:274: "kind": "task_reward",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\task_verifications.py:281: ref_key = f"task:reward:{int(user_id)}:{int(task_id)}:manual:v2"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\task_verifications.py:285: SELECT finance_post_user_reward(
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\task_verifications.py:291: reward,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\task_verifications.py:292: "task_reward",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\task_verifications.py:293: "Manual task approval reward posted via finance ledger",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\task_verifications.py:296: reward_metadata,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\task_verifications.py:331: "reward": reward,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\task_verifications.py:352: "reward": reward,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\task_verifications.py:369: "task.reward_claimed",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\task_verifications.py:378: "reward": reward,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\app\services\task_verifications.py:382: "message": "Task approved and rewarded.",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\backups\worker.py.before_start_arg_hardening_20260309_140857.py:271: f"Referral reward granted: {bool(ref.get('reward_granted'))}",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\backups\worker.py.before_start_handler_replace_20260309_141457.py:271: f"Referral reward granted: {bool(ref.get('reward_granted'))}",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\backups\worker.py.before_start_handler_replace_20260309_141816.py:271: f"Referral reward granted: {bool(ref.get('reward_granted'))}",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\sql\patch_withdraw_audit_naming.sql:16: v_treasury_avail_id BIGINT;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\sql\patch_withdraw_audit_naming.sql:17: v_treasury_lock_id BIGINT;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\sql\patch_withdraw_audit_naming.sql:67: SELECT id INTO v_treasury_lock_id  FROM ledger_accounts WHERE code = 'TREASURY_LOCKED';
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\sql\patch_withdraw_audit_naming.sql:68: SELECT id INTO v_treasury_avail_id FROM ledger_accounts WHERE code = 'TREASURY_AVAILABLE';
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\sql\patch_withdraw_audit_naming.sql:74: (v_txn_id, 1, v_treasury_lock_id,  'debit',  v_amount, 'SLH', v_user_id, '{"kind":"withdrawal_reserve"}'),
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\sql\patch_withdraw_audit_naming.sql:75: (v_txn_id, 2, v_treasury_avail_id, 'credit', v_amount, 'SLH', v_user_id, '{"kind":"withdrawal_reserve"}'),
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\sql\patch_withdraw_audit_naming.sql:134: v_treasury_lock_id BIGINT;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\sql\patch_withdraw_audit_naming.sql:172: SELECT id INTO v_treasury_lock_id FROM ledger_accounts WHERE code = 'TREASURY_LOCKED';
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\sql\patch_withdraw_audit_naming.sql:179: (v_txn_id, 2, v_treasury_lock_id, 'credit', v_amount, 'SLH', v_user_id, '{"kind":"withdrawal_consume"}'),
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\sql\patch_withdraw_audit_naming.sql:234: v_treasury_avail_id BIGINT;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\sql\patch_withdraw_audit_naming.sql:235: v_treasury_lock_id BIGINT;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\sql\patch_withdraw_audit_naming.sql:269: SELECT id INTO v_treasury_avail_id FROM ledger_accounts WHERE code = 'TREASURY_AVAILABLE';
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\sql\patch_withdraw_audit_naming.sql:270: SELECT id INTO v_treasury_lock_id  FROM ledger_accounts WHERE code = 'TREASURY_LOCKED';
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\sql\patch_withdraw_audit_naming.sql:276: (v_txn_id, 1, v_treasury_avail_id, 'debit',  v_amount, 'SLH', v_user_id, '{"kind":"withdrawal_release"}'),
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\sql\patch_withdraw_audit_naming.sql:277: (v_txn_id, 2, v_treasury_lock_id,  'credit', v_amount, 'SLH', v_user_id, '{"kind":"withdrawal_release"}'),
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\fix_integrity_growth_v1.py:16: from app.services.bootstrap import grant_referral_reward_for_user
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\fix_integrity_growth_v1.py:26: "Daily reward already claimed.\\n\\n"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\fix_integrity_growth_v1.py:33: reward = float(res["reward"])
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\fix_integrity_growth_v1.py:35: "Daily reward claimed.\\n\\n"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\fix_integrity_growth_v1.py:36: f"Reward: {reward:.4f} SLH\\n"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\fix_integrity_growth_v1.py:47: @router.message(F.text == "Daily Reward")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\fix_integrity_growth_v1.py:63: return await message.answer("Daily reward failed. Please try again.")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\fix_integrity_growth_v1.py:65: referral_reward_granted = await grant_referral_reward_for_user(user_id)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\fix_integrity_growth_v1.py:67: "HANDLER: daily referral reward check by %s granted=%s",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\fix_integrity_growth_v1.py:69: referral_reward_granted,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\fix_integrity_growth_v1.py:81: REFERRAL_REWARD = 3.0
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\fix_integrity_growth_v1.py:182: async def grant_referral_reward_for_user(user_id: int) -> bool:
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\fix_integrity_growth_v1.py:187: SELECT id, inviter_user_id, invited_user_id, reward_granted
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\fix_integrity_growth_v1.py:198: if invite["reward_granted"]:
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\fix_integrity_growth_v1.py:230: SET reward_granted = TRUE
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\fix_integrity_growth_v1.py:232: AND reward_granted = FALSE
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\fix_integrity_growth_v1.py:247: REFERRAL_REWARD,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\fix_integrity_growth_v1.py:260: REFERRAL_REWARD,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\fix_integrity_growth_v1.py:272: "invite.reward_granted",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\fix_integrity_growth_v1.py:273: '{"invited_user_id":%s,"amount":%s,"xp_delta":%s}' % (user_id, REFERRAL_REWARD, REFERRAL_XP),
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\fix_integrity_growth_v1.py:279: "amount": REFERRAL_REWARD,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\fix_integrity_growth_v1.py:291: "xp.referral_reward",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\fix_tasks_handler_ux_v1.py:12: from app.services.tasks import get_tasks_overview, claim_task_reward
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\fix_tasks_handler_ux_v1.py:28: reward = float(t["reward"])
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\fix_tasks_handler_ux_v1.py:31: lines.append(f"{task_id}. {title} | {reward:.4f} SLH | {status}")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\fix_tasks_handler_ux_v1.py:60: "Task reward claimed.\\n\\n"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\fix_tasks_handler_ux_v1.py:62: f"Reward: {float(res['reward']):.4f} SLH\\n"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\fix_tasks_handler_ux_v1.py:88: res = await claim_task_reward(user_id, task_id)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\fix_tasks_handler_ux_v1.py:102: res = await claim_task_reward(user_id, task_id)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\fix_tasks_handler_ux_v1.py:116: res = await claim_task_reward(user_id, task_id)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_profile_render_v1.py:48: f"Referral reward granted: {bool(ref.get('reward_granted'))}",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_profile_render_v2.py:56: f"Referral reward granted: {bool(ref.get('reward_granted'))}",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v1.py:24: "REFERRAL_REWARD = 3.0\n",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v1.py:25: "REFERRAL_REWARD = 3.0\nREFERRAL_XP = 15\n",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v1.py:28: # --- bootstrap.py: replace grant_referral_reward_for_user ---
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v1.py:29: pattern = r'async def grant_referral_reward_for_user\(user_id: int\) -> bool:\n(?:    .*\n|\n)*?$'
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v1.py:30: replacement = '''async def grant_referral_reward_for_user(user_id: int) -> bool:
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v1.py:35: SELECT id, inviter_user_id, invited_user_id, reward_granted
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v1.py:46: if invite["reward_granted"]:
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v1.py:82: REFERRAL_REWARD,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v1.py:95: REFERRAL_REWARD,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v1.py:104: SET reward_granted = TRUE
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v1.py:116: "invite.reward_granted",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v1.py:117: '{"invited_user_id":%s,"amount":%s,"xp_delta":%s}' % (user_id, REFERRAL_REWARD, REFERRAL_XP),
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v1.py:123: "amount": REFERRAL_REWARD,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v1.py:135: "xp.referral_reward",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v1.py:144: raise SystemExit("grant_referral_reward_for_user function block not found")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v1.py:147: # --- claim.py: import grant_referral_reward_for_user ---
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v1.py:148: if "from app.services.bootstrap import grant_referral_reward_for_user" not in claim:
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v1.py:151: "from app.services.daily import claim_daily\nfrom app.services.bootstrap import grant_referral_reward_for_user\n",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v1.py:154: # --- claim.py: call referral reward after successful daily claim ---
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v1.py:156: new = '''    referral_reward_granted = await grant_referral_reward_for_user(user_id)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v1.py:158: "HANDLER: daily referral reward check by %s granted=%s",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v1.py:160: referral_reward_granted,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v2.py:57: "REFERRAL_REWARD = 3.0\n",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v2.py:58: "REFERRAL_REWARD = 3.0\nREFERRAL_XP = 15\n",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v2.py:62: # bootstrap.py - replace reward function
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v2.py:64: pattern_bootstrap = r"async def grant_referral_reward_for_user\(user_id: int\) -> bool:\n[\s\S]*$"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v2.py:65: replacement_bootstrap = """async def grant_referral_reward_for_user(user_id: int) -> bool:
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v2.py:70: SELECT id, inviter_user_id, invited_user_id, reward_granted
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v2.py:81: if invite["reward_granted"]:
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v2.py:113: SET reward_granted = TRUE
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v2.py:115: AND reward_granted = FALSE
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v2.py:130: REFERRAL_REWARD,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v2.py:143: REFERRAL_REWARD,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v2.py:155: "invite.reward_granted",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v2.py:156: '{"invited_user_id":%s,"amount":%s,"xp_delta":%s}' % (user_id, REFERRAL_REWARD, REFERRAL_XP),
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v2.py:162: "amount": REFERRAL_REWARD,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v2.py:174: "xp.referral_reward",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v2.py:182: raise SystemExit("bootstrap.py reward function block not found")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v2.py:188: if "from app.services.bootstrap import grant_referral_reward_for_user" not in claim:
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v2.py:191: "from app.services.daily import claim_daily\nfrom app.services.bootstrap import grant_referral_reward_for_user\n",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v2.py:198: pattern_claim = r"@router\.message\(Command\(\"daily\"\)\)\n@router\.message\(F\.text == \"Claim 1\.0 SLH\"\)\n@router\.message\(F\.text == \"Daily Reward\"\)\nasync def claim\(message: types\.Message\):\n[\s\S]*$"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v2.py:201: @router.message(F.text == "Daily Reward")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v2.py:217: return await message.answer("Daily reward failed. Please try again.")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v2.py:219: referral_reward_granted = await grant_referral_reward_for_user(user_id)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v2.py:221: "HANDLER: daily referral reward check by %s granted=%s",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_referral_xp_v2.py:223: referral_reward_granted,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_tasks_stage_a2_v1.py:16: TASK_XP_REWARDS = {
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_tasks_stage_a2_v1.py:26: SELECT id, title, reward, type
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_tasks_stage_a2_v1.py:68: reward = float(row["reward"] or 0)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_tasks_stage_a2_v1.py:86: "reward": reward,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_tasks_stage_a2_v1.py:95: async def claim_task_reward(user_id: int, task_id: int) -> dict:
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_tasks_stage_a2_v1.py:109: SELECT id, title, reward, type
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_tasks_stage_a2_v1.py:187: reward = float(task["reward"] or 0)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_tasks_stage_a2_v1.py:188: xp_delta = int(TASK_XP_REWARDS.get(task_id, 0))
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_tasks_stage_a2_v1.py:228: reward,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_tasks_stage_a2_v1.py:241: reward,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_tasks_stage_a2_v1.py:251: "reward": reward,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_tasks_stage_a2_v1.py:272: "reward": reward,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_tasks_stage_a2_v1.py:286: "task.reward_claimed",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_tasks_stage_a2_v1.py:293: "reward": reward,
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_tasks_stage_a2_v1.py:307: from app.services.tasks import get_tasks_overview, claim_task_reward
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_tasks_stage_a2_v1.py:320: f"{t['id']}. {t['title']} | {float(t['reward']):.4f} SLH | {t['status']}"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_tasks_stage_a2_v1.py:341: "Task reward claimed.\\n\\n"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_tasks_stage_a2_v1.py:343: f"Reward: {float(res['reward']):.4f} SLH\\n"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_tasks_stage_a2_v1.py:369: res = await claim_task_reward(user_id, task_id)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\patch_tasks_stage_a2_v1.py:383: res = await claim_task_reward(user_id, task_id)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\reset_referral_test_user.sql:4: SET reward_granted = FALSE
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\reset_referral_test_user.sql:17: WHERE event_type = 'invite.reward_granted'
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\reset_referral_test_user.sql:22: WHERE event_type = 'xp.referral_reward'
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\reset_referral_test_user.sql:27: SELECT COALESCE(last_reward, 0)::numeric(18,8) AS reward
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\reset_referral_test_user.sql:32: SET available = available - COALESCE((SELECT reward FROM last_daily), 0),
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\reset_referral_test_user.sql:37: SELECT COALESCE(last_reward, 0)::double precision AS reward
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\reset_referral_test_user.sql:42: SET balance = COALESCE(balance, 0) - COALESCE((SELECT reward FROM last_daily), 0),
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\run_daily_and_task3_test.py:12: from app.services.tasks import get_tasks_overview, claim_task_reward
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\run_daily_and_task3_test.py:26: task_res = await claim_task_reward(TEST_USER_ID, 3)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\run_referral_manual_task_test.py:11: from app.services.bootstrap import ensure_user_exists, attach_referrer, grant_referral_reward_for_user
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\run_referral_manual_task_test.py:28: res["grant_referral_reward"] = await grant_referral_reward_for_user(CHILD_ID)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\run_task3_claim_test.py:11: from app.services.tasks import get_tasks_overview, claim_task_reward
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\run_task3_claim_test.py:21: result = await claim_task_reward(TEST_USER_ID, 3)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\006_economic_core.sql:67: ('TREASURY_AVAILABLE', NULL, 'treasury_asset', 'debit'),
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\006_economic_core.sql:68: ('TREASURY_LOCKED', NULL, 'treasury_asset_locked', 'debit'),
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\007_finance_baseline_opening.sql:25: '{"kind":"baseline_opening","bucket":"available","side":"debit_treasury"}'
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\007_finance_baseline_opening.sql:30: ON a.code = 'TREASURY_AVAILABLE'
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\007_finance_baseline_opening.sql:72: '{"kind":"baseline_opening","bucket":"locked","side":"debit_treasury_locked"}'
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\007_finance_baseline_opening.sql:77: ON a.code = 'TREASURY_LOCKED'
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\008_finance_guardrails_and_backfill.sql:64: '{"kind":"withdrawal_reserve","bucket":"treasury_locked"}'
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\008_finance_guardrails_and_backfill.sql:67: JOIN ledger_accounts a ON a.code = 'TREASURY_LOCKED'
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\008_finance_guardrails_and_backfill.sql:79: '{"kind":"withdrawal_reserve","bucket":"treasury_available"}'
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\008_finance_guardrails_and_backfill.sql:82: JOIN ledger_accounts a ON a.code = 'TREASURY_AVAILABLE'
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\009_finance_functions.sql:3: CREATE OR REPLACE FUNCTION finance_post_user_reward(
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\009_finance_functions.sql:19: v_treasury_account_id BIGINT;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\009_finance_functions.sql:22: RAISE EXCEPTION 'finance_post_user_reward amount must be > 0';
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\009_finance_functions.sql:37: SELECT id INTO v_treasury_account_id
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\009_finance_functions.sql:39: WHERE code = 'TREASURY_AVAILABLE';
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\009_finance_functions.sql:45: IF v_treasury_account_id IS NULL OR v_avail_account_id IS NULL THEN
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\009_finance_functions.sql:46: RAISE EXCEPTION 'finance_post_user_reward missing ledger account(s) for user %', p_user_id;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\009_finance_functions.sql:51: (v_txn_id, 1, v_treasury_account_id, 'debit',  p_amount, 'SLH', p_user_id, p_metadata_json),
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\009_finance_functions.sql:78: v_treasury_avail_id BIGINT;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\009_finance_functions.sql:79: v_treasury_lock_id BIGINT;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\009_finance_functions.sql:105: SELECT id INTO v_treasury_avail_id FROM ledger_accounts WHERE code = 'TREASURY_AVAILABLE';
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\009_finance_functions.sql:106: SELECT id INTO v_treasury_lock_id  FROM ledger_accounts WHERE code = 'TREASURY_LOCKED';
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\009_finance_functions.sql:112: (v_txn_id, 1, v_treasury_avail_id, 'debit',  v_amount, 'SLH', v_user_id, '{"kind":"withdrawal_release"}'),
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\009_finance_functions.sql:113: (v_txn_id, 2, v_treasury_lock_id,  'credit', v_amount, 'SLH', v_user_id, '{"kind":"withdrawal_release"}'),
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\009_finance_functions.sql:164: v_treasury_lock_id BIGINT;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\009_finance_functions.sql:194: SELECT id INTO v_treasury_lock_id FROM ledger_accounts WHERE code = 'TREASURY_LOCKED';
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\009_finance_functions.sql:201: (v_txn_id, 2, v_treasury_lock_id, 'credit', v_amount, 'SLH', v_user_id, '{"kind":"withdrawal_consume"}'),
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\009_finance_functions.sql:240: '{"ok":true,"functions":["finance_post_user_reward","finance_reject_withdrawal_release","finance_mark_withdrawal_sent_consume"]}',
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\010_finance_functions_v2.sql:3: CREATE OR REPLACE FUNCTION finance_post_user_reward(
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\010_finance_functions_v2.sql:19: v_treasury_account_id BIGINT;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\010_finance_functions_v2.sql:22: RAISE EXCEPTION 'finance_post_user_reward amount must be > 0';
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\010_finance_functions_v2.sql:37: SELECT id INTO v_treasury_account_id
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\010_finance_functions_v2.sql:39: WHERE code = 'TREASURY_AVAILABLE';
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\010_finance_functions_v2.sql:45: IF v_treasury_account_id IS NULL OR v_avail_account_id IS NULL THEN
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\010_finance_functions_v2.sql:46: RAISE EXCEPTION 'finance_post_user_reward missing ledger account(s) for user %', p_user_id;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\010_finance_functions_v2.sql:51: (v_txn_id, 1, v_treasury_account_id, 'debit',  p_amount, 'SLH', p_user_id, p_metadata_json),
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\010_finance_functions_v2.sql:78: v_treasury_avail_id BIGINT;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\010_finance_functions_v2.sql:79: v_treasury_lock_id BIGINT;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\010_finance_functions_v2.sql:105: SELECT id INTO v_treasury_avail_id FROM ledger_accounts WHERE code = 'TREASURY_AVAILABLE';
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\010_finance_functions_v2.sql:106: SELECT id INTO v_treasury_lock_id  FROM ledger_accounts WHERE code = 'TREASURY_LOCKED';
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\010_finance_functions_v2.sql:112: (v_txn_id, 1, v_treasury_avail_id, 'debit',  v_amount, 'SLH', v_user_id, '{"kind":"withdrawal_release"}'),
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\010_finance_functions_v2.sql:113: (v_txn_id, 2, v_treasury_lock_id,  'credit', v_amount, 'SLH', v_user_id, '{"kind":"withdrawal_release"}'),
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\010_finance_functions_v2.sql:169: v_treasury_lock_id BIGINT;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\010_finance_functions_v2.sql:199: SELECT id INTO v_treasury_lock_id FROM ledger_accounts WHERE code = 'TREASURY_LOCKED';
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\010_finance_functions_v2.sql:206: (v_txn_id, 2, v_treasury_lock_id, 'credit', v_amount, 'SLH', v_user_id, '{"kind":"withdrawal_consume"}'),
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\010_finance_functions_v2.sql:320: '{"ok":true,"objects":["finance_post_user_reward","finance_reject_withdrawal_release","finance_mark_withdrawal_sent_consume","trg_withdrawals_wallet_sanitize","v_ledger_balance_by_account","v_user_finance_snapshot"]}',
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\011_finance_approve_withdrawal_reserve.sql:18: v_treasury_avail_id BIGINT;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\011_finance_approve_withdrawal_reserve.sql:19: v_treasury_lock_id BIGINT;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\011_finance_approve_withdrawal_reserve.sql:69: SELECT id INTO v_treasury_lock_id  FROM ledger_accounts WHERE code = 'TREASURY_LOCKED';
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\011_finance_approve_withdrawal_reserve.sql:70: SELECT id INTO v_treasury_avail_id FROM ledger_accounts WHERE code = 'TREASURY_AVAILABLE';
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\011_finance_approve_withdrawal_reserve.sql:76: (v_txn_id, 1, v_treasury_lock_id,  'debit',  v_amount, 'SLH', v_user_id, '{"kind":"withdrawal_reserve"}'),
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\sql\011_finance_approve_withdrawal_reserve.sql:77: (v_txn_id, 2, v_treasury_avail_id, 'credit', v_amount, 'SLH', v_user_id, '{"kind":"withdrawal_reserve"}'),
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\commerce_full_check_20260313_151956\worker.py:226: "Daily Reward",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\crash_report_20260308_233119\00_git_status.txt:35: 6e65930 Migrate reward flows to ledger-backed finance paths
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\crash_report_20260308_233119\07_docker_ps.txt:8: 0677fff043f6   telegram-guardian-docker-compose-enterprise-guardian-api   "uvicorn bot.server:ظخ"   4 days ago     Restarting (1) 11 seconds ago                                                 guardian-api
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\crash_report_20260308_233119\07_docker_ps.txt:9: a3d9ee0ef133   postgres:15-alpine                                         "docker-entrypoint.sظخ"   4 days ago     Up 34 hours (healthy)           5432/tcp                                      guardian-db
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\crash_report_20260308_233119\07_docker_ps.txt:10: 21841dbb2c65   redis:7-alpine                                             "docker-entrypoint.sظخ"   4 days ago     Up 34 hours (healthy)           6379/tcp                                      guardian-redis
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\crash_report_20260308_233119\07_docker_ps.txt:13: cead5b62a583   selha_sovereign_layer-guardian-tx                          "python -m uvicorn bظخ"   9 days ago     Restarting (1) 26 seconds ago                                                 selha_sovereign_layer-guardian-tx-1

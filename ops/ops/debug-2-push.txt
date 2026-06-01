@@ -1,0 +1,13 @@
+﻿git : To https://github.com/osifeu-prog/SLH.co.il.git
+At line:1 char:1
++ git push slhcoil master:main 2>&1 | Out-File ops\debug-2-push.txt -En ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (To https://gith...g/SLH.co.il.git:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+ ! [rejected]        master -> main (non-fast-forward)
+error: failed to push some refs to 'https://github.com/osifeu-prog/SLH.co.il.git'
+hint: Updates were rejected because a pushed branch tip is behind its remote
+hint: counterpart. If you want to integrate the remote changes, use 'git pull'
+hint: before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.

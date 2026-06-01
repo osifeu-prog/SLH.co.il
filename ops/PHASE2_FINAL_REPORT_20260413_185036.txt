@@ -1,0 +1,27 @@
+﻿PHASE2 COMPLETE
+Backup: D:\SLH_BACKUPS\SAFE_PHASE2_20260413_185036
+API main: D:\SLH_ECOSYSTEM\api\main.py
+Risk dashboard: D:\SLH_ECOSYSTEM\website\risk-dashboard.html
+Patch file: D:\SLH_ECOSYSTEM\ops\RISK_API_PATCH_SAFE_20260413_185036.py
+
+[Risk score]
+    entity_id    |  canonical_name   | entity_type |      homepage_url       | is_public | score_zuz | approved_reports | verified_evidence | eligible_for_publication 
+-----------------+-------------------+-------------+-------------------------+-----------+-----------+------------------+-------------------+--------------------------
+ coalichain_zooz | ZooZ / Coalichain | project     | https://zooz.coali.app/ | f         |     30.00 |                3 |                 1 | t
+(1 row)
+
+
+[External watch]
+      asset_key      |       asset_name        |      chain      |              contract_address              
+---------------------+-------------------------+-----------------+--------------------------------------------
+ coalichain_zooz_bsc | Coalichain Token (ZOOZ) | BNB Smart Chain | 0x132306a39d6fC1E49C3Cb6D8FE8d07d4D44B462a
+(1 row)
+
+
+[Latest snapshots]
+      asset_key      | price_usd  |    total_supply    | circulating_supply | liquidity_usd |        observed_at         
+---------------------+------------+--------------------+--------------------+---------------+----------------------------
+ coalichain_zooz_bsc | 0.24833000 | 770000000.00000000 | 759643000.00000000 |      45500.00 | 2026-04-13 15:50:55.202649
+ coalichain_zooz_bsc | 0.24833000 | 770000000.00000000 | 759643000.00000000 |      45500.00 | 2026-04-13 15:40:55.76118
+(2 rows)
+

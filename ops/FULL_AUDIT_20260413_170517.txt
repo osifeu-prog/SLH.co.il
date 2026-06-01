@@ -1,0 +1,524 @@
+﻿=== SLH FULL AUDIT ===
+Time: 2026-04-13 17:05:17
+
+
+================================================================================
+1) GIT STATUS
+================================================================================
+ M admin-bot/main.py
+ M admin-bot/shared/slh_payments/db.py
+ M airdrop/requirements_simple.txt
+ m backups/_restore/20260322_074442/SLH_PROJECT_V2
+ m backups/_restore/20260322_074442/TerminalCommandCenter
+ m botshop
+ M docker-compose.yml
+ M dockerfiles/Dockerfile.admin
+ M dockerfiles/Dockerfile.guardian
+ M factory/shared/slh_payments/db.py
+ M fun/app.py
+ M fun/shared/slh_payments/db.py
+ M ops/SESSION_HANDOFF_20260412.md
+ M ops/auto-verify.md
+ M ops/launch-watcher.md
+ M ops/overnight-health-log.md
+ M shared/bot_template.py
+ M shared/slh_payments/__init__.py
+ M shared/slh_payments/db.py
+ M wallet/shared/slh_payments/db.py
+?? .claude/
+?? CLEANUP_REPORT_2026-04-10.md
+?? PROJECT_MAP.md
+?? STATUS_REPORT.md
+?? SYSTEM_SCAN_REPORT_2026-04-10.md
+?? TEAM_TASKS.md
+?? TESTING_PLAN.md
+?? TOKEN_AUDIT.md
+?? admin-bot/shared/slh_payments/ledger.py
+?? api/Dockerfile
+?? api/Procfile
+?? api/community_backend_scan.txt
+?? api/patch_wallet_security.py
+?? api/railway.json
+?? api/requirements.txt
+?? api/routes/
+?? api/run_tamagotchi_advanced.py
+?? api/secure_wallet.py
+?? assets/app/
+?? assets/ascii_branding.txt
+?? assets/banners/
+?? assets/esp32/
+?? assets/promo/
+?? backups/20260405_160808/
+?? backups/slh_main_20260406.sql
+?? campaign-bot/
+?? dockerfiles/Dockerfile.airdrop
+?? dockerfiles/Dockerfile.campaign
+?? dockerfiles/Dockerfile.expertnet
+?? dockerfiles/Dockerfile.match
+?? dockerfiles/Dockerfile.nfty
+?? dockerfiles/Dockerfile.osifshop
+?? dockerfiles/Dockerfile.tonmnh
+?? dockerfiles/Dockerfile.wellness
+?? expertnet-bot/
+?? match-bot/
+?? nfty-bot/
+?? ops/AGENT_HANDOFF_PROMPT_20260413.md
+?? ops/ARCHITECTURE.md
+?? ops/BACKUP_SNAPSHOT_20260412_100807/
+?? ops/ENDPOINTS_TEST_GUIDE.md
+?? ops/FACEBOOK_FEED_PLAN.md
+?? ops/FULL_AUDIT_20260413_170517.txt
+?? ops/NEXT_SESSION_PLAN.md
+?? ops/NFTY_BOT_SCAN.md
+?? ops/ONBOARDING_AGENT.md
+?? ops/PARALLEL_AGENT_WORKPLAN_20260411.md
+?? ops/POST_DEPLOY_BROADCAST.md
+?? ops/PROJECT_BRIEF.md
+?? ops/REBOOT_GUIDE.md
+?? ops/SECURITY_TOKEN_ROTATION.md
+?? ops/SESSION_HANDOFF_20260410.md
+?? ops/TASK_BOARD.md
+?? ops/TOKENOMICS.md
+?? ops/TOKEN_ROTATION_20260410.md
+?? ops/UPGRADE_PLAN_20260412.md
+?? ops/WEB3_MARKETPLACE_PLAN.md
+?? ops/WEB3_WALLET_PLAN.md
+?? ops/WORK_PLAN_2026-04.md
+?? ops/migrations/
+?? ops/slh-backup.bat
+?? ops/slh-backup.ps1
+?? ops/slh-clean.ps1
+?? ops/slh-db-sync.ps1
+?? ops/slh-rebuild.ps1
+?? ops/slh-shutdown.bat
+?? ops/slh-startup.bat
+?? osif-shop/
+?? repair-and-upgrade-nfty.ps1
+?? setup-nfty-bot.ps1
+?? shared/__init__.py
+?? shared/community_api.py
+?? shared/slh_payments/ledger.py
+?? shared/slh_payments/promotions.py
+?? shared/slh_payments/referrals.py
+?? shared/slh_token_abi.json
+?? shared/wallet_api.py
+?? shared/wallet_engine.py
+?? tonmnh-bot/
+?? userinfo-bot/
+?? venv_shared/
+?? website/
+?? wellness-bot/
+ M main.py
+?? .deploy-trigger
+?? __pycache__/
+?? community_backend_scan.txt
+?? patch_wallet_security.py
+?? routes/__pycache__/
+?? run_tamagotchi_advanced.py
+?? secure_wallet.py
+
+================================================================================
+2) DOCKER STATUS
+================================================================================
+NAMES              STATUS                PORTS
+slh-userinfo       Up 4 hours            
+slh-guardian-bot   Up 47 hours           0.0.0.0:8001->8080/tcp, [::]:8001->8080/tcp
+slh-game           Up 47 hours           
+slh-nfty           Up 2 days             
+slh-factory        Up 2 days             
+slh-core-bot       Up 2 days             
+slh-campaign       Up 2 days             
+slh-expertnet      Up 46 hours           
+slh-ton            Up 2 days             
+slh-nifti          Up 2 days             
+slh-crazy-panel    Up 46 hours           
+slh-fun            Up 47 hours           0.0.0.0:8002->8080/tcp, [::]:8002->8080/tcp
+slh-wallet         Up 2 days             
+slh-beynonibank    Up 2 days             
+slh-selha          Up 4 hours            
+slh-ts-set         Up 2 days             
+slh-airdrop        Up 2 days             
+slh-nft-shop       Up 2 days             
+slh-ledger         Up 2 days             
+slh-chance         Up 2 days             
+slh-ton-mnh        Up 2 days             
+slh-botshop        Up 2 days             
+slh-osif-shop      Up 2 days             0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp
+slh-test-bot       Up 2 days             
+slh-admin          Up 2 days             
+slh_redis          Up 3 days             0.0.0.0:6380->6379/tcp, [::]:6380->6379/tcp
+redis-nifty        Up 3 days             6379/tcp
+slh-postgres       Up 3 days (healthy)   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+slh-redis          Up 3 days (healthy)   0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp
+NAME               IMAGE                           COMMAND                  SERVICE           CREATED        STATUS                PORTS
+slh-admin          slh_ecosystem-admin-bot         "python main.py"         admin-bot         2 days ago     Up 2 days             
+slh-airdrop        slh_ecosystem-airdrop-bot       "python -c 'from app…"   airdrop-bot       2 days ago     Up 2 days             
+slh-beynonibank    slh_ecosystem-beynonibank-bot   "python /app/shared/…"   beynonibank-bot   2 days ago     Up 2 days             
+slh-botshop        slh_ecosystem-botshop           "uvicorn app.main:ap…"   botshop           2 days ago     Up 2 days             
+slh-campaign       slh_ecosystem-campaign-bot      "python main.py"         campaign-bot      2 days ago     Up 2 days             
+slh-chance         slh_ecosystem-chance-bot        "python /app/shared/…"   chance-bot        2 days ago     Up 2 days             
+slh-core-bot       slh_ecosystem-core-bot          "python worker.py"       core-bot          2 days ago     Up 2 days             
+slh-crazy-panel    slh_ecosystem-crazy-panel-bot   "python /app/shared/…"   crazy-panel-bot   2 days ago     Up 46 hours           
+slh-expertnet      slh_ecosystem-expertnet-bot     "python main.py"         expertnet-bot     2 days ago     Up 46 hours           
+slh-factory        slh_ecosystem-factory-bot       "uvicorn app.main:ap…"   factory-bot       2 days ago     Up 2 days             
+slh-fun            slh_ecosystem-fun-bot           "uvicorn app:fastapi…"   fun-bot           2 days ago     Up 47 hours           0.0.0.0:8002->8080/tcp, [::]:8002->8080/tcp
+slh-game           slh_ecosystem-game-bot          "python /app/match-b…"   game-bot          47 hours ago   Up 47 hours           
+slh-guardian-bot   slh_ecosystem-guardian-bot      "python -m bot.main"     guardian-bot      47 hours ago   Up 47 hours           0.0.0.0:8001->8080/tcp, [::]:8001->8080/tcp
+slh-ledger         slh_ecosystem-ledger-bot        "python /app/shared/…"   ledger-bot        2 days ago     Up 2 days             
+slh-nft-shop       slh_ecosystem-nft-shop-bot      "python /app/shared/…"   nft-shop-bot      2 days ago     Up 2 days             
+slh-nfty           slh_ecosystem-nfty-bot          "python /app/main.py"    nfty-bot          2 days ago     Up 2 days             
+slh-nifti          slh_ecosystem-nifti-bot         "python main.py"         nifti-bot         2 days ago     Up 2 days             
+slh-osif-shop      slh_ecosystem-osif-shop-bot     "sh -c 'python /app/…"   osif-shop-bot     2 days ago     Up 2 days             0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp
+slh-postgres       postgres:15-alpine              "docker-entrypoint.s…"   postgres          7 days ago     Up 3 days (healthy)   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+slh-redis          redis:7-alpine                  "docker-entrypoint.s…"   redis             7 days ago     Up 3 days (healthy)   0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp
+slh-selha          slh_ecosystem-selha-bot         "python /app/shared/…"   selha-bot         2 days ago     Up 5 hours            
+slh-test-bot       slh_ecosystem-test-bot          "python /app/shared/…"   test-bot          2 days ago     Up 2 days             
+slh-ton            slh_ecosystem-slh-ton-bot       "python /app/shared/…"   slh-ton-bot       2 days ago     Up 2 days             
+slh-ton-mnh        slh_ecosystem-ton-mnh-bot       "sh -c 'rm -f /app/b…"   ton-mnh-bot       2 days ago     Up 2 days             
+slh-ts-set         slh_ecosystem-ts-set-bot        "python /app/shared/…"   ts-set-bot        2 days ago     Up 2 days             
+slh-userinfo       slh_ecosystem-userinfo-bot      "python main.py"         userinfo-bot      46 hours ago   Up 4 hours            
+slh-wallet         slh_ecosystem-wallet-bot        "uvicorn app.main:ap…"   wallet-bot        2 days ago     Up 2 days             
+
+================================================================================
+3) API HEALTH
+================================================================================
+{
+    "status":  "ok",
+    "db":  "connected",
+    "version":  "1.0.0"
+}
+
+================================================================================
+4) PUBLIC PAGES HEAD CHECK
+================================================================================
+https://slh-nft.com/	200	40241
+https://slh-nft.com/dashboard.html	200	210662
+https://slh-nft.com/wallet.html	200	86233
+https://slh-nft.com/trade.html	200	84509
+https://slh-nft.com/community.html	200	115458
+https://slh-nft.com/network.html	200	46699
+https://slh-nft.com/roadmap.html	200	44480
+https://slh-nft.com/guides.html	200	143322
+https://slh-nft.com/ops-dashboard.html	200	24874
+https://slh-nft.com/admin.html	200	132559
+
+================================================================================
+5) SEARCH FOR EXPOSED SECRETS / ADMIN STRINGS
+================================================================================
+D:\SLH_ECOSYSTEM\api\routes\ai_chat.py:19: OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
+D:\SLH_ECOSYSTEM\api\routes\ai_chat.py:109: headers={"Authorization": f"Bearer {OPENAI_API_KEY}", "Content-Type": "application/json"},
+D:\SLH_ECOSYSTEM\api\routes\ai_chat.py:127: if OPENAI_API_KEY:
+D:\SLH_ECOSYSTEM\api\routes\ai_chat.py:191: {"name": "openai", "model": os.environ.get("OPENAI_MODEL", "gpt-4o"), "configured": bool(OPENAI_API_KEY), "tier": "paid"},
+D:\SLH_ECOSYSTEM\api\main.py:29: JWT_SECRET = os.getenv("JWT_SECRET", "")
+D:\SLH_ECOSYSTEM\api\main.py:58: # Override in production by setting ADMIN_API_KEYS env var (comma-separated).
+D:\SLH_ECOSYSTEM\api\main.py:60: "slh2026admin",        # primary (Osif)
+D:\SLH_ECOSYSTEM\api\main.py:61: "slh_admin_2026",      # partner A
+D:\SLH_ECOSYSTEM\api\main.py:62: "slh-spark-admin",     # partner B
+D:\SLH_ECOSYSTEM\api\main.py:63: "slh-institutional",   # accountant / lawyer
+D:\SLH_ECOSYSTEM\api\main.py:65: ADMIN_API_KEYS = set(
+D:\SLH_ECOSYSTEM\api\main.py:66: (os.getenv("ADMIN_API_KEYS") or "").split(",")
+D:\SLH_ECOSYSTEM\api\main.py:68: if not ADMIN_API_KEYS:
+D:\SLH_ECOSYSTEM\api\main.py:69: ADMIN_API_KEYS = _ADMIN_KEYS_DEFAULT
+D:\SLH_ECOSYSTEM\api\main.py:70: print("[SECURITY] WARNING: Using default ADMIN_API_KEYS. Set ADMIN_API_KEYS env var in production.")
+D:\SLH_ECOSYSTEM\api\main.py:75: - X-Admin-Key: <one of ADMIN_API_KEYS> header
+D:\SLH_ECOSYSTEM\api\main.py:81: if admin_key_header and admin_key_header in ADMIN_API_KEYS:
+D:\SLH_ECOSYSTEM\api\main.py:88: payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+D:\SLH_ECOSYSTEM\api\main.py:110: if os.getenv("ADMIN_API_KEY", "slh_admin_2026") == "slh_admin_2026":
+D:\SLH_ECOSYSTEM\api\main.py:116: if not os.getenv("JWT_SECRET"):
+D:\SLH_ECOSYSTEM\api\main.py:117: _security_warnings.append("JWT_SECRET not set — JWT auth will be unreliable")
+D:\SLH_ECOSYSTEM\api\main.py:452: if not JWT_SECRET:
+D:\SLH_ECOSYSTEM\api\main.py:453: raise HTTPException(500, "JWT_SECRET is not configured")
+D:\SLH_ECOSYSTEM\api\main.py:462: return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+D:\SLH_ECOSYSTEM\api\main.py:471: if not JWT_SECRET:
+D:\SLH_ECOSYSTEM\api\main.py:472: raise HTTPException(500, "JWT_SECRET is not configured")
+D:\SLH_ECOSYSTEM\api\main.py:475: payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+D:\SLH_ECOSYSTEM\api\main.py:711: admin_secret = os.getenv("ADMIN_API_KEY", "slh_admin_2026")
+D:\SLH_ECOSYSTEM\api\main.py:820: admin_secret = os.getenv("ADMIN_API_KEY", "slh_admin_2026")
+D:\SLH_ECOSYSTEM\api\main.py:1954: 1. BitQuery GraphQL (free 10k/month) — BITQUERY_API_KEY env var
+D:\SLH_ECOSYSTEM\api\main.py:1966: bitquery_key = os.getenv("BITQUERY_API_KEY")
+D:\SLH_ECOSYSTEM\api\main.py:1980: "hint": "Set BITQUERY_API_KEY (recommended, free) or ETHERSCAN_API_KEY (PRO) on Railway",
+D:\SLH_ECOSYSTEM\api\main.py:2097: admin_secret = os.getenv("ADMIN_API_KEY", "slh_admin_2026")
+D:\SLH_ECOSYSTEM\api\main.py:3861: # Issue JWT for auto-login (graceful fallback if JWT_SECRET missing)
+D:\SLH_ECOSYSTEM\api\main.py:3866: print(f"[bot-sync] jwt creation failed (JWT_SECRET missing?): {e}")
+D:\SLH_ECOSYSTEM\api\main.py:4939: Admin key: accepts ADMIN_BROADCAST_KEY OR any of the 4 ADMIN_API_KEYS
+D:\SLH_ECOSYSTEM\api\main.py:4940: (slh2026admin, slh_admin_2026, slh-spark-admin, slh-institutional).
+D:\SLH_ECOSYSTEM\api\main.py:4942: if req.admin_key != ADMIN_BROADCAST_KEY and req.admin_key not in ADMIN_API_KEYS:
+D:\SLH_ECOSYSTEM\api\main.py:5165: if admin_key != ADMIN_BROADCAST_KEY and admin_key not in ADMIN_API_KEYS:
+D:\SLH_ECOSYSTEM\api\main.py:6157: if admin_key != ADMIN_BROADCAST_KEY and admin_key not in ADMIN_API_KEYS:
+D:\SLH_ECOSYSTEM\api\patch_wallet_security.py:34: if 'JWT_SECRET = os.getenv("JWT_SECRET", "")' not in text:
+D:\SLH_ECOSYSTEM\api\patch_wallet_security.py:37: 'BOT_TOKEN = os.getenv("EXPERTNET_BOT_TOKEN", "")\nJWT_SECRET = os.getenv("JWT_SECRET", "")\nJWT_ALGORITHM = "HS256"\nJWT_EXPIRES_HOURS = int(os.getenv("JWT_EXPIRES_HOURS", "12"))\nADMIN_USER_ID = int(os.getenv("ADMIN_USER_ID", "224223270"))',
+D:\SLH_ECOSYSTEM\api\patch_wallet_security.py:68: if not JWT_SECRET:
+D:\SLH_ECOSYSTEM\api\patch_wallet_security.py:69: raise HTTPException(500, "JWT_SECRET is not configured")
+D:\SLH_ECOSYSTEM\api\patch_wallet_security.py:78: return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+D:\SLH_ECOSYSTEM\api\patch_wallet_security.py:87: if not JWT_SECRET:
+D:\SLH_ECOSYSTEM\api\patch_wallet_security.py:88: raise HTTPException(500, "JWT_SECRET is not configured")
+D:\SLH_ECOSYSTEM\api\patch_wallet_security.py:91: payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+D:\SLH_ECOSYSTEM\api\secure_wallet.py:10: JWT_SECRET = "CHANGE_THIS_SECRET_NOW"
+D:\SLH_ECOSYSTEM\api\secure_wallet.py:22: payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALG])
+D:\SLH_ECOSYSTEM\backups\20260405_160808\.env:11: CORE_BOT_TOKEN=8351227223:AAHaXzBgVNuikOX5x4IMNF0Djr3XpJy4mM8
+D:\SLH_ECOSYSTEM\backups\20260405_160808\.env:15: GUARDIAN_BOT_TOKEN=8521882513:AAFpDj4Z4TyT7T1Gw54NZArhku7WkA17wKI
+D:\SLH_ECOSYSTEM\backups\20260405_160808\.env:18: BOTSHOP_BOT_TOKEN=8288632241:AAH5rcMUmo8ZbFJkntMQeq3r2N308dAzE_8
+D:\SLH_ECOSYSTEM\backups\20260405_160808\.env:21: WALLET_BOT_TOKEN=8729004785:AAGzYLJYK_5qT-RSr6Xtin5Hp4kINoV2agQ
+D:\SLH_ECOSYSTEM\backups\20260405_160808\.env:25: FACTORY_BOT_TOKEN=8216202784:AAHkeFB-Vpt6j9ThWvtreZlXNLJErfvRnvA
+D:\SLH_ECOSYSTEM\backups\20260405_160808\.env:28: FUN_BOT_TOKEN=8554485332:AAEDkKg3SXLOypxQ2EToK00ywVlQYkDtWjI
+D:\SLH_ECOSYSTEM\backups\20260405_160808\.env:34: GAME_BOT_TOKEN=8298897331:AAG5818dPoJ_T20DIBG8R4eRdfARCyBKJGo
+D:\SLH_ECOSYSTEM\backups\20260405_160808\.env:44: ADMIN_BOT_TOKEN=7644371589:AAFpaIL2oDMDcIgUV-ML7kBRUrWKCIh8RbE
+D:\SLH_ECOSYSTEM\backups\20260405_160808\.env:50: EXPERTNET_BOT_TOKEN=8530795944:AAH0pAVrhyrc5EsdZYkp8QESxQ6B8Bsacgo
+D:\SLH_ECOSYSTEM\backups\20260405_160808\.env:51: BOT_TOKEN=${NFTY_MADNESS_TOKEN}
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\docs\README_RELEASE.md:50: - `OPENAI_API_KEY` (for AI modules – optional but recommended)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\app\bot\ai_cmd.py:26: Admin-only. Uses OPENAI_API_KEY + OPENAI_MODEL.
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\app\bot\ai_cmd.py:37: api_key = os.getenv("OPENAI_API_KEY")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\app\bot\ai_cmd.py:41: await update.effective_message.reply_text("Missing OPENAI_API_KEY in environment.")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\tools\debug_env.py:4: print("OPENAI_API_KEY set:", bool((os.getenv("OPENAI_API_KEY") or "").strip()))
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\README_RELEASE.md:50: - `OPENAI_API_KEY` (for AI modules – optional but recommended)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\_handoff\run_20260305_171049\FILES\.env:1: BOT_TOKEN=***MASKED***
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\.env:1: BOT_TOKEN=8351227223:AAGogyv89UFn_Wp-czgSWh9pzjn-JU9q3FA
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\.env:2: SLH_BOT_TOKEN=8508943909:AAHervHJS1dkj3osB9jLIlZSfvKoGfodHwk
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\backups\day_close_20260317_013137\.env:1: BOT_TOKEN=8351227223:AAGogyv89UFn_Wp-czgSWh9pzjn-JU9q3FA
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\backups\day_close_20260317_013137\.env:2: SLH_BOT_TOKEN=8508943909:AAHervHJS1dkj3osB9jLIlZSfvKoGfodHwk
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\backups\morning_20260317_012654\.env:1: BOT_TOKEN=8351227223:AAGogyv89UFn_Wp-czgSWh9pzjn-JU9q3FA
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\backups\morning_20260317_012654\.env:2: SLH_BOT_TOKEN=8508943909:AAHervHJS1dkj3osB9jLIlZSfvKoGfodHwk
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\_handoff\run_20260305_171049\FILES\.env:1: BOT_TOKEN=***MASKED***
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\.env:1: BOT_TOKEN=8351227223:AAFpKQ3HtCRbIzQQKYk-fsgQ7qR5AAX2BAI
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\.env:2: SLH_BOT_TOKEN=8351227223:AAFpKQ3HtCRbIzQQKYk-fsgQ7qR5AAX2BAI
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\.env:1: SLH_BOT_TOKEN=8351227223:AAFpKQ3HtCRbIzQQKYk-fsgQ7qR5AAX2BAI
+
+================================================================================
+6) TOKENOMICS / ADMIN ENDPOINT AUTH CHECK IN CODE
+================================================================================
+D:\SLH_ECOSYSTEM\api\main.py:53: allow_headers=["Content-Type", "Authorization", "X-Admin-Key", "X-Requested-With"],
+D:\SLH_ECOSYSTEM\api\main.py:59: _ADMIN_KEYS_DEFAULT = {
+D:\SLH_ECOSYSTEM\api\main.py:69: ADMIN_API_KEYS = _ADMIN_KEYS_DEFAULT
+D:\SLH_ECOSYSTEM\api\main.py:73: def _require_admin(authorization: Optional[str] = None, admin_key_header: Optional[str] = None) -> int:
+D:\SLH_ECOSYSTEM\api\main.py:75: - X-Admin-Key: <one of ADMIN_API_KEYS> header
+D:\SLH_ECOSYSTEM\api\main.py:81: if admin_key_header and admin_key_header in ADMIN_API_KEYS:
+D:\SLH_ECOSYSTEM\api\main.py:623: admin_key: str = ""
+D:\SLH_ECOSYSTEM\api\main.py:710: # Admin verification: check admin_key or accept from known admin
+D:\SLH_ECOSYSTEM\api\main.py:712: if req.admin_key != admin_secret:
+D:\SLH_ECOSYSTEM\api\main.py:777: admin_key: Optional[str] = ""
+D:\SLH_ECOSYSTEM\api\main.py:821: if req.admin_key != admin_secret:
+D:\SLH_ECOSYSTEM\api\main.py:2095: async def beta_create_coupon(admin_key: str, code: str, max_uses: int = 49, slh_bonus: float = 0.1):
+D:\SLH_ECOSYSTEM\api\main.py:2098: if admin_key != admin_secret:
+D:\SLH_ECOSYSTEM\api\main.py:2530: x_admin_key: Optional[str] = Header(None),
+D:\SLH_ECOSYSTEM\api\main.py:2533: _require_admin(authorization, x_admin_key)
+D:\SLH_ECOSYSTEM\api\main.py:3715: x_admin_key: Optional[str] = Header(None),
+D:\SLH_ECOSYSTEM\api\main.py:3719: SECURITY FIX (H-1): Now requires admin authentication via JWT or X-Admin-Key header.
+D:\SLH_ECOSYSTEM\api\main.py:3721: _require_admin(authorization, x_admin_key)
+D:\SLH_ECOSYSTEM\api\main.py:4408: x_admin_key: Optional[str] = Header(None),
+D:\SLH_ECOSYSTEM\api\main.py:4411: # Accept either admin_id param or X-Admin-Key header
+D:\SLH_ECOSYSTEM\api\main.py:4414: _require_admin(authorization, x_admin_key)
+D:\SLH_ECOSYSTEM\api\main.py:4466: x_admin_key: Optional[str] = Header(None),
+D:\SLH_ECOSYSTEM\api\main.py:4469: _require_admin(authorization, x_admin_key)
+D:\SLH_ECOSYSTEM\api\main.py:4658: @app.post("/api/tokenomics/internal-transfer")
+D:\SLH_ECOSYSTEM\api\main.py:4731: @app.post("/api/tokenomics/burn")
+D:\SLH_ECOSYSTEM\api\main.py:4732: async def burn_tokens(req: BurnRequest, authorization: Optional[str] = Header(None), x_admin_key: Optional[str] = Header(None)):
+D:\SLH_ECOSYSTEM\api\main.py:4734: _require_admin(authorization, x_admin_key)
+D:\SLH_ECOSYSTEM\api\main.py:4767: @app.post("/api/tokenomics/reserves/add")
+D:\SLH_ECOSYSTEM\api\main.py:4768: async def add_reserve(req: ReserveRequest, authorization: Optional[str] = Header(None), x_admin_key: Optional[str] = Header(None)):
+D:\SLH_ECOSYSTEM\api\main.py:4770: _require_admin(authorization, x_admin_key)
+D:\SLH_ECOSYSTEM\api\main.py:4878: admin_key: str  # must match ADMIN_BROADCAST_KEY
+D:\SLH_ECOSYSTEM\api\main.py:4942: if req.admin_key != ADMIN_BROADCAST_KEY and req.admin_key not in ADMIN_API_KEYS:
+D:\SLH_ECOSYSTEM\api\main.py:5162: async def launch_verify_contribution(contribution_id: int, admin_key: str):
+D:\SLH_ECOSYSTEM\api\main.py:5165: if admin_key != ADMIN_BROADCAST_KEY and admin_key not in ADMIN_API_KEYS:
+D:\SLH_ECOSYSTEM\api\main.py:5260: x_admin_key: Optional[str] = Header(None),
+D:\SLH_ECOSYSTEM\api\main.py:5263: _require_admin(authorization, x_admin_key)
+D:\SLH_ECOSYSTEM\api\main.py:5295: x_admin_key: Optional[str] = Header(None),
+D:\SLH_ECOSYSTEM\api\main.py:5299: _require_admin(authorization, x_admin_key)
+D:\SLH_ECOSYSTEM\api\main.py:5430: x_admin_key: Optional[str] = Header(None),
+D:\SLH_ECOSYSTEM\api\main.py:5433: _require_admin(authorization, x_admin_key)
+D:\SLH_ECOSYSTEM\api\main.py:5689: x_admin_key: Optional[str] = Header(None),
+D:\SLH_ECOSYSTEM\api\main.py:5692: _require_admin(authorization, x_admin_key)
+D:\SLH_ECOSYSTEM\api\main.py:6151: async def broadcast_personal_cards(admin_key: str):
+D:\SLH_ECOSYSTEM\api\main.py:6157: if admin_key != ADMIN_BROADCAST_KEY and admin_key not in ADMIN_API_KEYS:
+
+================================================================================
+7) WALLET ADDRESS MISMATCH CHECK
+================================================================================
+D:\SLH_ECOSYSTEM\admin-bot\shared\slh_payments\config.py:9: TON_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\admin-bot\shared\group_config.json:12: "ton_wallet": "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp",
+D:\SLH_ECOSYSTEM\airdrop\app\api_server.py:9: TON_WALLET = os.getenv("TON_WALLET", "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp")
+D:\SLH_ECOSYSTEM\airdrop\app\bot_server.py:44: TON_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\airdrop\app\bot_server.py:45: BSC_CONTRACT = "0xACb0A09414CEA1C879c67bB7A877E4e19480f022"
+D:\SLH_ECOSYSTEM\airdrop\bot\clean_bot.py:21: TON_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\airdrop\bot\professional_bot.py:19: TON_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\airdrop\bot\professional_bot.py:357: `UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp`
+D:\SLH_ECOSYSTEM\airdrop\bot\ton_bot.py:23: TON_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\airdrop\bot\updated_bot.py:19: TON_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\airdrop\bot\updated_bot.py:357: `UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp`
+D:\SLH_ECOSYSTEM\airdrop\amazing_bot.py:22: TON_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\airdrop\amazing_bot.py:406: • חוזה BSC: https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022
+D:\SLH_ECOSYSTEM\airdrop\amazing_bot.py:673: • חוזה: https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022
+D:\SLH_ECOSYSTEM\airdrop\FINAL_BOT.py:19: TON_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\airdrop\perfect_bot.py:19: TON_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\airdrop\simple_bot.py:19: TON_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\airdrop\slh_admin_panel.html:113: <li><a href="https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022" target="_blank">📝 חוזה BSC</a></li>
+D:\SLH_ECOSYSTEM\airdrop\slh_connected_bot.py:157: <code>UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp</code>
+D:\SLH_ECOSYSTEM\airdrop\slh_perfect_bot.py:16: WALLET_ADDRESS = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\airdrop\slh_perfect_bot.py:70: • חוזה BSC: https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022
+D:\SLH_ECOSYSTEM\airdrop\slh_perfect_bot.py:191: • חוזה BSC: https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022
+D:\SLH_ECOSYSTEM\airdrop\ton_username_bot.py:153: <code>UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp</code>
+D:\SLH_ECOSYSTEM\api\routes\ai_chat.py:28: - SLH Token: BSC contract 0xACb0A09414CEA1C879c67bB7A877E4e19480f022, price ₪444 ($121.64)
+D:\SLH_ECOSYSTEM\api\routes\ai_chat.py:31: - Admin wallet BSC: 0xD0617B54FB4b6b66307846f217b4D685800E3dA4
+D:\SLH_ECOSYSTEM\api\routes\ai_chat.py:32: - Admin wallet TON: UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp
+D:\SLH_ECOSYSTEM\api\main.py:36: SLH_BSC_CONTRACT = "0xACb0A09414CEA1C879c67bB7A877E4e19480f022"
+D:\SLH_ECOSYSTEM\api\main.py:37: SLH_TON_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\api\main.py:1876: SLH_BSC_CONTRACT = "0xACb0A09414CEA1C879c67bB7A877E4e19480f022"
+D:\SLH_ECOSYSTEM\api\main.py:5059: COMPANY_BSC_WALLET = "0xd061de73B06d5E91bfA46b35EfB7B08b16903da4"  # Osif's Web3 wallet
+D:\SLH_ECOSYSTEM\assets\logos\info.json:8: "explorer": "https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022",
+D:\SLH_ECOSYSTEM\assets\logos\info.json:10: "id": "0xACb0A09414CEA1C879c67bB7A877E4e19480f022",
+D:\SLH_ECOSYSTEM\backups\20260405_160808\main.py:33: BSC_TOKEN_CONTRACT = os.getenv("SLH_BSC_CONTRACT", "0xACb0A09414CEA1C879c67bB7A877E4e19480f022")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\docs\index.html:390: <a href="https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022" target="_blank" rel="noopener">
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\docs\investors.html:350: <a href="https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022" target="_blank" rel="noopener">
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\secret_quarantine_20260314_134916\bot.py:13: MY_TON_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\_handoff\run_20260305_171049\FILES\bot.py:13: MY_TON_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\secret_quarantine_20260314_134916\bot.py:13: MY_TON_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\_handoff\run_20260305_171049\FILES\bot.py:13: MY_TON_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\TelegramBot_Core.py:144: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\TelegramBot_Core_20260313_121822.py:83: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\TelegramBot_Core_backup_20260313_160444.py:83: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\ton_watcher_20260313_121822.py:20: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\TelegramBot_Core.py:144: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\TelegramBot_Core_20260313_121822.py:83: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\TelegramBot_Core_backup_20260313_160444.py:83: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\ton_watcher_20260313_121822.py:20: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\TelegramBot_Core.py:144: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\TelegramBot_Core_20260313_121822.py:83: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\TelegramBot_Core_backup_20260313_160444.py:83: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\ton_watcher_20260313_121822.py:20: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\TelegramBot_Core.py:144: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\TelegramBot_Core_20260313_121822.py:83: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\TelegramBot_Core_backup_20260313_160444.py:83: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\ton_watcher_20260313_121822.py:20: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\TelegramBot_Core.py:144: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\TelegramBot_Core_20260313_121822.py:83: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\TelegramBot_Core_backup_20260313_160444.py:83: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\ton_watcher_20260313_121822.py:20: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\TelegramBot_Core.py:144: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\TelegramBot_Core_20260313_121822.py:83: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\TelegramBot_Core_backup_20260313_160444.py:83: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\ton_watcher_20260313_121822.py:20: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\TelegramBot_Core.py:144: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\TelegramBot_Core_20260313_121822.py:83: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\TelegramBot_Core_backup_20260313_160444.py:83: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\ton_watcher_20260313_121822.py:20: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\TelegramBot_Core.py:144: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\TelegramBot_Core_20260313_121822.py:83: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\TelegramBot_Core_backup_20260313_160444.py:83: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\ton_watcher_20260313_121822.py:20: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\TelegramBot_Core.py:144: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\TelegramBot_Core_20260313_121822.py:83: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\TelegramBot_Core_backup_20260313_160444.py:83: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\ton_watcher_20260313_121822.py:20: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\TelegramBot_Core.py:144: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\TelegramBot_Core_20260313_121822.py:83: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\TelegramBot_Core_backup_20260313_160444.py:83: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\ton_watcher_20260313_121822.py:20: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\TelegramBot_Core.py:144: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\TelegramBot_Core_20260313_121822.py:83: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\TelegramBot_Core_backup_20260313_160444.py:83: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\ton_watcher_20260313_121822.py:20: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\TelegramBot_Core.py:144: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\TelegramBot_Core_20260313_121822.py:83: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\TelegramBot_Core_backup_20260313_160444.py:83: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\ton_watcher_20260313_121822.py:20: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\TelegramBot_Core.py:144: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\TelegramBot_Core_20260313_121822.py:83: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\TelegramBot_Core_backup_20260313_160444.py:83: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\ton_watcher_20260313_121822.py:20: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\TelegramBot_Core.py:144: COMPANY_WALLET = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
+
+================================================================================
+8) I18N / THEME / SHARED INIT COVERAGE
+================================================================================
+
+Page                       initShared Theme i18n   AI Analytics
+----                       ---------- ----- ----   -- ---------
+about.html                       True False True True      True
+admin.html                       True  True True True      True
+analytics.html                   True  True True True      True
+blockchain.html                  True  True True True      True
+bots.html                        True  True True True      True
+broadcast-composer.html          True  True True True      True
+challenge.html                   True  True True True      True
+community.html                   True  True True True      True
+daily-blog.html                  True  True True True      True
+dashboard.html                   True  True True True      True
+dex-launch.html                  True  True True True      True
+earn.html                        True  True True True      True
+ecosystem-guide.html             True  True True True      True
+for-therapists.html              True  True True True      True
+getting-started.html            False False True True      True
+guides.html                      True  True True True      True
+healing-vision.html              True  True True True      True
+index.html                       True False True True      True
+invite.html                      True False True True      True
+jubilee.html                     True  True True True      True
+launch-event.html                True  True True True      True
+liquidity.html                   True False True True      True
+member.html                      True  True True True      True
+morning-checklist.html           True  True True True      True
+morning-handoff.html             True  True True True      True
+network.html                     True  True True True      True
+onboarding.html                 False  True True True      True
+ops-dashboard.html               True  True True True      True
+ops-report-20260411.html         True  True True True      True
+overnight-report.html            True  True True True      True
+p2p.html                         True  True True True      True
+partner-dashboard.html           True  True True True      True
+partner-launch-invite.html       True  True True True      True
+privacy.html                     True  True True True      True
+referral-card.html               True  True True True      True
+referral.html                    True  True True True      True
+roadmap.html                     True  True True True      True
+rotate.html                      True  True True True      True
+staking.html                     True  True True True      True
+system-health.html               True  True True True      True
+terms.html                       True  True True True      True
+test-bots.html                   True False True True      True
+trade.html                       True  True True True      True
+wallet-guide.html                True  True True True      True
+wallet.html                      True  True True True      True
+whitepaper.html                  True False True True      True
+
+
+
+
+================================================================================
+9) RECENT LOG ERRORS
+================================================================================
+DIR: D:\SLH_ECOSYSTEM\ops
+D:\SLH_ECOSYSTEM\ops\FULL_AUDIT_20260413_170517.txt | 04/13/2026 17:05:54
+D:\SLH_ECOSYSTEM\ops\auto-verify.md | 04/13/2026 16:22:55
+D:\SLH_ECOSYSTEM\ops\AGENT_HANDOFF_PROMPT_20260413.md | 04/13/2026 16:21:32
+D:\SLH_ECOSYSTEM\ops\NEXT_SESSION_PLAN.md | 04/13/2026 16:19:49
+D:\SLH_ECOSYSTEM\ops\overnight-health-log.md | 04/13/2026 16:18:13
+D:\SLH_ECOSYSTEM\ops\launch-watcher.md | 04/13/2026 16:17:53
+D:\SLH_ECOSYSTEM\ops\TRUST_WALLET_PR_GUIDE.md | 04/13/2026 12:21:08
+D:\SLH_ECOSYSTEM\ops\BROADCAST_GENESIS_SUNDAY.md | 04/13/2026 12:04:25
+D:\SLH_ECOSYSTEM\ops\API_STATUS_20260413.md | 04/13/2026 11:55:47
+D:\SLH_ECOSYSTEM\ops\api-health-check.py | 04/13/2026 11:55:21
+D:\SLH_ECOSYSTEM\ops\FULL_PROJECT_REPORT_20260413.md | 04/13/2026 11:32:34
+D:\SLH_ECOSYSTEM\ops\WEEKLY_STATUS_20260413.md | 04/13/2026 11:27:04
+D:\SLH_ECOSYSTEM\ops\SESSION_HANDOFF_20260413.md | 04/13/2026 00:26:56
+D:\SLH_ECOSYSTEM\ops\SESSION_HANDOFF_20260412.md | 04/12/2026 18:41:57
+D:\SLH_ECOSYSTEM\ops\SECURITY_AUDIT_20260412.md | 04/12/2026 18:41:57
+DIR: D:\SLH_PROJECT_V2\logs
+D:\SLH_PROJECT_V2\logs\worker.log | 04/07/2026 10:42:26
+D:\SLH_PROJECT_V2\logs\runtime_webhook.log | 04/06/2026 21:59:46
+D:\SLH_PROJECT_V2\logs\cloudflared.console.log | 04/04/2026 00:54:03
+D:\SLH_PROJECT_V2\logs\worker.log.1 | 04/03/2026 23:58:30
+D:\SLH_PROJECT_V2\logs\worker.log.2 | 04/03/2026 23:17:12
+D:\SLH_PROJECT_V2\logs\worker.console.log | 04/03/2026 16:37:51
+D:\SLH_PROJECT_V2\logs\tunnel.console.log | 04/03/2026 16:37:21
+D:\SLH_PROJECT_V2\logs\webhook.console.log | 04/03/2026 16:37:16
+D:\SLH_PROJECT_V2\logs\tunnel.console.log.bak_20260330_192107 | 03/30/2026 19:13:53
+D:\SLH_PROJECT_V2\logs\worker.console.log.bak_20260330_192107 | 03/30/2026 19:13:49
+D:\SLH_PROJECT_V2\logs\webhook.console.log.bak_20260330_192107 | 03/30/2026 19:13:43
+D:\SLH_PROJECT_V2\logs\tunnel.console.log.bak_20260330_190425 | 03/30/2026 18:45:09
+D:\SLH_PROJECT_V2\logs\worker.console.log.bak_20260330_190425 | 03/30/2026 18:45:02
+D:\SLH_PROJECT_V2\logs\webhook.console.log.bak_20260330_190425 | 03/30/2026 18:45:01
+D:\SLH_PROJECT_V2\logs\tunnel.console.log.bak_20260330_184355 | 03/30/2026 18:29:36
+
+================================================================================
+10) TOP FILES CHANGED TODAY
+================================================================================

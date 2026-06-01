@@ -1,0 +1,13 @@
+﻿=== SEO GAPS ===
+admin.html: description, og:title, og:description, og:image, canonical, twitter:card
+analytics.html: description, og:title, og:description, og:image, canonical, twitter:card
+broadcast-composer.html: og:title, og:description, og:image, canonical, twitter:card
+morning-checklist.html: og:title, og:description, og:image, canonical, twitter:card
+morning-handoff.html: og:title, og:description, og:image, canonical, twitter:card
+ops-dashboard.html: description, og:title, og:description, og:image, canonical, twitter:card
+ops-report-20260411.html: og:title, og:description, og:image, canonical, twitter:card
+overnight-report.html: canonical, twitter:card
+partner-launch-invite.html: og:title, og:description, og:image, canonical, twitter:card
+rotate.html: description, og:title, og:description, og:image, canonical, twitter:card
+system-health.html: og:title, og:description, og:image, canonical, twitter:card
+test-bots.html: description, og:title, og:description, og:image, canonical, twitter:card

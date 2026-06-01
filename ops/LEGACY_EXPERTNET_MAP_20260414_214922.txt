@@ -1,0 +1,491 @@
+﻿=== LEGACY EXPERTNET MAP ===
+Time: 2026-04-14 21:49:23
+
+[1] docker compose services
+postgres
+ledger-bot
+chance-bot
+factory-bot
+fun-bot
+redis
+guardian-bot
+nfty-bot
+nifti-bot
+slh-ton-bot
+beynonibank-bot
+crazy-panel-bot
+expertnet-bot
+ts-set-bot
+game-bot
+nft-shop-bot
+osif-shop-bot
+test-bot
+airdrop-bot
+botshop
+core-bot
+ton-mnh-bot
+admin-bot
+campaign-bot
+wallet-bot
+
+[2] grep compose for expertnet / selha / userinfo / airdrop
+56:      BOT_TOKEN: ${CORE_BOT_TOKEN}
+81:      BOT_TOKEN: ${GUARDIAN_BOT_TOKEN}
+82:      TELEGRAM_TOKEN: ${GUARDIAN_BOT_TOKEN}
+102:      BOT_TOKEN: ${BOTSHOP_BOT_TOKEN}
+103:      TELEGRAM_BOT_TOKEN: ${BOTSHOP_BOT_TOKEN}
+122:      BOT_TOKEN: ${WALLET_BOT_TOKEN}
+123:      TELEGRAM_BOT_TOKEN: ${WALLET_BOT_TOKEN}
+140:      BOT_TOKEN: ${FACTORY_BOT_TOKEN}
+141:      TELEGRAM_TOKEN: ${FACTORY_BOT_TOKEN}
+156:      BOT_TOKEN: ${FUN_BOT_TOKEN}
+175:      BOT_TOKEN: ${ADMIN_BOT_TOKEN}
+179:  # 8. ExpertNet / SLH_AIR Bot (Zvika Kaufman - Ambassador #1)
+180:  expertnet-bot:
+183:      dockerfile: dockerfiles/Dockerfile.expertnet
+184:    container_name: slh-expertnet
+190:      BOT_TOKEN: ${EXPERTNET_BOT_TOKEN}
+194:  # 9. SLH HUB / Airdrop Bot (Central economic engine)
+195:  airdrop-bot:
+198:      dockerfile: dockerfiles/Dockerfile.airdrop
+199:    container_name: slh-airdrop
+207:      TELEGRAM_TOKEN: ${AIRDROP_BOT_TOKEN}
+226:      BOT_TOKEN: ${CAMPAIGN_TOKEN}
+244:      BOT_TOKEN: ${GAME_BOT_TOKEN}
+255:      BOT_TOKEN: ${TON_MNH_TOKEN}
+256:      SLH_BOT_TOKEN: ${TON_MNH_TOKEN}
+267:      BOT_TOKEN: ${SLH_TON_TOKEN}
+282:      BOT_TOKEN: ${SLH_LEDGER_TOKEN}
+299:      BOT_TOKEN: ${OSIF_SHOP_TOKEN}
+313:      BOT_TOKEN: ${NIFTI_PUBLISHER_TOKEN}
+322:      BOT_TOKEN: ${CHANCE_PAIS_TOKEN}
+340:      BOT_TOKEN: ${NFTY_MADNESS_TOKEN}
+358:  # selha-bot: REMOVED — dummy placeholder bot, shared token with userinfo
+359:  # userinfo-bot: REMOVED — dummy placeholder bot, not a real service
+367:      BOT_TOKEN: ${TS_SET_TOKEN}
+382:      BOT_TOKEN: ${CRAZY_PANEL_TOKEN}
+398:      BOT_TOKEN: ${MY_NFT_SHOP_TOKEN}
+414:      BOT_TOKEN: ${BEYNONIBANK_TOKEN}
+430:      BOT_TOKEN: ${TEST_BOT_TOKEN}
+
+[3] repo-wide references
+D:\SLH_ECOSYSTEM\.env:21: SLH_SELHA_TOKEN=8225059465:AAHftpz1wfET6gAiJ2zxSAKWB45aUy9NaT0
+D:\SLH_ECOSYSTEM\.env:22: EXPERTNET_BOT_TOKEN=8225059465:AAHftpz1wfET6gAiJ2zxSAKWB45aUy9NaT0  # mirror of SLH_SELHA_TOKEN
+D:\SLH_ECOSYSTEM\.env:51: EXPERTNET_BOT_TOKEN=8225059465:AAHftpz1wfET6gAiJ2zxSAKWB45aUy9NaT0
+D:\SLH_ECOSYSTEM\CLEANUP_REPORT_2026-04-10.md:141: - `slh-expertnet` — token conflict with crazy-panel (stopped during morning session)
+D:\SLH_ECOSYSTEM\CLEANUP_REPORT_2026-04-10.md:142: - `slh-userinfo` — aiogram 3.7 breaking change: `parse_mode` removed from `Bot()` init
+D:\SLH_ECOSYSTEM\CLEANUP_REPORT_2026-04-10.md:244: ✅ slh-ton-mnh       ✅ slh-selha          ✅ slh-ts-set
+D:\SLH_ECOSYSTEM\CLEANUP_REPORT_2026-04-10.md:255: - `slh-expertnet` — waiting for new dedicated token from @BotFather
+D:\SLH_ECOSYSTEM\CLEANUP_REPORT_2026-04-10.md:256: - `slh-userinfo` — aiogram 3.7 breaking change needs code fix
+D:\SLH_ECOSYSTEM\CLEANUP_REPORT_2026-04-10.md:264: 1. **Create new bot for ExpertNet** (Zvika's bot)
+D:\SLH_ECOSYSTEM\CLEANUP_REPORT_2026-04-10.md:267: - Put new token in `.env` as `EXPERTNET_BOT_TOKEN`
+D:\SLH_ECOSYSTEM\CLEANUP_REPORT_2026-04-10.md:268: - Run: `docker compose up -d expertnet-bot`
+D:\SLH_ECOSYSTEM\CLEANUP_REPORT_2026-04-10.md:280: 4. **slh-userinfo aiogram 3.7 fix** — `Bot()` can't take `parse_mode` anymore, needs `DefaultBotProperties(parse_mode=ParseMode.HTML)`
+D:\SLH_ECOSYSTEM\CLEANUP_REPORT_2026-04-10.md:281: - Files to check: `userinfo-bot/` (or wherever the service source is)
+D:\SLH_ECOSYSTEM\CLEANUP_REPORT_2026-04-10.md:282: - Then rebuild: `docker compose build userinfo-bot && docker compose up -d userinfo-bot`
+D:\SLH_ECOSYSTEM\CLEANUP_REPORT_2026-04-10.md:312: - `@SLH_AIR_bot` (Investment HUB)
+D:\SLH_ECOSYSTEM\CLEANUP_REPORT_2026-04-10.md:321: - `@Slh_selha_bot`
+D:\SLH_ECOSYSTEM\docker-compose.yml:179: # 8. ExpertNet / SLH_AIR Bot (Zvika Kaufman - Ambassador #1)
+D:\SLH_ECOSYSTEM\docker-compose.yml:180: expertnet-bot:
+D:\SLH_ECOSYSTEM\docker-compose.yml:183: dockerfile: dockerfiles/Dockerfile.expertnet
+D:\SLH_ECOSYSTEM\docker-compose.yml:184: container_name: slh-expertnet
+D:\SLH_ECOSYSTEM\docker-compose.yml:190: BOT_TOKEN: ${EXPERTNET_BOT_TOKEN}
+D:\SLH_ECOSYSTEM\docker-compose.yml:358: # selha-bot: REMOVED — dummy placeholder bot, shared token with userinfo
+D:\SLH_ECOSYSTEM\docker-compose.yml:359: # userinfo-bot: REMOVED — dummy placeholder bot, not a real service
+D:\SLH_ECOSYSTEM\main.py:26: BOT_TOKEN = os.getenv("EXPERTNET_BOT_TOKEN", "")
+D:\SLH_ECOSYSTEM\main.py:27: # Broadcast bot â€” @SLH_AIR_bot is the main user-facing bot
+D:\SLH_ECOSYSTEM\main.py:635: "SELECT payment_status FROM premium_users WHERE user_id=$1 AND bot_name='expertnet'", auth.id
+D:\SLH_ECOSYSTEM\main.py:2453: "SELECT payment_status FROM premium_users WHERE user_id=$1 AND bot_name='expertnet'", telegram_id
+D:\SLH_ECOSYSTEM\main.py:2947: "telegram_link": f"https://t.me/SLH_AIR_bot?start={user_id}",
+D:\SLH_ECOSYSTEM\main.py:3921: """Called by SLH_AIR_bot whenever a user presses /start.
+D:\SLH_ECOSYSTEM\main.py:3925: @userinfobot or the Telegram Login Widget. This is the core of the
+D:\SLH_ECOSYSTEM\main.py:4129: "SELECT payment_status FROM premium_users WHERE user_id=$1 AND bot_name='expertnet'",
+D:\SLH_ECOSYSTEM\main.py:4974: # Uses @SLH_AIR_bot to DM every registered user. Ideal for
+D:\SLH_ECOSYSTEM\main.py:5035: """Send a broadcast message to registered users via @SLH_AIR_bot.
+D:\SLH_ECOSYSTEM\PROJECT_MAP.md:68: |Factory |  |FUN Bot |  |Admin Bot|  |ExpertNet  |
+D:\SLH_ECOSYSTEM\PROJECT_MAP.md:119: | `slh_main`     | Core bot, Admin, ExpertNet, Airdrop, all template bots |
+D:\SLH_ECOSYSTEM\PROJECT_MAP.md:165: | 8 | ExpertNet/AIR    | `slh-expertnet`    | `EXPERTNET_BOT_TOKEN`  | `Dockerfile.expertnet`   | `slh_main`     | -     | Zvika Kaufman ambassador bot, arcade, ZVIKUSH tokens |
+D:\SLH_ECOSYSTEM\PROJECT_MAP.md:178: | ExpertNet   | `D:\SLH_ECOSYSTEM\expertnet-bot\`                   |
+D:\SLH_ECOSYSTEM\PROJECT_MAP.md:183: | UserInfo    | `D:\SLH_ECOSYSTEM\userinfo-bot\`                    |
+D:\SLH_ECOSYSTEM\PROJECT_MAP.md:195: | 4 | SLH Selha     | `slh-selha`        | `SLH_SELHA_TOKEN`   | `selha`       | 49          | 2.5         | Community & trading      |
+D:\SLH_ECOSYSTEM\PROJECT_MAP.md:212: | 7 | UserInfo      | `slh-userinfo`     | `SLH_SELHA_TOKEN`        | Built in context       | Enhanced @userinfobot clone    |
+D:\SLH_ECOSYSTEM\PROJECT_MAP.md:444: | ZVK   | ZVIKUSH token (ExpertNet)      |
+D:\SLH_ECOSYSTEM\PROJECT_MAP.md:488: | `EXPERTNET_BOT_TOKEN`   | ExpertNet/AIR          |
+D:\SLH_ECOSYSTEM\PROJECT_MAP.md:494: | `SLH_SELHA_TOKEN`       | Selha + UserInfo       |
+D:\SLH_ECOSYSTEM\PROJECT_MAP.md:683: +-- expertnet-bot/           # ExpertNet bot (Zvika)
+D:\SLH_ECOSYSTEM\PROJECT_MAP.md:690: +-- userinfo-bot/            # UserInfo bot
+D:\SLH_ECOSYSTEM\PROJECT_MAP.md:724: - [ ] **AIRDROP_BOT_TOKEN shares the same token as EXPERTNET_BOT_TOKEN** - potential conflict
+D:\SLH_ECOSYSTEM\PROJECT_MAP.md:725: - [ ] **SLH_SELHA_TOKEN is used by both selha-bot and userinfo-bot** - token sharing may cause polling conflicts
+D:\SLH_ECOSYSTEM\PROJECT_MAP.md:735: 1. Fix duplicate token assignments (AIRDROP/EXPERTNET, SELHA/USERINFO)
+D:\SLH_ECOSYSTEM\ROADMAP.md:41: - [ ] ExpertNet: AI expert network integration
+D:\SLH_ECOSYSTEM\ROADMAP.md:65: | @Slh_selha_bot | SLH branded |
+D:\SLH_ECOSYSTEM\STATUS_REPORT.md:78: | slh-selha | Up 47 hours | — | Selha bot |
+D:\SLH_ECOSYSTEM\STATUS_REPORT.md:90: | slh-expertnet | Up 8 hours | — | ExpertNet (Zvika) |
+D:\SLH_ECOSYSTEM\STATUS_REPORT.md:146: - [x] SLH_SELHA_TOKEN
+D:\SLH_ECOSYSTEM\STATUS_REPORT.md:154: - [x] EXPERTNET_BOT_TOKEN
+D:\SLH_ECOSYSTEM\STATUS_REPORT.md:194: 2. **AIRDROP_BOT_TOKEN = EXPERTNET_BOT_TOKEN** — Both bots share the same token. This may cause conflicts.
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:41: | 10 | slh-expertnet | expertnet-bot | slh_ecosystem-expertnet-bot | 0% | 91 MB | 🔴 **@My_crazy_panel_bot** (mapping שגוי!) |
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:42: | 11 | slh-airdrop | airdrop-bot | slh_ecosystem-airdrop-bot | 0% | 91 MB | 🟢 @SLH_AIR_bot |
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:45: | 14 | slh-selha | selha-bot | slh_ecosystem-selha-bot | 0% | 79 MB | 🟢 @Slh_selha_bot |
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:61: - `slh-userinfo` — לא רץ (משתף טוקן עם selha, הוסר כדי למנוע קונפליקט)
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:154: | `slh_main` | **44 tables** | Core bot, Admin, ExpertNet, Airdrop, kol template bots | 🟢 פעיל |
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:198: | 2 | @SLH_AIR_bot (Investment HUB) | slh-airdrop | 8530795944 | ✅ polling + WalletEngine connected |
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:206: | 10 | @Slh_selha_bot | slh-selha | 8225059465 | ✅ polling |
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:220: | **slh-expertnet = @My_crazy_panel_bot** | ה-container `slh-expertnet` מריץ את `@My_crazy_panel_bot` (id=8238076648) במקום @SLH_AIR_bot או בוט ExpertNet ייעודי. **TOKEN_AUDIT.md** (2026-04-07) מציין ש-EXPERTNET_BOT_TOKEN = AIRDROP_BOT_TOKEN — אבל עכשיו נראה שה-token הוחלף ל-CRAZY_PANEL_TOKEN. בעיה: אין בוט ExpertNet ייעודי רץ. |
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:227: **1. EXPERTNET vs AIRDROP**
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:229: EXPERTNET_BOT_TOKEN ↔ AIRDROP_BOT_TOKEN
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:230: → שניהם היו של @SLH_AIR_bot (8530795944)
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:232: → נראה ש-EXPERTNET הוחלף ל-@My_crazy_panel_bot כתיקון
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:233: → המשמעות: אין בוט ExpertNet ייעודי לציקה! (הבוט של זביקה)
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:236: **2. SELHA vs USERINFO**
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:238: SLH_SELHA_TOKEN = 8225059465
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:239: → נמצא גם ב-selha-bot וגם ב-userinfo-bot
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:240: → פתרון נוכחי: slh-userinfo פשוט לא רץ
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:241: → המשמעות: אין @SLH_UserInfo_bot זמין
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:292: ├─ airdrop/                    ← @SLH_AIR_bot (HUB מרכזי)
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:293: ├─ expertnet-bot/              ← ExpertNet (running @My_crazy_panel_bot currently)
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:299: ├─ tonmnh-bot/, userinfo-bot/, osif-shop/, campaign-bot/
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:326: 5. **Wallet Engine** — @SLH_AIR_bot מחובר ל-DB + Redis + BSC + TON
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:341: 1. **slh-expertnet container מריץ את הבוט הלא נכון**
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:343: - expected: @SLH_ExpertNet_bot או דומה (של זביקה)
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:344: - **פעולה נדרשת:** ליצור בוט חדש דרך BotFather לExpertNet וללבדכן את `.env`
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:360: 5. **Selha/UserInfo token conflict** — slh-userinfo לא רץ כי משתף טוקן
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:361: - **פעולה נדרשת:** ליצור @SLH_UserInfo_bot ייעודי
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:386: 20. **ExpertNet Zvika spec** — לא מיושם (ambassador bot per memory)
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:425: 3. **פתור ExpertNet token conflict**
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:427: - לעדכן `EXPERTNET_BOT_TOKEN=...` ב-`.env`
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:428: - `docker compose restart expertnet-bot`
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:477: docker compose restart expertnet-bot
+D:\SLH_ECOSYSTEM\SYSTEM_SCAN_REPORT_2026-04-10.md:509: - מה @Slh_selha_bot צריך לעשות? (כרגע ללא ייעוד)
+D:\SLH_ECOSYSTEM\TEAM_TASKS.md:17: - [ ] **Fix duplicate bot token: AIRDROP = EXPERTNET**
+D:\SLH_ECOSYSTEM\TEAM_TASKS.md:18: תיקון טוקן כפול - AIRDROP_BOT_TOKEN ו-EXPERTNET_BOT_TOKEN זהים
+D:\SLH_ECOSYSTEM\TESTING_PLAN.md:201: #### ExpertNet Bot (@SLH_AIR_bot)
+D:\SLH_ECOSYSTEM\TOKEN_AUDIT.md:8: **EXPERTNET_BOT_TOKEN** and **AIRDROP_BOT_TOKEN** share the same value:
+D:\SLH_ECOSYSTEM\TOKEN_AUDIT.md:16: | Username | @SLH_AIR_bot |
+D:\SLH_ECOSYSTEM\TOKEN_AUDIT.md:19: **Conclusion:** The token belongs to **@SLH_AIR_bot** (the Airdrop bot). ExpertNet does NOT have its own unique token.
+D:\SLH_ECOSYSTEM\TOKEN_AUDIT.md:25: ### expertnet-bot service (docker-compose line 179)
+D:\SLH_ECOSYSTEM\TOKEN_AUDIT.md:26: - Container: `slh-expertnet`
+D:\SLH_ECOSYSTEM\TOKEN_AUDIT.md:27: - Env var: `BOT_TOKEN: ${EXPERTNET_BOT_TOKEN}`
+D:\SLH_ECOSYSTEM\TOKEN_AUDIT.md:28: - Source code: `expertnet-bot/` directory
+D:\SLH_ECOSYSTEM\TOKEN_AUDIT.md:29: - Dockerfile: `Dockerfile.expertnet`
+D:\SLH_ECOSYSTEM\TOKEN_AUDIT.md:37: **Both services resolve to the same Telegram bot (@SLH_AIR_bot).** Only one service can actively poll at a time -- running both will cause Telegram API "conflict" errors (409).
+D:\SLH_ECOSYSTEM\TOKEN_AUDIT.md:43: **SLH_SELHA_TOKEN** (`8225059465:AAEkP02BOQZLAebVj3NtTJ4HJHcWrezus1s`) is used by TWO services:
+D:\SLH_ECOSYSTEM\TOKEN_AUDIT.md:47: | selha-bot | slh-selha | `BOT_TOKEN: ${SLH_SELHA_TOKEN}` |
+D:\SLH_ECOSYSTEM\TOKEN_AUDIT.md:48: | userinfo-bot | slh-userinfo | `BOT_TOKEN: ${SLH_SELHA_TOKEN}` |
+D:\SLH_ECOSYSTEM\TOKEN_AUDIT.md:75: | **EXPERTNET_BOT_TOKEN** | **expertnet-bot** | BOT_TOKEN |
+D:\SLH_ECOSYSTEM\TOKEN_AUDIT.md:86: | **SLH_SELHA_TOKEN** | **selha-bot, userinfo-bot** | BOT_TOKEN |
+D:\SLH_ECOSYSTEM\TOKEN_AUDIT.md:99: | 1 | `8530795944:AAH0pAVrhyrc5EsdZYkp8QESxQ6B8Bsacgo` | expertnet-bot, airdrop-bot | @SLH_AIR_bot |
+D:\SLH_ECOSYSTEM\TOKEN_AUDIT.md:100: | 2 | `8225059465:AAEkP02BOQZLAebVj3NtTJ4HJHcWrezus1s` | selha-bot, userinfo-bot | (needs verification) |
+D:\SLH_ECOSYSTEM\TOKEN_AUDIT.md:106: ### Conflict #1: ExpertNet / Airdrop
+D:\SLH_ECOSYSTEM\TOKEN_AUDIT.md:107: - **Create a new bot** via @BotFather for ExpertNet (e.g., `@ExpertNet_bot` or `@SLH_ExpertNet_bot`)
+D:\SLH_ECOSYSTEM\TOKEN_AUDIT.md:108: - Copy the new token into `EXPERTNET_BOT_TOKEN` in `.env`
+D:\SLH_ECOSYSTEM\TOKEN_AUDIT.md:109: - Leave `AIRDROP_BOT_TOKEN` as-is -- it correctly maps to @SLH_AIR_bot
+D:\SLH_ECOSYSTEM\TOKEN_AUDIT.md:111: ### Conflict #2: Selha / UserInfo
+D:\SLH_ECOSYSTEM\TOKEN_AUDIT.md:112: - **Create a new bot** via @BotFather for UserInfo (e.g., `@SLH_UserInfo_bot`)
+D:\SLH_ECOSYSTEM\TOKEN_AUDIT.md:113: - Add a new env var like `USERINFO_BOT_TOKEN` in `.env`
+D:\SLH_ECOSYSTEM\TOKEN_AUDIT.md:114: - Update `userinfo-bot` service in `docker-compose.yml` to use the new variable
+D:\SLH_ECOSYSTEM\TOKEN_AUDIT.md:115: - Leave `SLH_SELHA_TOKEN` for the selha-bot only
+D:\SLH_ECOSYSTEM\TOKEN_AUDIT.md:118: 1. One for ExpertNet bot
+D:\SLH_ECOSYSTEM\TOKEN_AUDIT.md:119: 2. One for UserInfo bot
+D:\SLH_ECOSYSTEM\airdrop\amazing_bot.py:415: share_link = f"https://t.me/SLH_AIR_bot?start={referral_code}"
+D:\SLH_ECOSYSTEM\airdrop\FINAL_DEPLOYMENT.ps1.txt:11: Write-Host "✅ airdrop עובד (בוט ישן): https://t.me/SLH_AIR_bot" -ForegroundColor Yellow
+D:\SLH_ECOSYSTEM\airdrop\FINAL_DEPLOYMENT.ps1.txt:784: Write-Host "2. שלח /start ל-@SLH_AIR_bot" -ForegroundColor White
+D:\SLH_ECOSYSTEM\airdrop\FINAL_DEPLOYMENT.ps1.txt:792: Write-Host "   🤖 בוט: https://t.me/SLH_AIR_bot" -ForegroundColor Blue
+D:\SLH_ECOSYSTEM\airdrop\FINAL_DEPLOYMENT.ps1.txt:867: Write-Host "2. חפש @SLH_AIR_bot" -ForegroundColor Gray
+D:\SLH_ECOSYSTEM\airdrop\FINAL_DEPLOYMENT.ps1.txt:895: Write-Host "1. 🤖 בוט: https://t.me/SLH_AIR_bot" -ForegroundColor Blue
+D:\SLH_ECOSYSTEM\airdrop\perfect_bot.py:186: link = f"https://t.me/SLH_AIR_bot?start=ref{chat_id}"
+D:\SLH_ECOSYSTEM\airdrop\perfect_bot.py:303: logger.info(f"📞 בוט: @SLH_AIR_bot")
+D:\SLH_ECOSYSTEM\airdrop\simple_bot.py:252: share_link = f"https://t.me/SLH_AIR_bot?start=SLH{chat_id}"
+D:\SLH_ECOSYSTEM\airdrop\slh_admin_panel.html:111: <li><a href="https://t.me/SLH_AIR_bot" target="_blank">🤖 הבוט: @SLH_AIR_bot</a></li>
+D:\SLH_ECOSYSTEM\airdrop\app\api_server.py:121: <p>@SLH_AIR_bot</p>
+D:\SLH_ECOSYSTEM\airdrop\app\api_server.py:142: <a href="https://t.me/SLH_AIR_bot" target="_blank">🤖 פתח בוט טלגרם</a>
+D:\SLH_ECOSYSTEM\airdrop\app\bot_server.py:291: # can log into slh-nft.com immediately without @userinfobot friction.
+D:\SLH_ECOSYSTEM\airdrop\app\bot_server.py:714: ref_link = f"https://t.me/SLH_AIR_bot?start=ref_{chat_id}"
+D:\SLH_ECOSYSTEM\airdrop\app\bot_server.py:729: ref_link = f"https://t.me/SLH_AIR_bot?start=ref_{chat_id}"
+D:\SLH_ECOSYSTEM\airdrop\app\bot_server.py:1083: ref_link = f"https://t.me/SLH_AIR_bot?start=ref_{chat_id}"
+D:\SLH_ECOSYSTEM\airdrop\app\bot_server.py:1238: ref_link = f"https://t.me/SLH_AIR_bot?start=ref_{chat_id}"
+D:\SLH_ECOSYSTEM\airdrop\app\bot_server.py:1253: f"• 🎁 Airdrop: <code>https://t.me/SLH_AIR_bot?start=ref_{chat_id}</code>\n"
+D:\SLH_ECOSYSTEM\airdrop\app\bot_server.py:1368: ref_link = f"https://t.me/SLH_AIR_bot?start=ref_{chat_id}"
+D:\SLH_ECOSYSTEM\airdrop\app\bot_server.py:1496: self.answer_callback(callback_id, f"🔗 https://t.me/SLH_AIR_bot?start=ref_{chat_id}", True)
+D:\SLH_ECOSYSTEM\api\main.py:26: BOT_TOKEN = os.getenv("EXPERTNET_BOT_TOKEN", "")
+D:\SLH_ECOSYSTEM\api\main.py:27: # Broadcast bot â€” @SLH_AIR_bot is the main user-facing bot
+D:\SLH_ECOSYSTEM\api\main.py:635: "SELECT payment_status FROM premium_users WHERE user_id=$1 AND bot_name='expertnet'", auth.id
+D:\SLH_ECOSYSTEM\api\main.py:2453: "SELECT payment_status FROM premium_users WHERE user_id=$1 AND bot_name='expertnet'", telegram_id
+D:\SLH_ECOSYSTEM\api\main.py:2947: "telegram_link": f"https://t.me/SLH_AIR_bot?start={user_id}",
+D:\SLH_ECOSYSTEM\api\main.py:3921: """Called by SLH_AIR_bot whenever a user presses /start.
+D:\SLH_ECOSYSTEM\api\main.py:3925: @userinfobot or the Telegram Login Widget. This is the core of the
+D:\SLH_ECOSYSTEM\api\main.py:4129: "SELECT payment_status FROM premium_users WHERE user_id=$1 AND bot_name='expertnet'",
+D:\SLH_ECOSYSTEM\api\main.py:4974: # Uses @SLH_AIR_bot to DM every registered user. Ideal for
+D:\SLH_ECOSYSTEM\api\main.py:5035: """Send a broadcast message to registered users via @SLH_AIR_bot.
+D:\SLH_ECOSYSTEM\api\patch_wallet_security.py:36: 'BOT_TOKEN = os.getenv("EXPERTNET_BOT_TOKEN", "")\nADMIN_USER_ID = int(os.getenv("ADMIN_USER_ID", "224223270"))',
+D:\SLH_ECOSYSTEM\api\patch_wallet_security.py:37: 'BOT_TOKEN = os.getenv("EXPERTNET_BOT_TOKEN", "")\nJWT_SECRET = os.getenv("JWT_SECRET", "")\nJWT_ALGORITHM = "HS256"\nJWT_EXPIRES_HOURS = int(os.getenv("JWT_EXPIRES_HOURS", "12"))\nADMIN_USER_ID = int(os.getenv("ADMIN_USER_ID", "224223270"))',
+D:\SLH_ECOSYSTEM\assets\ascii_branding.txt:97: 👉 https://t.me/SLH_AIR_bot
+D:\SLH_ECOSYSTEM\assets\ascii_branding.txt:111: 👉 https://t.me/SLH_AIR_bot
+D:\SLH_ECOSYSTEM\assets\logos\info.json:22: "url": "https://t.me/SLH_AIR_bot"
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1763: 7	7757102350	Osif83	expertnet	pending	AgACAgQAAxkBAAIFhGnQy5IFMohDGdyjzSYExerOL4D9AALEDWsbkpOAUvM9WXHi2IfWAQADAgADeQADOwQ	75.00	ILS	bank	\N	\N	f	2026-04-04 08:27:40.93923
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1873: 27	user.start	expertnet	7757102350		2026-04-04 08:27:11.540879	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1874: 28	payment.started	expertnet	7757102350		2026-04-04 08:27:40.942488	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1875: 29	payment.submitted	expertnet	7757102350		2026-04-04 08:28:01.852389	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1876: 30	user.start	expertnet	7757102350		2026-04-04 08:57:30.193577	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1877: 31	user.start	expertnet	7757102350		2026-04-04 09:05:02.840097	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1879: 33	user.start	expertnet	7757102350		2026-04-04 10:24:19.599311	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1880: 34	user.start	expertnet	7757102350		2026-04-04 10:35:10.9766	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1886: 40	user.start	expertnet	224223270		2026-04-04 10:58:01.799614	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1889: 43	user.start	selha	224223270		2026-04-04 10:58:02.051137	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1890: 44	user.start	expertnet	224223270		2026-04-04 11:10:48.503263	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1891: 45	user.start	expertnet	224223270		2026-04-04 13:11:13.357337	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1894: 48	user.start	selha	224223270		2026-04-04 13:37:31.627949	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1895: 49	user.start	expertnet	7757102350		2026-04-04 13:50:33.384276	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1896: 50	user.start	expertnet	224223270		2026-04-04 13:52:24.902423	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1897: 51	user.start	expertnet	224223270		2026-04-04 15:33:39.844424	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1898: 52	user.start	expertnet	224223270		2026-04-04 15:37:48.638492	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1903: 57	user.start	selha	224223270		2026-04-04 15:37:49.354534	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1906: 60	user.start	expertnet	224223270		2026-04-04 15:39:38.655398	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1907: 61	user.start	expertnet	7757102350		2026-04-04 16:02:48.557371	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1908: 62	user.start	expertnet	7757102350		2026-04-04 16:12:00.237475	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1909: 63	user.start	expertnet	224223270		2026-04-04 16:21:27.409126	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1912: 66	user.start	expertnet	224223270		2026-04-04 17:12:40.152223	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1913: 67	user.start	expertnet	5010371391		2026-04-04 17:19:12.540781	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1914: 68	user.start	expertnet	5010371391		2026-04-04 18:27:40.41772	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1915: 69	user.start	expertnet	224223270		2026-04-04 18:28:48.274309	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1916: 70	user.start	expertnet	224223270		2026-04-04 18:48:27.896844	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1917: 71	user.start	expertnet	1185887485		2026-04-04 18:49:05.415882	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1918: 72	user.start	expertnet	224223270		2026-04-04 18:49:54.127929	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1919: 73	user.start	expertnet	224223270		2026-04-04 18:55:01.619604	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1920: 74	user.start	expertnet	1185887485		2026-04-04 18:55:16.751507	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1921: 75	user.start	expertnet	5010371391		2026-04-04 18:57:34.421961	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1922: 76	user.start	expertnet	224223270		2026-04-04 19:11:03.989296	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1923: 77	user.start	expertnet	5010371391		2026-04-04 19:43:08.823264	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1924: 78	internal.transfer	expertnet	224223270	5.0 SLH -> 5010371391	2026-04-05 06:54:42.48665	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1925: 79	slh.transfer	expertnet	224223270	0.1 SLH -> 0x82815f...0252	2026-04-05 06:57:41.469524	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1926: 80	user.start	expertnet	224223270		2026-04-05 07:07:13.631986	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1927: 81	user.start	expertnet	224223270		2026-04-05 07:13:50.164132	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1928: 82	user.start	expertnet	224223270		2026-04-05 07:20:09.160968	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1929: 83	user.start	expertnet	224223270		2026-04-05 07:26:47.601587	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1930: 84	user.start	expertnet	224223270		2026-04-05 07:35:06.002794	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1931: 85	user.start	expertnet	224223270		2026-04-05 07:37:40.362031	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1932: 86	user.start	expertnet	224223270		2026-04-05 07:42:56.384612	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1933: 87	user.start	expertnet	224223270		2026-04-05 07:49:56.534834	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1934: 88	user.start	expertnet	224223270		2026-04-05 07:59:54.53915	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1935: 89	user.start	expertnet	224223270		2026-04-05 08:10:34.302364	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1936: 90	user.start	expertnet	224223270		2026-04-05 08:20:27.767652	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1937: 91	user.start	expertnet	224223270		2026-04-05 08:21:15.317152	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1938: 92	user.start	expertnet	224223270		2026-04-05 08:23:47.393335	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1939: 93	user.start	expertnet	224223270		2026-04-05 08:52:44.12175	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1940: 94	user.start	expertnet	224223270		2026-04-05 09:36:15.9996	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1941: 95	user.start	expertnet	224223270		2026-04-05 09:39:47.141929	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1942: 96	user.start	expertnet	224223270		2026-04-05 09:41:08.037211	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1943: 97	user.start	expertnet	224223270		2026-04-05 10:03:48.266515	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1946: 100	user.start	expertnet	224223270		2026-04-05 12:22:09.269806	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1947: 101	user.start	expertnet	224223270		2026-04-05 12:24:26.080054	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1948: 102	user.start	selha	224223270		2026-04-05 12:27:00.190511	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1949: 103	user.start	expertnet	224223270		2026-04-05 12:30:21.723074	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1950: 104	user.start	expertnet	224223270		2026-04-05 12:58:42.644011	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1951: 105	user.start	expertnet	224223270		2026-04-05 13:30:32.19582	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1953: 107	user.start	selha	224223270		2026-04-05 13:44:21.93964	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1954: 108	user.start	selha	224223270		2026-04-05 13:44:25.570569	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1955: 109	user.start	expertnet	7757102350		2026-04-05 13:47:47.033326	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1956: 110	user.start	expertnet	224223270		2026-04-05 13:48:21.653636	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1957: 111	user.start	expertnet	224223270		2026-04-05 14:08:58.564831	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1959: 113	user.start	expertnet	224223270		2026-04-05 14:18:50.085157	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1961: 115	user.start	selha	224223270		2026-04-05 14:25:02.407075	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1962: 116	user.start	selha	224223270		2026-04-05 14:25:02.434281	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1963: 117	user.start	selha	224223270		2026-04-05 14:25:02.601289	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1981: 135	user.start	expertnet	224223270		2026-04-05 17:19:34.48197	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1982: 136	user.start	expertnet	224223270		2026-04-05 17:19:34.531224	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1983: 137	user.start	expertnet	224223270		2026-04-05 17:19:34.604984	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1984: 138	user.start	expertnet	224223270		2026-04-05 17:19:34.70274	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1985: 139	user.start	expertnet	224223270		2026-04-05 17:20:59.670214	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1996: 150	user.start	selha	224223270		2026-04-05 17:56:38.472147	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1997: 151	user.start	selha	224223270		2026-04-05 17:56:38.623517	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1998: 152	user.start	selha	224223270		2026-04-05 17:56:38.66976	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:1999: 153	user.start	selha	224223270		2026-04-05 17:56:38.704454	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:2002: 156	user.start	expertnet	224223270		2026-04-05 17:57:44.152784	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:2003: 157	user.start	expertnet	8088324234		2026-04-05 18:08:22.503288	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:2004: 158	user.start	expertnet	8088324234		2026-04-05 18:10:40.352839	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:2007: 161	user.start	expertnet	8088324234		2026-04-05 18:19:10.311401	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:2009: 163	user.start	expertnet	920721513		2026-04-05 18:38:54.894209	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\slh_main_20260406.sql:2012: 166	user.start	expertnet	224223270		2026-04-05 20:50:24.284441	\N	\N	\N
+D:\SLH_ECOSYSTEM\backups\20260405_160808\.env:35: SLH_SELHA_TOKEN=8225059465:AAEkP02BOQZLAebVj3NtTJ4HJHcWrezus1s
+D:\SLH_ECOSYSTEM\backups\20260405_160808\.env:50: EXPERTNET_BOT_TOKEN=8530795944:AAH0pAVrhyrc5EsdZYkp8QESxQ6B8Bsacgo
+D:\SLH_ECOSYSTEM\backups\20260405_160808\docker-compose.yml:178: # 8. ExpertNet / SLH_AIR Bot (Zvika Kaufman - Ambassador #1)
+D:\SLH_ECOSYSTEM\backups\20260405_160808\docker-compose.yml:179: expertnet-bot:
+D:\SLH_ECOSYSTEM\backups\20260405_160808\docker-compose.yml:182: dockerfile: dockerfiles/Dockerfile.expertnet
+D:\SLH_ECOSYSTEM\backups\20260405_160808\docker-compose.yml:183: container_name: slh-expertnet
+D:\SLH_ECOSYSTEM\backups\20260405_160808\docker-compose.yml:189: BOT_TOKEN: ${EXPERTNET_BOT_TOKEN}
+D:\SLH_ECOSYSTEM\backups\20260405_160808\docker-compose.yml:322: selha-bot:
+D:\SLH_ECOSYSTEM\backups\20260405_160808\docker-compose.yml:324: container_name: slh-selha
+D:\SLH_ECOSYSTEM\backups\20260405_160808\docker-compose.yml:328: BOT_TOKEN: ${SLH_SELHA_TOKEN}
+D:\SLH_ECOSYSTEM\backups\20260405_160808\docker-compose.yml:329: BOT_KEY: selha
+D:\SLH_ECOSYSTEM\backups\20260405_160808\docker-compose.yml:330: BOT_DISPLAY_NAME: "SLH Selha"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\app.json:3: "name": "Selha Wallet",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\app.json:4: "slug": "selha-wallet",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\app.json:19: "bundleIdentifier": "com.selha.wallet",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\app.json:27: "package": "com.selha.wallet",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\i18n\en.ts:2: welcomeTitle: "Welcome to Selha Wallet",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\i18n\he.ts:2: welcomeTitle: "ברוך הבא ל-Selha Wallet",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\i18n\index.ts:23: await AsyncStorage.setItem("selha_wallet_language", lang);
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\i18n\index.ts:31: const savedLang = await AsyncStorage.getItem("selha_wallet_language") as LanguageCode;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\screens\HomeScreen.tsx:57: <Text style={styles.title}>Selha Wallet 🚀</Text>
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\screens\ReferralScreen.tsx:76: const message = `הצטרף ל-Selha Wallet וקבל 100 MEAH בחינם! ${link}`;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\screens\WalletScreen.tsx:143: <Text style={styles.title}>חבר ארנק ל-Selha</Text>
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\screens\WalletSetupScreen.tsx:95: await AsyncStorage.setItem("selha_wallet", JSON.stringify({
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\screens\WalletSetupScreen.tsx:147: <Text style={styles.title}>Welcome to Selha Wallet</Text>
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\referralService.ts:20: private static readonly STORAGE_KEY = "selha_referral_data";
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\referralService.ts:21: private static readonly HISTORY_KEY = "selha_referral_history";
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\services\walletService.ts:18: private static readonly STORAGE_KEY = "selha_wallet_data";
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\utils\constants.ts:3: APP_NAME: "Selha Wallet",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\utils\constants.ts:5: SUPPORT_EMAIL: "support@selha.app",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\20260207_192228\src\utils\constants.ts:45: ENCRYPTION_KEY: "selha-wallet-secure-key-2024",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\i18n\en.ts:2: welcomeTitle: "Welcome to Selha Wallet",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\i18n\he.ts:2: welcomeTitle: "ברוך הבא ל-Selha Wallet",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\i18n\index.ts:23: await AsyncStorage.setItem("selha_wallet_language", lang);
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\i18n\index.ts:31: const savedLang = await AsyncStorage.getItem("selha_wallet_language") as LanguageCode;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\screens\HomeScreen.tsx:57: <Text style={styles.title}>Selha Wallet 🚀</Text>
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\screens\ReferralScreen.tsx:76: const message = `הצטרף ל-Selha Wallet וקבל 100 MEAH בחינם! ${link}`;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\screens\WalletScreen.tsx:143: <Text style={styles.title}>חבר ארנק ל-Selha</Text>
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\screens\WalletSetupScreen.tsx:95: await AsyncStorage.setItem("selha_wallet", JSON.stringify({
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\screens\WalletSetupScreen.tsx:147: <Text style={styles.title}>Welcome to Selha Wallet</Text>
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\referralService.ts:20: private static readonly STORAGE_KEY = "selha_referral_data";
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\referralService.ts:21: private static readonly HISTORY_KEY = "selha_referral_history";
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\services\walletService.ts:18: private static readonly STORAGE_KEY = "selha_wallet_data";
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\utils\constants.ts:3: APP_NAME: "Selha Wallet",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\utils\constants.ts:5: SUPPORT_EMAIL: "support@selha.app",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet\Auto\20260207_192242\src\utils\constants.ts:45: ENCRYPTION_KEY: "selha-wallet-secure-key-2024",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\.env:3: API_URL=https://api.selha.app
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\i18n\en.ts:2: welcomeTitle: "Welcome to Selha Wallet",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\i18n\he.ts:2: welcomeTitle: "ברוך הבא ל-Selha Wallet",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\i18n\index.ts:23: await AsyncStorage.setItem("selha_wallet_language", lang);
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\i18n\index.ts:31: const savedLang = await AsyncStorage.getItem("selha_wallet_language") as LanguageCode;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\screens\HomeScreen.tsx:57: <Text style={styles.title}>Selha Wallet 🚀</Text>
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\screens\ReferralScreen.tsx:76: const message = `הצטרף ל-Selha Wallet וקבל 100 MEAH בחינם! ${link}`;
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\screens\WalletScreen.tsx:143: <Text style={styles.title}>חבר ארנק ל-Selha</Text>
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\screens\WalletSetupScreen.tsx:95: await AsyncStorage.setItem("selha_wallet", JSON.stringify({
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\screens\WalletSetupScreen.tsx:147: <Text style={styles.title}>Welcome to Selha Wallet</Text>
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\referralService.ts:20: private static readonly STORAGE_KEY = "selha_referral_data";
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\referralService.ts:21: private static readonly HISTORY_KEY = "selha_referral_history";
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\services\walletService.ts:18: private static readonly STORAGE_KEY = "selha_wallet_data";
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\utils\constants.ts:3: APP_NAME: "Selha Wallet",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\utils\constants.ts:5: SUPPORT_EMAIL: "support@selha.app",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\CryptoWallet54\Backup_20260207_193539\src\utils\constants.ts:45: ENCRYPTION_KEY: "selha-wallet-secure-key-2024",
+
+[4] container inspect - slh-expertnet
+"Image": "sha256:40106004c9119ea212a7223bf9024c4d972f489a84b265e420fc2fcb095b4fe0",
+"BOT_TOKEN=8225059465:AAHftpz1wfET6gAiJ2zxSAKWB45aUy9NaT0",
+"Cmd": [
+"Image": "slh_ecosystem-expertnet-bot",
+"WorkingDir": "/app",
+"Entrypoint": null,
+
+[5] last logs - slh-expertnet
+2026-04-14 17:09:40,028 | WARNING | aiogram.dispatcher | Sleep for 4.904736 seconds and try again... (tryings = 4330, bot id = 8225059465)
+2026-04-14 17:09:48,706 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:09:48,706 | WARNING | aiogram.dispatcher | Sleep for 5.070373 seconds and try again... (tryings = 4331, bot id = 8225059465)
+2026-04-14 17:09:58,586 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:09:58,586 | WARNING | aiogram.dispatcher | Sleep for 5.066196 seconds and try again... (tryings = 4332, bot id = 8225059465)
+2026-04-14 17:10:07,236 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:10:07,236 | WARNING | aiogram.dispatcher | Sleep for 4.984684 seconds and try again... (tryings = 4333, bot id = 8225059465)
+2026-04-14 17:10:17,027 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:10:17,027 | WARNING | aiogram.dispatcher | Sleep for 4.978666 seconds and try again... (tryings = 4334, bot id = 8225059465)
+2026-04-14 17:10:25,516 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:10:25,516 | WARNING | aiogram.dispatcher | Sleep for 4.769889 seconds and try again... (tryings = 4335, bot id = 8225059465)
+2026-04-14 17:10:35,391 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:10:35,391 | WARNING | aiogram.dispatcher | Sleep for 5.025273 seconds and try again... (tryings = 4336, bot id = 8225059465)
+2026-04-14 17:10:43,518 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:10:43,518 | WARNING | aiogram.dispatcher | Sleep for 5.118746 seconds and try again... (tryings = 4337, bot id = 8225059465)
+2026-04-14 17:10:53,858 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:10:53,858 | WARNING | aiogram.dispatcher | Sleep for 4.799792 seconds and try again... (tryings = 4338, bot id = 8225059465)
+2026-04-14 17:11:02,176 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:11:02,176 | WARNING | aiogram.dispatcher | Sleep for 5.133150 seconds and try again... (tryings = 4339, bot id = 8225059465)
+2026-04-14 17:11:12,205 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:11:12,206 | WARNING | aiogram.dispatcher | Sleep for 4.918315 seconds and try again... (tryings = 4340, bot id = 8225059465)
+2026-04-14 17:11:20,499 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:11:20,499 | WARNING | aiogram.dispatcher | Sleep for 4.932478 seconds and try again... (tryings = 4341, bot id = 8225059465)
+2026-04-14 17:11:30,537 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:11:30,537 | WARNING | aiogram.dispatcher | Sleep for 5.240374 seconds and try again... (tryings = 4342, bot id = 8225059465)
+2026-04-14 17:11:39,116 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:11:39,116 | WARNING | aiogram.dispatcher | Sleep for 4.929435 seconds and try again... (tryings = 4343, bot id = 8225059465)
+2026-04-14 17:11:49,198 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:11:49,198 | WARNING | aiogram.dispatcher | Sleep for 5.139741 seconds and try again... (tryings = 4344, bot id = 8225059465)
+2026-04-14 17:12:04,010 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:12:04,029 | WARNING | aiogram.dispatcher | Sleep for 5.080834 seconds and try again... (tryings = 4345, bot id = 8225059465)
+2026-04-14 17:12:12,931 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:12:12,931 | WARNING | aiogram.dispatcher | Sleep for 5.010066 seconds and try again... (tryings = 4346, bot id = 8225059465)
+2026-04-14 17:12:22,330 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:12:22,331 | WARNING | aiogram.dispatcher | Sleep for 5.057346 seconds and try again... (tryings = 4347, bot id = 8225059465)
+2026-04-14 17:12:30,953 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:12:30,953 | WARNING | aiogram.dispatcher | Sleep for 5.031592 seconds and try again... (tryings = 4348, bot id = 8225059465)
+2026-04-14 17:12:40,668 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:12:40,668 | WARNING | aiogram.dispatcher | Sleep for 5.085339 seconds and try again... (tryings = 4349, bot id = 8225059465)
+2026-04-14 17:12:49,322 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:12:49,322 | WARNING | aiogram.dispatcher | Sleep for 5.110283 seconds and try again... (tryings = 4350, bot id = 8225059465)
+2026-04-14 17:12:58,848 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:12:58,848 | WARNING | aiogram.dispatcher | Sleep for 4.907295 seconds and try again... (tryings = 4351, bot id = 8225059465)
+2026-04-14 17:13:07,742 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:13:07,742 | WARNING | aiogram.dispatcher | Sleep for 4.959778 seconds and try again... (tryings = 4352, bot id = 8225059465)
+2026-04-14 17:13:16,995 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:13:16,996 | WARNING | aiogram.dispatcher | Sleep for 4.854536 seconds and try again... (tryings = 4353, bot id = 8225059465)
+2026-04-14 17:13:26,015 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:13:26,015 | WARNING | aiogram.dispatcher | Sleep for 5.097980 seconds and try again... (tryings = 4354, bot id = 8225059465)
+2026-04-14 17:13:34,953 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:13:34,953 | WARNING | aiogram.dispatcher | Sleep for 5.021646 seconds and try again... (tryings = 4355, bot id = 8225059465)
+2026-04-14 17:13:44,407 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:13:44,407 | WARNING | aiogram.dispatcher | Sleep for 5.012786 seconds and try again... (tryings = 4356, bot id = 8225059465)
+2026-04-14 17:13:53,263 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:13:53,263 | WARNING | aiogram.dispatcher | Sleep for 5.063412 seconds and try again... (tryings = 4357, bot id = 8225059465)
+2026-04-14 17:14:02,682 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:14:02,683 | WARNING | aiogram.dispatcher | Sleep for 4.945040 seconds and try again... (tryings = 4358, bot id = 8225059465)
+2026-04-14 17:14:11,609 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:14:11,609 | WARNING | aiogram.dispatcher | Sleep for 4.900705 seconds and try again... (tryings = 4359, bot id = 8225059465)
+2026-04-14 17:14:20,737 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:14:20,737 | WARNING | aiogram.dispatcher | Sleep for 5.130978 seconds and try again... (tryings = 4360, bot id = 8225059465)
+2026-04-14 17:14:29,786 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:14:29,786 | WARNING | aiogram.dispatcher | Sleep for 5.056283 seconds and try again... (tryings = 4361, bot id = 8225059465)
+2026-04-14 17:14:39,306 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:14:39,306 | WARNING | aiogram.dispatcher | Sleep for 5.008227 seconds and try again... (tryings = 4362, bot id = 8225059465)
+2026-04-14 17:14:47,963 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:14:47,963 | WARNING | aiogram.dispatcher | Sleep for 4.910218 seconds and try again... (tryings = 4363, bot id = 8225059465)
+2026-04-14 17:14:57,612 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:14:57,613 | WARNING | aiogram.dispatcher | Sleep for 4.832594 seconds and try again... (tryings = 4364, bot id = 8225059465)
+2026-04-14 17:15:06,016 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:15:06,016 | WARNING | aiogram.dispatcher | Sleep for 4.918533 seconds and try again... (tryings = 4365, bot id = 8225059465)
+2026-04-14 17:15:15,443 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:15:15,443 | WARNING | aiogram.dispatcher | Sleep for 5.083581 seconds and try again... (tryings = 4366, bot id = 8225059465)
+2026-04-14 17:15:24,310 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:15:24,310 | WARNING | aiogram.dispatcher | Sleep for 4.955827 seconds and try again... (tryings = 4367, bot id = 8225059465)
+2026-04-14 17:15:33,580 | ERROR | aiogram.dispatcher | Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2026-04-14 17:15:33,580 | WARNING | aiogram.dispatcher | Sleep for 5.047269 seconds and try again... (tryings = 4368, bot id = 8225059465)
+2026-04-14 17:15:35,422 | WARNING | aiogram.dispatcher | Received SIGTERM signal
+2026-04-14 17:15:35,501 | INFO | aiogram.dispatcher | Polling stopped for bot @Slh_selha_bot id=8225059465 - 'SLH'
+2026-04-14 17:15:35,502 | INFO | aiogram.dispatcher | Polling stopped
+
+[6] airdrop references
+"Image": "sha256:6af4b016adb886360b25c916547bf00b88ef602ac94b640dde0bd7cb66664d07",
+"Cmd": [
+"Image": "slh_ecosystem-airdrop-bot",
+"WorkingDir": "/app",
+"Entrypoint": null,
+
+[7] last logs - slh-airdrop
+2026-04-14 16:08:22,147 | INFO | wallet_engine | WalletEngine initialised — DB & Redis connected
+2026-04-14 16:08:22,147 | INFO | slh.hub | ✅ WalletEngine connected — DB + Redis + BSC + TON
+2026-04-14 16:08:22,147 | INFO | slh.hub | 🚀 SLH Investment House + HUB initialized
+2026-04-14 16:08:22,148 | INFO | slh.hub | ==================================================
+2026-04-14 16:08:22,148 | INFO | slh.hub | 🚀 SLH Investment House + HUB BOT — Starting...
+2026-04-14 16:08:22,148 | INFO | slh.hub | ==================================================
+2026-04-14 16:08:22,476 | INFO | slh.hub | ✅ Bot: @SLH_AIR_bot
+2026-04-14 16:08:22,476 | INFO | slh.hub | 🔄 Running — Investment House + HUB + Buy SLH
+2026-04-14 16:11:18,803 | INFO | slh.hub | 📩 Osif: Bot rebuilt and running!
+System.Management.Automation.RemoteException
+עכשיו כשמישהו שולח /start ל-@SLH_AIR_bot הוא יראה:
+System.Management.Automation.RemoteException
+🆔 המזהה שלך: 1234567890
+👤 Username: @username
+System.Management.Automation.RemoteException
+נסה: שלח /start ל-@SLH_AIR_bot ותראה את ה-ID שלך מוצג.
+2026-04-14 16:11:21,018 | INFO | slh.hub | 📩 Osif: /start
+2026-04-14 16:11:21,343 | INFO | slh.hub | [bot-sync] ✅ Synced 224223270 (@osifeu_prog) to website — registered=True
+2026-04-14 16:33:05,005 | INFO | slh.hub | 📩 David: /start login
+2026-04-14 16:33:05,422 | INFO | slh.hub | [bot-sync] ✅ Synced 8265956478 (@ShacharDs) to website — registered=False
+2026-04-14 16:40:35,357 | INFO | slh.hub | 📩 David: /start login
+2026-04-14 16:40:35,497 | INFO | slh.hub | [bot-sync] ✅ Synced 8265956478 (@ShacharDs) to website — registered=False

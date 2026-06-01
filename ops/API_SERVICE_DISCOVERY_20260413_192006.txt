@@ -1,0 +1,403 @@
+﻿D:\SLH_ECOSYSTEM\airdrop\app\api_server.py:6: app = FastAPI(title="SLH Airdrop API")
+D:\SLH_ECOSYSTEM\airdrop\app\api_server.py:181: import uvicorn
+D:\SLH_ECOSYSTEM\airdrop\app\api_server.py:184: uvicorn.run(app, host="0.0.0.0", port=port)
+D:\SLH_ECOSYSTEM\airdrop\app\complete_api.py:9: app = FastAPI(title="SLH Airdrop API", version="2.0")
+D:\SLH_ECOSYSTEM\airdrop\old_backups\backup_20260131_224225\main_run.py:4: app = FastAPI(title='Airdrop Platform', version='stable')
+D:\SLH_ECOSYSTEM\airdrop\old_backups\backup_20260131_231240\main_run.py:4: app = FastAPI(title='Airdrop Platform', version='stable')
+D:\SLH_ECOSYSTEM\airdrop\old_backups\backup_20260131_231757\main_run.py:4: app = FastAPI(title='Airdrop Platform', version='stable')
+D:\SLH_ECOSYSTEM\airdrop\old_backups\backup_20260131_231917\main_run.py:4: app = FastAPI(title='Airdrop Platform', version='stable')
+D:\SLH_ECOSYSTEM\airdrop\old_backups\backup_20260131_232108\main_run.py:4: app = FastAPI(title='Airdrop Platform', version='stable')
+D:\SLH_ECOSYSTEM\airdrop\old_backups\backup_20260131_232753\main_run.py:4: app = FastAPI(title='Airdrop Platform', version='stable')
+D:\SLH_ECOSYSTEM\airdrop\tools\dev.ps1:48: $uvArgs = @("-m","uvicorn","app.main:app","--host",$BindHost,"--port",$port,"--log-level","debug")
+D:\SLH_ECOSYSTEM\airdrop\tools\smoke.ps1:25: -ArgumentList @("-m","uvicorn","app.main:app","--host","127.0.0.1","--port","$port","--log-level","debug") `
+D:\SLH_ECOSYSTEM\airdrop\tools\traffic.ps1:66: $args = "-m uvicorn app.main:app --host $HostAddr --port $Port --log-level info"
+D:\SLH_ECOSYSTEM\airdrop\airdrop.ps1:22: "-m uvicorn app.main:app --host 127.0.0.1 --port 8000 --log-level info > logs\server.log 2>&1" `
+D:\SLH_ECOSYSTEM\airdrop\airdrop.ps1:107: if (-not (Get-Command uvicorn -ErrorAction SilentlyContinue)) { $issues += "Uvicorn not installed" }
+D:\SLH_ECOSYSTEM\airdrop\run.ps1:7: Write-Host "[1/4] Starting backend (Uvicorn) on http://127.0.0.1:$BACKEND_PORT"
+D:\SLH_ECOSYSTEM\airdrop\run.ps1:9: "-m","uvicorn","app.main:app","--host","127.0.0.1","--port","$BACKEND_PORT","--reload"
+D:\SLH_ECOSYSTEM\airdrop\run_airdrop.ps1:20: "python -m uvicorn backend.app.main_run:app --reload"
+D:\SLH_ECOSYSTEM\airdrop\run_server_db.ps1:17: python -m uvicorn app.main:app --host 127.0.0.1 --port 18081 --log-level info
+D:\SLH_ECOSYSTEM\airdrop\run_server_local.ps1:32: python -m uvicorn app.main:app --host 127.0.0.1 --port 18082 --log-level info
+D:\SLH_ECOSYSTEM\airdrop\run_server_stable.ps1:16: python -m uvicorn app.main:app --host 127.0.0.1 --port 18082 --log-level info
+D:\SLH_ECOSYSTEM\api\main.py:41: app = FastAPI(
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\app\main.py:32: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\tools\run_local.ps1:33: python -m pip install -U openai "python-telegram-bot>=22" fastapi uvicorn | Out-Host
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\tools\run_local.ps1:36: python -m pip list | Select-String -Pattern "openai|python-telegram-bot|fastapi|uvicorn" | Out-Host
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\tools\run_local.ps1:62: app = FastAPI(title="SLH Investor Gateway")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\tools\run_local.ps1:235: Write-Host "==> Starting uvicorn..." -ForegroundColor Green
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\tools\run_local.ps1:239: python -m uvicorn app.main:app --host 127.0.0.1 --port $Port $reloadArg
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\admin-console.ps1:67: ($_.CommandLine -like "*worker.py*" -or $_.CommandLine -like "*webhook_server.py*")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\admin-console.ps1:99: '.\venv\Scripts\python.exe -u .\webhook_server.py'
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\admin-console.ps1:117: "Do not run webhook_server.py in CONTROL",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\admin-console.ps1:153: "Open WEBHOOK window and start webhook_server.py",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\admin-console.ps1:154: "Wait until you see: Uvicorn running on http://127.0.0.1:8080"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\doctor.ps1:49: foreach ($file in "webhook_server.py","worker.py","slh.ps1","ops\start-stable.ps1","ops\stop-stable.ps1","ops\status-stable.ps1") {
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\e2e-clean.ps1:85: -ArgumentList "webhook_server.py" `
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\morning-start.ps1:45: ".\webhook_server.py",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\morning-start.ps1:76: ".\webhook_server.py",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\rotate_bot_token.ps1:60: '& { Set-Location ''D:\SLH_PROJECT_V2''; $global:ErrorActionPreference = ''Stop''; .\venv\Scripts\python.exe .\webhook_server.py }'
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\run-supervised.ps1:88: LogLine "Starting webhook_server.py"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\run-supervised.ps1:89: & $py ".\webhook_server.py"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\run-supervised.ps1:91: LogLine "webhook_server.py exited. code=$exitCode"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\run-supervised.ps1:93: LogLine "webhook_server.py crashed: $($_.Exception.Message)"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\run-webhook.ps1:31: $cmdLine = "`"$python`" -u .\webhook_server.py 2>&1"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\runbook-manual-stable.ps1:69: '.\venv\Scripts\python.exe -u .\webhook_server.py'
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\snapshot-now.ps1:15: Copy-Item .\\webhook_server.py "$dst\\webhook_server.py"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\start-full-auto.ps1:42: '& { Set-Location ''D:\SLH_PROJECT_V2''; $global:ErrorActionPreference = ''Stop''; .\venv\Scripts\python.exe .\webhook_server.py }'
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\start-local-stack.ps1:33: & '$python' -u '.\webhook_server.py'
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\start-stable.ps1:66: $webhookPy = Join-Path $ROOT "webhook_server.py"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\start-stack.ps1:55: -ArgumentList "-u",".\webhook_server.py" `
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\start-webhook.ps1:8: $cmd = "& '$python' -u '.\webhook_server.py'"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\stop-core.ps1:26: $_.CommandLine -like "*webhook_server.py*"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\stop-stack.ps1:71: ($_.CommandLine -like "*worker.py*" -or $_.CommandLine -like "*webhook_server.py*")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\_fix_health_route_order.py:4: p = Path("webhook_server.py")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\_fix_health_route_order.py:36: print("FIXED webhook_server.py")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\_patch_health_aliases.py:3: p = Path("webhook_server.py")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\_patch_health_aliases.py:20: print("PATCHED webhook_server.py")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\runtime\verify\patch_webhook_release.py:3: p = Path("webhook_server.py")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\commerce_full_check_20260313_151956\webhook_server.py:9: import uvicorn
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\commerce_full_check_20260313_151956\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\commerce_full_check_20260313_151956\webhook_server.py:69: uvicorn.run(app, host=os.getenv("HOST", "0.0.0.0"), port=int(os.getenv("PORT", "8080")), log_level="info")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\proj_backup_20260313_142419\webhook_server.py:9: import uvicorn
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\proj_backup_20260313_142419\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\proj_backup_20260313_142419\webhook_server.py:69: uvicorn.run(app, host=os.getenv("HOST", "0.0.0.0"), port=int(os.getenv("PORT", "8080")), log_level="info")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260310_225133\webhook_server.py:9: import uvicorn
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260310_225133\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260310_225133\webhook_server.py:69: uvicorn.run(app, host=os.getenv("HOST", "0.0.0.0"), port=int(os.getenv("PORT", "8080")), log_level="info")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031305\webhook_server.py:9: import uvicorn
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031305\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031305\webhook_server.py:69: uvicorn.run(app, host=os.getenv("HOST", "0.0.0.0"), port=int(os.getenv("PORT", "8080")), log_level="info")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031309\webhook_server.py:9: import uvicorn
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031309\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031309\webhook_server.py:69: uvicorn.run(app, host=os.getenv("HOST", "0.0.0.0"), port=int(os.getenv("PORT", "8080")), log_level="info")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031310\webhook_server.py:9: import uvicorn
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031310\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031310\webhook_server.py:69: uvicorn.run(app, host=os.getenv("HOST", "0.0.0.0"), port=int(os.getenv("PORT", "8080")), log_level="info")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031311\webhook_server.py:9: import uvicorn
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031311\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031311\webhook_server.py:69: uvicorn.run(app, host=os.getenv("HOST", "0.0.0.0"), port=int(os.getenv("PORT", "8080")), log_level="info")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031312\webhook_server.py:9: import uvicorn
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031312\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031312\webhook_server.py:69: uvicorn.run(app, host=os.getenv("HOST", "0.0.0.0"), port=int(os.getenv("PORT", "8080")), log_level="info")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_132635\webhook_server.py:9: import uvicorn
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_132635\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_132635\webhook_server.py:69: uvicorn.run(app, host=os.getenv("HOST", "0.0.0.0"), port=int(os.getenv("PORT", "8080")), log_level="info")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_143254\webhook_server.py:9: import uvicorn
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_143254\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_143254\webhook_server.py:69: uvicorn.run(app, host=os.getenv("HOST", "0.0.0.0"), port=int(os.getenv("PORT", "8080")), log_level="info")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\bot.py:2: "LEGACY ENTRYPOINT BLOCKED: bot.py is deprecated. Use worker.py + webhook_server.py runtime only."
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\main.py:2: "LEGACY ENTRYPOINT BLOCKED: use ops/start-core.ps1 with webhook_server.py + worker.py, not main.py"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\webhook_server.py:9: import uvicorn
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\webhook_server.py:69: uvicorn.run(app, host=os.getenv("HOST", "0.0.0.0"), port=int(os.getenv("PORT", "8080")), log_level="info")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\admin-console.ps1:67: ($_.CommandLine -like "*worker.py*" -or $_.CommandLine -like "*webhook_server.py*")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\admin-console.ps1:99: '.\venv\Scripts\python.exe -u .\webhook_server.py'
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\admin-console.ps1:117: "Do not run webhook_server.py in CONTROL",
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\admin-console.ps1:153: "Open WEBHOOK window and start webhook_server.py",
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\admin-console.ps1:154: "Wait until you see: Uvicorn running on http://127.0.0.1:8080"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\doctor.ps1:49: foreach ($file in "webhook_server.py","worker.py","slh.ps1","ops\start-stable.ps1","ops\stop-stable.ps1","ops\status-stable.ps1") {
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\e2e-clean.ps1:85: -ArgumentList "webhook_server.py" `
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\morning-start.ps1:45: ".\webhook_server.py",
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\morning-start.ps1:76: ".\webhook_server.py",
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\rotate_bot_token.ps1:60: '& { Set-Location ''D:\SLH_PROJECT_V2''; $global:ErrorActionPreference = ''Stop''; .\venv\Scripts\python.exe .\webhook_server.py }'
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\run-full-from-scratch.ps1:38: Save-IfExists ".\webhook_server.py" $backupDir
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\run-full-from-scratch.ps1:139: "Set-Location D:\SLH_PROJECT_V2; .\venv\Scripts\python.exe .\webhook_server.py *>> `"$webhookLog`""
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\run-one-window.ps1:14: $_.CommandLine -like "*webhook_server.py*" -or
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\run-one-window.ps1:74: -ArgumentList @(".\webhook_server.py") `
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\run-supervised.ps1:88: LogLine "Starting webhook_server.py"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\run-supervised.ps1:89: & $py ".\webhook_server.py"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\run-supervised.ps1:91: LogLine "webhook_server.py exited. code=$exitCode"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\run-supervised.ps1:93: LogLine "webhook_server.py crashed: $($_.Exception.Message)"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\run-webhook.ps1:31: $cmdLine = "`"$python`" -u .\webhook_server.py 2>&1"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\runbook-manual-stable.ps1:69: '.\venv\Scripts\python.exe -u .\webhook_server.py'
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\snapshot-now.ps1:15: Copy-Item .\\webhook_server.py "$dst\\webhook_server.py"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\start-core.ps1:68: $webhookCmd = "Set-Location '$root'; `$env:PYTHONUNBUFFERED='1'; .\venv\Scripts\python.exe .\webhook_server.py *>> '$webhookLog'"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\start-full-auto.ps1:42: '& { Set-Location ''D:\SLH_PROJECT_V2''; $global:ErrorActionPreference = ''Stop''; .\venv\Scripts\python.exe .\webhook_server.py }'
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\start-local-stack.ps1:33: & '$python' -u '.\webhook_server.py'
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\start-stable.ps1:66: $webhookPy = Join-Path $ROOT "webhook_server.py"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\start-stack.ps1:55: -ArgumentList "-u",".\webhook_server.py" `
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\start-webhook.ps1:8: $cmd = "& '$python' -u '.\webhook_server.py'"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\stop-core.ps1:26: $_.CommandLine -like "*webhook_server.py*"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\stop-stack.ps1:71: ($_.CommandLine -like "*worker.py*" -or $_.CommandLine -like "*webhook_server.py*")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\_fix_health_route_order.py:4: p = Path("webhook_server.py")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\_fix_health_route_order.py:36: print("FIXED webhook_server.py")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\_patch_health_aliases.py:3: p = Path("webhook_server.py")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\_patch_health_aliases.py:20: print("PATCHED webhook_server.py")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\commerce_full_check_20260313_151956\webhook_server.py:9: import uvicorn
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\commerce_full_check_20260313_151956\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\commerce_full_check_20260313_151956\webhook_server.py:69: uvicorn.run(app, host=os.getenv("HOST", "0.0.0.0"), port=int(os.getenv("PORT", "8080")), log_level="info")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\proj_backup_20260313_142419\webhook_server.py:9: import uvicorn
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\proj_backup_20260313_142419\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\proj_backup_20260313_142419\webhook_server.py:69: uvicorn.run(app, host=os.getenv("HOST", "0.0.0.0"), port=int(os.getenv("PORT", "8080")), log_level="info")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260310_225133\webhook_server.py:9: import uvicorn
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260310_225133\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260310_225133\webhook_server.py:69: uvicorn.run(app, host=os.getenv("HOST", "0.0.0.0"), port=int(os.getenv("PORT", "8080")), log_level="info")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031305\webhook_server.py:9: import uvicorn
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031305\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031305\webhook_server.py:69: uvicorn.run(app, host=os.getenv("HOST", "0.0.0.0"), port=int(os.getenv("PORT", "8080")), log_level="info")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031309\webhook_server.py:9: import uvicorn
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031309\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031309\webhook_server.py:69: uvicorn.run(app, host=os.getenv("HOST", "0.0.0.0"), port=int(os.getenv("PORT", "8080")), log_level="info")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031310\webhook_server.py:9: import uvicorn
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031310\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031310\webhook_server.py:69: uvicorn.run(app, host=os.getenv("HOST", "0.0.0.0"), port=int(os.getenv("PORT", "8080")), log_level="info")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031311\webhook_server.py:9: import uvicorn
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031311\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031311\webhook_server.py:69: uvicorn.run(app, host=os.getenv("HOST", "0.0.0.0"), port=int(os.getenv("PORT", "8080")), log_level="info")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031312\webhook_server.py:9: import uvicorn
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031312\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031312\webhook_server.py:69: uvicorn.run(app, host=os.getenv("HOST", "0.0.0.0"), port=int(os.getenv("PORT", "8080")), log_level="info")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_132635\webhook_server.py:9: import uvicorn
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_132635\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_132635\webhook_server.py:69: uvicorn.run(app, host=os.getenv("HOST", "0.0.0.0"), port=int(os.getenv("PORT", "8080")), log_level="info")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_143254\webhook_server.py:9: import uvicorn
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_143254\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_143254\webhook_server.py:69: uvicorn.run(app, host=os.getenv("HOST", "0.0.0.0"), port=int(os.getenv("PORT", "8080")), log_level="info")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\bot.py:2: "LEGACY ENTRYPOINT BLOCKED: bot.py is deprecated. Use worker.py + webhook_server.py runtime only."
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\main.py:2: "LEGACY ENTRYPOINT BLOCKED: use ops/start-core.ps1 with webhook_server.py + worker.py, not main.py"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\webhook_server.py:9: import uvicorn
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\webhook_server.py:69: uvicorn.run(app, host=os.getenv("HOST", "0.0.0.0"), port=int(os.getenv("PORT", "8080")), log_level="info")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\security\api_key.py:75: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\security\api_key.py:167: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\security\api_key.py:255: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\security\http.py:132: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\security\http.py:244: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\security\http.py:349: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\security\oauth2.py:39: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\security\oauth2.py:181: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:52: class FastAPI(Starlette):
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:64: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:121: app = FastAPI(title="ChimichangApp")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:142: app = FastAPI(summary="Deadpond's favorite app. Nuff said.")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:164: app = FastAPI(
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:204: app = FastAPI(version="0.0.1")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:227: app = FastAPI(openapi_url="/api/v1/openapi.json")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:287: app = FastAPI(openapi_tags=tags_metadata)
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:331: app = FastAPI(
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:358: app = FastAPI(dependencies=[Depends(func_dep_1), Depends(func_dep_2)])
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:378: app = FastAPI(default_response_class=ORJSONResponse)
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:395: app = FastAPI(redirect_slashes=True)  # the default
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:427: app = FastAPI(docs_url="/documentation", redoc_url=None)
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:451: app = FastAPI(docs_url="/documentation", redoc_url="redocumentation")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:564: app = FastAPI(terms_of_service="http://example.com/terms/")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:591: app = FastAPI(
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:626: app = FastAPI(
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:666: app = FastAPI(root_path="/api/v1")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:686: app = FastAPI(root_path_in_servers=False)
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:843: app = FastAPI(openapi_external_docs=external_docs)
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:902: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:1318: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:1377: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:1418: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:1444: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:1472: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:1527: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:1885: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:2263: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:2641: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:3014: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:3387: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:3760: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:4138: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:4511: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:4607: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:4657: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\background.py:23: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\datastructures.py:49: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\exceptions.py:32: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\exceptions.py:99: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\param_functions.py:297: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\param_functions.py:2286: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\param_functions.py:2372: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\routing.py:743: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\routing.py:1225: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\routing.py:1379: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\routing.py:1840: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\routing.py:2222: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\routing.py:2604: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\routing.py:2981: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\routing.py:3358: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\routing.py:3740: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\routing.py:4122: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\routing.py:4504: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\pydantic\_internal\_validators.py:80: """Inspired by uvicorn — dotted paths should include a colon before the final item if that item is not a module.
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\lifespan\off.py:5: from uvicorn import Config
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\lifespan\on.py:8: from uvicorn import Config
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\lifespan\on.py:9: from uvicorn._types import (
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\lifespan\on.py:37: self.logger = logging.getLogger("uvicorn.error")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\lifespan\on.py:53: # See https://github.com/Kludex/uvicorn/pull/972
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\loops\auto.py:11: from uvicorn.loops.asyncio import asyncio_loop_factory as loop_factory
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\loops\auto.py:15: from uvicorn.loops.uvloop import uvloop_loop_factory
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\middleware\asgi2.py:1: from uvicorn._types import (
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\middleware\message_logger.py:4: from uvicorn._types import (
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\middleware\message_logger.py:12: from uvicorn.logging import TRACE_LOG_LEVEL
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\middleware\message_logger.py:40: self.logger = logging.getLogger("uvicorn.asgi")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\middleware\proxy_headers.py:5: from uvicorn._types import ASGI3Application, ASGIReceiveCallable, ASGISendCallable, Scope
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\middleware\proxy_headers.py:53: # See: https://github.com/Kludex/uvicorn/issues/1068
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\middleware\proxy_headers.py:141: # See https://github.com/Kludex/uvicorn/issues/1068#issuecomment-855371576
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\middleware\wsgi.py:11: from uvicorn._types import (
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\middleware\wsgi.py:85: "Uvicorn's native WSGI implementation is deprecated, you should switch to a2wsgi (`pip install a2wsgi`).",
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\http\auto.py:9: from uvicorn.protocols.http.h11_impl import H11Protocol
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\http\auto.py:13: from uvicorn.protocols.http.httptools_impl import HttpToolsProtocol
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\http\flow_control.py:3: from uvicorn._types import ASGIReceiveCallable, ASGISendCallable, Scope
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\http\h11_impl.py:12: from uvicorn._types import (
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\http\h11_impl.py:21: from uvicorn.config import Config
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\http\h11_impl.py:22: from uvicorn.logging import TRACE_LOG_LEVEL
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\http\h11_impl.py:23: from uvicorn.protocols.http.flow_control import CLOSE_HEADER, HIGH_WATER_LIMIT, FlowControl, service_unavailable
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\http\h11_impl.py:24: from uvicorn.protocols.utils import get_client_addr, get_local_addr, get_path_with_query_string, get_remote_addr, is_ssl
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\http\h11_impl.py:25: from uvicorn.server import ServerState
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\http\h11_impl.py:52: self.logger = logging.getLogger("uvicorn.error")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\http\h11_impl.py:53: self.access_logger = logging.getLogger("uvicorn.access")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\http\h11_impl.py:157: msg = "No supported WebSocket library detected. Please use \"pip install 'uvicorn[standard]'\", or install 'websockets' or 'wsproto' manually."  # noqa: E501
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py:14: from uvicorn._types import (
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py:22: from uvicorn.config import Config
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py:23: from uvicorn.logging import TRACE_LOG_LEVEL
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py:24: from uvicorn.protocols.http.flow_control import CLOSE_HEADER, HIGH_WATER_LIMIT, FlowControl, service_unavailable
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py:25: from uvicorn.protocols.utils import get_client_addr, get_local_addr, get_path_with_query_string, get_remote_addr, is_ssl
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py:26: from uvicorn.server import ServerState
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py:57: self.logger = logging.getLogger("uvicorn.error")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py:58: self.access_logger = logging.getLogger("uvicorn.access")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py:160: msg = "No supported WebSocket library detected. Please use \"pip install 'uvicorn[standard]'\", or install 'websockets' or 'wsproto' manually."  # noqa: E501
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\websockets\auto.py:15: from uvicorn.protocols.websockets.wsproto_impl import WSProtocol
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\websockets\auto.py:19: from uvicorn.protocols.websockets.websockets_impl import WebSocketProtocol
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\websockets\websockets_impl.py:20: from uvicorn._types import (
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\websockets\websockets_impl.py:33: from uvicorn.config import Config
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\websockets\websockets_impl.py:34: from uvicorn.logging import TRACE_LOG_LEVEL
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\websockets\websockets_impl.py:35: from uvicorn.protocols.utils import (
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\websockets\websockets_impl.py:43: from uvicorn.server import ServerState
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\websockets\websockets_impl.py:113: logger=logging.getLogger("uvicorn.error"),
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\websockets\websockets_impl.py:226: # itself (see https://github.com/Kludex/uvicorn/issues/920)
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\websockets\websockets_sansio_impl.py:17: from uvicorn._types import (
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\websockets\websockets_sansio_impl.py:27: from uvicorn.config import Config
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\websockets\websockets_sansio_impl.py:28: from uvicorn.logging import TRACE_LOG_LEVEL
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\websockets\websockets_sansio_impl.py:29: from uvicorn.protocols.utils import (
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\websockets\websockets_sansio_impl.py:36: from uvicorn.server import ServerState
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\websockets\websockets_sansio_impl.py:58: self.logger = logging.getLogger("uvicorn.error")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\websockets\websockets_sansio_impl.py:92: logger=logging.getLogger("uvicorn.error"),
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\websockets\wsproto_impl.py:14: from uvicorn._types import (
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\websockets\wsproto_impl.py:25: from uvicorn.config import Config
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\websockets\wsproto_impl.py:26: from uvicorn.logging import TRACE_LOG_LEVEL
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\websockets\wsproto_impl.py:27: from uvicorn.protocols.utils import (
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\websockets\wsproto_impl.py:35: from uvicorn.server import ServerState
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\websockets\wsproto_impl.py:52: self.logger = logging.getLogger("uvicorn.error")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\protocols\utils.py:6: from uvicorn._types import WWWScope
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\supervisors\basereload.py:16: from uvicorn._subprocess import get_subprocess
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\supervisors\basereload.py:17: from uvicorn.config import Config
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\supervisors\basereload.py:24: logger = logging.getLogger("uvicorn.error")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\supervisors\multiprocess.py:13: from uvicorn._subprocess import get_subprocess
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\supervisors\multiprocess.py:14: from uvicorn.config import Config
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\supervisors\multiprocess.py:22: logger = logging.getLogger("uvicorn.error")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\supervisors\statreload.py:9: from uvicorn.config import Config
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\supervisors\statreload.py:10: from uvicorn.supervisors.basereload import BaseReload
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\supervisors\statreload.py:12: logger = logging.getLogger("uvicorn.error")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\supervisors\watchfilesreload.py:9: from uvicorn.config import Config
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\supervisors\watchfilesreload.py:10: from uvicorn.supervisors.basereload import BaseReload
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\supervisors\__init__.py:5: from uvicorn.supervisors.basereload import BaseReload
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\supervisors\__init__.py:6: from uvicorn.supervisors.multiprocess import Multiprocess
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\supervisors\__init__.py:12: from uvicorn.supervisors.watchfilesreload import WatchFilesReload as ChangeReload
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\supervisors\__init__.py:14: from uvicorn.supervisors.statreload import StatReload as ChangeReload
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:19: from uvicorn._compat import iscoroutinefunction
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:20: from uvicorn._types import ASGIApplication
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:21: from uvicorn.importer import ImportFromStringError, import_from_string
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:22: from uvicorn.logging import TRACE_LOG_LEVEL
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:23: from uvicorn.middleware.asgi2 import ASGI2Middleware
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:24: from uvicorn.middleware.message_logger import MessageLoggerMiddleware
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:25: from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:26: from uvicorn.middleware.wsgi import WSGIMiddleware
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:43: "auto": "uvicorn.protocols.http.auto:AutoHTTPProtocol",
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:44: "h11": "uvicorn.protocols.http.h11_impl:H11Protocol",
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:45: "httptools": "uvicorn.protocols.http.httptools_impl:HttpToolsProtocol",
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:48: "auto": "uvicorn.protocols.websockets.auto:AutoWebSocketsProtocol",
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:50: "websockets": "uvicorn.protocols.websockets.websockets_impl:WebSocketProtocol",
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:51: "websockets-sansio": "uvicorn.protocols.websockets.websockets_sansio_impl:WebSocketsSansIOProtocol",
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:52: "wsproto": "uvicorn.protocols.websockets.wsproto_impl:WSProtocol",
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:55: "auto": "uvicorn.lifespan.on:LifespanOn",
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:56: "on": "uvicorn.lifespan.on:LifespanOn",
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:57: "off": "uvicorn.lifespan.off:LifespanOff",
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:61: "auto": "uvicorn.loops.auto:auto_loop_factory",
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:62: "asyncio": "uvicorn.loops.asyncio:asyncio_loop_factory",
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:63: "uvloop": "uvicorn.loops.uvloop:uvloop_loop_factory",
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:74: "()": "uvicorn.logging.DefaultFormatter",
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:79: "()": "uvicorn.logging.AccessFormatter",
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:96: "uvicorn": {"handlers": ["default"], "level": "INFO", "propagate": False},
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:97: "uvicorn.error": {"level": "INFO"},
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:98: "uvicorn.access": {"handlers": ["access"], "level": "INFO", "propagate": False},
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:102: logger = logging.getLogger("uvicorn.error")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:376: # Install the PyYAML package or the uvicorn[standard] optional
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:393: logging.getLogger("uvicorn.error").setLevel(log_level)
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:394: logging.getLogger("uvicorn.access").setLevel(log_level)
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:395: logging.getLogger("uvicorn.asgi").setLevel(log_level)
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:397: logging.getLogger("uvicorn.access").handlers = []
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:398: logging.getLogger("uvicorn.access").propagate = False
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:419: [(b"server", b"uvicorn")] + encoded_headers
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:481: "The `setup_event_loop` method was replaced by `get_loop_factory` in uvicorn 0.36.0.\n"
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:483: "https://github.com/Kludex/uvicorn/discussions/2706. Thank you, and sorry for the inconvenience."
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:512: message = "Uvicorn running on unix socket %s (Press CTRL+C to quit)"
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:514: color_message = "Uvicorn running on " + click.style(sock_name_format, bold=True) + " (Press CTRL+C to quit)"
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:518: message = "Uvicorn running on socket %s (Press CTRL+C to quit)"
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:520: color_message = "Uvicorn running on " + click.style(fd_name_format, bold=True) + " (Press CTRL+C to quit)"
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:539: message = f"Uvicorn running on {addr_format} (Press CTRL+C to quit)"
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\config.py:540: color_message = "Uvicorn running on " + click.style(addr_format, bold=True) + " (Press CTRL+C to quit)"
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\main.py:15: import uvicorn
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\main.py:16: from uvicorn._types import ASGIApplication
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\main.py:17: from uvicorn.config import (
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\main.py:30: from uvicorn.server import Server
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\main.py:31: from uvicorn.supervisors import ChangeReload, Multiprocess
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\main.py:44: logger = logging.getLogger("uvicorn.error")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\main.py:51: "Running uvicorn {version} with {py_implementation} {py_version} on {system}".format(  # noqa: UP032
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\main.py:52: version=uvicorn.__version__,
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\main.py:61: @click.command(context_settings={"auto_envvar_prefix": "UVICORN"})
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\main.py:62: @click.argument("app", envvar="UVICORN_APP")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\main.py:350: help="Display the uvicorn version and exit.",
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\main.py:581: logger = logging.getLogger("uvicorn.error")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\main.py:607: "uvicorn.main.ServerState is deprecated, use uvicorn.server.ServerState instead.",
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\main.py:610: from uvicorn.server import ServerState
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\server.py:20: from uvicorn._compat import asyncio_run
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\server.py:21: from uvicorn.config import Config
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\server.py:24: from uvicorn.protocols.http.h11_impl import H11Protocol
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\server.py:25: from uvicorn.protocols.http.httptools_impl import HttpToolsProtocol
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\server.py:26: from uvicorn.protocols.websockets.websockets_impl import WebSocketProtocol
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\server.py:27: from uvicorn.protocols.websockets.websockets_sansio_impl import WebSocketsSansIOProtocol
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\server.py:28: from uvicorn.protocols.websockets.wsproto_impl import WSProtocol
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\server.py:39: logger = logging.getLogger("uvicorn.error")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\server.py:195: "Uvicorn running on socket %s (Press CTRL+C to quit)",
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\server.py:200: logger.info("Uvicorn running on unix socket %s (Press CTRL+C to quit)", config.uds)
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\server.py:214: message = f"Uvicorn running on {addr_format} (Press CTRL+C to quit)"
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\server.py:215: color_message = "Uvicorn running on " + click.style(addr_format, bold=True) + " (Press CTRL+C to quit)"
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\workers.py:13: from uvicorn._compat import asyncio_run
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\workers.py:14: from uvicorn.config import Config
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\workers.py:15: from uvicorn.server import Server
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\workers.py:18: "The `uvicorn.workers` module is deprecated. Please use `uvicorn-worker` package instead.\n"
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\workers.py:19: "For more details, see https://github.com/Kludex/uvicorn-worker.",
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\workers.py:24: class UvicornWorker(Worker):
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\workers.py:35: logger = logging.getLogger("uvicorn.error")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\workers.py:40: logger = logging.getLogger("uvicorn.access")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\workers.py:77: # See: https://github.com/Kludex/uvicorn/issues/894
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\workers.py:88: - https://github.com/Kludex/uvicorn/issues/1116
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\workers.py:110: class UvicornH11Worker(UvicornWorker):
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\_subprocess.py:15: from uvicorn.config import Config
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\_subprocess.py:30: * config - The Uvicorn configuration instance.
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\_subprocess.py:63: * config - The Uvicorn configuration instance.
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\__init__.py:1: from uvicorn.config import Config
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\__init__.py:2: from uvicorn.main import Server, main, run
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\__main__.py:1: import uvicorn
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\uvicorn\__main__.py:4: uvicorn.main()
+D:\SLH_ECOSYSTEM\botshop\app\main.py:17: app = FastAPI(title=settings.PROJECT_NAME)
+D:\SLH_ECOSYSTEM\botshop\tools\full-cycle.ps1:37: Start-Process powershell -ArgumentList '-NoExit', '-Command', "cd $projectPath; . .\.venv\Scripts\activate; uvicorn app.main:app --reload --port 8000"
+D:\SLH_ECOSYSTEM\factory\app\main.py:17: app = FastAPI()
+D:\SLH_ECOSYSTEM\factory\tools\run_local.ps1:33: python -m pip install -U openai "python-telegram-bot>=22" fastapi uvicorn | Out-Host
+D:\SLH_ECOSYSTEM\factory\tools\run_local.ps1:36: python -m pip list | Select-String -Pattern "openai|python-telegram-bot|fastapi|uvicorn" | Out-Host
+D:\SLH_ECOSYSTEM\factory\tools\run_local.ps1:62: app = FastAPI(title="SLH Investor Gateway")
+D:\SLH_ECOSYSTEM\factory\tools\run_local.ps1:235: Write-Host "==> Starting uvicorn..." -ForegroundColor Green
+D:\SLH_ECOSYSTEM\factory\tools\run_local.ps1:239: python -m uvicorn app.main:app --host 127.0.0.1 --port $Port $reloadArg
+D:\SLH_ECOSYSTEM\factory\tools\server.ps1:8: $pidFile = Join-Path $root ".uvicorn.pid"
+D:\SLH_ECOSYSTEM\factory\tools\server.ps1:70: $args = @("-m","uvicorn","app.main:app","--host","127.0.0.1","--port","8000","--log-level","info")
+D:\SLH_ECOSYSTEM\fun\app.py:37: fastapi_app = FastAPI()
+D:\SLH_ECOSYSTEM\promo\app\main.py:44: app = FastAPI(
+D:\SLH_ECOSYSTEM\shared\community_api.py:25: app = FastAPI(title="SLH Community API", version="1.0.0")
+D:\SLH_ECOSYSTEM\shared\community_api.py:395: import uvicorn
+D:\SLH_ECOSYSTEM\shared\community_api.py:397: uvicorn.run("community_api:app", host="0.0.0.0", port=8001, reload=True)
+D:\SLH_ECOSYSTEM\shared\wallet_api.py:8: app = FastAPI(lifespan=lifespan)
+D:\SLH_ECOSYSTEM\wallet\app\main.py:15: app = FastAPI(title="SLH Community Wallet", version="0.1.0")
+D:\SLH_ECOSYSTEM\main.py:41: app = FastAPI(

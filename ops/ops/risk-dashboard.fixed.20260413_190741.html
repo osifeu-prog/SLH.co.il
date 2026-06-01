@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SLH Risk Dashboard</title>
+  <meta name="description" content="Internal SLH risk intelligence dashboard." />
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="canonical" href="https://slh-nft.com/risk-dashboard.html" />
+  <meta property="og:title" content="SLH Risk Dashboard" />
+  <meta property="og:description" content="Internal risk intelligence dashboard." />
+  <meta property="og:image" content="https://slh-nft.com/assets/og/risk-dashboard.png" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <style>
+    body { font-family: Arial, sans-serif; background:#0b1020; color:#e8eefc; margin:0; padding:24px; }
+    h1,h2 { margin:0 0 12px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; }
+    .card { background:#141b2d; border:1px solid #2b3657; border-radius:16px; padding:16px; }
+    .muted { color:#9db0d1; }
+    table { width:100%; border-collapse:collapse; margin-top:12px; }
+    th, td { text-align:left; padding:8px; border-bottom:1px solid #2b3657; vertical-align:top; }
+    .pill { display:inline-block; padding:4px 10px; border-radius:999px; background:#223155; }
+    code { color:#9ef; word-break:break-all; }
+  </style>
+</head>
+<body>
+  <h1>SLH Risk Dashboard</h1>
+  <p class="muted">Internal-only risk intelligence and evidence tracking.</p>
+
+  <div class="grid" id="summary"></div>
+
+  <div class="card" style="margin-top:16px;">
+    <h2>Entities</h2>
+    <div id="entities">Loading...</div>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <h2>External Watch</h2>
+    <div id="watch">Loading...</div>
+  </div>
+
+  <script>
+    async function j(url) {
+      const r = await fetch(url);
+      if (!r.ok) throw new Error(url + " -> " + r.status);
+      return await r.json();
+    }
+
+    async function main() {
+      const entities = await j("/api/risk/entities");
+      const watch = await j("/api/risk/external-watch");
+
+      const summary = document.getElementById("summary");
+      summary.innerHTML = `
+        <div class="card"><h2>${entities.total_entities}</h2><div class="muted">Entities</div></div>
+        <div class="card"><h2>${entities.public_ready}</h2><div class="muted">Ready for publication</div></div>
+        <div class="card"><h2>${watch.total_assets}</h2><div class="muted">Watched assets</div></div>
+      `;
+
+      const ent = document.getElementById("entities");
+      ent.innerHTML = `
+        <table>
+          <thead>
+            <tr><th>Name</th><th>Score</th><th>Reports</th><th>Evidence</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            ${entities.items.map(x => `
+              <tr>
+                <td><strong>${x.canonical_name}</strong><br><span class="muted">${x.entity_id}</span></td>
+                <td>${x.score_zuz}</td>
+                <td>${x.approved_reports}</td>
+                <td>${x.verified_evidence}</td>
+                <td><span class="pill">${x.eligible_for_publication ? "ready" : "internal"}</span></td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+
+      const w = document.getElementById("watch");
+      w.innerHTML = `
+        <table>
+          <thead>
+            <tr><th>Asset</th><th>Chain</th><th>Contract</th><th>Price</th><th>Last Seen</th></tr>
+          </thead>
+          <tbody>
+            ${watch.items.map(x => `
+              <tr>
+                <td>${x.asset_name}</td>
+                <td>${x.chain}</td>
+                <td><code>${x.contract_address}</code></td>
+                <td>${x.last_price_usd ?? "-"}</td>
+                <td>${x.last_seen_at ?? "-"}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+    }
+
+    main().catch(err => {
+      document.body.insertAdjacentHTML(
+        "beforeend",
+        `<div class="card" style="margin-top:16px;color:#ffb4b4;">${err.message}</div>`
+      );
+    });
+  </script>
+</body>
+</html>

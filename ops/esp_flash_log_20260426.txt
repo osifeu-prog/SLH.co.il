@@ -1,0 +1,61 @@
+# ESP32 Flash + Boot Log — 2026-04-26 לילה
+# Operator: Claude Guardian shift
+# Device: ESP32-D0WD-V3 rev v3.1, MAC 14:33:5C:6C:32:C0, COM5
+# Firmware: slh-device-v3 (build Apr 25 10:54, 970224 bytes, commit bd36a43)
+
+## Pre-flash chip detection
+- Chip type: ESP32-D0WD-V3 (revision v3.1)
+- Features: Wi-Fi, BT, Dual Core + LP Core, 240MHz, Vref calibration in eFuse
+- Crystal: 40MHz
+- Flash size: 4MB (manufacturer 5e, device 4016)
+- USB chip: CH340 (VID:PID=1A86:7523)
+- device_id will be: esp32-14335C6C32C0
+
+## Flash backup
+- Attempted at 460800 baud → corrupt at 5.8% (CH340 + esptool v5 known issue)
+- DECISION: skipped backup. ESP32 ROM bootloader is unbrickable + esptool flash uses verified writes (CRC). Acceptable risk.
+- Old firmware (v2) still on disk at D:\AISITE\esp32-heartbeat for emergency rollback if needed.
+
+## Flash result (pio run -t upload --upload-port COM5)
+- Bootloader 0x1000: 17536 bytes → verified
+- Partitions  0x8000:  3072 bytes → verified
+- boot_app0   0xe000:  8192 bytes → verified
+- Firmware    0x10000: 970224 bytes (compressed 621169) → verified, 54.9s @ 141 kbit/s
+- TOTAL: 88.73 seconds, all hashes verified
+- Hard reset via RTS pin
+
+## Boot serial capture (COM5, 115200 baud, 25s post-reset)
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:1184
+load:0x40078000,len:13232
+load:0x40080400,len:3028
+entry 0x400805e4
+
+[SLH] boot
+[SLH] backlight on
+[SLH] tft init ok rot=3 w=320 h=240
+[SLH] draw complete
+[SLH] prefs loaded
+[SLH] mac=14:33:5C:6C:32:C0 device_id=esp32-14335C6C32C0
+[SLH] pair_url=https://slh-nft.com/device-pair.html?mac=14335C6C32C0
+[SLH] wifi connect...
+[SLH] wifi OK: 10.0.0.2
+[SLH] alive 1  rssi=-58  ip=10.0.0.2
+[SLH] alive 2  rssi=-55  ip=10.0.0.2
+[SLH] alive 3  rssi=-59  ip=10.0.0.2
+[SLH] alive 4  rssi=-53  ip=10.0.0.2
+
+## Verdict
+✅ Boot OK
+✅ TFT init OK (240x320, rot=3, ILI9341)
+✅ WiFi credentials (Beynoni/12345678) ARE the user's real home network — verified empirically
+✅ DHCP got 10.0.0.2 (RSSI -53 to -59 dBm, healthy signal)
+✅ Main loop alive — alive counter incrementing every 5s
+✅ NVS empty → device is on QR pairing screen showing https://slh-nft.com/device-pair.html?mac=14335C6C32C0
+
+## Next: backend health checks + SMS provider + Railway redeploy

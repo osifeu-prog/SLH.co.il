@@ -1,0 +1,196 @@
+﻿=== ZUZ DB AUDIT ===
+
+==================================================
+DATABASE: slh_main
+==================================================
+        table_name         
+---------------------------
+ access_requests
+ account_balances
+ achievements
+ airdrop_events
+ airdrop_users
+ audit_log
+ bank_accounts
+ blacklist
+ breathing_sessions
+ claims
+ daily_claims
+ daily_quests
+ deposits
+ fee_schedule
+ invites
+ journal_entries
+ kyc_records
+ nfty_activation_requests
+ nfty_items
+ nfty_listings
+ nfty_users
+ pet_action_log
+ premium_users
+ product_groups
+ products
+ purchase_orders
+ referral_stats
+ referrals
+ sell_orders
+ shop_products
+ shops
+ statements
+ stock_movements
+ system_events
+ system_settings
+ task_verifications
+ tasks
+ token_balances
+ token_transfers
+ user_balances
+ user_tasks
+ users
+ v_user_withdrawal_history
+ v_withdrawal_admin_queue
+ virtual_pets
+ withdrawals
+(46 rows)
+
+
+-- token-like search --
+   table_name    |   column_name   
+-----------------+-----------------
+ nfty_listings   | currency_symbol
+ token_balances  | token
+ token_transfers | token
+(3 rows)
+
+
+-- direct ZUZ search in common tables --
+QUERY: select * from token_balances where token ilike '%ZUZ%';
+ user_id | token | balance | updated_at 
+---------+-------+---------+------------
+(0 rows)
+
+QUERY: select * from token_transfers where token ilike '%ZUZ%';
+ id | from_user_id | to_user_id | token | amount | fee | memo | tx_type | blockchain_tx | created_at 
+----+--------------+------------+-------+--------+-----+------+---------+---------------+------------
+(0 rows)
+
+QUERY: select * from account_balances where cast(account_balances as text) ilike '%ZUZ%';
+ account_id | available | locked | total | updated_at 
+------------+-----------+--------+-------+------------
+(0 rows)
+
+QUERY: select * from system_settings where cast(system_settings as text) ilike '%ZUZ%';
+ key | value_text | updated_at 
+-----+------------+------------
+(0 rows)
+
+QUERY: select * from journal_entries where cast(journal_entries as text) ilike '%ZUZ%';
+ id | tx_ref | debit_account_id | credit_account_id | amount | currency | description | entry_type | created_at 
+----+--------+------------------+-------------------+--------+----------+-------------+------------+------------
+(0 rows)
+
+QUERY: select * from audit_log where cast(audit_log as text) ilike '%ZUZ%';
+ id | user_id | event_type | payload_json | created_at 
+----+---------+------------+--------------+------------
+(0 rows)
+
+
+==================================================
+DATABASE: slh_guardian
+==================================================
+    table_name     
+-------------------
+ accounts
+ admin_requests
+ admins
+ alembic_version
+ audit_log
+ expert_candidates
+ expert_categories
+ expert_votes
+ managed_groups
+ p2p_orders
+ payment_requests
+ permissions
+ plans
+ points_ledger
+ referrals
+ reward_ledger
+ role_permissions
+ roles
+ user_roles
+ users
+(20 rows)
+
+
+-- token-like search --
+ table_name | column_name 
+------------+-------------
+ p2p_orders | token
+(1 row)
+
+
+-- direct ZUZ search in common tables --
+QUERY: select * from token_balances where token ilike '%ZUZ%';
+ERROR:  relation "token_balances" does not exist
+LINE 1: select * from token_balances where token ilike '%ZUZ%';
+                      ^
+QUERY: select * from token_transfers where token ilike '%ZUZ%';
+ERROR:  relation "token_transfers" does not exist
+LINE 1: select * from token_transfers where token ilike '%ZUZ%';
+                      ^
+QUERY: select * from account_balances where cast(account_balances as text) ilike '%ZUZ%';
+ERROR:  relation "account_balances" does not exist
+LINE 1: select * from account_balances where cast(account_balances a...
+                      ^
+QUERY: select * from system_settings where cast(system_settings as text) ilike '%ZUZ%';
+ERROR:  relation "system_settings" does not exist
+LINE 1: select * from system_settings where cast(system_settings as ...
+                      ^
+QUERY: select * from journal_entries where cast(journal_entries as text) ilike '%ZUZ%';
+ERROR:  relation "journal_entries" does not exist
+LINE 1: select * from journal_entries where cast(journal_entries as ...
+                      ^
+QUERY: select * from audit_log where cast(audit_log as text) ilike '%ZUZ%';
+ id | event | actor_user_id | meta | created_at 
+----+-------+---------------+------+------------
+(0 rows)
+
+
+==================================================
+DATABASE: slh_wallet
+==================================================
+ table_name 
+------------
+ wallets
+(1 row)
+
+
+-- token-like search --
+ table_name | column_name 
+------------+-------------
+(0 rows)
+
+
+-- direct ZUZ search in common tables --
+QUERY: select * from token_balances where token ilike '%ZUZ%';
+ERROR:  relation "token_balances" does not exist
+LINE 1: select * from token_balances where token ilike '%ZUZ%';
+                      ^
+QUERY: select * from token_transfers where token ilike '%ZUZ%';
+ERROR:  relation "token_transfers" does not exist
+LINE 1: select * from token_transfers where token ilike '%ZUZ%';
+                      ^
+QUERY: select * from account_balances where cast(account_balances as text) ilike '%ZUZ%';
+ERROR:  relation "account_balances" does not exist
+LINE 1: select * from account_balances where cast(account_balances a...
+                      ^
+QUERY: select * from system_settings where cast(system_settings as text) ilike '%ZUZ%';
+ERROR:  relation "system_settings" does not exist
+LINE 1: select * from system_settings where cast(system_settings as ...
+                      ^
+QUERY: select * from journal_entries where cast(journal_entries as text) ilike '%ZUZ%';
+ERROR:  relation "journal_entries" does not exist
+LINE 1: select * from journal_entries where cast(journal_entries as ...
+                      ^
+QUERY: select * from audit_log where cast(audit_log as text) ilike '%ZUZ%';

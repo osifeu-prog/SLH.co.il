@@ -1,0 +1,39 @@
+﻿=== UNIFIED STATUS ===
+
+[1] Risk entity score
+    entity_id    |  canonical_name   | entity_type |      homepage_url       | is_public | score_zuz | approved_reports | verified_evidence | eligible_for_publication 
+-----------------+-------------------+-------------+-------------------------+-----------+-----------+------------------+-------------------+--------------------------
+ coalichain_zooz | ZooZ / Coalichain | project     | https://zooz.coali.app/ | f         |     30.00 |                3 |                 1 | t
+(1 row)
+
+
+[2] External watch assets
+      asset_key      |       asset_name        |      chain      |              contract_address              
+---------------------+-------------------------+-----------------+--------------------------------------------
+ coalichain_zooz_bsc | Coalichain Token (ZOOZ) | BNB Smart Chain | 0x132306a39d6fC1E49C3Cb6D8FE8d07d4D44B462a
+(1 row)
+
+
+[3] Latest snapshots
+      asset_key      | price_usd  |    total_supply    | circulating_supply | liquidity_usd |        observed_at        
+---------------------+------------+--------------------+--------------------+---------------+---------------------------
+ coalichain_zooz_bsc | 0.24833000 | 770000000.00000000 | 759643000.00000000 |      45500.00 | 2026-04-13 15:40:55.76118
+(1 row)
+
+
+[4] Guardian stats (prod API)
+{
+    "total_reports":  1,
+    "total_flagged_users":  1,
+    "total_banned":  0,
+    "total_auto_banned":  0,
+    "total_messages_scanned":  0,
+    "total_messages_flagged":  0,
+    "total_zuz_issued":  10.0,
+    "groups_protected":  0,
+    "zuz_auto_ban_threshold":  100
+}
+
+[5] SEO gaps quick scan
+overnight-report.html: canonical, twitter:card
+risk-dashboard.html: canonical

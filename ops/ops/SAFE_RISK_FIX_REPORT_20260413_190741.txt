@@ -1,0 +1,38 @@
+﻿SAFE RISK FIX COMPLETE
+Backup: D:\SLH_BACKUPS\SAFE_RISK_FIX_20260413_190741
+API main: D:\SLH_ECOSYSTEM\api\main.py
+Dashboard: D:\SLH_ECOSYSTEM\website\risk-dashboard.html
+API block file: D:\SLH_ECOSYSTEM\ops\RISK_API_BLOCK_FIXED_20260413_190741.py
+
+[Risk score]
+    entity_id    |  canonical_name   | entity_type |      homepage_url       | is_public | score_zuz | approved_reports | verified_evidence | eligible_for_publication 
+-----------------+-------------------+-------------+-------------------------+-----------+-----------+------------------+-------------------+--------------------------
+ coalichain_zooz | ZooZ / Coalichain | project     | https://zooz.coali.app/ | f         |     30.00 |                3 |                 1 | t
+(1 row)
+
+
+[External watch]
+      asset_key      |       asset_name        |      chain      |              contract_address              
+---------------------+-------------------------+-----------------+--------------------------------------------
+ coalichain_zooz_bsc | Coalichain Token (ZOOZ) | BNB Smart Chain | 0x132306a39d6fC1E49C3Cb6D8FE8d07d4D44B462a
+(1 row)
+
+
+[Snapshots]
+      asset_key      | price_usd  |    total_supply    | circulating_supply | liquidity_usd |        observed_at         
+---------------------+------------+--------------------+--------------------+---------------+----------------------------
+ coalichain_zooz_bsc | 0.24833000 | 770000000.00000000 | 759643000.00000000 |      45500.00 | 2026-04-13 15:50:55.202649
+ coalichain_zooz_bsc | 0.24833000 | 770000000.00000000 | 759643000.00000000 |      45500.00 | 2026-04-13 15:40:55.76118
+(2 rows)
+
+
+[Local endpoint tests]
+
+Url                                              Ok Preview                                
+---                                              -- -------                                
+http://127.0.0.1:8080/api/risk/entities       False The operation has timed out.           
+http://127.0.0.1:8080/api/risk/external-watch False השרת המרוחק החזיר שגיאה: (404) לא נמצא.
+http://127.0.0.1:8000/api/risk/entities       False אין אפשרות להתחבר לשרת המרוחק          
+
+
+

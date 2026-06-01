@@ -1,0 +1,191 @@
+{
+  "generated_at": "2026-04-21",
+  "generated_by": "Claude Opus 4.7 (Phase 0 audit pass)",
+  "source_of_truth": "D:\\SLH_ECOSYSTEM",
+  "railway_repo": "https://github.com/osifeu-prog/slh-api.git (branch: master)",
+  "website_repo": "https://github.com/osifeu-prog/osifeu-prog.github.io (branch: main, domain: slh-nft.com)",
+
+  "core": {
+    "primary_system": "D:\\SLH_ECOSYSTEM",
+    "orchestrator": "D:\\SLH_CONTROL.ps1",
+    "control_commands": ["status", "up", "down", "restart", "logs", "health"],
+    "entry_points": [
+      "D:\\SLH_ECOSYSTEM\\main.py (root, Railway builds from here)",
+      "D:\\SLH_ECOSYSTEM\\api\\main.py (synced mirror)"
+    ],
+    "db_core": "D:\\SLH_ECOSYSTEM\\shared_db_core.py (new, Night 21.4)"
+  },
+
+  "bots_running_now": {
+    "count": 20,
+    "infrastructure": ["slh-redis", "slh-postgres"],
+    "list": [
+      "slh-nfty", "slh-airdrop", "slh-osif-shop", "slh-game",
+      "slh-core-bot", "slh-guardian-bot", "slh-admin", "slh-factory",
+      "slh-botshop", "slh-chance", "slh-test-bot", "slh-crazy-panel",
+      "slh-ts-set", "slh-beynonibank", "slh-nft-shop", "slh-ton",
+      "slh-ton-mnh", "slh-campaign", "slh-nifti", "slh-fun"
+    ],
+    "uptime": "39 hours (as of scan)",
+    "source": "D:\\SLH_ECOSYSTEM\\docker-compose.yml"
+  },
+
+  "api": {
+    "production_url": "https://slh-api-production.up.railway.app",
+    "endpoint_count": "113+",
+    "file": "D:\\SLH_ECOSYSTEM\\main.py",
+    "line_count": 10695,
+    "health_endpoint": "/api/health (returns 503 on DB down — Phase 0 change)"
+  },
+
+  "finance_and_external_integrations": {
+    "slh_token_bsc": {
+      "contract": "0xACb0A09414CEA1C879c67bB7A877E4e19480f022",
+      "chain": "BSC (BEP-20, 15 decimals)",
+      "pool": "0xacea26b6e132cd45f2b8a4754170d4d0d3b8bbee (PancakeSwap V2)",
+      "status": "LIVE — do not touch"
+    },
+    "genesis_wallet": "0xd061de73B06d5E91bfA46b35EfB7B08b16903da4",
+    "main_metamask": "0xD0617B54FB4b6b66307846f217b4D685800E3dA4 (199K SLH)",
+    "tokens": ["SLH", "MNH (stablecoin)", "ZVK (rewards)", "REP (reputation)", "ZUZ (anti-fraud)"],
+    "slh_bnb_system": {
+      "path": "D:\\SLH_BNB",
+      "repo": "https://github.com/osifeu-prog/SLH_BNB.git",
+      "db": "slh_bnb.db (SQLite) + alembic migrations",
+      "status": "SEPARATE deployment, investor-facing — DO NOT TOUCH per user flag"
+    }
+  },
+
+  "mobile_apps_separate": [
+    {
+      "path": "D:\\SLHWallet",
+      "tech": "React Native",
+      "platforms": ["Android", "iOS"],
+      "repo": "local git only"
+    },
+    {
+      "path": "D:\\SLH_APP",
+      "tech": "Expo",
+      "config": "app.json + eas.json",
+      "repo": "local git, baseline v1.0.0"
+    }
+  ],
+
+  "labs_experimental": {
+    "aisite": {
+      "path": "D:\\AISITE",
+      "repo": "https://github.com/osifeu-prog/SLH-Lab.git",
+      "purpose": "SLH Spark local lab — agent_hub, command_listener, bot_pinger",
+      "status": "NOT production, local-only per Night 19.4 memory"
+    },
+    "slh_game_test": {
+      "path": "D:\\SLH_GAME_TEST",
+      "purpose": "Game testing rig with ESP hardware interface + agent_board",
+      "status": "Night 20.4 late — slh_entry/glitch/recover unified here",
+      "keep": true
+    },
+    "slh_control_dir": {
+      "path": "D:\\SLH_CONTROL\\",
+      "contents": "control_bot.py + venv",
+      "status": "NOT the orchestrator — SLH_CONTROL.ps1 is. This dir is a separate bot experiment",
+      "action": "rename or archive to avoid confusion"
+    }
+  },
+
+  "standalone_bots_not_currently_running": {
+    "slh_agent_merchant": "D:\\SLH_AGENT_MERCHANT (main.py + docker-compose.redis.yml)",
+    "slh_agent_sales": "D:\\SLH_AGENT_SALES (main.py + docker-compose.redis.yml)",
+    "slhb": "D:\\SLHB (main.py + docker-compose.yml for postgres)",
+    "gate_botshop": "D:\\GATE_BOTSHOP (Procfile, Railway-ready)",
+    "telegram_guardian_enterprise": "D:\\telegram-guardian-DOCKER-COMPOSE-ENTERPRISE (separate docker stack, guardian-api + db + redis)",
+    "expertnet_core": "D:\\ExpertNet_Core (launcher.py, monitor_system.ps1)",
+    "games": "D:\\GAMES (payment_flow.py, BOT, BOT_TEST, Railway-ready)"
+  },
+
+  "protected_do_not_touch": {
+    "live_production_flagged_by_user": [
+      "D:\\SLH_BNB (BNB investor system, separate Railway deploy)",
+      "D:\\SLH_ECOSYSTEM (main Railway deploy + 20 Docker bots)"
+    ],
+    "explicit_user_flags_in_filenames": [
+      "D:\\אתר ובוט מחובר לבייננס - לא למחוק.zip",
+      "D:\\מחובר ל BNB למשקיעים לא למחוק (בוטפאקטורי).zip"
+    ]
+  },
+
+  "backups_candidates_for_archive": {
+    "top_level_zips": [
+      "SLH_BACKUP_2026-03-05_12-51.zip",
+      "SLH_BACKUP_AUTO_2026-03-05_12-54.zip",
+      "SLH_BACKUP_AUTO_2026-03-05_12-59.zip",
+      "SLH_BACKUP_AUTO_2026-03-05_13-01.zip",
+      "SLH_BACKUP_SUCCESS_2026-03-05_12-53.zip",
+      "SLH_PROJECT_V2_BACKUP.zip",
+      "SLH_PROJECT_V2_snapshot_20260331_201602.zip",
+      "SLH_PROJECT_V2_snapshot_20260331_204647.zip",
+      "SLH_REAL_SYSTEM.zip",
+      "SLH_AUDIT_20260416_190058.zip",
+      "SLH_AUDIT_FILES.zip",
+      "SLH_DIAGNOSTIC.zip",
+      "SLH_DIAGNOSTICS_20260411_190125.zip",
+      "SLH_MASTER_AUDIT.zip",
+      "SLH_NEXT_AUDIT.zip",
+      "SLH_PHASE0_EXECUTION.zip",
+      "SLH_BNB.zip (duplicate of D:\\SLH_BNB)",
+      "BOT_FACTORY.zip",
+      "HBD.zip",
+      "GATE_BOTSHOP-main (2).zip"
+    ],
+    "backup_dirs": [
+      "SLH_BACKUPS",
+      "SLH_SAFE_BACKUPS",
+      "SLH_HOTFIX_BACKUP_20260409_215251",
+      "SLH_RESTORE_20260410_011044",
+      "SLH_LIVE_VERIFY_20260411_192534",
+      "AISITE_BACKUP_2026-04-18_21-48-23",
+      "ARCHIVE_SLH_OLD (contains SLH_BOTS_20260416 + SLH_PROJECT_V2_20260416)"
+    ],
+    "audit_snapshots": [
+      "SLH_AUDIT_2026-04-09",
+      "SLH_AUDIT_20260416_190058",
+      "SLH_AUDIT_FILES",
+      "SLH_AUDIT_FULL",
+      "SLH_AUDIT_NIFTII",
+      "SLH_DIAGNOSTIC",
+      "SLH_DIAGNOSTICS_20260411_190125",
+      "SLH_DIAG_20260410_120427",
+      "SLH_MASTER_AUDIT",
+      "SLH_NEXT_AUDIT",
+      "SLH_REAL_SYSTEM (text-file snapshot, not real system)"
+    ]
+  },
+
+  "unknown_low_value_candidates": [
+    "D:\\44 (contains only ESCOLLS dir)",
+    "D:\\SLH (old React Native wallet project with its own backups)",
+    "D:\\SLHSITE (only node_modules, empty shell)",
+    "D:\\Gardient2_Final",
+    "D:\\ReactProjects",
+    "D:\\DockerData",
+    "D:\\Dockerfile (bare file at D:\\ root)",
+    "D:\\campaign1.zip (unknown content)",
+    "D:\\Microsoft Excel Worksheet חדש.xlsx",
+    "D:\\‫מסמך טקסט ‫חדש (2).txt",
+    "D:\\‫מסמך טקסט ‫חדש.txt"
+  ],
+
+  "active_scripts_in_d_root": {
+    "preserve": ["D:\\SLH_CONTROL.ps1"],
+    "reviewable": [
+      "scan_all.ps1",
+      "start-wallet.bat",
+      "fix_svc2.py", "fix_svc_purchases.py", "fix_view_final.py",
+      "fix_views.py", "fix_views_clean.py", "fix_withdrawals.py",
+      "fix_withdrawals_full.py", "rebuild_withdraw_views.py",
+      "show_buy_block.py", "show_setting.py",
+      "tmp_check.py", "tmp_fix.py", "tmp_fix2.py", "tmp_fix3.py",
+      "test-setup.js", "test.js", "testConnection.js",
+      "wallet_api_benchmark.txt"
+    ]
+  }
+}

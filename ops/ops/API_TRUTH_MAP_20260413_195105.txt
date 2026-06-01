@@ -1,0 +1,1036 @@
+﻿=== API TRUTH MAP ===
+Time: 2026-04-13 19:51:06
+
+1) Railway config files
+D:\SLH_ECOSYSTEM\airdrop\Dockerfile
+D:\SLH_ECOSYSTEM\airdrop\infra\docker-compose.yml
+D:\SLH_ECOSYSTEM\airdrop\infra\Dockerfile
+D:\SLH_ECOSYSTEM\airdrop\railway.json
+D:\SLH_ECOSYSTEM\airdrop\railway.toml
+D:\SLH_ECOSYSTEM\api\Dockerfile
+D:\SLH_ECOSYSTEM\api\railway.json
+D:\SLH_ECOSYSTEM\backups\20260405_160808\docker-compose.yml
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\Dockerfile
+D:\SLH_ECOSYSTEM\botshop\Dockerfile
+D:\SLH_ECOSYSTEM\docker-compose.yml
+D:\SLH_ECOSYSTEM\Dockerfile
+D:\SLH_ECOSYSTEM\factory\Dockerfile
+D:\SLH_ECOSYSTEM\fun\Dockerfile
+D:\SLH_ECOSYSTEM\fun\railway.toml
+D:\SLH_ECOSYSTEM\promo\railway.toml
+D:\SLH_ECOSYSTEM\railway.json
+D:\SLH_ECOSYSTEM\school\railway.json
+D:\SLH_ECOSYSTEM\site\railway.toml
+D:\SLH_ECOSYSTEM\userinfo-bot\Dockerfile
+
+2) Search for Railway API start command / healthcheck / main:app
+D:\SLH_ECOSYSTEM\airdrop\docs\PROGRESS.md:11: - תיעוד פריסה ל-Railway (Variables + healthcheck)
+D:\SLH_ECOSYSTEM\airdrop\debug_results.json:25: "בוט ישן כנראה רץ ב-Railway",
+D:\SLH_ECOSYSTEM\airdrop\FINAL_DEPLOYMENT.ps1.txt:10: Write-Host "✅ API01 עובד: https://successful-fulfillment-production.up.railway.app" -ForegroundColor Green
+D:\SLH_ECOSYSTEM\airdrop\FINAL_DEPLOYMENT.ps1.txt:17: Write-Host "`n1. 🛑 עצירת הבוט הישן ב-Railway..." -ForegroundColor Red
+D:\SLH_ECOSYSTEM\airdrop\FINAL_DEPLOYMENT.ps1.txt:18: Write-Host "   עבור ל: https://railway.app/project/airdrop" -ForegroundColor Blue
+D:\SLH_ECOSYSTEM\airdrop\FINAL_DEPLOYMENT.ps1.txt:705: print("🌐 URL: https://successful-fulfillment-production.up.railway.app")
+D:\SLH_ECOSYSTEM\airdrop\FINAL_DEPLOYMENT.ps1.txt:726: $botContent = $botContent -replace 'API_URL = "http://localhost:8000"', 'API_URL = "https://successful-fulfillment-production.up.railway.app"'
+D:\SLH_ECOSYSTEM\airdrop\FINAL_DEPLOYMENT.ps1.txt:728: Write-Host "   ✅ הבוט מעודכן לכתובת ה-API ב-Railway" -ForegroundColor Green
+D:\SLH_ECOSYSTEM\airdrop\FINAL_DEPLOYMENT.ps1.txt:745: $apiUrl = "https://successful-fulfillment-production.up.railway.app"
+D:\SLH_ECOSYSTEM\airdrop\FINAL_DEPLOYMENT.ps1.txt:772: Write-Host "   https://successful-fulfillment-production.up.railway.app/admin/dashboard?admin_key=airdrop_admin_2026" -ForegroundColor Blue
+D:\SLH_ECOSYSTEM\airdrop\FINAL_DEPLOYMENT.ps1.txt:776: Write-Host "   • בריאות: https://successful-fulfillment-production.up.railway.app/health" -ForegroundColor Gray
+D:\SLH_ECOSYSTEM\airdrop\FINAL_DEPLOYMENT.ps1.txt:777: Write-Host "   • דוקומנטציה: https://successful-fulfillment-production.up.railway.app/docs" -ForegroundColor Gray
+D:\SLH_ECOSYSTEM\airdrop\FINAL_DEPLOYMENT.ps1.txt:793: Write-Host "   🌐 API: https://successful-fulfillment-production.up.railway.app" -ForegroundColor Blue
+D:\SLH_ECOSYSTEM\airdrop\FINAL_DEPLOYMENT.ps1.txt:794: Write-Host "   📊 פאנל: https://successful-fulfillment-production.up.railway.app/admin/dashboard?admin_key=airdrop_admin_2026" -ForegroundColor Blue
+D:\SLH_ECOSYSTEM\airdrop\FINAL_DEPLOYMENT.ps1.txt:821: # שלב 6: הפעל מחדש את ה-API ב-Railway
+D:\SLH_ECOSYSTEM\airdrop\FINAL_DEPLOYMENT.ps1.txt:823: Write-Host "`n6. 🔄 הפעלת מחדש של ה-API ב-Railway..." -ForegroundColor Blue
+D:\SLH_ECOSYSTEM\airdrop\FINAL_DEPLOYMENT.ps1.txt:825: Write-Host "   עבור ל: https://railway.app/project/API01" -ForegroundColor White
+D:\SLH_ECOSYSTEM\airdrop\FINAL_DEPLOYMENT.ps1.txt:857: Write-Host "2. עבור ל: https://successful-fulfillment-production.up.railway.app/health" -ForegroundColor Gray
+D:\SLH_ECOSYSTEM\airdrop\FINAL_DEPLOYMENT.ps1.txt:861: Write-Host "1. עבור ל: https://successful-fulfillment-production.up.railway.app/admin/dashboard?admin_key=airdrop_admin_2026" -ForegroundColor Gray
+D:\SLH_ECOSYSTEM\airdrop\FINAL_DEPLOYMENT.ps1.txt:881: Write-Host "• לוגים: Railway → פרויקט API01 → Logs" -ForegroundColor Blue
+D:\SLH_ECOSYSTEM\airdrop\FINAL_DEPLOYMENT.ps1.txt:890: Write-Host "✅ בוט מעודכן לכתובת ה-Railway" -ForegroundColor Green
+D:\SLH_ECOSYSTEM\airdrop\FINAL_DEPLOYMENT.ps1.txt:896: Write-Host "2. 🌐 API: https://successful-fulfillment-production.up.railway.app" -ForegroundColor Blue
+D:\SLH_ECOSYSTEM\airdrop\FINAL_DEPLOYMENT.ps1.txt:897: Write-Host "3. 📊 פאנל: https://successful-fulfillment-production.up.railway.app/admin/dashboard?admin_key=airdrop_admin_2026" -ForegroundColor Blue
+D:\SLH_ECOSYSTEM\airdrop\FINAL_DEPLOYMENT.ps1.txt:898: Write-Host "4. ❤️  בריאות: https://successful-fulfillment-production.up.railway.app/health" -ForegroundColor Blue
+D:\SLH_ECOSYSTEM\airdrop\railway.json:2: "$schema": "https://railway.app/railway.schema.json",
+D:\SLH_ECOSYSTEM\airdrop\README.md:18: 2. Deploy to Railway:
+D:\SLH_ECOSYSTEM\airdrop\ROADMAP.md:34: - Railway deploy gating
+D:\SLH_ECOSYSTEM\api\railway.json:2: "$schema": "https://railway.app/railway.schema.json",
+D:\SLH_ECOSYSTEM\api\railway.json:8: "startCommand": "sh -c 'uvicorn main:app --host 0.0.0.0 --port $PORT'",
+D:\SLH_ECOSYSTEM\api\railway.json:9: "healthcheckPath": "/api/health",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\docs\README.md:3: FastAPI + python-telegram-bot v21 service running on Railway.
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\docs\README.md:46: ## Deploying to Railway
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\docs\README.md:50: - Make sure `PORT` is set to `8080` in Railway (or change the Docker CMD).
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\docs\README.md:58: ✔ רץ על Railway עם Webhook מלא
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\docs\README.md:93: ✔ שמירה על Webhook יציב תחת Railway
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\docs\README_RELEASE.md:5: 1. `app/` – FastAPI + Telegram backend (Railway)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\docs\README_RELEASE.md:9: ## 1. Backend API (Railway – `app/`)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\docs\README_RELEASE.md:31: ### Railway deployment
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\docs\README_RELEASE.md:34: 2. Create a **Railway** project and attach the repo.
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\docs\README_RELEASE.md:36: 4. In Railway → Variables define:
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\docs\README_RELEASE.md:42: - `WEBHOOK_URL` (your Railway URL)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\docs\README_RELEASE.md:52: 5. Set the **start command** (if not in Dockerfile) to:
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\docs\README_RELEASE.md:58: 6. Healthcheck path should be `/health`.
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\docs\README_RELEASE.md:63: WEBHOOK_URL = https://<your-service>.railway.app
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\docs\README_RELEASE.md:94: 5. Set environment variables as needed to point to your Railway API, e.g.:
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\docs\README_RELEASE.md:96: - `VITE_API_BASE_URL=https://tease-production.up.railway.app`
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\docs\README_RELEASE.md:135: - Backend (Railway): `slhfinance.railway.app`
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\docs\README_RELEASE.md:141: - Point `api.slhfinance.ai` → Railway
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\docs\README_RELEASE.md:149: - Open `https://<railway-app>.railway.app/health` – should be `{"status":"ok"}`.
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\docs\README_RELEASE.md:150: - Open `https://<railway-app>.railway.app/ready` – DB and BSC should be `ok`.
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\docs\README_RELEASE.md:171: - Later you can connect real data via API calls to the Railway backend.
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\tools\railway.vars.txt:1: DATABASE_URL=postgresql://postgres:WmbldPpYTjWmGWAThTgXtKXnoguZNXIc@postgres.railway.internal:5432/railway
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\README.md:3: FastAPI + python-telegram-bot v21 service running on Railway.
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\README.md:46: ## Deploying to Railway
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\README.md:50: - Make sure `PORT` is set to `8080` in Railway (or change the Docker CMD).
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\README.md:58: ✔ רץ על Railway עם Webhook מלא
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\README.md:93: ✔ שמירה על Webhook יציב תחת Railway
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\README_RELEASE.md:5: 1. `app/` – FastAPI + Telegram backend (Railway)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\README_RELEASE.md:9: ## 1. Backend API (Railway – `app/`)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\README_RELEASE.md:31: ### Railway deployment
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\README_RELEASE.md:34: 2. Create a **Railway** project and attach the repo.
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\README_RELEASE.md:36: 4. In Railway → Variables define:
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\README_RELEASE.md:42: - `WEBHOOK_URL` (your Railway URL)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\README_RELEASE.md:52: 5. Set the **start command** (if not in Dockerfile) to:
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\README_RELEASE.md:58: 6. Healthcheck path should be `/health`.
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\README_RELEASE.md:63: WEBHOOK_URL = https://<your-service>.railway.app
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\README_RELEASE.md:94: 5. Set environment variables as needed to point to your Railway API, e.g.:
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\README_RELEASE.md:96: - `VITE_API_BASE_URL=https://tease-production.up.railway.app`
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\README_RELEASE.md:135: - Backend (Railway): `slhfinance.railway.app`
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\README_RELEASE.md:141: - Point `api.slhfinance.ai` → Railway
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\README_RELEASE.md:149: - Open `https://<railway-app>.railway.app/health` – should be `{"status":"ok"}`.
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\README_RELEASE.md:150: - Open `https://<railway-app>.railway.app/ready` – DB and BSC should be `ok`.
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\README_RELEASE.md:171: - Later you can connect real data via API calls to the Railway backend.
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\local\SECRET_REMINDERS.local.md:19: - Railway credentials available
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\commerce_full_check_20260313_151956\SUMMARY.txt:24: - If Telegram webhook points to prod but prod lacks DB tables, Railway DB migration mismatch is likely.
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\commerce_full_check_20260313_151956\SUMMARY.txt:25: - If local DB has tables but prod crashes on submit_payment, Railway DB or Railway deploy is still out of sync.
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\commerce_full_check_20260313_151956\telegram_getWebhookInfo.json:1: {"ok":true,"result":{"url":"https://slhprojectv2-production.up.railway.app/tg/webhook","has_custom_certificate":false,"pending_update_count":0,"last_error_date":1773405620,"last_error_message":"Connection reset by peer","max_connections":40,"ip_address":"66.33.22.2","allowed_updates":["message","callback_query"]}}
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\crash_report_20260308_233119\00_git_status.txt:26: 6568e0b Fix Railway withdrawal approval flow and align webhook url
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\crash_report_20260308_233119\00_git_status.txt:27: 8e31cf9 Fix Railway webhook binding and add requirements
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\crash_report_20260308_233119\09_stop_stable_source.txt:30: Write-Host "STOP STABLE DONE (Railway-only mode)" -ForegroundColor Green
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\crash_report_20260308_233119\10_start_stable_source.txt:62: Good "START STABLE DONE (Railway-only mode)"
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\secret_quarantine_20260314_134916\LOG.txt:47: Webhooks: ×§×‘×œ×ھ ×¢×“×›×•× ×™×‌ ×‘×–×‍×ں ×گ×‍×ھ ×‍×‍×¢×¨×›×•×ھ CRM, ×’×™×œ×™×•× ×•×ھ Google Sheets, ×گ×• ×©×™×¨×•×ھ×™ ×¢× ×ں (×›×‍×• Railway ×گ×• AWS).
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\secret_quarantine_20260314_134916\LOG.txt:6290: ×©×™×‌ ×œ×‘: ×•×•×“×گ ×©×‘×§×•×‘×¥ ×”-.env ×©×œ×ڑ ×™×© DATABASE_URL ×ھ×§×™×ں (×œ×‍×©×œ ×©×œ Railway ×گ×• ×¤×•×،×ک×’×¨×، ×‍×§×•×‍×™). ×گ×‌ ×گ×™×ں ×œ×ڑ ×›×–×” ×¢×“×™×™×ں, ×ھ×’×™×“ ×œ×™ ×•×گ×¢×–×•×¨ ×œ×ڑ ×œ×”×§×™×‌ ×گ×—×“ ×‘×—×™× ×‌ ×ھ×•×ڑ ×“×§×”.
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\secret_quarantine_20260314_134916\LOG.txt:7902: ×—×™×‘×•×¨ ×œ×¢× ×ں (×‍×•×‍×œ×¥): ×گ×‌ ×™×© ×œ×ڑ ×›×‘×¨ ×¤×¨×•×™×§×ک ×‘-Railway, ×ھ×¢×ھ×™×§ ×‍×©×‌ ×گ×ھ ×”-Public Database URL ×œ×§×•×‘×¥ ×”-.env ×©×œ×ڑ.
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\secret_quarantine_20260314_134916\LOG.txt:7908: ×‘×¨×’×¢ ×©×ھ×¢×“×›×ں ×گ×ھ ×”×›×ھ×•×‘×ھ ×œ×©×¨×ھ ×¤×¢×™×œ ×‘-Railway, ×”×‘×•×ک ×™×¤×،×™×§ ×œ×”×¨×گ×•×ھ ×گ×ھ ×”×©×’×™×گ×” ×•×”× ×ھ×•× ×™×‌ ×™×™×©×‍×¨×• ×‘×گ×‍×ھ. ×‘×™× ×ھ×™×™×‌, ×¢×‌ ×”×§×•×“ ×”×—×“×© ×œ×‍×¢×œ×”, ×”×‘×•×ک ×œ×¤×—×•×ھ ×™×¢×œ×” ×•×œ×گ ×™×§×¨×•×، ×›×©×œ×•×—×¦×™×‌ /start.
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\secret_quarantine_20260314_134916\LOG.txt:18831: # ×”×ھ×—×‘×¨×•×ھ ×œ-Postgres (×ھ×•×•×“×گ ×©×”×¤×¨×ک×™×‌ × ×›×•× ×™×‌ ×œ-Railway/Local)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\secret_quarantine_20260314_134916\LOG.txt:19012: ×گ×‌ ×™×© ×©×’×™×گ×”: ×،×‘×™×¨ ×œ×”× ×™×— ×©×”×™×گ ×ھ×”×™×” ×‘-Database Connection Error. ×–×” ×§×•×¨×” ×›×™ ×‘×ھ×•×ڑ db_service.py ×”×’×“×¨× ×• ×›×ھ×•×‘×ھ 127.0.0.1 (×‍×—×©×‘ ×‍×§×•×‍×™). ×گ×‌ ×‍×،×“ ×”× ×ھ×•× ×™×‌ ×©×œ×ڑ ×¨×¥ ×‘-Railway ×گ×• ×‘×‍×§×•×‌ ×گ×—×¨, × ×¦×ک×¨×ڑ ×œ×¢×“×›×ں ×گ×ھ ×”×›×ھ×•×‘×ھ.
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\secret_quarantine_20260314_134916\LOG.txt:20159: ×گ×‌ ×”×ھ×§× ×ھ PostgreSQL ×‘×‍×—×©×‘ ×•×§×‘×¢×ھ ×،×™×،×‍×” ×گ×—×¨×ھ, ×ھ×—×œ×™×£ ×گ×•×ھ×” ×›×گ×ں. ×گ×‌ ×گ×ھ×” ×‍×©×ھ×‍×© ×‘-Railway, ×ھ×¢×ھ×™×§ ×œ×›×گ×ں ×گ×ھ ×”-Connection String ×©×”×‌ × ×ھ× ×• ×œ×ڑ.
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\secret_quarantine_20260314_134916\LOG.txt:20213: ×¨×•×¦×” ×©×گ×¢×–×•×¨ ×œ×ڑ ×œ×”×’×“×™×¨ ×‍×،×“ × ×ھ×•× ×™×‌ ×‍×”×™×¨ ×‘-Railway ×›×“×™ ×©×™×”×™×” ×œ×ڑ ×§×™×©×•×¨ ×‍×•×›×ں ×œ×”×“×‘×§×”? ×›×ڑ ×œ×گ ×ھ×¦×ک×¨×ڑ ×œ×”×ھ×§×™×ں ×›×œ×•×‌ ×¢×œ ×”×‍×—×©×‘.
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\secret_quarantine_20260314_134916\LOG.txt:26928: ×§×œ×•×ھ ×¢×“×›×•×ں: ×گ×‌ ×ھ×¨×¦×” ×œ×”×—×œ×™×£ ×ک×•×§×ں ×گ×• ×œ×¢×‘×•×¨ ×œ×©×¨×ھ ×‍×¨×•×—×§ (×›×‍×• Railway) ×‘×¢×ھ×™×“, ×گ×ھ×” ×‍×©× ×” ×¨×§ ×©×•×¨×” ×گ×—×ھ ×‘×§×•×‘×¥ ×”×ک×§×،×ک .env.
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\secret_quarantine_20260314_134916\LOG.txt:49558: Container/Deployment: ×‍×•×›× ×•×ھ ×œ-Railway/Docker.
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\secret_quarantine_20260314_134916\LOG.txt:58683: It looks like you've got two main issues happening in SLH_PROJECT_V2. First, a connection fallback because the specific database doesn't exist, and second, a SQL syntax error inside your /start command handler.
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\secret_quarantine_20260314_134916\LOG.txt:77956: Network Errors: Your logs showed some ServerDisconnectedError. This is often temporary with Telegram's API or a local network hiccup, but if it persists, you might want to check your aiogram version or consider using a webhook if you're deploying on a server like Railway.
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260308_205024\env_nonsecret.txt:6: WEBHOOK_URL=https://slhprojectv2-production.up.railway.app/tg/webhook
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260308_210217\env_nonsecret.txt:6: WEBHOOK_URL=https://slhprojectv2-production.up.railway.app/tg/webhook
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260310_225133\git_log.txt:4: d5a2fb6 ops: add explicit railway postgres and shell helpers
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260310_225133\git_status.txt:10: ?? ops/railway_check_purchase_orders.ps1
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260310_225133\git_status.txt:11: ?? ops/railway_env_dump.ps1
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260310_225133\git_status.txt:16: ?? state/phase_railway_realign_20260310_220154/
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260310_225133\git_status.txt:17: ?? state/railway_pause_20260310_210417/
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260310_225133\git_status.txt:18: ?? state/railway_worker_mismatch_20260310_211555/
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031305\git_log.txt:6: d5a2fb6 ops: add explicit railway postgres and shell helpers
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031305\git_status.txt:8: ?? ops/railway_check_purchase_orders.ps1
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031305\git_status.txt:9: ?? ops/railway_env_dump.ps1
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031305\git_status.txt:16: ?? state/phase_railway_realign_20260310_220154/
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031305\git_status.txt:17: ?? state/railway_pause_20260310_210417/
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031305\git_status.txt:18: ?? state/railway_worker_mismatch_20260310_211555/
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031309\git_log.txt:6: d5a2fb6 ops: add explicit railway postgres and shell helpers
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031309\git_status.txt:8: ?? ops/railway_check_purchase_orders.ps1
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031309\git_status.txt:9: ?? ops/railway_env_dump.ps1
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031309\git_status.txt:16: ?? state/phase_railway_realign_20260310_220154/
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031309\git_status.txt:17: ?? state/railway_pause_20260310_210417/
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031309\git_status.txt:18: ?? state/railway_worker_mismatch_20260310_211555/
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031310\git_log.txt:6: d5a2fb6 ops: add explicit railway postgres and shell helpers
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031310\git_status.txt:8: ?? ops/railway_check_purchase_orders.ps1
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031310\git_status.txt:9: ?? ops/railway_env_dump.ps1
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031310\git_status.txt:16: ?? state/phase_railway_realign_20260310_220154/
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031310\git_status.txt:17: ?? state/railway_pause_20260310_210417/
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031310\git_status.txt:18: ?? state/railway_worker_mismatch_20260310_211555/
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031311\git_log.txt:6: d5a2fb6 ops: add explicit railway postgres and shell helpers
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031311\git_status.txt:8: ?? ops/railway_check_purchase_orders.ps1
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031311\git_status.txt:9: ?? ops/railway_env_dump.ps1
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031311\git_status.txt:16: ?? state/phase_railway_realign_20260310_220154/
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031311\git_status.txt:17: ?? state/railway_pause_20260310_210417/
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031311\git_status.txt:18: ?? state/railway_worker_mismatch_20260310_211555/
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031312\git_log.txt:6: d5a2fb6 ops: add explicit railway postgres and shell helpers
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031312\git_status.txt:8: ?? ops/railway_check_purchase_orders.ps1
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031312\git_status.txt:9: ?? ops/railway_env_dump.ps1
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031312\git_status.txt:16: ?? state/phase_railway_realign_20260310_220154/
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031312\git_status.txt:17: ?? state/railway_pause_20260310_210417/
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031312\git_status.txt:18: ?? state/railway_worker_mismatch_20260310_211555/
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_132635\git_log.txt:6: d5a2fb6 ops: add explicit railway postgres and shell helpers
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_132635\git_status.txt:8: ?? ops/railway_check_purchase_orders.ps1
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_132635\git_status.txt:9: ?? ops/railway_env_dump.ps1
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_132635\git_status.txt:16: ?? state/phase_railway_realign_20260310_220154/
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_132635\git_status.txt:17: ?? state/railway_pause_20260310_210417/
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_132635\git_status.txt:18: ?? state/railway_worker_mismatch_20260310_211555/
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_143254\git_log.txt:7: d5a2fb6 ops: add explicit railway postgres and shell helpers
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_143254\git_status.txt:5: ?? ops/railway_check_purchase_orders.ps1
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_143254\git_status.txt:6: ?? ops/railway_env_dump.ps1
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_143254\git_status.txt:11: ?? state/phase_railway_realign_20260310_220154/
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_143254\git_status.txt:12: ?? state/railway_pause_20260310_210417/
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_143254\git_status.txt:13: ?? state/railway_worker_mismatch_20260310_211555/
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\commerce_related_files.txt:35: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\phase_railway_realign_20260310_220154\app_handlers_pu...
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\commerce_related_files.txt:36: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_pause_20260310_210417\purchases.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\commerce_related_files.txt:37: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_worker_mismatch_20260310_211555\app_handlers_...
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\commerce_related_files.txt:55: D:\SLH_PROJECT_V2\state\phase_railway_realign_20260310_220154\app_handlers_purchases.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\commerce_related_files.txt:56: D:\SLH_PROJECT_V2\state\railway_pause_20260310_210417\purchases.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\commerce_related_files.txt:57: D:\SLH_PROJECT_V2\state\railway_worker_mismatch_20260310_211555\app_handlers_purchases.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\env_sanitized.txt:18: WEBHOOK_URL=https://slhprojectv2-production.up.railway.app/tg/webhook
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\git_status.txt:20: state/phase_railway_realign_20260310_220154/
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\git_status.txt:23: state/railway_pause_20260310_210417/
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\git_status.txt:24: state/railway_worker_mismatch_20260310_211555/
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:370: D:\SLH_PROJECT_V2\ops\railway-connect-postgres.ps1
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:371: D:\SLH_PROJECT_V2\ops\railway-tail-worker.ps1
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:372: D:\SLH_PROJECT_V2\ops\railway_check_purchase_orders.ps1
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:373: D:\SLH_PROJECT_V2\ops\railway_env_dump.ps1
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:510: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\ops\railway_check_purchase_orders.ps1
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:511: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\ops\railway_env_dump.ps1
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:620: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\phase_railway_realign_20260310_220154\app_handlers_pu...
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:621: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\phase_railway_realign_20260310_220154\app_i18n.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:622: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\phase_railway_realign_20260310_220154\git_head.txt
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:623: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\phase_railway_realign_20260310_220154\git_log.txt
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:624: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\phase_railway_realign_20260310_220154\git_status.txt
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:625: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\phase_railway_realign_20260310_220154\phase_summary.txt
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:626: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\phase_railway_realign_20260310_220154\railway_health....
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:627: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\phase_railway_realign_20260310_220154\railway_healthz...
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:628: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\phase_railway_realign_20260310_220154\telegram_getWeb...
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:629: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\phase_railway_realign_20260310_220154\webhook_server.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:630: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\phase_railway_realign_20260310_220154\worker.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:631: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_pause_20260310_210417\git_head.txt
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:632: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_pause_20260310_210417\git_log.txt
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:633: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_pause_20260310_210417\git_status.txt
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:634: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_pause_20260310_210417\i18n.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:635: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_pause_20260310_210417\purchases.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:636: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_pause_20260310_210417\webhook_server.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:637: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_pause_20260310_210417\worker.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:638: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_worker_mismatch_20260310_211555\app_handlers_...
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:639: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_worker_mismatch_20260310_211555\app_i18n.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:640: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_worker_mismatch_20260310_211555\git_head.txt
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:641: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_worker_mismatch_20260310_211555\git_log.txt
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:642: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_worker_mismatch_20260310_211555\git_status.txt
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:643: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_worker_mismatch_20260310_211555\webhook_serve...
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:644: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_worker_mismatch_20260310_211555\worker.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:651: D:\SLH_PROJECT_V2\state\close_day_20260311_020314\railway_status.txt
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:793: D:\SLH_PROJECT_V2\state\next_round_full_context_20260311_184835\railway_filtered_signals.txt
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:794: D:\SLH_PROJECT_V2\state\next_round_full_context_20260311_184835\railway_logs_300.txt
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:802: D:\SLH_PROJECT_V2\state\phase_railway_realign_20260310_220154\app_handlers_purchases.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:803: D:\SLH_PROJECT_V2\state\phase_railway_realign_20260310_220154\app_i18n.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:804: D:\SLH_PROJECT_V2\state\phase_railway_realign_20260310_220154\git_head.txt
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:805: D:\SLH_PROJECT_V2\state\phase_railway_realign_20260310_220154\git_log.txt
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:806: D:\SLH_PROJECT_V2\state\phase_railway_realign_20260310_220154\git_status.txt
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:807: D:\SLH_PROJECT_V2\state\phase_railway_realign_20260310_220154\phase_summary.txt
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:808: D:\SLH_PROJECT_V2\state\phase_railway_realign_20260310_220154\railway_health.json
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:809: D:\SLH_PROJECT_V2\state\phase_railway_realign_20260310_220154\railway_healthz.json
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:810: D:\SLH_PROJECT_V2\state\phase_railway_realign_20260310_220154\telegram_getWebhookInfo.json
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:811: D:\SLH_PROJECT_V2\state\phase_railway_realign_20260310_220154\webhook_server.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:812: D:\SLH_PROJECT_V2\state\phase_railway_realign_20260310_220154\worker.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:832: D:\SLH_PROJECT_V2\state\pre_ux_commerce_20260311_184220\railway_logs_200.txt
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:840: D:\SLH_PROJECT_V2\state\railway_pause_20260310_210417\git_head.txt
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:841: D:\SLH_PROJECT_V2\state\railway_pause_20260310_210417\git_log.txt
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:842: D:\SLH_PROJECT_V2\state\railway_pause_20260310_210417\git_status.txt
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:843: D:\SLH_PROJECT_V2\state\railway_pause_20260310_210417\i18n.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:844: D:\SLH_PROJECT_V2\state\railway_pause_20260310_210417\purchases.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:845: D:\SLH_PROJECT_V2\state\railway_pause_20260310_210417\webhook_server.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:846: D:\SLH_PROJECT_V2\state\railway_pause_20260310_210417\worker.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:847: D:\SLH_PROJECT_V2\state\railway_worker_mismatch_20260310_211555\app_handlers_purchases.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:848: D:\SLH_PROJECT_V2\state\railway_worker_mismatch_20260310_211555\app_i18n.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:849: D:\SLH_PROJECT_V2\state\railway_worker_mismatch_20260310_211555\git_head.txt
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:850: D:\SLH_PROJECT_V2\state\railway_worker_mismatch_20260310_211555\git_log.txt
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:851: D:\SLH_PROJECT_V2\state\railway_worker_mismatch_20260310_211555\git_status.txt
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:852: D:\SLH_PROJECT_V2\state\railway_worker_mismatch_20260310_211555\webhook_server.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\project_files.txt:853: D:\SLH_PROJECT_V2\state\railway_worker_mismatch_20260310_211555\worker.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\python_files.txt:116: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\phase_railway_realign_20260310_220154\app_handlers_pu...
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\python_files.txt:117: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\phase_railway_realign_20260310_220154\app_i18n.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\python_files.txt:118: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\phase_railway_realign_20260310_220154\webhook_server.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\python_files.txt:119: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\phase_railway_realign_20260310_220154\worker.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\python_files.txt:120: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_pause_20260310_210417\i18n.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\python_files.txt:121: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_pause_20260310_210417\purchases.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\python_files.txt:122: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_pause_20260310_210417\webhook_server.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\python_files.txt:123: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_pause_20260310_210417\worker.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\python_files.txt:124: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_worker_mismatch_20260310_211555\app_handlers_...
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\python_files.txt:125: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_worker_mismatch_20260310_211555\app_i18n.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\python_files.txt:126: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_worker_mismatch_20260310_211555\webhook_serve...
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\python_files.txt:127: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_worker_mismatch_20260310_211555\worker.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\python_files.txt:142: D:\SLH_PROJECT_V2\state\phase_railway_realign_20260310_220154\app_handlers_purchases.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\python_files.txt:143: D:\SLH_PROJECT_V2\state\phase_railway_realign_20260310_220154\app_i18n.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\python_files.txt:144: D:\SLH_PROJECT_V2\state\phase_railway_realign_20260310_220154\webhook_server.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\python_files.txt:145: D:\SLH_PROJECT_V2\state\phase_railway_realign_20260310_220154\worker.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\python_files.txt:146: D:\SLH_PROJECT_V2\state\railway_pause_20260310_210417\i18n.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\python_files.txt:147: D:\SLH_PROJECT_V2\state\railway_pause_20260310_210417\purchases.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\python_files.txt:148: D:\SLH_PROJECT_V2\state\railway_pause_20260310_210417\webhook_server.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\python_files.txt:149: D:\SLH_PROJECT_V2\state\railway_pause_20260310_210417\worker.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\python_files.txt:150: D:\SLH_PROJECT_V2\state\railway_worker_mismatch_20260310_211555\app_handlers_purchases.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\python_files.txt:151: D:\SLH_PROJECT_V2\state\railway_worker_mismatch_20260310_211555\app_i18n.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\python_files.txt:152: D:\SLH_PROJECT_V2\state\railway_worker_mismatch_20260310_211555\webhook_server.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260312_144923\python_files.txt:153: D:\SLH_PROJECT_V2\state\railway_worker_mismatch_20260310_211555\worker.py
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\tasks\current_task.txt:2: TITLE=Railway migration deploy fix
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\tasks\task_20260313_155253.txt:2: TITLE=Railway DB migration alignment
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\tasks\task_20260313_155528.txt:2: TITLE=Railway migration deploy fix
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\tasks\task_20260313_155532.txt:2: TITLE=Railway migration deploy fix
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\ANCHOR.md:4: - Railway remains the current primary runtime.
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\ANCHOR.md:5: - Telegram webhook points to Railway production webhook.
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\ANCHOR.md:9: - Therefore the working hypothesis is still partial deployment alignment / worker mismatch during the Railway incident window, not a source-code failure.
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\ANCHOR.md:19: 1. Reconfirm Railway worker + webhook are aligned on the intended deployment after platform stabilization.
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\ANCHOR.md:32: - Primary: Railway
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\ANCHOR.md:38: - Do not add more store UX patches until Railway visibly serves the inline store version
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\MASTER_AGENT_TASK.md:5: - **Railway:** הגרסה היציבה היא V5.2/V5.3. הראוטר ב-purchases.py מחובר ל-Services.
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\PROJECT_BRIEF.md:12: - Production Telegram webhook points to Railway
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\PROJECT_SCAN.md:15: - Telegram production webhook points to Railway
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\PROJECT_SCAN.md:214: "url":  "https://slhprojectv2-production.up.railway.app/tg/webhook",
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\ROADMAP.md:6: - [x] Railway deployment path exists
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\ROADMAP.md:9: - [ ] Confirm Railway serves the inline store UI in production
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\ROADMAP.md:17: - [ ] set-webhook-railway.ps1
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\ROADMAP.md:27: - [ ] Test manual failover from Railway to local webhook target
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\ROADMAP.md:28: - [ ] Test failback from local runtime to Railway
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\RUNBOOK.md:4: - Telegram webhook target should point to Railway production webhook
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\RUNBOOK.md:5: - Railway is the current primary runtime
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\RUNBOOK.md:17: 2. Confirm Railway deployment finished for all relevant services
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\RUNBOOK.md:62: Until Railway visibly serves the new inline /buy UI:
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\SESSION_SUMMARY_20260311.md:8: 1. **תיקון Production (Railway):**
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\diag_20260317_191210\01_tree.txt:7: |   .railwayignore
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\diag_20260317_191210\01_tree.txt:697: |   |   railway-connect-postgres.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\diag_20260317_191210\01_tree.txt:698: |   |   railway-tail-worker.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\diag_20260317_191210\01_tree.txt:699: |   |   railway_check_purchase_orders.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\diag_20260317_191210\01_tree.txt:700: |   |   railway_env_dump.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\diag_20260317_191210\01_tree.txt:868: |   |           +---phase_railway_realign_20260310_220154
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\diag_20260317_191210\01_tree.txt:869: |   |           +---railway_pause_20260310_210417
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\diag_20260317_191210\01_tree.txt:870: |   |           \---railway_worker_mismatch_20260310_211555
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\diag_20260317_191210\01_tree.txt:964: |   +---phase_railway_realign_20260310_220154
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\diag_20260317_191210\01_tree.txt:983: |   +---railway_pause_20260310_210417
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\diag_20260317_191210\01_tree.txt:984: |   +---railway_worker_mismatch_20260310_211555
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\diag_20260317_191210\02_root_files.txt:33: -a---- 180    3/16/2026 4:30:13 PM  .railwayignore
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\diag_20260317_191210\05_git_log.txt:1: eed2b37 add railway and docker ignore files
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\local\SECRET_REMINDERS.local.md:19: - Railway credentials available
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\audit_20260317_192011\PROJECT_AUDIT_SANITIZED.txt:73: eed2b37 add railway and docker ignore files
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\audit_20260317_192011\PROJECT_AUDIT_SANITIZED.txt:1036: D:\SLH_PROJECT_V2\ops\railway_check_purchase_orders.ps1:1: $db = [Environment]::GetEnvironmentVariable("DATABASE_URL")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\audit_20260317_192011\PROJECT_AUDIT_SANITIZED.txt:1037: D:\SLH_PROJECT_V2\ops\railway_check_purchase_orders.ps1:3: Write-Error "DATABASE_URL is empty"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\audit_20260317_192011\PROJECT_AUDIT_SANITIZED.txt:1038: D:\SLH_PROJECT_V2\ops\railway_check_purchase_orders.ps1:7: Write-Host "DATABASE_URL found" -ForegroundColor Green
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\audit_20260317_192011\PROJECT_AUDIT_SANITIZED.txt:1039: D:\SLH_PROJECT_V2\ops\railway_env_dump.ps1:3: "DATABASE_URL",
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\audit_20260317_192011\PROJECT_AUDIT_SANITIZED.txt:1062: D:\SLH_PROJECT_V2\ops\start-full-auto.ps1:16: $webhookUrl = "https://slhprojectv2-production.up.railway.app/tg/webhook"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\commerce_full_check_20260313_151956\SUMMARY.txt:24: - If Telegram webhook points to prod but prod lacks DB tables, Railway DB migration mismatch is likely.
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\commerce_full_check_20260313_151956\SUMMARY.txt:25: - If local DB has tables but prod crashes on submit_payment, Railway DB or Railway deploy is still out of sync.
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\commerce_full_check_20260313_151956\telegram_getWebhookInfo.json:1: {"ok":true,"result":{"url":"https://slhprojectv2-production.up.railway.app/tg/webhook","has_custom_certificate":false,"pending_update_count":0,"last_error_date":1773405620,"last_error_message":"Connection reset by peer","max_connections":40,"ip_address":"66.33.22.2","allowed_updates":["message","callback_query"]}}
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\crash_report_20260308_233119\00_git_status.txt:26: 6568e0b Fix Railway withdrawal approval flow and align webhook url
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\crash_report_20260308_233119\00_git_status.txt:27: 8e31cf9 Fix Railway webhook binding and add requirements
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\crash_report_20260308_233119\09_stop_stable_source.txt:30: Write-Host "STOP STABLE DONE (Railway-only mode)" -ForegroundColor Green
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\crash_report_20260308_233119\10_start_stable_source.txt:62: Good "START STABLE DONE (Railway-only mode)"
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\full_restore_audit_20260318_141801\01_root_inventory.txt:9: .railwayignore                                                180 3/16/2026 4:30:13 PM  -a----
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\full_restore_audit_20260318_141801\12_git_status.txt:61: eed2b37 add railway and docker ignore files
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\full_scan_20260319_023322\02_root_listing.txt:36: -a---- 180    3/16/2026 4:30:13 PM  .railwayignore
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\full_scan_20260319_023322\26_repo_tree_shallow.txt:216: -a---- 369     3/10/2026 7:13:35 PM  railway-connect-postgres.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\full_scan_20260319_023322\26_repo_tree_shallow.txt:217: -a---- 526     3/10/2026 7:23:40 PM  railway-tail-worker.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\full_scan_20260319_023322\26_repo_tree_shallow.txt:218: -a---- 295     3/9/2026 11:03:14 PM  railway_check_purchase_orders.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\full_scan_20260319_023322\26_repo_tree_shallow.txt:219: -a---- 246     3/9/2026 11:03:12 PM  railway_env_dump.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\full_scan_20260319_023322\26_repo_tree_shallow.txt:330: d-----         3/16/2026 8:01:57 PM  phase_railway_realign_20260310_220154
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\full_scan_20260319_023322\26_repo_tree_shallow.txt:332: d-----         3/16/2026 8:01:57 PM  railway_pause_20260310_210417
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\full_scan_20260319_023322\26_repo_tree_shallow.txt:333: d-----         3/16/2026 8:01:57 PM  railway_worker_mismatch_20260310_211555
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\secret_quarantine_20260314_134916\LOG.txt:47: Webhooks: ×§×‘×œ×ھ ×¢×“×›×•× ×™×‌ ×‘×–×‍×ں ×گ×‍×ھ ×‍×‍×¢×¨×›×•×ھ CRM, ×’×™×œ×™×•× ×•×ھ Google Sheets, ×گ×• ×©×™×¨×•×ھ×™ ×¢× ×ں (×›×‍×• Railway ×گ×• AWS).
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\secret_quarantine_20260314_134916\LOG.txt:6290: ×©×™×‌ ×œ×‘: ×•×•×“×گ ×©×‘×§×•×‘×¥ ×”-.env ×©×œ×ڑ ×™×© DATABASE_URL ×ھ×§×™×ں (×œ×‍×©×œ ×©×œ Railway ×گ×• ×¤×•×،×ک×’×¨×، ×‍×§×•×‍×™). ×گ×‌ ×گ×™×ں ×œ×ڑ ×›×–×” ×¢×“×™×™×ں, ×ھ×’×™×“ ×œ×™ ×•×گ×¢×–×•×¨ ×œ×ڑ ×œ×”×§×™×‌ ×گ×—×“ ×‘×—×™× ×‌ ×ھ×•×ڑ ×“×§×”.
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\secret_quarantine_20260314_134916\LOG.txt:7902: ×—×™×‘×•×¨ ×œ×¢× ×ں (×‍×•×‍×œ×¥): ×گ×‌ ×™×© ×œ×ڑ ×›×‘×¨ ×¤×¨×•×™×§×ک ×‘-Railway, ×ھ×¢×ھ×™×§ ×‍×©×‌ ×گ×ھ ×”-Public Database URL ×œ×§×•×‘×¥ ×”-.env ×©×œ×ڑ.
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\secret_quarantine_20260314_134916\LOG.txt:7908: ×‘×¨×’×¢ ×©×ھ×¢×“×›×ں ×گ×ھ ×”×›×ھ×•×‘×ھ ×œ×©×¨×ھ ×¤×¢×™×œ ×‘-Railway, ×”×‘×•×ک ×™×¤×،×™×§ ×œ×”×¨×گ×•×ھ ×گ×ھ ×”×©×’×™×گ×” ×•×”× ×ھ×•× ×™×‌ ×™×™×©×‍×¨×• ×‘×گ×‍×ھ. ×‘×™× ×ھ×™×™×‌, ×¢×‌ ×”×§×•×“ ×”×—×“×© ×œ×‍×¢×œ×”, ×”×‘×•×ک ×œ×¤×—×•×ھ ×™×¢×œ×” ×•×œ×گ ×™×§×¨×•×، ×›×©×œ×•×—×¦×™×‌ /start.
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\secret_quarantine_20260314_134916\LOG.txt:18831: # ×”×ھ×—×‘×¨×•×ھ ×œ-Postgres (×ھ×•×•×“×گ ×©×”×¤×¨×ک×™×‌ × ×›×•× ×™×‌ ×œ-Railway/Local)
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\secret_quarantine_20260314_134916\LOG.txt:19012: ×گ×‌ ×™×© ×©×’×™×گ×”: ×،×‘×™×¨ ×œ×”× ×™×— ×©×”×™×گ ×ھ×”×™×” ×‘-Database Connection Error. ×–×” ×§×•×¨×” ×›×™ ×‘×ھ×•×ڑ db_service.py ×”×’×“×¨× ×• ×›×ھ×•×‘×ھ 127.0.0.1 (×‍×—×©×‘ ×‍×§×•×‍×™). ×گ×‌ ×‍×،×“ ×”× ×ھ×•× ×™×‌ ×©×œ×ڑ ×¨×¥ ×‘-Railway ×گ×• ×‘×‍×§×•×‌ ×گ×—×¨, × ×¦×ک×¨×ڑ ×œ×¢×“×›×ں ×گ×ھ ×”×›×ھ×•×‘×ھ.
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\secret_quarantine_20260314_134916\LOG.txt:20159: ×گ×‌ ×”×ھ×§× ×ھ PostgreSQL ×‘×‍×—×©×‘ ×•×§×‘×¢×ھ ×،×™×،×‍×” ×گ×—×¨×ھ, ×ھ×—×œ×™×£ ×گ×•×ھ×” ×›×گ×ں. ×گ×‌ ×گ×ھ×” ×‍×©×ھ×‍×© ×‘-Railway, ×ھ×¢×ھ×™×§ ×œ×›×گ×ں ×گ×ھ ×”-Connection String ×©×”×‌ × ×ھ× ×• ×œ×ڑ.
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\secret_quarantine_20260314_134916\LOG.txt:20213: ×¨×•×¦×” ×©×گ×¢×–×•×¨ ×œ×ڑ ×œ×”×’×“×™×¨ ×‍×،×“ × ×ھ×•× ×™×‌ ×‍×”×™×¨ ×‘-Railway ×›×“×™ ×©×™×”×™×” ×œ×ڑ ×§×™×©×•×¨ ×‍×•×›×ں ×œ×”×“×‘×§×”? ×›×ڑ ×œ×گ ×ھ×¦×ک×¨×ڑ ×œ×”×ھ×§×™×ں ×›×œ×•×‌ ×¢×œ ×”×‍×—×©×‘.
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\secret_quarantine_20260314_134916\LOG.txt:26928: ×§×œ×•×ھ ×¢×“×›×•×ں: ×گ×‌ ×ھ×¨×¦×” ×œ×”×—×œ×™×£ ×ک×•×§×ں ×گ×• ×œ×¢×‘×•×¨ ×œ×©×¨×ھ ×‍×¨×•×—×§ (×›×‍×• Railway) ×‘×¢×ھ×™×“, ×گ×ھ×” ×‍×©× ×” ×¨×§ ×©×•×¨×” ×گ×—×ھ ×‘×§×•×‘×¥ ×”×ک×§×،×ک .env.
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\secret_quarantine_20260314_134916\LOG.txt:49558: Container/Deployment: ×‍×•×›× ×•×ھ ×œ-Railway/Docker.
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\secret_quarantine_20260314_134916\LOG.txt:58683: It looks like you've got two main issues happening in SLH_PROJECT_V2. First, a connection fallback because the specific database doesn't exist, and second, a SQL syntax error inside your /start command handler.
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\secret_quarantine_20260314_134916\LOG.txt:77956: Network Errors: Your logs showed some ServerDisconnectedError. This is often temporary with Telegram's API or a local network hiccup, but if it persists, you might want to check your aiogram version or consider using a webhook if you're deploying on a server like Railway.
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260308_205024\env_nonsecret.txt:6: WEBHOOK_URL=https://slhprojectv2-production.up.railway.app/tg/webhook
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260308_210217\env_nonsecret.txt:6: WEBHOOK_URL=https://slhprojectv2-production.up.railway.app/tg/webhook
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260310_225133\git_log.txt:4: d5a2fb6 ops: add explicit railway postgres and shell helpers
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260310_225133\git_status.txt:10: ?? ops/railway_check_purchase_orders.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260310_225133\git_status.txt:11: ?? ops/railway_env_dump.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260310_225133\git_status.txt:16: ?? state/phase_railway_realign_20260310_220154/
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260310_225133\git_status.txt:17: ?? state/railway_pause_20260310_210417/
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260310_225133\git_status.txt:18: ?? state/railway_worker_mismatch_20260310_211555/
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031305\git_log.txt:6: d5a2fb6 ops: add explicit railway postgres and shell helpers
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031305\git_status.txt:8: ?? ops/railway_check_purchase_orders.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031305\git_status.txt:9: ?? ops/railway_env_dump.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031305\git_status.txt:16: ?? state/phase_railway_realign_20260310_220154/
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031305\git_status.txt:17: ?? state/railway_pause_20260310_210417/
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031305\git_status.txt:18: ?? state/railway_worker_mismatch_20260310_211555/
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031309\git_log.txt:6: d5a2fb6 ops: add explicit railway postgres and shell helpers
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031309\git_status.txt:8: ?? ops/railway_check_purchase_orders.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031309\git_status.txt:9: ?? ops/railway_env_dump.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031309\git_status.txt:16: ?? state/phase_railway_realign_20260310_220154/
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031309\git_status.txt:17: ?? state/railway_pause_20260310_210417/
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031309\git_status.txt:18: ?? state/railway_worker_mismatch_20260310_211555/
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031310\git_log.txt:6: d5a2fb6 ops: add explicit railway postgres and shell helpers
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031310\git_status.txt:8: ?? ops/railway_check_purchase_orders.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031310\git_status.txt:9: ?? ops/railway_env_dump.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031310\git_status.txt:16: ?? state/phase_railway_realign_20260310_220154/
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031310\git_status.txt:17: ?? state/railway_pause_20260310_210417/
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031310\git_status.txt:18: ?? state/railway_worker_mismatch_20260310_211555/
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031311\git_log.txt:6: d5a2fb6 ops: add explicit railway postgres and shell helpers
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031311\git_status.txt:8: ?? ops/railway_check_purchase_orders.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031311\git_status.txt:9: ?? ops/railway_env_dump.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031311\git_status.txt:16: ?? state/phase_railway_realign_20260310_220154/
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031311\git_status.txt:17: ?? state/railway_pause_20260310_210417/
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031311\git_status.txt:18: ?? state/railway_worker_mismatch_20260310_211555/
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031312\git_log.txt:6: d5a2fb6 ops: add explicit railway postgres and shell helpers
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031312\git_status.txt:8: ?? ops/railway_check_purchase_orders.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031312\git_status.txt:9: ?? ops/railway_env_dump.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031312\git_status.txt:16: ?? state/phase_railway_realign_20260310_220154/
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031312\git_status.txt:17: ?? state/railway_pause_20260310_210417/
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031312\git_status.txt:18: ?? state/railway_worker_mismatch_20260310_211555/
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_132635\git_log.txt:6: d5a2fb6 ops: add explicit railway postgres and shell helpers
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_132635\git_status.txt:8: ?? ops/railway_check_purchase_orders.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_132635\git_status.txt:9: ?? ops/railway_env_dump.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_132635\git_status.txt:16: ?? state/phase_railway_realign_20260310_220154/
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_132635\git_status.txt:17: ?? state/railway_pause_20260310_210417/
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_132635\git_status.txt:18: ?? state/railway_worker_mismatch_20260310_211555/
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_143254\git_log.txt:7: d5a2fb6 ops: add explicit railway postgres and shell helpers
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_143254\git_status.txt:5: ?? ops/railway_check_purchase_orders.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_143254\git_status.txt:6: ?? ops/railway_env_dump.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_143254\git_status.txt:11: ?? state/phase_railway_realign_20260310_220154/
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_143254\git_status.txt:12: ?? state/railway_pause_20260310_210417/
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_143254\git_status.txt:13: ?? state/railway_worker_mismatch_20260310_211555/
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\commerce_related_files.txt:35: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\phase_railway_realign_20260310_220154\app_handlers_pu...
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\commerce_related_files.txt:36: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_pause_20260310_210417\purchases.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\commerce_related_files.txt:37: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_worker_mismatch_20260310_211555\app_handlers_...
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\commerce_related_files.txt:55: D:\SLH_PROJECT_V2\state\phase_railway_realign_20260310_220154\app_handlers_purchases.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\commerce_related_files.txt:56: D:\SLH_PROJECT_V2\state\railway_pause_20260310_210417\purchases.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\commerce_related_files.txt:57: D:\SLH_PROJECT_V2\state\railway_worker_mismatch_20260310_211555\app_handlers_purchases.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\env_sanitized.txt:18: WEBHOOK_URL=https://slhprojectv2-production.up.railway.app/tg/webhook
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\git_status.txt:20: state/phase_railway_realign_20260310_220154/
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\git_status.txt:23: state/railway_pause_20260310_210417/
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\git_status.txt:24: state/railway_worker_mismatch_20260310_211555/
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:370: D:\SLH_PROJECT_V2\ops\railway-connect-postgres.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:371: D:\SLH_PROJECT_V2\ops\railway-tail-worker.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:372: D:\SLH_PROJECT_V2\ops\railway_check_purchase_orders.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:373: D:\SLH_PROJECT_V2\ops\railway_env_dump.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:510: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\ops\railway_check_purchase_orders.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:511: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\ops\railway_env_dump.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:620: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\phase_railway_realign_20260310_220154\app_handlers_pu...
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:621: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\phase_railway_realign_20260310_220154\app_i18n.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:622: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\phase_railway_realign_20260310_220154\git_head.txt
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:623: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\phase_railway_realign_20260310_220154\git_log.txt
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:624: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\phase_railway_realign_20260310_220154\git_status.txt
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:625: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\phase_railway_realign_20260310_220154\phase_summary.txt
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:626: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\phase_railway_realign_20260310_220154\railway_health....
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:627: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\phase_railway_realign_20260310_220154\railway_healthz...
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:628: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\phase_railway_realign_20260310_220154\telegram_getWeb...
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:629: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\phase_railway_realign_20260310_220154\webhook_server.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:630: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\phase_railway_realign_20260310_220154\worker.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:631: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_pause_20260310_210417\git_head.txt
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:632: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_pause_20260310_210417\git_log.txt
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:633: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_pause_20260310_210417\git_status.txt
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:634: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_pause_20260310_210417\i18n.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:635: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_pause_20260310_210417\purchases.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:636: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_pause_20260310_210417\webhook_server.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:637: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_pause_20260310_210417\worker.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:638: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_worker_mismatch_20260310_211555\app_handlers_...
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:639: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_worker_mismatch_20260310_211555\app_i18n.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:640: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_worker_mismatch_20260310_211555\git_head.txt
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:641: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_worker_mismatch_20260310_211555\git_log.txt
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:642: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_worker_mismatch_20260310_211555\git_status.txt
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:643: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_worker_mismatch_20260310_211555\webhook_serve...
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:644: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_worker_mismatch_20260310_211555\worker.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:651: D:\SLH_PROJECT_V2\state\close_day_20260311_020314\railway_status.txt
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:793: D:\SLH_PROJECT_V2\state\next_round_full_context_20260311_184835\railway_filtered_signals.txt
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:794: D:\SLH_PROJECT_V2\state\next_round_full_context_20260311_184835\railway_logs_300.txt
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:802: D:\SLH_PROJECT_V2\state\phase_railway_realign_20260310_220154\app_handlers_purchases.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:803: D:\SLH_PROJECT_V2\state\phase_railway_realign_20260310_220154\app_i18n.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:804: D:\SLH_PROJECT_V2\state\phase_railway_realign_20260310_220154\git_head.txt
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:805: D:\SLH_PROJECT_V2\state\phase_railway_realign_20260310_220154\git_log.txt
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:806: D:\SLH_PROJECT_V2\state\phase_railway_realign_20260310_220154\git_status.txt
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:807: D:\SLH_PROJECT_V2\state\phase_railway_realign_20260310_220154\phase_summary.txt
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:808: D:\SLH_PROJECT_V2\state\phase_railway_realign_20260310_220154\railway_health.json
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:809: D:\SLH_PROJECT_V2\state\phase_railway_realign_20260310_220154\railway_healthz.json
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:810: D:\SLH_PROJECT_V2\state\phase_railway_realign_20260310_220154\telegram_getWebhookInfo.json
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:811: D:\SLH_PROJECT_V2\state\phase_railway_realign_20260310_220154\webhook_server.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:812: D:\SLH_PROJECT_V2\state\phase_railway_realign_20260310_220154\worker.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:832: D:\SLH_PROJECT_V2\state\pre_ux_commerce_20260311_184220\railway_logs_200.txt
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:840: D:\SLH_PROJECT_V2\state\railway_pause_20260310_210417\git_head.txt
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:841: D:\SLH_PROJECT_V2\state\railway_pause_20260310_210417\git_log.txt
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:842: D:\SLH_PROJECT_V2\state\railway_pause_20260310_210417\git_status.txt
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:843: D:\SLH_PROJECT_V2\state\railway_pause_20260310_210417\i18n.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:844: D:\SLH_PROJECT_V2\state\railway_pause_20260310_210417\purchases.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:845: D:\SLH_PROJECT_V2\state\railway_pause_20260310_210417\webhook_server.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:846: D:\SLH_PROJECT_V2\state\railway_pause_20260310_210417\worker.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:847: D:\SLH_PROJECT_V2\state\railway_worker_mismatch_20260310_211555\app_handlers_purchases.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:848: D:\SLH_PROJECT_V2\state\railway_worker_mismatch_20260310_211555\app_i18n.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:849: D:\SLH_PROJECT_V2\state\railway_worker_mismatch_20260310_211555\git_head.txt
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:850: D:\SLH_PROJECT_V2\state\railway_worker_mismatch_20260310_211555\git_log.txt
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:851: D:\SLH_PROJECT_V2\state\railway_worker_mismatch_20260310_211555\git_status.txt
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:852: D:\SLH_PROJECT_V2\state\railway_worker_mismatch_20260310_211555\webhook_server.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\project_files.txt:853: D:\SLH_PROJECT_V2\state\railway_worker_mismatch_20260310_211555\worker.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\python_files.txt:116: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\phase_railway_realign_20260310_220154\app_handlers_pu...
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\python_files.txt:117: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\phase_railway_realign_20260310_220154\app_i18n.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\python_files.txt:118: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\phase_railway_realign_20260310_220154\webhook_server.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\python_files.txt:119: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\phase_railway_realign_20260310_220154\worker.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\python_files.txt:120: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_pause_20260310_210417\i18n.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\python_files.txt:121: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_pause_20260310_210417\purchases.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\python_files.txt:122: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_pause_20260310_210417\webhook_server.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\python_files.txt:123: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_pause_20260310_210417\worker.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\python_files.txt:124: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_worker_mismatch_20260310_211555\app_handlers_...
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\python_files.txt:125: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_worker_mismatch_20260310_211555\app_i18n.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\python_files.txt:126: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_worker_mismatch_20260310_211555\webhook_serve...
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\python_files.txt:127: D:\SLH_PROJECT_V2\state\close_day_20260311_010501\backup\state\railway_worker_mismatch_20260310_211555\worker.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\python_files.txt:142: D:\SLH_PROJECT_V2\state\phase_railway_realign_20260310_220154\app_handlers_purchases.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\python_files.txt:143: D:\SLH_PROJECT_V2\state\phase_railway_realign_20260310_220154\app_i18n.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\python_files.txt:144: D:\SLH_PROJECT_V2\state\phase_railway_realign_20260310_220154\webhook_server.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\python_files.txt:145: D:\SLH_PROJECT_V2\state\phase_railway_realign_20260310_220154\worker.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\python_files.txt:146: D:\SLH_PROJECT_V2\state\railway_pause_20260310_210417\i18n.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\python_files.txt:147: D:\SLH_PROJECT_V2\state\railway_pause_20260310_210417\purchases.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\python_files.txt:148: D:\SLH_PROJECT_V2\state\railway_pause_20260310_210417\webhook_server.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\python_files.txt:149: D:\SLH_PROJECT_V2\state\railway_pause_20260310_210417\worker.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\python_files.txt:150: D:\SLH_PROJECT_V2\state\railway_worker_mismatch_20260310_211555\app_handlers_purchases.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\python_files.txt:151: D:\SLH_PROJECT_V2\state\railway_worker_mismatch_20260310_211555\app_i18n.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\python_files.txt:152: D:\SLH_PROJECT_V2\state\railway_worker_mismatch_20260310_211555\webhook_server.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260312_144923\python_files.txt:153: D:\SLH_PROJECT_V2\state\railway_worker_mismatch_20260310_211555\worker.py
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260319_000303\02_root_dir.txt:36: -a---- 180    3/16/2026 4:30:13 PM  .railwayignore
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260319_000303\24_repo_tree_shallow.txt:208: -a---- 369     3/10/2026 7:13:35 PM  railway-connect-postgres.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260319_000303\24_repo_tree_shallow.txt:209: -a---- 526     3/10/2026 7:23:40 PM  railway-tail-worker.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260319_000303\24_repo_tree_shallow.txt:210: -a---- 295     3/9/2026 11:03:14 PM  railway_check_purchase_orders.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260319_000303\24_repo_tree_shallow.txt:211: -a---- 246     3/9/2026 11:03:12 PM  railway_env_dump.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260319_000303\24_repo_tree_shallow.txt:316: d-----         3/16/2026 8:01:57 PM  phase_railway_realign_20260310_220154
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260319_000303\24_repo_tree_shallow.txt:318: d-----         3/16/2026 8:01:57 PM  railway_pause_20260310_210417
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260319_000303\24_repo_tree_shallow.txt:319: d-----         3/16/2026 8:01:57 PM  railway_worker_mismatch_20260310_211555
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\tasks\current_task.txt:2: TITLE=Railway migration deploy fix
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\tasks\task_20260313_155253.txt:2: TITLE=Railway DB migration alignment
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\tasks\task_20260313_155528.txt:2: TITLE=Railway migration deploy fix
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\tasks\task_20260313_155532.txt:2: TITLE=Railway migration deploy fix
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\ANCHOR.md:4: - Railway remains the current primary runtime.
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\ANCHOR.md:5: - Telegram webhook points to Railway production webhook.
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\ANCHOR.md:9: - Therefore the working hypothesis is still partial deployment alignment / worker mismatch during the Railway incident window, not a source-code failure.
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\ANCHOR.md:19: 1. Reconfirm Railway worker + webhook are aligned on the intended deployment after platform stabilization.
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\ANCHOR.md:32: - Primary: Railway
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\ANCHOR.md:38: - Do not add more store UX patches until Railway visibly serves the inline store version
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\MASTER_AGENT_TASK.md:5: - **Railway:** הגרסה היציבה היא V5.2/V5.3. הראוטר ב-purchases.py מחובר ל-Services.
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\PROJECT_BRIEF.md:12: - Production Telegram webhook points to Railway
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\PROJECT_SCAN.md:15: - Telegram production webhook points to Railway
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\PROJECT_SCAN.md:214: "url":  "https://slhprojectv2-production.up.railway.app/tg/webhook",
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\ROADMAP.md:6: - [x] Railway deployment path exists
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\ROADMAP.md:9: - [ ] Confirm Railway serves the inline store UI in production
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\ROADMAP.md:17: - [ ] set-webhook-railway.ps1
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\ROADMAP.md:27: - [ ] Test manual failover from Railway to local webhook target
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\ROADMAP.md:28: - [ ] Test failback from local runtime to Railway
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\RUNBOOK.md:4: - Telegram webhook target should point to Railway production webhook
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\RUNBOOK.md:5: - Railway is the current primary runtime
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\RUNBOOK.md:17: 2. Confirm Railway deployment finished for all relevant services
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\RUNBOOK.md:62: Until Railway visibly serves the new inline /buy UI:
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\SESSION_SUMMARY_20260311.md:8: 1. **תיקון Production (Railway):**
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\FINAL_STATE_MAP.txt:466: $matches = [regex]::Matches($content, 'https?://[a-zA-Z0-9\-\.]+\.(railway\.app|com|net|io|org)[^\s"''}{]*')
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\PROJECT_DUMP.txt:340: $matches = [regex]::Matches($content, 'https?://[a-zA-Z0-9\-\.]+\.(railway\.app|com|net|io|org)[^\s"''}{]*')
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\FINAL_STATE_MAP.txt:466: $matches = [regex]::Matches($content, 'https?://[a-zA-Z0-9\-\.]+\.(railway\.app|com|net|io|org)[^\s"''}{]*')
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\PROJECT_DUMP.txt:340: $matches = [regex]::Matches($content, 'https?://[a-zA-Z0-9\-\.]+\.(railway\.app|com|net|io|org)[^\s"''}{]*')
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\FINAL_STATE_MAP.txt:466: $matches = [regex]::Matches($content, 'https?://[a-zA-Z0-9\-\.]+\.(railway\.app|com|net|io|org)[^\s"''}{]*')
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\PROJECT_DUMP.txt:340: $matches = [regex]::Matches($content, 'https?://[a-zA-Z0-9\-\.]+\.(railway\.app|com|net|io|org)[^\s"''}{]*')
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\FINAL_STATE_MAP.txt:466: $matches = [regex]::Matches($content, 'https?://[a-zA-Z0-9\-\.]+\.(railway\.app|com|net|io|org)[^\s"''}{]*')
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\PROJECT_DUMP.txt:340: $matches = [regex]::Matches($content, 'https?://[a-zA-Z0-9\-\.]+\.(railway\.app|com|net|io|org)[^\s"''}{]*')
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\FINAL_STATE_MAP.txt:466: $matches = [regex]::Matches($content, 'https?://[a-zA-Z0-9\-\.]+\.(railway\.app|com|net|io|org)[^\s"''}{]*')
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\backups\full_copy\PROJECT_DUMP.txt:340: $matches = [regex]::Matches($content, 'https?://[a-zA-Z0-9\-\.]+\.(railway\.app|com|net|io|org)[^\s"''}{]*')
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\FINAL_STATE_MAP.txt:466: $matches = [regex]::Matches($content, 'https?://[a-zA-Z0-9\-\.]+\.(railway\.app|com|net|io|org)[^\s"''}{]*')
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\backups\full_copy\PROJECT_DUMP.txt:340: $matches = [regex]::Matches($content, 'https?://[a-zA-Z0-9\-\.]+\.(railway\.app|com|net|io|org)[^\s"''}{]*')
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\FINAL_STATE_MAP.txt:466: $matches = [regex]::Matches($content, 'https?://[a-zA-Z0-9\-\.]+\.(railway\.app|com|net|io|org)[^\s"''}{]*')
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\backups\full_copy\PROJECT_DUMP.txt:340: $matches = [regex]::Matches($content, 'https?://[a-zA-Z0-9\-\.]+\.(railway\.app|com|net|io|org)[^\s"''}{]*')
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\FINAL_STATE_MAP.txt:466: $matches = [regex]::Matches($content, 'https?://[a-zA-Z0-9\-\.]+\.(railway\.app|com|net|io|org)[^\s"''}{]*')
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\full_copy\PROJECT_DUMP.txt:340: $matches = [regex]::Matches($content, 'https?://[a-zA-Z0-9\-\.]+\.(railway\.app|com|net|io|org)[^\s"''}{]*')
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\FINAL_STATE_MAP.txt:466: $matches = [regex]::Matches($content, 'https?://[a-zA-Z0-9\-\.]+\.(railway\.app|com|net|io|org)[^\s"''}{]*')
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\PROJECT_DUMP.txt:340: $matches = [regex]::Matches($content, 'https?://[a-zA-Z0-9\-\.]+\.(railway\.app|com|net|io|org)[^\s"''}{]*')
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\FINAL_STATE_MAP.txt:466: $matches = [regex]::Matches($content, 'https?://[a-zA-Z0-9\-\.]+\.(railway\.app|com|net|io|org)[^\s"''}{]*')
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\PROJECT_DUMP.txt:340: $matches = [regex]::Matches($content, 'https?://[a-zA-Z0-9\-\.]+\.(railway\.app|com|net|io|org)[^\s"''}{]*')
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\FINAL_STATE_MAP.txt:466: $matches = [regex]::Matches($content, 'https?://[a-zA-Z0-9\-\.]+\.(railway\.app|com|net|io|org)[^\s"''}{]*')
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\PROJECT_DUMP.txt:340: $matches = [regex]::Matches($content, 'https?://[a-zA-Z0-9\-\.]+\.(railway\.app|com|net|io|org)[^\s"''}{]*')
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\FINAL_STATE_MAP.txt:466: $matches = [regex]::Matches($content, 'https?://[a-zA-Z0-9\-\.]+\.(railway\.app|com|net|io|org)[^\s"''}{]*')
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\backups\pre_mainnet_20260313_171438\PROJECT_DUMP.txt:340: $matches = [regex]::Matches($content, 'https?://[a-zA-Z0-9\-\.]+\.(railway\.app|com|net|io|org)[^\s"''}{]*')
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\FINAL_STATE_MAP.txt:466: $matches = [regex]::Matches($content, 'https?://[a-zA-Z0-9\-\.]+\.(railway\.app|com|net|io|org)[^\s"''}{]*')
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\backups\pre_mainnet_20260313_171438\PROJECT_DUMP.txt:340: $matches = [regex]::Matches($content, 'https?://[a-zA-Z0-9\-\.]+\.(railway\.app|com|net|io|org)[^\s"''}{]*')
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\FINAL_STATE_MAP.txt:466: $matches = [regex]::Matches($content, 'https?://[a-zA-Z0-9\-\.]+\.(railway\.app|com|net|io|org)[^\s"''}{]*')
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\TerminalCommandCenter\PROJECT_DUMP.txt:340: $matches = [regex]::Matches($content, 'https?://[a-zA-Z0-9\-\.]+\.(railway\.app|com|net|io|org)[^\s"''}{]*')
+D:\SLH_ECOSYSTEM\botshop\.env.txt:14: WEBHOOK_URL="https://gatebotshop-production.up.railway.app"
+D:\SLH_ECOSYSTEM\botshop\README.md:15: export WEBHOOK_URL="https://your-ngrok-or-railway-url"
+D:\SLH_ECOSYSTEM\botshop\README.md:24: Telegram webhook (Railway):
+D:\SLH_ECOSYSTEM\botshop\README.md:25: - `WEBHOOK_URL` must be your public base URL, e.g. `https://gatebotshop-production.up.railway.app`
+D:\SLH_ECOSYSTEM\factory\README.md:3: FastAPI + python-telegram-bot v21 service running on Railway.
+D:\SLH_ECOSYSTEM\factory\README.md:46: ## Deploying to Railway
+D:\SLH_ECOSYSTEM\factory\README.md:50: - Make sure `PORT` is set to `8080` in Railway (or change the Docker CMD).
+D:\SLH_ECOSYSTEM\factory\README.md:58: ✔ רץ על Railway עם Webhook מלא
+D:\SLH_ECOSYSTEM\factory\README.md:93: ✔ שמירה על Webhook יציב תחת Railway
+D:\SLH_ECOSYSTEM\factory\README_RELEASE.md:5: 1. `app/` – FastAPI + Telegram backend (Railway)
+D:\SLH_ECOSYSTEM\factory\README_RELEASE.md:9: ## 1. Backend API (Railway – `app/`)
+D:\SLH_ECOSYSTEM\factory\README_RELEASE.md:31: ### Railway deployment
+D:\SLH_ECOSYSTEM\factory\README_RELEASE.md:34: 2. Create a **Railway** project and attach the repo.
+D:\SLH_ECOSYSTEM\factory\README_RELEASE.md:36: 4. In Railway → Variables define:
+D:\SLH_ECOSYSTEM\factory\README_RELEASE.md:42: - `WEBHOOK_URL` (your Railway URL)
+D:\SLH_ECOSYSTEM\factory\README_RELEASE.md:52: 5. Set the **start command** (if not in Dockerfile) to:
+D:\SLH_ECOSYSTEM\factory\README_RELEASE.md:58: 6. Healthcheck path should be `/health`.
+D:\SLH_ECOSYSTEM\factory\README_RELEASE.md:63: WEBHOOK_URL = https://<your-service>.railway.app
+D:\SLH_ECOSYSTEM\factory\README_RELEASE.md:94: 5. Set environment variables as needed to point to your Railway API, e.g.:
+D:\SLH_ECOSYSTEM\factory\README_RELEASE.md:96: - `VITE_API_BASE_URL=https://tease-production.up.railway.app`
+D:\SLH_ECOSYSTEM\factory\README_RELEASE.md:135: - Backend (Railway): `slhfinance.railway.app`
+D:\SLH_ECOSYSTEM\factory\README_RELEASE.md:141: - Point `api.slhfinance.ai` → Railway
+D:\SLH_ECOSYSTEM\factory\README_RELEASE.md:149: - Open `https://<railway-app>.railway.app/health` – should be `{"status":"ok"}`.
+D:\SLH_ECOSYSTEM\factory\README_RELEASE.md:150: - Open `https://<railway-app>.railway.app/ready` – DB and BSC should be `ok`.
+D:\SLH_ECOSYSTEM\factory\README_RELEASE.md:171: - Later you can connect real data via API calls to the Railway backend.
+D:\SLH_ECOSYSTEM\fun\railway.toml:15: WEBHOOK_BASE = "https://fun-production-8132.up.railway.app"
+D:\SLH_ECOSYSTEM\fun\README.md:3: בוט טלגרם מבוסס וובהוק עם FastAPI + Aiogram, מותאם ל־Railway.
+D:\SLH_ECOSYSTEM\fun\README.md:7: 1. הגדר משתני סביבה ב־Railway:
+D:\SLH_ECOSYSTEM\fun\README.md:15: 2. העלה את הקוד ל־GitHub → חבר ל־Railway.
+D:\SLH_ECOSYSTEM\fun\README.md:17: 3. Railway יבנה אוטומטית עם `railway.toml`.
+D:\SLH_ECOSYSTEM\ops\AGENT_HANDOFF_PROMPT_20260413.md:84: - D:\SLH_PROJECT_V2 — deployment נפרד על Railway (webhook-based), לא backup! עלול להתנגש עם ECOSYSTEM
+D:\SLH_ECOSYSTEM\ops\AGENT_HANDOFF_PROMPT_20260413.md:103: ### SEC-3: Railway env vars חסרים
+D:\SLH_ECOSYSTEM\ops\AGENT_HANDOFF_PROMPT_20260413.md:124: - API repo: `D:\SLH_ECOSYSTEM\api\` → github.com/osifeu-prog/slh-api (branch: master)
+D:\SLH_ECOSYSTEM\ops\AGENT_HANDOFF_PROMPT_20260413.md:154: - API: https://slh-api-production.up.railway.app
+D:\SLH_ECOSYSTEM\ops\API_STATUS_20260413.md:7: | 1 | OK | 550 | /api/health | System health |
+
+3) Search for local API app definitions
+D:\SLH_ECOSYSTEM\airdrop\app\api_server.py:6: app = FastAPI(title="SLH Airdrop API")
+D:\SLH_ECOSYSTEM\airdrop\app\api_server.py:11: @app.get("/")
+D:\SLH_ECOSYSTEM\airdrop\app\api_server.py:15: @app.get("/health")
+D:\SLH_ECOSYSTEM\airdrop\app\api_server.py:29: @app.get("/api/stats")
+D:\SLH_ECOSYSTEM\airdrop\app\api_server.py:46: @app.get("/admin/dashboard")
+D:\SLH_ECOSYSTEM\airdrop\app\complete_api.py:9: app = FastAPI(title="SLH Airdrop API", version="2.0")
+D:\SLH_ECOSYSTEM\airdrop\app\complete_api.py:220: @app.get("/api/users/{telegram_id}/status")
+D:\SLH_ECOSYSTEM\airdrop\app\complete_api.py:265: @app.get("/api/stats")
+D:\SLH_ECOSYSTEM\airdrop\app\complete_api.py:304: @app.get("/admin/dashboard")
+D:\SLH_ECOSYSTEM\airdrop\app\complete_api.py:372: @app.get("/")
+D:\SLH_ECOSYSTEM\airdrop\app\complete_api.py:390: @app.get("/health")
+D:\SLH_ECOSYSTEM\airdrop\old_backups\backup_20260131_224225\main_run.py:4: app = FastAPI(title='Airdrop Platform', version='stable')
+D:\SLH_ECOSYSTEM\airdrop\old_backups\backup_20260131_231240\main_run.py:4: app = FastAPI(title='Airdrop Platform', version='stable')
+D:\SLH_ECOSYSTEM\airdrop\old_backups\backup_20260131_231757\main_run.py:4: app = FastAPI(title='Airdrop Platform', version='stable')
+D:\SLH_ECOSYSTEM\airdrop\old_backups\backup_20260131_231917\main_run.py:4: app = FastAPI(title='Airdrop Platform', version='stable')
+D:\SLH_ECOSYSTEM\airdrop\old_backups\backup_20260131_232108\main_run.py:4: app = FastAPI(title='Airdrop Platform', version='stable')
+D:\SLH_ECOSYSTEM\airdrop\old_backups\backup_20260131_232753\main_run.py:4: app = FastAPI(title='Airdrop Platform', version='stable')
+D:\SLH_ECOSYSTEM\airdrop\quick_test.py:10: r = requests.get("http://localhost:8000/api/health", timeout=5)
+D:\SLH_ECOSYSTEM\airdrop\test_system.py:38: async with session.get(f"{base_url}/api/health", headers=headers) as response:
+D:\SLH_ECOSYSTEM\api\main.py:41: app = FastAPI(
+D:\SLH_ECOSYSTEM\api\main.py:970: @app.get("/api/beta/status")
+D:\SLH_ECOSYSTEM\api\main.py:1046: @app.get("/api/cashback/{user_id}")
+D:\SLH_ECOSYSTEM\api\main.py:1170: @app.get("/api/external-wallets/{user_id}")
+D:\SLH_ECOSYSTEM\api\main.py:1395: @app.get("/api/audit/verify-chain")
+D:\SLH_ECOSYSTEM\api\main.py:1431: @app.get("/api/audit/recent")
+D:\SLH_ECOSYSTEM\api\main.py:1652: @app.get("/api/cex/keys/{user_id}")
+D:\SLH_ECOSYSTEM\api\main.py:1842: @app.get("/api/cex/portfolio/{user_id}")
+D:\SLH_ECOSYSTEM\api\main.py:1949: @app.get("/api/network/slh-holders")
+D:\SLH_ECOSYSTEM\api\main.py:2115: @app.get("/api/registration/status/{user_id}")
+D:\SLH_ECOSYSTEM\api\main.py:2134: @app.get("/api/registration/pending")
+D:\SLH_ECOSYSTEM\api\main.py:2203: @app.get("/api/user/wallet/{user_id}")
+D:\SLH_ECOSYSTEM\api\main.py:2343: @app.get("/api/user/{telegram_id}")
+D:\SLH_ECOSYSTEM\api\main.py:2439: @app.get("/api/staking/plans")
+D:\SLH_ECOSYSTEM\api\main.py:2588: @app.get("/api/staking/positions/{user_id}")
+D:\SLH_ECOSYSTEM\api\main.py:2601: @app.get("/api/prices")
+D:\SLH_ECOSYSTEM\api\main.py:2631: @app.get("/api/stats")
+D:\SLH_ECOSYSTEM\api\main.py:2657: @app.get("/api/health")
+D:\SLH_ECOSYSTEM\api\main.py:2799: @app.get("/api/referral/tree/{user_id}")
+D:\SLH_ECOSYSTEM\api\main.py:2854: @app.get("/api/referral/link/{user_id}")
+D:\SLH_ECOSYSTEM\api\main.py:2865: @app.get("/api/referral/leaderboard")
+D:\SLH_ECOSYSTEM\api\main.py:2899: @app.get("/api/referral/stats/{user_id}")
+D:\SLH_ECOSYSTEM\api\main.py:2947: @app.get("/api/activity/{user_id}")
+D:\SLH_ECOSYSTEM\api\main.py:3047: @app.get("/api/transactions/{user_id}")
+D:\SLH_ECOSYSTEM\api\main.py:3077: @app.get("/api/leaderboard")
+D:\SLH_ECOSYSTEM\api\main.py:3220: @app.get("/api/community/posts")
+D:\SLH_ECOSYSTEM\api\main.py:3317: @app.get("/api/community/stats")
+D:\SLH_ECOSYSTEM\api\main.py:3329: @app.get("/api/community/health")
+D:\SLH_ECOSYSTEM\api\main.py:3366: @app.get("/api/analytics/stats")
+D:\SLH_ECOSYSTEM\api\main.py:3431: @app.get("/api/wallet/price")
+D:\SLH_ECOSYSTEM\api\main.py:3444: @app.get("/api/wallet/{user_id}")
+D:\SLH_ECOSYSTEM\api\main.py:3470: @app.get("/api/wallet/{user_id}/balances")
+D:\SLH_ECOSYSTEM\api\main.py:3542: @app.get("/api/wallet/{user_id}/transactions")
+D:\SLH_ECOSYSTEM\api\main.py:3712: @app.get("/api/admin/dashboard")
+D:\SLH_ECOSYSTEM\api\main.py:3886: @app.get("/api/user/full/{telegram_id}")
+D:\SLH_ECOSYSTEM\api\main.py:4153: @app.get("/api/marketplace/items")
+D:\SLH_ECOSYSTEM\api\main.py:4222: @app.get("/api/marketplace/items/{item_id}")
+D:\SLH_ECOSYSTEM\api\main.py:4312: @app.get("/api/marketplace/orders/{user_id}")
+D:\SLH_ECOSYSTEM\api\main.py:4350: @app.get("/api/marketplace/my-listings/{user_id}")
+D:\SLH_ECOSYSTEM\api\main.py:4403: @app.get("/api/marketplace/admin/pending")
+D:\SLH_ECOSYSTEM\api\main.py:4446: @app.get("/api/marketplace/stats")
+D:\SLH_ECOSYSTEM\api\main.py:4462: @app.get("/api/admin/activity")
+D:\SLH_ECOSYSTEM\api\main.py:4563: @app.get("/api/tokenomics/stats")
+D:\SLH_ECOSYSTEM\api\main.py:4847: @app.get("/api/strategy/list")
+D:\SLH_ECOSYSTEM\api\main.py:4858: @app.get("/api/strategy/{strategy_id}")
+D:\SLH_ECOSYSTEM\api\main.py:5257: @app.get("/api/admin/all-users")
+D:\SLH_ECOSYSTEM\api\main.py:5649: @app.get("/api/guardian/check/{user_id}")
+D:\SLH_ECOSYSTEM\api\main.py:5684: @app.get("/api/guardian/blacklist")
+D:\SLH_ECOSYSTEM\api\main.py:5797: @app.get("/api/guardian/stats")
+D:\SLH_ECOSYSTEM\api\main.py:6014: @app.get("/api/og/{slug}.png")
+D:\SLH_ECOSYSTEM\api\main.py:6065: @app.get("/api/shares/stats")
+D:\SLH_ECOSYSTEM\api\main.py:6098: @app.get("/api/launch/status")
+D:\SLH_ECOSYSTEM\api\main.py:6208: @app.get("/api/broadcast/history")
+D:\SLH_ECOSYSTEM\api\main.py:6235: @app.get("/api/strategy/backtest/{strategy_id}")
+D:\SLH_ECOSYSTEM\api\main.py:6322: @app.get("/api/rep/leaderboard")
+D:\SLH_ECOSYSTEM\api\main.py:6337: @app.get("/api/rep/{user_id}")
+D:\SLH_ECOSYSTEM\api\main.py:6593: @app.get("/api/member-card/{user_id}")
+D:\SLH_ECOSYSTEM\api\main.py:6797: @app.get("/api/member-card/image/{user_id}")
+D:\SLH_ECOSYSTEM\api\main.py:6829: @app.get("/api/member-cards/all")
+D:\SLH_ECOSYSTEM\api\main.py:6978: @app.get("/api/p2p/orders")
+D:\SLH_ECOSYSTEM\api\main.py:7218: @app.get("/api/p2p/v2/orders")
+D:\SLH_ECOSYSTEM\api\main.py:7411: @app.get("/api/risk/entities")
+D:\SLH_ECOSYSTEM\api\main.py:7441: @app.get("/api/risk/external-watch")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\app\main.py:32: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\app\main.py:37: @app.get("/robots.txt", response_class=PlainTextResponse)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\app\main.py:44: @app.get("/health")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\app\main.py:49: @app.get("/status")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\app\main.py:62: @app.get("/debug/telegram")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\app\main.py:113: @app.get("/", include_in_schema=False)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\app\main.py:121: @app.get("/favicon.ico", include_in_schema=False)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\app\main.py:128: @app.get("/getInfo", include_in_schema=False)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\BOT_FACTORY\BOT_FACTORY_BACKUP_2026-01-09_1538\project\BOT_FACTORY\app\main.py:134: @app.get("/getWebhookInfo", include_in_schema=False)
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\_fix_health_route_order.py:15: anchor = '''@app.get("/healthz")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\_fix_health_route_order.py:21: @app.get("/health")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\_fix_health_route_order.py:25: @app.get("/readyz")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\_patch_health_aliases.py:6: if '@app.get("/health")' not in s:
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\_patch_health_aliases.py:9: @app.get("/health")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\ops\_patch_health_aliases.py:13: @app.get("/readyz")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\commerce_full_check_20260313_151956\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\commerce_full_check_20260313_151956\webhook_server.py:56: @app.get("/healthz")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\commerce_full_check_20260313_151956\webhook_server.py:60: @app.get("/health")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\commerce_full_check_20260313_151956\webhook_server.py:64: @app.get("/readyz")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\proj_backup_20260313_142419\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\proj_backup_20260313_142419\webhook_server.py:56: @app.get("/healthz")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\proj_backup_20260313_142419\webhook_server.py:60: @app.get("/health")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\proj_backup_20260313_142419\webhook_server.py:64: @app.get("/readyz")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260310_225133\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260310_225133\webhook_server.py:56: @app.get("/healthz")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260310_225133\webhook_server.py:60: @app.get("/health")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260310_225133\webhook_server.py:64: @app.get("/readyz")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031305\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031305\webhook_server.py:56: @app.get("/healthz")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031305\webhook_server.py:60: @app.get("/health")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031305\webhook_server.py:64: @app.get("/readyz")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031309\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031309\webhook_server.py:56: @app.get("/healthz")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031309\webhook_server.py:60: @app.get("/health")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031309\webhook_server.py:64: @app.get("/readyz")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031310\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031310\webhook_server.py:56: @app.get("/healthz")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031310\webhook_server.py:60: @app.get("/health")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031310\webhook_server.py:64: @app.get("/readyz")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031311\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031311\webhook_server.py:56: @app.get("/healthz")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031311\webhook_server.py:60: @app.get("/health")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031311\webhook_server.py:64: @app.get("/readyz")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031312\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031312\webhook_server.py:56: @app.get("/healthz")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031312\webhook_server.py:60: @app.get("/health")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_031312\webhook_server.py:64: @app.get("/readyz")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_132635\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_132635\webhook_server.py:56: @app.get("/healthz")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_132635\webhook_server.py:60: @app.get("/health")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_132635\webhook_server.py:64: @app.get("/readyz")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_143254\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_143254\webhook_server.py:56: @app.get("/healthz")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_143254\webhook_server.py:60: @app.get("/health")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\state\snapshot_20260311_143254\webhook_server.py:64: @app.get("/readyz")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\webhook_server.py:56: @app.get("/healthz")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\webhook_server.py:60: @app.get("/health")
+D:\SLH_ECOSYSTEM\backups\BACKUPS_old\SLH_Project_20260316_2329\webhook_server.py:64: @app.get("/readyz")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\_fix_health_route_order.py:15: anchor = '''@app.get("/healthz")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\_fix_health_route_order.py:21: @app.get("/health")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\_fix_health_route_order.py:25: @app.get("/readyz")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\_patch_health_aliases.py:6: if '@app.get("/health")' not in s:
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\_patch_health_aliases.py:9: @app.get("/health")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\ops\_patch_health_aliases.py:13: @app.get("/readyz")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\commerce_full_check_20260313_151956\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\commerce_full_check_20260313_151956\webhook_server.py:56: @app.get("/healthz")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\commerce_full_check_20260313_151956\webhook_server.py:60: @app.get("/health")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\commerce_full_check_20260313_151956\webhook_server.py:64: @app.get("/readyz")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\proj_backup_20260313_142419\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\proj_backup_20260313_142419\webhook_server.py:56: @app.get("/healthz")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\proj_backup_20260313_142419\webhook_server.py:60: @app.get("/health")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\proj_backup_20260313_142419\webhook_server.py:64: @app.get("/readyz")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260310_225133\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260310_225133\webhook_server.py:56: @app.get("/healthz")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260310_225133\webhook_server.py:60: @app.get("/health")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260310_225133\webhook_server.py:64: @app.get("/readyz")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031305\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031305\webhook_server.py:56: @app.get("/healthz")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031305\webhook_server.py:60: @app.get("/health")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031305\webhook_server.py:64: @app.get("/readyz")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031309\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031309\webhook_server.py:56: @app.get("/healthz")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031309\webhook_server.py:60: @app.get("/health")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031309\webhook_server.py:64: @app.get("/readyz")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031310\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031310\webhook_server.py:56: @app.get("/healthz")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031310\webhook_server.py:60: @app.get("/health")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031310\webhook_server.py:64: @app.get("/readyz")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031311\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031311\webhook_server.py:56: @app.get("/healthz")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031311\webhook_server.py:60: @app.get("/health")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031311\webhook_server.py:64: @app.get("/readyz")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031312\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031312\webhook_server.py:56: @app.get("/healthz")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031312\webhook_server.py:60: @app.get("/health")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_031312\webhook_server.py:64: @app.get("/readyz")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_132635\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_132635\webhook_server.py:56: @app.get("/healthz")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_132635\webhook_server.py:60: @app.get("/health")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_132635\webhook_server.py:64: @app.get("/readyz")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_143254\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_143254\webhook_server.py:56: @app.get("/healthz")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_143254\webhook_server.py:60: @app.get("/health")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\state\snapshot_20260311_143254\webhook_server.py:64: @app.get("/readyz")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\webhook_server.py:40: app = FastAPI()
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\webhook_server.py:56: @app.get("/healthz")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\webhook_server.py:60: @app.get("/health")
+D:\SLH_ECOSYSTEM\backups\_restore\20260322_074442\SLH_PROJECT_V2\webhook_server.py:64: @app.get("/readyz")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\security\api_key.py:75: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\security\api_key.py:80: @app.get("/items/")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\security\api_key.py:167: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\security\api_key.py:172: @app.get("/items/")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\security\api_key.py:255: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\security\api_key.py:260: @app.get("/items/")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\security\http.py:132: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\security\http.py:137: @app.get("/users/me")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\security\http.py:244: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\security\http.py:249: @app.get("/users/me")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\security\http.py:349: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\security\http.py:354: @app.get("/users/me")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\security\oauth2.py:39: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\security\oauth2.py:181: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:64: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:121: app = FastAPI(title="ChimichangApp")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:142: app = FastAPI(summary="Deadpond's favorite app. Nuff said.")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:164: app = FastAPI(
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:204: app = FastAPI(version="0.0.1")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:227: app = FastAPI(openapi_url="/api/v1/openapi.json")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:239: * `@app.get("/users/", tags=["users"])`
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:240: * `@app.get("/items/", tags=["items"])`
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:287: app = FastAPI(openapi_tags=tags_metadata)
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:331: app = FastAPI(
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:358: app = FastAPI(dependencies=[Depends(func_dep_1), Depends(func_dep_2)])
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:378: app = FastAPI(default_response_class=ORJSONResponse)
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:395: app = FastAPI(redirect_slashes=True)  # the default
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:397: @app.get("/items/")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:427: app = FastAPI(docs_url="/documentation", redoc_url=None)
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:451: app = FastAPI(docs_url="/documentation", redoc_url="redocumentation")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:564: app = FastAPI(terms_of_service="http://example.com/terms/")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:591: app = FastAPI(
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:626: app = FastAPI(
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:666: app = FastAPI(root_path="/api/v1")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:686: app = FastAPI(root_path_in_servers=False)
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:843: app = FastAPI(openapi_external_docs=external_docs)
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:902: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:1318: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:1377: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:1418: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:1444: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:1472: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:1527: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:1885: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:1887: @app.get("/items/")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:2263: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:2641: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:3014: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:3387: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:3760: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:4138: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:4511: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:4607: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\applications.py:4657: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\background.py:23: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\datastructures.py:49: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\exceptions.py:32: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\exceptions.py:37: @app.get("/items/{item_id}")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\exceptions.py:99: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\param_functions.py:297: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\param_functions.py:300: @app.get("/items/{item_id}")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\param_functions.py:2286: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\param_functions.py:2293: @app.get("/items/")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\param_functions.py:2372: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\param_functions.py:2374: @app.get("/users/me/items/")
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\routing.py:743: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\routing.py:1225: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\routing.py:1379: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\routing.py:1840: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\routing.py:2222: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\routing.py:2604: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\routing.py:2981: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\routing.py:3358: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\routing.py:3740: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\routing.py:4122: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\.venv\Lib\site-packages\fastapi\routing.py:4504: app = FastAPI()
+D:\SLH_ECOSYSTEM\botshop\app\main.py:17: app = FastAPI(title=settings.PROJECT_NAME)
+D:\SLH_ECOSYSTEM\botshop\app\main.py:65: @app.get("/health")
+D:\SLH_ECOSYSTEM\botshop\app\main.py:72: @app.get("/")
+D:\SLH_ECOSYSTEM\factory\app\main.py:17: app = FastAPI()
+D:\SLH_ECOSYSTEM\factory\app\main.py:18: @app.get("/health")
+D:\SLH_ECOSYSTEM\factory\app\main.py:26: @app.get("/ready")
+D:\SLH_ECOSYSTEM\fun\app.py:37: fastapi_app = FastAPI()
+D:\SLH_ECOSYSTEM\ops\api-health-check.py:32: ('GET', '/api/health', False, 'System health'),
+D:\SLH_ECOSYSTEM\ops\CURRENT_RISK_BLOCK_20260413_191534.py:3: @app.get("/api/risk/entities")
+D:\SLH_ECOSYSTEM\ops\CURRENT_RISK_BLOCK_20260413_191534.py:35: @app.get("/api/risk/external-watch")
+D:\SLH_ECOSYSTEM\ops\RISK_API_BLOCK_CLEAN_20260413_191534.py:3: @app.get("/api/risk/entities")
+D:\SLH_ECOSYSTEM\ops\RISK_API_BLOCK_CLEAN_20260413_191534.py:35: @app.get("/api/risk/external-watch")
+D:\SLH_ECOSYSTEM\ops\RISK_API_BLOCK_FIXED_20260413_190741.py:3: @app.get("/api/risk/entities")
+D:\SLH_ECOSYSTEM\ops\RISK_API_BLOCK_FIXED_20260413_190741.py:35: @app.get("/api/risk/external-watch")
+D:\SLH_ECOSYSTEM\ops\RISK_API_PATCH_20260413.py:3: @app.get("/api/risk/entities")
+D:\SLH_ECOSYSTEM\ops\RISK_API_PATCH_20260413.py:26: @app.get("/api/risk/external-watch")
+D:\SLH_ECOSYSTEM\ops\RISK_API_PATCH_SAFE_20260413_185036.py:3: @app.get("/api/risk/entities")
+D:\SLH_ECOSYSTEM\ops\RISK_API_PATCH_SAFE_20260413_185036.py:35: @app.get("/api/risk/external-watch")
+D:\SLH_ECOSYSTEM\promo\app\main.py:44: app = FastAPI(
+D:\SLH_ECOSYSTEM\promo\app\main.py:75: @app.get("/")
+D:\SLH_ECOSYSTEM\promo\app\main.py:86: @app.get("/health")
+D:\SLH_ECOSYSTEM\promo\app\main.py:116: @app.get("/info")
+D:\SLH_ECOSYSTEM\promo\app\main.py:178: @app.get("/live")
+D:\SLH_ECOSYSTEM\shared\community_api.py:25: app = FastAPI(title="SLH Community API", version="1.0.0")
+D:\SLH_ECOSYSTEM\shared\community_api.py:203: @app.get("/api/community/health")
+D:\SLH_ECOSYSTEM\shared\community_api.py:213: @app.get("/api/community/posts")
+D:\SLH_ECOSYSTEM\shared\community_api.py:364: @app.get("/api/community/stats")
+D:\SLH_ECOSYSTEM\shared\wallet_api.py:8: app = FastAPI(lifespan=lifespan)
+D:\SLH_ECOSYSTEM\wallet\app\main.py:15: app = FastAPI(title="SLH Community Wallet", version="0.1.0")
+D:\SLH_ECOSYSTEM\wallet\app\main.py:42: @app.get("/health")
+D:\SLH_ECOSYSTEM\main.py:41: app = FastAPI(
+D:\SLH_ECOSYSTEM\main.py:970: @app.get("/api/beta/status")
+D:\SLH_ECOSYSTEM\main.py:1046: @app.get("/api/cashback/{user_id}")
+D:\SLH_ECOSYSTEM\main.py:1170: @app.get("/api/external-wallets/{user_id}")
+D:\SLH_ECOSYSTEM\main.py:1395: @app.get("/api/audit/verify-chain")
+D:\SLH_ECOSYSTEM\main.py:1431: @app.get("/api/audit/recent")
+D:\SLH_ECOSYSTEM\main.py:1652: @app.get("/api/cex/keys/{user_id}")
+D:\SLH_ECOSYSTEM\main.py:1842: @app.get("/api/cex/portfolio/{user_id}")
+D:\SLH_ECOSYSTEM\main.py:1949: @app.get("/api/network/slh-holders")
+D:\SLH_ECOSYSTEM\main.py:2115: @app.get("/api/registration/status/{user_id}")
+D:\SLH_ECOSYSTEM\main.py:2134: @app.get("/api/registration/pending")
+D:\SLH_ECOSYSTEM\main.py:2203: @app.get("/api/user/wallet/{user_id}")
+D:\SLH_ECOSYSTEM\main.py:2343: @app.get("/api/user/{telegram_id}")
+D:\SLH_ECOSYSTEM\main.py:2439: @app.get("/api/staking/plans")
+D:\SLH_ECOSYSTEM\main.py:2588: @app.get("/api/staking/positions/{user_id}")
+D:\SLH_ECOSYSTEM\main.py:2601: @app.get("/api/prices")
+D:\SLH_ECOSYSTEM\main.py:2631: @app.get("/api/stats")
+D:\SLH_ECOSYSTEM\main.py:2657: @app.get("/api/health")
+D:\SLH_ECOSYSTEM\main.py:2799: @app.get("/api/referral/tree/{user_id}")
+D:\SLH_ECOSYSTEM\main.py:2854: @app.get("/api/referral/link/{user_id}")
+D:\SLH_ECOSYSTEM\main.py:2865: @app.get("/api/referral/leaderboard")
+D:\SLH_ECOSYSTEM\main.py:2899: @app.get("/api/referral/stats/{user_id}")
+D:\SLH_ECOSYSTEM\main.py:2947: @app.get("/api/activity/{user_id}")
+D:\SLH_ECOSYSTEM\main.py:3047: @app.get("/api/transactions/{user_id}")
+D:\SLH_ECOSYSTEM\main.py:3077: @app.get("/api/leaderboard")
+D:\SLH_ECOSYSTEM\main.py:3220: @app.get("/api/community/posts")
+D:\SLH_ECOSYSTEM\main.py:3317: @app.get("/api/community/stats")
+D:\SLH_ECOSYSTEM\main.py:3329: @app.get("/api/community/health")
+D:\SLH_ECOSYSTEM\main.py:3366: @app.get("/api/analytics/stats")
+D:\SLH_ECOSYSTEM\main.py:3431: @app.get("/api/wallet/price")
+D:\SLH_ECOSYSTEM\main.py:3444: @app.get("/api/wallet/{user_id}")
+D:\SLH_ECOSYSTEM\main.py:3470: @app.get("/api/wallet/{user_id}/balances")
+D:\SLH_ECOSYSTEM\main.py:3542: @app.get("/api/wallet/{user_id}/transactions")
+D:\SLH_ECOSYSTEM\main.py:3712: @app.get("/api/admin/dashboard")
+D:\SLH_ECOSYSTEM\main.py:3886: @app.get("/api/user/full/{telegram_id}")
+D:\SLH_ECOSYSTEM\main.py:4153: @app.get("/api/marketplace/items")
+D:\SLH_ECOSYSTEM\main.py:4222: @app.get("/api/marketplace/items/{item_id}")
+D:\SLH_ECOSYSTEM\main.py:4312: @app.get("/api/marketplace/orders/{user_id}")
+D:\SLH_ECOSYSTEM\main.py:4350: @app.get("/api/marketplace/my-listings/{user_id}")
+D:\SLH_ECOSYSTEM\main.py:4403: @app.get("/api/marketplace/admin/pending")
+D:\SLH_ECOSYSTEM\main.py:4446: @app.get("/api/marketplace/stats")
+D:\SLH_ECOSYSTEM\main.py:4462: @app.get("/api/admin/activity")
+D:\SLH_ECOSYSTEM\main.py:4563: @app.get("/api/tokenomics/stats")
+D:\SLH_ECOSYSTEM\main.py:4847: @app.get("/api/strategy/list")
+D:\SLH_ECOSYSTEM\main.py:4858: @app.get("/api/strategy/{strategy_id}")
+D:\SLH_ECOSYSTEM\main.py:5257: @app.get("/api/admin/all-users")
+D:\SLH_ECOSYSTEM\main.py:5649: @app.get("/api/guardian/check/{user_id}")
+D:\SLH_ECOSYSTEM\main.py:5684: @app.get("/api/guardian/blacklist")
+D:\SLH_ECOSYSTEM\main.py:5797: @app.get("/api/guardian/stats")
+D:\SLH_ECOSYSTEM\main.py:6014: @app.get("/api/og/{slug}.png")
+D:\SLH_ECOSYSTEM\main.py:6065: @app.get("/api/shares/stats")
+D:\SLH_ECOSYSTEM\main.py:6098: @app.get("/api/launch/status")
+D:\SLH_ECOSYSTEM\main.py:6208: @app.get("/api/broadcast/history")
+D:\SLH_ECOSYSTEM\main.py:6235: @app.get("/api/strategy/backtest/{strategy_id}")
+D:\SLH_ECOSYSTEM\main.py:6322: @app.get("/api/rep/leaderboard")
+D:\SLH_ECOSYSTEM\main.py:6337: @app.get("/api/rep/{user_id}")
+D:\SLH_ECOSYSTEM\main.py:6593: @app.get("/api/member-card/{user_id}")
+D:\SLH_ECOSYSTEM\main.py:6797: @app.get("/api/member-card/image/{user_id}")
+D:\SLH_ECOSYSTEM\main.py:6829: @app.get("/api/member-cards/all")
+D:\SLH_ECOSYSTEM\main.py:6978: @app.get("/api/p2p/orders")
+D:\SLH_ECOSYSTEM\main.py:7218: @app.get("/api/p2p/v2/orders")
+
+4) Show compose services and commands
+NAME               IMAGE                           COMMAND                  SERVICE           CREATED      STATUS                PORTS
+slh-admin          slh_ecosystem-admin-bot         "python main.py"         admin-bot         2 days ago   Up 2 days             
+slh-airdrop        slh_ecosystem-airdrop-bot       "python -c 'from app…"   airdrop-bot       2 days ago   Up 2 days             
+slh-beynonibank    slh_ecosystem-beynonibank-bot   "python /app/shared/…"   beynonibank-bot   2 days ago   Up 2 days             
+slh-botshop        slh_ecosystem-botshop           "uvicorn app.main:ap…"   botshop           2 days ago   Up 2 days             
+slh-campaign       slh_ecosystem-campaign-bot      "python main.py"         campaign-bot      2 days ago   Up 2 days             
+slh-chance         slh_ecosystem-chance-bot        "python /app/shared/…"   chance-bot        2 days ago   Up 2 days             
+slh-core-bot       slh_ecosystem-core-bot          "python worker.py"       core-bot          2 days ago   Up 2 days             
+slh-crazy-panel    slh_ecosystem-crazy-panel-bot   "python /app/shared/…"   crazy-panel-bot   2 days ago   Up 2 days             
+slh-factory        slh_ecosystem-factory-bot       "uvicorn app.main:ap…"   factory-bot       2 days ago   Up 2 days             
+slh-fun            slh_ecosystem-fun-bot           "uvicorn app:fastapi…"   fun-bot           2 days ago   Up 2 days             0.0.0.0:8002->8080/tcp, [::]:8002->8080/tcp
+slh-game           slh_ecosystem-game-bot          "python /app/match-b…"   game-bot          2 days ago   Up 2 days             
+slh-guardian-bot   slh_ecosystem-guardian-bot      "python -m bot.main"     guardian-bot      2 days ago   Up 2 days             0.0.0.0:8001->8080/tcp, [::]:8001->8080/tcp
+slh-ledger         slh_ecosystem-ledger-bot        "python /app/shared/…"   ledger-bot        2 days ago   Up 2 days             
+slh-nft-shop       slh_ecosystem-nft-shop-bot      "python /app/shared/…"   nft-shop-bot      2 days ago   Up 2 days             
+slh-nfty           slh_ecosystem-nfty-bot          "python /app/main.py"    nfty-bot          2 days ago   Up 2 days             
+slh-nifti          slh_ecosystem-nifti-bot         "python main.py"         nifti-bot         2 days ago   Up 2 days             
+slh-osif-shop      slh_ecosystem-osif-shop-bot     "sh -c 'python /app/…"   osif-shop-bot     2 days ago   Up 11 minutes         0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp
+slh-postgres       postgres:15-alpine              "docker-entrypoint.s…"   postgres          8 days ago   Up 3 days (healthy)   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+slh-redis          redis:7-alpine                  "docker-entrypoint.s…"   redis             8 days ago   Up 3 days (healthy)   0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp
+slh-test-bot       slh_ecosystem-test-bot          "python /app/shared/…"   test-bot          2 days ago   Up 2 days             
+slh-ton            slh_ecosystem-slh-ton-bot       "python /app/shared/…"   slh-ton-bot       2 days ago   Up 2 days             
+slh-ton-mnh        slh_ecosystem-ton-mnh-bot       "sh -c 'rm -f /app/b…"   ton-mnh-bot       2 days ago   Up 2 days             
+slh-ts-set         slh_ecosystem-ts-set-bot        "python /app/shared/…"   ts-set-bot        2 days ago   Up 2 days             
+slh-wallet         slh_ecosystem-wallet-bot        "uvicorn app.main:ap…"   wallet-bot        2 days ago   Up 2 days             
+
+5) Inspect likely local web/API services
+
+==== slh-osif-shop ====
+"python /app/webapp_server.py \u0026 python /app/main.py"
+"Image": "sha256:adcdc72a6f7161f97af7c497657635fbed27afec6b7ed8a9eaea684466817678",
+"Cmd": [
+"python /app/webapp_server.py \u0026 python /app/main.py"
+"Image": "slh_ecosystem-osif-shop-bot",
+"WorkingDir": "/app",
+"Entrypoint": null,
+
+==== slh-guardian-bot ====
+"Image": "sha256:9b35d1faa4de57f4889a18ae7f39297f614e74ac0d87d559e033c0bce2ad1ca5",
+"Cmd": [
+"Image": "slh_ecosystem-guardian-bot",
+"WorkingDir": "/app",
+"Entrypoint": null,
+
+==== slh-fun ====
+"Path": "uvicorn",
+"Image": "sha256:ec0a1e223039471688a8388128f15c55a0d420196ac14def79cc9a54b927c0c0",
+"Cmd": [
+"uvicorn",
+"Image": "slh_ecosystem-fun-bot",
+"WorkingDir": "/app",
+"Entrypoint": null,
+
+==== slh-wallet ====
+"Path": "uvicorn",
+"app.main:app",
+"Image": "sha256:adbb9994909cdd37f2bfbdf3c2a4090fc8819b4bc57c5ae2228de0d695c1ef8f",
+"Cmd": [
+"uvicorn",
+"app.main:app",
+"Image": "slh_ecosystem-wallet-bot",
+"WorkingDir": "/app",
+"Entrypoint": null,
+
+==== slh-factory ====
+"Path": "uvicorn",
+"app.main:app",
+"Image": "sha256:886809f77f63c91001198b176fe209dfd90c31ff3e101006bcd924298e253d86",
+"Cmd": [
+"uvicorn",
+"app.main:app",
+"Image": "slh_ecosystem-factory-bot",
+"WorkingDir": "/app",
+"Entrypoint": null,
+
+==== slh-botshop ====
+"Path": "uvicorn",
+"app.main:app",
+"Image": "sha256:4e5b9a803998371b6a7ad1ec1283a1ecb84a1e5702d0960e3d06dd59040e726d",
+"Cmd": [
+"uvicorn",
+"app.main:app",
+"Image": "slh_ecosystem-botshop",
+"WorkingDir": "/app",
+"Entrypoint": null,
+
+6) Direct endpoint checks
+[OK]  https://slh-api-production.up.railway.app/api/health -> 200
+[OK]  https://slh-api-production.up.railway.app/openapi.json -> 200
+[NO]  https://slh-api-production.up.railway.app/api/risk/entities -> השרת המרוחק החזיר שגיאה: (404) לא נמצא.
+[NO]  https://slh-api-production.up.railway.app/api/risk/external-watch -> השרת המרוחק החזיר שגיאה: (404) לא נמצא.
+[OK]  http://127.0.0.1:8080/ -> 200
+[NO]  http://127.0.0.1:8080/api/health -> השרת המרוחק החזיר שגיאה: (404) לא נמצא.
+[NO]  http://127.0.0.1:8080/api/risk/entities -> השרת המרוחק החזיר שגיאה: (404) לא נמצא.
+[NO]  http://127.0.0.1:8001/healthz -> ההתקשרות הבסיסית נסגרה: ההתחברות נסגרה באופן בלתי צפוי.
+[NO]  http://127.0.0.1:8002/healthz -> השרת המרוחק החזיר שגיאה: (405) שיטה לא מותרת.
+
+7) Done
+Report: D:\SLH_ECOSYSTEM\ops\API_TRUTH_MAP_20260413_195105.txt

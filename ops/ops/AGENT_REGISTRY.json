@@ -1,0 +1,161 @@
+{
+  "version": "1.0",
+  "updated": "2026-04-17T01:55:00+03:00",
+  "project": "SLH Ecosystem",
+  "ssot": "D:\\SLH_ECOSYSTEM\\ops\\SESSION_STATUS.md",
+  "coordination_channel": "Telegram group (TBD)",
+  "agents": {
+    "claude_opus": {
+      "name": "Claude Opus 4.6",
+      "vendor": "Anthropic",
+      "type": "local_cli",
+      "runtime": "Claude Code",
+      "authentication": "local_session (not exposable as token)",
+      "machine": "Giga Store (Windows 10 Pro, D:\\)",
+      "capabilities": [
+        "read_write_files",
+        "run_shell_commands",
+        "git_operations",
+        "api_development_python_fastapi",
+        "frontend_development_html_js",
+        "docker_inspection",
+        "preview_server_verification"
+      ],
+      "cannot": [
+        "access_botfather",
+        "access_railway_ui",
+        "physical_esp32_flashing",
+        "send_telegram_as_any_bot"
+      ],
+      "reachable_via": [
+        "Osif types in Claude Code CLI session",
+        "Reads ops/SESSION_STATUS.md on session start",
+        "Responds to messages left in ops/MESSAGES_FOR_CLAUDE.md"
+      ],
+      "status_signal": "commits to master with author 'Claude Opus 4.6'",
+      "commit_authority": true,
+      "current_task": "Bug debug system + agent coordination docs"
+    },
+    "slh_core_assistant": {
+      "name": "SLH Core Assistant",
+      "vendor": "unknown",
+      "type": "telegram_based_advisor",
+      "runtime": "Telegram chat",
+      "authentication": "N/A (message-based)",
+      "capabilities": [
+        "code_generation_powershell",
+        "code_generation_python_aiogram",
+        "code_generation_dockerfile",
+        "code_generation_arduino_platformio",
+        "log_analysis",
+        "error_diagnosis"
+      ],
+      "cannot": [
+        "run_commands_directly",
+        "commit_to_git",
+        "access_files_on_osif_machine"
+      ],
+      "reachable_via": [
+        "Osif forwards messages in Telegram",
+        "Pastes docker logs / git status → gets patched code"
+      ],
+      "status_signal": "returns code blocks in Telegram",
+      "commit_authority": false,
+      "working_on": "ESP32 device-registry flow (register/verify/sign without telegram bot in middle)"
+    },
+    "osif_ungar": {
+      "name": "Osif Kaufman Ungar",
+      "type": "human_operator",
+      "telegram_id": 224223270,
+      "telegram_handle": "@osifeu_prog",
+      "email": "osif.erez.ungar@gmail.com",
+      "capabilities": [
+        "botfather_operations",
+        "railway_ui_operations",
+        "docker_local_operations",
+        "esp32_physical_device",
+        "env_file_edits",
+        "approval_authority"
+      ],
+      "machines": ["Giga Store (primary)", "multiple other computers (requested cross-machine sync)"],
+      "working_hours": "variable (sees Telegram instantly)"
+    }
+  },
+  "communication_protocol": {
+    "new_bug_reported": {
+      "trigger": "POST /api/bugs/report",
+      "notifies": ["osif_ungar via Telegram"],
+      "destination": "bug_reports table + /admin-bugs.html"
+    },
+    "session_handoff": {
+      "trigger": "end of agent session",
+      "action": "overwrite ops/SESSION_STATUS.md + commit + push",
+      "next_agent_reads": "SESSION_STATUS.md on session start"
+    },
+    "claim_task": {
+      "trigger": "agent picks up a blocker from SESSION_STATUS.md",
+      "action": "edit SESSION_STATUS.md → move blocker to 'in_progress by <agent>' + commit"
+    },
+    "ready_signals": {
+      "BOT_READY": "<bot_name> healthy + responding to /start",
+      "API_READY": "<endpoint> deployed + smoke-tested",
+      "WEB_READY": "<page> on GitHub Pages + FAB visible",
+      "ESP_READY": "<device_id> registered via device-registry",
+      "DOC_READY": "<file> committed to ops/"
+    }
+  },
+  "shared_state_files": {
+    "ops/SESSION_STATUS.md": "live blockers + next priorities (SSoT)",
+    "ops/SYNC_PROTOCOL.md": "coordination rules between agents",
+    "ops/TEAM_TASKS.md": "task cards per role (Telegram-shareable)",
+    "ops/TRIAGE_REPORT.md": "uncommitted files categorization",
+    "ops/AGENT_REGISTRY.json": "this file — agents identity + reach"
+  },
+  "endpoints_live": {
+    "api_base": "https://slh-api-production.up.railway.app",
+    "health": "/api/health",
+    "bug_report": "POST /api/bugs/report (anonymous)",
+    "bug_list_admin": "GET /api/admin/bugs/list (X-Admin-Key)",
+    "bug_status_update": "PATCH /api/admin/bugs/{id}/status (X-Admin-Key)",
+    "admin_dashboard": "https://slh-nft.com/admin.html",
+    "bug_dashboard": "https://slh-nft.com/admin-bugs.html"
+  },
+  "endpoints_planned": {
+    "agents_heartbeat": "POST /api/agents/heartbeat",
+    "agents_active": "GET /api/agents/active",
+    "agents_claim": "POST /api/agents/claim-task",
+    "agents_dashboard": "https://slh-nft.com/admin-agents.html"
+  },
+  "known_issues": [
+    {
+      "id": "BUG-001",
+      "severity": "high",
+      "component": "SLH_AIR_bot",
+      "description": "Responds 'פקודה לא מוכרת' to every command including /start@SLH_AIR_bot addressed to itself",
+      "evidence": "Telegram transcript 17/04/2026 01:56",
+      "likely_cause": "aiogram Command() filter not handling @username suffix"
+    },
+    {
+      "id": "BUG-002",
+      "severity": "high",
+      "component": "Campaign bot",
+      "description": "Command naming inconsistency: /new_survey vs /newsurvey, /contacts vs /addcontact vs /add_contact",
+      "action": "standardize on /snake_case"
+    },
+    {
+      "id": "BUG-003",
+      "severity": "critical",
+      "component": "slh-ledger container",
+      "description": "Exited (restart count 21). Container crashed with NoneType token, despite .env having real token.",
+      "likely_cause": ".env was truncated to 65 bytes (only SLH_LEDGER_TOKEN); other bots' tokens missing",
+      "backup_available": ".env.backup-20260416-192749 (3962 bytes, 85 lines)"
+    },
+    {
+      "id": "BUG-004",
+      "severity": "medium",
+      "component": "ESP32 /register /verify",
+      "description": "No bot response to /register ESP001 <phone> or /verify ESP001 <code>",
+      "assigned_to": "slh_core_assistant (to write handler)"
+    }
+  ]
+}
