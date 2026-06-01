@@ -1,12 +1,6 @@
-fastapi
-uvicorn
-aiohttp
-psycopg2-binary
+﻿aiogram==3.13.1
 python-dotenv
+httpx
+aiofiles
 requests
-aiogram
-psutil
-httpx
-httpx
-aiosqlite
-asyncpg
+redis>=4.5.0
