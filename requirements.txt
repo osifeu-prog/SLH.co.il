@@ -1,0 +1,9 @@
+﻿aiogram>=3.0,<4.0
+asyncpg
+python-dotenv
+httpx
+groq
+google-generativeai
+anthropic
+aiohttp
+psutil

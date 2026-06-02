@@ -1,0 +1,9 @@
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
+app.mount("/webapp", StaticFiles(directory="webapp", html=True), name="webapp")
+app.mount("/dashboard", StaticFiles(directory="dashboard", html=True), name="dashboard")
+
+@app.get("/")
+async def root():
+    return FileResponse("webapp/index.html")
