@@ -1,4 +1,4 @@
-import os
+﻿import os
 import psycopg2
 
 db_url = os.environ['DATABASE_URL']
@@ -18,4 +18,4 @@ conn.commit()
 cur.close()
 conn.close()
 
-print("✅ DB schema fixed successfully!")
+print("âœ… DB schema fixed successfully!")

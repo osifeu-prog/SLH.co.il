@@ -3,9 +3,9 @@
 with open("bot.py", "r", encoding="utf-8") as f:
     content = f.read()
 
-# ─── TON tracking code ───
+# â”€â”€â”€ TON tracking code â”€â”€â”€
 ton_code = r'''
-# ═══ TON DEPOSIT TRACKING ═══
+# â•â•â• TON DEPOSIT TRACKING â•â•â•
 TON_WALLET_RAW = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
 TON_API_URL = "https://toncenter.com/api/v3/transactions"
 last_ton_lt = None
@@ -66,10 +66,10 @@ async def process_ton_deposit(user_id: int, amount: float, tx_hash: str):
         try:
             await bot.send_message(
                 user_id,
-                f"✅ <b>הפקדה התקבלה!</b>\n\n"
-                f"סכום: <b>{amount:.2f} TON</b>\n"
+                f"âœ… <b>×”×¤×§×“×” ×”×ª×§×‘×œ×”!</b>\n\n"
+                f"×¡×›×•×: <b>{amount:.2f} TON</b>\n"
                 f"TX: <code>{tx_hash[:12]}...</code>\n\n"
-                f"יתרה מעודכנת: {new_balance:.2f} TON\n"
+                f"×™×ª×¨×” ×ž×¢×•×“×›× ×ª: {new_balance:.2f} TON\n"
                 f"Tier: <b>{tier.upper()}</b>",
                 parse_mode="HTML"
             )
@@ -82,14 +82,14 @@ async def ton_monitor():
         await asyncio.sleep(30)
 '''
 
-# ─── Inject imports (aiohttp) ───
+# â”€â”€â”€ Inject imports (aiohttp) â”€â”€â”€
 if "import aiohttp" not in content:
     content = content.replace("import groq", "import groq\nimport aiohttp")
 
-# ─── Add ton_code before main() ───
+# â”€â”€â”€ Add ton_code before main() â”€â”€â”€
 content = content.replace("async def main():", ton_code + "\n\nasync def main():")
 
-# ─── Launch monitor inside main ───
+# â”€â”€â”€ Launch monitor inside main â”€â”€â”€
 old_main_body = "    await create_pool()\n    await bot.delete_webhook(drop_pending_updates=True)\n    await dp.start_polling(bot)"
 new_main_body = "    await create_pool()\n    asyncio.create_task(ton_monitor())\n    await bot.delete_webhook(drop_pending_updates=True)\n    await dp.start_polling(bot)"
 content = content.replace(old_main_body, new_main_body)
@@ -97,4 +97,5 @@ content = content.replace(old_main_body, new_main_body)
 with open("bot.py", "w", encoding="utf-8", newline="\n") as f:
     f.write(content)
 
-print("✅ TON deposit tracking added.")
+print("âœ… TON deposit tracking added.")
+

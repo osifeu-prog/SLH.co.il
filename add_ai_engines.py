@@ -1,17 +1,17 @@
-import os
+﻿import os
 
 FILE = "bot.py"
 with open(FILE, "r", encoding="utf-8") as f:
     content = f.read()
 
-# 1. ודא imports
+# 1. ×•×“× imports
 if "import google.generativeai as genai" not in content:
     content = content.replace(
         "import groq\n",
         "import groq\nimport google.generativeai as genai\nimport anthropic\n"
     )
 
-# 2. החלף ai_chat
+# 2. ×”×—×œ×£ ai_chat
 old_ai = '''@dp.message(F.text, ~F.text.startswith("/"))
 async def ai_chat(message: types.Message):
     await bot.send_chat_action(chat_id=message.chat.id, action="typing")
@@ -27,7 +27,7 @@ async def ai_chat(message: types.Message):
         answer = resp.choices[0].message.content
         await message.answer(answer[:4096])
     except Exception as e:
-        await message.answer(f"⚠️ AI error: {str(e)[:200]}")'''
+        await message.answer(f"âš ï¸ AI error: {str(e)[:200]}")'''
 
 new_ai = '''@dp.message(F.text, ~F.text.startswith("/"))
 async def ai_chat(message: types.Message):
@@ -63,11 +63,11 @@ async def ai_chat(message: types.Message):
                 return
         except:
             continue
-    await message.answer("⚠️ כל מנועי ה-AI לא זמינים. נסה שוב.")'''
+    await message.answer("âš ï¸ ×›×œ ×ž× ×•×¢×™ ×”-AI ×œ× ×–×ž×™× ×™×. × ×¡×” ×©×•×‘.")'''
 
 content = content.replace(old_ai, new_ai)
 
 with open(FILE, "w", encoding="utf-8", newline="\n") as f:
     f.write(content)
 
-print("✅ Gemini + Claude added.")
+print("âœ… Gemini + Claude added.")

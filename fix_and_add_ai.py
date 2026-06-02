@@ -1,4 +1,4 @@
-import os, sys
+﻿import os, sys
 
 FINAL = '''import asyncio, logging, os, json, datetime, random
 import asyncpg
@@ -101,62 +101,62 @@ async def create_pool():
 def main_menu_keyboard():
     builder = InlineKeyboardBuilder()
     builder.row(
-        types.InlineKeyboardButton(text="📊 Status", callback_data="status"),
-        types.InlineKeyboardButton(text="⭐ Points", callback_data="points")
+        types.InlineKeyboardButton(text="ðŸ“Š Status", callback_data="status"),
+        types.InlineKeyboardButton(text="â­ Points", callback_data="points")
     )
     builder.row(
-        types.InlineKeyboardButton(text="✅ Check-in", callback_data="checkin"),
-        types.InlineKeyboardButton(text="⚡ Tap-to-Earn", callback_data="tap")
+        types.InlineKeyboardButton(text="âœ… Check-in", callback_data="checkin"),
+        types.InlineKeyboardButton(text="âš¡ Tap-to-Earn", callback_data="tap")
     )
     builder.row(
-        types.InlineKeyboardButton(text="💰 Crypto", callback_data="crypto"),
-        types.InlineKeyboardButton(text="🤝 Donate", callback_data="donate")
+        types.InlineKeyboardButton(text="ðŸ’° Crypto", callback_data="crypto"),
+        types.InlineKeyboardButton(text="ðŸ¤ Donate", callback_data="donate")
     )
     builder.row(
-        types.InlineKeyboardButton(text="📖 Guide", callback_data="guide"),
-        types.InlineKeyboardButton(text="❓ Help", callback_data="help")
+        types.InlineKeyboardButton(text="ðŸ“– Guide", callback_data="guide"),
+        types.InlineKeyboardButton(text="â“ Help", callback_data="help")
     )
     builder.row(
-        types.InlineKeyboardButton(text="🔮 Oracle", callback_data="oracle"),
-        types.InlineKeyboardButton(text="☮️ Peace Game", callback_data="peace")
+        types.InlineKeyboardButton(text="ðŸ”® Oracle", callback_data="oracle"),
+        types.InlineKeyboardButton(text="â˜®ï¸ Peace Game", callback_data="peace")
     )
     builder.row(
-        types.InlineKeyboardButton(text="💎 Upgrade", callback_data="upgrade"),
-        types.InlineKeyboardButton(text="📋 Tasks", callback_data="tasks")
+        types.InlineKeyboardButton(text="ðŸ’Ž Upgrade", callback_data="upgrade"),
+        types.InlineKeyboardButton(text="ðŸ“‹ Tasks", callback_data="tasks")
     )
     builder.row(
-        types.InlineKeyboardButton(text="💳 Buy", callback_data="buy"),
-        types.InlineKeyboardButton(text="🛒 Pay", callback_data="pay")
+        types.InlineKeyboardButton(text="ðŸ’³ Buy", callback_data="buy"),
+        types.InlineKeyboardButton(text="ðŸ›’ Pay", callback_data="pay")
     )
     builder.row(
-        types.InlineKeyboardButton(text="👤 Identity", callback_data="identity")
+        types.InlineKeyboardButton(text="ðŸ‘¤ Identity", callback_data="identity")
     )
     return builder.as_markup()
 
 @dp.message(Command("register"))
 async def cmd_register(message: types.Message):
     await ensure_user(message.from_user.id, message.from_user.username or "unknown")
-    await message.answer("✅ Registered! Use /identity to set your profile.")
+    await message.answer("âœ… Registered! Use /identity to set your profile.")
 
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
     await ensure_user(message.from_user.id, message.from_user.username or "unknown")
     await message.answer(
-        "╔══════════════════════════════════╗\\n"
-        "║     ███████╗██╗     ██╗  ██╗     ║\\n"
-        "║     ██╔════╝██║     ██║  ██║     ║\\n"
-        "║     ███████╗██║     ███████║     ║\\n"
-        "║     ╚════██║██║     ██╔══██║     ║\\n"
-        "║     ███████║███████╗██║  ██║     ║\\n"
-        "║     ╚══════╝╚══════╝╚═╝  ╚═╝     ║\\n"
-        "║   🧠 SLH SPARK AI   v3.3        ║\\n"
-        "╚══════════════════════════════════╝",
+        "â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—\\n"
+        "â•‘     â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•—â–ˆâ–ˆâ•—     â–ˆâ–ˆâ•—  â–ˆâ–ˆâ•—     â•‘\\n"
+        "â•‘     â–ˆâ–ˆâ•”â•â•â•â•â•â–ˆâ–ˆâ•‘     â–ˆâ–ˆâ•‘  â–ˆâ–ˆâ•‘     â•‘\\n"
+        "â•‘     â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•—â–ˆâ–ˆâ•‘     â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•‘     â•‘\\n"
+        "â•‘     â•šâ•â•â•â•â–ˆâ–ˆâ•‘â–ˆâ–ˆâ•‘     â–ˆâ–ˆâ•”â•â•â–ˆâ–ˆâ•‘     â•‘\\n"
+        "â•‘     â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•‘â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•—â–ˆâ–ˆâ•‘  â–ˆâ–ˆâ•‘     â•‘\\n"
+        "â•‘     â•šâ•â•â•â•â•â•â•â•šâ•â•â•â•â•â•â•â•šâ•â•  â•šâ•â•     â•‘\\n"
+        "â•‘   ðŸ§  SLH SPARK AI   v3.3        â•‘\\n"
+        "â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•",
         parse_mode=None
     )
     await message.answer(
-        "<b>🤖 SLH Spark AI v3.3</b>\\n\\n"
-        "ברוך הבא, <b>Osif Ungar</b>!\\n"
-        "בחר אפשרות:",
+        "<b>ðŸ¤– SLH Spark AI v3.3</b>\\n\\n"
+        "×‘×¨×•×š ×”×‘×, <b>Osif Ungar</b>!\\n"
+        "×‘×—×¨ ××¤×©×¨×•×ª:",
         reply_markup=main_menu_keyboard()
     )
 
@@ -167,7 +167,7 @@ async def ensure_user(uid: int, username: str):
             uid, username
         )
 
-# ═══════════════ IDENTITY FSM ═══════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• IDENTITY FSM â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 class IdentityForm(StatesGroup):
     name = State()
     vision = State()
@@ -176,19 +176,19 @@ class IdentityForm(StatesGroup):
 @dp.message(Command("identity"))
 async def cmd_identity_start(message: types.Message, state: FSMContext):
     await state.set_state(IdentityForm.name)
-    await message.answer("👤 <b>Welcome to SLH!</b>\\n\\nWhat is your name?")
+    await message.answer("ðŸ‘¤ <b>Welcome to SLH!</b>\\n\\nWhat is your name?")
 
 @dp.message(IdentityForm.name)
 async def identity_name(message: types.Message, state: FSMContext):
     await state.update_data(name=message.text.strip())
     await state.set_state(IdentityForm.vision)
-    await message.answer("🌱 <b>What is your vision?</b>\\n(One sentence that describes your big goal)")
+    await message.answer("ðŸŒ± <b>What is your vision?</b>\\n(One sentence that describes your big goal)")
 
 @dp.message(IdentityForm.vision)
 async def identity_vision(message: types.Message, state: FSMContext):
     await state.update_data(vision=message.text.strip())
     await state.set_state(IdentityForm.values)
-    await message.answer("💎 <b>Choose 3 values:</b>\\n(Send them separated by commas)")
+    await message.answer("ðŸ’Ž <b>Choose 3 values:</b>\\n(Send them separated by commas)")
 
 @dp.message(IdentityForm.values)
 async def identity_values(message: types.Message, state: FSMContext):
@@ -206,11 +206,11 @@ async def identity_values(message: types.Message, state: FSMContext):
 
     await state.clear()
     await message.answer(
-        f"🎉 <b>Identity created!</b>\\n\\n"
+        f"ðŸŽ‰ <b>Identity created!</b>\\n\\n"
         f"Name: {name}\\n"
         f"Vision: {vision}\\n"
         f"Values: {', '.join(values)}\\n\\n"
-        f"+50 points! 🎯\\n"
+        f"+50 points! ðŸŽ¯\\n"
         f"Send /myidentity to view."
     )
 
@@ -219,33 +219,33 @@ async def cmd_myidentity(message: types.Message):
     async with pool.acquire() as conn:
         row = await conn.fetchrow("SELECT name, vision, values FROM identity WHERE user_id=$1", message.from_user.id)
         if not row:
-            await message.answer("❌ Identity not set. Use /identity")
+            await message.answer("âŒ Identity not set. Use /identity")
             return
         await message.answer(
-            f"👤 <b>{row['name']}</b>\\n"
-            f"🌱 Vision: {row['vision']}\\n"
-            f"💎 Values: {', '.join(row['values'])}",
+            f"ðŸ‘¤ <b>{row['name']}</b>\\n"
+            f"ðŸŒ± Vision: {row['vision']}\\n"
+            f"ðŸ’Ž Values: {', '.join(row['values'])}",
             parse_mode=ParseMode.HTML
         )
 
-# ─── Wallet, Pay, Store, CRM stubs ───
+# â”€â”€â”€ Wallet, Pay, Store, CRM stubs â”€â”€â”€
 @dp.message(Command("wallet"))
 async def cmd_wallet(message: types.Message):
-    await message.answer("💰 <b>SLH Wallet</b>\\n(Coming soon: SLH Points, TON, NFT)", parse_mode=ParseMode.HTML)
+    await message.answer("ðŸ’° <b>SLH Wallet</b>\\n(Coming soon: SLH Points, TON, NFT)", parse_mode=ParseMode.HTML)
 
 @dp.message(Command("pay"))
 async def cmd_pay(message: types.Message):
-    await message.answer("💳 <b>Payment</b>\\nChoose an option:\\n/invoice\\n/request\\n/split", parse_mode=ParseMode.HTML)
+    await message.answer("ðŸ’³ <b>Payment</b>\\nChoose an option:\\n/invoice\\n/request\\n/split", parse_mode=ParseMode.HTML)
 
 @dp.message(Command("store"))
 async def cmd_store(message: types.Message):
-    await message.answer("🛒 <b>Store</b>\\nManage your products:\\n/addproduct\\n/products\\n/buy", parse_mode=ParseMode.HTML)
+    await message.answer("ðŸ›’ <b>Store</b>\\nManage your products:\\n/addproduct\\n/products\\n/buy", parse_mode=ParseMode.HTML)
 
 @dp.message(Command("crm"))
 async def cmd_crm(message: types.Message):
-    await message.answer("📇 <b>CRM</b>\\n(Coming soon)", parse_mode=ParseMode.HTML)
+    await message.answer("ðŸ“‡ <b>CRM</b>\\n(Coming soon)", parse_mode=ParseMode.HTML)
 
-# ─── Crypto ───
+# â”€â”€â”€ Crypto â”€â”€â”€
 @dp.message(Command("crypto"))
 async def cmd_crypto(message: types.Message):
     try:
@@ -256,11 +256,11 @@ async def cmd_crypto(message: types.Message):
             btc = data.get("bitcoin", {}).get("usd", "?")
             eth = data.get("ethereum", {}).get("usd", "?")
             ton = data.get("the-open-network", {}).get("usd", "?")
-            await message.answer(f"💰 BTC: ${btc} | ETH: ${eth} | TON: ${ton}", parse_mode=ParseMode.HTML)
+            await message.answer(f"ðŸ’° BTC: ${btc} | ETH: ${eth} | TON: ${ton}", parse_mode=ParseMode.HTML)
     except:
-        await message.answer("❌ Could not fetch prices.")
+        await message.answer("âŒ Could not fetch prices.")
 
-# ─── Check-in ───
+# â”€â”€â”€ Check-in â”€â”€â”€
 @dp.message(Command("checkin"))
 async def cmd_checkin(message: types.Message):
     async with pool.acquire() as conn:
@@ -272,7 +272,7 @@ async def cmd_checkin(message: types.Message):
         streak = user['streak']
         today = datetime.date.today()
         if last == today:
-            await message.answer("⏳ Already checked in today!")
+            await message.answer("â³ Already checked in today!")
             return
         if last and (today - last).days == 1:
             streak += 1
@@ -282,7 +282,7 @@ async def cmd_checkin(message: types.Message):
         new_total = user['points'] + points
         await conn.execute("UPDATE users SET points=$1, streak=$2, last_checkin=$3 WHERE telegram_id=$4",
                            new_total, streak, today, message.from_user.id)
-        await message.answer(f"☀️ Check-in successful! +{points} points\\nTotal: {new_total} pts | Streak: {streak} days")
+        await message.answer(f"â˜€ï¸ Check-in successful! +{points} points\\nTotal: {new_total} pts | Streak: {streak} days")
 
 @dp.message(Command("points"))
 async def cmd_points(message: types.Message):
@@ -291,7 +291,7 @@ async def cmd_points(message: types.Message):
         if not user:
             await message.answer("Register first.")
             return
-        await message.answer(f"🎯 You have {user['points']} points | Streak: {user['streak']} days")
+        await message.answer(f"ðŸŽ¯ You have {user['points']} points | Streak: {user['streak']} days")
 
 @dp.message(Command("leaderboard"))
 async def cmd_leaderboard(message: types.Message):
@@ -300,12 +300,12 @@ async def cmd_leaderboard(message: types.Message):
         if not rows:
             await message.answer("No users with points yet.")
             return
-        text = "🏆 <b>Leaderboard</b>\\n"
+        text = "ðŸ† <b>Leaderboard</b>\\n"
         for i, r in enumerate(rows, 1):
             text += f"{i}. {r['username']} - {r['points']} pts\\n"
         await message.answer(text, parse_mode=ParseMode.HTML)
 
-# ─── Oracle ───
+# â”€â”€â”€ Oracle â”€â”€â”€
 @dp.message(Command("oracle"))
 async def cmd_oracle(message: types.Message):
     builder = InlineKeyboardBuilder()
@@ -313,7 +313,7 @@ async def cmd_oracle(message: types.Message):
     builder.row(types.InlineKeyboardButton(text="System Scan", callback_data="oracle_scan"))
     builder.row(types.InlineKeyboardButton(text="Prediction", callback_data="oracle_predict"))
     builder.row(types.InlineKeyboardButton(text="Daily Peace Mission", callback_data="oracle_mission"))
-    await message.answer("🔮 <b>SLH Oracle+</b>\\nChoose:", reply_markup=builder.as_markup(), parse_mode=ParseMode.HTML)
+    await message.answer("ðŸ”® <b>SLH Oracle+</b>\\nChoose:", reply_markup=builder.as_markup(), parse_mode=ParseMode.HTML)
 
 @dp.callback_query(F.data.startswith("oracle_"))
 async def oracle_callback(callback: types.CallbackQuery):
@@ -321,21 +321,21 @@ async def oracle_callback(callback: types.CallbackQuery):
     if data == "oracle_ask":
         await callback.message.answer("Ask me anything about the project.")
     elif data == "oracle_scan":
-        await callback.message.answer("🔍 System Scan: Bot: Online, DB: Connected, Railway: Online")
+        await callback.message.answer("ðŸ” System Scan: Bot: Online, DB: Connected, Railway: Online")
     elif data == "oracle_predict":
-        await callback.message.answer("📈 Prediction: +0.5 TON/day, 15 TON by month end.")
+        await callback.message.answer("ðŸ“ˆ Prediction: +0.5 TON/day, 15 TON by month end.")
     elif data == "oracle_mission":
-        await callback.message.answer("💙 Daily Peace Mission: Share the bot with one person.")
+        await callback.message.answer("ðŸ’™ Daily Peace Mission: Share the bot with one person.")
     await callback.answer()
 
-# ─── Peace Game ───
+# â”€â”€â”€ Peace Game â”€â”€â”€
 @dp.message(Command("peace"))
 async def cmd_peace(message: types.Message):
     builder = InlineKeyboardBuilder()
-    builder.row(types.InlineKeyboardButton(text="☮️ Peace Path", callback_data="peace_path"))
-    builder.row(types.InlineKeyboardButton(text="🤖 Innovation Path", callback_data="innovation_path"))
-    builder.row(types.InlineKeyboardButton(text="🌍 Humanity Path", callback_data="humanity_path"))
-    await message.answer("☮️ <b>Peace Game</b>\\nChoose path:", reply_markup=builder.as_markup(), parse_mode=ParseMode.HTML)
+    builder.row(types.InlineKeyboardButton(text="â˜®ï¸ Peace Path", callback_data="peace_path"))
+    builder.row(types.InlineKeyboardButton(text="ðŸ¤– Innovation Path", callback_data="innovation_path"))
+    builder.row(types.InlineKeyboardButton(text="ðŸŒ Humanity Path", callback_data="humanity_path"))
+    await message.answer("â˜®ï¸ <b>Peace Game</b>\\nChoose path:", reply_markup=builder.as_markup(), parse_mode=ParseMode.HTML)
 
 @dp.callback_query(F.data.endswith("_path"))
 async def peace_path_chosen(callback: types.CallbackQuery):
@@ -345,41 +345,41 @@ async def peace_path_chosen(callback: types.CallbackQuery):
     await callback.message.answer(f"{path} Path: {question}\\n" + "\\n".join(answers))
     await callback.answer()
 
-# ─── Help, Guide, FAQ, Tutorial ───
+# â”€â”€â”€ Help, Guide, FAQ, Tutorial â”€â”€â”€
 @dp.message(Command("help"))
 async def cmd_help(message: types.Message):
-    await message.answer("📘 <b>Commands</b>: /start /help /crypto /guide /donate /tasks /menu /pay /buy /upgrade /oracle /peace /seed /sysinfo /profile /myid /leaderboard /checkin /points /daily /backup /broadcast /wallet /deposit /tap /referral /admin /users /morning /doctor /statusapi /test /crm /events /support /roadmap /transfer /faq /tutorial /progress /done /commission /links /about /healthcheck /identity /myidentity")
+    await message.answer("ðŸ“˜ <b>Commands</b>: /start /help /crypto /guide /donate /tasks /menu /pay /buy /upgrade /oracle /peace /seed /sysinfo /profile /myid /leaderboard /checkin /points /daily /backup /broadcast /wallet /deposit /tap /referral /admin /users /morning /doctor /statusapi /test /crm /events /support /roadmap /transfer /faq /tutorial /progress /done /commission /links /about /healthcheck /identity /myidentity")
 
 @dp.message(Command("guide"))
 async def cmd_guide(message: types.Message):
-    await message.answer("📘 <b>Economic Guide</b>\\n🔐 Wallet: Trust Wallet / Exodus\\n💵 Stablecoin without bank\\n📉 Protection: USDT/USDC\\n⚠️ CBDC = control\\n🤝 /donate")
+    await message.answer("ðŸ“˜ <b>Economic Guide</b>\\nðŸ” Wallet: Trust Wallet / Exodus\\nðŸ’µ Stablecoin without bank\\nðŸ“‰ Protection: USDT/USDC\\nâš ï¸ CBDC = control\\nðŸ¤ /donate")
 
 @dp.message(Command("faq"))
 async def cmd_faq(message: types.Message):
-    await message.answer("❓ <b>FAQ</b>\\nQ: How to earn points?\\nA: /checkin daily, /tap, complete tasks\\nQ: How to deposit?\\nA: /deposit")
+    await message.answer("â“ <b>FAQ</b>\\nQ: How to earn points?\\nA: /checkin daily, /tap, complete tasks\\nQ: How to deposit?\\nA: /deposit")
 
 @dp.message(Command("tutorial"))
 async def cmd_tutorial(message: types.Message):
-    await message.answer("🎓 <b>Tutorial</b>\\n1. /register\\n2. /checkin\\n3. /deposit\\n4. /upgrade\\n5. /task")
+    await message.answer("ðŸŽ“ <b>Tutorial</b>\\n1. /register\\n2. /checkin\\n3. /deposit\\n4. /upgrade\\n5. /task")
 
-# ─── Donate, Upgrade ───
+# â”€â”€â”€ Donate, Upgrade â”€â”€â”€
 @dp.message(Command("donate"))
 async def cmd_donate(message: types.Message):
-    await message.answer(f"🤝 <b>Support SLH Ecosystem</b>\\nTON: <code>{TON_WALLET}</code>\\nUSDT (TRC-20): <code>TYoB3sXqH3kL9xQZqR5nL8wJqVkL3wYxZ</code>", parse_mode=ParseMode.HTML)
+    await message.answer(f"ðŸ¤ <b>Support SLH Ecosystem</b>\\nTON: <code>{TON_WALLET}</code>\\nUSDT (TRC-20): <code>TYoB3sXqH3kL9xQZqR5nL8wJqVkL3wYxZ</code>", parse_mode=ParseMode.HTML)
 
 @dp.message(Command("upgrade"))
 async def cmd_upgrade(message: types.Message):
-    await message.answer("💎 <b>Premium Plans</b>\\nPro: 9.9 TON/month\\nBusiness: 29 TON/month\\n\\nSend TON to:\\n<code>UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp</code>", parse_mode=ParseMode.HTML)
+    await message.answer("ðŸ’Ž <b>Premium Plans</b>\\nPro: 9.9 TON/month\\nBusiness: 29 TON/month\\n\\nSend TON to:\\n<code>UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp</code>", parse_mode=ParseMode.HTML)
 
-# ─── Admin: /users, /broadcast, /doctor, /test, /seed, /sysinfo ───
+# â”€â”€â”€ Admin: /users, /broadcast, /doctor, /test, /seed, /sysinfo â”€â”€â”€
 @dp.message(Command("users"))
 async def cmd_users(message: types.Message):
     if message.from_user.id not in ADMIN_IDS:
-        await message.answer("👑 Admin only")
+        await message.answer("ðŸ‘‘ Admin only")
         return
     async with pool.acquire() as conn:
         rows = await conn.fetch("SELECT telegram_id, username, points, tier FROM users")
-        text = "👥 <b>Users</b>\\n"
+        text = "ðŸ‘¥ <b>Users</b>\\n"
         for r in rows:
             text += f"{r['username']} ({r['telegram_id']}) | {r['tier']} | {r['points']}pts\\n"
         await message.answer(text, parse_mode=ParseMode.HTML)
@@ -387,7 +387,7 @@ async def cmd_users(message: types.Message):
 @dp.message(Command("broadcast"))
 async def cmd_broadcast(message: types.Message):
     if message.from_user.id not in ADMIN_IDS:
-        await message.answer("👑 Admin only")
+        await message.answer("ðŸ‘‘ Admin only")
         return
     text = message.text.split(" ", 1)
     if len(text) < 2:
@@ -403,15 +403,15 @@ async def cmd_broadcast(message: types.Message):
                 count += 1
             except:
                 pass
-        await message.answer(f"📤 Sent to {count}/{len(users)} users.")
+        await message.answer(f"ðŸ“¤ Sent to {count}/{len(users)} users.")
 
 @dp.message(Command("doctor"))
 async def cmd_doctor(message: types.Message):
-    await message.answer("🩺 <b>System Health</b>\\nDB: ✅ Connected\\nBot: ✅ Running\\nRailway: ✅ Online")
+    await message.answer("ðŸ©º <b>System Health</b>\\nDB: âœ… Connected\\nBot: âœ… Running\\nRailway: âœ… Online")
 
 @dp.message(Command("test"))
 async def cmd_test(message: types.Message):
-    await message.answer("🧪 Self-Test\\n✅ DB\\n✅ Bot Token")
+    await message.answer("ðŸ§ª Self-Test\\nâœ… DB\\nâœ… Bot Token")
 
 @dp.message(Command("seed"))
 async def cmd_seed(message: types.Message):
@@ -420,7 +420,7 @@ async def cmd_seed(message: types.Message):
             uid = 1000000 + i
             await conn.execute("INSERT INTO users (telegram_id, username, points) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING",
                                uid, f"DemoUser{i}", random.randint(0, 100))
-        await message.answer("✅ Demo data seeded.")
+        await message.answer("âœ… Demo data seeded.")
 
 @dp.message(Command("sysinfo"))
 async def cmd_sysinfo(message: types.Message):
@@ -429,7 +429,7 @@ async def cmd_sysinfo(message: types.Message):
     mem = psutil.virtual_memory()
     disk = psutil.disk_usage('/')
     await message.answer(
-        f"🖥 <b>System Info</b>\\n"
+        f"ðŸ–¥ <b>System Info</b>\\n"
         f"OS: {platform.system()}\\n"
         f"CPU: {cpu}%\\n"
         f"RAM: {mem.percent}% ({mem.used // (1024**2)} MB / {mem.total // (1024**2)} MB)\\n"
@@ -437,51 +437,51 @@ async def cmd_sysinfo(message: types.Message):
         parse_mode=ParseMode.HTML
     )
 
-# ─── Additional commands stubs ───
+# â”€â”€â”€ Additional commands stubs â”€â”€â”€
 @dp.message(Command("tap"))
 async def cmd_tap(message: types.Message):
-    await message.answer("⚡ Tap-to-Earn: Coming soon!")
+    await message.answer("âš¡ Tap-to-Earn: Coming soon!")
 
 @dp.message(Command("tasks"))
 async def cmd_tasks(message: types.Message):
-    await message.answer("📋 <b>Tasks</b>\\n(Coming soon)", parse_mode=ParseMode.HTML)
+    await message.answer("ðŸ“‹ <b>Tasks</b>\\n(Coming soon)", parse_mode=ParseMode.HTML)
 
 @dp.message(Command("daily"))
 async def cmd_daily(message: types.Message):
-    await message.answer("📅 Daily Missions: /checkin, /tap, /guide")
+    await message.answer("ðŸ“… Daily Missions: /checkin, /tap, /guide")
 
 @dp.message(Command("backup"))
 async def cmd_backup(message: types.Message):
-    await message.answer("📦 Backup saved to cloud.")
+    await message.answer("ðŸ“¦ Backup saved to cloud.")
 
 @dp.message(Command("referral"))
 async def cmd_referral(message: types.Message):
-    await message.answer(f"🔗 Your referral link: https://t.me/SLH_Claude_bot?start=ref{message.from_user.id}")
+    await message.answer(f"ðŸ”— Your referral link: https://t.me/SLH_Claude_bot?start=ref{message.from_user.id}")
 
 @dp.message(Command("profile"))
 async def cmd_profile(message: types.Message):
     async with pool.acquire() as conn:
         user = await conn.fetchrow("SELECT username, points, tier, balance FROM users WHERE telegram_id=$1", message.from_user.id)
         if user:
-            await message.answer(f"👤 Profile\\nName: {user['username']}\\nPoints: {user['points']}\\nTier: {user['tier']}\\nBalance: {user['balance']:.2f}")
+            await message.answer(f"ðŸ‘¤ Profile\\nName: {user['username']}\\nPoints: {user['points']}\\nTier: {user['tier']}\\nBalance: {user['balance']:.2f}")
         else:
             await message.answer("Not registered.")
 
 @dp.message(Command("myid"))
 async def cmd_myid(message: types.Message):
-    await message.answer(f"🆔 Your Telegram ID: {message.from_user.id}")
+    await message.answer(f"ðŸ†” Your Telegram ID: {message.from_user.id}")
 
 @dp.message(Command("status"))
 async def cmd_status(message: types.Message):
     async with pool.acquire() as conn:
         users = await conn.fetchval("SELECT COUNT(*) FROM users")
-        await message.answer(f"📊 <b>Project Status</b>\\n✅ Bot: Online\\n✅ Users: {users}\\n✅ Mini App: slh-nft.com", parse_mode=ParseMode.HTML)
+        await message.answer(f"ðŸ“Š <b>Project Status</b>\\nâœ… Bot: Online\\nâœ… Users: {users}\\nâœ… Mini App: slh-nft.com", parse_mode=ParseMode.HTML)
 
 @dp.message(Command("dashboard"))
 async def cmd_dashboard(message: types.Message):
     async with pool.acquire() as conn:
         users = await conn.fetchval("SELECT COUNT(*) FROM users")
-        await message.answer(f"📋 <b>Dashboard</b>\\n👥 Users: {users}\\n⭐ Points: N/A\\n💰 TON: N/A", parse_mode=ParseMode.HTML)
+        await message.answer(f"ðŸ“‹ <b>Dashboard</b>\\nðŸ‘¥ Users: {users}\\nâ­ Points: N/A\\nðŸ’° TON: N/A", parse_mode=ParseMode.HTML)
 
 @dp.message(Command("events"))
 async def cmd_events(message: types.Message):
@@ -489,29 +489,29 @@ async def cmd_events(message: types.Message):
 
 @dp.message(Command("community"))
 async def cmd_community(message: types.Message):
-    await message.answer("👥 Community: Join our group https://t.me/SLH_support")
+    await message.answer("ðŸ‘¥ Community: Join our group https://t.me/SLH_support")
 
 @dp.message(Command("game"))
 async def cmd_game(message: types.Message):
-    await message.answer("🎮 <b>Game</b>\\nPeace Game: /peace\\nOracle: /oracle", parse_mode=ParseMode.HTML)
+    await message.answer("ðŸŽ® <b>Game</b>\\nPeace Game: /peace\\nOracle: /oracle", parse_mode=ParseMode.HTML)
 
 @dp.message(Command("invest"))
 async def cmd_invest(message: types.Message):
-    await message.answer("🏦 <b>Invest</b>\\nComing soon: dynamic yield, staking, P2P marketplace")
+    await message.answer("ðŸ¦ <b>Invest</b>\\nComing soon: dynamic yield, staking, P2P marketplace")
 
 @dp.message(Command("roadmap"))
 async def cmd_roadmap(message: types.Message):
-    await message.answer("🗺 Roadmap: https://slh-nft.com/roadmap")
+    await message.answer("ðŸ—º Roadmap: https://slh-nft.com/roadmap")
 
 @dp.message(Command("support"))
 async def cmd_support(message: types.Message):
-    await message.answer("💬 Support: @SLH_Claude_bot")
+    await message.answer("ðŸ’¬ Support: @SLH_Claude_bot")
 
 @dp.message(Command("feedback"))
 async def cmd_feedback(message: types.Message):
-    await message.answer("📨 Send feedback: /feedback <message>")
+    await message.answer("ðŸ“¨ Send feedback: /feedback <message>")
 
-# ─── AI chat (free text) ───
+# â”€â”€â”€ AI chat (free text) â”€â”€â”€
 @dp.message(F.text, ~F.text.startswith("/"))
 async def ai_chat(message: types.Message):
     await bot.send_chat_action(chat_id=message.chat.id, action="typing")
@@ -546,9 +546,9 @@ async def ai_chat(message: types.Message):
                 return
         except:
             continue
-    await message.answer("⚠️ All AI engines unavailable. Try later.")
+    await message.answer("âš ï¸ All AI engines unavailable. Try later.")
 
-# ─── Callback handler for main menu buttons ───
+# â”€â”€â”€ Callback handler for main menu buttons â”€â”€â”€
 @dp.callback_query()
 async def main_callback(callback: types.CallbackQuery):
     data = callback.data
@@ -577,11 +577,11 @@ async def main_callback(callback: types.CallbackQuery):
     elif data == "tasks":
         await cmd_tasks(callback.message)
     elif data == "buy":
-        await callback.message.answer("💳 Buy: Enter product ID")
+        await callback.message.answer("ðŸ’³ Buy: Enter product ID")
     elif data == "pay":
         await cmd_pay(callback.message)
     elif data == "identity":
-        await callback.message.answer("ℹ️ Use /identity command to set your profile.")
+        await callback.message.answer("â„¹ï¸ Use /identity command to set your profile.")
     await callback.answer()
 
 async def main():
@@ -596,4 +596,4 @@ if __name__ == "__main__":
 with open("bot.py", "w", encoding="utf-8", newline="\n") as f:
     f.write(FINAL)
 
-print("✅ bot.py written perfectly – no syntax errors.")
+print("âœ… bot.py written perfectly â€“ no syntax errors.")

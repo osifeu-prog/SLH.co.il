@@ -20,3 +20,4 @@ def add_to_conversation(user_id: int, role: str, content: str):
 def clear_conversation(user_id: int):
     key = f"conv:{user_id}"
     redis_client.delete(key)
+

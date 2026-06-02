@@ -1,6 +1,6 @@
-import psycopg2
+﻿import psycopg2
 
-# ⚠️ החלף בכתובת הציבורית שלך מ-Railway Dashboard
+# âš ï¸ ×”×—×œ×£ ×‘×›×ª×•×‘×ª ×”×¦×™×‘×•×¨×™×ª ×©×œ×š ×ž-Railway Dashboard
 DB_URL = "postgresql://postgres:oPDCKJGOZvNKPaTlNIlWfYnDGsNjgqRg@baboon-production.up.railway.app:5432/railway"
 
 conn = psycopg2.connect(DB_URL)
@@ -18,4 +18,4 @@ conn.commit()
 cur.close()
 conn.close()
 
-print("✅ DB fixed successfully!")
+print("âœ… DB fixed successfully!")

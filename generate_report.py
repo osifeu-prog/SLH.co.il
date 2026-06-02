@@ -1,15 +1,15 @@
-
+﻿
 import json, matplotlib.pyplot as plt
 from datetime import datetime
 
-# טען את הדו״ח JSON אם קיים
+# ×˜×¢×Ÿ ××ª ×”×“×•×´×— JSON ×× ×§×™×™×
 try:
     data = json.load(open("test_report.json"))
 except:
     data = {"status":"no report","checks":[]}
 
 html = "<html><head><title>SLH Diagnostic Report</title></head><body>"
-html += f"<h1>SLH Diagnostic Report — {datetime.now().strftime('%Y-%m-%d %H:%M')}</h1>"
+html += f"<h1>SLH Diagnostic Report â€” {datetime.now().strftime('%Y-%m-%d %H:%M')}</h1>"
 html += f"<p><b>Status:</b> {data.get('status','unknown')}</p>"
 
 html += "<table border=1 cellpadding=5><tr><th>Check</th><th>Result</th><th>Severity</th></tr>"
@@ -29,4 +29,5 @@ if latencies:
 
 html += "</body></html>"
 open("test_report.html","w",encoding="utf-8").write(html)
-print("📊 HTML report generated: test_report.html")
+print("ðŸ“Š HTML report generated: test_report.html")
+

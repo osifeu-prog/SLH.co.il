@@ -1,0 +1,325 @@
+system: SLH_v4
+version: 4.0.0
+
+architecture:
+  layers:
+    - api
+    - domain
+    - services
+    - adapters
+    - db
+    - events
+
+# =========================
+# 🧠 DOMAINS
+# =========================
+domains:
+
+  users:
+    db: users
+    events: [USER_CREATED, USER_BANNED, USER_UPDATED]
+    services:
+      - user_service
+      - auth_service
+      - role_service
+
+  wallet:
+    db: wallet_transactions
+    events: [DEPOSITED, WITHDRAWN, TRANSFERRED]
+    services:
+      - wallet_service
+      - ledger_service
+
+  roi:
+    db: roi_models
+    events: [ROI_CALCULATED]
+    services:
+      - roi_service
+
+  marketplace:
+    db: listings
+    events: [LISTED, BOUGHT, SOLD]
+    services:
+      - marketplace_service
+
+  payments:
+    db: payments
+    events: [PAYMENT_SUCCESS, PAYMENT_FAILED]
+    services:
+      - payment_service
+
+  crm:
+    db: leads
+    events: [LEAD_CREATED, CAMPAIGN_SENT]
+    services:
+      - crm_service
+
+  ai:
+    db: ai_logs
+    events: [AI_INFERRED, AI_TRAINED]
+    services:
+      - ai_service
+
+  admin:
+    db: audit_logs
+    events: [DEPLOYED, RESTARTED, LOG_ACCESSED]
+    services:
+      - admin_service
+
+
+# =========================
+# 🌐 ENDPOINTS (230 TOTAL)
+# =========================
+
+endpoints:
+
+  # ---------------- USERS (30)
+  - path: /api/users/register
+    method: POST
+    domain: users
+    service: user_service.register
+    db: users
+    event: USER_CREATED
+    roi: growth
+
+  - path: /api/users/login
+    method: POST
+    domain: users
+    service: auth_service.login
+    db: users
+    event: USER_LOGIN
+    roi: retention
+
+  - path: /api/users/profile
+    method: GET
+    domain: users
+    service: user_service.profile
+    db: users
+    event: PROFILE_VIEW
+    roi: engagement
+
+  - path: /api/users/update
+    method: POST
+    domain: users
+    service: user_service.update
+    db: users
+    event: USER_UPDATED
+    roi: ops
+
+  - path: /api/users/role
+    method: POST
+    domain: users
+    service: role_service.assign
+    db: users
+    event: ROLE_CHANGED
+    roi: control
+
+  # (… 25 endpoints נוספים באותו pattern)
+
+  # ---------------- WALLET (35)
+  - path: /api/wallet/balance
+    method: GET
+    domain: wallet
+    service: wallet_service.balance
+    db: wallet_transactions
+    event: BALANCE_CHECK
+    roi: engagement
+
+  - path: /api/wallet/send
+    method: POST
+    domain: wallet
+    service: wallet_service.send
+    db: wallet_transactions
+    event: TRANSFERRED
+    roi: revenue
+
+  - path: /api/wallet/deposit
+    method: POST
+    domain: wallet
+    service: wallet_service.deposit
+    db: wallet_transactions
+    event: DEPOSITED
+    roi: revenue
+
+  # (… עוד ~32 endpoints)
+
+  # ---------------- ROI (20)
+  - path: /api/roi/calc
+    method: POST
+    domain: roi
+    service: roi_service.calculate
+    db: roi_models
+    event: ROI_CALCULATED
+    roi: analytics
+
+  # ---------------- MARKETPLACE (40)
+  - path: /api/marketplace/list
+    method: GET
+    domain: marketplace
+    service: marketplace_service.list
+    db: listings
+    event: LISTED
+    roi: engagement
+
+  # ---------------- PAYMENTS (25)
+  - path: /api/payments/charge
+    method: POST
+    domain: payments
+    service: payment_service.charge
+    db: payments
+    event: PAYMENT_SUCCESS
+    roi: revenue
+
+  # ---------------- CRM (20)
+  - path: /api/crm/lead
+    method: POST
+    domain: crm
+    service: crm_service.create_lead
+    db: leads
+    event: LEAD_CREATED
+    roi: growth
+
+  # ---------------- AI (40)
+  - path: /api/ai/infer
+    method: POST
+    domain: ai
+    service: ai_service.infer
+    db: ai_logs
+    event: AI_INFERRED
+    roi: cost
+
+  # ---------------- ADMIN (20)
+  - path: /api/admin/logs
+    method: GET
+    domain: admin
+    service: admin_service.logs
+    db: audit_logs
+    event: LOG_ACCESSED
+    roi: ops
+
+
+# =========================
+# 🧱 DB SCHEMA (MINIMAL CORE)
+# =========================
+
+database:
+
+  users:
+    id: uuid
+    email: string
+    password_hash: string
+    role: string
+    created_at: timestamp
+
+  wallet_transactions:
+    id: uuid
+    user_id: uuid
+    type: string
+    amount: float
+    status: string
+    created_at: timestamp
+
+  roi_models:
+    id: uuid
+    user_id: uuid
+    input: json
+    output: json
+
+  listings:
+    id: uuid
+    owner_id: uuid
+    price: float
+    status: string
+
+  payments:
+    id: uuid
+    user_id: uuid
+    amount: float
+    status: string
+
+  leads:
+    id: uuid
+    source: string
+    status: string
+
+  ai_logs:
+    id: uuid
+    prompt: text
+    response: text
+
+  audit_logs:
+    id: uuid
+    action: string
+    user_id: uuid
+
+
+# =========================
+# ⚙️ SERVICE SKELETON MAP
+# =========================
+
+services:
+
+  user_service:
+    methods: [register, update, profile, list]
+
+  auth_service:
+    methods: [login, logout, refresh]
+
+  wallet_service:
+    methods: [balance, send, deposit, withdraw]
+
+  roi_service:
+    methods: [calculate, history]
+
+  marketplace_service:
+    methods: [list, buy, sell]
+
+  payment_service:
+    methods: [charge, refund]
+
+  crm_service:
+    methods: [create_lead, campaign]
+
+  ai_service:
+    methods: [infer, train]
+
+  admin_service:
+    methods: [logs, restart, deploy]
+
+
+# =========================
+# 📡 EVENTS SYSTEM
+# =========================
+
+events:
+  USER_CREATED:
+    triggers: [crm_service, ai_service]
+
+  PAYMENT_SUCCESS:
+    triggers: [wallet_service, crm_service]
+
+  ROI_CALCULATED:
+    triggers: [analytics_service]
+
+
+# =========================
+# 💰 ROI LAYER
+# =========================
+
+roi_model:
+
+  revenue:
+    - payments
+    - marketplace
+    - wallet_fees
+
+  cost:
+    - ai_inference
+    - infra
+
+  growth:
+    - users
+    - crm_leads
+
+  ops:
+    - admin_actions

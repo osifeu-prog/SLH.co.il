@@ -36,3 +36,4 @@ def transfer(from_user: int, to_user: int, amount: float) -> bool:
     conn.commit()
     conn.close()
     return True
+

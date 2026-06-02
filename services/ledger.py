@@ -11,3 +11,4 @@ def log_transaction(user_id: int, t_type: str, category: str, amount: float, cur
     """, (user_id, t_type, category, amount, currency, reference, json.dumps(metadata or {})))
     conn.commit()
     conn.close()
+

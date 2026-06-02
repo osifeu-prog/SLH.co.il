@@ -1,4 +1,4 @@
-import os, sys
+﻿import os, sys
 
 FILE = "bot.py"
 with open(FILE, "r", encoding="utf-8") as f:
@@ -16,10 +16,10 @@ lines = content.split("\n")
 new_lines = []
 skip = False
 for line in lines:
-    if "# ─── /identity flow ───" in line or "async def cmd_identity(message: types.Message):" in line:
+    if "# â”€â”€â”€ /identity flow â”€â”€â”€" in line or "async def cmd_identity(message: types.Message):" in line:
         skip = True
         continue
-    if skip and "# ─── Wallet, Pay, Store, CRM stubs" in line:
+    if skip and "# â”€â”€â”€ Wallet, Pay, Store, CRM stubs" in line:
         skip = False
         new_lines.append(line)
         continue
@@ -29,7 +29,7 @@ content = "\n".join(new_lines)
 
 # 3. Insert the FSM-based identity code
 fsm_code = '''
-# ─── Identity FSM ───
+# â”€â”€â”€ Identity FSM â”€â”€â”€
 class IdentityForm(StatesGroup):
     name = State()
     vision = State()
@@ -38,19 +38,19 @@ class IdentityForm(StatesGroup):
 @dp.message(Command("identity"))
 async def cmd_identity_start(message: types.Message, state: FSMContext):
     await state.set_state(IdentityForm.name)
-    await message.answer("👤 <b>ברוך הבא למסע החיים של SLH</b>\n\nמה השם שלך?")
+    await message.answer("ðŸ‘¤ <b>×‘×¨×•×š ×”×‘× ×œ×ž×¡×¢ ×”×—×™×™× ×©×œ SLH</b>\n\n×ž×” ×”×©× ×©×œ×š?")
 
 @dp.message(IdentityForm.name)
 async def identity_name(message: types.Message, state: FSMContext):
     await state.update_data(name=message.text.strip())
     await state.set_state(IdentityForm.vision)
-    await message.answer("🌱 <b>מה החזון שלך?</b>\n(משפט אחד שמתאר את המטרה הגדולה שלך)")
+    await message.answer("ðŸŒ± <b>×ž×” ×”×—×–×•×Ÿ ×©×œ×š?</b>\n(×ž×©×¤×˜ ××—×“ ×©×ž×ª××¨ ××ª ×”×ž×˜×¨×” ×”×’×“×•×œ×” ×©×œ×š)")
 
 @dp.message(IdentityForm.vision)
 async def identity_vision(message: types.Message, state: FSMContext):
     await state.update_data(vision=message.text.strip())
     await state.set_state(IdentityForm.values)
-    await message.answer("💎 <b>בחר 3 ערכים שמנחים אותך:</b>\n(לדוגמה: אהבה, חופש, שלום, צדק, אומץ, חכמה)\nשלח את שלושתם מופרדים בפסיקים")
+    await message.answer("ðŸ’Ž <b>×‘×—×¨ 3 ×¢×¨×›×™× ×©×ž× ×—×™× ××•×ª×š:</b>\n(×œ×“×•×’×ž×”: ××”×‘×”, ×—×•×¤×©, ×©×œ×•×, ×¦×“×§, ××•×ž×¥, ×—×›×ž×”)\n×©×œ×— ××ª ×©×œ×•×©×ª× ×ž×•×¤×¨×“×™× ×‘×¤×¡×™×§×™×")
 
 @dp.message(IdentityForm.values)
 async def identity_values(message: types.Message, state: FSMContext):
@@ -68,12 +68,12 @@ async def identity_values(message: types.Message, state: FSMContext):
 
     await state.clear()
     await message.answer(
-        f"🎉 <b>הזהות שלך נוצרה!</b>\n\n"
-        f"שם: {name}\n"
-        f"חזון: {vision}\n"
-        f"ערכים: {', '.join(values)}\n\n"
-        f"+50 נקודות! 🎯\n"
-        f"שלח /myidentity כדי לראות את הדף שלך."
+        f"ðŸŽ‰ <b>×”×–×”×•×ª ×©×œ×š × ×•×¦×¨×”!</b>\n\n"
+        f"×©×: {name}\n"
+        f"×—×–×•×Ÿ: {vision}\n"
+        f"×¢×¨×›×™×: {', '.join(values)}\n\n"
+        f"+50 × ×§×•×“×•×ª! ðŸŽ¯\n"
+        f"×©×œ×— /myidentity ×›×“×™ ×œ×¨××•×ª ××ª ×”×“×£ ×©×œ×š."
     )
 
 @dp.message(Command("myidentity"))
@@ -81,16 +81,16 @@ async def cmd_myidentity(message: types.Message):
     async with pool.acquire() as conn:
         row = await conn.fetchrow("SELECT name, vision, values FROM identity WHERE user_id=$1", message.from_user.id)
         if not row:
-            await message.answer("❌ עדיין לא הגדרת זהות. שלח /identity")
+            await message.answer("âŒ ×¢×“×™×™×Ÿ ×œ× ×”×’×“×¨×ª ×–×”×•×ª. ×©×œ×— /identity")
             return
         await message.answer(
-            f"👤 <b>{row['name']}</b>\n"
-            f"🌱 חזון: {row['vision']}\n"
-            f"💎 ערכים: {', '.join(row['values'])}",
+            f"ðŸ‘¤ <b>{row['name']}</b>\n"
+            f"ðŸŒ± ×—×–×•×Ÿ: {row['vision']}\n"
+            f"ðŸ’Ž ×¢×¨×›×™×: {', '.join(row['values'])}",
             parse_mode=ParseMode.HTML
         )
 '''
-content = content.replace("# ─── Wallet, Pay, Store, CRM stubs", fsm_code + "\n# ─── Wallet, Pay, Store, CRM stubs")
+content = content.replace("# â”€â”€â”€ Wallet, Pay, Store, CRM stubs", fsm_code + "\n# â”€â”€â”€ Wallet, Pay, Store, CRM stubs")
 
 # 4. Replace ai_chat with Groq version
 old_ai = '''@dp.message(F.text, ~F.text.startswith("/"))
@@ -111,7 +111,7 @@ async def ai_chat(message: types.Message):
         answer = resp.choices[0].message.content
         await message.answer(answer[:4096])
     except Exception as e:
-        await message.answer(f"⚠️ AI error: {str(e)[:200]}")'''
+        await message.answer(f"âš ï¸ AI error: {str(e)[:200]}")'''
 content = content.replace(old_ai, new_ai)
 
 # 5. Ensure 'import groq' is at top if not present
@@ -122,4 +122,4 @@ if "import groq" not in content.split("\n")[0:20]:
 with open(FILE, "w", encoding="utf-8", newline="\n") as f:
     f.write(content)
 
-print("✅ bot.py patched successfully.")
+print("âœ… bot.py patched successfully.")

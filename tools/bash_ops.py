@@ -49,7 +49,7 @@ def _validate(cmd: str) -> str | None:
     if not ALLOW_DESTRUCTIVE:
         for bad in SOFT_BLOCK:
             if bad in low:
-                return f"[blocked] destructive pattern {bad!r} ×³Â³×’â‚¬â„¢×³â€™×’â‚¬ÂšÖ²Â¬×³â€™×’â€šÂ¬Ö²Â set ALLOW_DESTRUCTIVE=true to enable"
+                return f"[blocked] destructive pattern {bad!r} Ã—Â³Ã‚Â³Ã—â€™Ã¢â€šÂ¬Ã¢â€žÂ¢Ã—Â³Ã¢â‚¬â„¢Ã—â€™Ã¢â€šÂ¬Ã‚Å¡Ã–Â²Ã‚Â¬Ã—Â³Ã¢â‚¬â„¢Ã—â€™Ã¢â‚¬Å¡Ã‚Â¬Ã–Â²Ã‚Â set ALLOW_DESTRUCTIVE=true to enable"
     first = cmd.strip().split(maxsplit=1)[0] if cmd.strip() else ""
     if not any(first == p or first.startswith(p + " ") or first == p for p in ALLOWED_PREFIXES):
         if ALLOW_DESTRUCTIVE:
@@ -86,6 +86,7 @@ async def run(command: str, cwd: str = "", timeout: int = 60) -> str:
     if len(out) > 8000:
         out = out[:8000] + f"\n... [truncated, total {len(out)} chars]"
     return f"[exit {proc.returncode}]\n{out}" if out.strip() else f"[exit {proc.returncode}] (no output)"
+
 
 
 

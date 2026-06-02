@@ -10,3 +10,4 @@ def emit_event(user_id: int, event_type: str, source: str = "telegram", entity_t
     """, (user_id, event_type, source, entity_type, entity_id, json.dumps(metadata or {})))
     conn.commit()
     conn.close()
+

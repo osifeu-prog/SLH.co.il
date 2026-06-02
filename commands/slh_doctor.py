@@ -110,34 +110,35 @@ async def check_ai_key() -> dict:
     return {"ok": False, "detail": "No AI API key found"}
 
 def _icon(result: dict) -> str:
-    if result.get("ok") is True: return "✅"
-    if result.get("ok") is None: return "⚪"
-    return "❌"
+    if result.get("ok") is True: return "âœ…"
+    if result.get("ok") is None: return "âšª"
+    return "âŒ"
 
 def build_report(railway, db, redis, ai) -> str:
-    lines = ["🩺 *SLH System Doctor*", "━━━━━━━━━━━━━━━━━━━━━", ""]
+    lines = ["ðŸ©º *SLH System Doctor*", "â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”", ""]
     r_icon = _icon(railway)
     r_status = railway.get("status", "?")
     r_service = railway.get("service", "")
     r_id = railway.get("deploy_id", "")
-    lines.append(f"{r_icon} *Railway* — {r_status}")
+    lines.append(f"{r_icon} *Railway* â€” {r_status}")
     if r_service: lines.append(f"   service: {r_service} | deploy: {r_id}")
-    if not railway["ok"] and "detail" in railway: lines.append(f"   ⚠️ {railway['detail']}")
+    if not railway["ok"] and "detail" in railway: lines.append(f"   âš ï¸ {railway['detail']}")
     lines.append("")
     db_icon = _icon(db)
-    if db["ok"]: lines.append(f"{db_icon} *Database* — {db.get('latency_ms', '?')}ms")
-    else: lines.append(f"{db_icon} *Database* — {db.get('detail', 'error')}")
+    if db["ok"]: lines.append(f"{db_icon} *Database* â€” {db.get('latency_ms', '?')}ms")
+    else: lines.append(f"{db_icon} *Database* â€” {db.get('detail', 'error')}")
     r2_icon = _icon(redis)
-    if redis.get("ok") is None: lines.append(f"{r2_icon} *Redis* — {redis.get('detail', 'skip')}")
-    elif redis["ok"]: lines.append(f"{r2_icon} *Redis* — {redis.get('latency_ms', '?')}ms")
-    else: lines.append(f"{r2_icon} *Redis* — {redis.get('detail', 'error')}")
+    if redis.get("ok") is None: lines.append(f"{r2_icon} *Redis* â€” {redis.get('detail', 'skip')}")
+    elif redis["ok"]: lines.append(f"{r2_icon} *Redis* â€” {redis.get('latency_ms', '?')}ms")
+    else: lines.append(f"{r2_icon} *Redis* â€” {redis.get('detail', 'error')}")
     ai_icon = _icon(ai)
     ai_prov = ai.get("provider", "AI")
-    lines.append(f"{ai_icon} *{ai_prov}* — {ai.get('detail', '?')}")
+    lines.append(f"{ai_icon} *{ai_prov}* â€” {ai.get('detail', '?')}")
     lines.append("")
-    lines.append("━━━━━━━━━━━━━━━━━━━━━")
+    lines.append("â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”")
     checks = [railway["ok"], db["ok"], ai["ok"]]
-    if all(c is True for c in checks): lines.append("🟢 *All systems operational*")
-    elif any(c is False for c in checks): lines.append("🔴 *Issues detected — check logs*")
-    else: lines.append("🟡 *Partial — some checks skipped*")
+    if all(c is True for c in checks): lines.append("ðŸŸ¢ *All systems operational*")
+    elif any(c is False for c in checks): lines.append("ðŸ”´ *Issues detected â€” check logs*")
+    else: lines.append("ðŸŸ¡ *Partial â€” some checks skipped*")
     return "\n".join(lines)
+

@@ -20,4 +20,5 @@ for col, typ in zip(tables, col_types):
 conn.commit()
 cur.close()
 conn.close()
-print("✅ DB fixed")
+print("âœ… DB fixed")
+

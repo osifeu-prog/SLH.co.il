@@ -1,4 +1,4 @@
-import json
+﻿import json
 from services.db import get_db
 
 def add_product(store_id: int, name: str, price: float, metadata: dict = None) -> int:
@@ -18,3 +18,4 @@ def list_products(store_id: int) -> list:
     rows = cur.fetchall()
     conn.close()
     return [{"id": r[0], "name": r[1], "price": r[2]} for r in rows]
+

@@ -35,3 +35,4 @@ def init_db():
         cur.execute("CREATE TABLE IF NOT EXISTS orders (id BIGSERIAL PRIMARY KEY, product_id BIGINT REFERENCES products(id), buyer_id BIGINT REFERENCES users(id), status TEXT DEFAULT 'pending', created_at TIMESTAMP DEFAULT NOW())")
     conn.commit()
     conn.close()
+

@@ -1,0 +1,12 @@
+SLH ENTERPRISE v4 MAP
+
+users → slh-users-service
+wallet → slh-wallet-service
+roi → slh-roi-service
+marketplace → slh-marketplace-service
+payments → slh-payments-service
+crm → slh-crm-service
+ai → slh-ai-service
+admin → slh-admin-service
+
+ROI DISTRIBUTION:

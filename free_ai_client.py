@@ -46,4 +46,5 @@ async def converse(messages: List[Dict]) -> str:
         return await ask_railway_api(messages)
     except Exception as e:
         print(f"Railway API failed: {e}")
-        return "⚠️ AI service unavailable. Please try again later."
+        return "âš ï¸ AI service unavailable. Please try again later."
+

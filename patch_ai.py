@@ -3,12 +3,12 @@
 with open("bot.py", "r", encoding="utf-8") as f:
     content = f.read()
 
-# 1. ודא imports
+# 1. ×•×“× imports
 for lib, imp in [("google.generativeai", "import google.generativeai as genai\n"), ("anthropic", "import anthropic\n")]:
     if lib not in content:
         content = content.replace("import groq\n", "import groq\n" + imp)
 
-# 2. החלף את פונקציית ai_chat הישנה בחדשה
+# 2. ×”×—×œ×£ ××ª ×¤×•× ×§×¦×™×™×ª ai_chat ×”×™×©× ×” ×‘×—×“×©×”
 old_ai = r'''@dp.message(F.text, ~F.text.startswith("/"))
 async def ai_chat(message: types.Message):
     await message.answer("AI is thinking... (use /ask for advanced)")'''
@@ -47,21 +47,22 @@ async def ai_chat(message: types.Message):
                 return
         except:
             continue
-    await message.answer("⚠️ All AI engines unavailable. Try later.")'''
+    await message.answer("âš ï¸ All AI engines unavailable. Try later.")'''
 
 if old_ai in content:
     content = content.replace(old_ai, new_ai)
 else:
     # Fallback: insert before callback handler
-    content = content.replace("# ─── Callback handler", new_ai + "\n\n# ─── Callback handler")
+    content = content.replace("# â”€â”€â”€ Callback handler", new_ai + "\n\n# â”€â”€â”€ Callback handler")
 
-# 3. תיקון מחרוזות לא סגורות (אם יש)
+# 3. ×ª×™×§×•×Ÿ ×ž×—×¨×•×–×•×ª ×œ× ×¡×’×•×¨×•×ª (×× ×™×©)
 content = content.replace(
-    'await message.answer("👤 <b>ברוך הבא למסע החיים של SLH</b>\n\nמה השם שלך?\n(פשוט שלח הודעה עם השם)", parse_mode=ParseMode.HTML)',
-    'await message.answer("👤 Welcome! What is your name?")'
+    'await message.answer("ðŸ‘¤ <b>×‘×¨×•×š ×”×‘× ×œ×ž×¡×¢ ×”×—×™×™× ×©×œ SLH</b>\n\n×ž×” ×”×©× ×©×œ×š?\n(×¤×©×•×˜ ×©×œ×— ×”×•×“×¢×” ×¢× ×”×©×)", parse_mode=ParseMode.HTML)',
+    'await message.answer("ðŸ‘¤ Welcome! What is your name?")'
 )
 
 with open("bot.py", "w", encoding="utf-8", newline="\n") as f:
     f.write(content)
 
-print("✅ AI function patched.")
+print("âœ… AI function patched.")
+

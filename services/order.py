@@ -10,3 +10,4 @@ def create_order(buyer_id: int, product_id: int, price: float, seller_id: int) -
     conn.commit()
     conn.close()
     return True
+

@@ -16,3 +16,4 @@ def get_store(store_id: int) -> dict:
     row = cur.fetchone()
     conn.close()
     return {"id": row[0], "owner_id": row[1], "name": row[2], "description": row[3]} if row else None
+

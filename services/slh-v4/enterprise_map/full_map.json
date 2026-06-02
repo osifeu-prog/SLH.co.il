@@ -1,0 +1,26 @@
+{
+  "services": {
+    "users": "slh-users-service",
+    "wallet": "slh-wallet-service",
+    "roi": "slh-roi-service",
+    "marketplace": "slh-marketplace-service",
+    "payments": "slh-payments-service",
+    "crm": "slh-crm-service",
+    "ai": "slh-ai-service",
+    "admin": "slh-admin-service"
+  },
+  "endpoints": {},
+  "db": {
+    "users": "users_db",
+    "wallet": "wallet_db",
+    "roi": "roi_db",
+    "marketplace": "marketplace_db",
+    "payments": "payments_db",
+    "crm": "crm_db",
+    "ai": "ai_db",
+    "admin": "admin_db"
+  },
+  "bots": {},
+  "roi": {},
+  "graph": {}
+}
