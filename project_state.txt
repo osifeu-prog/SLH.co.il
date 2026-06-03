@@ -1,8 +1,8 @@
-﻿SLH BOT - CURRENT STATE (after redeploy)
+﻿SLH BOT - CURRENT STATE (after redeploy of stable deployment)
 - Bot starts: YES
-- Railway deploys: YES (after redeploy)
+- Railway deploys: YES (redeployed from last stable)
 - PostgreSQL connected: YES
 - Telegram connected: YES
 - Basic commands work: YES
-- Issue: secrets_local import appeared again  possible bad deployment.
-- Next session: Audit commands, callbacks, DB schema, Railway vars.
+- Known issue: secrets_local import reappeared in one deployment  suspect bad file push.
+- Goal for next session: Audit commands, callbacks, DB schema, Railway vars, modular architecture.
