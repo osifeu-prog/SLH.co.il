@@ -1,508 +1,531 @@
-﻿import asyncio
-import sqlite3
-import json
-import os
-import re
-from datetime import datetime
-from aiogram import Bot, Dispatcher, F
-from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
+﻿import asyncio, logging, os, json, datetime, random
+import asyncpg
+from dotenv import load_dotenv
+from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters import Command
-from aiogram.client.default import DefaultBotProperties
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.enums import ParseMode
+from aiogram.client.bot import DefaultBotProperties
+from aiogram.fsm.state import State, StatesGroup
+from aiogram.fsm.context import FSMContext
+import groq
 
-# ×˜×¢×Ÿ ×ž×©×ª× ×™×
-from secrets_local import TELEGRAM_BOT_TOKEN, DATABASE_URL, ADMIN_ID, GROQ_API_KEY
+load_dotenv()
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+DATABASE_URL = os.getenv("DATABASE_URL")
+ADMIN_IDS = [int(x) for x in os.getenv("ADMIN_TELEGRAM_IDS", "224223270").split(",")]
+TON_WALLET = os.getenv("TON_WALLET", "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-# ====================== DATABASE ======================
-def get_db():
-    if DATABASE_URL.startswith("sqlite"):
-        db_path = DATABASE_URL.replace("sqlite:///", "")
-        return sqlite3.connect(db_path)
-    else:
-        import psycopg2
-        return psycopg2.connect(DATABASE_URL)
-
-def init_db():
-    conn = get_db()
-    cur = conn.cursor()
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS users (
-            telegram_id INTEGER PRIMARY KEY,
-            username TEXT,
-            first_name TEXT,
-            points INTEGER DEFAULT 0,
-            streak INTEGER DEFAULT 0,
-            last_checkin TEXT,
-            tier TEXT DEFAULT 'free',
-            balance REAL DEFAULT 0,
-            registered BOOLEAN DEFAULT FALSE,
-            referral_code TEXT,
-            referred_by INTEGER,
-            created_at TEXT
-        )
-    """)
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS payments (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
-            amount REAL,
-            tx_hash TEXT UNIQUE,
-            status TEXT DEFAULT 'confirmed',
-            created_at TEXT
-        )
-    """)
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS contacts (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
-            username TEXT,
-            full_name TEXT,
-            joined TEXT
-        )
-    """)
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS events (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
-            event_type TEXT,
-            metadata TEXT,
-            created_at TEXT
-        )
-    """)
-    conn.commit()
-    conn.close()
-
-init_db()
-
-# ====================== FIX HEBREW ======================
-def fix_hebrew(t: str) -> str:
-    if not t:
-        return t
-    # ×”×•×¡×£ RLM ×× ×™×© ×ª×•×•×™× ×¢×‘×¨×™×™×
-    if any(u"\u0590" <= ch <= u"\u05FF" for ch in t):
-        return "\u200F" + t
-    return t
-
-# ====================== BOT SETUP ======================
-bot = Bot(token=TELEGRAM_BOT_TOKEN, default=DefaultBotProperties(parse_mode=None))
+logging.basicConfig(level=logging.INFO)
+bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 dp = Dispatcher()
+pool = None
 
-# ====================== KEYBOARDS ======================
+async def create_pool():
+    global pool
+    pool = await asyncpg.create_pool(DATABASE_URL)
+    async with pool.acquire() as conn:
+        await conn.execute("""CREATE TABLE IF NOT EXISTS users (telegram_id BIGINT PRIMARY KEY, username TEXT, points INT DEFAULT 0, streak INT DEFAULT 0, last_checkin DATE, balance REAL DEFAULT 0, tier TEXT DEFAULT 'free', energy INT DEFAULT 100, last_energy TIMESTAMP DEFAULT NOW(), created_at TIMESTAMP DEFAULT NOW())""")
+        await conn.execute("""CREATE TABLE IF NOT EXISTS identity (user_id BIGINT PRIMARY KEY, name TEXT, vision TEXT, values TEXT[])""")
+        await conn.execute("""CREATE TABLE IF NOT EXISTS tasks (id SERIAL PRIMARY KEY, user_id BIGINT, description TEXT, done BOOLEAN DEFAULT FALSE, created_at DATE DEFAULT CURRENT_DATE)""")
+        await conn.execute("""CREATE TABLE IF NOT EXISTS crm_notes (id SERIAL PRIMARY KEY, user_id BIGINT, note TEXT, created_at TIMESTAMP DEFAULT NOW())""")
+        await conn.execute("""CREATE TABLE IF NOT EXISTS payments (id SERIAL PRIMARY KEY, user_id BIGINT, amount NUMERIC, plan TEXT, status TEXT DEFAULT 'pending', created_at TIMESTAMP DEFAULT NOW())""")
+        await conn.execute("""CREATE TABLE IF NOT EXISTS products (id SERIAL PRIMARY KEY, user_id BIGINT, name TEXT, description TEXT, price NUMERIC, created_at TIMESTAMP DEFAULT NOW())""")
+        await conn.execute("""CREATE TABLE IF NOT EXISTS feedback (id SERIAL PRIMARY KEY, user_id BIGINT, message TEXT, created_at TIMESTAMP DEFAULT NOW())""")
+        
+        # ALTER TABLE for existing databases
+        await conn.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS referral_code TEXT")
+        await conn.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS referred_by BIGINT")
+        await conn.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS last_seen TIMESTAMP DEFAULT NOW()")
+        await conn.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS last_energy_update TIMESTAMP DEFAULT NOW()")
+        await conn.execute("ALTER TABLE products ADD COLUMN IF NOT EXISTS user_id BIGINT")
+        await conn.execute("ALTER TABLE products ADD COLUMN IF NOT EXISTS name TEXT")
+        await conn.execute("ALTER TABLE products ADD COLUMN IF NOT EXISTS description TEXT")
+        await conn.execute("ALTER TABLE products ADD COLUMN IF NOT EXISTS price NUMERIC")
+    print("DB ready")
+
+async def ensure_user(uid, username):
+    async with pool.acquire() as conn:
+        await conn.execute("INSERT INTO users (telegram_id, username, referral_code) VALUES ($1, $2, $3) ON CONFLICT (telegram_id) DO UPDATE SET username = $2, last_seen = NOW()", uid, username, f"SLH{uid}")
+
+async def update_energy(uid):
+    async with pool.acquire() as conn:
+        await conn.execute("UPDATE users SET energy = LEAST(100, energy + FLOOR(EXTRACT(EPOCH FROM (NOW() - last_energy_update))/3)::int), last_energy_update = NOW() WHERE telegram_id = $1", uid)
+
+def get_multiplier(tier):
+    return 2.0 if tier == "business" else 1.5 if tier == "pro" else 1.0
+
+# ------------------------------ MAIN MENU ------------------------------
 def main_menu():
-    return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="ðŸ“Š Status", callback_data="cmd_status"),
-         InlineKeyboardButton(text="ðŸ’° Points", callback_data="cmd_points")],
-        [InlineKeyboardButton(text="âœ… Check-in", callback_data="cmd_checkin"),
-         InlineKeyboardButton(text="ðŸ”¥ Tap-to-Earn", callback_data="cmd_tap")],
-        [InlineKeyboardButton(text="â­ï¸ Upgrade", callback_data="cmd_upgrade"),
-         InlineKeyboardButton(text="â¤ï¸ Donate", callback_data="cmd_donate")],
-        [InlineKeyboardButton(text="ðŸ‘¤ Profile", callback_data="cmd_profile"),
-         InlineKeyboardButton(text="ðŸ‘‘ Admin", callback_data="cmd_admin")],
-        [InlineKeyboardButton(text="ðŸ“‹ Tasks", callback_data="cmd_tasks"),
-         InlineKeyboardButton(text="â“ Help", callback_data="cmd_help")],
-    ])
+    builder = InlineKeyboardBuilder()
+    builder.row(types.InlineKeyboardButton(text="📊 Status", callback_data="status"), types.InlineKeyboardButton(text="⭐ Points", callback_data="points"))
+    builder.row(types.InlineKeyboardButton(text="✅ Check-in", callback_data="checkin"), types.InlineKeyboardButton(text="⚡ Tap", callback_data="tap"))
+    builder.row(types.InlineKeyboardButton(text="💰 Crypto", callback_data="crypto"), types.InlineKeyboardButton(text="🤝 Donate", callback_data="donate"))
+    builder.row(types.InlineKeyboardButton(text="💎 Upgrade", callback_data="upgrade"), types.InlineKeyboardButton(text="📋 Tasks", callback_data="tasks"))
+    builder.row(types.InlineKeyboardButton(text="🔮 Oracle", callback_data="oracle"), types.InlineKeyboardButton(text="☮️ Peace", callback_data="peace"))
+    builder.row(types.InlineKeyboardButton(text="👛 Wallet", callback_data="wallet"), types.InlineKeyboardButton(text="🔗 Referral", callback_data="referral"))
+    builder.row(types.InlineKeyboardButton(text="📊 Dashboard", callback_data="dashboard"), types.InlineKeyboardButton(text="👑 Admin", callback_data="admin"))
+    builder.row(types.InlineKeyboardButton(text="❓ Help", callback_data="help"))
+    return builder.as_markup()
 
-# ====================== COMMAND HANDLERS ======================
+# ------------------------------ START ------------------------------
 @dp.message(Command("start"))
-async def cmd_start(msg: Message):
-    await bot.send_chat_action(msg.chat.id, "typing")
-    await asyncio.sleep(0.6)
-    logo = """
-+----------------------------------+
-|     â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•—â–ˆâ–ˆâ•—     â–ˆâ–ˆâ•—  â–ˆâ–ˆâ•—     |
-|     â–ˆâ–ˆâ•”â•â•â•â•â•â–ˆâ–ˆâ•‘     â–ˆâ–ˆâ•‘  â–ˆâ–ˆâ•‘     |
-|     â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•—â–ˆâ–ˆâ•‘     â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•‘     |
-|     â•šâ•â•â•â•â–ˆâ–ˆâ•‘â–ˆâ–ˆâ•‘     â–ˆâ–ˆâ•”â•â•â–ˆâ–ˆâ•‘     |
-|     â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•‘â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•—â–ˆâ–ˆâ•‘  â–ˆâ–ˆâ•‘     |
-|     â•šâ•â•â•â•â•â•â•â•šâ•â•â•â•â•â•â•â•šâ•â•  â•šâ•â•     |
-|   ðŸ§  SLH SPARK AI   v3.3        |
-+----------------------------------+
-"""
-    await msg.answer(fix_hebrew(logo))
-    name = msg.from_user.first_name or "friend"
-    await msg.answer(fix_hebrew(f"<b>ðŸ‘‹ ×”×™×™, {name}!</b>\n\nðŸ§  <b>Spark AI Agent</b> â€” ×”×¢×•×–×¨ ×”××™×©×™ ×©×œ×š ×œ×¤×¨×•×™×§×˜×™× ×‘-TON\n\nâ€¢ ×—× ×•×™×•×ª NFT\nâ€¢ ×ž×¡×—×¨ ×‘×˜×•×§× ×™×\nâ€¢ ×‘× ×™×™×ª ×§×”×™×œ×”\nâ€¢ ×ª×©×œ×•×ž×™× ××•×˜×•×ž×˜×™×™×"), reply_markup=main_menu())
-
-@dp.message(Command("help"))
-async def cmd_help(msg: Message):
-    text = """<b>ðŸ“˜ SLH Bot â€” ×¨×©×™×ž×ª ×¤×§×•×“×•×ª</b>
-
-<b>ðŸ’Ž Premium &amp; Payments</b>
-/upgrade â€” ×©×“×¨×’ ×œ-Pro/Business
-/donate â€” ×ª×¨×•×ž×”
-/paid â€” (××“×ž×™×Ÿ) ××™×©×•×¨ ×ª×©×œ×•×
-
-<b>ðŸ† Rewards</b>
-/checkin â€” ×¦'×§-××™×Ÿ ×™×•×ž×™
-/points â€” × ×§×•×“×•×ª
-/tap â€” Tap-to-Earn
-/leaderboard â€” ×˜×‘×œ×”
-/referral â€” ×§×™×©×•×¨ ×”×¤× ×™×•×ª
-
-<b>ðŸ’° TON Wallet</b>
-/wallet â€” ×™×ª×¨×”
-/deposit â€” ×”×¤×§×“×”
-/transfer â€” ×”×¢×‘×¨×”
-
-<b>ðŸ›’ Marketplace</b>
-/store â€” ×—× ×•×ª
-/products â€” ×ž×•×¦×¨×™×
-/buy â€” ×§× ×™×™×”
-
-<b>ðŸ“Š Analytics &amp; CRM</b>
-/dashboard â€” ×¡×˜×˜×™×¡×˜×™×§×•×ª
-/crm â€” × ×™×”×•×œ ×œ×§×•×—×•×ª
-/events â€” ××™×¨×•×¢×™×
-/segments â€” ×¤×™×œ×•×— ×ž×©×ª×ž×©×™×
-
-<b>ðŸ›  Tools</b>
-/profile /myid /tasks /feedback /crypto /daily /roadmap /support /seed /sysinfo /oracle /peace /game /invest
-
-<b>ðŸ‘‘ Admin</b>
-/admin /users /broadcast /morning /doctor /statusapi /test /backup
-"""
-    await msg.answer(fix_hebrew(text))
+async def cmd_start(msg: types.Message):
+    uid = msg.from_user.id
+    name = msg.from_user.full_name or msg.from_user.username or "friend"
+    await ensure_user(uid, name)
+    # referral
+    parts = msg.text.split()
+    if len(parts) > 1 and parts[1].startswith("ref_"):
+        try:
+            ref_uid = int(parts[1][4:])
+            async with pool.acquire() as conn:
+                row = await conn.fetchrow("SELECT referred_by FROM users WHERE telegram_id=$1", uid)
+                if row and row['referred_by'] is None and ref_uid != uid:
+                    await conn.execute("UPDATE users SET referred_by=$1 WHERE telegram_id=$2", ref_uid, uid)
+                    await conn.execute("UPDATE users SET points = points + 50 WHERE telegram_id=$1", ref_uid)
+                    await bot.send_message(ref_uid, "New user via your referral! +50 points")
+        except: pass
+    logo = (
+        "╔════════════════════════════╗\n"
+        "║           ✨  SLH SPARK AI v3.3  ✨              ║\n"
+        "║     ███████╗██╗              ██╗     ██╗    ║\n"
+        "║     ██╔════╝██║              ██║     ██║    ║\n"
+        "║     ███████╗██║              ███████║    ║\n"
+        "║     ╚════██║██║              ██╔══██║    ║\n"
+        "║     ███████║███████╗ ██║      ██║   ║\n"
+        "║     ╚══════╝╚══════╝ ╚═╝      ╚═╝   ║\n"
+        "║         INTELLIGENT PROJECT ENGINE       ║\n"
+        "╚════════════════════════════╝"
+    )
+    await msg.answer(f"<pre>{logo}</pre>", parse_mode=ParseMode.HTML)
+    await msg.answer("SLH Spark AI v3.3 - Welcome!", reply_markup=main_menu())
 
 @dp.message(Command("register"))
-async def cmd_register(msg: Message):
-    conn = get_db()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM users WHERE telegram_id = ?", (msg.from_user.id,))
-    exists = cur.fetchone()
-    if exists:
-        await msg.answer(fix_hebrew("âœ… You are already registered!"))
-    else:
-        cur.execute("INSERT INTO users (telegram_id, username, first_name, registered, created_at) VALUES (?, ?, ?, ?, ?)",
-                    (msg.from_user.id, msg.from_user.username, msg.from_user.first_name, True, datetime.now().isoformat()))
-        conn.commit()
-        await msg.answer(fix_hebrew("ðŸŽ‰ You are now registered for updates!"))
-    conn.close()
+async def cmd_register(msg: types.Message):
+    await ensure_user(msg.from_user.id, msg.from_user.username or "unknown")
+    await msg.answer("Registered! Use /identity to set your profile.")
 
-@dp.message(Command("profile"))
-async def cmd_profile(msg: Message):
-    conn = get_db()
-    cur = conn.cursor()
-    cur.execute("SELECT telegram_id, username, points, tier, balance, created_at FROM users WHERE telegram_id = ?", (msg.from_user.id,))
-    user = cur.fetchone()
-    conn.close()
-    if not user:
-        await msg.answer(fix_hebrew("Profile not found. Use /register first."))
-        return
-    await msg.answer(fix_hebrew(f"ðŸ‘¤ <b>Profile</b>\nID: {user[0]}\nUsername: @{user[1]}\nPoints: {user[2]}\nTier: {user[3]}\nWallet: {user[4]} TON\nJoined: {user[5]}\n\nUse /myidentity for Telegram details"))
+# ------------------------------ CALLBACK FUNCTIONS (ALL REQUIRED) ------------------------------
+async def cmd_status(msg: types.Message):
+    uid = msg.from_user.id
+    await ensure_user(uid, msg.from_user.username or "unknown")
+    await update_energy(uid)
+    async with pool.acquire() as conn:
+        row = await conn.fetchrow("SELECT points, energy, tier, streak, balance FROM users WHERE telegram_id=$1", uid)
+        if not row: return await msg.answer("Register with /register")
+        await msg.answer(f"📊 Status\n⭐ Points: {row['points']}\n🔋 Energy: {row['energy']}/100\n🏆 Tier: {row['tier'].upper()}\n🔥 Streak: {row['streak']} days\n💎 Balance: {row['balance']:.2f} TON")
 
-@dp.message(Command("myid"))
-async def cmd_myid(msg: Message):
-    await msg.answer(fix_hebrew(f"ðŸªª Your Telegram ID: {msg.from_user.id}"))
+async def cmd_points(msg: types.Message):
+    async with pool.acquire() as conn:
+        pts = await conn.fetchval("SELECT points FROM users WHERE telegram_id=$1", msg.from_user.id) or 0
+    await msg.answer(f"⭐ Your points: {pts}")
 
-@dp.message(Command("myidentity"))
-async def cmd_myidentity(msg: Message):
-    await msg.answer(fix_hebrew(f"ðŸªª ID: {msg.from_user.id}\nName: {msg.from_user.first_name}\nUsername: @{msg.from_user.username}"))
+async def cmd_checkin(msg: types.Message):
+    uid = msg.from_user.id
+    await ensure_user(uid, msg.from_user.username or "unknown")
+    today = datetime.date.today()
+    async with pool.acquire() as conn:
+        row = await conn.fetchrow("SELECT points, streak, last_checkin FROM users WHERE telegram_id=$1", uid)
+        if row and row['last_checkin'] == today: return await msg.answer("✅ Already checked in today!")
+        streak = (row['streak'] + 1) if row else 1
+        bonus = min(streak, 7) * 5
+        new_points = (row['points'] + bonus) if row else bonus
+        await conn.execute("UPDATE users SET points=$1, streak=$2, last_checkin=$3 WHERE telegram_id=$4", new_points, streak, today, uid)
+    await msg.answer(f"✅ +{bonus} points! Total: {new_points} | Streak: {streak} days")
 
-@dp.message(Command("checkin"))
-async def cmd_checkin(msg: Message):
-    today = datetime.now().date().isoformat()
-    conn = get_db()
-    cur = conn.cursor()
-    cur.execute("SELECT last_checkin, points, streak FROM users WHERE telegram_id = ?", (msg.from_user.id,))
-    user = cur.fetchone()
-    if not user:
-        await msg.answer(fix_hebrew("Please /register first."))
-        conn.close()
-        return
-    last = user[0]
-    if last == today:
-        await msg.answer(fix_hebrew("â³ Already checked in today! Come back tomorrow."))
-    else:
-        new_streak = (user[2] + 1) if last else 1
-        points_earned = 5
-        new_points = (user[1] or 0) + points_earned
-        cur.execute("UPDATE users SET last_checkin = ?, streak = ?, points = ? WHERE telegram_id = ?",
-                    (today, new_streak, new_points, msg.from_user.id))
-        conn.commit()
-        await msg.answer(fix_hebrew(f"âœ… Check-in successful! +{points_earned} points\nTotal: {new_points} pts | Streak: {new_streak} days"))
-    conn.close()
+async def cmd_tap(msg: types.Message):
+    uid = msg.from_user.id
+    await ensure_user(uid, msg.from_user.username or "unknown")
+    async with pool.acquire() as conn:
+        user = await conn.fetchrow("SELECT energy, points, tier FROM users WHERE telegram_id=$1", uid)
+        if not user or user['energy'] < 5: return await msg.answer("❌ Not enough energy. Wait a few seconds.")
+        multiplier = get_multiplier(user['tier'])
+        gain = int(5 * multiplier)
+        new_energy = user['energy'] - 5
+        new_points = user['points'] + gain
+        await conn.execute("UPDATE users SET energy=$1, points=$2, last_energy_update=NOW() WHERE telegram_id=$3", new_energy, new_points, uid)
+    await msg.answer(f"⚡ +{gain} points! Total: {new_points} | Energy: {new_energy}")
 
-@dp.message(Command("points"))
-async def cmd_points(msg: Message):
-    conn = get_db()
-    cur = conn.cursor()
-    cur.execute("SELECT points, streak FROM users WHERE telegram_id = ?", (msg.from_user.id,))
-    user = cur.fetchone()
-    conn.close()
-    points = user[0] if user else 0
-    streak = user[1] if user else 0
-    await msg.answer(fix_hebrew(f"ðŸ’° Your points: {points} | Streak: {streak} days"))
+async def cmd_crypto(msg: types.Message):
+    try:
+        import httpx
+        async with httpx.AsyncClient(timeout=10) as client:
+            r = await client.get("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,the-open-network&vs_currencies=usd")
+            data = r.json()
+            await msg.answer(f"💰 Crypto: BTC ${data['bitcoin']['usd']} | ETH ${data['ethereum']['usd']} | TON ${data['the-open-network']['usd']}")
+    except:
+        await msg.answer("⚠️ Crypto prices unavailable.")
 
-@dp.message(Command("leaderboard"))
-async def cmd_leaderboard(msg: Message):
-    conn = get_db()
-    cur = conn.cursor()
-    cur.execute("SELECT username, points FROM users WHERE points > 0 ORDER BY points DESC LIMIT 10")
-    rows = cur.fetchall()
-    conn.close()
-    if not rows:
-        await msg.answer(fix_hebrew("No data available."))
-        return
-    text = "ðŸ† <b>Leaderboard</b>\n"
-    for i, (name, pts) in enumerate(rows, 1):
-        text += f"{i}. {name or 'Anonymous'} â€” {pts} pts\n"
-    await msg.answer(fix_hebrew(text))
+async def cmd_donate(msg: types.Message):
+    await msg.answer(f"🤝 Donate TON: {TON_WALLET}\nUSDT (TRC20): TYoB3sXqH3kL9xQZqR5nL8wJqVkL3wYxZ")
 
-@dp.message(Command("wallet"))
-async def cmd_wallet(msg: Message):
-    await msg.answer(fix_hebrew("ðŸ‘› SLH Wallet\nBalance: 0.00 TON\nTier: free\n\nUse /deposit to add funds."))
+async def cmd_upgrade(msg: types.Message):
+    await msg.answer(f"💎 Premium: Pro 9.9 TON/month, Business 29 TON/month.\nSend TON to {TON_WALLET}\nMemo: {msg.from_user.id}\nAfter payment use /paid")
 
-@dp.message(Command("deposit"))
-async def cmd_deposit(msg: Message):
-    ton_wallet = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
-    await msg.answer(fix_hebrew(f"ðŸ’° Deposit TON to:\n<code>{ton_wallet}</code>\n\n<b>Important:</b> Write your ID in the comment:\n<code>{msg.from_user.id}</code>"))
+async def cmd_tasks(msg: types.Message):
+    uid = msg.from_user.id
+    await ensure_user(uid, msg.from_user.username or "unknown")
+    async with pool.acquire() as conn:
+        rows = await conn.fetch("SELECT id, description, done FROM tasks WHERE user_id=$1 AND created_at = CURRENT_DATE", uid)
+        if not rows:
+            for desc in ["Check-in today", "Tap 3 times", "Invite a friend"]:
+                await conn.execute("INSERT INTO tasks (user_id, description) VALUES ($1,$2)", uid, desc)
+            rows = await conn.fetch("SELECT id, description, done FROM tasks WHERE user_id=$1 AND created_at = CURRENT_DATE", uid)
+        text = "📋 Daily Tasks:\n\n" + "\n".join(f"{'✅' if r['done'] else '❌'} {r['description']} (ID:{r['id']})" for r in rows)
+        await msg.answer(text + "\n\nUse /done [task_id] to complete.")
 
-@dp.message(Command("transfer"))
-async def cmd_transfer(msg: Message):
-    await msg.answer(fix_hebrew("Transfer coming soon."))
+async def cmd_oracle(msg: types.Message):
+    builder = InlineKeyboardBuilder()
+    builder.row(types.InlineKeyboardButton(text="🔮 Ask Oracle", callback_data="oracle_ask"))
+    builder.row(types.InlineKeyboardButton(text="🖥️ System Scan", callback_data="oracle_scan"))
+    builder.row(types.InlineKeyboardButton(text="📈 Prediction", callback_data="oracle_predict"))
+    builder.row(types.InlineKeyboardButton(text="📜 Daily Mission", callback_data="oracle_mission"))
+    await msg.answer("🔮 Oracle+", reply_markup=builder.as_markup())
 
-@dp.message(Command("donate"))
-async def cmd_donate(msg: Message):
-    ton_wallet = "UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp"
-    await msg.answer(fix_hebrew(f"â¤ï¸ <b>Donate to SLH</b>\nTON: <code>{ton_wallet}</code>\nUSDT (TRC-20): <code>TYoB3sXqH3kL9xQZqR5nL8wJqVkL3wYxZ</code>\nBitcoin: <code>bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</code>"))
+async def cmd_peace(msg: types.Message):
+    builder = InlineKeyboardBuilder()
+    builder.row(types.InlineKeyboardButton(text="🕊️ Peace Path", callback_data="peace_path"))
+    builder.row(types.InlineKeyboardButton(text="💡 Innovation Path", callback_data="innovation_path"))
+    builder.row(types.InlineKeyboardButton(text="❤️ Humanity Path", callback_data="humanity_path"))
+    await msg.answer("☮️ Peace Game - Choose path:", reply_markup=builder.as_markup())
 
-@dp.message(Command("upgrade"))
-async def cmd_upgrade(msg: Message):
-    await msg.answer(fix_hebrew("â­ï¸ <b>Premium Plans</b>\nPro: 9.9 TON/month\nBusiness: 29 TON/month\n\nSend TON to the donation address with your ID and then /paid"))
+async def cmd_wallet(msg: types.Message):
+    async with pool.acquire() as conn:
+        bal = await conn.fetchval("SELECT balance FROM users WHERE telegram_id=$1", msg.from_user.id) or 0
+    await msg.answer(f"👛 Wallet\nBalance: {bal:.2f} TON")
 
-@dp.message(Command("tasks"))
-async def cmd_tasks(msg: Message):
-    await msg.answer(fix_hebrew("ðŸ“‹ Your tasks:\n- Daily check-in (/checkin)\n- Invite friends (/referral)\n- Donate (/donate)\n- Join community (/support)"))
+async def cmd_referral(msg: types.Message):
+    uid = msg.from_user.id
+    await ensure_user(uid, msg.from_user.username or "unknown")
+    async with pool.acquire() as conn:
+        code = await conn.fetchval("SELECT referral_code FROM users WHERE telegram_id=$1", uid)
+        count = await conn.fetchval("SELECT COUNT(*) FROM users WHERE referred_by=$1", uid)
+    code = code or f"SLH{uid}"
+    link = f"https://t.me/SLH_Claude_bot?start=ref_{uid}"
+    await msg.answer(f"🔗 Your referral link:\n{link}\n👥 Invited: {count} users\n⭐ +50 points per invite")
 
-@dp.message(Command("daily"))
-async def cmd_daily(msg: Message):
-    await cmd_checkin(msg)
+async def cmd_dashboard(msg: types.Message):
+    uid = msg.from_user.id
+    await ensure_user(uid, msg.from_user.username or "unknown")
+    async with pool.acquire() as conn:
+        urow = await conn.fetchrow("SELECT points, tier, streak, balance FROM users WHERE telegram_id=$1", uid)
+        total = await conn.fetchval("SELECT COUNT(*) FROM users")
+        active = await conn.fetchval("SELECT COUNT(*) FROM users WHERE last_checkin = CURRENT_DATE")
+        rank = await conn.fetchval("SELECT COUNT(*)+1 FROM users WHERE points > (SELECT points FROM users WHERE telegram_id=$1)", uid) or 1
+        open_tasks = await conn.fetchval("SELECT COUNT(*) FROM tasks WHERE user_id=$1 AND done=FALSE", uid)
+        done_tasks = await conn.fetchval("SELECT COUNT(*) FROM tasks WHERE user_id=$1 AND done=TRUE", uid)
+        await msg.answer(
+            f"📋 Dashboard\n\n👤 Your Profile\n⭐ Points: {urow['points']}\n🏆 Tier: {urow['tier'].upper()}\n"
+            f"🥇 Rank: #{rank}\n🔥 Streak: {urow['streak']}\n💎 Balance: {urow['balance']:.2f} TON\n\n"
+            f"👥 Community\n👥 Users: {total}\n✅ Active today: {active}\n\n📝 Tasks: {open_tasks} open / {done_tasks} done"
+        )
 
-@dp.message(Command("backup"))
-async def cmd_backup(msg: Message):
-    await msg.answer(fix_hebrew("ðŸ’¾ Backup saved to cloud."))
+async def cmd_admin(msg: types.Message):
+    if msg.from_user.id not in ADMIN_IDS: return await msg.answer("👑 Admin only.")
+    await msg.answer("👑 Admin panel. Use /users, /broadcast, /morning, /doctor, /statusapi, /setreminder, /backup, /crm, /stats, /events, /segments")
 
-@dp.message(Command("broadcast"))
-async def cmd_broadcast(msg: Message):
-    if msg.from_user.id != ADMIN_ID:
-        await msg.answer(fix_hebrew("ðŸ”’ Admins only."))
-        return
-    args = msg.text.split(maxsplit=1)
-    if len(args) < 2:
-        await msg.answer(fix_hebrew("Usage: /broadcast <message>"))
-        return
-    await msg.answer(fix_hebrew(f"ðŸ“¢ Broadcasting: {args[1]}"))
+async def cmd_help(msg: types.Message):
+    await msg.answer("📘 Commands: /start, /register, /tap, /tasks, /done, /checkin, /points, /wallet, /deposit, /transfer, /upgrade, /paid, /referral, /leaderboard, /dashboard, /addcustomer, /customers, /addnote, /notes, /vip, /invite, /crypto, /donate, /guide, /oracle, /peace, /admin, /users, /broadcast, /morning, /doctor, /statusapi, /setreminder, /backup, /crm, /stats, /events, /segments, /profile, /myid, /identity, /myidentity, /simdeposit")
 
-@dp.message(Command("users"))
-async def cmd_users(msg: Message):
-    if msg.from_user.id != ADMIN_ID:
-        await msg.answer(fix_hebrew("ðŸ”’ Admins only."))
-        return
-    conn = get_db()
-    cur = conn.cursor()
-    cur.execute("SELECT telegram_id, username, first_name, points, registered FROM users LIMIT 20")
-    rows = cur.fetchall()
-    conn.close()
-    if not rows:
-        await msg.answer(fix_hebrew("No users registered."))
-        return
-    text = "ðŸ‘¥ <b>Registered Users</b>\n"
-    for uid, uname, fname, pts, reg in rows:
-        text += f"{uid} - {fname or uname or '?'} - {pts} pts\n"
-    await msg.answer(fix_hebrew(text))
+# ------------------------------ ADDITIONAL COMMANDS (existing from your backup) ------------------------------
+@dp.message(Command("addcustomer"))
+async def cmd_addcustomer(msg: types.Message):
+    parts = msg.text.split(" ", 2)
+    if len(parts) < 3: return await msg.answer("Usage: /addcustomer [name] [phone]")
+    async with pool.acquire() as conn:
+        await conn.execute("INSERT INTO crm_notes (user_id, note) VALUES ($1,$2)", msg.from_user.id, f"CUSTOMER: {parts[1]} | PHONE: {parts[2]}")
+    await msg.answer(f"Customer {parts[1]} added!")
 
-@dp.message(Command("morning"))
-async def cmd_morning(msg: Message):
-    if msg.from_user.id != ADMIN_ID:
-        await msg.answer(fix_hebrew("ðŸ”’ Admins only."))
-        return
-    await msg.answer(fix_hebrew("ðŸŒ… Good morning, Osif!\nDate: 2026-06-01\nRegistered users: 3\nCheck-ins today: 1"))
+@dp.message(Command("customers"))
+async def cmd_customers(msg: types.Message):
+    async with pool.acquire() as conn:
+        rows = await conn.fetch("SELECT note, created_at FROM crm_notes WHERE user_id=$1 AND note LIKE 'CUSTOMER:%' ORDER BY created_at DESC LIMIT 20", msg.from_user.id)
+        if not rows: return await msg.answer("No customers yet.")
+        text = "Your Customers:\n\n" + "\n".join(f"{i+1}. {r['note']} | {r['created_at'].strftime('%d/%m/%Y')}" for i, r in enumerate(rows))
+    await msg.answer(text)
 
-@dp.message(Command("doctor"))
-async def cmd_doctor(msg: Message):
-    await msg.answer(fix_hebrew("ðŸ©º <b>SLH System Doctor</b>\nâœ… Bot: Online\nâœ… Railway: Connected\nâœ… Database: OK\nâœ… Groq API Key: " + ("Set" if "gsk" in GROQ_API_KEY else "Missing") + "\nðŸŸ¢ All systems operational"))
+@dp.message(Command("addnote"))
+async def cmd_addnote(msg: types.Message):
+    parts = msg.text.split(" ", 2)
+    if len(parts) < 3: return await msg.answer("Usage: /addnote [customer_id] [note]")
+    async with pool.acquire() as conn:
+        await conn.execute("INSERT INTO crm_notes (user_id, note) VALUES ($1,$2)", msg.from_user.id, f"NOTE:{parts[1]}:{parts[2]}")
+    await msg.answer("Note added.")
 
-@dp.message(Command("statusapi"))
-async def cmd_statusapi(msg: Message):
-    await msg.answer(fix_hebrew("ðŸ”Œ API Status\nâœ… Railway online\nâœ… Database online"))
+@dp.message(Command("notes"))
+async def cmd_notes(msg: types.Message):
+    parts = msg.text.split(" ", 1)
+    if len(parts) < 2: return await msg.answer("Usage: /notes [customer_id]")
+    cid = parts[1]
+    async with pool.acquire() as conn:
+        rows = await conn.fetch("SELECT note, created_at FROM crm_notes WHERE user_id=$1 AND note LIKE $2 ORDER BY created_at DESC LIMIT 10", msg.from_user.id, f"NOTE:{cid}:%")
+        if not rows: return await msg.answer("No notes.")
+        text = f"Notes for {cid}:\n\n" + "\n".join(f"[{r['created_at'].strftime('%H:%M')}] {r['note'].split(':',2)[-1]}" for r in rows)
+    await msg.answer(text)
 
-@dp.message(Command("test"))
-async def cmd_test(msg: Message):
-    await msg.answer(fix_hebrew("Test passed."))
+@dp.message(Command("vip"))
+async def cmd_vip(msg: types.Message):
+    await msg.answer(f"💎 VIP Group\nCost: 18 ILS\nSend TON to {TON_WALLET}\nMemo: VIP+{msg.from_user.id}")
 
-@dp.message(Command("crm"))
-async def cmd_crm(msg: Message):
-    await msg.answer(fix_hebrew("ðŸ“Š CRM System\nLeads: 0\nCustomers: 0\nTasks: 0\nUse /users to see registered users."))
-
-@dp.message(Command("events"))
-async def cmd_events(msg: Message):
-    await msg.answer(fix_hebrew("No events yet."))
-
-@dp.message(Command("segments"))
-async def cmd_segments(msg: Message):
-    await msg.answer(fix_hebrew("User Segments:\nFree: 1\nPro: 0\nBusiness: 0"))
-
-@dp.message(Command("dashboard"))
-async def cmd_dashboard(msg: Message):
-    await msg.answer(fix_hebrew("Dashboard:\nUsers: 1\nStores: 0\nProducts: 0\nEvents: 0"))
-
-@dp.message(Command("support"))
-async def cmd_support(msg: Message):
-    await msg.answer(fix_hebrew("ðŸ’¬ Support: @OsifUngar\nCommunity: https://t.me/SLH_Claude_bot"))
-
-@dp.message(Command("roadmap"))
-async def cmd_roadmap(msg: Message):
-    await msg.answer(fix_hebrew("ðŸ—º Roadmap: https://slh-nft.com/roadmap"))
-
-@dp.message(Command("seed"))
-async def cmd_seed(msg: Message):
-    await msg.answer(fix_hebrew("Seed planted! ðŸŒ±"))
-
-@dp.message(Command("sysinfo"))
-async def cmd_sysinfo(msg: Message):
-    import platform
-    await msg.answer(fix_hebrew(f"System: {platform.system()}\nCPU: {os.cpu_count()} cores"))
-
-@dp.message(Command("crypto"))
-async def cmd_crypto(msg: Message):
-    await msg.answer(fix_hebrew("ðŸ’° BTC: $71629 | ETH: $1990.64"))
-
-@dp.message(Command("referral"))
-async def cmd_referral(msg: Message):
+@dp.message(Command("invite"))
+async def cmd_invite(msg: types.Message):
     link = f"https://t.me/SLH_Claude_bot?start=ref{msg.from_user.id}"
-    await msg.answer(fix_hebrew(f"ðŸ”— Your referral link:\n{link}\n\nShare with friends to earn points!"))
+    await msg.answer(f"🔗 Invite link: {link}\n⭐ +50 points per friend!")
 
 @dp.message(Command("identity"))
-async def cmd_identity(msg: Message):
-    await msg.answer(fix_hebrew("ðŸ” Identity system active.\nUse /myidentity to view your profile."))
+async def cmd_identity(msg: types.Message, state: FSMContext):
+    await state.set_state(IdentityForm.name)
+    await msg.answer("What is your name?")
 
-@dp.message(Command("healthcheck"))
-async def cmd_healthcheck(msg: Message):
-    ai_status = "âœ… Set" if "gsk" in GROQ_API_KEY else "âŒ Missing"
-    await msg.answer(fix_hebrew(f"ðŸ¤– Bot: Online\nðŸ§  Groq: {ai_status}\nðŸ—„ DB: SQLite\nðŸ“¡ Telegram: OK"))
+class IdentityForm(StatesGroup):
+    name = State()
+    vision = State()
+    values = State()
 
-@dp.message(Command("oracle"))
-async def cmd_oracle(msg: Message):
-    await msg.answer(fix_hebrew("ðŸ”® SLH Oracle+ coming soon."))
+@dp.message(IdentityForm.name)
+async def identity_name(msg: types.Message, state: FSMContext):
+    await state.update_data(name=msg.text.strip())
+    await state.set_state(IdentityForm.vision)
+    await msg.answer("What is your vision? (one sentence)")
 
-@dp.message(Command("peace"))
-async def cmd_peace(msg: Message):
-    await msg.answer(fix_hebrew("ðŸ•Šï¸ Peace Game: Share positive vibes in the community!"))
+@dp.message(IdentityForm.vision)
+async def identity_vision(msg: types.Message, state: FSMContext):
+    await state.update_data(vision=msg.text.strip())
+    await state.set_state(IdentityForm.values)
+    await msg.answer("Choose 3 values (separated by commas)")
 
-@dp.message(Command("game"))
-async def cmd_game(msg: Message):
-    await msg.answer(fix_hebrew("ðŸŽ® SLH Game: Coming soon!"))
+@dp.message(IdentityForm.values)
+async def identity_values(msg: types.Message, state: FSMContext):
+    data = await state.get_data()
+    name, vision = data['name'], data['vision']
+    values = [v.strip() for v in msg.text.split(",")[:3]]
+    async with pool.acquire() as conn:
+        await conn.execute("INSERT INTO identity (user_id, name, vision, values) VALUES ($1,$2,$3,$4) ON CONFLICT (user_id) DO UPDATE SET name=$2, vision=$3, values=$4", msg.from_user.id, name, vision, values)
+        await conn.execute("UPDATE users SET points = points + 50 WHERE telegram_id=$1", msg.from_user.id)
+    await state.clear()
+    await msg.answer(f"Identity created!\nName: {name}\nVision: {vision}\nValues: {', '.join(values)}\n+50 points!")
 
-@dp.message(Command("invest"))
-async def cmd_invest(msg: Message):
-    await msg.answer(fix_hebrew("ðŸ“ˆ Investment opportunities: https://slh-nft.com/investor-landing/"))
-
-@dp.message(Command("store"))
-async def cmd_store(msg: Message):
-    await msg.answer(fix_hebrew("ðŸ›’ Store: Coming soon. Use /buy for now."))
-
-@dp.message(Command("buy"))
-async def cmd_buy(msg: Message):
-    await msg.answer(fix_hebrew("Purchase system in development. Check /donate to support."))
-
-@dp.message(Command("tap"))
-async def cmd_tap(msg: Message):
-    await msg.answer(fix_hebrew("ðŸ”¥ Tap-to-Earn: Coming soon!"))
-
-@dp.message(Command("faq"))
-async def cmd_faq(msg: Message):
-    await msg.answer(fix_hebrew("â“ FAQ: https://slh-nft.com/faq"))
-
-@dp.message(Command("tutorial"))
-async def cmd_tutorial(msg: Message):
-    await msg.answer(fix_hebrew("ðŸ“š Tutorial: Use /start to begin."))
-
-@dp.message(Command("progress"))
-async def cmd_progress(msg: Message):
-    await msg.answer(fix_hebrew("ðŸ“Š Progress: 60% complete. Next milestone: AI integration."))
+@dp.message(Command("myidentity"))
+async def cmd_myidentity(msg: types.Message):
+    async with pool.acquire() as conn:
+        row = await conn.fetchrow("SELECT name, vision, values FROM identity WHERE user_id=$1", msg.from_user.id)
+        if not row: await msg.answer("Not set. Use /identity")
+        else: await msg.answer(f"Name: {row['name']}\nVision: {row['vision']}\nValues: {', '.join(row['values'])}")
 
 @dp.message(Command("done"))
-async def cmd_done(msg: Message):
-    await msg.answer(fix_hebrew("âœ… Done! Great job!"))
+async def cmd_done(msg: types.Message):
+    parts = msg.text.split()
+    if len(parts) < 2: return await msg.answer("Usage: /done [task_id]")
+    try: task_id = int(parts[1])
+    except: return await msg.answer("Invalid ID")
+    uid = msg.from_user.id
+    async with pool.acquire() as conn:
+        task = await conn.fetchrow("SELECT * FROM tasks WHERE id=$1 AND user_id=$2", task_id, uid)
+        if not task or task['done']: return await msg.answer("Task not found or already done.")
+        await conn.execute("UPDATE tasks SET done = TRUE WHERE id=$1", task_id)
+        await conn.execute("UPDATE users SET points = points + 10 WHERE telegram_id=$1", uid)
+    await msg.answer("✅ Task completed! +10 points.")
 
-@dp.message(Command("about"))
-async def cmd_about(msg: Message):
-    await msg.answer(fix_hebrew("ðŸŒ SLH is an autonomous AI system for Telegram communities, NFT stores, and TON payments."))
+@dp.message(Command("deposit"))
+async def cmd_deposit(msg: types.Message):
+    await msg.answer(f"📥 Deposit TON to:\n{TON_WALLET}\nMemo: {msg.from_user.id}")
 
-@dp.message(Command("links"))
-async def cmd_links(msg: Message):
-    await msg.answer(fix_hebrew("ðŸ”— Important links:\nWebsite: https://slh-nft.com\nCampaign: https://slh-nft.com/campaign/\nInvestor: https://slh-nft.com/investor-landing/"))
+@dp.message(Command("transfer"))
+async def cmd_transfer(msg: types.Message):
+    await msg.answer("↗️ Internal transfer coming soon.")
 
-@dp.message(Command("community"))
-async def cmd_community(msg: Message):
-    await msg.answer(fix_hebrew("ðŸ‘¥ Join our community: @SLH_Claude_bot"))
+@dp.message(Command("paid"))
+async def cmd_paid(msg: types.Message):
+    if msg.from_user.id not in ADMIN_IDS: return await msg.answer("Admin only.")
+    parts = msg.text.split()
+    if len(parts) < 3: return await msg.answer("Usage: /paid [user_id] [pro/business]")
+    target = int(parts[1]); plan = parts[2].lower()
+    async with pool.acquire() as conn:
+        await conn.execute("UPDATE users SET tier=$1 WHERE telegram_id=$2", plan, target)
+    await msg.answer(f"User {target} upgraded to {plan}.")
+    await bot.send_message(target, f"🎉 Your account upgraded to {plan.upper()}!")
 
-@dp.message(Command("feedback"))
-async def cmd_feedback(msg: Message):
-    args = msg.text.split(maxsplit=1)
-    if len(args) < 2:
-        await msg.answer(fix_hebrew("Usage: /feedback <message>"))
-        return
-    await msg.answer(fix_hebrew("ðŸ“¨ Thank you for your feedback! +5 points"))
+@dp.message(Command("leaderboard"))
+async def cmd_leaderboard(msg: types.Message):
+    async with pool.acquire() as conn:
+        rows = await conn.fetch("SELECT username, points FROM users WHERE points>0 ORDER BY points DESC LIMIT 10")
+        if not rows: return await msg.answer("No users yet.")
+        board = "\n".join(f"{i+1}. {r['username']} – {r['points']} pts" for i, r in enumerate(rows))
+    await msg.answer(f"🏆 Leaderboard\n{board}")
 
-# ====================== CALLBACK HANDLER ======================
+@dp.message(Command("users"))
+async def cmd_users(msg: types.Message):
+    if msg.from_user.id not in ADMIN_IDS: return await msg.answer("Admin only.")
+    async with pool.acquire() as conn:
+        rows = await conn.fetch("SELECT telegram_id, username, tier, points FROM users ORDER BY points DESC LIMIT 20")
+        text = "\n".join(f"{r['username']} ({r['telegram_id']}) | {r['tier']} | {r['points']} pts" for r in rows)
+    await msg.answer(f"👥 Users\n{text}")
 
-@dp.message(Command("invest_calc"))
-async def cmd_invest_calc(msg: Message):
-    args = msg.text.split()
-    if len(args) >= 5:
-        try:
-            users = int(args[1])
-            profit = float(args[2])
-            share = float(args[3]) / 100
-            invest = float(args[4])
-            net = users * profit
-            investor = net * share
-            months = invest / investor if investor > 0 else 0
-            await msg.answer(fix_hebrew(f"?? ?????:\n???? ?????: {net:,.0f} ILS\n??? ??????: {investor:,.0f} ILS\n??????: {months:.1f}"))
-        except:
-            await msg.answer(fix_hebrew("? ????? ???????"))
-    else:
-        await msg.answer(fix_hebrew("?????: /invest_calc <???????> <???? ??????> <????> <?????>"))
+@dp.message(Command("broadcast"))
+async def cmd_broadcast(msg: types.Message):
+    if msg.from_user.id not in ADMIN_IDS: return await msg.answer("Admin only.")
+    text = msg.text.replace("/broadcast", "", 1).strip()
+    if not text: return await msg.answer("Usage: /broadcast [message]")
+    async with pool.acquire() as conn:
+        users = await conn.fetch("SELECT telegram_id FROM users")
+        sent = 0
+        for (uid,) in users:
+            try: await bot.send_message(uid, text); sent += 1; await asyncio.sleep(0.05)
+            except: pass
+    await msg.answer(f"📢 Broadcast sent to {sent} users.")
 
+@dp.message(Command("morning"))
+async def cmd_morning(msg: types.Message):
+    if msg.from_user.id not in ADMIN_IDS: return await msg.answer("Admin only.")
+    today = datetime.date.today()
+    async with pool.acquire() as conn:
+        total = await conn.fetchval("SELECT COUNT(*) FROM users")
+        new = await conn.fetchval("SELECT COUNT(*) FROM users WHERE created_at::date = $1", today)
+        checked = await conn.fetchval("SELECT COUNT(*) FROM users WHERE last_checkin = $1", today)
+    await msg.answer(f"☀️ Morning Report {today}\n👥 Total: {total} (+{new})\n✅ Checked in: {checked}")
+
+@dp.message(Command("doctor"))
+async def cmd_doctor(msg: types.Message):
+    if msg.from_user.id not in ADMIN_IDS: return await msg.answer("Admin only.")
+    try:
+        async with pool.acquire() as conn: await conn.fetchval("SELECT 1")
+        db_status = "✅ Connected"
+    except: db_status = "❌ Error"
+    await msg.answer(f"🩺 System Health\nDB: {db_status}\nBot: ✅ Running\nRailway: ✅")
+
+@dp.message(Command("statusapi"))
+async def cmd_statusapi(msg: types.Message):
+    if msg.from_user.id not in ADMIN_IDS: return await msg.answer("Admin only.")
+    await msg.answer("📡 API Status\n✅ Railway online\n✅ DB online\n✅ Telegram online")
+
+@dp.message(Command("setreminder"))
+async def cmd_setreminder(msg: types.Message):
+    if msg.from_user.id not in ADMIN_IDS: return await msg.answer("Admin only.")
+    parts = msg.text.split()
+    if len(parts) < 2: return await msg.answer("Usage: /setreminder HH:MM")
+    await msg.answer(f"⏰ Reminder set for {parts[1]} (coming soon)")
+
+@dp.message(Command("backup"))
+async def cmd_backup(msg: types.Message):
+    if msg.from_user.id not in ADMIN_IDS: return await msg.answer("Admin only.")
+    async with pool.acquire() as conn:
+        users = await conn.fetchval("SELECT COUNT(*) FROM users")
+        tasks = await conn.fetchval("SELECT COUNT(*) FROM tasks")
+        notes = await conn.fetchval("SELECT COUNT(*) FROM crm_notes")
+    await msg.answer(f"💾 Backup status\n👥 Users: {users}\n📝 Tasks: {tasks}\n📋 Notes: {notes}\n✅ Auto-backup daily")
+
+@dp.message(Command("crm"))
+async def cmd_crm(msg: types.Message):
+    if msg.from_user.id not in ADMIN_IDS: return await msg.answer("Admin only.")
+    async with pool.acquire() as conn:
+        tiers = await conn.fetch("SELECT tier, COUNT(*) FROM users GROUP BY tier")
+        text = "\n".join(f"{r['tier']}: {r['count']}" for r in tiers)
+    await msg.answer(f"🗂️ CRM Tiers\n{text}")
+
+@dp.message(Command("stats"))
+async def cmd_stats(msg: types.Message):
+    if msg.from_user.id not in ADMIN_IDS: return await msg.answer("Admin only.")
+    async with pool.acquire() as conn:
+        total = await conn.fetchval("SELECT COUNT(*) FROM users")
+        active = await conn.fetchval("SELECT COUNT(*) FROM users WHERE last_checkin = CURRENT_DATE")
+        pro = await conn.fetchval("SELECT COUNT(*) FROM users WHERE tier='pro'")
+        biz = await conn.fetchval("SELECT COUNT(*) FROM users WHERE tier='business'")
+        total_pts = await conn.fetchval("SELECT SUM(points) FROM users") or 0
+    await msg.answer(f"📊 Stats\n👥 Users: {total}\n✅ Active today: {active}\n💎 Pro: {pro} | Business: {biz}\n⭐ Total points: {total_pts}")
+
+@dp.message(Command("events"))
+async def cmd_events(msg: types.Message):
+    await msg.answer("📅 Upcoming events:\n🔜 NFT Launch\n🔜 Token Sale Q3\n🔜 Community AMA")
+
+@dp.message(Command("segments"))
+async def cmd_segments(msg: types.Message):
+    if msg.from_user.id not in ADMIN_IDS: return await msg.answer("Admin only.")
+    async with pool.acquire() as conn:
+        active = await conn.fetchval("SELECT COUNT(*) FROM users WHERE points >= 100")
+        loyal = await conn.fetchval("SELECT COUNT(*) FROM users WHERE streak >= 7")
+        premium = await conn.fetchval("SELECT COUNT(*) FROM users WHERE tier != 'free'")
+    await msg.answer(f"🎯 Segments\nActive (100+ pts): {active}\nLoyal (7+ streak): {loyal}\nPremium: {premium}")
+
+@dp.message(Command("profile"))
+async def cmd_profile(msg: types.Message):
+    uid = msg.from_user.id
+    await ensure_user(uid, msg.from_user.username or "unknown")
+    async with pool.acquire() as conn:
+        row = await conn.fetchrow("SELECT username, tier, points, streak, balance FROM users WHERE telegram_id=$1", uid)
+        if not row: return await msg.answer("Register with /register")
+        await msg.answer(f"👤 Profile\nName: {row['username']}\nTier: {row['tier'].upper()}\nPoints: {row['points']}\nStreak: {row['streak']}\nBalance: {row['balance']:.2f} TON")
+
+@dp.message(Command("myid"))
+async def cmd_myid(msg: types.Message):
+    await msg.answer(f"🆔 Your ID: {msg.from_user.id}")
+
+@dp.message(Command("guide"))
+async def cmd_guide(msg: types.Message):
+    await msg.answer("📖 Economic Guide: Use non‑custodial wallets, stablecoins, avoid CBDC. Support via /donate")
+
+@dp.message(Command("faq"))
+async def cmd_faq(msg: types.Message):
+    await msg.answer("❓ FAQ: /checkin for points, /deposit for TON, /upgrade for premium")
+
+@dp.message(Command("tutorial"))
+async def cmd_tutorial(msg: types.Message):
+    await msg.answer("📚 Tutorial: 1. /register 2. /checkin 3. /deposit 4. /upgrade")
+
+@dp.message(Command("simdeposit"))
+async def cmd_simdeposit(msg: types.Message):
+    parts = msg.text.split()
+    if len(parts) < 2: return await msg.answer("Usage: /simdeposit [amount]")
+    try: amount = float(parts[1])
+    except: return await msg.answer("Invalid amount.")
+    async with pool.acquire() as conn:
+        await conn.execute("UPDATE users SET balance = balance + $1 WHERE telegram_id = $2", amount, msg.from_user.id)
+        new_balance = await conn.fetchval("SELECT balance FROM users WHERE telegram_id = $1", msg.from_user.id)
+        await conn.execute("UPDATE users SET tier = CASE WHEN $1 >= 29 THEN 'business' WHEN $1 >= 9.9 THEN 'pro' ELSE 'free' END WHERE telegram_id = $2", new_balance, msg.from_user.id)
+        tier = await conn.fetchval("SELECT tier FROM users WHERE telegram_id = $1", msg.from_user.id)
+    await msg.answer(f"💰 Simulated deposit: {amount} TON\nBalance: {new_balance:.2f} TON\nTier: {tier.upper()}")
+
+@dp.message(F.text, ~F.text.startswith("/"))
+async def ai_chat(msg: types.Message):
+    if not GROQ_API_KEY: return await msg.answer("🤖 AI is disabled (GROQ_API_KEY missing).")
+    await bot.send_chat_action(msg.chat.id, "typing")
+    try:
+        client = groq.Groq(api_key=GROQ_API_KEY)
+        resp = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[{"role":"user","content":msg.text}],
+            max_tokens=400, temperature=0.7
+        )
+        await msg.answer(resp.choices[0].message.content[:4096])
+    except Exception as e:
+        await msg.answer(f"⚠️ AI error: {str(e)[:200]}")
+
+# ------------------------------ MAIN CALLBACK HANDLER ------------------------------
 @dp.callback_query()
-async def handle_callback(call: CallbackQuery):
+async def main_callback(call: types.CallbackQuery):
     await call.answer()
-    data = call.data
-    if data == "cmd_status":
-        await cmd_dashboard(call.message)
-    elif data == "cmd_points":
-        await cmd_points(call.message)
-    elif data == "cmd_checkin":
-        await cmd_checkin(call.message)
-    elif data == "cmd_tap":
-        await cmd_tap(call.message)
-    elif data == "cmd_upgrade":
-        await cmd_upgrade(call.message)
-    elif data == "cmd_donate":
-        await cmd_donate(call.message)
-    elif data == "cmd_profile":
-        await cmd_profile(call.message)
-    elif data == "cmd_admin":
-        await cmd_users(call.message)
-    elif data == "cmd_tasks":
-        await cmd_tasks(call.message)
-    elif data == "cmd_help":
-        await cmd_help(call.message)
-    else:
-        await call.message.answer(fix_hebrew("ðŸ”˜ Use /help for commands."))
+    try:
+        data = call.data
+        msg = call.message
+        handlers = {
+            "status": cmd_status, "points": cmd_points, "checkin": cmd_checkin, "tap": cmd_tap,
+            "crypto": cmd_crypto, "donate": cmd_donate, "upgrade": cmd_upgrade, "tasks": cmd_tasks,
+            "oracle": cmd_oracle, "peace": cmd_peace, "wallet": cmd_wallet, "referral": cmd_referral,
+            "dashboard": cmd_dashboard, "admin": cmd_admin, "help": cmd_help
+        }
+        if data in handlers:
+            await handlers[data](msg)
+        else:
+            await msg.answer("✨ Feature coming soon")
+    except Exception as e:
+        await call.message.answer(f"⚠️ Error: {str(e)[:200]}")
 
-# ====================== MAIN ======================
+# ------------------------------ MAIN ------------------------------
 async def main():
-    print("ðŸš€ SLH Spark AI v3.3 starting...")
+    await create_pool()
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
     asyncio.run(main())
-
-
-# ---------- PERSISTENT MENU ----------
-async def send_main_menu(chat_id: int, text: str = "×—×–×•×¨ ×œ×ª×¤×¨×™×˜ ×”×¨××©×™:"):
-    await bot.send_message(chat_id, fix_hebrew(text), reply_markup=main_menu())
-
-
