@@ -1,7 +1,14 @@
-﻿FROM python:3.11-slim
+FROM python:3.11-slim
+
+# ???? UTF-8
+ENV PYTHONUTF8=1
+ENV PYTHONIOENCODING=utf-8
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
+
 WORKDIR /app
-RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-COPY . .
-CMD ["python", "-u", "bot.py"]
+COPY bot.py /app/
+
+RUN pip install --no-cache-dir aiogram asyncpg python-dotenv httpx groq google-generativeai
+
+CMD ["python", "bot.py"]
