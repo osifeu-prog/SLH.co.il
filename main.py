@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """
 SLH Ecosystem API - FastAPI Backend
 Deployed on Railway | Connected to PostgreSQL
@@ -20,6 +20,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import asyncio
 import asyncpg
@@ -139,6 +140,13 @@ async def redirect_economy():
     return RedirectResponse("/api/economy/status")
 
 
+
+# Static files - blog
+import os as _os
+_blog_path = _os.path.join(_os.path.dirname(__file__), "blog")
+if _os.path.exists(_blog_path):
+    app.mount("/blog", StaticFiles(directory=_blog_path, html=True), name="blog")
+
 # ==================== ALL EXISTING ROUTERS (from your current main.py) ====================
 
 # (?????? ?? ?? ?-imports ??-include_router ??? ??? ??? - ?? ?????? ?? ?????? ????)
@@ -233,4 +241,6 @@ async def command_center():
 @app.get('/pay', response_class=HTMLResponse)
 async def pay_page():
     return open('pay.html', encoding='utf-8').read()
+
+
 
