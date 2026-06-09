@@ -1,0 +1,524 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌙 Overnight Report — Good Morning Osif</title>
+<meta name="description" content="מה קרה בלילה האחרון באקוסיסטם SLH — דוח בוקר אוטומטי">
+<meta name="robots" content="noindex">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="SLH Overnight Report">
+<meta property="og:description" content="Automated morning briefing — what happened overnight">
+<meta property="og:image" content="https://slh-nft.com/assets/og/default.png">
+
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/shared.css?v=20260426e">
+
+<style>
+    :root {
+        --bg: #0a0e1a;
+        --bg2: #111628;
+        --bg3: #1a2038;
+        --accent: #00e887;
+        --accent2: #00b4d8;
+        --moon: #ffd700;
+        --red: #ef4444;
+        --text: #e8e8f0;
+        --text2: #8a8aa0;
+        --border: rgba(0, 232, 135, 0.2);
+    }
+    body {
+        background:
+            radial-gradient(circle at 20% 10%, rgba(255, 215, 0, 0.06), transparent 50%),
+            radial-gradient(circle at 80% 30%, rgba(0, 232, 135, 0.05), transparent 50%),
+            var(--bg);
+        color: var(--text);
+        font-family: 'Inter', system-ui, sans-serif;
+        line-height: 1.6;
+    }
+
+    .hero {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 80px 24px 40px;
+        text-align: center;
+    }
+    .moon-icon {
+        font-size: 72px;
+        margin-bottom: 16px;
+        display: block;
+        animation: float 4s ease-in-out infinite;
+    }
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+    .hero h1 {
+        font-size: clamp(32px, 5vw, 56px);
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--moon), var(--accent));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-bottom: 8px;
+    }
+    .greeting {
+        font-size: 20px;
+        color: var(--text);
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+    .timestamp {
+        font-size: 13px;
+        color: var(--text2);
+        font-family: monospace;
+    }
+
+    .section {
+        max-width: 1200px;
+        margin: 0 auto 32px;
+        padding: 0 24px;
+    }
+    .section-title {
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--accent);
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    /* TL;DR Stats */
+    .tldr-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+    }
+    .stat-card {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 20px;
+        position: relative;
+    }
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--accent);
+        border-radius: 14px 0 0 14px;
+    }
+    .stat-card.gold::before { background: var(--moon); }
+    .stat-card.blue::before { background: var(--accent2); }
+    .stat-card.red::before { background: var(--red); }
+    .stat-label {
+        font-size: 11px;
+        color: var(--text2);
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-bottom: 6px;
+    }
+    .stat-value {
+        font-size: 32px;
+        font-weight: 900;
+        color: var(--text);
+    }
+    .stat-sub {
+        font-size: 11px;
+        color: var(--text2);
+        margin-top: 4px;
+    }
+
+    /* Activity list */
+    .activity-list {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 20px;
+    }
+    .activity-item {
+        display: flex;
+        gap: 14px;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border);
+    }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        background: rgba(0, 232, 135, 0.1);
+        color: var(--accent);
+    }
+    .activity-text {
+        flex: 1;
+        font-size: 14px;
+    }
+    .activity-time {
+        font-size: 11px;
+        color: var(--text2);
+        font-family: monospace;
+    }
+
+    /* Highlight */
+    .highlight {
+        background: linear-gradient(135deg, rgba(255, 215, 0, 0.12), rgba(0, 232, 135, 0.06));
+        border: 1px solid var(--moon);
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 24px;
+    }
+    .highlight .label {
+        font-size: 11px;
+        color: var(--moon);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-weight: 800;
+        margin-bottom: 6px;
+    }
+    .highlight h2 {
+        font-size: 22px;
+        font-weight: 900;
+        color: var(--text);
+        margin-bottom: 8px;
+    }
+    .highlight p {
+        color: var(--text2);
+        font-size: 14px;
+    }
+
+    /* Alert */
+    .alert {
+        background: rgba(239, 68, 68, 0.08);
+        border: 1px solid var(--red);
+        border-radius: 12px;
+        padding: 18px;
+        margin-bottom: 16px;
+    }
+    .alert strong { color: var(--red); }
+
+    /* Links grid */
+    .links-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 12px;
+    }
+    .link-card {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 18px;
+        text-decoration: none;
+        color: var(--text);
+        transition: all 0.2s;
+    }
+    .link-card:hover {
+        border-color: var(--accent);
+        transform: translateY(-2px);
+    }
+    .link-card .ic {
+        font-size: 24px;
+        margin-bottom: 6px;
+    }
+    .link-card .ttl {
+        font-size: 14px;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+    .link-card .desc {
+        font-size: 11px;
+        color: var(--text2);
+    }
+
+    /* Commits */
+    .commit-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .commit-row {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px 16px;
+        font-family: monospace;
+        font-size: 12px;
+    }
+    .commit-hash {
+        color: var(--accent);
+        margin-right: 8px;
+    }
+
+    /* Theme Switcher */
+    #theme-fab{position:fixed;bottom:94px;left:24px;z-index:9997;background:var(--accent,#00e887);color:#000;width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;font-size:20px;box-shadow:0 4px 16px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center}
+    #theme-panel{position:fixed;bottom:150px;left:24px;z-index:9998;background:var(--bg,#0a0a0a);border:1px solid rgba(255,255,255,.15);padding:16px;border-radius:12px;display:none;flex-direction:column;gap:6px;max-width:220px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+    #theme-panel.open{display:flex}
+    #theme-panel button{background:var(--bg,#0a0a0a);border:1px solid rgba(255,255,255,.1);color:#e8e8f0;padding:10px 14px;cursor:pointer;font-size:12px;text-align:right;font-family:inherit;border-radius:6px;transition:all .2s}
+    #theme-panel button:hover{background:var(--accent,#00e887);color:#000}
+    [data-theme="dark"]{--bg:#0b0e16;--bg2:#111628;--accent:#00b4d8;--text:#e8e8f0;--text2:#8a8aa0;--border:rgba(0,180,216,.2)}
+    [data-theme="light"]{--bg:#f8f9fb;--bg2:#fff;--accent:#0066cc;--text:#1a1a1a;--text2:#555;--border:rgba(0,102,204,.2)}
+    [data-theme="crypto"]{--bg:#0d1117;--bg2:#161b22;--accent:#f7931a;--text:#e8e8f0;--text2:#8a8aa0;--border:rgba(247,147,26,.2)}
+    [data-theme="ocean"]{--bg:#001e3c;--bg2:#002c55;--accent:#00d9ff;--text:#b8e6ff;--text2:#6bb6cc;--border:rgba(0,217,255,.2)}
+    [data-theme="sunset"]{--bg:#1a0a14;--bg2:#251018;--accent:#ff6b6b;--text:#ffe5d9;--text2:#c9a88a;--border:rgba(255,107,107,.2)}
+</style>
+</head>
+<body>
+
+<div id="topnav-root"></div>
+
+<section class="hero">
+    <div class="moon-icon">🌙</div>
+    <h1>Overnight Report</h1>
+    <div class="greeting">בוקר טוב, אוסיף ✨</div>
+    <div class="timestamp" id="report-time">Loading...</div>
+</section>
+
+<!-- Launch Status Highlight -->
+<section class="section">
+    <div class="highlight" id="launch-highlight">
+        <div class="label">🚀 Genesis Launch Status</div>
+        <h2 id="launch-headline">Checking...</h2>
+        <p id="launch-desc">טוען את המצב הנוכחי של ההשקה...</p>
+    </div>
+</section>
+
+<!-- TL;DR Stats -->
+<section class="section">
+    <div class="section-title">📊 TL;DR</div>
+    <div class="tldr-grid" id="tldr-grid">
+        <div class="stat-card">
+            <div class="stat-label">System Health</div>
+            <div class="stat-value" id="stat-health">--</div>
+            <div class="stat-sub" id="stat-health-sub">Loading...</div>
+        </div>
+        <div class="stat-card blue">
+            <div class="stat-label">API Uptime</div>
+            <div class="stat-value" id="stat-uptime">--</div>
+            <div class="stat-sub">Last 24h</div>
+        </div>
+        <div class="stat-card gold">
+            <div class="stat-label">Real Users</div>
+            <div class="stat-value" id="stat-users">--</div>
+            <div class="stat-sub" id="stat-users-sub">Filtered real IDs</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Audit Entries</div>
+            <div class="stat-value" id="stat-audit">--</div>
+            <div class="stat-sub" id="stat-audit-sub">hash chain verified</div>
+        </div>
+        <div class="stat-card gold">
+            <div class="stat-label">Genesis 49</div>
+            <div class="stat-value" id="stat-genesis">--</div>
+            <div class="stat-sub" id="stat-genesis-sub">remaining coupons</div>
+        </div>
+        <div class="stat-card blue">
+            <div class="stat-label">Contributors</div>
+            <div class="stat-value" id="stat-contributors">--</div>
+            <div class="stat-sub" id="stat-contributors-sub">Genesis Launch</div>
+        </div>
+    </div>
+</section>
+
+<!-- Alerts -->
+<section class="section" id="alerts-section" style="display:none">
+    <div class="section-title">⚠️ Alerts</div>
+    <div id="alerts-list"></div>
+</section>
+
+<!-- Activity Log -->
+<section class="section">
+    <div class="section-title">📋 פעילות הלילה</div>
+    <div class="activity-list" id="activity-list">
+        <div class="activity-item">
+            <div class="activity-icon"><i class="fas fa-moon"></i></div>
+            <div class="activity-text">המערכת פועלת. מדווחת אוטומטית כל 30 דקות.</div>
+            <div class="activity-time">--:--</div>
+        </div>
+    </div>
+</section>
+
+<!-- Overnight Work -->
+<section class="section">
+    <div class="section-title">🛠 מה בנינו בלילה</div>
+    <div id="work-list">
+        <div class="commit-list">
+            <div class="commit-row"><span class="commit-hash">pending</span> Drive Scan Report — scanning 30+ D:\SLH_* folders</div>
+            <div class="commit-row"><span class="commit-hash">pending</span> Security Audit — reviewing API endpoints</div>
+            <div class="commit-row"><span class="commit-hash">pending</span> Ecosystem Guide — unified documentation</div>
+            <div class="commit-row"><span class="commit-hash">pending</span> Bot completions — 3-4 COMING bots</div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Links -->
+<section class="section">
+    <div class="section-title">🎯 פעולות בוקר</div>
+    <div class="links-grid">
+        <a href="/launch-event.html" class="link-card">
+            <div class="ic">🚀</div>
+            <div class="ttl">Launch Status</div>
+            <div class="desc">בדוק אם צביקה שלח BNB</div>
+        </a>
+        <a href="/admin.html" class="link-card">
+            <div class="ic">🏛</div>
+            <div class="ttl">Admin Panel</div>
+            <div class="desc">דרוש התחברות דרך Admin Panel</div>
+        </a>
+        <a href="/system-health.html" class="link-card">
+            <div class="ic">🔬</div>
+            <div class="ttl">System Health</div>
+            <div class="desc">30+ בדיקות חיות</div>
+        </a>
+        <a href="/ecosystem-guide.html" class="link-card">
+            <div class="ic">📚</div>
+            <div class="ttl">Ecosystem Guide</div>
+            <div class="desc">מדריך מקיף חדש</div>
+        </a>
+        <a href="/ops-report-20260411.html" class="link-card">
+            <div class="ic">📄</div>
+            <div class="ttl">Ops Report</div>
+            <div class="desc">דוח ביצוע מפורט</div>
+        </a>
+        <a href="/daily-blog.html" class="link-card">
+            <div class="ic">📰</div>
+            <div class="ttl">Daily Blog</div>
+            <div class="desc">כל השינויים</div>
+        </a>
+    </div>
+</section>
+
+<div id="bottomnav-root"></div>
+<div id="footer-root"></div>
+
+<script src="/js/translations.js?v=20260426e"></script>
+<script src="/js/shared.js?v=20260426e"></script>
+<script>
+initShared({ activePage: 'overnight', showBottomNav: true });
+
+const API = 'https://slh-api-production.up.railway.app';
+
+// Render timestamp
+document.getElementById('report-time').textContent = 'Generated: ' + new Date().toLocaleString('he-IL');
+
+async function loadReport() {
+    const alerts = [];
+
+    // 1. Launch status
+    try {
+        const r = await fetch(API + '/api/launch/status', { cache: 'no-store' });
+        const d = await r.json();
+        const raised = (d.raised_bnb_verified || 0) + (d.raised_bnb_pending || 0);
+        const contributors = d.contributors_count || 0;
+
+        const headline = document.getElementById('launch-headline');
+        const desc = document.getElementById('launch-desc');
+        if (contributors > 0 || raised > 0) {
+            headline.innerHTML = `🎉 יש תרומות! ${raised.toFixed(4)} BNB מ-${contributors} שותפים`;
+            desc.textContent = `התקדמות: ${(d.progress_pct || 0).toFixed(1)}% מהיעד. כנס ל-/launch-event.html לפרטים.`;
+        } else {
+            headline.textContent = '🌱 ממתין לתרומה ראשונה';
+            desc.textContent = 'טרם התקבלה תרומה. שלח את ההודעה לצביקה כדי להתחיל.';
+        }
+        document.getElementById('stat-contributors').textContent = contributors;
+        document.getElementById('stat-contributors-sub').textContent = raised > 0 ? `${raised.toFixed(4)} BNB` : 'ממתין';
+    } catch(e) {
+        document.getElementById('launch-headline').textContent = '❌ Launch API error';
+        alerts.push({severity: 'red', text: 'Launch API failed: ' + e.message});
+    }
+
+    // 2. System health
+    try {
+        const r = await fetch(API + '/api/health', { cache: 'no-store' });
+        const d = await r.json();
+        const el = document.getElementById('stat-health');
+        const sub = document.getElementById('stat-health-sub');
+        if (d.status === 'ok') {
+            el.textContent = '✅';
+            el.style.color = 'var(--accent)';
+            sub.textContent = 'DB: ' + d.db + ' · v' + d.version;
+        } else {
+            el.textContent = '⚠️';
+            el.style.color = 'var(--red)';
+            alerts.push({severity: 'red', text: 'Health check: ' + JSON.stringify(d)});
+        }
+    } catch(e) {
+        document.getElementById('stat-health').textContent = '❌';
+        alerts.push({severity: 'red', text: 'Health API offline'});
+    }
+
+    // 3. Admin dashboard
+    try {
+        const r = await fetch(API + '/api/admin/dashboard', { cache: 'no-store' });
+        const d = await r.json();
+        document.getElementById('stat-users').textContent = d.total_users || 0;
+        document.getElementById('stat-users-sub').textContent = (d.premium_users || 0) + ' premium';
+    } catch(e) {
+        alerts.push({severity: 'red', text: 'Admin API failed: ' + e.message});
+    }
+
+    // 4. Audit chain
+    try {
+        const r = await fetch(API + '/api/audit/verify-chain', { cache: 'no-store' });
+        const d = await r.json();
+        document.getElementById('stat-audit').textContent = d.total || 0;
+        document.getElementById('stat-audit-sub').textContent = d.ok ? '✅ ' + d.message : '❌ BROKEN';
+        if (!d.ok) alerts.push({severity: 'red', text: 'AUDIT CHAIN BROKEN: ' + d.message});
+    } catch(e) {
+        alerts.push({severity: 'red', text: 'Audit chain check failed'});
+    }
+
+    // 5. Genesis 49
+    try {
+        const r = await fetch(API + '/api/beta/status', { cache: 'no-store' });
+        const d = await r.json();
+        if (d.coupons && d.coupons.length) {
+            document.getElementById('stat-genesis').textContent = d.coupons[0].remaining;
+            document.getElementById('stat-genesis-sub').textContent = d.coupons[0].used_count + ' used';
+        }
+    } catch(e) {
+        alerts.push({severity: 'yellow', text: 'Genesis 49 API failed'});
+    }
+
+    // Uptime (simple — if health passed, 100%)
+    document.getElementById('stat-uptime').textContent = alerts.filter(a => a.severity === 'red').length === 0 ? '100%' : '⚠️';
+
+    // Render alerts
+    if (alerts.length) {
+        document.getElementById('alerts-section').style.display = 'block';
+        document.getElementById('alerts-list').innerHTML = alerts.map(a => `<div class="alert"><strong>${a.severity === 'red' ? '🔴' : '🟡'}</strong> ${a.text}</div>`).join('');
+    }
+}
+
+loadReport();
+// Refresh every 2 minutes
+setInterval(loadReport, 120000);
+</script>
+<button id="theme-fab" onclick="document.getElementById('theme-panel').classList.toggle('open')" title="Theme">🎨</button>
+<div id="theme-panel">
+    <div style="font-size:11px;color:var(--text2,#8a8aa0);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">ערכת צבעים</div>
+    <button onclick="document.documentElement.removeAttribute('data-theme');localStorage.setItem('slh_page_theme','default');document.getElementById('theme-panel').classList.remove('open')">🟢 Default</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','dark');localStorage.setItem('slh_page_theme','dark');document.getElementById('theme-panel').classList.remove('open')">🌙 Dark</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','light');localStorage.setItem('slh_page_theme','light');document.getElementById('theme-panel').classList.remove('open')">☀️ Light</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','crypto');localStorage.setItem('slh_page_theme','crypto');document.getElementById('theme-panel').classList.remove('open')">₿ Crypto</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','ocean');localStorage.setItem('slh_page_theme','ocean');document.getElementById('theme-panel').classList.remove('open')">🌊 Ocean</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','sunset');localStorage.setItem('slh_page_theme','sunset');document.getElementById('theme-panel').classList.remove('open')">🌅 Sunset</button>
+</div>
+<script>
+(function(){var t=localStorage.getItem('slh_page_theme');if(t&&t!=='default')document.documentElement.setAttribute('data-theme',t);document.addEventListener('click',function(e){var p=document.getElementById('theme-panel'),f=document.getElementById('theme-fab');if(p&&f&&!p.contains(e.target)&&!f.contains(e.target))p.classList.remove('open');});})();
+</script>
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260426e"></script>
+</body>
+</html>

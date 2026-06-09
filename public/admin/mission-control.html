@@ -1,0 +1,737 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mission Control | SLH Admin</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="/favicon-32.png">
+  <style>
+    :root{
+      --bg:#0a0a0a;--bg2:#111;--bg3:#1a1a1a;
+      --accent:#00ff41;--accent2:#39ff14;
+      --cyan:#00e5ff;--gold:#ffd700;--red:#ff0055;--purple:#a855f7;
+      --text:#e8e8f0;--text2:#8a8aa0;--text-bright:#fff;
+      --card:rgba(0,255,65,.03);--border:rgba(0,255,65,.15);
+      --font:'Inter',system-ui,sans-serif;
+      --radius:6px;
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;font-size:13px}
+    a{color:var(--accent);text-decoration:none}
+    button{cursor:pointer;font-family:inherit;font-size:12px;border:none}
+
+    /* Auth gate */
+    #auth-gate{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;align-items:center;justify-content:center}
+    .auth-box{background:var(--bg2);border:1px solid var(--border);padding:32px;border-radius:var(--radius);width:360px;text-align:center}
+    .auth-box h2{color:var(--accent);margin-bottom:16px}
+    .auth-box input{width:100%;padding:12px;background:var(--bg);border:1px solid var(--border);color:var(--text);margin-bottom:12px;border-radius:var(--radius);text-align:center}
+    .auth-box button{width:100%;padding:12px;background:var(--accent);color:#000;font-weight:700;border-radius:var(--radius)}
+
+    /* Top bar */
+    .topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 24px;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+    .brand{font-weight:700;color:var(--accent);font-size:16px}
+    .brand span{background:var(--red);color:#fff;padding:2px 8px;font-size:10px;border-radius:3px;margin-right:8px}
+    .topbar-links{display:flex;gap:12px;font-size:12px}
+    .topbar-links a{padding:6px 12px;border:1px solid var(--border);color:var(--text2);border-radius:var(--radius)}
+    .topbar-links a:hover{color:var(--accent);border-color:var(--accent)}
+
+    /* Layout */
+    main{max-width:1400px;margin:0 auto;padding:20px}
+
+    /* Deploy status section */
+    .deploy-status{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:20px}
+    .deploy-card{background:var(--bg2);border:1px solid var(--border);padding:14px;border-radius:var(--radius);position:relative}
+    .deploy-card .label{font-size:10px;text-transform:uppercase;color:var(--text2);letter-spacing:1px;margin-bottom:6px}
+    .deploy-card .value{font-size:16px;font-weight:700;color:var(--text-bright)}
+    .deploy-card .detail{font-size:11px;color:var(--text2);margin-top:4px}
+    .deploy-card.green{border-color:var(--accent)}
+    .deploy-card.red{border-color:var(--red)}
+    .deploy-card.gold{border-color:var(--gold)}
+    .deploy-card .refresh{position:absolute;top:8px;left:8px;background:transparent;color:var(--text2);font-size:12px}
+
+    /* Stats strip */
+    .stats-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:20px}
+    .stat-pill{background:var(--bg3);padding:10px 14px;border-radius:var(--radius);text-align:center;cursor:pointer;border:1px solid transparent;transition:all .15s}
+    .stat-pill:hover{border-color:var(--accent)}
+    .stat-pill .n{font-size:22px;font-weight:700;color:var(--text-bright);font-family:'Space Mono',monospace}
+    .stat-pill .l{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:1px}
+    .stat-pill.p0 .n{color:var(--red)}
+    .stat-pill.p1 .n{color:var(--gold)}
+    .stat-pill.p2 .n{color:var(--accent)}
+    .stat-pill.blocked .n{color:var(--purple)}
+
+    /* Filter bar */
+    .filter-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;background:var(--bg2);padding:12px;border-radius:var(--radius);border:1px solid var(--border)}
+    .filter-bar select,.filter-bar input{background:var(--bg);color:var(--text);border:1px solid var(--border);padding:8px 10px;border-radius:var(--radius);font-size:12px}
+    .filter-bar input[type="search"]{flex:1;min-width:180px}
+    .filter-bar .new-btn{background:var(--accent);color:#000;padding:8px 16px;font-weight:700;border-radius:var(--radius);margin-right:auto}
+
+    /* Main grid */
+    .layout{display:grid;grid-template-columns:1fr 320px;gap:16px}
+    @media (max-width:980px){.layout{grid-template-columns:1fr}}
+
+    /* Task list */
+    .task-list{display:flex;flex-direction:column;gap:8px}
+    .task-card{background:var(--bg2);border:1px solid var(--border);padding:14px;border-radius:var(--radius);cursor:pointer;transition:border-color .15s}
+    .task-card:hover{border-color:var(--accent)}
+    .task-card .tc-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+    .task-card .tc-title{font-weight:600;color:var(--text-bright);flex:1}
+    .badge{display:inline-block;padding:2px 8px;font-size:10px;font-weight:700;border-radius:3px;text-transform:uppercase;letter-spacing:.5px}
+    .badge.P0{background:rgba(255,0,85,.18);color:var(--red)}
+    .badge.P1{background:rgba(255,215,0,.18);color:var(--gold)}
+    .badge.P2{background:rgba(0,255,65,.15);color:var(--accent)}
+    .badge.open{background:rgba(138,138,160,.2);color:var(--text2)}
+    .badge.in_progress{background:rgba(0,229,255,.2);color:var(--cyan)}
+    .badge.blocked{background:rgba(168,85,247,.2);color:var(--purple)}
+    .badge.done{background:rgba(0,255,65,.18);color:var(--accent)}
+    .badge.cancelled{background:rgba(138,138,160,.1);color:var(--text2);text-decoration:line-through}
+    .tag{display:inline-block;padding:1px 8px;font-size:10px;color:var(--text2);background:var(--bg3);border-radius:10px}
+    .tc-meta{display:flex;gap:8px;flex-wrap:wrap;font-size:11px;color:var(--text2)}
+    .tc-meta .assignee{color:var(--cyan);font-weight:600}
+    .tc-meta .blocker{color:var(--purple)}
+    .tc-actions{display:flex;gap:6px;margin-top:8px}
+    .tc-actions button{background:var(--bg3);color:var(--text2);padding:4px 10px;font-size:11px;border-radius:3px}
+    .tc-actions button:hover{background:var(--accent);color:#000}
+    .empty{text-align:center;padding:40px;color:var(--text2)}
+
+    /* Right column */
+    .side-col{display:flex;flex-direction:column;gap:16px}
+    .side-card{background:var(--bg2);border:1px solid var(--border);padding:14px;border-radius:var(--radius)}
+    .side-card h3{font-size:13px;color:var(--accent);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+    .team-row{display:flex;justify-content:space-between;padding:6px 0;font-size:12px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.04)}
+    .team-row:hover .name{color:var(--accent)}
+    .team-row .name{color:var(--text-bright)}
+    .team-row .count{color:var(--gold);font-weight:700}
+    .feed-row{font-size:11px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);color:var(--text2)}
+    .feed-row .ev{color:var(--cyan);font-weight:700}
+    .feed-row .title{color:var(--text-bright);display:block;margin-top:2px}
+    .feed-row .time{color:var(--text2);font-size:10px}
+    .blocked-row{padding:8px;background:rgba(168,85,247,.08);border-radius:var(--radius);margin-bottom:6px;font-size:12px}
+    .blocked-row .tt{color:var(--text-bright);font-weight:600;margin-bottom:2px}
+    .blocked-row .why{color:var(--text2);font-size:11px}
+
+    /* Modal */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+    .modal-backdrop.open{display:flex}
+    .modal{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);width:100%;max-width:640px;max-height:90vh;overflow-y:auto;padding:20px}
+    .modal h2{color:var(--accent);margin-bottom:16px;font-size:16px}
+    .modal label{display:block;font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin:8px 0 4px}
+    .modal input,.modal textarea,.modal select{width:100%;background:var(--bg);color:var(--text);border:1px solid var(--border);padding:8px;border-radius:var(--radius);font-family:inherit;font-size:13px}
+    .modal textarea{min-height:80px;resize:vertical}
+    .modal .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .modal .actions{margin-top:16px;display:flex;gap:8px;justify-content:flex-end}
+    .modal .actions button{padding:8px 16px;border-radius:var(--radius);font-weight:600}
+    .modal .primary{background:var(--accent);color:#000}
+    .modal .secondary{background:var(--bg3);color:var(--text)}
+    .modal .danger{background:var(--red);color:#fff}
+
+    .events-list{margin-top:16px;border-top:1px solid var(--border);padding-top:12px}
+    .events-list .ev-row{padding:6px 0;font-size:11px;color:var(--text2);border-bottom:1px solid rgba(255,255,255,.03)}
+    .events-list .ev-row b{color:var(--cyan)}
+
+    #toast{position:fixed;bottom:20px;right:20px;background:var(--bg3);color:var(--text-bright);padding:12px 20px;border-radius:var(--radius);border:1px solid var(--accent);z-index:200;display:none}
+    #toast.error{border-color:var(--red);color:var(--red)}
+  </style>
+</head>
+<body>
+
+<div id="auth-gate">
+  <div class="auth-box">
+    <h2>🎯 Mission Control</h2>
+    <p style="color:var(--text2);font-size:12px;margin-bottom:16px">הזן מפתח אדמין (X-Admin-Key)</p>
+    <input type="password" id="auth-input" placeholder="slh_admin_..." autofocus>
+    <button onclick="doAuth()">כניסה</button>
+    <p id="auth-err" style="color:var(--red);font-size:11px;margin-top:8px;display:none"></p>
+  </div>
+</div>
+
+<div class="topbar">
+  <div class="brand"><span>ADMIN</span>🎯 Mission Control</div>
+  <div class="topbar-links">
+    <a href="/admin/control-center.html">🎛 Control</a>
+    <a href="/admin.html">← Admin Home</a>
+    <a href="/ops-dashboard.html">📡 Ops</a>
+    <a href="/chain-status.html">⛓ Chain</a>
+    <a href="/admin/reality.html">🔍 Reality</a>
+    <a href="/admin/tokens.html">🔑 Tokens</a>
+    <a href="/admin/rotate-token.html">🔄 Rotate</a>
+    <a href="/admin/secrets-vault.html">🔐 Vault</a>
+    <a href="https://railway.app/project/slh-api" target="_blank">🚂 Railway</a>
+    <a href="https://github.com/osifeu-prog/slh-api" target="_blank">🐙 GitHub</a>
+    <a href="#" onclick="logout();return false" style="color:var(--red)">Logout</a>
+  </div>
+</div>
+
+<main>
+
+  <section class="deploy-status" id="deploy-status">
+    <div class="deploy-card" id="deploy-api">
+      <div class="label">Railway API</div>
+      <div class="value">...</div>
+      <div class="detail">loading</div>
+    </div>
+    <div class="deploy-card" id="deploy-pages">
+      <div class="label">GitHub Pages</div>
+      <div class="value">...</div>
+      <div class="detail">loading</div>
+    </div>
+    <div class="deploy-card" id="deploy-events">
+      <div class="label">Events Feed</div>
+      <div class="value">...</div>
+      <div class="detail">loading</div>
+    </div>
+    <div class="deploy-card" id="deploy-overview-ts">
+      <div class="label">Last Refresh</div>
+      <div class="value">--</div>
+      <div class="detail">
+        <button onclick="refreshAll()" style="background:var(--accent);color:#000;padding:4px 10px;border-radius:3px;font-size:11px">Refresh now</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats-strip" id="stats-strip">
+    <div class="stat-pill p0" onclick="filterBy('priority','P0')"><div class="n" id="s-p0">--</div><div class="l">P0 פתוח</div></div>
+    <div class="stat-pill p1" onclick="filterBy('priority','P1')"><div class="n" id="s-p1">--</div><div class="l">P1 פתוח</div></div>
+    <div class="stat-pill p2" onclick="filterBy('priority','P2')"><div class="n" id="s-p2">--</div><div class="l">P2 פתוח</div></div>
+    <div class="stat-pill" onclick="filterBy('status','in_progress')"><div class="n" id="s-inprog">--</div><div class="l">בתהליך</div></div>
+    <div class="stat-pill blocked" onclick="filterBy('status','blocked')"><div class="n" id="s-blocked">--</div><div class="l">חסום</div></div>
+    <div class="stat-pill" onclick="filterBy('status','done')"><div class="n" id="s-done-today">--</div><div class="l">נסגר היום</div></div>
+  </section>
+
+  <div class="filter-bar">
+    <button class="new-btn" onclick="openCreate()">+ משימה חדשה</button>
+    <select id="f-status" onchange="loadTasks()">
+      <option value="">כל הסטטוסים (ללא done)</option>
+      <option value="open">Open</option>
+      <option value="in_progress">In Progress</option>
+      <option value="blocked">Blocked</option>
+      <option value="done">Done</option>
+      <option value="cancelled">Cancelled</option>
+    </select>
+    <select id="f-priority" onchange="loadTasks()">
+      <option value="">כל העדיפויות</option>
+      <option value="P0">P0</option>
+      <option value="P1">P1</option>
+      <option value="P2">P2</option>
+    </select>
+    <select id="f-category" onchange="loadTasks()">
+      <option value="">כל הקטגוריות</option>
+      <option value="infra">Infra</option>
+      <option value="crm">CRM</option>
+      <option value="community">Community</option>
+      <option value="qa">QA</option>
+      <option value="owner">Owner</option>
+      <option value="code">Code</option>
+      <option value="strategic">Strategic</option>
+      <option value="security">Security</option>
+    </select>
+    <input type="search" id="f-search" placeholder="חיפוש טקסט..." oninput="debouncedSearch()">
+    <select id="f-assignee" onchange="loadTasks()">
+      <option value="">כל המקבלים</option>
+    </select>
+  </div>
+
+  <div class="layout">
+    <div class="task-list" id="task-list">
+      <div class="empty">טוען משימות...</div>
+    </div>
+
+    <aside class="side-col">
+      <div class="side-card">
+        <h3>🛑 Blocked Items</h3>
+        <div id="blocked-list"><div style="color:var(--text2);font-size:11px">—</div></div>
+      </div>
+      <div class="side-card">
+        <h3>👥 Team</h3>
+        <div id="team-list"><div style="color:var(--text2);font-size:11px">—</div></div>
+      </div>
+      <div class="side-card">
+        <h3>📡 Recent Activity</h3>
+        <div id="activity-feed"><div style="color:var(--text2);font-size:11px">—</div></div>
+      </div>
+    </aside>
+  </div>
+
+</main>
+
+<div class="modal-backdrop" id="task-modal">
+  <div class="modal">
+    <h2 id="modal-title">משימה חדשה</h2>
+    <input type="hidden" id="m-id">
+    <label>כותרת *</label>
+    <input type="text" id="m-title" required>
+    <label>תיאור</label>
+    <textarea id="m-description"></textarea>
+    <div class="row">
+      <div>
+        <label>Priority</label>
+        <select id="m-priority"><option>P0</option><option selected>P1</option><option>P2</option></select>
+      </div>
+      <div>
+        <label>Status</label>
+        <select id="m-status">
+          <option value="open" selected>Open</option>
+          <option value="in_progress">In Progress</option>
+          <option value="blocked">Blocked</option>
+          <option value="done">Done</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label>Category</label>
+        <select id="m-category">
+          <option value="infra">Infra</option>
+          <option value="crm">CRM</option>
+          <option value="community">Community</option>
+          <option value="qa">QA</option>
+          <option value="owner">Owner</option>
+          <option value="code" selected>Code</option>
+          <option value="strategic">Strategic</option>
+          <option value="security">Security</option>
+        </select>
+      </div>
+      <div>
+        <label>Assignee (שם)</label>
+        <input type="text" id="m-assignee" placeholder="Osif / Idan / Eliezer / ...">
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label>Blocker (אם status=blocked)</label>
+        <input type="text" id="m-blocker">
+      </div>
+      <div>
+        <label>Due date</label>
+        <input type="date" id="m-due">
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label>Estimated minutes</label>
+        <input type="number" id="m-est" min="0">
+      </div>
+      <div>
+        <label>Source (marker)</label>
+        <input type="text" id="m-source" placeholder="KNOWN_ISSUES K-5 / manual">
+      </div>
+    </div>
+
+    <div class="events-list" id="m-events" style="display:none">
+      <h4 style="color:var(--cyan);font-size:12px;margin-bottom:8px">📜 Event Log</h4>
+      <div id="m-events-body"></div>
+      <label>הוסף הערה</label>
+      <textarea id="m-comment" rows="2"></textarea>
+      <button class="secondary" onclick="addComment()" style="margin-top:6px;padding:6px 12px;border-radius:3px">Add Comment</button>
+    </div>
+
+    <div class="actions">
+      <button class="danger" id="m-delete" onclick="deleteTask()" style="display:none">מחק</button>
+      <button class="secondary" onclick="closeModal()">ביטול</button>
+      <button class="primary" onclick="saveTask()">שמור</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const API = 'https://slh-api-production.up.railway.app';
+let ADMIN_KEY = localStorage.getItem('slh_admin_password') || '';
+let tasksCache = [];
+let overviewCache = null;
+
+function toast(msg, isErr) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = isErr ? 'error' : '';
+  t.style.display = 'block';
+  setTimeout(()=>t.style.display='none', 3000);
+}
+
+async function api(path, opts={}) {
+  opts.headers = Object.assign({'X-Admin-Key': ADMIN_KEY, 'Content-Type':'application/json'}, opts.headers||{});
+  const r = await fetch(API+path, opts);
+  if (r.status === 403) {
+    localStorage.removeItem('slh_admin_password');
+    document.getElementById('auth-gate').style.display='flex';
+    throw new Error('Auth failed');
+  }
+  const text = await r.text();
+  if (!r.ok) throw new Error(text || r.statusText);
+  try { return JSON.parse(text); } catch { return text; }
+}
+
+async function doAuth() {
+  const k = document.getElementById('auth-input').value.trim();
+  if (!k) return;
+  ADMIN_KEY = k;
+  try {
+    await api('/api/admin/overview');
+    localStorage.setItem('slh_admin_password', k);
+    document.getElementById('auth-gate').style.display='none';
+    refreshAll();
+  } catch (e) {
+    document.getElementById('auth-err').textContent = 'מפתח לא תקין — ' + e.message;
+    document.getElementById('auth-err').style.display='block';
+  }
+}
+
+function logout() {
+  localStorage.removeItem('slh_admin_password');
+  location.reload();
+}
+
+async function checkAuth() {
+  if (!ADMIN_KEY) {
+    document.getElementById('auth-gate').style.display='flex';
+    return false;
+  }
+  try {
+    await api('/api/admin/overview');
+    document.getElementById('auth-gate').style.display='none';
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+async function loadDeployStatus() {
+  try {
+    const h = await fetch(API+'/api/health').then(r=>r.json());
+    const card = document.getElementById('deploy-api');
+    card.className = 'deploy-card ' + (h.db === 'connected' ? 'green' : 'red');
+    card.querySelector('.value').textContent = h.version || '?';
+    card.querySelector('.detail').textContent = 'db: ' + (h.db || '?');
+  } catch { document.getElementById('deploy-api').querySelector('.value').textContent = 'DOWN'; }
+
+  try {
+    const pages = await fetch('https://slh-nft.com/', {method:'HEAD'});
+    const card = document.getElementById('deploy-pages');
+    card.className = 'deploy-card ' + (pages.ok ? 'green' : 'red');
+    card.querySelector('.value').textContent = pages.ok ? 'LIVE' : 'DOWN';
+    card.querySelector('.detail').textContent = 'slh-nft.com';
+  } catch { document.getElementById('deploy-pages').querySelector('.value').textContent = 'DOWN'; }
+
+  try {
+    const ev = await fetch(API+'/api/events/public').then(r=>r.json());
+    const card = document.getElementById('deploy-events');
+    const ok = Array.isArray(ev) || (ev && Array.isArray(ev.events));
+    card.className = 'deploy-card ' + (ok ? 'green' : 'gold');
+    card.querySelector('.value').textContent = ok ? 'OK' : 'MISSING';
+    card.querySelector('.detail').textContent = ok ? `${(ev.events||ev).length} events` : (ev.detail || 'unavailable');
+  } catch { document.getElementById('deploy-events').querySelector('.value').textContent = 'ERR'; }
+
+  document.getElementById('deploy-overview-ts').querySelector('.value').textContent =
+    new Date().toLocaleTimeString('he-IL');
+}
+
+async function loadOverview() {
+  try {
+    overviewCache = await api('/api/admin/overview');
+    const c = overviewCache.counts;
+    document.getElementById('s-p0').textContent = c.by_priority.P0 || 0;
+    document.getElementById('s-p1').textContent = c.by_priority.P1 || 0;
+    document.getElementById('s-p2').textContent = c.by_priority.P2 || 0;
+    document.getElementById('s-inprog').textContent = c.by_status.in_progress || 0;
+    document.getElementById('s-blocked').textContent = c.by_status.blocked || 0;
+    document.getElementById('s-done-today').textContent = c.done_today || 0;
+
+    // Team list
+    const team = document.getElementById('team-list');
+    if (c.by_assignee.length === 0) {
+      team.innerHTML = '<div style="color:var(--text2);font-size:11px">אין משימות עם משויך</div>';
+    } else {
+      team.innerHTML = c.by_assignee.map(a =>
+        `<div class="team-row" onclick="filterByAssignee('${escape(a.name)}')">
+           <span class="name">${escapeHtml(a.name)}</span>
+           <span class="count">${a.open} פתוח · ${a.done} סגור</span>
+         </div>`
+      ).join('');
+    }
+
+    // Assignee filter dropdown
+    const assigneeSelect = document.getElementById('f-assignee');
+    const currentAssignee = assigneeSelect.value;
+    assigneeSelect.innerHTML = '<option value="">כל המקבלים</option>' +
+      c.by_assignee.map(a => `<option value="${escapeHtml(a.name)}">${escapeHtml(a.name)} (${a.open})</option>`).join('');
+    assigneeSelect.value = currentAssignee;
+
+    // Blocked list
+    const blocked = document.getElementById('blocked-list');
+    if (overviewCache.blocked.length === 0) {
+      blocked.innerHTML = '<div style="color:var(--text2);font-size:11px">אין משימות חסומות 🎉</div>';
+    } else {
+      blocked.innerHTML = overviewCache.blocked.map(b =>
+        `<div class="blocked-row">
+           <div class="tt">${escapeHtml(b.title)}</div>
+           <div class="why">👤 ${escapeHtml(b.assignee||'(none)')} · 🛑 ${escapeHtml(b.blocker||'no reason given')}</div>
+         </div>`
+      ).join('');
+    }
+
+    // Activity feed
+    const feed = document.getElementById('activity-feed');
+    if (overviewCache.recent_events.length === 0) {
+      feed.innerHTML = '<div style="color:var(--text2);font-size:11px">אין פעילות עדיין</div>';
+    } else {
+      feed.innerHTML = overviewCache.recent_events.map(e =>
+        `<div class="feed-row">
+           <span class="ev">${escapeHtml(e.event_type)}</span>
+           <span>${escapeHtml(e.actor_name||'system')}</span>
+           <span class="title">${escapeHtml(e.task_title)}</span>
+           <span class="time">${timeAgo(e.created_at)}</span>
+         </div>`
+      ).join('');
+    }
+  } catch (e) {
+    toast('שגיאת טעינת overview: ' + e.message, true);
+  }
+}
+
+async function loadTasks() {
+  const params = new URLSearchParams();
+  const s = document.getElementById('f-status').value;
+  const p = document.getElementById('f-priority').value;
+  const c = document.getElementById('f-category').value;
+  const a = document.getElementById('f-assignee').value;
+  const q = document.getElementById('f-search').value;
+  if (s) params.set('status', s); else params.set('include_done', 'false');
+  if (p) params.set('priority', p);
+  if (c) params.set('category', c);
+  if (a) params.set('assignee', a);
+  if (q) params.set('search', q);
+  params.set('limit', '200');
+
+  try {
+    const r = await api('/api/admin/tasks?' + params.toString());
+    tasksCache = r.tasks;
+    renderTasks();
+  } catch (e) {
+    document.getElementById('task-list').innerHTML =
+      `<div class="empty" style="color:var(--red)">שגיאה: ${escapeHtml(e.message)}</div>`;
+  }
+}
+
+function renderTasks() {
+  const list = document.getElementById('task-list');
+  if (tasksCache.length === 0) {
+    list.innerHTML = '<div class="empty">אין משימות שתואמות לפילטר</div>';
+    return;
+  }
+  list.innerHTML = tasksCache.map(t => {
+    const blockerHtml = t.blocker ? `<span class="blocker">🛑 ${escapeHtml(t.blocker)}</span>` : '';
+    const assigneeHtml = t.assignee_name ? `<span class="assignee">👤 ${escapeHtml(t.assignee_name)}</span>` : '<span>👤 —</span>';
+    const dueHtml = t.due_date ? `<span>📅 ${t.due_date}</span>` : '';
+    const sourceHtml = t.source ? `<span class="tag">${escapeHtml(t.source)}</span>` : '';
+    const desc = t.description ? `<div style="color:var(--text2);font-size:11px;margin:6px 0">${escapeHtml((t.description||'').slice(0,180))}${t.description.length>180?'...':''}</div>` : '';
+    return `
+      <div class="task-card" onclick="openEdit(${t.id})">
+        <div class="tc-top">
+          <div class="tc-title">${escapeHtml(t.title)}</div>
+          <span class="badge ${t.priority}">${t.priority}</span>
+          <span class="badge ${t.status}">${t.status.replace('_',' ')}</span>
+        </div>
+        ${desc}
+        <div class="tc-meta">
+          <span class="tag">${t.category}</span>
+          ${assigneeHtml}
+          ${blockerHtml}
+          ${dueHtml}
+          ${sourceHtml}
+        </div>
+        <div class="tc-actions" onclick="event.stopPropagation()">
+          ${t.status !== 'in_progress' ? `<button onclick="quickStatus(${t.id},'in_progress')">▶ Start</button>` : ''}
+          ${t.status !== 'blocked' ? `<button onclick="quickStatus(${t.id},'blocked')">🛑 Block</button>` : ''}
+          ${t.status !== 'done' ? `<button onclick="quickStatus(${t.id},'done')">✓ Done</button>` : ''}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+async function quickStatus(id, status) {
+  try {
+    let blocker = null;
+    if (status === 'blocked') {
+      blocker = prompt('סיבה לחסימה?');
+      if (blocker === null) return;
+    }
+    await api('/api/admin/tasks/'+id, {
+      method: 'PATCH',
+      body: JSON.stringify({status, blocker, actor_name: 'osif'})
+    });
+    toast('עודכן ✓');
+    refreshAll();
+  } catch (e) { toast('שגיאה: '+e.message, true); }
+}
+
+let editingId = null;
+
+function openCreate() {
+  editingId = null;
+  document.getElementById('modal-title').textContent = 'משימה חדשה';
+  document.getElementById('m-id').value = '';
+  document.getElementById('m-title').value = '';
+  document.getElementById('m-description').value = '';
+  document.getElementById('m-priority').value = 'P1';
+  document.getElementById('m-status').value = 'open';
+  document.getElementById('m-category').value = 'code';
+  document.getElementById('m-assignee').value = '';
+  document.getElementById('m-blocker').value = '';
+  document.getElementById('m-due').value = '';
+  document.getElementById('m-est').value = '';
+  document.getElementById('m-source').value = '';
+  document.getElementById('m-events').style.display = 'none';
+  document.getElementById('m-delete').style.display = 'none';
+  document.getElementById('task-modal').classList.add('open');
+}
+
+async function openEdit(id) {
+  const t = tasksCache.find(x => x.id === id);
+  if (!t) return;
+  editingId = id;
+  document.getElementById('modal-title').textContent = '✏️ משימה #' + id;
+  document.getElementById('m-id').value = id;
+  document.getElementById('m-title').value = t.title || '';
+  document.getElementById('m-description').value = t.description || '';
+  document.getElementById('m-priority').value = t.priority;
+  document.getElementById('m-status').value = t.status;
+  document.getElementById('m-category').value = t.category;
+  document.getElementById('m-assignee').value = t.assignee_name || '';
+  document.getElementById('m-blocker').value = t.blocker || '';
+  document.getElementById('m-due').value = t.due_date || '';
+  document.getElementById('m-est').value = t.estimated_minutes || '';
+  document.getElementById('m-source').value = t.source || '';
+  document.getElementById('m-events').style.display = 'block';
+  document.getElementById('m-delete').style.display = 'inline-block';
+  loadEvents(id);
+  document.getElementById('task-modal').classList.add('open');
+}
+
+async function loadEvents(id) {
+  try {
+    const r = await api('/api/admin/tasks/'+id+'/events');
+    const body = document.getElementById('m-events-body');
+    if (r.events.length === 0) {
+      body.innerHTML = '<div style="color:var(--text2);font-size:11px">אין אירועים</div>';
+      return;
+    }
+    body.innerHTML = r.events.map(e => {
+      const p = e.payload ? JSON.stringify(e.payload) : '';
+      return `<div class="ev-row"><b>${e.event_type}</b> — ${escapeHtml(e.actor_name||'system')} · ${timeAgo(e.created_at)}${p?' · <code>'+escapeHtml(p.slice(0,100))+'</code>':''}</div>`;
+    }).join('');
+  } catch {}
+}
+
+async function addComment() {
+  const note = document.getElementById('m-comment').value.trim();
+  if (!note || !editingId) return;
+  try {
+    await api('/api/admin/tasks/'+editingId+'/events', {
+      method: 'POST',
+      body: JSON.stringify({event_type:'commented', actor_name:'osif', payload:{text:note}})
+    });
+    document.getElementById('m-comment').value = '';
+    loadEvents(editingId);
+    toast('הערה נוספה ✓');
+  } catch (e) { toast('שגיאה: '+e.message, true); }
+}
+
+function closeModal() {
+  document.getElementById('task-modal').classList.remove('open');
+}
+
+async function saveTask() {
+  const data = {
+    title: document.getElementById('m-title').value.trim(),
+    description: document.getElementById('m-description').value.trim() || null,
+    priority: document.getElementById('m-priority').value,
+    status: document.getElementById('m-status').value,
+    category: document.getElementById('m-category').value,
+    assignee_name: document.getElementById('m-assignee').value.trim() || null,
+    blocker: document.getElementById('m-blocker').value.trim() || null,
+    due_date: document.getElementById('m-due').value || null,
+    estimated_minutes: parseInt(document.getElementById('m-est').value) || null,
+    source: document.getElementById('m-source').value.trim() || null,
+    actor_name: 'osif'
+  };
+  if (!data.title) { toast('חסרה כותרת', true); return; }
+  try {
+    if (editingId) {
+      await api('/api/admin/tasks/'+editingId, {method:'PATCH', body: JSON.stringify(data)});
+      toast('נשמר ✓');
+    } else {
+      await api('/api/admin/tasks', {method:'POST', body: JSON.stringify(data)});
+      toast('נוצר ✓');
+    }
+    closeModal();
+    refreshAll();
+  } catch (e) { toast('שגיאה: '+e.message, true); }
+}
+
+async function deleteTask() {
+  if (!editingId) return;
+  if (!confirm('למחוק משימה לצמיתות?')) return;
+  try {
+    await api('/api/admin/tasks/'+editingId+'?actor_name=osif', {method:'DELETE'});
+    toast('נמחק ✓');
+    closeModal();
+    refreshAll();
+  } catch (e) { toast('שגיאה: '+e.message, true); }
+}
+
+function filterBy(field, value) {
+  const el = document.getElementById('f-'+field);
+  if (el) { el.value = value; loadTasks(); }
+}
+
+function filterByAssignee(name) {
+  document.getElementById('f-assignee').value = unescape(name);
+  loadTasks();
+}
+
+let searchTimer;
+function debouncedSearch() {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(loadTasks, 350);
+}
+
+function escapeHtml(s) {
+  return String(s||'').replace(/[&<>"']/g, c =>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function timeAgo(iso) {
+  const d = new Date(iso);
+  const s = Math.floor((Date.now() - d.getTime()) / 1000);
+  if (s < 60) return s+'s';
+  if (s < 3600) return Math.floor(s/60)+'m';
+  if (s < 86400) return Math.floor(s/3600)+'h';
+  return Math.floor(s/86400)+'d';
+}
+
+async function refreshAll() {
+  await Promise.all([loadDeployStatus(), loadOverview(), loadTasks()]);
+}
+
+// Init
+(async () => {
+  if (ADMIN_KEY && await checkAuth()) {
+    refreshAll();
+    setInterval(loadDeployStatus, 30000);
+    setInterval(loadOverview, 60000);
+  }
+})();
+
+document.getElementById('auth-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doAuth();
+});
+document.getElementById('task-modal').addEventListener('click', e => {
+  if (e.target.id === 'task-modal') closeModal();
+});
+</script>
+
+</body>
+</html>

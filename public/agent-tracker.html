@@ -1,0 +1,249 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SLH · Agent Tracker · מי עובד על מה</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="stylesheet" href="/css/slh-design-system.css">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+.wrap{max-width:1200px;margin:0 auto;padding:var(--space-6) var(--space-4)}
+.hdr{margin-bottom:var(--space-6)}
+.hdr h1{font-size:var(--font-size-3xl);background:linear-gradient(90deg,var(--color-brand-primary),var(--color-brand-secondary),var(--color-brand-purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hdr .sub{color:var(--color-text-secondary);font-size:var(--font-size-sm);margin-top:var(--space-2)}
+.last-update{font-family:var(--font-family-mono);font-size:var(--font-size-xs);color:var(--color-text-tertiary)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:var(--space-4)}
+.agent-card{background:var(--color-bg-elevated);border:1px solid var(--color-border-subtle);border-radius:var(--radius-lg);padding:var(--space-4);position:relative;overflow:hidden}
+.agent-card::before{content:"";position:absolute;top:0;inset-inline-start:0;width:4px;height:100%;background:var(--status-color,var(--color-text-tertiary))}
+.agent-card.status-active{--status-color:var(--color-brand-primary)}
+.agent-card.status-waiting{--status-color:var(--color-warning)}
+.agent-card.status-blocked{--status-color:var(--color-error)}
+.agent-card.status-done{--status-color:var(--color-info)}
+.agent-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-3)}
+.agent-id{font-family:var(--font-family-mono);font-size:var(--font-size-xs);color:var(--color-text-tertiary)}
+.agent-name{font-size:var(--font-size-md);font-weight:var(--font-weight-bold);margin-top:var(--space-1)}
+.status-pill{display:inline-flex;align-items:center;gap:var(--space-1);padding:var(--space-1) var(--space-3);border-radius:var(--radius-full);font-size:var(--font-size-xs);font-weight:var(--font-weight-bold);background:rgba(0,255,65,.12);color:var(--color-brand-primary)}
+.status-pill.waiting{background:rgba(245,158,11,.12);color:var(--color-warning)}
+.status-pill.blocked{background:rgba(239,68,68,.12);color:var(--color-error)}
+.status-pill.done{background:rgba(59,130,246,.12);color:var(--color-info)}
+.now{background:var(--color-bg-surface);border-radius:var(--radius-md);padding:var(--space-3);margin-bottom:var(--space-3)}
+.now-label{font-size:var(--font-size-xs);text-transform:uppercase;color:var(--color-text-tertiary);letter-spacing:.05em;margin-bottom:var(--space-1)}
+.now-text{color:var(--color-text-primary);font-size:var(--font-size-sm);line-height:1.5}
+.tasks{list-style:none;margin-bottom:var(--space-3)}
+.tasks li{display:flex;align-items:flex-start;gap:var(--space-2);padding:var(--space-1) 0;font-size:var(--font-size-sm);color:var(--color-text-secondary)}
+.tasks li i{width:16px;margin-top:3px;flex-shrink:0}
+.tasks li.done{color:var(--color-text-tertiary);text-decoration:line-through}
+.tasks li.done i{color:var(--color-success)}
+.tasks li.active i{color:var(--color-brand-primary)}
+.tasks li.pending i{color:var(--color-text-tertiary)}
+.tasks li.blocked i{color:var(--color-error)}
+.actions{display:flex;gap:var(--space-2);flex-wrap:wrap;margin-top:var(--space-3);padding-top:var(--space-3);border-top:1px solid var(--color-border-subtle)}
+.actions .btn{flex:1;min-width:120px;font-size:var(--font-size-xs)}
+.blocker{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.3);border-radius:var(--radius-md);padding:var(--space-2) var(--space-3);margin-top:var(--space-2);font-size:var(--font-size-xs);color:var(--color-error)}
+.deliv{background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.2);border-radius:var(--radius-md);padding:var(--space-2) var(--space-3);margin-top:var(--space-2);font-size:var(--font-size-xs)}
+.deliv a{color:var(--color-brand-secondary);text-decoration:none;margin-inline-end:var(--space-2)}
+.deliv a:hover{text-decoration:underline}
+.legend{display:flex;flex-wrap:wrap;gap:var(--space-4);margin-bottom:var(--space-4);padding:var(--space-3);background:var(--color-bg-surface);border-radius:var(--radius-md)}
+.legend-item{display:flex;align-items:center;gap:var(--space-2);font-size:var(--font-size-xs);color:var(--color-text-secondary)}
+.legend-dot{width:10px;height:10px;border-radius:50%}
+</style>
+<meta name="slh-version" content="v1.0-flip">
+<script defer src="/js/slh-flip.js?v=20260426e"></script>
+</head>
+<body class="theme-dark">
+<script src="/js/slh-nav.js"></script>
+<div class="wrap">
+  <div class="hdr">
+    <h1><i class="fas fa-robot"></i> Agent Tracker</h1>
+    <div class="sub">מי עובד עכשיו, על מה, ומה מחכה לאישור שלך.</div>
+    <div class="last-update">עודכן: <span id="lastUpdate">2026-04-17 · אחה"צ</span></div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><span class="legend-dot" style="background:var(--color-brand-primary)"></span> פעיל עובד עכשיו</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--color-warning)"></span> ממתין לאישור שלך</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--color-error)"></span> חסום (צריך משאב)</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--color-info)"></span> סיים</div>
+  </div>
+
+  <div class="grid">
+
+    <div class="agent-card status-waiting">
+      <div class="agent-head">
+        <div>
+          <div class="agent-id">#1 · Content Writer</div>
+          <div class="agent-name">✍️ סוכן כתיבת תוכן</div>
+        </div>
+        <span class="status-pill waiting">ממתין לאישור</span>
+      </div>
+      <div class="now">
+        <div class="now-label">עובד עכשיו על</div>
+        <div class="now-text">W.1 · 5 פוסטים לבלוג — כולם בלייב. עכשיו W.2: 30 פוסטי רשתות חברתיות.</div>
+      </div>
+      <ul class="tasks">
+        <li class="done"><i class="fas fa-check-circle"></i> W.1 פוסט #1 · neurology-meets-meditation</li>
+        <li class="done"><i class="fas fa-check-circle"></i> W.1 פוסט #2 · crypto-yoga-attention</li>
+        <li class="done"><i class="fas fa-check-circle"></i> W.1 פוסט #3 · verified-experts-not-influencers</li>
+        <li class="done"><i class="fas fa-check-circle"></i> W.1 פוסט #4 · slh-ecosystem-map</li>
+        <li class="done"><i class="fas fa-check-circle"></i> W.1 פוסט #5 · anti-facebook-manifesto</li>
+        <li class="pending"><i class="far fa-circle"></i> W.2 · 30 פוסטים לרשתות חברתיות</li>
+        <li class="pending"><i class="far fa-circle"></i> W.3 · Email templates</li>
+      </ul>
+      <div class="deliv">
+        <i class="fas fa-file-lines"></i>
+        <a href="/blog/neurology-meets-meditation.html">פוסט #1</a>
+        <a href="/blog/crypto-yoga-attention.html">פוסט #2</a>
+      </div>
+      <div class="actions">
+        <a class="btn btn-primary" href="/prompts/CONTENT_WRITER_AGENT_PROMPT.md">📄 Prompt</a>
+        <a class="btn btn-secondary" href="/blog.html">🔗 Blog Index</a>
+      </div>
+    </div>
+
+    <div class="agent-card status-active">
+      <div class="agent-head">
+        <div>
+          <div class="agent-id">#2 · UI/UX Designer</div>
+          <div class="agent-name">🎨 סוכן עיצוב UI/UX</div>
+        </div>
+        <span class="status-pill">פעיל</span>
+      </div>
+      <div class="now">
+        <div class="now-label">עובד עכשיו על</div>
+        <div class="now-text">U.2 · Unified Top Navigation. נשלח slh-nav.js + תוספות CSS. הבא: U.5 skeleton loaders.</div>
+      </div>
+      <ul class="tasks">
+        <li class="done"><i class="fas fa-check-circle"></i> U.1 · Design System v1.0 (tokens, themes)</li>
+        <li class="done"><i class="fas fa-check-circle"></i> U.2 · Unified Navigation (slh-nav.js)</li>
+        <li class="done"><i class="fas fa-check-circle"></i> U.5 · Skeleton loaders (slh-skeleton.js)</li>
+        <li class="active"><i class="fas fa-spinner"></i> U.3 · Typography audit</li>
+        <li class="pending"><i class="far fa-circle"></i> U.4 · Responsive/a11y audit</li>
+      </ul>
+      <div class="deliv">
+        <i class="fas fa-folder-open"></i>
+        <a href="/css/slh-design-system.css">design-system.css</a>
+        <a href="/js/slh-nav.js">slh-nav.js</a>
+        <a href="/js/slh-skeleton.js">slh-skeleton.js</a>
+      </div>
+      <div class="actions">
+        <a class="btn btn-primary" href="/prompts/UI_UX_AGENT_PROMPT.md">📄 Prompt</a>
+      </div>
+    </div>
+
+    <div class="agent-card status-blocked">
+      <div class="agent-head">
+        <div>
+          <div class="agent-id">#3 · Social Automation</div>
+          <div class="agent-name">📡 סוכן אוטומציה חברתית</div>
+        </div>
+        <span class="status-pill blocked">חסום</span>
+      </div>
+      <div class="now">
+        <div class="now-label">עובד עכשיו על</div>
+        <div class="now-text">S.1 n8n install + S.2 Telegram pipe. זיהה ש-RSS endpoint לא נבדק. מחכה לגו להרצה אמיתית + N8N_PASSWORD.</div>
+      </div>
+      <ul class="tasks">
+        <li class="done"><i class="fas fa-check-circle"></i> תכנון arch · Redis stream → n8n webhook</li>
+        <li class="active"><i class="fas fa-spinner"></i> S.1 · n8n self-hosted (Docker)</li>
+        <li class="blocked"><i class="fas fa-lock"></i> S.2 · Telegram pipe (ממתין לסיסמה)</li>
+        <li class="pending"><i class="far fa-circle"></i> S.3 · Twitter/LinkedIn/FB OAuth</li>
+        <li class="pending"><i class="far fa-circle"></i> S.4 · Rate limiting</li>
+        <li class="pending"><i class="far fa-circle"></i> S.5 · Content variation per network</li>
+        <li class="pending"><i class="far fa-circle"></i> S.6 · Analytics dashboard</li>
+      </ul>
+      <div class="blocker">
+        <i class="fas fa-exclamation-triangle"></i> ממתין ל-2 תנאים:<br>
+        <code style="font-family:var(--font-family-mono);font-size:11px;display:block;margin-top:6px;color:var(--color-brand-primary)">1. N8N_PASSWORD=...</code>
+        <code style="font-family:var(--font-family-mono);font-size:11px;display:block;color:var(--color-brand-primary)">2. "מאשר docker compose"</code>
+        <div style="margin-top:6px;color:var(--color-text-secondary);font-size:11px">
+          ברגע ששני אלה נשלחים → 5 צעדים: add service → <span style="font-family:monospace">docker compose config</span> → <span style="font-family:monospace">up -d n8n</span> → localhost:5678 → Telegram workflow
+        </div>
+      </div>
+      <div class="actions">
+        <a class="btn btn-primary" href="/prompts/SOCIAL_AUTOMATION_AGENT_PROMPT.md">📄 Prompt</a>
+      </div>
+    </div>
+
+    <div class="agent-card status-blocked">
+      <div class="agent-head">
+        <div>
+          <div class="agent-id">#4 · ESP Firmware</div>
+          <div class="agent-name">🔌 סוכן ESP32 (CYD)</div>
+        </div>
+        <span class="status-pill blocked">חסום</span>
+      </div>
+      <div class="now">
+        <div class="now-label">עובד עכשיו על</div>
+        <div class="now-text">E.1 · TFT display boot (ILI9341). תוקן include anti-pattern ל-proper .h headers.</div>
+      </div>
+      <ul class="tasks">
+        <li class="active"><i class="fas fa-spinner"></i> E.1 · Bootstrap · WiFi + TFT</li>
+        <li class="pending"><i class="far fa-circle"></i> E.2 · /api/esp/register device</li>
+        <li class="pending"><i class="far fa-circle"></i> E.3 · Balance display</li>
+        <li class="pending"><i class="far fa-circle"></i> E.4 · Transaction signing</li>
+      </ul>
+      <div class="blocker"><i class="fas fa-exclamation-triangle"></i> ESP32-2432S028 זה CYD עם TFT ILI9341 (לא OLED). ודא TFT_eSPI לא U8g2.</div>
+      <div class="actions">
+        <a class="btn btn-primary" href="/prompts/ESP_FIRMWARE_AGENT_PROMPT.md">📄 Prompt</a>
+      </div>
+    </div>
+
+    <div class="agent-card status-done">
+      <div class="agent-head">
+        <div>
+          <div class="agent-id">#5 · Master Executor</div>
+          <div class="agent-name">🧠 מנהל ראשי</div>
+        </div>
+        <span class="status-pill done">פעיל שוטף</span>
+      </div>
+      <div class="now">
+        <div class="now-label">עובד עכשיו על</div>
+        <div class="now-text">6 tracks orchestration + E2E testing. Track average: 67-70%.</div>
+      </div>
+      <ul class="tasks">
+        <li class="done"><i class="fas fa-check-circle"></i> Payments auto · TON + BSC public RPC</li>
+        <li class="done"><i class="fas fa-check-circle"></i> Sudoku backtracking engine</li>
+        <li class="done"><i class="fas fa-check-circle"></i> Dating age-gate (18+)</li>
+        <li class="done"><i class="fas fa-check-circle"></i> Broadcast endpoint (5 networks)</li>
+        <li class="active"><i class="fas fa-spinner"></i> User tour + BETA banner + bug FAB</li>
+        <li class="pending"><i class="far fa-circle"></i> E2E test suite</li>
+      </ul>
+      <div class="actions">
+        <a class="btn btn-primary" href="/prompts/MASTER_EXECUTOR_AGENT_PROMPT.md">📄 Prompt</a>
+        <a class="btn btn-secondary" href="/mission-control.html">🎯 Mission Control</a>
+      </div>
+    </div>
+
+    <div class="agent-card status-waiting">
+      <div class="agent-head">
+        <div>
+          <div class="agent-id">#6 · G4meb0t</div>
+          <div class="agent-name">🎮 סוכן בוט משחקים</div>
+        </div>
+        <span class="status-pill waiting">ממתין</span>
+      </div>
+      <div class="now">
+        <div class="now-label">עובד עכשיו על</div>
+        <div class="now-text">@G4meb0t_bot_bot · aiogram 3.x skeleton מוכן. ממתין ל-token מ-BotFather.</div>
+      </div>
+      <ul class="tasks">
+        <li class="done"><i class="fas fa-check-circle"></i> Bot skeleton (aiogram 3.x)</li>
+        <li class="blocked"><i class="fas fa-lock"></i> Deploy (ממתין ל-BOT_TOKEN)</li>
+        <li class="pending"><i class="far fa-circle"></i> Sudoku mini-app integration</li>
+      </ul>
+      <div class="blocker"><i class="fas fa-exclamation-triangle"></i> צריך: BotFather token, PR קישור לפתיחה</div>
+    </div>
+
+  </div>
+
+  <div style="margin-top:var(--space-8);padding-top:var(--space-6);border-top:1px solid var(--color-border-subtle);text-align:center;color:var(--color-text-tertiary);font-size:var(--font-size-sm)">
+    <a href="/prompts/" style="color:var(--color-text-secondary);margin:0 var(--space-2)">📋 All Prompts</a> ·
+    <a href="/mission-control.html" style="color:var(--color-text-secondary);margin:0 var(--space-2)">🎯 Mission Control</a> ·
+    <a href="/ops-dashboard.html" style="color:var(--color-text-secondary);margin:0 var(--space-2)">📊 Ops Dashboard</a>
+  </div>
+</div>
+</body>
+</html>

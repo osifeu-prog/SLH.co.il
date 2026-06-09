@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH Swarm — Physical Device Mesh (Phase 2 Vision)</title>
+<meta name="description" content="SLH Swarm — רשת מכשירי ESP32 מבוזרת לארנק כשר, proof-of-presence, DePIN-lite. Phase 2 vision.">
+<meta name="keywords" content="SLH Swarm, ESP32, mesh, IoT, Kosher Wallet, DePIN, device network">
+<link rel="canonical" href="https://slh-nft.com/swarm.html">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="SLH Swarm — Physical Device Mesh (Phase 2)">
+<meta property="og:description" content="ESP32 mesh + phone relay + anchor backend. Kosher Wallet + DePIN-lite economy. Phase 2 vision.">
+<meta property="og:image" content="https://slh-nft.com/assets/og/network.png">
+<meta property="og:url" content="https://slh-nft.com/swarm.html">
+<meta property="og:locale" content="he_IL">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SLH Swarm — ESP32 Mesh Network (Phase 2)">
+<meta name="twitter:description" content="Decentralized physical network — Kosher Wallet + DePIN.">
+<meta name="twitter:image" content="https://slh-nft.com/assets/og/network.png">
+
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/shared.css?v=20260421a">
+
+<style>
+  :root {
+    --bg: #05080f;
+    --bg2: #0d1220;
+    --bg3: #151a2e;
+    --accent: #a855f7;
+    --accent2: #5ba3ff;
+    --gold: #d4af37;
+    --green: #00e887;
+    --orange: #ff9800;
+    --silver: #c0c0d0;
+    --text: #e8f4ff;
+    --text2: #9cb8d6;
+    --text3: #6c7d94;
+    --border: rgba(168, 85, 247, 0.28);
+    --mono: 'JetBrains Mono', 'Courier New', monospace;
+  }
+  body {
+    background: radial-gradient(circle at 15% 10%, rgba(168, 85, 247, 0.10), transparent 60%),
+                radial-gradient(circle at 85% 80%, rgba(91, 163, 255, 0.06), transparent 60%),
+                var(--bg);
+    color: var(--text);
+    font-family: 'Assistant', system-ui, sans-serif;
+    line-height: 1.7;
+  }
+  .phase-banner {
+    max-width: 1100px;
+    margin: 80px auto 0;
+    padding: 14px 20px;
+    background: linear-gradient(135deg, rgba(168,85,247,.10), rgba(212,175,55,.05));
+    border: 1px solid rgba(168,85,247,.35);
+    border-radius: 14px;
+    font-size: 14px;
+    text-align: center;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .phase-banner strong { color: var(--gold); }
+
+  .hero {
+    max-width: 1100px;
+    margin: 24px auto 36px;
+    padding: 30px 20px;
+    text-align: center;
+  }
+  .hero .badge {
+    display: inline-block;
+    padding: 6px 16px;
+    background: rgba(168, 85, 247, 0.14);
+    color: var(--accent);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 18px;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: clamp(34px, 5.5vw, 54px);
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 14px;
+    line-height: 1.2;
+  }
+  .hero .tagline {
+    font-size: 18px;
+    color: var(--text);
+    max-width: 720px;
+    margin: 0 auto 8px;
+  }
+  .hero .sub {
+    font-size: 14px;
+    color: var(--text3);
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .section {
+    max-width: 1100px;
+    margin: 0 auto 48px;
+    padding: 0 20px;
+  }
+  .section h2 {
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 800;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  .section h2 .gradient {
+    background: linear-gradient(135deg, var(--accent), var(--gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Architecture layers */
+  .layers {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 860px) { .layers { grid-template-columns: 1fr; } }
+  .layer {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .layer::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 80px; height: 80px;
+    border-radius: 0 0 0 80px;
+    opacity: .18;
+  }
+  .layer.l1::before { background: var(--accent); }
+  .layer.l2::before { background: var(--accent2); }
+  .layer.l3::before { background: var(--gold); }
+  .layer .lbl { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
+  .layer h3 { font-size: 20px; font-weight: 900; margin-bottom: 10px; }
+  .layer.l1 h3 { color: var(--accent); }
+  .layer.l2 h3 { color: var(--accent2); }
+  .layer.l3 h3 { color: var(--gold); }
+  .layer p { font-size: 14px; color: var(--text2); margin-bottom: 12px; }
+  .layer ul { list-style: none; padding: 0; }
+  .layer li { font-size: 13px; color: var(--text2); padding-right: 22px; position: relative; margin-bottom: 6px; }
+  .layer li::before {
+    content: "›";
+    position: absolute; right: 0;
+    color: var(--accent); font-weight: 900; font-size: 16px;
+  }
+
+  /* Flow diagram */
+  .flow {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 18px;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text);
+    text-align: center;
+  }
+  .flow pre {
+    margin: 0;
+    white-space: pre;
+    color: var(--text2);
+    line-height: 1.8;
+  }
+  .flow pre .hl { color: var(--accent); font-weight: 700; }
+  .flow pre .hl2 { color: var(--accent2); font-weight: 700; }
+  .flow pre .hl3 { color: var(--gold); font-weight: 700; }
+
+  /* Use cases */
+  .cases {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .case {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 20px;
+    transition: transform .25s, border-color .25s;
+  }
+  .case:hover { transform: translateY(-3px); border-color: var(--accent); }
+  .case .ic { font-size: 32px; margin-bottom: 10px; color: var(--accent); }
+  .case h3 { font-size: 16px; font-weight: 800; color: var(--accent2); margin-bottom: 6px; }
+  .case p { font-size: 13px; color: var(--text2); }
+  .case .status { display: inline-block; padding: 2px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; margin-top: 10px; }
+  .case .status.plan { background: rgba(255,152,0,.14); color: var(--orange); }
+  .case .status.future { background: rgba(168,85,247,.14); color: var(--accent); }
+
+  /* Phases */
+  .phases {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+  }
+  .phase-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 18px;
+    position: relative;
+  }
+  .phase-card .num {
+    position: absolute; top: 12px; inset-inline-end: 14px;
+    background: var(--bg3); color: var(--accent);
+    padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 900;
+  }
+  .phase-card h3 { font-size: 15px; font-weight: 800; color: var(--text); margin-bottom: 4px; padding-inline-end: 60px; }
+  .phase-card .dur { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+  .phase-card .goal { font-size: 13px; color: var(--text2); margin-bottom: 10px; }
+  .phase-card ul { list-style: none; padding: 0; margin: 0; }
+  .phase-card li { font-size: 12px; color: var(--text2); padding-right: 16px; position: relative; margin-bottom: 4px; }
+  .phase-card li::before { content: "▸"; position: absolute; right: 0; color: var(--accent); }
+
+  /* Waitlist form */
+  .lead-card {
+    background: var(--bg2);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    padding: 32px 24px;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+  .lead-card h3 { font-size: 20px; color: var(--accent); margin-bottom: 14px; }
+  .lead-card label { display: block; font-size: 13px; color: var(--text2); margin-top: 12px; margin-bottom: 4px; font-weight: 700; }
+  .lead-card input, .lead-card select, .lead-card textarea {
+    width: 100%;
+    background: var(--bg3);
+    color: var(--text);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-family: inherit;
+    font-size: 14px;
+  }
+  .lead-card input:focus, .lead-card select:focus, .lead-card textarea:focus {
+    outline: none; border-color: var(--accent);
+  }
+  .lead-card textarea { min-height: 80px; resize: vertical; }
+  .lead-card .btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 13px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    margin-top: 18px;
+    font-family: inherit;
+  }
+  .lead-card .btn:hover { filter: brightness(1.1); }
+  .lead-card .result { margin-top: 14px; padding: 10px 14px; border-radius: 10px; font-size: 14px; display: none; }
+  .lead-card .result.ok { display: block; background: rgba(0,232,135,.10); color: var(--green); border: 1px solid rgba(0,232,135,.3); }
+  .lead-card .result.err { display: block; background: rgba(255,107,107,.10); color: #ff6b6b; border: 1px solid rgba(255,107,107,.3); }
+
+  .disclaimer {
+    max-width: 900px;
+    margin: 40px auto 24px;
+    padding: 20px 22px;
+    background: rgba(168,85,247,.06);
+    border: 1px solid rgba(168,85,247,.25);
+    border-radius: 12px;
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.8;
+  }
+  .disclaimer strong { color: var(--accent); }
+  .disclaimer code {
+    background: var(--bg3);
+    color: var(--accent2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+
+  .kosher-link {
+    display: block;
+    background: linear-gradient(135deg, rgba(212,175,55,.10), rgba(91,163,255,.06));
+    border: 2px solid var(--gold);
+    border-radius: 20px;
+    padding: 26px 22px;
+    text-decoration: none;
+    color: inherit;
+    transition: all .25s;
+    text-align: center;
+  }
+  .kosher-link:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(212,175,55,.2); }
+  .kosher-link .emo { font-size: 40px; margin-bottom: 8px; }
+  .kosher-link h3 { font-size: 20px; color: var(--gold); margin-bottom: 6px; }
+  .kosher-link p { font-size: 14px; color: var(--text2); margin-bottom: 10px; }
+  .kosher-link .cta { display: inline-block; background: var(--gold); color: #000; padding: 8px 20px; border-radius: 10px; font-weight: 800; font-size: 13px; }
+</style>
+</head>
+<body>
+
+<div id="topnav-root"></div>
+<div id="ticker-root"></div>
+
+<div class="phase-banner">
+  🚧 <strong>SLH Swarm</strong> · שלב תכנון — Phase 2/3 ב-Roadmap · Hardware POC טרם הוזמן ·
+  <a href="/roadmap.html" style="color:var(--accent2);text-decoration:underline">פרטי roadmap</a>
+</div>
+
+<section class="hero">
+  <span class="badge">🛰️ ESP32 · Mesh · DePIN</span>
+  <h1>SLH Swarm — רשת פיזית מבוזרת</h1>
+  <p class="tagline">
+    מכשירי ESP32 → טלפון Relay → Anchor Server. תקשורת mesh מבוזרת עם חתימות קריפטוגרפיות,
+    ארנק כשר, proof-of-presence, ו-DePIN-lite עבור כלכלת SLH.
+  </p>
+  <p class="sub">
+    פרויקט תכנון — Phase 2/3 ב-Roadmap של SLH. Hardware POC טרם הוזמן.
+    Blueprint טכני מלא זמין ב-<code style="background:var(--bg3);color:var(--accent2);padding:2px 6px;border-radius:4px">ops/SWARM_V1_BLUEPRINT_20260424.md</code>.
+  </p>
+</section>
+
+<section class="section">
+  <h2>ארכיטקטורה · <span class="gradient">3 שכבות</span></h2>
+  <div class="layers">
+    <div class="layer l1">
+      <div class="lbl">Layer 1</div>
+      <h3>Device · ESP32</h3>
+      <p>חומרה זולה (₪50/יחידה) שמתקשרת דרך ESP-NOW או WiFi.</p>
+      <ul>
+        <li>תקשורת ESP-NOW (250m)</li>
+        <li>חתימה ECDSA מקומית</li>
+        <li>Cache ב-SPIFFS/LittleFS</li>
+        <li>כפתור פיזי לאישור</li>
+      </ul>
+    </div>
+    <div class="layer l2">
+      <div class="lbl">Layer 2</div>
+      <h3>Relay · Phone</h3>
+      <p>אנדרואיד (Termux POC) = gateway לאינטרנט.</p>
+      <ul>
+        <li>BLE GATT / WiFi AP</li>
+        <li>WebSocket ל-Anchor</li>
+        <li>Buffer offline (SQLite)</li>
+        <li>חיבור לבוט טלגרם</li>
+      </ul>
+    </div>
+    <div class="layer l3">
+      <div class="lbl">Layer 3</div>
+      <h3>Anchor · SLH API</h3>
+      <p>אותו FastAPI על Railway — לא שרת נפרד.</p>
+      <ul>
+        <li>Registry של devices</li>
+        <li>Hash-chain audit</li>
+        <li>Broadcast commands</li>
+        <li>Bridge ל-BSC/TON</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2>זרימת מסר · <span class="gradient">Edge-First</span></h2>
+  <div class="flow">
+<pre>
+<span class="hl">ESP Device</span>  ══ESP-NOW══>  <span class="hl">ESP Device</span>  ══BLE/WiFi══>  <span class="hl2">Phone Relay</span>  ══WSS══>  <span class="hl3">SLH Anchor</span>
+     │                                                              │                        │
+     ▼                                                              ▼                        ▼
+  sign(ev)                                                   buffer + queue            events table
+                                                                                      hash-chain audit
+                                                                                      BSC bridge
+
+Decision ladder:
+  1. <span class="hl">ESP decides alone</span> if possible
+  2. <span class="hl2">Phone intervenes</span> if needed
+  3. <span class="hl3">Anchor only if must</span>
+</pre>
+  </div>
+  <p style="text-align:center;color:var(--text3);font-size:12px;margin-top:14px">
+    פרטי פרוטוקול SLH-MESH v1 + Protocol JSON format זמינים ב-blueprint הפנימי.
+  </p>
+</section>
+
+<section class="section">
+  <h2>שימושים · <span class="gradient">Use Cases</span></h2>
+  <div class="cases">
+    <div class="case">
+      <div class="ic"><i class="fas fa-wallet"></i></div>
+      <h3>Kosher Wallet</h3>
+      <p>ESP32 + SMS במקום ארנק קריפטו אינטרנטי. כפתור פיזי לחתימה. מתאים לטלפון כשר 100%.</p>
+      <span class="status plan">Phase 2 · Pre-sale ₪888</span>
+    </div>
+    <div class="case">
+      <div class="ic"><i class="fas fa-fingerprint"></i></div>
+      <h3>Device Identity</h3>
+      <p>כל node חותם טרנזקציות ביד פיזית. אין phishing, אין man-in-the-middle.</p>
+      <span class="status plan">Phase 2</span>
+    </div>
+    <div class="case">
+      <div class="ic"><i class="fas fa-map-marker-alt"></i></div>
+      <h3>Proof-of-Presence</h3>
+      <p>Attestation של נוכחות באירועי SLH / פגישות — hardware-backed ולא שקרי.</p>
+      <span class="status future">Phase 3</span>
+    </div>
+    <div class="case">
+      <div class="ic"><i class="fas fa-coins"></i></div>
+      <h3>DePIN Economy</h3>
+      <p>ZVK rewards על heartbeat/events. תשתית פיזית מבוזרת = הכנסה פסיבית.</p>
+      <span class="status future">Phase 4 (2027+)</span>
+    </div>
+    <div class="case">
+      <div class="ic"><i class="fas fa-store"></i></div>
+      <h3>Marketplace Scanning</h3>
+      <p>סריקת device בעמדת מוכר → תשלום MNH/SLH אוטומטי.</p>
+      <span class="status future">Phase 4</span>
+    </div>
+    <div class="case">
+      <div class="ic"><i class="fas fa-users"></i></div>
+      <h3>Community Mesh</h3>
+      <p>Multi-hop mesh בקהילות ללא WiFi. הודעות/תשלומים ללא אינטרנט ישיר.</p>
+      <span class="status future">Phase 4</span>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2>Roadmap · <span class="gradient">מסלול בנייה</span></h2>
+  <div class="phases">
+    <div class="phase-card">
+      <div class="num">P0</div>
+      <h3>Pre-work</h3>
+      <div class="dur">היום · 24.4.2026</div>
+      <div class="goal">תיעוד + הכנת הזמנות</div>
+      <ul>
+        <li>Blueprint פנימי ✅</li>
+        <li>דף חזון באתר ✅</li>
+        <li>רישום ב-network map ✅</li>
+        <li>הזמנת 3 ESP32 (₪150)</li>
+      </ul>
+    </div>
+    <div class="phase-card">
+      <div class="num">P1</div>
+      <h3>POC — Firmware</h3>
+      <div class="dur">2-3 שבועות</div>
+      <div class="goal">1 device עם end-to-end event</div>
+      <ul>
+        <li>DB schema (3 טבלאות)</li>
+        <li>7 API endpoints</li>
+        <li>Termux relay script</li>
+        <li>ESP-NOW basic test</li>
+      </ul>
+    </div>
+    <div class="phase-card">
+      <div class="num">P2</div>
+      <h3>Kosher Wallet</h3>
+      <div class="dur">4-6 שבועות</div>
+      <div class="goal">3 devices + signing</div>
+      <ul>
+        <li>ECDSA מלא</li>
+        <li>Mesh multi-hop</li>
+        <li>כפתור חתימה ל-SLH tx</li>
+        <li>Admin panel swarm tab</li>
+      </ul>
+    </div>
+    <div class="phase-card">
+      <div class="num">P3</div>
+      <h3>Production HW</h3>
+      <div class="dur">3-6 חודשים</div>
+      <div class="goal">100 יחידות ב-₪888 presale</div>
+      <ul>
+        <li>PCB + Secure Element</li>
+        <li>Enclosure</li>
+        <li>Android app native</li>
+        <li>Manufacturing run</li>
+      </ul>
+    </div>
+    <div class="phase-card">
+      <div class="num">P4</div>
+      <h3>DePIN Economy</h3>
+      <div class="dur">2027+</div>
+      <div class="goal">רשת פיזית משמעותית</div>
+      <ul>
+        <li>Proof-of-Location</li>
+        <li>ZVK rewards loop</li>
+        <li>Marketplace integration</li>
+        <li>Multi-hop בקהילות</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2>Kosher Wallet · <span class="gradient">אבן הדרך הקרובה</span></h2>
+  <a href="/kosher-wallet.html" class="kosher-link">
+    <div class="emo">🕊️</div>
+    <h3>ארנק קריפטו ESP32 לקהילה החרדית</h3>
+    <p>המוצר הראשון של SLH Swarm. ניהול קריפטו מטלפון כשר ב-SMS, ללא חשיפה לאינטרנט.
+    חלק מחזון שנת היובל — 17 בדצמבר 2026.</p>
+    <span class="cta">מידע נוסף · Pre-sale ₪888 ←</span>
+  </a>
+</section>
+
+<section class="section">
+  <h2>הצטרפו לרשימת ההמתנה · <span class="gradient">Early Builders</span></h2>
+  <div class="lead-card">
+    <h3><i class="fas fa-microchip"></i> מעוניין ב-device או בפיתוח</h3>
+    <p style="color:var(--text2);font-size:13px">
+      אם אתה מפתח ESP32, maker, מעוניין ב-Kosher Wallet או שותף עסקי פוטנציאלי — השאר פרטים.
+      Phase 1 יתחיל עם 2-3 בטא-טסטרים סגורים.
+    </p>
+
+    <label>שם מלא *</label>
+    <input id="swarm-name" type="text" placeholder="דוגמה: יוסי כהן">
+
+    <label>אימייל *</label>
+    <input id="swarm-email" type="email" placeholder="you@example.com">
+
+    <label>טלפון / Telegram (אופציונלי)</label>
+    <input id="swarm-contact" type="text" placeholder="050-1234567 או @handle">
+
+    <label>עניין עיקרי</label>
+    <select id="swarm-interest">
+      <option value="kosher-wallet">רכישת Kosher Wallet</option>
+      <option value="developer">מפתח ESP32 / מאייקר</option>
+      <option value="partner">שותף עסקי / מפיץ</option>
+      <option value="researcher">חוקר DePIN / Mesh</option>
+      <option value="merchant">עסק מעוניין בקבלת תשלומים</option>
+      <option value="other">אחר</option>
+    </select>
+
+    <label>מה מעניין אותך במיוחד?</label>
+    <textarea id="swarm-notes" placeholder="לדוגמה: חתימת tx offline, mesh networking, proof-of-location, DePIN rewards..."></textarea>
+
+    <button class="btn" onclick="submitSwarmLead()">
+      <i class="fas fa-paper-plane"></i> שלח — הצטרף לרשימת Early Builders
+    </button>
+    <div class="result" id="swarm-result"></div>
+  </div>
+</section>
+
+<div class="disclaimer">
+  <strong>⚠️ גילוי נאות:</strong> SLH Swarm הוא <strong>פרויקט בשלב תכנון</strong>, Phase 2/3
+  ב-Roadmap של SLH. <strong>אין חומרה פעילה כרגע</strong>. אין התחייבות למועד השקה או זמן אספקה.
+  המחירים (לרבות Kosher Wallet ₪888 pre-sale) הם מחירי תוכנית עבודה בלבד ויכולים להשתנות.
+  Blueprint טכני מלא + decision points זמינים פנימית ב-<code>ops/SWARM_V1_BLUEPRINT_20260424.md</code>.
+  רישום לרשימה אינו מקים חיוב או זכות רכישה.
+</div>
+
+<div id="bottomnav-root"></div>
+<div id="footer-root"></div>
+
+<script src="/js/translations.js?v=20260421a"></script>
+<script src="/js/shared.js?v=20260424a"></script>
+<script>
+initShared({ activePage: 'swarm', showBottomNav: true, showTicker: true });
+
+async function submitSwarmLead() {
+  const name = document.getElementById('swarm-name').value.trim();
+  const email = document.getElementById('swarm-email').value.trim();
+  const contact = document.getElementById('swarm-contact').value.trim();
+  const interest = document.getElementById('swarm-interest').value;
+  const notes = document.getElementById('swarm-notes').value.trim();
+  const result = document.getElementById('swarm-result');
+
+  if (!name || !email) {
+    result.className = 'result err';
+    result.textContent = 'שם ואימייל חובה';
+    return;
+  }
+
+  const lead = {
+    product: 'SLH Swarm',
+    name, email, contact, interest, notes,
+    submitted_at: new Date().toISOString()
+  };
+
+  try {
+    const existing = JSON.parse(localStorage.getItem('slh_swarm_leads') || '[]');
+    existing.push(lead);
+    localStorage.setItem('slh_swarm_leads', JSON.stringify(existing));
+
+    await fetch('https://slh-api-production.up.railway.app/api/community/posts', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        username: 'SwarmLead:' + name,
+        text: `🛰️ SLH Swarm Waitlist: ${name} | ${interest} | ${email}${contact ? ' | ' + contact : ''}${notes ? ' | notes: ' + notes : ''}`,
+        category: 'general',
+        telegram_id: null
+      })
+    });
+
+    result.className = 'result ok';
+    result.innerHTML = '✅ נרשמת ל-Early Builders. נעדכן אותך כשה-POC מתחיל.';
+
+    document.getElementById('swarm-name').value = '';
+    document.getElementById('swarm-email').value = '';
+    document.getElementById('swarm-contact').value = '';
+    document.getElementById('swarm-notes').value = '';
+  } catch(e) {
+    result.className = 'result err';
+    result.textContent = '❌ שגיאה: ' + e.message;
+  }
+}
+</script>
+
+<button id="theme-fab" onclick="document.getElementById('theme-panel').classList.toggle('open')" title="Theme">🎨</button>
+<div id="theme-panel">
+  <div style="font-size:11px;color:var(--text2,#8a8aa0);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">ערכת צבעים</div>
+  <button onclick="document.documentElement.removeAttribute('data-theme');localStorage.setItem('slh_page_theme','default');document.getElementById('theme-panel').classList.remove('open')">🟢 Default</button>
+  <button onclick="document.documentElement.setAttribute('data-theme','dark');localStorage.setItem('slh_page_theme','dark');document.getElementById('theme-panel').classList.remove('open')">🌙 Dark</button>
+  <button onclick="document.documentElement.setAttribute('data-theme','light');localStorage.setItem('slh_page_theme','light');document.getElementById('theme-panel').classList.remove('open')">☀️ Light</button>
+  <button onclick="document.documentElement.setAttribute('data-theme','crypto');localStorage.setItem('slh_page_theme','crypto');document.getElementById('theme-panel').classList.remove('open')">₿ Crypto</button>
+  <button onclick="document.documentElement.setAttribute('data-theme','ocean');localStorage.setItem('slh_page_theme','ocean');document.getElementById('theme-panel').classList.remove('open')">🌊 Ocean</button>
+  <button onclick="document.documentElement.setAttribute('data-theme','sunset');localStorage.setItem('slh_page_theme','sunset');document.getElementById('theme-panel').classList.remove('open')">🌅 Sunset</button>
+</div>
+<script>
+(function(){var t=localStorage.getItem('slh_page_theme');if(t&&t!=='default')document.documentElement.setAttribute('data-theme',t);document.addEventListener('click',function(e){var p=document.getElementById('theme-panel'),f=document.getElementById('theme-fab');if(p&&f&&!p.contains(e.target)&&!f.contains(e.target))p.classList.remove('open');});})();
+</script>
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260421a"></script>
+</body>
+</html>

@@ -1,0 +1,791 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH Spark DEX Launch — BNB Pool Creation</title>
+<meta name="description" content="SLH Spark DEX launch on PancakeSwap. Smart calculator, step-by-step pool creation, and safety recommendations.">
+<link rel="canonical" href="https://slh-nft.com/dex-launch.html">
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="DEX Launch Calculator - 5 Scenarios from $32">
+<meta property="og:description" content="AMM math, slippage calculator, and step-by-step pool creation">
+<meta property="og:image" content="https://slh-nft.com/assets/og/default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://slh-nft.com/dex-launch.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="DEX Launch Calculator - 5 Scenarios from $32">
+<meta name="twitter:description" content="AMM math, slippage calculator, and step-by-step pool creation">
+<meta name="twitter:image" content="https://slh-nft.com/assets/og/default.png">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/shared.css?v=20260426e">
+<style>
+    :root {
+        --bg: #0a0e1a;
+        --bg2: #111628;
+        --bg3: #1a2038;
+        --accent: #f3ba2f; /* BNB yellow */
+        --accent2: #00e887;
+        --purple: #a855f7;
+        --red: #ef4444;
+        --text: #e8e8f0;
+        --text2: #8a8aa0;
+        --text3: #555a70;
+        --border: rgba(243, 186, 47, 0.2);
+    }
+    body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'Inter', -apple-system, system-ui, sans-serif;
+        line-height: 1.6;
+    }
+    .dex-hero {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 60px 24px 40px;
+        text-align: center;
+    }
+    .dex-hero .badge {
+        display: inline-block;
+        padding: 6px 16px;
+        background: linear-gradient(135deg, rgba(243, 186, 47, 0.2), rgba(0, 232, 135, 0.15));
+        border: 1px solid var(--accent);
+        color: var(--accent);
+        border-radius: 24px;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 20px;
+    }
+    .dex-hero h1 {
+        font-size: clamp(32px, 5vw, 56px);
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-bottom: 16px;
+    }
+    .dex-hero .subtitle {
+        max-width: 700px;
+        margin: 0 auto;
+        color: var(--text2);
+        font-size: 15px;
+    }
+
+    .section {
+        max-width: 1200px;
+        margin: 0 auto 40px;
+        padding: 0 24px;
+    }
+    .section h2 {
+        font-size: 24px;
+        font-weight: 800;
+        margin-bottom: 20px;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    /* Calculator */
+    .calculator {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 28px;
+        margin-bottom: 24px;
+    }
+    .calc-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        margin-bottom: 20px;
+    }
+    @media (max-width: 768px) { .calc-grid { grid-template-columns: 1fr; } }
+
+    .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .input-group label {
+        font-size: 12px;
+        color: var(--text2);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 700;
+    }
+    .input-group input {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 14px 16px;
+        color: var(--text);
+        font-size: 18px;
+        font-weight: 700;
+        font-family: monospace;
+    }
+    .input-group .hint {
+        font-size: 11px;
+        color: var(--text3);
+    }
+
+    .slider-group {
+        margin: 16px 0;
+    }
+    .slider-group input[type="range"] {
+        width: 100%;
+        height: 6px;
+        background: var(--bg3);
+        border-radius: 3px;
+        outline: none;
+        -webkit-appearance: none;
+    }
+    .slider-group input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 20px;
+        height: 20px;
+        background: var(--accent);
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .result-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 16px;
+        padding: 20px;
+        background: linear-gradient(135deg, rgba(243, 186, 47, 0.05), rgba(0, 232, 135, 0.03));
+        border-radius: 12px;
+        border: 1px solid rgba(243, 186, 47, 0.2);
+    }
+    .result-item {
+        text-align: center;
+    }
+    .result-label {
+        font-size: 11px;
+        color: var(--text2);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 6px;
+    }
+    .result-value {
+        font-size: 24px;
+        font-weight: 900;
+        color: var(--accent);
+    }
+    .result-sub {
+        font-size: 11px;
+        color: var(--text3);
+        margin-top: 2px;
+    }
+
+    /* Scenarios */
+    .scenarios {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+    .scenario-card {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px;
+        cursor: pointer;
+        transition: all 0.2s;
+        position: relative;
+    }
+    .scenario-card:hover {
+        transform: translateY(-2px);
+        border-color: var(--accent);
+    }
+    .scenario-card.recommended {
+        border-color: var(--accent2);
+        border-width: 2px;
+        box-shadow: 0 0 20px rgba(0, 232, 135, 0.1);
+    }
+    .scenario-card.recommended::before {
+        content: '⭐ מומלץ';
+        position: absolute;
+        top: -10px;
+        right: 16px;
+        background: var(--accent2);
+        color: #000;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 800;
+    }
+    .scenario-name {
+        font-size: 16px;
+        font-weight: 800;
+        color: var(--text);
+        margin-bottom: 8px;
+    }
+    .scenario-cost {
+        font-size: 28px;
+        font-weight: 900;
+        color: var(--accent);
+        margin-bottom: 12px;
+    }
+    .scenario-details {
+        font-size: 12px;
+        color: var(--text2);
+        line-height: 1.8;
+    }
+    .scenario-details strong {
+        color: var(--text);
+    }
+
+    /* Steps */
+    .steps {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+    .step {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px 24px;
+        display: flex;
+        gap: 18px;
+        align-items: flex-start;
+    }
+    .step-num {
+        flex-shrink: 0;
+        width: 40px;
+        height: 40px;
+        background: var(--accent);
+        color: #000;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: 900;
+    }
+    .step-content h3 {
+        font-size: 16px;
+        font-weight: 800;
+        color: var(--text);
+        margin-bottom: 8px;
+    }
+    .step-content p {
+        font-size: 13px;
+        color: var(--text2);
+        margin-bottom: 8px;
+    }
+    .step-content code {
+        background: var(--bg3);
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 12px;
+        color: var(--accent);
+    }
+    .step-content a.btn-action {
+        display: inline-block;
+        margin-top: 8px;
+        padding: 10px 18px;
+        background: var(--accent);
+        color: #000;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 13px;
+    }
+    .step-content a.btn-action:hover {
+        background: var(--accent2);
+    }
+    .step-content .warning {
+        background: rgba(239, 68, 68, 0.08);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-size: 12px;
+        color: #ef9a9a;
+        margin-top: 8px;
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--accent2);
+        text-decoration: none;
+        font-size: 13px;
+        margin-bottom: 20px;
+    }
+
+    /* Theme Switcher */
+    #theme-fab{position:fixed;bottom:94px;left:24px;z-index:9997;background:var(--accent,#00e887);color:#000;width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;font-size:20px;box-shadow:0 4px 16px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center}
+    #theme-panel{position:fixed;bottom:150px;left:24px;z-index:9998;background:var(--bg,#0a0a0a);border:1px solid rgba(255,255,255,.15);padding:16px;border-radius:12px;display:none;flex-direction:column;gap:6px;max-width:220px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+    #theme-panel.open{display:flex}
+    #theme-panel button{background:var(--bg,#0a0a0a);border:1px solid rgba(255,255,255,.1);color:#e8e8f0;padding:10px 14px;cursor:pointer;font-size:12px;text-align:right;font-family:inherit;border-radius:6px;transition:all .2s}
+    #theme-panel button:hover{background:var(--accent,#00e887);color:#000}
+    [data-theme="dark"]{--bg:#0b0e16;--bg2:#111628;--accent:#00b4d8;--text:#e8e8f0;--text2:#8a8aa0;--border:rgba(0,180,216,.2)}
+    [data-theme="light"]{--bg:#f8f9fb;--bg2:#fff;--accent:#0066cc;--text:#1a1a1a;--text2:#555;--border:rgba(0,102,204,.2)}
+    [data-theme="crypto"]{--bg:#0d1117;--bg2:#161b22;--accent:#f7931a;--text:#e8e8f0;--text2:#8a8aa0;--border:rgba(247,147,26,.2)}
+    [data-theme="ocean"]{--bg:#001e3c;--bg2:#002c55;--accent:#00d9ff;--text:#b8e6ff;--text2:#6bb6cc;--border:rgba(0,217,255,.2)}
+    [data-theme="sunset"]{--bg:#1a0a14;--bg2:#251018;--accent:#ff6b6b;--text:#ffe5d9;--text2:#c9a88a;--border:rgba(255,107,107,.2)}
+</style>
+</head>
+<body>
+
+<div id="topnav-root"></div>
+
+<section class="dex-hero">
+    <a href="/ops-report-20260411.html" class="back-link">← חזרה לדוח הביצוע</a>
+    <div class="badge">⚡ DEX Launch — PancakeSwap</div>
+    <h1>יצירת Pool ראשוני של SLH</h1>
+    <p class="subtitle">
+        מחשבון חכם לקביעת ערכי ה-pool שלך על PancakeSwap. התחלה עם סכום מינימלי + פרוטוקול גידול
+        הדרגתי לפי אמון ונפח. בטיחות מרבית, חשיפה מינימלית.
+    </p>
+</section>
+
+<!-- Recommended Scenarios -->
+<section class="section">
+    <h2>🎯 5 תרחישי השקה — מינימום טכני עד מקצועי</h2>
+    <div class="scenarios">
+        <div class="scenario-card" onclick="applyScenario('ultra')" style="border-color:rgba(0,232,135,0.4)">
+            <div class="scenario-name">🔬 Ultra Micro</div>
+            <div class="scenario-cost">~$32</div>
+            <div class="scenario-details">
+                <strong>0.05 BNB + 50 SLH</strong><br>
+                מחיר התחלתי: <strong>$0.61 / SLH</strong><br>
+                Market Cap: <strong>$67.6M</strong><br>
+                Slippage על 0.005 BNB: ~9%<br>
+                <em>⚠️ המינימום הטכני המוחלט — רק להוכחת מנגנון</em>
+            </div>
+        </div>
+
+        <div class="scenario-card" onclick="applyScenario('nano')" style="border-color:rgba(168,85,247,0.4)">
+            <div class="scenario-name">🧪 Nano Seed</div>
+            <div class="scenario-cost">~$63</div>
+            <div class="scenario-details">
+                <strong>0.1 BNB + 100 SLH</strong><br>
+                מחיר התחלתי: <strong>$0.61 / SLH</strong><br>
+                Market Cap: <strong>$67.6M</strong><br>
+                Slippage על 0.01 BNB: ~9%<br>
+                <em>המינימום המעשי — מתאים לשלב הוכחת רעיון</em>
+            </div>
+        </div>
+
+        <div class="scenario-card" onclick="applyScenario('micro')">
+            <div class="scenario-name">🌱 Micro Seed</div>
+            <div class="scenario-cost">~$310</div>
+            <div class="scenario-details">
+                <strong>0.5 BNB + 500 SLH</strong><br>
+                מחיר התחלתי: <strong>$0.61 / SLH</strong><br>
+                Market Cap: <strong>$67.6M</strong><br>
+                Slippage על 0.05 BNB: ~9%<br>
+                <em>מוכן לקהל מוגבל, עדיין שטחי</em>
+            </div>
+        </div>
+
+        <div class="scenario-card recommended" onclick="applyScenario('seed')">
+            <div class="scenario-name">⭐ Seed Launch</div>
+            <div class="scenario-cost">~$620</div>
+            <div class="scenario-details">
+                <strong>1 BNB + 1,000 SLH</strong><br>
+                מחיר התחלתי: <strong>$0.61 / SLH</strong><br>
+                Market Cap: <strong>$67.5M</strong><br>
+                Slippage על 0.05 BNB: ~5%<br>
+                <em>האיזון המושלם בין עלות וחוויית מסחר</em>
+            </div>
+        </div>
+
+        <div class="scenario-card" onclick="applyScenario('growth')">
+            <div class="scenario-name">🚀 Growth Pool</div>
+            <div class="scenario-cost">~$3,100</div>
+            <div class="scenario-details">
+                <strong>5 BNB + 5,000 SLH</strong><br>
+                מחיר התחלתי: <strong>$0.61 / SLH</strong><br>
+                Market Cap: <strong>$67.5M</strong><br>
+                Slippage על 0.5 BNB: ~9%<br>
+                <em>עומק נזילות מקצועי, מוכן לקהל רחב</em>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gas Fees Warning -->
+    <div style="margin-top:18px;padding:16px 20px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3);border-radius:12px">
+        <div style="font-size:13px;color:#ef9a9a;font-weight:800;margin-bottom:6px">⚠️ חשוב — עלויות נוספות ל-Gas</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.8">
+            לכל התרחישים מעליהם, צריך להוסיף <strong>~0.003 BNB ($1.80)</strong> ל-gas fees:<br>
+            • Approve SLH Contract: ~0.0005 BNB<br>
+            • Create Pair: ~0.0015 BNB<br>
+            • Add Liquidity: ~0.001 BNB<br>
+            <strong>סה"כ gas:</strong> ~$1.80 · <strong>סה"כ Ultra Micro אמיתי:</strong> ~$33.80
+        </div>
+    </div>
+</section>
+
+<!-- Crowdfunding / Presale Path -->
+<section class="section" style="margin-top:40px">
+    <h2>💰 אלטרנטיבה חכמה — Presale / Crowdfunding</h2>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:28px">
+        <p style="color:var(--text2);margin-bottom:20px;font-size:14px;line-height:1.8">
+            במקום להוציא כסף מהכיס שלך, תוכל <strong style="color:var(--accent)">לגייס את הסכום מהקהל</strong>
+            דרך פלטפורמות IDO/Presale שמנהלות את כל התהליך. המשתתפים שולחים BNB → בסוף הגיוס →
+            הטוקנים מחולקים + ה-pool נוצר אוטומטית + הנזילות ננעלת.
+        </p>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-bottom:20px">
+            <div style="background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:20px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+                    <div style="font-size:16px;font-weight:800;color:var(--accent)">PinkSale</div>
+                    <span style="background:rgba(0,232,135,0.15);color:var(--accent2);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700">⭐ מומלץ</span>
+                </div>
+                <div style="font-size:12px;color:var(--text2);line-height:1.8">
+                    <strong>עלות:</strong> 0.75 BNB (~$456) + 2% מהגיוס<br>
+                    <strong>יתרון:</strong> הכי מוכר בקהילת BSC, KYC אוטומטי, נעילת LP אוטומטית<br>
+                    <strong>זמן:</strong> עד 14 ימים לגיוס<br>
+                    <strong>מינימום:</strong> ללא (אתה קובע)
+                </div>
+                <a href="https://www.pinksale.finance/launchpad/create?chain=BSC" target="_blank" rel="noopener" style="display:inline-block;margin-top:12px;padding:8px 14px;background:var(--accent);color:#000;border-radius:6px;text-decoration:none;font-size:12px;font-weight:700">Create Launchpad →</a>
+            </div>
+
+            <div style="background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:20px">
+                <div style="font-size:16px;font-weight:800;color:var(--purple);margin-bottom:10px">DxSale</div>
+                <div style="font-size:12px;color:var(--text2);line-height:1.8">
+                    <strong>עלות:</strong> 1 BNB (~$608) cap + 2%<br>
+                    <strong>יתרון:</strong> וותיק וותיק, fair launch option, cheap<br>
+                    <strong>זמן:</strong> עד 7 ימים<br>
+                    <strong>מינימום:</strong> 0.5 BNB softcap
+                </div>
+                <a href="https://dx.app/app/v3/defisalecreate" target="_blank" rel="noopener" style="display:inline-block;margin-top:12px;padding:8px 14px;background:var(--purple);color:#fff;border-radius:6px;text-decoration:none;font-size:12px;font-weight:700">Start on DxSale →</a>
+            </div>
+
+            <div style="background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:20px">
+                <div style="font-size:16px;font-weight:800;color:#00b4d8;margin-bottom:10px">GemPad</div>
+                <div style="font-size:12px;color:var(--text2);line-height:1.8">
+                    <strong>עלות:</strong> 0.3 BNB (~$182) + 3%<br>
+                    <strong>יתרון:</strong> הכי זול, מתאים לפרויקטים קטנים<br>
+                    <strong>זמן:</strong> עד 30 ימים<br>
+                    <strong>מינימום:</strong> 0.1 BNB softcap
+                </div>
+                <a href="https://app.gempad.app/create" target="_blank" rel="noopener" style="display:inline-block;margin-top:12px;padding:8px 14px;background:#00b4d8;color:#000;border-radius:6px;text-decoration:none;font-size:12px;font-weight:700">GemPad Create →</a>
+            </div>
+        </div>
+
+        <!-- Smart Strategy -->
+        <div style="margin-top:20px;padding:18px;background:linear-gradient(135deg, rgba(0,232,135,0.08), rgba(243,186,47,0.08));border:1px solid var(--accent2);border-radius:12px">
+            <div style="font-size:14px;font-weight:800;color:var(--accent2);margin-bottom:10px">💡 האסטרטגיה החכמה ביותר — Private Presale + Public Launch</div>
+            <ol style="padding-right:22px;color:var(--text2);font-size:13px;line-height:1.9">
+                <li><strong>Private Round (חינם לחלוטין — 0 עלות ממך):</strong><br>
+                פנה ל-10 המשקיעים הקיימים שלך → כל אחד תורם 0.1-0.5 BNB בתמורה ל-SLH במחיר מופחת של $0.40<br>
+                → אוספים ~1-5 BNB ($608-$3,040) מוכן לגמרי</li>
+                <li><strong>Fair Launch ב-GemPad (0.3 BNB מה-private round):</strong><br>
+                שאר ה-BNB (0.7-4.7) + SLH מתאים → השק ב-$0.61 כמחיר ציבורי<br>
+                → משתתפים ציבוריים קונים במחיר סופי</li>
+                <li><strong>PancakeSwap Pool נוצר אוטומטית:</strong><br>
+                בסוף הגיוס, GemPad/PinkSale יוצר את ה-pool + נועל את ה-LP<br>
+                → אתה מסיים עם pool חי בלי להוציא כלום מהכיס שלך</li>
+                <li><strong>Genesis 49 כקבוצת Whitelist ראשונה:</strong><br>
+                ה-49 משתמשים הראשונים שיש להם את ה-NFT מקבלים עדיפות וזכות ראשונים לרכוש בהנחה<br>
+                → מנגנון הקיים כבר במערכת שלנו!</li>
+            </ol>
+            <div style="margin-top:12px;padding:12px;background:rgba(0,0,0,0.3);border-radius:8px;font-size:12px;color:var(--text3)">
+                <strong style="color:var(--accent2)">התוצאה:</strong> Pool של $1,200-$6,000 בלי להוציא דולר אחד. הסיכון שלך = 0. הרווח שלך = הכל.
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Calculator -->
+<section class="section">
+    <h2>🧮 מחשבון מותאם אישית</h2>
+    <div class="calculator">
+        <div class="calc-grid">
+            <div class="input-group">
+                <label>BNB להפקדה</label>
+                <input type="number" id="input-bnb" value="1" step="0.1" min="0.1" oninput="calc()">
+                <span class="hint">מינימום מעשי: 0.5 BNB. תחת זה, הpool שטוח מדי.</span>
+            </div>
+            <div class="input-group">
+                <label>SLH להפקדה</label>
+                <input type="number" id="input-slh" value="1000" step="100" min="100" oninput="calc()">
+                <span class="hint">קובע את מחיר ההתחלתי ביחס ל-BNB</span>
+            </div>
+        </div>
+
+        <div class="slider-group">
+            <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:8px">מחיר BNB הנוכחי (USD)</label>
+            <input type="number" id="input-bnb-price" value="608" step="1" min="100" oninput="calc()" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px;color:var(--text);font-family:monospace">
+        </div>
+
+        <div class="result-grid">
+            <div class="result-item">
+                <div class="result-label">Initial SLH Price</div>
+                <div class="result-value" id="res-price">$0.61</div>
+                <div class="result-sub" id="res-price-ils">~₪2.22</div>
+            </div>
+            <div class="result-item">
+                <div class="result-label">Total Pool Value</div>
+                <div class="result-value" id="res-pool-usd">$1,216</div>
+                <div class="result-sub" id="res-pool-bnb">(2 BNB equivalent)</div>
+            </div>
+            <div class="result-item">
+                <div class="result-label">Market Cap</div>
+                <div class="result-value" id="res-mc">$67.5M</div>
+                <div class="result-sub">on 111M supply</div>
+            </div>
+            <div class="result-item">
+                <div class="result-label">0.1 BNB Buy Impact</div>
+                <div class="result-value" id="res-slippage">9.1%</div>
+                <div class="result-sub">slippage</div>
+            </div>
+            <div class="result-item">
+                <div class="result-label">Your Risk</div>
+                <div class="result-value" id="res-risk">$608</div>
+                <div class="result-sub">BNB portion only</div>
+            </div>
+            <div class="result-item">
+                <div class="result-label">Price per ₪</div>
+                <div class="result-value" id="res-ils-ratio">₪2.22</div>
+                <div class="result-sub">= $0.61</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Step by Step -->
+<section class="section">
+    <h2>📋 שלבי ביצוע — איך יוצרים את ה-Pool</h2>
+    <div class="steps">
+        <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+                <h3>הכן את ה-BNB + SLH ב-MetaMask</h3>
+                <p>
+                    אתה צריך את שתי המטבעות בארנק Web3 שלך על רשת BSC. SLH כבר יש לך ב-
+                    <code>0xd061...3da4</code> (199,788 SLH).
+                </p>
+                <p>
+                    אם אין לך מספיק BNB, קנה דרך Binance או OKX → Withdraw BNB ל-MetaMask → Network: BSC.
+                </p>
+                <div class="warning">
+                    ⚠️ חובה <strong>BNB על BSC</strong>, לא BNB על Ethereum (ERC-20) או BNB Beacon Chain.
+                </div>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+                <h3>פתח את PancakeSwap Liquidity</h3>
+                <p>
+                    הכנס ל-PancakeSwap Add Liquidity, חבר MetaMask לרשת BSC (Chain ID 56).
+                </p>
+                <a href="https://pancakeswap.finance/add/BNB/0xACb0A09414CEA1C879c67bB7A877E4e19480f022?chain=bsc" target="_blank" rel="noopener" class="btn-action">
+                    🔗 פתח PancakeSwap Add Liquidity →
+                </a>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+                <h3>אשר את חוזה SLH (Token Approval)</h3>
+                <p>
+                    בפעם הראשונה, PancakeSwap יבקש ממך לאשר שימוש בחוזה SLH. זו טרנזקציה חד-פעמית שעולה ~0.0005 BNB ($0.30).
+                </p>
+                <p>
+                    לחץ "Enable SLH" → MetaMask יפתח → אשר → המתן לאישור.
+                </p>
+                <div class="warning">
+                    ⚠️ זה לא מעביר את ה-SLH, רק נותן הרשאה ל-PancakeSwap להעביר אותם בשבילך בעת יצירת ה-pool.
+                </div>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+                <h3>הכנס את הכמויות</h3>
+                <p>
+                    בשדה BNB הכנס את הכמות (לפי התרחיש שבחרת — 0.5 / 1 / 5 BNB).
+                    בשדה SLH הכמות המתאימה תחושב אוטומטית לפי המחיר שתגדיר.
+                </p>
+                <p>
+                    <strong>⚠️ חשוב</strong>: PancakeSwap יציב מחיר התחלתי לפי הקלט שלך. אם אתה הראשון ב-pool, <em>אתה קובע את המחיר</em>.
+                </p>
+                <div class="warning">
+                    💡 לפי ה-Seed Launch המומלץ: הכנס <strong>1 BNB</strong> ו-<strong>1,000 SLH</strong>. זה ייצור מחיר של $0.61/SLH.
+                </div>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-content">
+                <h3>Supply → Create Pool</h3>
+                <p>
+                    לחץ "Supply" → PancakeSwap יראה לך סיכום: כמות BNB + SLH + מחיר + את האחוז שלך ב-pool (צריך להיות 100% כי אתה ה-liquidity provider היחיד).
+                </p>
+                <p>
+                    לחץ "Confirm Supply" → MetaMask יפתח עם טרנזקציה שמעבירה את שני הטוקנים ל-PancakeSwap ומקבל בחזרה LP tokens.
+                </p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">6</div>
+            <div class="step-content">
+                <h3>אימות בפאנקייק + BSCScan</h3>
+                <p>
+                    אחרי הטרנזקציה:
+                </p>
+                <ul style="padding-right:20px;color:var(--text2);font-size:13px;line-height:1.8">
+                    <li>ב-PancakeSwap תראה את ה-pool תחת "Your Liquidity"</li>
+                    <li>ב-BSCScan תראה טרנזקציית Mint של LP tokens</li>
+                    <li>ה-pool קיבל כתובת חדשה: <code>Cake-LP SLH-BNB</code></li>
+                </ul>
+                <a href="https://pancakeswap.finance/info/v2/pair/" target="_blank" rel="noopener" class="btn-action">
+                    🔍 בדוק ב-PancakeSwap Info →
+                </a>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">7</div>
+            <div class="step-content">
+                <h3>ביצוע קנייה ראשונה לבדיקה</h3>
+                <p>
+                    עכשיו כל אחד (כולל אתה) יכול לקנות SLH:
+                </p>
+                <ul style="padding-right:20px;color:var(--text2);font-size:13px;line-height:1.8">
+                    <li>לך ל-<strong>Swap</strong> ב-PancakeSwap</li>
+                    <li>From: BNB | To: SLH (0xACb0...f022)</li>
+                    <li>כמות: 0.01 BNB ($6)</li>
+                    <li>Swap → תקבל ~16 SLH</li>
+                    <li>ראה את זה בדשבורד שלנו → Web3 wallet</li>
+                </ul>
+                <a href="https://pancakeswap.finance/swap?outputCurrency=0xACb0A09414CEA1C879c67bB7A877E4e19480f022&inputCurrency=BNB&chain=bsc" target="_blank" rel="noopener" class="btn-action">
+                    🔄 פתח Swap SLH/BNB →
+                </a>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">8</div>
+            <div class="step-content">
+                <h3>נעל את ה-LP tokens (מומלץ ליציבות הקהילה)</h3>
+                <p>
+                    אחרי שה-pool עובד, אפשר לנעול את ה-LP tokens שלך בחוזה נעילה (כמו Mudra Locker או Unicrypt) לזמן מוגדר (לדוגמה: 6 חודשים).
+                </p>
+                <p>
+                    <strong>למה?</strong> זה מוכיח לקהל שאתה לא יכול למשוך את הנזילות פתאום (anti-rug-pull signal). משקיעים רציניים יהיו הרבה יותר בטוחים.
+                </p>
+                <a href="https://mudra.website/?certificate" target="_blank" rel="noopener" class="btn-action">
+                    🔒 Mudra Locker →
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="section" style="text-align:center;padding:40px 24px">
+    <div style="background:linear-gradient(135deg, var(--bg2), var(--bg3));border:1px solid var(--border);border-radius:16px;padding:40px">
+        <h2 style="justify-content:center">🚀 מוכן להשיק?</h2>
+        <p style="color:var(--text2);margin-bottom:24px;max-width:600px;margin-left:auto;margin-right:auto">
+            אחרי שתוציא את ה-pool, חזור לדוח הביצוע ואני אעדכן אותך על השלבים הבאים:
+            Staking, Buyback-Burn, Listing על בורסות נוספות.
+        </p>
+        <a href="/ops-report-20260411.html" style="display:inline-block;padding:14px 28px;background:var(--accent);color:#000;border-radius:10px;text-decoration:none;font-weight:700;margin:0 8px">
+            📊 חזרה לדוח הביצוע
+        </a>
+        <a href="/wallet.html" style="display:inline-block;padding:14px 28px;background:transparent;border:1px solid var(--accent);color:var(--accent);border-radius:10px;text-decoration:none;font-weight:700;margin:0 8px">
+            💼 עבור לארנק
+        </a>
+    </div>
+</section>
+
+<div id="bottomnav-root"></div>
+<div id="footer-root"></div>
+
+<script src="/js/translations.js?v=20260426e"></script>
+<script src="/js/shared.js?v=20260426e"></script>
+<script>
+    initShared({ activePage: 'dex-launch', showBottomNav: true });
+
+    const USD_ILS = 3.65;
+    const TOTAL_SUPPLY = 111186328;
+
+    function calc() {
+        const bnb = parseFloat(document.getElementById('input-bnb').value) || 0;
+        const slh = parseFloat(document.getElementById('input-slh').value) || 0;
+        const bnbPrice = parseFloat(document.getElementById('input-bnb-price').value) || 608;
+
+        if (bnb === 0 || slh === 0) return;
+
+        const bnbUsd = bnb * bnbPrice;
+        const slhPrice = bnbUsd / slh;
+        const marketCap = slhPrice * TOTAL_SUPPLY;
+
+        // Slippage calculation for 0.1 BNB swap
+        // x * y = k => new_y = k / (x + 0.1)
+        const k = bnb * slh;
+        const newBnb = bnb + 0.1;
+        const newSlh = k / newBnb;
+        const slhReceived = slh - newSlh;
+        const idealReceived = 0.1 / (bnb / slh);
+        const slippage = ((idealReceived - slhReceived) / idealReceived) * 100;
+
+        document.getElementById('res-price').textContent = '$' + slhPrice.toFixed(2);
+        document.getElementById('res-price-ils').textContent = '~₪' + (slhPrice * USD_ILS).toFixed(2);
+        document.getElementById('res-pool-usd').textContent = '$' + (bnbUsd * 2).toLocaleString('en-US', {maximumFractionDigits:0});
+        document.getElementById('res-pool-bnb').textContent = '(' + (bnb * 2).toFixed(2) + ' BNB equivalent)';
+        document.getElementById('res-mc').textContent = '$' + (marketCap / 1e6).toFixed(1) + 'M';
+        document.getElementById('res-slippage').textContent = slippage.toFixed(1) + '%';
+        document.getElementById('res-risk').textContent = '$' + bnbUsd.toLocaleString('en-US', {maximumFractionDigits:0});
+        document.getElementById('res-ils-ratio').textContent = '₪' + (slhPrice * USD_ILS).toFixed(2);
+    }
+
+    function applyScenario(name) {
+        const scenarios = {
+            'ultra':  { bnb: 0.05, slh: 50 },
+            'nano':   { bnb: 0.1,  slh: 100 },
+            'micro':  { bnb: 0.5,  slh: 500 },
+            'seed':   { bnb: 1,    slh: 1000 },
+            'growth': { bnb: 5,    slh: 5000 }
+        };
+        const s = scenarios[name];
+        if (!s) return;
+        document.getElementById('input-bnb').value = s.bnb;
+        document.getElementById('input-slh').value = s.slh;
+        calc();
+        document.querySelector('.calculator').scrollIntoView({behavior:'smooth',block:'center'});
+    }
+
+    // Initial calculation
+    calc();
+</script>
+<button id="theme-fab" onclick="document.getElementById('theme-panel').classList.toggle('open')" title="Theme">🎨</button>
+<div id="theme-panel">
+    <div style="font-size:11px;color:var(--text2,#8a8aa0);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">ערכת צבעים</div>
+    <button onclick="document.documentElement.removeAttribute('data-theme');localStorage.setItem('slh_page_theme','default');document.getElementById('theme-panel').classList.remove('open')">🟢 Default</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','dark');localStorage.setItem('slh_page_theme','dark');document.getElementById('theme-panel').classList.remove('open')">🌙 Dark</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','light');localStorage.setItem('slh_page_theme','light');document.getElementById('theme-panel').classList.remove('open')">☀️ Light</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','crypto');localStorage.setItem('slh_page_theme','crypto');document.getElementById('theme-panel').classList.remove('open')">₿ Crypto</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','ocean');localStorage.setItem('slh_page_theme','ocean');document.getElementById('theme-panel').classList.remove('open')">🌊 Ocean</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','sunset');localStorage.setItem('slh_page_theme','sunset');document.getElementById('theme-panel').classList.remove('open')">🌅 Sunset</button>
+</div>
+<script>
+(function(){var t=localStorage.getItem('slh_page_theme');if(t&&t!=='default')document.documentElement.setAttribute('data-theme',t);document.addEventListener('click',function(e){var p=document.getElementById('theme-panel'),f=document.getElementById('theme-fab');if(p&&f&&!p.contains(e.target)&&!f.contains(e.target))p.classList.remove('open');});})();
+</script>
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260426e"></script>
+</body>
+</html>

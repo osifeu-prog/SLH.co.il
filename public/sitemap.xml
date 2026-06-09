@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Core public pages -->
+  <url><loc>https://slh-nft.com/</loc><lastmod>2026-04-17</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://slh-nft.com/about.html</loc><lastmod>2026-04-17</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://slh-nft.com/whitepaper.html</loc><lastmod>2026-04-17</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://slh-nft.com/roadmap.html</loc><lastmod>2026-04-17</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://slh-nft.com/tour.html</loc><lastmod>2026-04-17</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://slh-nft.com/getting-started.html</loc><lastmod>2026-04-17</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://slh-nft.com/ecosystem-guide.html</loc><lastmod>2026-04-17</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://slh-nft.com/join-guide.html</loc><lastmod>2026-04-17</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+
+  <!-- Economy + tokens -->
+  <url><loc>https://slh-nft.com/buy.html</loc><lastmod>2026-04-17</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
+  <url><loc>https://slh-nft.com/pay.html</loc><lastmod>2026-04-17</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://slh-nft.com/staking.html</loc><lastmod>2026-04-17</lastmod><changefreq>weekly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://slh-nft.com/trade.html</loc><lastmod>2026-04-17</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://slh-nft.com/p2p.html</loc><lastmod>2026-04-17</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://slh-nft.com/earn.html</loc><lastmod>2026-04-17</lastmod><changefreq>weekly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://slh-nft.com/wallet.html</loc><lastmod>2026-04-17</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://slh-nft.com/wallet-guide.html</loc><lastmod>2026-04-17</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://slh-nft.com/blockchain.html</loc><lastmod>2026-04-17</lastmod><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://slh-nft.com/liquidity.html</loc><lastmod>2026-04-17</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://slh-nft.com/dex-launch.html</loc><lastmod>2026-04-17</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://slh-nft.com/launch-event.html</loc><lastmod>2026-04-17</lastmod><changefreq>weekly</changefreq><priority>0.75</priority></url>
+
+  <!-- Community + experts -->
+  <url><loc>https://slh-nft.com/community.html</loc><lastmod>2026-04-17</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <url><loc>https://slh-nft.com/experts.html</loc><lastmod>2026-04-17</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <url><loc>https://slh-nft.com/dating.html</loc><lastmod>2026-04-17</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <url><loc>https://slh-nft.com/learning-path.html</loc><lastmod>2026-04-17</lastmod><changefreq>weekly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://slh-nft.com/challenge.html</loc><lastmod>2026-04-17</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://slh-nft.com/sudoku.html</loc><lastmod>2026-04-17</lastmod><changefreq>daily</changefreq><priority>0.85</priority></url>
+  <url><loc>https://slh-nft.com/bots.html</loc><lastmod>2026-04-17</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://slh-nft.com/referral.html</loc><lastmod>2026-04-17</lastmod><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://slh-nft.com/invite.html</loc><lastmod>2026-04-17</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://slh-nft.com/jubilee.html</loc><lastmod>2026-04-17</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://slh-nft.com/kosher-wallet.html</loc><lastmod>2026-04-17</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://slh-nft.com/for-therapists.html</loc><lastmod>2026-04-17</lastmod><changefreq>monthly</changefreq><priority>0.65</priority></url>
+  <url><loc>https://slh-nft.com/healing-vision.html</loc><lastmod>2026-04-17</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+  <!-- User dashboards (low-priority, but indexable) -->
+  <url><loc>https://slh-nft.com/dashboard.html</loc><lastmod>2026-04-17</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://slh-nft.com/profile.html</loc><lastmod>2026-04-17</lastmod><changefreq>weekly</changefreq><priority>0.55</priority></url>
+  <url><loc>https://slh-nft.com/member.html</loc><lastmod>2026-04-17</lastmod><changefreq>monthly</changefreq><priority>0.55</priority></url>
+  <url><loc>https://slh-nft.com/network.html</loc><lastmod>2026-04-17</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+
+  <!-- Blog -->
+  <url><loc>https://slh-nft.com/blog/</loc><lastmod>2026-04-17</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
+  <url><loc>https://slh-nft.com/blog/neurology-meets-meditation.html</loc><lastmod>2026-04-17</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://slh-nft.com/blog/crypto-yoga-attention.html</loc><lastmod>2026-04-17</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://slh-nft.com/blog/verified-experts-not-influencers.html</loc><lastmod>2026-04-17</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://slh-nft.com/blog/slh-ecosystem-map.html</loc><lastmod>2026-04-17</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://slh-nft.com/blog/anti-facebook-manifesto.html</loc><lastmod>2026-04-17</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://slh-nft.com/blog/slh-token-for-beginners.html</loc><lastmod>2026-04-17</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://slh-nft.com/blog/ton-vs-bsc-comparison.html</loc><lastmod>2026-04-17</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://slh-nft.com/blog/aic-ai-credits-guide.html</loc><lastmod>2026-04-17</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://slh-nft.com/blog/earn-crypto-sudoku.html</loc><lastmod>2026-04-17</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://slh-nft.com/blog/dating-without-algorithm.html</loc><lastmod>2026-04-17</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://slh-nft.com/blog/zvk-reputation-explained.html</loc><lastmod>2026-04-17</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://slh-nft.com/blog/how-to-buy-slh-israel.html</loc><lastmod>2026-04-17</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://slh-nft.com/blog/slh-community-join-guide.html</loc><lastmod>2026-04-17</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://slh-nft.com/blog/expert-verification-process.html</loc><lastmod>2026-04-17</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://slh-nft.com/blog/slh-vs-other-networks.html</loc><lastmod>2026-04-17</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+
+  <!-- Legal -->
+  <url><loc>https://slh-nft.com/terms.html</loc><lastmod>2026-04-17</lastmod><changefreq>yearly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://slh-nft.com/privacy.html</loc><lastmod>2026-04-17</lastmod><changefreq>yearly</changefreq><priority>0.4</priority></url>
+</urlset>

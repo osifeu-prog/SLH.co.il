@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>הקבלות שלי · SLH Spark</title>
+<meta name="description" content="היסטוריית קבלות דיגיטליות — תשלומי TON, BSC, iCount, PayPal, Stripe ועוד.">
+<link rel="canonical" href="https://slh-nft.com/receipts.html">
+<link rel="stylesheet" href="/css/slh-design-system.css">
+<link rel="stylesheet" href="/css/shared.css?v=20260417">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+body{font-family:'Rubik',system-ui,sans-serif;background:var(--color-bg-page,#05080f);color:var(--color-text-primary,#f5f5f8);margin:0;min-height:100vh;padding:20px}
+.wrap{max-width:900px;margin:40px auto;padding:0 16px}
+.hdr{text-align:center;margin-bottom:32px}
+.hdr h1{font-size:32px;background:linear-gradient(135deg,#00ff41,#00e5ff,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:0 0 8px}
+.hdr p{color:var(--color-text-muted,#9ba0b5);margin:0}
+.login-box{background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.2);border-radius:12px;padding:24px;margin-bottom:24px;text-align:center}
+.login-box input{padding:12px 16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.15);border-radius:8px;color:#fff;font-size:16px;width:280px;max-width:100%;margin-inline-end:8px}
+.login-box button{padding:12px 24px;background:linear-gradient(135deg,#00ff41,#00e5ff);color:#000;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:15px}
+.login-box button:hover{opacity:.9}
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:24px}
+.summary-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:16px}
+.summary-card .label{font-size:11px;color:#8a8aa0;text-transform:uppercase;letter-spacing:1px}
+.summary-card .value{font-size:28px;font-weight:700;margin-top:6px}
+.summary-card.premium .value{color:#00ff41}
+.summary-card.count .value{color:#00e5ff}
+.summary-card.total .value{color:#ffd700}
+.receipt{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:18px;margin-bottom:14px;display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center}
+.receipt .icon{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#00ff41,#00e5ff);display:flex;align-items:center;justify-content:center;font-size:22px}
+.receipt .body .num{font-family:'JetBrains Mono',monospace;font-size:13px;color:#00e5ff;font-weight:600}
+.receipt .body .source{font-size:14px;margin-top:4px}
+.receipt .body .when{font-size:12px;color:#8a8aa0;margin-top:4px}
+.receipt .amount{font-weight:700;font-size:18px;color:#ffd700}
+.empty{text-align:center;padding:40px;color:#8a8aa0}
+.alert{background:rgba(255,68,68,.08);border:1px solid rgba(255,68,68,.3);border-radius:8px;padding:12px;margin:12px 0;color:#ff9999;font-size:13px}
+.foot{text-align:center;margin-top:40px;color:#5a6078;font-size:12px}
+.foot a{color:#00e5ff}
+</style>
+<meta name="slh-version" content="v1.0-flip">
+<script defer src="/js/slh-flip.js?v=20260417"></script>
+</head>
+<body>
+<div class="wrap">
+  <div class="hdr">
+    <h1>🧾 הקבלות שלי</h1>
+    <p>היסטוריית תשלומים · TON · BSC · כרטיסי אשראי · העברות בנק</p>
+  </div>
+
+  <div id="login" class="login-box">
+    <p style="margin:0 0 16px">הכנס את ה-Telegram ID שלך כדי לראות את הקבלות:</p>
+    <input id="tg-id" type="number" placeholder="224223270" inputmode="numeric" />
+    <button onclick="loadReceipts()">הצג קבלות</button>
+    <p style="margin:14px 0 0;font-size:12px;color:#5a6078">
+      איך מוצאים? פתח את @userinfobot בטלגרם → ההודעה הראשונה → "Id: ..."
+    </p>
+  </div>
+
+  <div id="content" style="display:none">
+    <div class="summary">
+      <div class="summary-card premium"><div class="label">Premium</div><div class="value" id="s-premium">--</div></div>
+      <div class="summary-card count"><div class="label">קבלות</div><div class="value" id="s-count">--</div></div>
+      <div class="summary-card total"><div class="label">סכום כולל (BNB)</div><div class="value" id="s-total">--</div></div>
+    </div>
+
+    <div id="list"></div>
+  </div>
+
+  <div class="foot">
+    <p>🧾 קבלות נוצרות אוטומטית עם כל תשלום מאומת. נשמרות לנצח במסד נתונים + ניתן לצרף ב-PDF לצורכי מס.</p>
+    <p>דף זה ציבורי — כל משתמש יכול לצפות בקבלות של עצמו. נתוני מי שלא הכנסת לא נחשפים.</p>
+    <p><a href="/dashboard.html">← חזרה ל-Dashboard</a> · <a href="/wallet.html">Wallet</a> · <a href="/pay.html">תשלום חדש</a></p>
+  </div>
+</div>
+
+<script>
+const API = 'https://slh-api-production.up.railway.app';
+
+// Auto-load if tg_id in URL (from bot deep-link)
+(function(){
+  const params = new URLSearchParams(location.search);
+  const tgFromUrl = params.get('tg_id') || localStorage.getItem('slh_tg_id');
+  if (tgFromUrl) {
+    document.getElementById('tg-id').value = tgFromUrl;
+    loadReceipts();
+  }
+})();
+
+async function loadReceipts() {
+  const input = document.getElementById('tg-id');
+  const tgId = (input.value || '').trim();
+  if (!tgId || !/^\d+$/.test(tgId)) {
+    input.focus();
+    return;
+  }
+  localStorage.setItem('slh_tg_id', tgId);
+
+  const content = document.getElementById('content');
+  const listEl = document.getElementById('list');
+  content.style.display = 'block';
+  listEl.innerHTML = '<div class="empty">טוען...</div>';
+
+  try {
+    const r = await fetch(`${API}/api/payment/receipts/${tgId}?limit=100`);
+    const data = await r.json();
+    const receipts = data.receipts || [];
+    render(receipts);
+  } catch (e) {
+    listEl.innerHTML = `<div class="alert">שגיאה בטעינה: ${e.message}</div>`;
+  }
+}
+
+function render(receipts) {
+  const listEl = document.getElementById('list');
+  document.getElementById('s-count').textContent = receipts.length;
+
+  let totalBnb = 0;
+  receipts.forEach(r => { if ((r.currency||'').toUpperCase() === 'BNB') totalBnb += parseFloat(r.amount || 0); });
+  document.getElementById('s-total').textContent = totalBnb.toFixed(4);
+
+  if (!receipts.length) {
+    document.getElementById('s-premium').textContent = '—';
+    listEl.innerHTML = '<div class="empty">עוד אין קבלות. <a href="/pay.html" style="color:#00e5ff">בצע תשלום ראשון →</a></div>';
+    return;
+  }
+
+  document.getElementById('s-premium').textContent = '✅';
+
+  listEl.innerHTML = receipts.map(r => {
+    const date = new Date(r.issued_at).toLocaleString('he-IL',{dateStyle:'short',timeStyle:'short'});
+    const srcIcon = r.source_type?.includes('ton') ? '💎' : r.source_type?.includes('bsc') ? '🟡' : r.source_type?.includes('external') ? '💳' : '🧾';
+    const srcName = ({
+      ton_deposit:'TON Transfer',
+      bsc_deposit:'BSC/BNB Transfer',
+      external_bsc_direct:'BSC Direct',
+      external_ton_direct:'TON Direct',
+      external_stripe:'Stripe',
+      external_paypal:'PayPal',
+      external_icount:'iCount חשבונית',
+      external_manual_bank:'העברה בנקאית',
+    })[r.source_type] || r.source_type;
+    return `<div class="receipt">
+      <div class="icon">${srcIcon}</div>
+      <div class="body">
+        <div class="num">${r.receipt_number}</div>
+        <div class="source">${srcName}</div>
+        <div class="when">${date}</div>
+      </div>
+      <div class="amount">${parseFloat(r.amount).toFixed(r.currency==='BNB'||r.currency==='TON'?4:2)} ${r.currency}</div>
+    </div>`;
+  }).join('');
+}
+</script>
+</body>
+</html>

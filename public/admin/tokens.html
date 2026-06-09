@@ -1,0 +1,659 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bot Tokens | SLH Admin</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="/favicon-32.png">
+  <style>
+    :root{
+      --bg:#0a0a0a;--bg2:#111;--bg3:#1a1a1a;
+      --accent:#00ff41;--cyan:#00e5ff;--gold:#ffd700;--red:#ff0055;--purple:#a855f7;
+      --text:#e8e8f0;--text2:#8a8aa0;--text-bright:#fff;
+      --border:rgba(0,255,65,.15);
+      --font:'Inter',system-ui,sans-serif;
+      --radius:6px;
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;font-size:13px}
+    a{color:var(--accent);text-decoration:none}
+    button{cursor:pointer;font-family:inherit;font-size:12px;border:none}
+
+    .topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 24px;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+    .brand{font-weight:700;color:var(--accent);font-size:16px}
+    .brand span{background:var(--red);color:#fff;padding:2px 8px;font-size:10px;border-radius:3px;margin-right:8px}
+    .tb-right{display:flex;gap:10px;font-size:12px}
+    .tb-right a{padding:6px 12px;border:1px solid var(--border);color:var(--text2);border-radius:var(--radius)}
+    .tb-right a:hover{color:var(--accent);border-color:var(--accent)}
+
+    main{max-width:1400px;margin:0 auto;padding:20px}
+
+    .warning{background:rgba(255,0,85,.08);border:1px solid var(--red);padding:14px 18px;border-radius:var(--radius);margin-bottom:20px;font-size:12px;line-height:1.6}
+    .warning b{color:var(--red)}
+
+    .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:20px}
+    .stat{background:var(--bg3);padding:14px;border-radius:var(--radius);text-align:center}
+    .stat .n{font-size:24px;font-weight:700;color:var(--text-bright);font-family:'Space Mono',monospace}
+    .stat.warn .n{color:var(--gold)}
+    .stat.danger .n{color:var(--red)}
+    .stat.ok .n{color:var(--accent)}
+    .stat .l{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+
+    .toolbar{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+    .toolbar button{padding:8px 14px;background:var(--bg2);color:var(--text);border:1px solid var(--border);border-radius:var(--radius)}
+    .toolbar button:hover,.toolbar button.active{border-color:var(--accent);color:var(--accent)}
+    .toolbar .spacer{flex:1}
+    .toolbar input{background:var(--bg);color:var(--text);border:1px solid var(--border);padding:8px 12px;border-radius:var(--radius);min-width:200px}
+    .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:300;padding:20px}
+    .modal-bg.show{display:flex}
+    .modal{background:var(--bg2);border:1px solid var(--accent);border-radius:8px;padding:24px;max-width:480px;width:100%;max-height:90vh;overflow-y:auto}
+    .modal h3{margin-bottom:16px;color:var(--text-bright);font-size:16px}
+    .modal label{display:block;color:var(--text2);font-size:11px;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px}
+    .modal input,.modal select,.modal textarea{width:100%;background:var(--bg);color:var(--text-bright);border:1px solid var(--border);padding:8px 10px;border-radius:4px;font-family:inherit;font-size:13px;margin-bottom:12px}
+    .modal-actions{display:flex;gap:8px;margin-top:8px}
+    .modal-actions button{flex:1;padding:9px;border-radius:4px;border:none;font-weight:600;cursor:pointer}
+    .modal-actions .save{background:var(--accent);color:#000}
+    .modal-actions .cancel{background:var(--bg3);color:var(--text)}
+    .modal-actions .danger{background:rgba(255,0,85,.15);color:var(--red);border:1px solid var(--red)}
+    .row-actions button.edit{background:rgba(0,229,255,.12);color:var(--cyan)}
+    .row-actions button.del{background:rgba(255,0,85,.12);color:var(--red)}
+
+    table{width:100%;border-collapse:collapse;background:var(--bg2);border-radius:var(--radius);overflow:hidden}
+    th{text-align:right;padding:12px 14px;background:var(--bg3);color:var(--text2);font-size:10px;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border)}
+    td{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px}
+    tr:hover td{background:rgba(0,255,65,.02)}
+    .bot-name{color:var(--text-bright);font-weight:600}
+    .bot-handle{color:var(--text2);font-size:11px;display:block;margin-top:2px}
+    code{background:var(--bg3);padding:2px 6px;border-radius:3px;color:var(--cyan);font-size:11px}
+
+    .badge{display:inline-block;padding:2px 8px;font-size:10px;font-weight:700;border-radius:3px;text-transform:uppercase}
+    .badge.ok{background:rgba(0,255,65,.15);color:var(--accent)}
+    .badge.warn{background:rgba(255,215,0,.18);color:var(--gold)}
+    .badge.stale{background:rgba(255,0,85,.15);color:var(--red)}
+    .badge.unknown{background:rgba(138,138,160,.15);color:var(--text2)}
+    .tier-badge{display:inline-block;padding:2px 8px;font-size:10px;font-weight:700;border-radius:3px;text-transform:uppercase}
+    .tier-critical{background:rgba(255,0,85,.18);color:var(--red);border:1px solid var(--red)}
+    .tier-high{background:rgba(255,215,0,.18);color:var(--gold);border:1px solid var(--gold)}
+    .tier-medium{background:rgba(0,255,65,.10);color:var(--accent)}
+    .tier-low{background:rgba(138,138,160,.15);color:var(--text2)}
+    .rot-btn{background:rgba(0,229,255,.15);color:var(--cyan);border:1px solid var(--cyan);padding:4px 10px;font-size:11px;border-radius:3px;cursor:pointer}
+    .rot-btn:hover{background:var(--cyan);color:#000}
+    .rot-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:400;padding:20px}
+    .rot-modal-bg.show{display:flex}
+    .rot-modal{background:var(--bg2);border:1px solid var(--cyan);border-radius:8px;padding:24px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto}
+    .rot-modal h3{margin-bottom:12px;color:var(--text-bright);font-size:16px}
+    .rot-modal .meta{background:var(--bg3);padding:10px 12px;border-radius:4px;font-size:12px;line-height:1.7;margin-bottom:14px}
+    .rot-modal .meta b{color:var(--cyan)}
+    .rot-modal .warn-box{background:rgba(255,0,85,.06);border:1px solid var(--red);padding:10px 12px;border-radius:4px;margin-bottom:14px;font-size:12px;line-height:1.6;color:#ffb8c5}
+    .rot-modal label{display:block;color:var(--text2);font-size:11px;margin:8px 0 4px;text-transform:uppercase;letter-spacing:0.5px}
+    .rot-modal input[type=password],.rot-modal input[type=text]{width:100%;background:var(--bg);color:var(--text-bright);border:1px solid var(--border);padding:9px 11px;border-radius:4px;font-family:'Space Mono',monospace;font-size:13px;letter-spacing:1px}
+    .rot-modal .swap-row{display:flex;align-items:center;gap:8px;margin:10px 0;font-size:12px;color:var(--gold);cursor:pointer}
+    .rot-modal .swap-row input{width:auto}
+    .rot-modal .progress{background:#000;color:var(--accent);padding:10px 12px;border-radius:4px;font-family:'Space Mono',monospace;font-size:11px;line-height:1.7;margin-top:12px;max-height:200px;overflow-y:auto;display:none}
+    .rot-modal .progress.show{display:block}
+    .rot-modal .actions{display:flex;gap:8px;margin-top:12px}
+    .rot-modal .actions button{flex:1;padding:10px;border-radius:4px;border:none;font-weight:700;cursor:pointer;font-size:13px}
+    .rot-modal .go{background:var(--cyan);color:#000}
+    .rot-modal .go.confirm{background:var(--red);color:#fff}
+    .rot-modal .go:disabled{opacity:.5;cursor:not-allowed}
+    .rot-modal .cncl{background:var(--bg3);color:var(--text)}
+
+    .row-actions{display:flex;gap:6px;flex-wrap:wrap}
+    .row-actions a,.row-actions button{padding:4px 10px;font-size:11px;border-radius:3px;background:var(--bg3);color:var(--text)}
+    .row-actions a:hover,.row-actions button:hover{background:var(--accent);color:#000}
+    .row-actions button.did{background:var(--accent);color:#000}
+
+    .help{background:var(--bg2);border:1px solid var(--border);padding:16px;border-radius:var(--radius);margin-top:20px;font-size:12px;line-height:1.8;color:var(--text2)}
+    .help b{color:var(--accent)}
+    .help ol{padding-right:20px;margin:10px 0}
+    .help li{margin-bottom:6px}
+    .help code{font-size:11px}
+
+    #toast{position:fixed;bottom:20px;right:20px;background:var(--bg3);color:var(--text-bright);padding:12px 20px;border-radius:var(--radius);border:1px solid var(--accent);z-index:200;display:none}
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><span>ADMIN</span>🔑 Bot Tokens</div>
+  <div class="tb-right">
+    <a href="/admin/security-hub.html" style="color:var(--accent);border-color:var(--accent)">🛡 Hub</a>
+    <a href="/admin/control-center.html">🎛 Control</a>
+    <a href="/admin/mission-control.html">🎯 Mission</a>
+    <a href="/admin/rotation-history.html">📜 Audit</a>
+    <a href="/admin/secrets-vault.html">🔐 Vault</a>
+    <a href="https://t.me/BotFather" target="_blank" style="color:var(--gold)">🤖 BotFather ↗</a>
+    <a href="https://railway.com/project/slh-api" target="_blank" style="color:var(--cyan)">🚂 Railway ↗</a>
+  </div>
+</div>
+
+<main>
+
+  <div class="warning">
+    <b>🔒 לא מאחסן טוקנים בצד לקוח.</b> הדף הזה הוא <b>מעקב + checklist</b>. הטוקנים עצמם חיים רק ב-<code>.env</code> מקומי (gitignored) וב-<code>Railway Variables</code>. רוטציה דורשת שני שלבים ידניים — BotFather → Railway. אחרי שסיימת, לחץ "סמן סובב" והטיימסטמפ נשמר ב-<code>localStorage</code> של הדפדפן הזה.
+  </div>
+
+  <div class="stats">
+    <div class="stat ok" id="s-ok"><div class="n">--</div><div class="l">✅ מסובב לאחרונה</div></div>
+    <div class="stat warn" id="s-warn"><div class="n">--</div><div class="l">⚠️ >90 יום</div></div>
+    <div class="stat danger" id="s-stale"><div class="n">--</div><div class="l">🚨 >180 יום</div></div>
+    <div class="stat" id="s-unknown"><div class="n">--</div><div class="l">❓ לא מתועד</div></div>
+    <div class="stat" id="s-total"><div class="n">--</div><div class="l">סה"כ בוטים</div></div>
+  </div>
+
+  <div class="toolbar">
+    <button onclick="filterBy('all')" class="active" id="f-all">כולם</button>
+    <button onclick="filterBy('stale')" id="f-stale">🚨 דחוף</button>
+    <button onclick="filterBy('warn')" id="f-warn">⚠️ ישן</button>
+    <button onclick="filterBy('unknown')" id="f-unknown">❓ לא ידוע</button>
+    <button onclick="filterBy('ok')" id="f-ok">✅ טרי</button>
+    <div class="spacer"></div>
+    <input type="search" id="search" placeholder="חיפוש לפי שם / env / handle..." oninput="render()">
+    <button onclick="openAddModal()" style="background:rgba(0,255,65,.15);color:var(--accent);border-color:var(--accent)">➕ הוסף בוט</button>
+    <button onclick="loadBotsFromAPI()" title="רענן מ-API">↻</button>
+    <button onclick="exportCSV()">📥 CSV Export</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>בוט</th>
+        <th>Handle</th>
+        <th>Env Var</th>
+        <th>Tier</th>
+        <th>סובב לאחרונה</th>
+        <th>סטטוס</th>
+        <th>פעולות</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+
+  <div class="help" style="background:rgba(0,255,65,.05); border:1px solid var(--accent);">
+    <b style="color: var(--accent);">🔄 לסיבוב ישיר במערכת — בלי Notepad ובלי PowerShell ידני:</b>
+    <p style="margin-top:8px; font-size:13px; color: var(--text);">
+      → <a href="/admin/rotate-token.html" style="font-weight:700; font-size:14px;">פתח את דף סיבוב הטוקנים</a>
+    </p>
+    <p style="margin-top:6px; font-size:12px; color: var(--text2); line-height:1.6">
+      הדף מאמת את הטוקן ישירות מול Telegram, מייצר פקודת PowerShell מוכנה, וטוקן לא נכנס ל-DOM או נשמר.
+      תומך גם ב-<b style="color: var(--gold);">מצב החלפת בוט</b> — שימוש בטוקן של בוט אחר לאותו השירות,
+      כשלא רוצים להמשיך לסבב את הבוט המקורי (סיכון rate-limit ב-BotFather).
+    </p>
+  </div>
+
+  <div class="help">
+    <b>📋 תהליך רוטציה ידני (אם פתחת את הדף הסיבוב לא עובד)</b>
+    <ol>
+      <li>פתח <a href="https://t.me/BotFather" target="_blank">@BotFather</a> → <code>/mybots</code> → בחר את הבוט → <code>API Token</code> → <code>Revoke current token</code></li>
+      <li>העתק את הטוקן החדש (לא להדביק בצ'אט — ישר ל-<code>.env</code>)</li>
+      <li>פתח <a href="https://railway.com/project/slh-api" target="_blank">Railway</a> → Variables → עדכן את <code>&lt;BOT&gt;_BOT_TOKEN</code> לערך החדש</li>
+      <li>אם הבוט רץ ב-docker מקומית: עדכן את <code>D:\SLH_ECOSYSTEM\.env</code> וה-<code>docker compose restart &lt;service&gt;</code></li>
+      <li>וודא ב-<a href="https://t.me/BotFather" target="_blank">BotFather</a> שהבוט <code>/start</code> עדיין מגיב</li>
+      <li>חזור לדף הזה, לחץ "סמן סובב" → הטיימסטמפ ישמור אצלך בדפדפן</li>
+    </ol>
+    <b>⚠️ אסור:</b> להדביק טוקן בצ'אט AI, במסמך, ב-git. אם בטעות הדבקת → סובב מיד <b>או החלף בוט</b>.
+  </div>
+
+</main>
+
+<!-- Add Bot Modal -->
+<div class="modal-bg" id="modal-bg" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <h3 id="modal-title">➕ הוסף בוט</h3>
+    <input type="hidden" id="m-id" />
+    <label>שם תצוגה (Hebrew/English ok)</label>
+    <input type="text" id="m-name" placeholder="לדוגמה: SLH Wallet" />
+    <label>Telegram handle</label>
+    <input type="text" id="m-handle" placeholder="@SLH_xxx_bot" />
+    <label>שם משתנה ב-.env</label>
+    <input type="text" id="m-env" placeholder="WALLET_BOT_TOKEN" style="font-family:'Space Mono',monospace" />
+    <label>שירות docker (אופציונלי)</label>
+    <input type="text" id="m-service" placeholder="slh-wallet" />
+    <label>סטטוס</label>
+    <select id="m-status">
+      <option value="active">active — פעיל</option>
+      <option value="paused">paused — מושהה</option>
+      <option value="swap-target">swap-target — שמור להחלפה</option>
+      <option value="deprecated">deprecated — לא בשימוש</option>
+    </select>
+    <label>הערות</label>
+    <textarea id="m-notes" rows="2" placeholder="הערה אופציונלית..."></textarea>
+    <div class="modal-actions">
+      <button class="cancel" onclick="closeModal()">בטל</button>
+      <button class="danger" id="m-delete" onclick="deleteBot()" style="display:none">🗑 מחק</button>
+      <button class="save" id="m-save" onclick="saveBot()">שמור</button>
+    </div>
+  </div>
+</div>
+
+<!-- Rotate (pipeline) Modal -->
+<div class="rot-modal-bg" id="rot-modal-bg" onclick="if(event.target===this)closeRotateModal()">
+  <div class="rot-modal">
+    <h3 id="rot-title">🔄 סיבוב טוקן</h3>
+    <div class="meta" id="rot-meta">—</div>
+    <div class="warn-box">
+      <b>⚠️ Pipeline mode:</b> הטוקן ייסע לשרת ב-HTTPS, יידחף ל-Railway, ו-redeploy יופעל אוטומטית.
+      הטוקן <b>לא נשמר</b> בשרת או ב-DB. רק 4 הספרות האחרונות נכנסות ל-audit log לזיהוי.
+      למצב מקסימום-אבטחה (טוקן לא יוצא מהדפדפן) השתמש ב-<a href="/admin/rotate-token.html" style="color:var(--cyan)">/rotate-token.html</a>.
+    </div>
+    <label for="rot-token">טוקן חדש מ-BotFather</label>
+    <input type="password" id="rot-token" placeholder="123456789:AAH..." autocomplete="off" spellcheck="false" />
+    <div class="swap-row">
+      <input type="checkbox" id="rot-swap" />
+      <label for="rot-swap" style="margin:0;text-transform:none;letter-spacing:0;color:var(--gold);font-size:12px;cursor:pointer">🔁 swap mode — הטוקן שייך לבוט אחר (החלפת בוט מכוונת)</label>
+    </div>
+    <pre class="progress" id="rot-progress"></pre>
+    <div class="actions">
+      <button class="cncl" onclick="closeRotateModal()">בטל</button>
+      <button class="go" id="rot-go">🚀 בצע סיבוב</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// Bot catalog now lives in DB. Loaded from /api/admin/bots on page load.
+// Token values never leave the server. This page tracks metadata + rotation state.
+
+const API = 'https://slh-api-production.up.railway.app';
+const STORE_KEY = 'slh_bot_rotations_v1';
+
+let BOTS = [];  // populated by loadBotsFromAPI()
+
+function adminKey() {
+  let k = sessionStorage.getItem('slh_admin_key') || localStorage.getItem('slh_admin_password') || '';
+  if (!k) {
+    k = prompt('הזן מפתח אדמין (X-Admin-Key) — נשמר רק בדפדפן לסשן הזה') || '';
+    if (k) sessionStorage.setItem('slh_admin_key', k);
+  }
+  return k;
+}
+
+async function apiCall(method, path, body) {
+  const k = adminKey();
+  if (!k) throw new Error('admin key required');
+  const opts = {
+    method,
+    headers: { 'X-Admin-Key': k, 'Content-Type': 'application/json' },
+  };
+  if (body) opts.body = JSON.stringify(body);
+  const r = await fetch(API + path, opts);
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.detail || ('HTTP ' + r.status));
+  return j;
+}
+
+async function loadBotsFromAPI() {
+  try {
+    const j = await apiCall('GET', '/api/admin/bots');
+    BOTS = (j.bots || []).map(b => ({
+      id: b.id,
+      name: b.name,
+      handle: b.handle,
+      env: b.env_var,
+      service: b.service,
+      status: b.status,
+      note: b.notes,
+      last: b.last_rotated_at ? b.last_rotated_at.slice(0,10) : null,
+      telegram_bot_id: b.telegram_bot_id,
+    }));
+    render();
+  } catch (e) {
+    toast('שגיאה בטעינה: ' + e.message + ' (משתמש בfallback מקומי)');
+    BOTS = [];
+    render();
+  }
+}
+
+function loadRotations() {
+  try { return JSON.parse(localStorage.getItem(STORE_KEY) || '{}'); }
+  catch { return {}; }
+}
+function saveRotations(data) {
+  localStorage.setItem(STORE_KEY, JSON.stringify(data));
+}
+
+function daysAgo(dateStr) {
+  if (!dateStr) return null;
+  const diff = Date.now() - new Date(dateStr).getTime();
+  return Math.floor(diff / 86400000);
+}
+
+function statusFor(bot) {
+  const rot = loadRotations();
+  const last = rot[bot.env] || bot.last || null;
+  const days = daysAgo(last);
+  if (days === null) return { kind: 'unknown', days, last };
+  if (days > 180) return { kind: 'stale', days, last };
+  if (days > 90)  return { kind: 'warn', days, last };
+  return { kind: 'ok', days, last };
+}
+
+let currentFilter = 'all';
+function filterBy(kind) {
+  currentFilter = kind;
+  ['all','ok','warn','stale','unknown'].forEach(k => {
+    document.getElementById('f-'+k).classList.toggle('active', k === kind);
+  });
+  render();
+}
+
+function escapeHtml(s) {
+  return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function render() {
+  const search = document.getElementById('search').value.toLowerCase();
+  const stats = { ok: 0, warn: 0, stale: 0, unknown: 0, total: BOTS.length };
+  const tbody = document.getElementById('tbody');
+  const rows = [];
+
+  BOTS.forEach(bot => {
+    const s = statusFor(bot);
+    stats[s.kind]++;
+    if (currentFilter !== 'all' && s.kind !== currentFilter) return;
+
+    const hay = (bot.name + bot.handle + bot.env + (bot.note||'')).toLowerCase();
+    if (search && !hay.includes(search)) return;
+
+    const daysLabel = s.days === null ? '—' : s.days + ' יום';
+    const lastLabel = s.last ? s.last : '—';
+    const badgeMap = {ok:'✅ טרי', warn:'⚠️ ישן', stale:'🚨 דחוף', unknown:'❓ לא ידוע'};
+
+    const tier = (bot.tier || 'medium').toLowerCase();
+    const tierLabel = {critical:'🚨 CRIT', high:'⚠️ HIGH', medium:'🔹 MED', low:'⚪ LOW'}[tier] || tier;
+    rows.push(`
+      <tr>
+        <td>
+          <div class="bot-name">${escapeHtml(bot.name)}</div>
+          ${bot.note ? `<div class="bot-handle" style="color:var(--gold)">📝 ${escapeHtml(bot.note)}</div>` : ''}
+        </td>
+        <td><a href="https://t.me/${bot.handle.replace('@','')}" target="_blank">${escapeHtml(bot.handle)}</a></td>
+        <td><code>${escapeHtml(bot.env)}</code></td>
+        <td><span class="tier-badge tier-${tier}">${tierLabel}</span></td>
+        <td>${lastLabel}${s.days !== null ? ` <span style="color:var(--text2);font-size:11px">(${daysLabel})</span>` : ''}</td>
+        <td><span class="badge ${s.kind}">${badgeMap[s.kind]}</span></td>
+        <td>
+          <div class="row-actions">
+            <button class="rot-btn" onclick='openRotateModal(${JSON.stringify(bot)})' title="סיבוב אוטומטי דרך Railway">🔄 Rotate</button>
+            <a href="/admin/rotate-token.html" target="_blank" title="סיבוב מקומי (PowerShell)">🛡 Local</a>
+            <a href="https://t.me/BotFather" target="_blank">BotFather ↗</a>
+            <button onclick="markRotated('${bot.env}')">סמן ידני</button>
+            ${bot.id ? `<button class="edit" onclick="openEditModal(${bot.id})">✏️</button>` : ''}
+          </div>
+        </td>
+      </tr>`);
+  });
+
+  tbody.innerHTML = rows.join('') || `<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text2)">אין בוטים שתואמים לפילטר</td></tr>`;
+
+  document.getElementById('s-ok').querySelector('.n').textContent = stats.ok;
+  document.getElementById('s-warn').querySelector('.n').textContent = stats.warn;
+  document.getElementById('s-stale').querySelector('.n').textContent = stats.stale;
+  document.getElementById('s-unknown').querySelector('.n').textContent = stats.unknown;
+  document.getElementById('s-total').querySelector('.n').textContent = stats.total;
+}
+
+async function markRotated(env) {
+  // Find the bot by env var
+  const bot = BOTS.find(b => b.env === env);
+  if (!bot || !bot.id) {
+    // Fallback to localStorage if DB row doesn't exist
+    const rot = loadRotations();
+    rot[env] = new Date().toISOString().slice(0,10);
+    saveRotations(rot);
+    toast('סומן (local)');
+    render();
+    return;
+  }
+  try {
+    await apiCall('POST', `/api/admin/bots/${bot.id}/mark-rotated`, {});
+    toast('✓ נרשם ב-DB. אל תשכח לעדכן ב-Railway אם רלוונטי!');
+    await loadBotsFromAPI();
+  } catch (e) {
+    toast('שגיאה ב-DB, נשמר מקומית: ' + e.message);
+    const rot = loadRotations();
+    rot[env] = new Date().toISOString().slice(0,10);
+    saveRotations(rot);
+    render();
+  }
+}
+
+async function clearRotated(env) {
+  if (!confirm('לנקות את התאריך?')) return;
+  const rot = loadRotations();
+  delete rot[env];
+  saveRotations(rot);
+  // Clearing DB timestamp is intentionally not exposed (audit trail).
+  // To "un-rotate" in DB, edit the bot via the modal.
+  render();
+}
+
+// ─── Add / Edit / Delete via modal ──────────────────────────────────────
+function openAddModal() {
+  document.getElementById('modal-title').textContent = '➕ הוסף בוט חדש';
+  document.getElementById('m-id').value = '';
+  document.getElementById('m-name').value = '';
+  document.getElementById('m-handle').value = '';
+  document.getElementById('m-env').value = '';
+  document.getElementById('m-service').value = '';
+  document.getElementById('m-status').value = 'active';
+  document.getElementById('m-notes').value = '';
+  document.getElementById('m-delete').style.display = 'none';
+  document.getElementById('modal-bg').classList.add('show');
+}
+
+function openEditModal(id) {
+  const bot = BOTS.find(b => b.id === id);
+  if (!bot) return;
+  document.getElementById('modal-title').textContent = `✏️ עריכה: ${bot.name}`;
+  document.getElementById('m-id').value = bot.id;
+  document.getElementById('m-name').value = bot.name;
+  document.getElementById('m-handle').value = bot.handle;
+  document.getElementById('m-env').value = bot.env;
+  document.getElementById('m-service').value = bot.service || '';
+  document.getElementById('m-status').value = bot.status || 'active';
+  document.getElementById('m-notes').value = bot.note || '';
+  document.getElementById('m-delete').style.display = 'block';
+  document.getElementById('modal-bg').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('modal-bg').classList.remove('show');
+}
+
+async function saveBot() {
+  const id = document.getElementById('m-id').value;
+  const body = {
+    name: document.getElementById('m-name').value.trim(),
+    handle: document.getElementById('m-handle').value.trim(),
+    env_var: document.getElementById('m-env').value.trim(),
+    service: document.getElementById('m-service').value.trim() || null,
+    status: document.getElementById('m-status').value,
+    notes: document.getElementById('m-notes').value.trim() || null,
+  };
+  if (!body.name || !body.handle || !body.env_var) {
+    toast('שם / handle / env_var חובה'); return;
+  }
+  try {
+    if (id) {
+      await apiCall('PATCH', `/api/admin/bots/${id}`, body);
+      toast('✓ נשמר');
+    } else {
+      await apiCall('POST', '/api/admin/bots', body);
+      toast('✓ נוסף');
+    }
+    closeModal();
+    await loadBotsFromAPI();
+  } catch (e) {
+    toast('שגיאה: ' + e.message);
+  }
+}
+
+async function deleteBot() {
+  const id = document.getElementById('m-id').value;
+  const bot = BOTS.find(b => b.id === Number(id));
+  if (!bot) return;
+  if (!confirm(`למחוק את ${bot.name} מקטלוג?\n(לא נוגע ב-.env או ב-BotFather, רק מסיר מהרשימה)`)) return;
+  try {
+    await apiCall('DELETE', `/api/admin/bots/${id}`);
+    toast('✓ נמחק');
+    closeModal();
+    await loadBotsFromAPI();
+  } catch (e) {
+    toast('שגיאה: ' + e.message);
+  }
+}
+
+function exportCSV() {
+  const rot = loadRotations();
+  const lines = ['bot_name,handle,env_var,last_rotated_local,status,notes'];
+  BOTS.forEach(bot => {
+    const s = statusFor(bot);
+    const row = [bot.name, bot.handle, bot.env, s.last||'', s.kind, (bot.note||'').replace(/"/g,"'")]
+      .map(v => `"${v}"`).join(',');
+    lines.push(row);
+  });
+  const blob = new Blob([lines.join('\n')], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'slh_bot_tokens_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('CSV הורד');
+}
+
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',3500)}
+
+// ─── Rotate (pipeline) Modal ──────────────────────────────────────────────
+let _rotateBot = null;
+let _confirmToken = null;
+
+function openRotateModal(bot) {
+  _rotateBot = bot;
+  _confirmToken = null;
+  document.getElementById('rot-title').textContent = `🔄 סיבוב: ${bot.name}`;
+  const tier = (bot.tier || 'medium').toLowerCase();
+  const tierEmoji = {critical:'🚨', high:'⚠️', medium:'🔹', low:'⚪'}[tier] || '';
+  document.getElementById('rot-meta').innerHTML =
+    `<b>Handle:</b> ${escapeHtml(bot.handle)}<br>` +
+    `<b>Env Var:</b> <code>${escapeHtml(bot.env)}</code><br>` +
+    `<b>Service:</b> ${escapeHtml(bot.service||'—')}<br>` +
+    `<b>Tier:</b> ${tierEmoji} ${tier.toUpperCase()}` +
+    (tier==='critical' ? ' <span style="color:var(--red)">— ידרוש אישור 60s</span>' : '');
+  document.getElementById('rot-token').value = '';
+  document.getElementById('rot-swap').checked = false;
+  document.getElementById('rot-progress').textContent = '';
+  document.getElementById('rot-progress').classList.remove('show');
+  const goBtn = document.getElementById('rot-go');
+  goBtn.disabled = false;
+  goBtn.textContent = '🚀 בצע סיבוב';
+  goBtn.classList.remove('confirm');
+  document.getElementById('rot-modal-bg').classList.add('show');
+  setTimeout(() => document.getElementById('rot-token').focus(), 100);
+}
+
+function closeRotateModal() {
+  document.getElementById('rot-modal-bg').classList.remove('show');
+  _rotateBot = null;
+  _confirmToken = null;
+}
+
+function appendProgress(line) {
+  const p = document.getElementById('rot-progress');
+  p.classList.add('show');
+  p.textContent += line + '\n';
+  p.scrollTop = p.scrollHeight;
+}
+
+async function executeRotation() {
+  if (!_rotateBot) return;
+  const token = document.getElementById('rot-token').value.trim();
+  if (!/^\d+:[A-Za-z0-9_-]{30,}$/.test(token)) {
+    appendProgress('❌ הטוקן לא בפורמט תקני.');
+    return;
+  }
+  const swap = document.getElementById('rot-swap').checked;
+  const goBtn = document.getElementById('rot-go');
+  goBtn.disabled = true;
+
+  const payload = {
+    env_var: _rotateBot.env,
+    new_token: token,
+    expect_handle: _rotateBot.handle,
+    swap_mode: swap,
+  };
+  if (_confirmToken) payload.confirm_token = _confirmToken;
+
+  appendProgress((_confirmToken ? '⏳ מאשר ומבצע...' : '⏳ שולח לשרת...'));
+  let r, j;
+  try {
+    r = await fetch(API + '/api/admin/rotate-bot-token-pipeline', {
+      method: 'POST',
+      headers: { 'X-Admin-Key': adminKey(), 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    j = await r.json().catch(() => ({}));
+  } catch (e) {
+    appendProgress('❌ שגיאת רשת: ' + e.message);
+    goBtn.disabled = false;
+    return;
+  }
+
+  if (j.needs_confirm) {
+    _confirmToken = j.confirm_token;
+    appendProgress('🔐 ' + (j.message_he || 'Critical tier — לחץ שוב לאישור'));
+    goBtn.disabled = false;
+    goBtn.textContent = '✅ אשר וסובב';
+    goBtn.classList.add('confirm');
+    return;
+  }
+  if (!r.ok) {
+    appendProgress('❌ HTTP ' + r.status + ': ' + (j.detail || JSON.stringify(j).slice(0,200)));
+    goBtn.disabled = false;
+    return;
+  }
+  if (j.phase === 'healthcheck_failed') {
+    appendProgress('🚨 Healthcheck נכשל — Variable + redeploy בוצעו אך הבוט לא מגיב.');
+    appendProgress('   Deploy: ' + (j.deploy_id || '—'));
+    appendProgress('   נדרשת התערבות ידנית — בדוק Railway logs.');
+    goBtn.disabled = false;
+    goBtn.textContent = 'סגור';
+    goBtn.onclick = closeRotateModal;
+    return;
+  }
+  if (j.ok) {
+    appendProgress('✅ Variable עודכן ב-Railway');
+    appendProgress('✅ Redeploy: ' + ((j.deploy_id || '').slice(0,16) || 'queued'));
+    appendProgress('✅ Healthcheck (getMe): @' + (j.tg_username || '?'));
+    appendProgress('✅ setMyCommands סונכרן');
+    appendProgress('✅ נשלח broadcast לאדמינים');
+    appendProgress('✅ סיבוב הושלם! tier=' + j.tier + ' last4=…' + (j.last4 || ''));
+    toast('✓ סיבוב הושלם');
+    setTimeout(() => { closeRotateModal(); loadBotsFromAPI(); }, 2500);
+    return;
+  }
+  appendProgress('⚠️ תשובה לא צפויה: ' + JSON.stringify(j).slice(0, 200));
+  goBtn.disabled = false;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const goBtn = document.getElementById('rot-go');
+  if (goBtn) goBtn.addEventListener('click', executeRotation);
+  // ESC closes modal
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && document.getElementById('rot-modal-bg').classList.contains('show')) {
+      closeRotateModal();
+    }
+  });
+});
+
+// Boot: load bots from API. Falls back to empty list with toast if API fails.
+loadBotsFromAPI();
+</script>
+
+</body>
+</html>

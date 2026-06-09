@@ -1,0 +1,506 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH · Agent Brief — שילוח סוכנים לפרויקט</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Shareable one-page brief for AI agents joining the SLH project. Copy the prompt, paste to agent, get work done.">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+  --bg:#05080f; --bg2:#0c1018; --bg3:#141924; --bg4:#1a2030;
+  --accent:#00ff41; --cyan:#00e5ff; --gold:#ffd700;
+  --red:#ff0055; --purple:#a855f7; --blue:#3b82f6;
+  --text:#e0e0f0; --text2:#8a8ab0; --text3:#444466;
+  --border:rgba(0,255,65,.1); --border2:rgba(255,255,255,.06);
+  --font:'Inter',system-ui,sans-serif; --mono:'Space Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6}
+a{color:var(--accent);text-decoration:none}
+body::before{content:'';position:fixed;inset:0;background:
+  radial-gradient(1000px 400px at 80% -10%, rgba(168,85,247,.05), transparent 60%),
+  radial-gradient(800px 400px at 10% 30%, rgba(0,255,65,.04), transparent 60%);
+  pointer-events:none;z-index:0}
+
+.wrap{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:28px 20px 60px}
+
+/* Header */
+.hdr{text-align:center;padding:20px 0 32px;border-bottom:1px solid var(--border2);margin-bottom:32px}
+.hdr .logo{display:inline-block;font-size:50px;margin-bottom:12px}
+.hdr h1{font-size:32px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.hdr .sub{color:var(--text2);font-size:14px}
+.hdr .version{display:inline-block;margin-top:10px;padding:4px 14px;background:var(--bg3);border:1px solid var(--border2);border-radius:20px;font-family:var(--mono);font-size:11px;color:var(--text2)}
+
+/* Section */
+.sec{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:24px;margin-bottom:20px;position:relative}
+.sec h2{font-size:18px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.sec h2 i{color:var(--accent)}
+.sec h2 .num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;background:rgba(0,255,65,.1);color:var(--accent);border-radius:8px;font-size:14px;font-family:var(--mono)}
+
+/* Prompt box */
+.prompt-box{position:relative;background:var(--bg);border:1px solid var(--border2);border-radius:10px;padding:20px;font-family:var(--mono);font-size:12.5px;line-height:1.8;color:var(--text);white-space:pre-wrap;max-height:600px;overflow-y:auto;margin-top:12px}
+.prompt-box::-webkit-scrollbar{width:8px}
+.prompt-box::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.copy-btn{position:absolute;top:10px;left:10px;padding:6px 14px;background:rgba(0,255,65,.1);color:var(--accent);border:1px solid rgba(0,255,65,.25);border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--font);transition:.15s;z-index:2}
+.copy-btn:hover{background:rgba(0,255,65,.2)}
+.copy-btn.ok{background:rgba(0,255,65,.25);color:var(--accent)}
+
+/* KPIs */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:14px}
+.kpi{background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:14px;text-align:center}
+.kpi .lbl{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:6px}
+.kpi .val{font-size:24px;font-weight:800;color:#fff;font-family:var(--mono)}
+.kpi .sub{font-size:10px;color:var(--text3);margin-top:4px}
+
+/* List */
+.task{display:block;padding:12px 16px;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;margin-bottom:10px;transition:.15s;color:var(--text)}
+.task:hover{border-color:rgba(0,255,65,.25);transform:translateX(-3px)}
+.task .row1{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.task .num{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:var(--bg4);color:var(--accent);border-radius:6px;font-size:11px;font-family:var(--mono);font-weight:700;flex-shrink:0}
+.task .title{font-weight:700;flex:1}
+.task .tag{font-size:10px;padding:3px 8px;border-radius:4px;font-weight:700;font-family:var(--mono)}
+.t-easy{background:rgba(0,255,65,.1);color:var(--accent)}
+.t-med{background:rgba(255,215,0,.1);color:var(--gold)}
+.t-hard{background:rgba(168,85,247,.1);color:var(--purple)}
+.t-revenue{background:rgba(255,0,85,.1);color:var(--red)}
+.task .desc{font-size:12px;color:var(--text2);line-height:1.5;margin-right:34px}
+.task .meta{font-size:10px;color:var(--text3);margin-top:6px;margin-right:34px;font-family:var(--mono)}
+
+/* Quick links */
+.links{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:14px}
+.links a{display:block;padding:14px;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;text-align:center;transition:.15s}
+.links a:hover{border-color:rgba(0,255,65,.3);background:var(--bg4)}
+.links a .ico{font-size:20px;margin-bottom:6px}
+.links a .lbl{font-size:12px;color:var(--text);font-weight:600}
+.links a .desc{font-size:10px;color:var(--text2);margin-top:3px}
+
+/* Table */
+table{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px}
+th{text-align:right;padding:10px;background:var(--bg3);color:var(--text2);font-size:10px;text-transform:uppercase;letter-spacing:1px}
+td{padding:10px;border-top:1px solid var(--border2);vertical-align:top}
+td.mono{font-family:var(--mono);color:var(--cyan);font-size:11px}
+tr:hover td{background:rgba(0,255,65,.02)}
+
+/* Share */
+.share{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:20px 0}
+.share a{padding:10px 20px;border-radius:8px;background:var(--bg3);border:1px solid var(--border2);color:var(--text);font-weight:600;font-size:13px;transition:.15s}
+.share a:hover{border-color:var(--accent);color:var(--accent)}
+
+/* Footer */
+.foot{text-align:center;color:var(--text3);font-size:11px;padding:24px 0;border-top:1px solid var(--border2);margin-top:40px;font-family:var(--mono)}
+
+/* Note */
+.note{background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.2);border-radius:10px;padding:14px;font-size:12px;color:var(--cyan);margin-top:12px;line-height:1.6}
+.warn{background:rgba(255,215,0,.04);border-color:rgba(255,215,0,.2);color:var(--gold)}
+.err{background:rgba(255,0,85,.04);border-color:rgba(255,0,85,.2);color:var(--red)}
+</style>
+</head>
+<body>
+<style>
+.slh-beta-banner{position:sticky;top:0;z-index:9998;background:linear-gradient(90deg,#ff9900,#ffd700,#00ff41);color:#000;font-weight:700;font-size:12px;padding:6px 14px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.slh-beta-banner a{color:#000;text-decoration:underline;font-weight:800}
+.slh-beta-banner button{background:rgba(0,0,0,.15);color:#000;border:none;padding:3px 10px;border-radius:12px;font-size:11px;cursor:pointer;font-weight:700}
+.slh-bug-fab{position:fixed;bottom:20px;left:20px;z-index:9999;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#ff4444,#ff9900);display:grid;place-items:center;font-size:24px;text-decoration:none;box-shadow:0 4px 20px rgba(255,68,68,.4);transition:transform .2s;animation:bugPulse 3s infinite}
+.slh-bug-fab:hover{transform:scale(1.1)}
+@keyframes bugPulse{0%,100%{box-shadow:0 4px 20px rgba(255,68,68,.4)}50%{box-shadow:0 4px 30px rgba(255,153,0,.6)}}
+@media(max-width:600px){.slh-bug-fab{bottom:80px;width:46px;height:46px;font-size:20px}}
+</style>
+<div class="slh-beta-banner" id="slhBeta">
+  <span>🚧 <b>BETA</b></span>
+  <span style="opacity:.85">אם משהו לא עובד —</span>
+  <a href="/bug-report.html">🐛 דווח באג</a>
+  <button onclick="localStorage.setItem('slh_beta_dismissed','1');this.parentElement.remove()">✕</button>
+</div>
+<a href="/bug-report.html" class="slh-bug-fab" title="דווח באג">🐛</a>
+<script>if(localStorage.getItem('slh_beta_dismissed')==='1'){var b=document.getElementById('slhBeta');if(b)b.remove();}</script>
+
+
+<div class="wrap">
+
+  <header class="hdr">
+    <div class="logo">🤖</div>
+    <h1>SLH · Agent Brief</h1>
+    <div class="sub">דף אחד. פרומפט מוכן. משימות פנויות. סוכן AI יכול להתחיל לעבוד בלי שאלות.</div>
+    <div class="version" id="versionTag">updated: <span id="updateTime">--</span> · API <span id="apiVersion">--</span></div>
+  </header>
+
+  <!-- Live KPIs -->
+  <div class="sec">
+    <h2><i class="fa fa-satellite-dish"></i> מצב המערכת עכשיו</h2>
+    <div class="kpis" id="kpis">
+      <div class="kpi"><div class="lbl">Users</div><div class="val" id="kUsers">--</div><div class="sub">registered</div></div>
+      <div class="kpi"><div class="lbl">Premium</div><div class="val" id="kPremium">--</div><div class="sub">paid</div></div>
+      <div class="kpi"><div class="lbl">Endpoints</div><div class="val" id="kEp">--</div><div class="sub">live</div></div>
+      <div class="kpi"><div class="lbl">Bots</div><div class="val" id="kBots">--</div><div class="sub">live</div></div>
+      <div class="kpi"><div class="lbl">Staked TON</div><div class="val" id="kTon">--</div><div class="sub">locked</div></div>
+      <div class="kpi"><div class="lbl">API Health</div><div class="val" id="kHealth" style="font-size:16px;padding-top:6px">--</div><div class="sub">status</div></div>
+    </div>
+    <div class="note">
+      <i class="fa fa-info-circle"></i> הנתונים האלה מתעדכנים כל 30 שניות מה‑API הציבורי. הם החיים — לא צילום מסך ישן.
+    </div>
+  </div>
+
+  <!-- The One Prompt -->
+  <div class="sec">
+    <h2><span class="num">1</span> הפרומפט · העתק והדבק לסוכן חדש</h2>
+    <div style="color:var(--text2);font-size:13px;margin-bottom:8px">
+      הדבק את כל הטקסט הבא כהודעה ראשונה לכל סוכן AI חדש (ChatGPT, Claude, Gemini, DeepSeek, Copilot). הוא יקבל הכל שצריך כדי להתחיל.
+    </div>
+    <div style="position:relative">
+      <button class="copy-btn" onclick="copyPrompt()" id="copyBtn"><i class="fa fa-copy"></i> העתק</button>
+      <div class="prompt-box" id="promptBox">אתה סוכן AI שמצטרף לפרויקט SLH Spark — מערכת השקעות מוסדית דיגיטלית בישראל של אוסיף קאופמן‑אונגר.
+
+╔════════════════════════════════════════════════════════════════╗
+║  SLH ECOSYSTEM — ONBOARDING BRIEF                               ║
+║  Project: SLH Spark · Owner: Osif Ungar (TG 224223270)          ║
+║  Updated: 2026-04-17                                            ║
+╚════════════════════════════════════════════════════════════════╝
+
+🎯 המטרה העליונה עכשיו
+   לסגור עוד רכישות + להפעיל תשלום אוטומטי. כסף בעולם האמיתי, מהר.
+
+📐 הארכיטקטורה בקצרה
+   • API:     FastAPI on Railway — https://slh-api-production.up.railway.app
+             225+ endpoints, ~10K lines in main.py (v1.0.0)
+             GitHub: osifeu-prog/slh-api (master → auto-deploy)
+   • Website: 79 HTML pages + 15 blog posts — https://slh-nft.com
+             GitHub: osifeu-prog/osifeu-prog.github.io (main → GH Pages)
+   • Bots:    25 Telegram bots in Docker Compose (aiogram 3.x)
+             @G4meb0t_bot_bot (dating) — NEW 2026-04-17 evening
+             ledger, nfty, device-registry + 19 more LIVE
+   • DB:      PostgreSQL 15 + Redis 7 on Railway
+   • Chain:   SLH on BSC (BEP-20, contract 0xACb0A094...8f022)
+             PancakeSwap V2 pool live
+
+💰 6 טוקנים
+   SLH — premium/governance (₪444 target)
+   MNH — stable (₪1 peg, internal)
+   ZVK — activity rewards (~₪4.4, internal)
+   REP — reputation (0-1000+)
+   ZUZ — anti-fraud (ban@100)
+   AIC — AI credits (~$0.001, NEW 2026-04-17)
+
+🚦 המצב עכשיו (live data — 30s refresh at top of page)
+   • 18+ users, 9+ premium, 10 TON staked (live from API)
+   • 0.082 BNB raised (Genesis)
+   • 6 tracks orchestrated at 67% avg (Payments 95%, Social 75%, AIC 80%)
+   • ledger-bot + nfty-bot + 20 more: LIVE
+   • /api/device/register: LIVE
+   • /api/payment/ton/auto-verify: LIVE (tolerance 0.00002 BNB, auto-verify from public RPC)
+   • /api/payment/bsc/auto-verify: LIVE
+   • /api/payment/external/record: LIVE (active providers: ton_direct, bsc_direct, manual_bank — others reserved for future)
+   • /api/dating/* : 8 endpoints LIVE (Interest-overlap matching, 18+ gate)
+   • /api/sudoku/* : 8 endpoints LIVE (daily puzzle, AIC rewards)
+   • /api/ai/chat-metered: LIVE (AIC burn + 5 AIC welcome)
+   • /api/broadcast/* : 5 networks (TG+Discord+Twitter+LinkedIn+FB)
+   • /api/community/rss: LIVE (RSS 2.0 feed)
+
+🔑 קבצים שחובה לקרוא לפני עבודה
+   1. https://github.com/osifeu-prog/slh-api/blob/master/CLAUDE.md
+      — הוראות עבודה + who-am-I + כללי מצב
+   2. https://github.com/osifeu-prog/slh-api/blob/master/ops/SESSION_STATUS.md
+      — Single Source of Truth: מה פתוח + מה חסום
+   3. https://github.com/osifeu-prog/slh-api/blob/master/ops/DECISIONS.md
+      — לוג החלטות; אל תדיין מחדש החלטות שכבר נסגרו
+   4. https://github.com/osifeu-prog/slh-api/blob/master/ops/AGENT_REGISTRY.json
+      — מי אתה ומה מותר לך
+   5. https://github.com/osifeu-prog/slh-api/blob/master/ops/SYNC_PROTOCOL.md
+      — איך מתאמים בין סוכנים
+
+🎛 Dashboards (לחץ לראות)
+   Mission Control: https://slh-nft.com/mission-control.html
+   Ops Dashboard:   https://slh-nft.com/ops-dashboard.html
+   Project Map:     https://slh-nft.com/project-map.html
+   Control Center:  https://slh-nft.com/control-center.html
+   Admin:           https://slh-nft.com/admin.html
+   Bug Dashboard:   https://slh-nft.com/admin-bugs.html
+
+🔒 מה אסור
+   ❌ אל תכתוב סיסמאות/טוקנים ב‑HTML (localStorage בלבד)
+   ❌ אל תשתמש ב‑_ensure_tables בפונקציות חדשות (הטבלאות נוצרות ב‑startup)
+   ❌ אל תמציא mock data — אם אין נתון, תגיד "אין"
+   ❌ אל תפרסם .env ל‑git
+   ❌ אל תשנה את main.py בלי לסנכרן ל‑api/main.py (Railway בונה מ‑root)
+
+✅ מה כן
+   ✅ כתוב UI בעברית, קוד וקומיטים באנגלית
+   ✅ קומיט לכל שינוי משמעותי (ניכר ב‑git log)
+   ✅ סנכרן main.py ו‑api/main.py (cp api/main.py main.py)
+   ✅ עדכן ops/SESSION_STATUS.md בסוף session
+   ✅ שאל את אוסיף לפני שינויי deployment / secrets rotation
+
+📋 המשימות הפנויות עכשיו (לקוח מ‑Agent Brief; אתה רשאי לקחת אחת)
+
+   [#1] 🌱 EASY — BotFather commands setup (5 min)
+        לכל בוט: /setcommands → הדבק start/help/status/mylink/premium
+        בלוקר: אוסיף חייב לבצע ידנית (צריך BotFather access)
+
+   [#2] 🟡 MED — Re-deploy 6 stopped bots with bot_filters.py
+        shared/bot_filters.py מוכן. צריך להוסיף install_cross_bot_filters(dp, BOT_USERNAME)
+        לכל בוט בקוד ולבנות מחדש את ה‑Docker image.
+        Est: 45 min.
+
+   [#3] 💰 REVENUE — Twilio SMS integration on /api/device/register
+        ברגע שיש Twilio API key, להוסיף fetch ל‑/Messages API
+        אחרי יצירת קוד. Est: 30 min (unblocked when key supplied).
+
+   [#4] 🟡 MED — i18n on 27 remaining pages
+        Wrap Hebrew strings with data-i18n; translation keys to /js/translations.js.
+        Est: ~60 min for a batch of 5 pages.
+
+   [#5] 🟢 EASY — Theme switcher on 25 remaining pages
+        Copy shared.js pattern from dashboard.html. Est: 60 min.
+
+   [#6] 💰 REVENUE — PancakeSwap TX tracker
+        Consume BscScan events for the SLH/WBNB pair. Credit buyer accounts
+        when SLH is received. Est: 90 min.
+
+   [#7] 🟣 HARD — TON Wallet deep-link button (wallet.html)
+        Add "Connect Tonkeeper" → opens ton://transfer deep-link with payload.
+        On return, call /api/payment/ton/auto-verify. Est: 60 min.
+
+🛠 אם אתה סוכן executor (יכול להריץ קוד)
+   - Clone: git clone https://github.com/osifeu-prog/slh-api.git
+   - Branch: feature/<kebab-case>
+   - Commit messages: conventional style (feat/fix/docs/chore)
+   - PR: targets master, body includes:
+        * What shipped
+        * How tested
+        * Files touched
+        * Ask for Osif confirmation if anything touches auth/secrets/deploy
+
+🗣 אם אתה סוכן advisor (טקסט בלבד)
+   - החזר patches כ‑unified diff או python-file-in-fence
+   - אל תשנה לסמנטיקה של קבצים שאתה לא רואה
+   - אם חסר לך context — בקש ספציפית את הקובץ
+
+📣 דיווח חזרה לאוסיף
+   ב‑end of session, כתוב ב‑Telegram ל‑@osifeu_prog:
+   "Agent <your name> סיים: <task>. <commit-hash or diff-size>.
+    בלוקרים חדשים: <יש/אין>. המלצה: <next>."
+
+🔗 אחראים לתחומים
+   • Frontend UI/UX        → Claude Code
+   • Backend API           → Claude Code
+   • Bot handlers          → SLH Core Assistant (advisor)
+   • Deploy / Railway      → Osif Ungar (human)
+   • BotFather / tokens    → Osif Ungar (human)
+   • ESP32 flashing        → Osif Ungar (human)
+
+═══════════════════════════════════════════════════════════════
+תחילת העבודה: ענה "מוכן" + השם של המשימה שלקחת + est time.
+ואז התחל. אל תבקש רשות לקרוא קבצים פומביים.
+═══════════════════════════════════════════════════════════════</div>
+    </div>
+    <div class="note warn">
+      <i class="fa fa-triangle-exclamation"></i> הפרומפט הזה גדל עם הפרויקט. אם אתה מעתיק אותו לסוכן, וודא שאתה עובד עם הגרסה מה‑GitHub: <a href="https://slh-nft.com/agent-brief.html">slh-nft.com/agent-brief.html</a>
+    </div>
+  </div>
+
+  <!-- Available tasks -->
+  <div class="sec">
+    <h2><span class="num">2</span> משימות פנויות (לחץ לפרטים)</h2>
+    <a class="task" href="https://github.com/osifeu-prog/slh-api/blob/master/ops/SESSION_STATUS.md" target="_blank">
+      <div class="row1">
+        <span class="num">#1</span>
+        <span class="title">BotFather commands — הגדרת /commands ל‑12 בוטים</span>
+        <span class="tag t-easy">EASY · 5m</span>
+      </div>
+      <div class="desc">כל בוט צריך רשימה של פקודות ב‑BotFather. דורש גישה ידנית של אוסיף.</div>
+      <div class="meta">Owner: Osif · Est: 5 min per bot · Prerequisite: BotFather access</div>
+    </a>
+    <a class="task" href="https://github.com/osifeu-prog/slh-api/blob/master/shared/bot_filters.py" target="_blank">
+      <div class="row1">
+        <span class="num">#2</span>
+        <span class="title">Re-deploy 6 stopped bots with cross-bot filter</span>
+        <span class="tag t-med">MED · 45m</span>
+      </div>
+      <div class="desc">install_cross_bot_filters(dp, BOT_USERNAME) — מונע "פקודה לא מוכרת" כאשר בוט אחר מקבל הודעה.</div>
+      <div class="meta">Owner: Any agent + Osif · Est: 45 min · File: shared/bot_filters.py</div>
+    </a>
+    <a class="task" href="https://github.com/osifeu-prog/slh-api/blob/master/api/routes/payments_auto.py" target="_blank">
+      <div class="row1">
+        <span class="num">#3</span>
+        <span class="title">Twilio SMS integration</span>
+        <span class="tag t-revenue">REVENUE · 30m</span>
+      </div>
+      <div class="desc">על הטלפון לקבל SMS עם קוד אימות. כרגע fallback ל‑Telegram.</div>
+      <div class="meta">Owner: Any agent · Blocked-on: Osif (Twilio API key)</div>
+    </a>
+    <a class="task" href="https://slh-nft.com/project-map.html" target="_blank">
+      <div class="row1">
+        <span class="num">#4</span>
+        <span class="title">i18n על 27 עמודים נוספים</span>
+        <span class="tag t-med">MED · 60m/batch</span>
+      </div>
+      <div class="desc">Wrap Hebrew strings with data-i18n attributes. translations in /js/translations.js.</div>
+      <div class="meta">Owner: Any frontend agent · Est: 60 min per batch of 5 pages</div>
+    </a>
+    <a class="task" href="https://slh-nft.com/project-map.html" target="_blank">
+      <div class="row1">
+        <span class="num">#5</span>
+        <span class="title">Theme switcher on 25 pages</span>
+        <span class="tag t-easy">EASY · 60m</span>
+      </div>
+      <div class="desc">Copy shared.js pattern. No deps needed.</div>
+      <div class="meta">Owner: Any frontend agent</div>
+    </a>
+    <a class="task" href="https://bscscan.com/address/0xacea26b6e132cd45f2b8a4754170d4d0d3b8bbee" target="_blank">
+      <div class="row1">
+        <span class="num">#6</span>
+        <span class="title">PancakeSwap TX tracker</span>
+        <span class="tag t-revenue">REVENUE · 90m</span>
+      </div>
+      <div class="desc">Consume BscScan events for SLH/WBNB pair. Credit buyer accounts automatically when SLH is received.</div>
+      <div class="meta">Owner: Any backend agent · Est: 90 min</div>
+    </a>
+    <a class="task" href="https://tonkeeper.com/" target="_blank">
+      <div class="row1">
+        <span class="num">#7</span>
+        <span class="title">TON deep-link (Tonkeeper) על wallet.html</span>
+        <span class="tag t-hard">HARD · 60m</span>
+      </div>
+      <div class="desc">"Connect Tonkeeper" button → ton://transfer deep-link. On return, call /api/payment/ton/auto-verify.</div>
+      <div class="meta">Owner: Any frontend agent</div>
+    </a>
+  </div>
+
+  <!-- Endpoints -->
+  <div class="sec">
+    <h2><span class="num">3</span> Payment API · עכשיו חי</h2>
+    <div class="note">
+      נוסף היום — 17.4.2026 · בוט AI עם תשלום USDT-TON / TON / BSC. תשתית on-chain בלבד.
+    </div>
+    <table>
+      <tr><th>Method</th><th>Path</th><th>מטרה</th></tr>
+      <tr><td class="mono">POST</td><td class="mono">/api/payment/ton/auto-verify</td><td>אמת TON TX אוטומטית → Premium</td></tr>
+      <tr><td class="mono">POST</td><td class="mono">/api/payment/bsc/auto-verify</td><td>אמת BNB TX ל‑Genesis → Premium</td></tr>
+      <tr><td class="mono">POST</td><td class="mono">/api/payment/external/record</td><td>רשום תשלום on-chain (ton_direct / bsc_direct)</td></tr>
+      <tr><td class="mono">GET</td><td class="mono">/api/payment/status/{user_id}</td><td>מצב Premium + deposits + receipts</td></tr>
+      <tr><td class="mono">GET</td><td class="mono">/api/payment/receipts/{user_id}</td><td>קבלות של המשתמש</td></tr>
+      <tr><td class="mono">GET</td><td class="mono">/api/payment/config</td><td>כתובות תשלום + סכומי מינימום + ספקים</td></tr>
+      <tr><td class="mono">GET</td><td class="mono">/api/payment/geography/summary</td><td>דשבורד אדמין: תשלומים לפי מדינה+מטבע</td></tr>
+    </table>
+  </div>
+
+  <!-- Links -->
+  <div class="sec">
+    <h2><span class="num">4</span> קישורים מהירים</h2>
+    <div class="links">
+      <a href="https://github.com/osifeu-prog/slh-api"><div class="ico"><i class="fa-brands fa-github"></i></div><div class="lbl">slh-api</div><div class="desc">Backend repo</div></a>
+      <a href="https://github.com/osifeu-prog/osifeu-prog.github.io"><div class="ico"><i class="fa-brands fa-github"></i></div><div class="lbl">website</div><div class="desc">Frontend repo</div></a>
+      <a href="https://slh-nft.com/mission-control.html"><div class="ico">🫀</div><div class="lbl">Mission Control</div><div class="desc">Live dashboard</div></a>
+      <a href="https://slh-nft.com/ops-dashboard.html"><div class="ico">📊</div><div class="lbl">Ops Dashboard</div><div class="desc">System status</div></a>
+      <a href="https://slh-nft.com/project-map.html"><div class="ico">🗺️</div><div class="lbl">Project Map</div><div class="desc">All 49 pages</div></a>
+      <a href="https://slh-nft.com/admin.html"><div class="ico">🛡️</div><div class="lbl">Admin Panel</div><div class="desc">19-page CRM</div></a>
+      <a href="https://slh-api-production.up.railway.app/docs"><div class="ico">📖</div><div class="lbl">OpenAPI Docs</div><div class="desc">Interactive</div></a>
+      <a href="https://t.me/osifeu_prog"><div class="ico"><i class="fa-brands fa-telegram"></i></div><div class="lbl">Osif on Telegram</div><div class="desc">Direct line</div></a>
+    </div>
+  </div>
+
+  <!-- Report template -->
+  <div class="sec">
+    <h2><span class="num">5</span> תבנית דיווח חזרה</h2>
+    <div style="color:var(--text2);font-size:13px;margin-bottom:12px">
+      סוכן שסיים משימה → מעתיק את התבנית הבאה → שולח לאוסיף ב‑Telegram:
+    </div>
+    <div style="position:relative">
+      <button class="copy-btn" onclick="copyReport()" id="reportBtn"><i class="fa fa-copy"></i> העתק</button>
+      <div class="prompt-box" id="reportBox">📋 Agent Report — SLH Ecosystem
+
+Agent:        [your name / model — e.g., "Claude Opus 4.7 via Claude Code"]
+Session:      [YYYY-MM-DD HH:MM → HH:MM]
+Task taken:   [#X title from Agent Brief]
+
+✅ Completed
+  - [specific thing 1, link to commit or file]
+  - [specific thing 2]
+
+🚧 In progress
+  - [thing still cooking, % complete]
+
+🛑 Blockers
+  - [anything that needs Osif / another agent]
+
+📊 Verification
+  - Tests run: [yes/no, which]
+  - Live check: [curl result, page behavior]
+  - Deployed: [commit hash, Railway/GH-Pages status]
+
+📝 Next recommended
+  - [what should happen next, and by whom]
+
+💰 Revenue impact (if any)
+  - [paid flows affected, users impacted]</div>
+    </div>
+  </div>
+
+  <!-- Share -->
+  <div class="share">
+    <a href="https://t.me/share/url?url=https://slh-nft.com/agent-brief.html&text=SLH%20Agent%20Brief%20-%20שלח%20לסוכן%20AI%20חדש"><i class="fa-brands fa-telegram"></i> שלח ב‑Telegram</a>
+    <a href="https://wa.me/?text=https://slh-nft.com/agent-brief.html"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+    <a href="mailto:?subject=SLH%20Agent%20Brief&body=https://slh-nft.com/agent-brief.html"><i class="fa fa-envelope"></i> Email</a>
+    <a href="#" onclick="navigator.clipboard.writeText(location.href);this.textContent='✅ הועתק';return false"><i class="fa fa-link"></i> העתק קישור</a>
+  </div>
+
+  <footer class="foot">
+    SLH Agent Brief · one page · infinite agents · <a href="mission-control.html" style="color:var(--text2)">Mission Control</a> · <a href="ops-dashboard.html" style="color:var(--text2)">Ops Dashboard</a>
+  </footer>
+
+</div>
+
+<script>
+const API = 'https://slh-api-production.up.railway.app';
+
+function copyPrompt(){
+  const text = document.getElementById('promptBox').textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    const b = document.getElementById('copyBtn');
+    b.textContent = '✅ הועתק!'; b.classList.add('ok');
+    setTimeout(()=>{ b.innerHTML='<i class="fa fa-copy"></i> העתק'; b.classList.remove('ok'); }, 2500);
+  });
+}
+
+function copyReport(){
+  const text = document.getElementById('reportBox').textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    const b = document.getElementById('reportBtn');
+    b.textContent = '✅ הועתק!'; b.classList.add('ok');
+    setTimeout(()=>{ b.innerHTML='<i class="fa fa-copy"></i> העתק'; b.classList.remove('ok'); }, 2500);
+  });
+}
+
+async function loadLive(){
+  document.getElementById('updateTime').textContent = new Date().toLocaleString('he-IL');
+  try{
+    const h = await (await fetch(API+'/api/health',{cache:'no-store'})).json();
+    document.getElementById('apiVersion').textContent = h.version;
+    document.getElementById('kHealth').textContent = h.status==='ok' ? '✅ OK' : '⚠';
+    document.getElementById('kHealth').style.color = h.status==='ok' ? 'var(--accent)' : 'var(--gold)';
+  }catch(e){
+    document.getElementById('kHealth').textContent = '❌ DOWN';
+    document.getElementById('kHealth').style.color = 'var(--red)';
+  }
+  try{
+    const s = await (await fetch(API+'/api/stats',{cache:'no-store'})).json();
+    document.getElementById('kUsers').textContent = s.total_users ?? '--';
+    document.getElementById('kPremium').textContent = s.premium_users ?? '--';
+    document.getElementById('kTon').textContent = (s.total_staked_ton ?? 0).toFixed(1);
+    document.getElementById('kBots').textContent = s.bots_live ?? '--';
+  }catch(e){}
+  try{
+    const o = await (await fetch(API+'/openapi.json',{cache:'no-store'})).json();
+    document.getElementById('kEp').textContent = Object.keys(o.paths||{}).length;
+  }catch(e){}
+}
+
+loadLive();
+setInterval(loadLive, 30000);
+</script>
+
+</body>
+</html>

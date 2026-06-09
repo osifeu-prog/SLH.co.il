@@ -1,0 +1,206 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>הצפנות טקסט בעברית · תיקון עברית מעוותת · SLH Spark</title>
+<meta name="description" content="למה טקסט עברי מתעוות ב-email, דפדפנים ישנים, ומערכות legacy? איך לתקן hebrew text corruption, ואיך SLH בונה אבטחת מידע מקומית מאפס.">
+<meta name="keywords" content="עברית מעוותת, hebrew text fix, hebrew encoding, flip text, scramble text, UTF-8 עברית, Windows-1255, SLH Spark, cryptography hebrew">
+<link rel="canonical" href="https://slh-nft.com/encryption.html">
+<meta property="og:title" content="הצפנות + עברית מעוותת — המדריך המלא">
+<meta property="og:description" content="למה עברית מתעוותת במערכות, איך לתקן, ואיך SLH בונה הצפנה מקומית.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://slh-nft.com/encryption.html">
+<meta property="og:image" content="https://slh-nft.com/assets/og/encryption.png">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/slh-design-system.css">
+<meta name="slh-version" content="v1.0-flip">
+<script defer src="/js/slh-flip.js?v=20260426e"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Rubik',system-ui,sans-serif;background:#05080f;color:#f5f5f8;min-height:100vh;line-height:1.7}
+a{color:#00e5ff;text-decoration:none}
+a:hover{text-decoration:underline}
+
+.pulse-bg{position:fixed;inset:0;z-index:-1;background:
+  radial-gradient(900px 500px at 50% -5%, rgba(0,229,255,.08), transparent 60%),
+  radial-gradient(600px 400px at 100% 50%, rgba(168,85,247,.06), transparent 60%)}
+
+.wrap{max-width:900px;margin:0 auto;padding:24px 16px}
+
+.hero{text-align:center;padding:80px 20px 60px;border-bottom:1px solid rgba(255,255,255,.06)}
+.hero h1{font-size:clamp(32px,5vw,56px);font-weight:900;line-height:1.15;margin:0 0 16px;min-height:1.2em}
+.hero .scramble-display{font-family:'JetBrains Mono',monospace;font-size:clamp(18px,3vw,28px);color:#00e5ff;margin:20px 0;min-height:1.5em;direction:ltr;background:rgba(0,229,255,.05);border:1px dashed rgba(0,229,255,.3);padding:14px;border-radius:10px;display:inline-block}
+.hero .tagline{font-size:18px;color:#9ba0b5;max-width:600px;margin:0 auto 30px}
+
+.demo{background:#0d1220;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:24px;margin:30px 0}
+.demo h2{font-size:22px;color:#00ff41;margin-bottom:14px}
+.demo textarea{width:100%;min-height:100px;background:#05080f;border:1px solid rgba(255,255,255,.15);color:#f5f5f8;padding:14px;border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:14px;resize:vertical;direction:ltr}
+.demo .btn-row{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.demo button{padding:10px 20px;background:linear-gradient(135deg,#00ff41,#00e5ff);color:#000;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-family:inherit}
+.demo button.sec{background:rgba(255,255,255,.05);color:#fff;border:1px solid rgba(255,255,255,.15)}
+.demo .result{margin-top:16px;background:rgba(0,255,65,.06);border:1px solid rgba(0,255,65,.2);border-radius:10px;padding:14px;font-family:'JetBrains Mono',monospace;font-size:14px;min-height:50px;color:#00ff41;direction:ltr;word-break:break-all}
+
+h2{font-size:28px;color:#00ff41;margin:40px 0 14px;font-weight:800}
+h3{font-size:20px;color:#00e5ff;margin:24px 0 10px}
+p{margin-bottom:14px;color:#cdd1e0}
+ul{padding-inline-start:24px;margin-bottom:14px}
+li{margin-bottom:8px;color:#cdd1e0}
+
+table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14px}
+th,td{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.08);text-align:start;vertical-align:top}
+th{background:rgba(255,255,255,.04);color:#00ff41;font-weight:700}
+code{background:rgba(255,255,255,.05);padding:2px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:13px;color:#00e5ff}
+
+.cta-box{background:linear-gradient(135deg,rgba(0,255,65,.08),rgba(0,229,255,.06));border:1px solid rgba(0,255,65,.3);border-radius:14px;padding:30px;margin:40px 0;text-align:center}
+.cta-box h3{color:#fff;font-size:22px;margin:0 0 10px}
+.cta-box .btn{display:inline-block;padding:14px 30px;background:linear-gradient(135deg,#00ff41,#00e5ff);color:#000;border-radius:50px;font-weight:900;text-decoration:none;margin-top:10px}
+
+.foot{text-align:center;margin-top:60px;color:#5a6078;font-size:13px;padding:30px 0;border-top:1px solid rgba(255,255,255,.06)}
+</style>
+</head>
+<body>
+<div class="pulse-bg"></div>
+
+<div class="wrap">
+
+<section class="hero">
+  <h1 data-flip="הצפנות · עברית שעובדת">הצפנות · עברית שעובדת</h1>
+  <div class="scramble-display" id="scr">×≠‚̃'→שלום ×¢×•×œ×</div>
+  <p class="tagline">למה טקסט עברי מתעוות במערכות ישנות — ואיך SLH Spark בונה אבטחת מידע מקומית שמבינה עברית מהיסוד.</p>
+</section>
+
+<section class="demo">
+  <h2>🎬 דמו חי · הדבק טקסט מעוות וראה איך אנחנו מתקנים</h2>
+  <p style="font-size:14px;color:#9ba0b5;margin-bottom:12px">שים טקסט עברי שהגיע מעוות מ-email ישן / legacy system / Windows-1255 → נהפוך אותו:</p>
+  <textarea id="in" placeholder="×©×œ×•× ×¢×•×œ× (example of mangled Hebrew)"></textarea>
+  <div class="btn-row">
+    <button onclick="demoFix()">🔧 נסה לתקן</button>
+    <button class="sec" onclick="demoScramble()">🎲 Scramble חי</button>
+    <button class="sec" onclick="demoLoad('×©×œ×•× ×¢×•×œ×')">📝 Load דוגמה</button>
+  </div>
+  <div class="result" id="out">(תוצאה תופיע כאן)</div>
+</section>
+
+<section>
+  <h2>למה זה קורה בכלל?</h2>
+  <p>כשאפליקציה ישנה שומרת טקסט עברי בקידוד <code>Windows-1255</code> או <code>ISO-8859-8</code>, אבל המשתמש מציג אותו ב-<code>UTF-8</code> — כל תו עברי מתפצל ל-2-3 תווים של Latin Extended. הנה מה שקורה למילה "שלום":</p>
+
+  <table>
+  <thead><tr><th>שלב</th><th>Bytes (hex)</th><th>מה רואים</th></tr></thead>
+  <tbody>
+  <tr><td>1. המקור (שלום)</td><td><code>D7 A9 D7 9C D7 95 D7 9D</code></td><td>שלום</td></tr>
+  <tr><td>2. נשמר ב-Windows-1255</td><td><code>F9 EC E5 ED</code></td><td>שלום (בסדר)</td></tr>
+  <tr><td>3. נקרא כ-UTF-8 בטעות</td><td><code>C3 B9 C3 AC C3 A5 C3 AD</code></td><td><code>×©×œ×•×</code></td></tr>
+  <tr><td>4. לאחר "תיקון" חלקי</td><td><code>D7 A9 D7 9C...</code></td><td>שלום ✓</td></tr>
+  </tbody>
+  </table>
+
+  <h2>5 סוגי התעוותות שרואים הכי הרבה</h2>
+  <ul>
+    <li><strong>UTF-8 → Windows-1255 שגוי:</strong> <code>שלום</code> → <code>×©×œ×•×</code></li>
+    <li><strong>ISO-8859-8 → UTF-8 שגוי:</strong> <code>שלום</code> → <code>ùìåí</code></li>
+    <li><strong>HTML entity encoding:</strong> <code>שלום</code> → <code>&amp;#1513;&amp;#1500;&amp;#1493;&amp;#1501;</code></li>
+    <li><strong>Logical vs Visual ordering:</strong> המילה נכתבת משמאל-לימין במקום מימין-לשמאל</li>
+    <li><strong>BOM markers:</strong> <code>ï»¿שלום</code> — תו BOM לא מטופל</li>
+  </ul>
+
+  <h2>איך SLH Spark מטפלת בעברית מהיסוד</h2>
+  <p>בניגוד למערכות legacy, כל אחד מ-<strong>225+ ה-API endpoints</strong> שלנו משתמש ב-UTF-8 מהרגע הראשון:</p>
+
+  <ul>
+    <li><strong>DB:</strong> PostgreSQL 15 עם <code>ENCODING UTF8</code> + <code>LC_COLLATE 'he_IL.UTF-8'</code> — מיון נכון של אלף-בית</li>
+    <li><strong>API:</strong> FastAPI עם <code>ensure_ascii=False</code> בכל JSON response — עברית נשארת עברית</li>
+    <li><strong>Frontend:</strong> כל HTML עם <code>&lt;meta charset="UTF-8"&gt;</code> + <code>dir="rtl"</code> + <code>lang="he"</code></li>
+    <li><strong>Bots:</strong> aiogram 3.x עם Python 3.11 — UTF-8 native, בלי escape hacks</li>
+  </ul>
+
+  <h3>למה זה חשוב למשקיעים?</h3>
+  <p>בפרויקט crypto ישראלי, אם הכתובית על כפתור "לחץ לתשלום" נראית <code>×œ×—×¥ ×œ×ª×©×œ×•×</code>, אנשים לא ילחצו. UX שבור = אמון שבור = כסף שלא זז. לכן אנחנו בנינו את הכל מחדש — לא "תרגמנו" מאנגלית.</p>
+
+  <h3>מה עם ההצפנה של הכסף עצמו?</h3>
+  <p>זה סיפור אחר לגמרי. SLH משתמש ב:</p>
+  <ul>
+    <li><strong>BSC (Binance Smart Chain):</strong> BEP-20 חוזה חתום, audit-ready</li>
+    <li><strong>TON Network:</strong> הצפנת secp256k1, integration עם <code>toncenter</code></li>
+    <li><strong>Internal tokens (AIC, ZVK, REP, ZUZ):</strong> append-only ledger עם hash chain</li>
+    <li><strong>Admin auth:</strong> JWT + X-Admin-Key dual-factor, <code>bcrypt</code> password hashing</li>
+    <li><strong>.env never in git:</strong> secrets רק ב-Railway variables</li>
+  </ul>
+
+  <h2>כלים חיצוניים שעוזרים</h2>
+  <p>אם אתה רק רוצה לתקן טקסט עברי מעוות בלי להיכנס ל-SLH:</p>
+  <ul>
+    <li><a href="https://www.pixiesoft.com/flip/" rel="nofollow">pixiesoft.com/flip</a> — השירות הוותיק (מ-1998). עובד, אבל UX ישן.</li>
+    <li><code>iconv -f WINDOWS-1255 -t UTF-8 file.txt</code> — Linux/Mac command line</li>
+    <li>Python: <code>text.encode('latin-1').decode('utf-8', errors='ignore')</code></li>
+  </ul>
+</section>
+
+<div class="cta-box">
+  <h3>בונה מערכת בעברית? הצטרף לקהילת SLH.</h3>
+  <p style="color:#cdd1e0">אנחנו מפתחים בעברית, לעברית. אם אתה מפתח, מומחה, או רק רוצה להשקיע — זה הבית.</p>
+  <a href="/getting-started.html?ref=encryption-seo" class="btn">🚀 התחל כאן (3 דקות)</a>
+</div>
+
+<div class="foot">
+  <p>דף זה הוא חלק מאקוסיסטם SLH Spark · <a href="/blog/">בלוג</a> · <a href="/whitepaper.html">Whitepaper</a> · <a href="/about.html">אודות</a></p>
+  <p style="margin-top:10px;opacity:.7">© 2026 SLH Spark · <span data-scramble="slh-nft.com"></span></p>
+</div>
+
+</div>
+
+<script>
+const MANGLED_MAP = {
+  // Windows-1255 bytes interpreted as UTF-8
+  '×': 'א','¢': 'ע','œ': 'ל','€': 'ט','•': 'ו','ž': 'מ','™': 'י','º': 'צ','¨': 'ר','¡': 'ס','ˆ': 'ה','—': 'ח','‹': 'כ','£': 'ג','¥': 'פ','¦': 'ד','§': 'ב','¨': 'ר','©': 'ש','ª': 'ת','«': 'ק','¬': 'נ','ן': 'ן','ם': 'ם','ך': 'ך','ץ': 'ץ','ף': 'ף',
+};
+
+function attemptFix(text) {
+  if (!text) return '';
+  // Strategy 1: try decoding via escape/unescape
+  try {
+    // Convert visible mangled UTF-8 back to bytes then re-decode as Windows-1255
+    const bytes = new Uint8Array(text.split('').map(c => c.charCodeAt(0) & 0xFF));
+    const dec = new TextDecoder('windows-1255', { fatal: false });
+    const attempt = dec.decode(bytes);
+    if (attempt && /[א-ת]/.test(attempt)) return attempt;
+  } catch (e) {}
+  // Strategy 2: character map fallback
+  let out = '';
+  for (const ch of text) {
+    out += MANGLED_MAP[ch] || ch;
+  }
+  return out || text;
+}
+
+function demoFix() {
+  const txt = document.getElementById('in').value;
+  if (!txt.trim()) { document.getElementById('out').textContent = '(הכנס טקסט למעלה)'; return; }
+  const fixed = attemptFix(txt);
+  document.getElementById('out').textContent = fixed;
+}
+
+function demoLoad(example) {
+  document.getElementById('in').value = example;
+}
+
+function demoScramble() {
+  const el = document.getElementById('scr');
+  const target = 'שלום · SLH · Spark System';
+  if (window.SLHFlip) {
+    window.SLHFlip.scramble(el, target, { duration: 2200 });
+  } else {
+    el.textContent = target;
+  }
+}
+
+// Auto-run scramble on page load
+window.addEventListener('load', () => {
+  setTimeout(demoScramble, 400);
+});
+</script>
+
+</body>
+</html>

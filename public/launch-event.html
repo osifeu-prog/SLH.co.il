@@ -1,0 +1,924 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH Spark Genesis Launch — First DEX Pool</title>
+<meta name="description" content="השקה ראשונה של SLH Spark ב-PancakeSwap. הצטרפו לאירוע הציון ההיסטורי של האקוסיסטם.">
+<link rel="canonical" href="https://slh-nft.com/launch-event.html">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://slh-nft.com/launch-event.html">
+<meta property="og:title" content="Genesis Launch - First SLH Pool on PancakeSwap">
+<meta property="og:description" content="Join as a Genesis Contributor and get NFT + 500 ZVK + historic credit">
+<meta property="og:image" content="https://slh-nft.com/assets/og/default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="he_IL">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Genesis Launch - First SLH Pool on PancakeSwap">
+<meta name="twitter:description" content="Join as a Genesis Contributor and get NFT + 500 ZVK + historic credit">
+<meta name="twitter:image" content="https://slh-nft.com/assets/og/default.png">
+
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/shared.css?v=20260426e">
+
+<style>
+    :root {
+        --bg: #0a0e1a;
+        --bg2: #111628;
+        --bg3: #1a2038;
+        --accent: #f3ba2f;
+        --accent2: #00e887;
+        --purple: #a855f7;
+        --gold: #ffd700;
+        --red: #ef4444;
+        --text: #e8e8f0;
+        --text2: #8a8aa0;
+        --text3: #555a70;
+        --border: rgba(243, 186, 47, 0.25);
+    }
+    body {
+        background:
+            radial-gradient(circle at 20% 20%, rgba(243, 186, 47, 0.08), transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(0, 232, 135, 0.08), transparent 50%),
+            var(--bg);
+        color: var(--text);
+        font-family: 'Inter', -apple-system, system-ui, sans-serif;
+        line-height: 1.6;
+        min-height: 100vh;
+    }
+
+    /* Hero */
+    .launch-hero {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 80px 24px 40px;
+        text-align: center;
+        position: relative;
+    }
+    .launch-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 24px;
+        background: linear-gradient(135deg, rgba(243, 186, 47, 0.2), rgba(0, 232, 135, 0.15));
+        border: 1px solid var(--accent);
+        color: var(--accent);
+        border-radius: 32px;
+        font-size: 13px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 24px;
+    }
+    .launch-badge .pulse {
+        width: 10px;
+        height: 10px;
+        background: var(--accent2);
+        border-radius: 50%;
+        box-shadow: 0 0 0 0 rgba(0, 232, 135, 0.6);
+        animation: pulseAnim 2s infinite;
+    }
+    @keyframes pulseAnim {
+        0% { box-shadow: 0 0 0 0 rgba(0, 232, 135, 0.6); }
+        70% { box-shadow: 0 0 0 12px rgba(0, 232, 135, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(0, 232, 135, 0); }
+    }
+    .launch-hero h1 {
+        font-size: clamp(36px, 6vw, 72px);
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--accent), var(--gold), var(--accent2));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-bottom: 16px;
+        line-height: 1.1;
+    }
+    .launch-hero p.tagline {
+        font-size: 20px;
+        color: var(--text);
+        margin-bottom: 12px;
+        font-weight: 600;
+    }
+    .launch-hero p.sub {
+        font-size: 15px;
+        color: var(--text2);
+        max-width: 700px;
+        margin: 0 auto 32px;
+    }
+
+    /* Progress bar */
+    .progress-section {
+        max-width: 900px;
+        margin: 0 auto 40px;
+        padding: 0 24px;
+    }
+    .progress-card {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 32px;
+        position: relative;
+        overflow: hidden;
+    }
+    .progress-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    .progress-label {
+        font-size: 12px;
+        color: var(--text2);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-weight: 700;
+    }
+    .progress-value {
+        font-size: 48px;
+        font-weight: 900;
+        color: var(--accent);
+        line-height: 1;
+    }
+    .progress-target {
+        font-size: 14px;
+        color: var(--text2);
+        margin-top: 4px;
+    }
+    .progress-pct {
+        text-align: left;
+    }
+    .progress-pct .n {
+        font-size: 32px;
+        font-weight: 900;
+        color: var(--accent2);
+    }
+    .progress-bar {
+        width: 100%;
+        height: 16px;
+        background: var(--bg3);
+        border-radius: 10px;
+        overflow: hidden;
+        position: relative;
+        margin-bottom: 16px;
+    }
+    .progress-bar .fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent), var(--accent2));
+        transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 10px;
+        position: relative;
+    }
+    .progress-bar .fill::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        animation: shimmer 2s infinite;
+    }
+    @keyframes shimmer {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+    .progress-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 16px;
+        margin-top: 20px;
+    }
+    .progress-stat {
+        text-align: center;
+        padding: 14px;
+        background: rgba(0,0,0,0.3);
+        border-radius: 10px;
+    }
+    .progress-stat .v {
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--accent);
+    }
+    .progress-stat .l {
+        font-size: 10px;
+        color: var(--text2);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 4px;
+    }
+
+    /* Action buttons */
+    .actions {
+        max-width: 900px;
+        margin: 0 auto 40px;
+        padding: 0 24px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 16px;
+    }
+    .btn-cta {
+        padding: 18px 28px;
+        border-radius: 14px;
+        text-align: center;
+        text-decoration: none;
+        font-weight: 800;
+        font-size: 16px;
+        transition: all 0.2s;
+        border: none;
+        cursor: pointer;
+    }
+    .btn-primary {
+        background: linear-gradient(135deg, var(--accent), var(--gold));
+        color: #000;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(243,186,47,0.3); }
+    .btn-outline {
+        background: transparent;
+        border: 2px solid var(--accent2);
+        color: var(--accent2);
+    }
+    .btn-outline:hover { background: rgba(0,232,135,0.1); }
+
+    /* Section */
+    .section {
+        max-width: 1200px;
+        margin: 0 auto 40px;
+        padding: 0 24px;
+    }
+    .section h2 {
+        font-size: 28px;
+        font-weight: 800;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    .section h2 span {
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    /* How it works */
+    .steps-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 20px;
+    }
+    .step-card {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 24px;
+        position: relative;
+    }
+    .step-card .num {
+        position: absolute;
+        top: -18px;
+        right: 24px;
+        width: 40px;
+        height: 40px;
+        background: var(--accent);
+        color: #000;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        font-weight: 900;
+    }
+    .step-card h3 {
+        font-size: 17px;
+        margin-bottom: 8px;
+        margin-top: 8px;
+        color: var(--text);
+    }
+    .step-card p {
+        font-size: 13px;
+        color: var(--text2);
+        line-height: 1.7;
+    }
+
+    /* Send BNB block */
+    .send-block {
+        background: linear-gradient(135deg, rgba(243, 186, 47, 0.08), rgba(0, 232, 135, 0.05));
+        border: 2px solid var(--accent);
+        border-radius: 20px;
+        padding: 32px;
+        text-align: center;
+    }
+    .wallet-address {
+        background: rgba(0,0,0,0.4);
+        border: 1px solid var(--border);
+        padding: 16px 20px;
+        border-radius: 10px;
+        font-family: 'Courier New', monospace;
+        font-size: 14px;
+        direction: ltr;
+        word-break: break-all;
+        margin: 16px 0;
+        color: var(--accent);
+    }
+    .send-block .qr {
+        display: inline-block;
+        background: white;
+        padding: 16px;
+        border-radius: 12px;
+        margin: 16px auto;
+    }
+    .send-block .qr img { display: block; width: 220px; height: 220px; }
+
+    /* Contributors list */
+    .contributors-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .contributor-row {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+    }
+    .contributor-row.cofounder {
+        border-color: var(--gold);
+        background: linear-gradient(135deg, rgba(255, 215, 0, 0.05), transparent);
+    }
+    .contributor-info {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        flex: 1;
+        min-width: 0;
+    }
+    .contributor-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+    .contributor-name {
+        font-weight: 700;
+        font-size: 15px;
+    }
+    .contributor-handle {
+        font-size: 12px;
+        color: var(--text2);
+    }
+    .contributor-amount {
+        text-align: left;
+        flex-shrink: 0;
+    }
+    .contributor-amount .bnb {
+        font-size: 16px;
+        font-weight: 800;
+        color: var(--accent);
+    }
+    .contributor-amount .usd {
+        font-size: 11px;
+        color: var(--text2);
+    }
+    .badge-role {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 6px;
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-right: 6px;
+    }
+    .badge-cofounder { background: var(--gold); color: #000; }
+    .badge-contributor { background: rgba(0, 180, 216, 0.2); color: #00b4d8; }
+    .badge-status-pending { background: rgba(255, 215, 0, 0.15); color: var(--gold); }
+    .badge-status-verified { background: rgba(0, 232, 135, 0.15); color: var(--accent2); }
+
+    /* Social share */
+    .share-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 12px;
+        margin-top: 20px;
+    }
+    .share-btn {
+        padding: 14px 20px;
+        border-radius: 10px;
+        text-align: center;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 13px;
+        color: white;
+        transition: all 0.2s;
+    }
+    .share-btn:hover { transform: translateY(-2px); }
+    .share-telegram { background: #0088cc; }
+    .share-twitter { background: #1da1f2; }
+    .share-facebook { background: #1877f2; }
+    .share-whatsapp { background: #25d366; }
+    .share-copy { background: var(--bg3); border: 1px solid var(--border); color: var(--accent); cursor: pointer; }
+
+    .loading-skeleton {
+        display: inline-block;
+        width: 80px;
+        height: 22px;
+        background: linear-gradient(90deg, var(--bg3), rgba(255,255,255,0.05), var(--bg3));
+        background-size: 200% 100%;
+        animation: skelly 1.5s infinite;
+        border-radius: 4px;
+    }
+    @keyframes skelly {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+
+    /* Theme Switcher */
+    #theme-fab{position:fixed;bottom:94px;left:24px;z-index:9997;background:var(--accent,#00e887);color:#000;width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;font-size:20px;box-shadow:0 4px 16px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center}
+    #theme-panel{position:fixed;bottom:150px;left:24px;z-index:9998;background:var(--bg,#0a0a0a);border:1px solid rgba(255,255,255,.15);padding:16px;border-radius:12px;display:none;flex-direction:column;gap:6px;max-width:220px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+    #theme-panel.open{display:flex}
+    #theme-panel button{background:var(--bg,#0a0a0a);border:1px solid rgba(255,255,255,.1);color:#e8e8f0;padding:10px 14px;cursor:pointer;font-size:12px;text-align:right;font-family:inherit;border-radius:6px;transition:all .2s}
+    #theme-panel button:hover{background:var(--accent,#00e887);color:#000}
+    [data-theme="dark"]{--bg:#0b0e16;--bg2:#111628;--accent:#00b4d8;--text:#e8e8f0;--text2:#8a8aa0;--border:rgba(0,180,216,.2)}
+    [data-theme="light"]{--bg:#f8f9fb;--bg2:#fff;--accent:#0066cc;--text:#1a1a1a;--text2:#555;--border:rgba(0,102,204,.2)}
+    [data-theme="crypto"]{--bg:#0d1117;--bg2:#161b22;--accent:#f7931a;--text:#e8e8f0;--text2:#8a8aa0;--border:rgba(247,147,26,.2)}
+    [data-theme="ocean"]{--bg:#001e3c;--bg2:#002c55;--accent:#00d9ff;--text:#b8e6ff;--text2:#6bb6cc;--border:rgba(0,217,255,.2)}
+    [data-theme="sunset"]{--bg:#1a0a14;--bg2:#251018;--accent:#ff6b6b;--text:#ffe5d9;--text2:#c9a88a;--border:rgba(255,107,107,.2)}
+</style>
+</head>
+<body>
+
+<div id="topnav-root"></div>
+
+<!-- Hero -->
+<section class="launch-hero">
+    <div class="launch-badge">
+        <span class="pulse"></span>
+        &#x1F7E2; OPEN · Genesis Pool
+    </div>
+    <h1>Genesis Launch 🚀</h1>
+    <p class="tagline">ההשקה הראשונה של SLH Spark ב-PancakeSwap</p>
+    <p class="sub">
+        הפּוּל הראשוני של SLH על BSC נוצר מהתרומות של שותפי Genesis. כל תרומה
+        נכתבת ב-audit log בלתי-שביר עם SHA-256 hash chain ומוצגת כאן בזמן אמת.
+        היסטוריה שאי אפשר לזייף.
+    </p>
+</section>
+
+<!-- Liquidity CTA Banner -->
+<section style="max-width:900px;margin:0 auto 24px;padding:0 24px">
+    <div style="padding:20px 28px;background:linear-gradient(135deg,rgba(0,232,135,0.12),rgba(243,186,47,0.10));border:2px solid var(--accent2);border-radius:16px;text-align:center">
+        <div style="font-size:28px;margin-bottom:8px">&#x1F4A7;</div>
+        <div style="font-size:20px;font-weight:900;color:var(--accent2);margin-bottom:6px">&#x200F;הוסיפו Liquidity ל-Pool!</div>
+        <div style="font-size:14px;color:var(--text2);margin-bottom:14px">ה-Pool חי ופעיל ב-PancakeSwap. כל תוספת נזילות מחזקת את האקוסיסטם.</div>
+        <a href="https://pancakeswap.finance/add/BNB/0xACb0A09414CEA1C879c67bB7A877E4e19480f022?chain=bsc" target="_blank" rel="noopener" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,var(--accent2),var(--accent));color:#000;border-radius:12px;font-weight:800;font-size:15px;text-decoration:none;transition:all 0.2s">&#x2795; Add Liquidity on PancakeSwap</a>
+    </div>
+</section>
+
+<!-- Progress -->
+<section class="progress-section">
+    <div class="progress-card">
+        <div class="progress-header">
+            <div>
+                <div class="progress-label">גויס עד כה</div>
+                <div class="progress-value"><span id="raised-bnb">--</span> <span style="font-size:24px">BNB</span></div>
+                <div class="progress-target">אין מגבלה על סכום התרומה <span id="target-bnb" style="display:none">100</span><span id="target-usd" style="display:none">$60,000</span></div>
+            </div>
+            <div class="progress-pct">
+                <div class="progress-label">התקדמות</div>
+                <div><span class="n" id="progress-pct">--</span>%</div>
+            </div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="fill" id="progress-fill" style="width:0%"></div>
+        </div>
+
+        <div class="progress-stats">
+            <div class="progress-stat">
+                <div class="v" id="stat-contributors">--</div>
+                <div class="l">שותפים</div>
+            </div>
+            <div class="progress-stat">
+                <div class="v" id="stat-raised-usd">$--</div>
+                <div class="l">שווי מגויס</div>
+            </div>
+            <div class="progress-stat">
+                <div class="v" id="stat-slh-price">$0.61</div>
+                <div class="l">מחיר SLH</div>
+            </div>
+            <div class="progress-stat">
+                <div class="v" id="stat-status">OPEN</div>
+                <div class="l">סטטוס</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Buttons -->
+<section class="actions">
+    <a href="#send-bnb" class="btn-cta btn-primary">💰 שלח BNB לתרום</a>
+    <a href="/dex-launch.html" class="btn-cta btn-outline">📊 לוח מחשבון ההשקה</a>
+    <a href="#share" class="btn-cta btn-outline">📣 שתף את האירוע</a>
+</section>
+
+<!-- How it Works -->
+<section class="section">
+    <h2>איך <span>זה עובד</span></h2>
+    <div class="steps-grid">
+        <div class="step-card">
+            <div class="num">1</div>
+            <h3>שלח BNB לארנק החברה</h3>
+            <p>העבר את התרומה שלך (מינימום 0.01 BNB, ללא מקסימום) לארנק BSC של SLH Spark. השתמש ב-QR קוד למטה.</p>
+        </div>
+        <div class="step-card">
+            <div class="num">2</div>
+            <h3>דווח על התרומה</h3>
+            <p>לחץ "דווח על תרומה" ומלא את השם שלך + TX hash. המערכת מאמתת ב-BSC ותירשם אותך כ-Genesis Contributor.</p>
+        </div>
+        <div class="step-card">
+            <div class="num">3</div>
+            <h3>קבל Genesis NFT + 500 ZVK</h3>
+            <p>כל שותף מקבל NFT ייחודי + 500 ZVK מתנה + קרדיט היסטורי כ-Genesis Contributor (תמונה קבועה באתר).</p>
+        </div>
+        <div class="step-card">
+            <div class="num">4</div>
+            <h3>Pool נוצר ב-PancakeSwap</h3>
+            <p>כשהיעד מושג, אנחנו יוצרים את ה-pool אוטומטית + LP tokens ננעלים ל-6 חודשים ב-Mudra Locker (anti-rug proof).</p>
+        </div>
+    </div>
+</section>
+
+<!-- Send BNB Block -->
+<section class="section" id="send-bnb">
+    <h2>💎 <span>שלח את התרומה שלך</span></h2>
+    <div class="send-block">
+        <p style="font-size:14px;color:var(--text2);margin-bottom:8px">כתובת BSC של החברה (BEP-20)</p>
+        <div class="wallet-address" id="wallet-addr">0xd061de73B06d5E91bfA46b35EfB7B08b16903da4</div>
+        <button onclick="copyWallet()" style="background:var(--accent);color:#000;border:none;padding:10px 20px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px">📋 העתק כתובת</button>
+
+        <div class="qr">
+            <img id="qr-img" src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=2&data=ethereum:0xd061de73B06d5E91bfA46b35EfB7B08b16903da4@56" alt="QR Code">
+        </div>
+
+        <div style="margin-top:20px;padding:16px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3);border-radius:12px;font-size:13px;color:#ef9a9a;text-align:right">
+            ⚠️ <strong>חשוב</strong>:<br>
+            • רק רשת <strong>BSC (BEP-20)</strong>. לא Ethereum, לא BNB Beacon Chain.<br>
+            • מינימום 0.01 BNB, ללא הגבלת מקסימום.<br>
+            • אחרי השליחה, דווח על ה-TX hash למטה כדי לקבל את התגמולים.
+        </div>
+
+        <div style="margin-top:20px">
+            <a href="https://pancakeswap.finance/swap?outputCurrency=BNB" target="_blank" rel="noopener" style="color:var(--accent2);font-size:13px;text-decoration:underline">אין לי BNB — איך לקנות?</a>
+        </div>
+    </div>
+</section>
+
+<!-- Report Contribution -->
+<section class="section" id="report">
+    <h2>📝 <span>דווח על תרומה</span></h2>
+
+    <!-- Auto-fill banner for logged-in users -->
+    <div id="contrib-autofill" style="display:none;max-width:600px;margin:0 auto 16px;padding:14px 20px;background:rgba(0,255,65,.06);border:1px solid rgba(0,255,65,.2);border-radius:12px;text-align:center">
+        <span style="font-size:13px;color:var(--accent)">✅ מחובר בתור <strong id="contrib-auto-name"></strong> — השדות מולאו אוטומטית</span>
+    </div>
+
+    <div style="max-width:600px;margin:0 auto;background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:28px">
+        <div style="display:flex;flex-direction:column;gap:14px">
+            <div>
+                <label style="display:block;font-size:12px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">שם שלך / חברה</label>
+                <input id="contrib-name" type="text" placeholder="למשל: דוד כהן" style="width:100%;padding:12px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;font-size:14px">
+            </div>
+            <div>
+                <label style="display:block;font-size:12px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">הנדל שלך בטלגרם <span style="font-size:10px;opacity:.6">(ממולא אוטומטית אם מחובר)</span></label>
+                <input id="contrib-handle" type="text" placeholder="@username" style="width:100%;padding:12px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;font-size:14px">
+            </div>
+            <div>
+                <label style="display:block;font-size:12px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">כמות BNB שנשלחה</label>
+                <div style="display:flex;gap:8px">
+                    <input id="contrib-amount" type="number" step="0.001" min="0.01" placeholder="0.01" style="flex:1;padding:12px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;font-size:14px">
+                    <div style="display:flex;gap:4px">
+                        <button onclick="document.getElementById('contrib-amount').value='0.01'" style="padding:8px 12px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);border-radius:8px;font-size:11px;cursor:pointer">0.01</button>
+                        <button onclick="document.getElementById('contrib-amount').value='0.05'" style="padding:8px 12px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);border-radius:8px;font-size:11px;cursor:pointer">0.05</button>
+                        <button onclick="document.getElementById('contrib-amount').value='0.1'" style="padding:8px 12px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);border-radius:8px;font-size:11px;cursor:pointer">0.1</button>
+                    </div>
+                </div>
+                <div id="bnb-usd-preview" style="font-size:11px;color:var(--text2);margin-top:4px;text-align:left;direction:ltr"></div>
+            </div>
+            <div>
+                <label style="display:block;font-size:12px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">TX Hash <span style="font-size:10px;opacity:.6">(אופציונלי — מזרז את האימות)</span></label>
+                <input id="contrib-tx" type="text" placeholder="0x..." dir="ltr" style="width:100%;padding:12px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;font-size:12px;font-family:monospace">
+            </div>
+            <div>
+                <label style="display:block;font-size:12px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">כתובת הארנק שלך <span style="font-size:10px;opacity:.6">(אופציונלי)</span></label>
+                <input id="contrib-wallet" type="text" placeholder="0x..." dir="ltr" style="width:100%;padding:12px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;font-size:12px;font-family:monospace">
+            </div>
+            <button onclick="submitContribution()" style="padding:16px;background:linear-gradient(135deg,var(--accent),var(--gold));color:#000;border:none;border-radius:10px;font-weight:800;font-size:16px;cursor:pointer;margin-top:8px">✅ רשום אותי כ-Genesis Contributor</button>
+            <div id="contrib-result" style="display:none;padding:14px;border-radius:8px;font-size:13px"></div>
+
+            <!-- Quick explanation for new users -->
+            <div style="padding:14px;background:var(--bg3);border-radius:10px;font-size:12px;color:var(--text2);line-height:1.8">
+                <strong style="color:var(--accent)">💡 איך זה עובד?</strong><br>
+                1. שלח BNB לכתובת למעלה (מינימום 0.01)<br>
+                2. מלא את הטופס הזה ולחץ "רשום אותי"<br>
+                3. המנהל מאשר → מקבל <strong>500 ZVK + כרטיס חבר NFT + קרדיט Genesis</strong>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FREE Registration -->
+<section class="section" id="free-join">
+    <h2>🆓 <span>הצטרף בחינם — בלי הפקדה!</span></h2>
+    <div style="max-width:600px;margin:0 auto;background:linear-gradient(135deg,rgba(0,232,135,.06),rgba(0,180,216,.04));border:2px solid var(--accent);border-radius:16px;padding:28px;text-align:center">
+        <div style="font-size:40px;margin-bottom:12px">🎁</div>
+        <h3 style="color:var(--accent);font-size:18px;margin-bottom:8px">Genesis 49 — חינם!</h3>
+        <p style="font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:16px">
+            אין לך BNB? לא נורא! הצטרף בחינם וקבל:<br>
+            <strong style="color:var(--text)">10 ZVK + כרטיס חבר NFT + גישה מלאה למערכת</strong>
+        </p>
+        <div style="display:flex;flex-direction:column;gap:12px;max-width:400px;margin:0 auto">
+            <a href="https://t.me/SLH_AIR_bot?start=genesis" target="_blank" rel="noopener" style="display:block;padding:16px;background:linear-gradient(135deg,#0088cc,#00b4d8);color:#fff;border-radius:12px;font-weight:800;font-size:16px;text-decoration:none">📱 הצטרף דרך Telegram</a>
+            <a href="/onboarding.html" style="display:block;padding:14px;background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:12px;font-weight:700;font-size:14px;text-decoration:none">🌐 הרשם דרך האתר</a>
+        </div>
+        <div style="margin-top:16px;font-size:12px;color:var(--text2)">
+            <strong>מה מקבלים בחינם?</strong><br>
+            ✅ 10 ZVK (~44₪)<br>
+            ✅ כרטיס חבר NFT אישי<br>
+            ✅ גישה לקהילה + P2P + referral<br>
+            ✅ הרוויח ZVK מהפניות ושיתופים<br><br>
+            <strong>רוצה יותר?</strong> הפקד BNB לפול ← קבל 500 ZVK + Genesis Status! ⬆️
+        </div>
+    </div>
+</section>
+
+<!-- Contributors List -->
+<section class="section" id="contributors">
+    <h2>👥 <span>שותפי Genesis</span></h2>
+    <div class="contributors-list" id="contributors-list">
+        <div style="text-align:center;color:var(--text3);padding:24px">טוען...</div>
+    </div>
+</section>
+
+<!-- Share -->
+<section class="section" id="share">
+    <h2>📣 <span>שתף את האירוע</span></h2>
+    <div style="max-width:700px;margin:0 auto;background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:28px;text-align:center">
+        <p style="color:var(--text2);margin-bottom:20px">עזור לקהילה שלנו לצמוח — שתף את ההשקה ברשתות החברתיות</p>
+        <div class="share-grid">
+            <a href="#" id="share-tg" target="_blank" rel="noopener" class="share-btn share-telegram">📱 Telegram</a>
+            <a href="#" id="share-tw" target="_blank" rel="noopener" class="share-btn share-twitter">🐦 Twitter / X</a>
+            <a href="#" id="share-fb" target="_blank" rel="noopener" class="share-btn share-facebook">📘 Facebook</a>
+            <a href="#" id="share-wa" target="_blank" rel="noopener" class="share-btn share-whatsapp">💬 WhatsApp</a>
+            <button onclick="copyShareText()" class="share-btn share-copy">📋 העתק טקסט</button>
+        </div>
+    </div>
+</section>
+
+<div id="bottomnav-root"></div>
+<div id="footer-root"></div>
+
+<script src="/js/translations.js?v=20260426e"></script>
+<script src="/js/shared.js?v=20260426e"></script>
+<script>
+initShared({ activePage: 'launch', showBottomNav: true });
+
+const API = 'https://slh-api-production.up.railway.app';
+const SHARE_URL = 'https://slh-nft.com/launch-event.html';
+const SHARE_TEXT_HE = '🚀 SLH Spark Genesis Launch! ההשקה הראשונה שלנו ב-PancakeSwap נמצאת בעיצומה. הצטרפו כ-Genesis Contributor וקבלו NFT ייחודי + 500 ZVK + קרדיט היסטורי באתר:';
+const SHARE_TEXT_EN = '🚀 SLH Spark Genesis Launch is LIVE on BSC! Join as a Genesis Contributor to receive unique NFT + 500 ZVK + historic credit:';
+
+// Copy wallet
+function copyWallet() {
+    const addr = document.getElementById('wallet-addr').textContent;
+    navigator.clipboard.writeText(addr).then(() => {
+        alert('✅ הכתובת הועתקה');
+    });
+}
+
+// Load live launch status
+async function loadLaunchStatus() {
+    try {
+        const r = await fetch(API + '/api/launch/status', { cache: 'no-store' });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const data = await r.json();
+
+        const raisedTotal = (data.raised_bnb_verified || 0) + (data.raised_bnb_pending || 0);
+        const raisedUsd = raisedTotal * 608;
+
+        document.getElementById('raised-bnb').textContent = raisedTotal.toFixed(4);
+        document.getElementById('target-bnb').textContent = (data.target_bnb || 0.05).toFixed(2);
+        document.getElementById('target-usd').textContent = '$' + (data.target_usd || 30);
+        document.getElementById('progress-pct').textContent = (data.progress_pct || 0).toFixed(1);
+        document.getElementById('progress-fill').style.width = Math.min(data.progress_pct || 0, 100) + '%';
+        // Filter out cancelled contributions — use active count for display
+        const active = (data.contributors || []).filter(c => c.status !== 'cancelled');
+        document.getElementById('stat-contributors').textContent = active.length;
+        document.getElementById('stat-raised-usd').textContent = '$' + raisedUsd.toFixed(2);
+        document.getElementById('stat-status').textContent = (data.status === 'FILLED' ? 'OPEN' : (data.status || 'OPEN')).toUpperCase();
+
+        renderContributors(active);
+    } catch(e) {
+        console.warn('[Launch] Status load failed:', e);
+        document.getElementById('raised-bnb').textContent = '0';
+        document.getElementById('progress-pct').textContent = '0';
+        document.getElementById('stat-contributors').textContent = '0';
+        document.getElementById('stat-raised-usd').textContent = '$0';
+        document.getElementById('contributors-list').innerHTML = '<div style="text-align:center;color:var(--text3);padding:24px">אין שותפים עדיין — תהיה הראשון!</div>';
+    }
+}
+
+function renderContributors(list) {
+    const container = document.getElementById('contributors-list');
+    if (!list.length) {
+        container.innerHTML = '<div style="text-align:center;color:var(--text3);padding:24px">אין שותפים עדיין — תהיה הראשון! 🚀</div>';
+        return;
+    }
+    container.innerHTML = list.map(c => {
+        const initials = (c.name || '?')[0].toUpperCase();
+        const roleClass = c.role === 'cofounder' ? 'cofounder' : '';
+        const badge = c.role === 'cofounder' ? '<span class="badge-role badge-cofounder">Co-Founder</span>' :
+                      '<span class="badge-role badge-contributor">Contributor</span>';
+        const statusBadge = c.status === 'verified' ?
+            '<span class="badge-role badge-status-verified">✓ Verified</span>' :
+            '<span class="badge-role badge-status-pending">⏳ Pending</span>';
+        const txLink = c.tx_hash ? `<div style="margin-top:4px"><a href="https://bscscan.com/tx/${escapeHtml(c.tx_hash)}" target="_blank" rel="noopener" style="color:var(--accent2);font-size:11px;font-family:monospace;text-decoration:underline">TX: ${escapeHtml(c.tx_hash.slice(0,10))}...${escapeHtml(c.tx_hash.slice(-6))}</a></div>` : '';
+        return `
+            <div class="contributor-row ${roleClass}">
+                <div class="contributor-info">
+                    <div class="contributor-avatar">${initials}</div>
+                    <div style="min-width:0">
+                        <div class="contributor-name">${escapeHtml(c.name)}</div>
+                        <div class="contributor-handle">${escapeHtml(c.handle || '')} ${badge} ${statusBadge}</div>
+                        ${txLink}
+                    </div>
+                </div>
+                <div class="contributor-amount">
+                    <div class="bnb">${(c.amount_bnb || 0).toFixed(4)} BNB</div>
+                    <div class="usd">$${(c.amount_usd || 0).toFixed(2)}</div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function escapeHtml(s) {
+    const d = document.createElement('div');
+    d.textContent = s || '';
+    return d.innerHTML;
+}
+
+// Submit contribution
+async function submitContribution() {
+    const name = document.getElementById('contrib-name').value.trim();
+    const handle = document.getElementById('contrib-handle').value.trim();
+    const amount = parseFloat(document.getElementById('contrib-amount').value);
+    const tx = document.getElementById('contrib-tx').value.trim();
+    const wallet = document.getElementById('contrib-wallet').value.trim();
+    const result = document.getElementById('contrib-result');
+
+    if (!name || amount <= 0) {
+        result.style.display = 'block';
+        result.style.background = 'rgba(239,68,68,0.1)';
+        result.style.color = '#ef4444';
+        result.textContent = 'שם וכמות חובה';
+        return;
+    }
+
+    try {
+        const res = await fetch(API + '/api/launch/contribute', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                partner_name: name,
+                partner_handle: handle || null,
+                amount_bnb: amount,
+                tx_hash: tx || null,
+                wallet_address: wallet || null,
+                role: 'contributor'
+            })
+        });
+        const data = await res.json();
+        if (data.ok) {
+            result.style.display = 'block';
+            result.style.background = 'rgba(0,232,135,0.1)';
+            result.style.color = 'var(--accent2)';
+            result.innerHTML = '✅ תודה! התרומה שלך נרשמה (ID: #' + data.contribution_id + '). תאומת תוך 24 שעות ותקבל את ה-NFT והטוקנים שלך.';
+            document.getElementById('contrib-name').value = '';
+            document.getElementById('contrib-handle').value = '';
+            document.getElementById('contrib-tx').value = '';
+            document.getElementById('contrib-wallet').value = '';
+            loadLaunchStatus();
+        } else {
+            result.style.display = 'block';
+            result.style.background = 'rgba(239,68,68,0.1)';
+            result.style.color = '#ef4444';
+            result.textContent = '❌ ' + (data.error || 'שגיאה');
+        }
+    } catch(e) {
+        result.style.display = 'block';
+        result.style.background = 'rgba(239,68,68,0.1)';
+        result.style.color = '#ef4444';
+        result.textContent = '❌ ' + e.message;
+    }
+}
+
+// Share links
+function setupShareLinks() {
+    const url = encodeURIComponent(SHARE_URL);
+    const textHe = encodeURIComponent(SHARE_TEXT_HE + ' ' + SHARE_URL);
+    const textEn = encodeURIComponent(SHARE_TEXT_EN + ' ' + SHARE_URL);
+
+    document.getElementById('share-tg').href = `https://t.me/share/url?url=${url}&text=${encodeURIComponent(SHARE_TEXT_HE)}`;
+    document.getElementById('share-tw').href = `https://twitter.com/intent/tweet?url=${url}&text=${encodeURIComponent(SHARE_TEXT_EN)}`;
+    document.getElementById('share-fb').href = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+    document.getElementById('share-wa').href = `https://wa.me/?text=${textHe}`;
+}
+setupShareLinks();
+
+function copyShareText() {
+    navigator.clipboard.writeText(SHARE_TEXT_HE + ' ' + SHARE_URL).then(() => {
+        alert('✅ הטקסט הועתק');
+    });
+}
+
+// Auto-fill form from localStorage (logged-in user)
+function autoFillContribForm() {
+    try {
+        const raw = localStorage.getItem('slh_user');
+        if (!raw) return;
+        const user = JSON.parse(raw);
+        const name = user.first_name || user.username || '';
+        const handle = user.username ? ('@' + user.username) : '';
+
+        if (name) {
+            document.getElementById('contrib-name').value = name;
+            document.getElementById('contrib-handle').value = handle;
+            const banner = document.getElementById('contrib-autofill');
+            const nameEl = document.getElementById('contrib-auto-name');
+            if (banner && nameEl) {
+                nameEl.textContent = name;
+                banner.style.display = 'block';
+            }
+        }
+    } catch(e) {}
+}
+autoFillContribForm();
+
+// Live BNB→USD preview
+let bnbPrice = 608;
+async function fetchBnbPrice() {
+    try {
+        const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=binancecoin&vs_currencies=usd');
+        const d = await r.json();
+        if (d.binancecoin && d.binancecoin.usd) bnbPrice = d.binancecoin.usd;
+    } catch(e) {}
+}
+fetchBnbPrice();
+
+document.getElementById('contrib-amount').addEventListener('input', function() {
+    const val = parseFloat(this.value) || 0;
+    const preview = document.getElementById('bnb-usd-preview');
+    if (val > 0) {
+        preview.textContent = `≈ $${(val * bnbPrice).toFixed(2)} USD (1 BNB = $${bnbPrice.toFixed(0)})`;
+    } else {
+        preview.textContent = '';
+    }
+});
+
+// Init + auto-refresh
+loadLaunchStatus();
+setInterval(loadLaunchStatus, 30000);
+</script>
+<button id="theme-fab" onclick="document.getElementById('theme-panel').classList.toggle('open')" title="Theme">🎨</button>
+<div id="theme-panel">
+    <div style="font-size:11px;color:var(--text2,#8a8aa0);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">ערכת צבעים</div>
+    <button onclick="document.documentElement.removeAttribute('data-theme');localStorage.setItem('slh_page_theme','default');document.getElementById('theme-panel').classList.remove('open')">🟢 Default</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','dark');localStorage.setItem('slh_page_theme','dark');document.getElementById('theme-panel').classList.remove('open')">🌙 Dark</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','light');localStorage.setItem('slh_page_theme','light');document.getElementById('theme-panel').classList.remove('open')">☀️ Light</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','crypto');localStorage.setItem('slh_page_theme','crypto');document.getElementById('theme-panel').classList.remove('open')">₿ Crypto</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','ocean');localStorage.setItem('slh_page_theme','ocean');document.getElementById('theme-panel').classList.remove('open')">🌊 Ocean</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','sunset');localStorage.setItem('slh_page_theme','sunset');document.getElementById('theme-panel').classList.remove('open')">🌅 Sunset</button>
+</div>
+<script>
+(function(){var t=localStorage.getItem('slh_page_theme');if(t&&t!=='default')document.documentElement.setAttribute('data-theme',t);document.addEventListener('click',function(e){var p=document.getElementById('theme-panel'),f=document.getElementById('theme-fab');if(p&&f&&!p.contains(e.target)&&!f.contains(e.target))p.classList.remove('open');});})();
+</script>
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260426e"></script>
+</body>
+</html>

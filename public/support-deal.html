@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>הצעה מיוחדת ללקוח — SLH Spark</title>
+<meta name="description" content="הצעה אישית ללקוחות בתמיכה טכנית — תיקון מכשיר + הנחה 10% לחברי אמון.">
+<meta property="fb:app_id" content="0">
+<meta property="og:type" content="website">
+<meta property="og:title" content="💎 הצעה אישית ללקוח — הנחה 10% + תיקון חינם">
+<meta property="og:description" content="עבור לקוחות בתהליך תמיכה טכנית — הנחה מיוחדת כאות אמון.">
+<meta property="og:image" content="https://slh-nft.com/assets/og/launch.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://slh-nft.com/support-deal.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="💎 הצעה אישית ללקוח — הנחה 10%">
+<meta name="twitter:image" content="https://slh-nft.com/assets/og/launch.jpg">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/shared.css?v=20260415">
+<style>
+:root{--bg:#050810;--bg2:#0d1220;--bg3:#151a2e;--gold:#ffd700;--green:#00e887;--red:#ff4444;--purple:#a855f7;--blue:#3b82f6;--cyan:#06b6d4;--text:#f5f5f8;--text2:#9ba0b5;--text3:#5a6078;--border:rgba(0,232,135,.3)}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Rubik',sans-serif;margin:0;min-height:100vh;line-height:1.6}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(ellipse at 20% 10%,rgba(0,232,135,.10),transparent 50%),radial-gradient(ellipse at 85% 80%,rgba(255,215,0,.08),transparent 50%)}
+.container{max-width:900px;margin:30px auto;padding:0 20px}
+.hero{text-align:center;padding:40px 20px;background:linear-gradient(135deg,rgba(0,232,135,.10),rgba(255,215,0,.06));border:2px solid var(--green);border-radius:24px;margin-bottom:30px}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;background:rgba(0,232,135,.2);border:1px solid var(--green);color:var(--green);border-radius:30px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:2px;margin-bottom:20px}
+.hero h1{font-size:clamp(30px,5vw,48px);font-weight:900;margin:0 0 14px;background:linear-gradient(135deg,var(--green),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{font-size:16px;color:var(--text);max-width:600px;margin:0 auto 20px}
+.discount-card{background:var(--bg2);border:2px solid var(--gold);border-radius:20px;padding:30px;text-align:center;margin-bottom:20px;box-shadow:0 20px 60px rgba(255,215,0,.15)}
+.price-row{display:flex;justify-content:center;align-items:baseline;gap:14px;flex-wrap:wrap;margin:14px 0}
+.price-old{font-size:22px;color:var(--text3);text-decoration:line-through}
+.price-new{font-size:48px;font-weight:900;color:var(--gold);font-family:'JetBrains Mono',monospace}
+.savings{display:inline-block;padding:6px 14px;background:var(--green);color:#000;border-radius:12px;font-weight:900;font-size:14px}
+.section{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:24px;margin-bottom:18px}
+.section h2{margin:0 0 16px;font-size:20px;font-weight:900;color:var(--gold);display:flex;align-items:center;gap:10px}
+.pay-methods{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.pay-card{background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center}
+.pay-card .ico{font-size:36px;color:var(--gold);margin-bottom:10px}
+.pay-card .name{font-weight:900;font-size:15px;margin-bottom:6px}
+.pay-card .detail{font-size:12px;color:var(--text2);margin-bottom:10px}
+.pay-card code{display:block;background:rgba(0,0,0,.4);padding:8px 10px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cyan);word-break:break-all;direction:ltr;text-align:left;margin:8px 0}
+.pay-card .amount{font-size:20px;font-weight:900;color:var(--green);font-family:'JetBrains Mono',monospace}
+.step{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start}
+.step-num{width:32px;height:32px;border-radius:50%;background:var(--gold);color:#000;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;flex-shrink:0}
+.step-body{flex:1}
+.step-body h3{margin:0 0 4px;font-size:15px;color:var(--text);font-weight:900}
+.step-body p{margin:0;font-size:13px;color:var(--text2);line-height:1.7}
+.cta-btn{display:inline-flex;align-items:center;gap:10px;padding:16px 32px;background:linear-gradient(135deg,var(--green),var(--gold));color:#000;border:none;border-radius:14px;font-weight:900;font-size:16px;text-decoration:none;cursor:pointer;font-family:inherit;margin-top:10px;transition:all .2s}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,232,135,.4)}
+.cta-btn.secondary{background:var(--bg);color:var(--text);border:1px solid var(--border)}
+.benefits-list{list-style:none;padding:0;margin:0}
+.benefits-list li{padding:8px 0;display:flex;gap:10px;align-items:flex-start;color:var(--text);font-size:14px}
+.benefits-list li i{color:var(--green);margin-top:4px;flex-shrink:0}
+.trust-note{background:rgba(168,85,247,.1);border:1px solid var(--purple);border-radius:12px;padding:14px;font-size:13px;color:var(--text);margin-top:18px;line-height:1.7}
+#hebrew-date{text-align:center;color:var(--text3);font-size:12px;padding:20px;margin-top:30px}
+</style>
+</head>
+<body>
+
+<div id="topnav-root"></div>
+
+<div class="container">
+  <div class="hero">
+    <div class="badge"><i class="fas fa-gem"></i> הצעה אישית ללקוח מוערך</div>
+    <h1>תודה על האמון שלך ב-SLH Spark</h1>
+    <p>
+      כאות הערכה על הפנייה שלך לתמיכה — הכנו עבורך <strong>הנחה של 10%</strong> על חבילת ה-Starter Pack.
+      בנוסף, <strong>נתקן את המכשיר שלך ללא עלות</strong> כחלק מהשירות.
+    </p>
+  </div>
+
+  <!-- Discount Card -->
+  <div class="discount-card">
+    <div style="font-size:13px;color:var(--gold);font-weight:800;letter-spacing:2px;text-transform:uppercase">🎁 הטבה אישית · קוד הנחה TRUST10</div>
+    <div class="price-row">
+      <span class="price-old">₪22.221</span>
+      <span class="price-new" id="discounted-price">₪19.999</span>
+      <span class="savings">חסכון 10%</span>
+    </div>
+    <div style="color:var(--text2);font-size:14px;margin-bottom:16px">כל מה שכלול — ועוד <strong style="color:var(--green)">תיקון מכשיר חינם</strong></div>
+
+    <ul class="benefits-list" style="max-width:400px;margin:20px auto;text-align:right">
+      <li><i class="fas fa-check"></i> 0.25 SLH + 10% בונוס טוקנים</li>
+      <li><i class="fas fa-check"></i> 1,000 ZVK (≈ ₪4,400 שווי פנימי)</li>
+      <li><i class="fas fa-check"></i> גישה לקבוצת Premium (30 יום)</li>
+      <li><i class="fas fa-check"></i> קורס בסיס + אפשרות למכור קורסים משלך</li>
+      <li><i class="fas fa-check"></i> <strong style="color:var(--green)">תיקון מכשיר חינם</strong> (ייעוץ והדרכה דרך טלגרם)</li>
+      <li><i class="fas fa-check"></i> 14 יום להחזר מלא</li>
+      <li><i class="fas fa-check"></i> תמיכה אישית של הצוות שלנו</li>
+    </ul>
+  </div>
+
+  <!-- How to Pay (EXACT instructions) -->
+  <div class="section">
+    <h2><i class="fas fa-credit-card"></i> בדיוק איך להעביר את הכסף</h2>
+    <p style="color:var(--text2);font-size:14px;margin-bottom:20px">בחר שיטה — כל אחת זמינה ומאובטחת, עם מעקב מלא:</p>
+
+    <div class="pay-methods">
+      <!-- TON -->
+      <div class="pay-card">
+        <div class="ico">💎</div>
+        <div class="name">TON Wallet</div>
+        <div class="detail">הכי מהיר · אישור תוך דקה</div>
+        <div class="amount">~4.82 TON</div>
+        <code>UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp</code>
+        <button onclick="copyText('UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp', this)" style="padding:8px 14px;background:var(--gold);color:#000;border:none;border-radius:8px;font-weight:900;font-size:12px;cursor:pointer;font-family:inherit">📋 העתק כתובת</button>
+      </div>
+
+      <!-- Bank -->
+      <div class="pay-card">
+        <div class="ico">🏦</div>
+        <div class="name">העברה בנקאית</div>
+        <div class="detail">אישור תוך 24 שעות</div>
+        <div class="amount">₪19.999</div>
+        <div style="text-align:right;font-size:12px;color:var(--text2);line-height:1.8;background:rgba(0,0,0,.3);padding:10px;border-radius:8px">
+          <strong>מוטב:</strong> קאופמן צביקה<br>
+          <strong>בנק:</strong> לאומי<br>
+          <strong>סניף:</strong> הרצליה (948)<br>
+          <strong>חשבון:</strong> 738009
+        </div>
+      </div>
+
+      <!-- BNB -->
+      <div class="pay-card">
+        <div class="ico">🟡</div>
+        <div class="name">BNB (BSC)</div>
+        <div class="detail">MetaMask/TrustWallet</div>
+        <div class="amount">~0.036 BNB</div>
+        <code>0xd061de73B06d5E91bfA46b35EfB7B08b16903da4</code>
+        <button onclick="copyText('0xd061de73B06d5E91bfA46b35EfB7B08b16903da4', this)" style="padding:8px 14px;background:var(--gold);color:#000;border:none;border-radius:8px;font-weight:900;font-size:12px;cursor:pointer;font-family:inherit">📋 העתק כתובת</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Steps -->
+  <div class="section">
+    <h2><i class="fas fa-list-ol"></i> 4 צעדים פשוטים</h2>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h3>בחר שיטת תשלום</h3>
+        <p>TON (הכי מומלץ למהירות), בנק (נוח לישראלים), או BNB (אם יש לך ארנק קריפטו).</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h3>בצע את ההעברה עם קוד <strong style="color:var(--gold)">TRUST10</strong></h3>
+        <p>סכום: ₪19.999 (במקום ₪22.221). רשום בהערות: "TRUST10 + קוד ההפניה שלך"</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h3>שלח צילום מסך של האישור לבוט</h3>
+        <p>לחץ על כפתור "שלח אישור" למטה. הטכנאי יאמת תוך שעות ספורות ויזכה את החשבון שלך.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h3>קבל גישה מלאה + תיקון מכשיר</h3>
+        <p>הטוקנים ירדו לחשבונך + קבלת הפניה לקבוצת Premium + הדרכה אישית לתיקון המכשיר.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTAs -->
+  <div class="section" style="text-align:center">
+    <h2 style="justify-content:center;text-align:center"><i class="fas fa-rocket"></i> מוכן להתחיל?</h2>
+    <a href="https://t.me/Grdian_bot" target="_blank" rel="noopener" class="cta-btn">
+      <i class="fab fa-telegram"></i> שלח אישור דרך הבוט
+    </a>
+    <a href="https://slh-nft.com/promo-shekel.html" class="cta-btn secondary">
+      <i class="fas fa-info-circle"></i> קרא עוד על המערכת
+    </a>
+    <a href="tel:+972584203384" class="cta-btn secondary">
+      <i class="fas fa-phone"></i> התקשר 058-420-3384
+    </a>
+  </div>
+
+  <!-- Trust note -->
+  <div class="trust-note">
+    💜 <strong>הערה אישית:</strong> אנחנו מעריכים שפנית אלינו לתמיכה ולא פשוט ויתרת.
+    זה אומר שאתה באמת מעוניין להיות חלק מהקהילה.
+    המחיר המיוחד וה-10% הנחה הם אות להערכה — וגם התחייבות שלנו להעמיד לרשותך
+    כל מה שצריך לפתרון הבעיה הטכנית שלך.
+  </div>
+
+  <div id="hebrew-date"></div>
+</div>
+
+<script src="/js/shared.js?v=20260415"></script>
+<script src="/js/analytics.js"></script>
+<script>
+function copyText(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = '✅ הועתק!';
+    setTimeout(() => btn.textContent = orig, 2000);
+  });
+}
+
+// Hebrew date footer
+function updateHebDate() {
+  try {
+    const now = new Date();
+    const heb = new Intl.DateTimeFormat('he-IL-u-ca-hebrew', {
+      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+    }).format(now);
+    const greg = new Intl.DateTimeFormat('he-IL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(now);
+    const time = now.toLocaleTimeString('he-IL');
+    const el = document.getElementById('hebrew-date');
+    if(el) el.textContent = `📅 ${heb} · ${greg} · ${time}`;
+  } catch(e) {}
+}
+updateHebDate();
+setInterval(updateHebDate, 1000);
+
+// Track this visit
+try {
+  fetch('https://slh-api-production.up.railway.app/api/campaign/click', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      campaign_id: 'support_deal_trust10',
+      path_type: 'support_discount',
+      lang: 'he',
+      source: document.referrer || 'direct'
+    })
+  }).catch(()=>{});
+} catch(e) {}
+</script>
+
+<script src="/js/ai-assistant.js"></script>
+</body>
+</html>

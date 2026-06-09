@@ -1,0 +1,191 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH · קישור מכשיר</title>
+<link rel="stylesheet" href="/css/style.css">
+<style>
+  body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: #0b1020; color: #e9ecf2; max-width: 520px; margin: 0 auto; padding: 24px 16px; }
+  h1 { color: #7ab4ff; font-size: 22px; margin: 0 0 16px; }
+  .card { background: #12182f; border: 1px solid #223058; border-radius: 12px; padding: 18px; margin-bottom: 14px; }
+  label { display: block; margin-bottom: 6px; color: #9db0d4; font-size: 14px; }
+  input, button { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #334071; background: #0e1428; color: #fff; font-size: 16px; box-sizing: border-box; }
+  button { background: linear-gradient(135deg, #3769b7, #4a89d1); border: none; font-weight: 600; cursor: pointer; margin-top: 8px; }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .muted { color: #8a98bf; font-size: 13px; }
+  .ok { color: #4ade80; }
+  .err { color: #f87171; }
+  .step { display: none; }
+  .step.active { display: block; }
+  code { background: #0a0e1e; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  .mac { font-family: monospace; color: #ffd27a; }
+</style>
+</head>
+<body>
+<h1>📟 קישור מכשיר SLH</h1>
+
+<div class="card">
+  <div class="muted">מכשיר: <span class="mac" id="mac">(טוען…)</span></div>
+  <div class="muted" id="status">מוכן לקישור</div>
+</div>
+
+<section class="step active" id="step-phone">
+  <div class="card" id="mac-manual-card" style="display:none">
+    <label for="manual-mac">MAC של המכשיר (12 תווים, ללא נקודתיים)</label>
+    <input type="text" id="manual-mac" placeholder="A1B2C3D4E5F6" maxlength="12" style="font-family:monospace;text-transform:uppercase">
+    <div class="muted" style="margin-top:6px">אם פתחת את הדף מהמחשב, הזן ידנית את ה-MAC שמופיע על מסך המכשיר בעת ה-boot, או השאר ריק ליצירת device_id אקראי לבדיקה.</div>
+    <button id="btn-set-mac" style="margin-top:10px;background:#334071">✔️ קבע מכשיר</button>
+  </div>
+  <div class="card">
+    <label for="phone">טלפון לקבלת קוד</label>
+    <input type="tel" id="phone" placeholder="0501234567" autocomplete="tel">
+    <button id="btn-send-code">📩 שלח קוד</button>
+    <div class="muted" style="margin-top:10px">הקוד יישלח לטלגרם אם הטלפון מקושר לחשבון SLH. אם לא — יופיע כאן קוד לבדיקה (SMS עדיין לא מחובר לספק).</div>
+  </div>
+</section>
+
+<section class="step" id="step-code">
+  <div class="card">
+    <label for="code">קוד אימות (6 ספרות)</label>
+    <input type="text" id="code" inputmode="numeric" maxlength="6" placeholder="123456">
+    <button id="btn-verify">✅ אמת וקשר מכשיר</button>
+    <div class="muted" style="margin-top:10px">הקוד תקף ל-5 דקות.</div>
+  </div>
+</section>
+
+<section class="step" id="step-done">
+  <div class="card">
+    <h2 style="color:#4ade80; margin:0 0 10px">✅ המכשיר קושר בהצלחה!</h2>
+    <div class="muted">User ID: <span id="out-uid">?</span></div>
+    <div class="muted" style="margin-top:8px">המכשיר אמור לתפוס את הקישור תוך 5 שניות ולעבור להציג את היתרה.</div>
+    <button onclick="location.href='/wallet.html'" style="margin-top:16px">👛 לארנק שלי</button>
+  </div>
+</section>
+
+<script>
+const API = "https://slh-api-production.up.railway.app";
+
+function qs(k) {
+  return new URLSearchParams(location.search).get(k);
+}
+
+function setStep(id) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = cls ? ('muted ' + cls) : 'muted';
+}
+
+let rawMac = (qs('mac') || '').toUpperCase().replace(/[^A-F0-9]/g, '');
+let deviceId = rawMac ? `esp32-${rawMac}` : '';
+
+function updateMacDisplay() {
+  document.getElementById('mac').textContent = rawMac || '(הזן ידנית למטה)';
+}
+updateMacDisplay();
+
+if (!rawMac) {
+  setStatus('ℹ️ פתוח מהמחשב — הזן MAC ידנית או השאר ריק לבדיקה.');
+  document.getElementById('mac-manual-card').style.display = 'block';
+}
+
+document.getElementById('btn-set-mac').addEventListener('click', () => {
+  const typed = document.getElementById('manual-mac').value.toUpperCase().replace(/[^A-F0-9]/g, '');
+  if (typed.length === 12) {
+    rawMac = typed;
+  } else if (typed.length === 0) {
+    // generate a random test MAC so user can pair a "virtual" device
+    rawMac = Array.from({length: 12}, () => '0123456789ABCDEF'[Math.floor(Math.random() * 16)]).join('');
+    setStatus('🎲 נוצר MAC אקראי לבדיקה: ' + rawMac, 'ok');
+  } else {
+    setStatus('MAC חייב להיות 12 תווים (או ריק ליצירה אקראית)', 'err');
+    return;
+  }
+  deviceId = `esp32-${rawMac}`;
+  updateMacDisplay();
+  document.getElementById('mac-manual-card').style.display = 'none';
+  setStatus('מכשיר נקבע: ' + deviceId + ' — עכשיו הזן טלפון', 'ok');
+});
+
+document.getElementById('btn-send-code').addEventListener('click', async () => {
+  if (!deviceId) {
+    setStatus('❌ קודם קבע מכשיר (MAC) למעלה', 'err');
+    return;
+  }
+  const phone = document.getElementById('phone').value.trim();
+  if (!phone || phone.length < 9) {
+    setStatus('מספר טלפון לא תקין', 'err');
+    return;
+  }
+  setStatus('שולח קוד…');
+  try {
+    const r = await fetch(`${API}/api/device/register`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({phone, device_id: deviceId, device_type: 'esp32'}),
+    });
+    const data = await r.json();
+    if (!r.ok) {
+      setStatus('שגיאה: ' + (data.detail || r.statusText), 'err');
+      return;
+    }
+    if (data.delivery === 'telegram') {
+      setStatus('✉️ קוד נשלח לטלגרם שלך', 'ok');
+    } else if (data.delivery === 'sms') {
+      const providerName = {
+        twilio: 'Twilio',
+        inforu: 'Inforu',
+        sms019: '019 Mobile'
+      }[data.sms_provider] || data.sms_provider || 'SMS';
+      setStatus('📱 קוד נשלח ב-SMS (' + providerName + ')', 'ok');
+    } else if (data._dev_code) {
+      setStatus('ℹ️ SMS עדיין לא מחובר. הקוד מוצג לבדיקה (תוקף 5 דק\'): ' + data._dev_code, 'ok');
+    } else if (data.sms_error) {
+      setStatus('⚠️ SMS נכשל: ' + data.sms_error + '. צור קשר עם התמיכה.', 'err');
+    } else {
+      setStatus('📱 קוד נשלח', 'ok');
+    }
+    setStep('step-code');
+    if (data._dev_code) {
+      // Dev helper: pre-fill code if SMS isn't configured
+      document.getElementById('code').value = data._dev_code;
+    }
+  } catch (e) {
+    setStatus('שגיאת רשת: ' + e.message, 'err');
+  }
+});
+
+document.getElementById('btn-verify').addEventListener('click', async () => {
+  const phone = document.getElementById('phone').value.trim();
+  const code = document.getElementById('code').value.trim();
+  if (!/^\d{6}$/.test(code)) {
+    setStatus('קוד חייב להיות 6 ספרות', 'err');
+    return;
+  }
+  setStatus('מאמת…');
+  try {
+    const r = await fetch(`${API}/api/device/verify`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({phone, device_id: deviceId, code}),
+    });
+    const data = await r.json();
+    if (!r.ok) {
+      setStatus('שגיאה: ' + (data.detail || r.statusText), 'err');
+      return;
+    }
+    document.getElementById('out-uid').textContent = data.user_id;
+    setStatus('מכשיר קושר! ממתין לפולינג של המכשיר…', 'ok');
+    setStep('step-done');
+  } catch (e) {
+    setStatus('שגיאת רשת: ' + e.message, 'err');
+  }
+});
+</script>
+</body>
+</html>

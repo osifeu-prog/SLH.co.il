@@ -1,0 +1,659 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLH Spark Wallet Guide â€” Telegram Setup</title>
+    <meta name="description" content="Step-by-step guide to setting up your Telegram crypto wallet and receiving SLH Spark tokens.">
+    <link rel="canonical" href="https://slh-nft.com/wallet-guide.html">
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://slh-nft.com/wallet-guide.html">
+    <meta property="og:title" content="SLH Spark Wallet Guide â€” Telegram Setup">
+    <meta property="og:description" content="Step-by-step guide: set up Telegram wallet and receive SLH tokens">
+    <meta property="og:image" content="https://slh-nft.com/assets/og/wallet.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="he_IL">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SLH Spark Wallet Guide â€” Telegram Setup">
+    <meta name="twitter:description" content="Step-by-step guide: set up Telegram wallet and receive SLH tokens">
+    <meta name="twitter:image" content="https://slh-nft.com/assets/og/wallet.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <meta name="theme-color" content="#050510">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/shared.css?v=20260426e">
+    <style>
+        .wg-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: calc(var(--topnav-h) + 32px) 24px 100px;
+        }
+
+        .wg-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text3);
+            text-decoration: none;
+            font-size: 13px;
+            margin-bottom: 24px;
+            transition: color var(--transition);
+        }
+        .wg-back:hover { color: var(--accent); }
+
+        .wg-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .wg-header h1 {
+            font-size: clamp(24px, 4vw, 36px);
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+        .wg-header h1 i {
+            color: var(--accent);
+            margin-left: 10px;
+        }
+        .wg-header .wg-subtitle {
+            font-size: 15px;
+            color: var(--text3);
+            line-height: 1.6;
+        }
+
+        /* â”€â”€ Table of Contents â”€â”€ */
+        .wg-toc {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 40px;
+        }
+        .wg-toc h3 {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 12px;
+        }
+        .wg-toc a {
+            display: block;
+            color: var(--text2);
+            text-decoration: none;
+            font-size: 14px;
+            padding: 5px 0;
+            transition: all var(--transition);
+        }
+        .wg-toc a:hover {
+            color: var(--accent);
+            padding-right: 6px;
+        }
+
+        /* â”€â”€ Section â”€â”€ */
+        .wg-section {
+            margin-bottom: 48px;
+        }
+        .wg-section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        .wg-section-title i {
+            color: var(--accent);
+            font-size: 22px;
+        }
+
+        /* â”€â”€ Step Cards â”€â”€ */
+        .wg-step {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            padding-right: 72px;
+            margin-bottom: 12px;
+            position: relative;
+            transition: border-color var(--transition);
+        }
+        .wg-step:hover {
+            border-color: var(--accent);
+        }
+        .wg-step-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(108, 92, 231, .12);
+            border: 1px solid var(--accent);
+            border-radius: 50%;
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--accent);
+        }
+        .wg-step-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+        .wg-step-desc {
+            font-size: 14px;
+            color: var(--text2);
+            line-height: 1.7;
+        }
+        .wg-step-desc code {
+            background: rgba(108, 92, 231, .1);
+            padding: 2px 8px;
+            border-radius: var(--radius-xs);
+            color: var(--accent);
+            font-family: var(--font-mono);
+            font-size: 13px;
+        }
+
+        /* â”€â”€ Info / Warn / Tip Cards â”€â”€ */
+        .wg-info {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 12px;
+            line-height: 1.7;
+        }
+        .wg-info p {
+            font-size: 14px;
+            color: var(--text2);
+            margin: 0;
+        }
+        .wg-info p + p {
+            margin-top: 8px;
+        }
+
+        .wg-warn {
+            background: rgba(255, 71, 87, .05);
+            border: 1px solid rgba(255, 71, 87, .25);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 12px;
+        }
+        .wg-warn-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--red);
+            margin-bottom: 8px;
+        }
+        .wg-warn p {
+            font-size: 13px;
+            color: var(--text2);
+            margin: 0;
+            line-height: 1.7;
+        }
+
+        .wg-tip {
+            background: rgba(0, 180, 216, .05);
+            border: 1px solid rgba(0, 180, 216, .25);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: var(--cyan);
+            line-height: 1.7;
+        }
+        .wg-tip i { margin-left: 6px; }
+
+        /* â”€â”€ Alt Wallet Cards â”€â”€ */
+        .wg-alt-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 12px;
+        }
+        .wg-alt-card h4 {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .wg-alt-card h4 i { color: var(--accent); }
+        .wg-alt-card ol {
+            padding-right: 20px;
+            margin: 0;
+        }
+        .wg-alt-card li {
+            font-size: 14px;
+            color: var(--text2);
+            line-height: 1.8;
+        }
+        .wg-alt-card code {
+            background: rgba(108, 92, 231, .1);
+            padding: 2px 6px;
+            border-radius: var(--radius-xs);
+            color: var(--accent);
+            font-family: var(--font-mono);
+            font-size: 12px;
+            word-break: break-all;
+        }
+
+        /* â”€â”€ FAQ â”€â”€ */
+        .wg-faq {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 12px;
+        }
+        .wg-faq summary {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .wg-faq summary::before {
+            content: '\f054';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: 11px;
+            color: var(--accent);
+            transition: transform var(--transition);
+        }
+        .wg-faq[open] summary::before {
+            transform: rotate(90deg);
+        }
+        html[dir="rtl"] .wg-faq[open] summary::before {
+            transform: rotate(-90deg);
+        }
+        .wg-faq p {
+            font-size: 14px;
+            color: var(--text2);
+            margin: 12px 0 0;
+            line-height: 1.7;
+        }
+
+        /* â”€â”€ CTA â”€â”€ */
+        .wg-cta {
+            text-align: center;
+            margin-top: 48px;
+            padding: 40px 24px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+        }
+        .wg-cta h3 {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+        .wg-cta .cta-sub {
+            font-size: 14px;
+            color: var(--text3);
+            margin-bottom: 24px;
+        }
+        .wg-cta-btns {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .wg-cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all var(--transition);
+        }
+        .wg-cta-btn.primary {
+            background: var(--accent);
+            color: #fff;
+        }
+        .wg-cta-btn.primary:hover {
+            filter: brightness(1.15);
+            transform: translateY(-2px);
+        }
+        .wg-cta-btn.secondary {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+        .wg-cta-btn.secondary:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* â”€â”€ Responsive â”€â”€ */
+        @media (max-width: 600px) {
+            .wg-step { padding-right: 20px; padding-top: 52px; }
+            .wg-step-badge { top: 12px; right: 12px; width: 32px; height: 32px; font-size: 14px; }
+            .wg-cta-btns { flex-direction: column; align-items: center; }
+            .wg-cta-btn { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+<div id="topnav-root"></div>
+<div id="ticker-root"></div>
+
+<div class="wg-container">
+
+    <a href="/guides.html" class="wg-back"><i class="fas fa-arrow-right"></i> ×—×–×¨×” ×œ×ž×“×¨×™×›×™×</a>
+
+    <div class="wg-header">
+        <h1><i class="fas fa-wallet"></i> ×ž×“×¨×™×š ××¨× ×§ ×˜×œ×’×¨×</h1>
+        <p class="wg-subtitle">×ž×“×¨×™×š ×©×œ×‘-××—×¨-×©×œ×‘ ×œ×”×’×“×¨×ª ××¨× ×§ ×§×¨×™×¤×˜×• ×‘×˜×œ×’×¨× ×•×œ×§×‘×œ×ª ×˜×•×§× ×™ SLH</p>
+    </div>
+
+    <!-- Table of Contents -->
+    <div class="wg-toc">
+        <h3><i class="fas fa-list"></i> ×ª×•×›×Ÿ ×¢× ×™×™× ×™×</h3>
+        <a href="#what-is-wallet">1. ×ž×” ×–×” ××¨× ×§ ×§×¨×™×¤×˜×•?</a>
+        <a href="#step1">2. ×©×œ×‘ 1: ×¤×ª×—×• ××ª @wallet ×‘×˜×œ×’×¨×</a>
+        <a href="#step2">3. ×©×œ×‘ 2: ×™×¦×™×¨×ª ××¨× ×§ TON</a>
+        <a href="#step3">4. ×©×œ×‘ 3: ×”×¢×ª×§×ª ×›×ª×•×‘×ª ×”××¨× ×§</a>
+        <a href="#step4">5. ×©×œ×‘ 4: ×©×œ×™×—×ª ×”×›×ª×•×‘×ª ×œ×‘×•×˜ SLH</a>
+        <a href="#step5">6. ×©×œ×‘ 5: ×§×‘×œ×ª ×˜×•×§× ×™ SLH</a>
+        <a href="#trust-wallet">7. ××¤×©×¨×•×ª × ×•×¡×¤×ª: Trust Wallet</a>
+        <a href="#metamask">8. ××¤×©×¨×•×ª × ×•×¡×¤×ª: MetaMask</a>
+        <a href="#security">9. ×˜×™×¤×™× ×œ××‘×˜×—×”</a>
+        <a href="#faq">10. ×©××œ×•×ª × ×¤×•×¦×•×ª</a>
+    </div>
+
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+    <!-- 1. ×ž×” ×–×” ××¨× ×§ ×§×¨×™×¤×˜×•? -->
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+    <div class="wg-section" id="what-is-wallet">
+        <h2 class="wg-section-title"><i class="fas fa-question-circle"></i> ×ž×” ×–×” ××¨× ×§ ×§×¨×™×¤×˜×•?</h2>
+        <div class="wg-info">
+            <p>××¨× ×§ ×§×¨×™×¤×˜×• ×”×•× ×›×œ×™ ×“×™×’×™×˜×œ×™ ×©×ž××¤×©×¨ ×œ×›× ×œ×©×ž×•×¨, ×œ×©×œ×•×— ×•×œ×§×‘×œ ×ž×˜×‘×¢×•×ª ×§×¨×™×¤×˜×•×’×¨×¤×™×™×. ×”××¨× ×§ ×ž×›×™×œ ×–×•×’ ×ž×¤×ª×—×•×ª: ×ž×¤×ª×— ×¦×™×‘×•×¨×™ (×›×ª×•×‘×ª ×”××¨× ×§ ×©×œ×›×, ×›×ž×• ×ž×¡×¤×¨ ×—×©×‘×•×Ÿ ×‘× ×§) ×•×ž×¤×ª×— ×¤×¨×˜×™ (×¡×™×¡×ž×” ×¡×•×“×™×ª ×œ×’×™×©×” ×œ×›×¡×¤×™×).</p>
+            <p>×›×“×™ ×œ×§×‘×œ ×˜×•×§× ×™ SLH, ×œ×¡×—×•×¨ ×‘×”× ××• ×œ×”×©×ª×ª×£ ×‘×¡×˜×™×™×§×™× ×’, ×ª×¦×˜×¨×›×• ××¨× ×§ ×§×¨×™×¤×˜×•. ×‘×ž×“×¨×™×š ×”×–×” × ×œ×ž×“ ××ª×›× ××™×š ×œ×”×’×“×™×¨ ××—×“ ×‘×§×œ×•×ª ×“×¨×š ×˜×œ×’×¨×.</p>
+        </div>
+    </div>
+
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+    <!-- 2. ×©×œ×‘ 1: ×¤×ª×—×• ××ª @wallet ×‘×˜×œ×’×¨× -->
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+    <div class="wg-section" id="step1">
+        <h2 class="wg-section-title"><i class="fas fa-paper-plane"></i> ×©×œ×‘ 1: ×¤×ª×—×• ××ª @wallet ×‘×˜×œ×’×¨×</h2>
+
+        <div class="wg-step">
+            <div class="wg-step-badge">1</div>
+            <div class="wg-step-title">×¤×ª×—×• ××ª ××¤×œ×™×§×¦×™×™×ª ×˜×œ×’×¨×</div>
+            <div class="wg-step-desc">×•×“××• ×©×ž×•×ª×§× ×ª ××¦×œ×›× ×”×’×¨×¡×” ×”×¢×“×›× ×™×ª ×‘×™×•×ª×¨ ×©×œ ×˜×œ×’×¨×. ×× ××™×Ÿ ×œ×›×, ×”×•×¨×™×“×• ×ž-<a href="https://telegram.org" style="color:var(--accent)">telegram.org</a>.</div>
+        </div>
+        <div class="wg-step">
+            <div class="wg-step-badge">2</div>
+            <div class="wg-step-title">×—×¤×©×• ××ª @wallet</div>
+            <div class="wg-step-desc">×‘×©×•×¨×ª ×”×—×™×¤×•×© ×‘×˜×œ×’×¨×, ×”×§×œ×™×“×• <code>@wallet</code> ×•×‘×—×¨×• ××ª ×”×‘×•×˜ ×”×¨×©×ž×™ ×©×œ Telegram Wallet (×¢× ×¡×™×ž×Ÿ ××™×ž×•×ª ×›×—×•×œ).</div>
+        </div>
+        <div class="wg-step">
+            <div class="wg-step-badge">3</div>
+            <div class="wg-step-title">×œ×—×¦×• Start</div>
+            <div class="wg-step-desc">×œ×—×¦×• ×¢×œ ×›×¤×ª×•×¨ <code>Start</code> ×‘×ª×—×ª×™×ª ×”×¦'××˜ ×›×“×™ ×œ×”×¤×¢×™×œ ××ª ××¨× ×§ ×˜×œ×’×¨×.</div>
+        </div>
+
+        <div class="wg-tip"><i class="fas fa-lightbulb"></i> ××¨× ×§ ×˜×œ×’×¨× ×”×•× ××¨× ×§ ×ž×•×‘× ×” ×‘×ª×•×š ×”××¤×œ×™×§×¦×™×” - ×œ× ×¦×¨×™×š ×œ×”×ª×§×™×Ÿ ×©×•× ×“×‘×¨ × ×•×¡×£.</div>
+    </div>
+
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+    <!-- 3. ×©×œ×‘ 2: ×™×¦×™×¨×ª ××¨× ×§ TON -->
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+    <div class="wg-section" id="step2">
+        <h2 class="wg-section-title"><i class="fas fa-plus-circle"></i> ×©×œ×‘ 2: ×™×¦×™×¨×ª ××¨× ×§ TON</h2>
+
+        <div class="wg-step">
+            <div class="wg-step-badge">1</div>
+            <div class="wg-step-title">×‘×—×¨×• ××ª ×¨×©×ª TON</div>
+            <div class="wg-step-desc">×‘×ª×¤×¨×™×˜ ×”××¨× ×§, ×‘×—×¨×• ××ª ×”×ž×˜×‘×¢ <code>TON</code> (Toncoin). ×× ×–×• ×”×¤×¢× ×”×¨××©×•× ×”, ×”××¨× ×§ ×™×™×¦×•×¨ ×¢×‘×•×¨×›× ×›×ª×•×‘×ª ×—×“×©×” ×‘××•×¤×Ÿ ××•×˜×•×ž×˜×™.</div>
+        </div>
+        <div class="wg-step">
+            <div class="wg-step-badge">2</div>
+            <div class="wg-step-title">××©×¨×• ××ª ×”×ª× ××™×</div>
+            <div class="wg-step-desc">××©×¨×• ××ª ×ª× ××™ ×”×©×™×ž×•×© ×©×œ ××¨× ×§ ×˜×œ×’×¨×. ×”××¨× ×§ ×ž××•×‘×˜×— ×•×ž× ×•×”×œ ×™×©×™×¨×•×ª ×‘×ª×•×š ×˜×œ×’×¨×.</div>
+        </div>
+        <div class="wg-step">
+            <div class="wg-step-badge">3</div>
+            <div class="wg-step-title">×”××¨× ×§ ×ž×•×›×Ÿ</div>
+            <div class="wg-step-desc">×‘×¨×’×¢ ×©×”××¨× ×§ × ×•×¦×¨, ×ª×•×›×œ×• ×œ×¨××•×ª ××ª ×”×™×ª×¨×” ×©×œ×›× (0 TON ×‘×”×ª×—×œ×”) ×•××ª ××¤×©×¨×•×™×•×ª ×”×©×œ×™×—×” ×•×”×§×‘×œ×”.</div>
+        </div>
+    </div>
+
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+    <!-- 4. ×©×œ×‘ 3: ×”×¢×ª×§×ª ×›×ª×•×‘×ª ×”××¨× ×§ -->
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+    <div class="wg-section" id="step3">
+        <h2 class="wg-section-title"><i class="fas fa-copy"></i> ×©×œ×‘ 3: ×”×¢×ª×§×ª ×›×ª×•×‘×ª ×”××¨× ×§</h2>
+
+        <div class="wg-step">
+            <div class="wg-step-badge">1</div>
+            <div class="wg-step-title">×œ×—×¦×• ×¢×œ TON</div>
+            <div class="wg-step-desc">×‘×ª×•×š ××¨× ×§ ×˜×œ×’×¨×, ×œ×—×¦×• ×¢×œ ×”×ž×˜×‘×¢ <code>TON</code> ×›×“×™ ×œ×”×™×›× ×¡ ×œ×“×£ ×”×ž×˜×‘×¢.</div>
+        </div>
+        <div class="wg-step">
+            <div class="wg-step-badge">2</div>
+            <div class="wg-step-title">×œ×—×¦×• ×¢×œ Receive (×§×‘×œ×”)</div>
+            <div class="wg-step-desc">×œ×—×¦×• ×¢×œ ×›×¤×ª×•×¨ <code>Receive</code> ×›×“×™ ×œ×¨××•×ª ××ª ×›×ª×•×‘×ª ×”××¨× ×§ ×©×œ×›×.</div>
+        </div>
+        <div class="wg-step">
+            <div class="wg-step-badge">3</div>
+            <div class="wg-step-title">×”×¢×ª×™×§×• ××ª ×”×›×ª×•×‘×ª</div>
+            <div class="wg-step-desc">×œ×—×¦×• ×¢×œ ×›×¤×ª×•×¨ <code>Copy</code> ××• ×œ×—×¦×• ×¢×œ ×”×›×ª×•×‘×ª ×¢×¦×ž×” ×›×“×™ ×œ×”×¢×ª×™×§ ××•×ª×”. ×”×›×ª×•×‘×ª × ×¨××™×ª ×‘×¢×¨×š ×›×š: <code>UQ...abc123</code>. ×©×ž×¨×• ××•×ª×” - ×ª×¦×˜×¨×›×• ××•×ª×” ×‘×©×œ×‘ ×”×‘×.</div>
+        </div>
+
+        <div class="wg-tip"><i class="fas fa-lightbulb"></i> ×›×ª×•×‘×ª ××¨× ×§ TON ×ž×ª×—×™×œ×” ×ª×ž×™×“ ×‘-<code>UQ</code> ××• <code>EQ</code>. ×× ×”×›×ª×•×‘×ª × ×¨××™×ª ××—×¨×ª, ×•×“××• ×©×‘×—×¨×ª× ×‘×¨×©×ª TON.</div>
+    </div>
+
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+    <!-- 5. ×©×œ×‘ 4: ×©×œ×™×—×ª ×”×›×ª×•×‘×ª ×œ×‘×•×˜ SLH -->
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+    <div class="wg-section" id="step4">
+        <h2 class="wg-section-title"><i class="fas fa-robot"></i> ×©×œ×‘ 4: ×©×œ×™×—×ª ×”×›×ª×•×‘×ª ×œ×‘×•×˜ SLH</h2>
+
+        <div class="wg-step">
+            <div class="wg-step-badge">1</div>
+            <div class="wg-step-title">×¤×ª×—×• ××ª @SLH_WALLET_bot</div>
+            <div class="wg-step-desc">×—×¤×©×• ××ª <code>@SLH_WALLET_bot</code> ×‘×˜×œ×’×¨× ×•×œ×—×¦×• <code>Start</code>. ×œ×—×œ×•×¤×™×Ÿ, ×”×™×›× ×¡×• ×™×©×™×¨×•×ª ×“×¨×š <a href="https://t.me/SLH_WALLET_bot" style="color:var(--accent)">t.me/SLH_WALLET_bot</a>.</div>
+        </div>
+        <div class="wg-step">
+            <div class="wg-step-badge">2</div>
+            <div class="wg-step-title">×©×œ×—×• ××ª ×›×ª×•×‘×ª ×”××¨× ×§</div>
+            <div class="wg-step-desc">×”×“×‘×™×§×• ××ª ×›×ª×•×‘×ª ×”××¨× ×§ ×©×”×¢×ª×§×ª× ×‘×©×œ×‘ ×”×§×•×“× ×•×©×œ×—×• ××•×ª×” ×œ×‘×•×˜. ×”×‘×•×˜ ×™××©×¨ ×©×”×›×ª×•×‘×ª × ×§×œ×˜×” ×‘×”×¦×œ×—×”.</div>
+        </div>
+        <div class="wg-step">
+            <div class="wg-step-badge">3</div>
+            <div class="wg-step-title">××¤×©×¨×•×ª: ×”×’×“×¨×” ×“×¨×š ×”×“××©×‘×•×¨×“</div>
+            <div class="wg-step-desc">×ª×•×›×œ×• ×’× ×œ×”×“×‘×™×§ ××ª ×›×ª×•×‘×ª ×”××¨× ×§ ×“×¨×š <a href="/dashboard.html" style="color:var(--accent)">×”×“××©×‘×•×¨×“ ×‘××ª×¨</a> &mdash; ×”×™×›× ×¡×• ×œ×¤×¨×•×¤×™×œ ×©×œ×›× ×•×¢×“×›× ×• ××ª ×©×“×” ×›×ª×•×‘×ª ×”××¨× ×§.</div>
+        </div>
+    </div>
+
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+    <!-- 6. ×©×œ×‘ 5: ×§×‘×œ×ª ×˜×•×§× ×™ SLH -->
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+    <div class="wg-section" id="step5">
+        <h2 class="wg-section-title"><i class="fas fa-coins"></i> ×©×œ×‘ 5: ×§×‘×œ×ª ×˜×•×§× ×™ SLH</h2>
+
+        <div class="wg-info">
+            <p>×˜×•×§×Ÿ SLH ×¤×•×¢×œ ×¢×œ ×¨×©×ª BSC (BNB Smart Chain). ×›×“×™ ×œ×¨××•×ª ××ª ×”×˜×•×§× ×™× ×‘××¨× ×§ ×—×™×¦×•× ×™, ×ª×¦×˜×¨×›×• ×œ×”×•×¡×™×£ ××ª ×”×˜×•×§×Ÿ ×™×“× ×™×ª.</p>
+        </div>
+
+        <div class="wg-step">
+            <div class="wg-step-badge">1</div>
+            <div class="wg-step-title">×•×“××• ×©×”××¨× ×§ ×©×œ×›× ×ª×•×ž×š ×‘-BSC</div>
+            <div class="wg-step-desc">×× ××ª× ×ž×©×ª×ž×©×™× ×‘-Trust Wallet ××• MetaMask, ×•×“××• ×©×¨×©×ª BSC (BNB Smart Chain) ×ž×•×¤×¢×œ×ª ×‘××¨× ×§ ×©×œ×›×.</div>
+        </div>
+        <div class="wg-step">
+            <div class="wg-step-badge">2</div>
+            <div class="wg-step-title">×”×•×¡×™×¤×• ××ª ×˜×•×§×Ÿ SLH ×›×˜×•×§×Ÿ ×ž×•×ª××</div>
+            <div class="wg-step-desc">×—×¤×©×• ××ª ×”××¤×©×¨×•×ª "Add Custom Token" ×‘××¨× ×§ ×©×œ×›×. ×‘×—×¨×• ×¨×©×ª <code>BSC</code> ×•×”×“×‘×™×§×• ××ª ×›×ª×•×‘×ª ×”×—×•×–×”:<br><code>0xACb0A09414CEA1C879c67bB7A877E4e19480f022</code></div>
+        </div>
+        <div class="wg-step">
+            <div class="wg-step-badge">3</div>
+            <div class="wg-step-title">×§×‘×œ×• ×˜×•×§× ×™×</div>
+            <div class="wg-step-desc">×œ××—×¨ ×”×”×’×“×¨×”, ×˜×•×§× ×™ SLH ×©×ª×¨×•×•×™×—×• ×“×¨×š ×”×‘×•×˜, ×¡×˜×™×™×§×™× ×’ ××• ×¨×¤×¨×œ×™× ×™×•×¤×™×¢×• ××•×˜×•×ž×˜×™×ª ×‘××¨× ×§ ×©×œ×›×.</div>
+        </div>
+    </div>
+
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+    <!-- 7. ××¤×©×¨×•×ª × ×•×¡×¤×ª: Trust Wallet -->
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+    <div class="wg-section" id="trust-wallet">
+        <h2 class="wg-section-title"><i class="fas fa-shield-halved"></i> ××¤×©×¨×•×ª × ×•×¡×¤×ª: Trust Wallet</h2>
+
+        <div class="wg-alt-card">
+            <h4><i class="fas fa-mobile-screen-button"></i> ×”×’×“×¨×ª Trust Wallet</h4>
+            <ol>
+                <li>×”×•×¨×™×“×• ××ª <strong>Trust Wallet</strong> ×ž×—× ×•×ª ×”××¤×œ×™×§×¦×™×•×ª (App Store / Google Play).</li>
+                <li>×¦×¨×• ××¨× ×§ ×—×“×© ×•×©×ž×¨×• ××ª 12 ×ž×™×œ×•×ª ×”×©×—×–×•×¨ (Seed Phrase) ×‘×ž×§×•× ×‘×˜×•×— &mdash; <strong>×œ×¢×•×œ× ××œ ×ª×©×ª×¤×• ××•×ª×Ÿ!</strong></li>
+                <li>×œ×—×¦×• ×¢×œ ×¡×ž×œ ×”×”×’×“×¨×•×ª (×’×œ×’×œ ×©×™× ×™×™×) ×‘×¤×™× ×” ×”×™×ž× ×™×ª ×”×¢×œ×™×•× ×”.</li>
+                <li>×‘×—×¨×• "Add Custom Token" ×•×ž×œ××• ××ª ×”×¤×¨×˜×™×:
+                    <br>×¨×©×ª: <code>BNB Smart Chain (BEP20)</code>
+                    <br>×›×ª×•×‘×ª ×—×•×–×”: <code>0xACb0A09414CEA1C879c67bB7A877E4e19480f022</code>
+                    <br>×©×: <code>SLH</code> &nbsp;|&nbsp; ×¡×ž×œ: <code>SLH</code> &nbsp;|&nbsp; ×¡×¤×¨×•×ª ×¢×©×¨×•× ×™×•×ª: <code>18</code>
+                </li>
+                <li>×œ×—×¦×• "Save". ×”×˜×•×§×Ÿ SLH ×™×•×¤×™×¢ ×›×¢×ª ×‘×¨×©×™×ž×ª ×”×ž×˜×‘×¢×•×ª ×©×œ×›×.</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+    <!-- 8. ××¤×©×¨×•×ª × ×•×¡×¤×ª: MetaMask -->
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+    <div class="wg-section" id="metamask">
+        <h2 class="wg-section-title"><i class="fab fa-ethereum"></i> ××¤×©×¨×•×ª × ×•×¡×¤×ª: MetaMask</h2>
+
+        <div class="wg-alt-card">
+            <h4><i class="fas fa-fox"></i> ×”×’×“×¨×ª MetaMask</h4>
+            <ol>
+                <li>×”×ª×§×™× ×• ××ª <strong>MetaMask</strong> ×›×ª×•×¡×£ ×œ×“×¤×“×¤×Ÿ ××• ×›××¤×œ×™×§×¦×™×” ×œ× ×™×™×“ ×ž-<a href="https://metamask.io" style="color:var(--accent)">metamask.io</a>.</li>
+                <li>×¦×¨×• ××¨× ×§ ×—×“×© ×•×©×ž×¨×• ××ª ×ž×™×œ×•×ª ×”×©×—×–×•×¨ ×‘×ž×§×•× ×‘×˜×•×—.</li>
+                <li>×”×•×¡×™×¤×• ××ª ×¨×©×ª BSC ×™×“× ×™×ª:
+                    <br>×©× ×¨×©×ª: <code>BNB Smart Chain</code>
+                    <br>RPC URL: <code>https://bsc-dataseed.binance.org/</code>
+                    <br>Chain ID: <code>56</code>
+                    <br>×¡×ž×œ: <code>BNB</code>
+                    <br>Block Explorer: <code>https://bscscan.com</code>
+                </li>
+                <li>×¢×‘×¨×• ×œ×¨×©×ª BSC ×•×œ×—×¦×• "Import Tokens" ×‘×ª×—×ª×™×ª.</li>
+                <li>×”×“×‘×™×§×• ××ª ×›×ª×•×‘×ª ×”×—×•×–×”: <code>0xACb0A09414CEA1C879c67bB7A877E4e19480f022</code></li>
+                <li>MetaMask ×™×–×”×” ××•×˜×•×ž×˜×™×ª ××ª ×©× ×”×˜×•×§×Ÿ (SLH) ×•×”×¡×¤×¨×•×ª. ×œ×—×¦×• "Add Custom Token" ×•××– "Import Tokens".</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+    <!-- 9. ×˜×™×¤×™× ×œ××‘×˜×—×” -->
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+    <div class="wg-section" id="security">
+        <h2 class="wg-section-title"><i class="fas fa-lock"></i> ×˜×™×¤×™× ×œ××‘×˜×—×”</h2>
+
+        <div class="wg-warn">
+            <div class="wg-warn-title"><i class="fas fa-triangle-exclamation"></i> ×—×©×•×‘ ×ž××•×“!</div>
+            <p>×œ×¢×•×œ× ××œ ×ª×©×ª×¤×• ××ª ×ž×™×œ×•×ª ×”×©×—×–×•×¨ (Seed Phrase) ××• ×”×ž×¤×ª×— ×”×¤×¨×˜×™ ×¢× ××£ ××—×“. ×¦×•×•×ª SLH ×œ×¢×•×œ× ×œ× ×™×‘×§×© ×ž×›× ×¤×¨×˜×™× ××œ×”.</p>
+        </div>
+
+        <div class="wg-step">
+            <div class="wg-step-badge"><i class="fas fa-key" style="font-size:14px"></i></div>
+            <div class="wg-step-title">×©×ž×¨×• ××ª ×ž×™×œ×•×ª ×”×©×—×–×•×¨ ×‘×ž×§×•× ×‘×˜×•×—</div>
+            <div class="wg-step-desc">×¨×©×ž×• ××ª 12/24 ×ž×™×œ×•×ª ×”×©×—×–×•×¨ ×¢×œ × ×™×™×¨ ×•×©×ž×¨×• ×‘×ž×§×•× ×‘×˜×•×— ×¤×™×–×™×ª. ×œ× ×‘×ž×—×©×‘, ×œ× ×‘×¦×™×œ×•× ×ž×¡×š, ×œ× ×‘×¢× ×Ÿ.</div>
+        </div>
+        <div class="wg-step">
+            <div class="wg-step-badge"><i class="fas fa-shield-halved" style="font-size:14px"></i></div>
+            <div class="wg-step-title">×”×¤×¢×™×œ×• ××™×ž×•×ª ×“×•-×©×œ×‘×™ (2FA)</div>
+            <div class="wg-step-desc">×”×™×›× ×¡×• ×œ×”×’×“×¨×•×ª ×˜×œ×’×¨× &rarr; ×¤×¨×˜×™×•×ª ×•××‘×˜×—×” &rarr; ××™×ž×•×ª ×“×•-×©×œ×‘×™. ×”×•×¡×™×¤×• ×¡×™×¡×ž×” × ×•×¡×¤×ª ×œ×—×©×‘×•×Ÿ ×”×˜×œ×’×¨× ×©×œ×›×.</div>
+        </div>
+        <div class="wg-step">
+            <div class="wg-step-badge"><i class="fas fa-check-circle" style="font-size:14px"></i></div>
+            <div class="wg-step-title">×”×©×ª×ž×©×• ×¨×§ ×‘××¤×œ×™×§×¦×™×•×ª ×¨×©×ž×™×•×ª</div>
+            <div class="wg-step-desc">×”×•×¨×™×“×• ××¨× ×§×™× ×¨×§ ×ž×”××ª×¨×™× ×”×¨×©×ž×™×™× ××• ×ž×—× ×•×™×•×ª ×”××¤×œ×™×§×¦×™×•×ª ×”×ž×•×›×¨×•×ª. ×”×™×–×”×¨×• ×ž×§×™×©×•×¨×™× ×—×©×•×“×™× ×•×ž××ª×¨×™ ×¤×™×©×™× ×’.</div>
+        </div>
+        <div class="wg-step">
+            <div class="wg-step-badge"><i class="fas fa-user-secret" style="font-size:14px"></i></div>
+            <div class="wg-step-title">××œ ×ª×œ×—×¦×• ×¢×œ ×§×™×©×•×¨×™× ×—×©×•×“×™×</div>
+            <div class="wg-step-desc">×× ×ž×™×©×”×• ×©×•×œ×— ×œ×›× ×§×™×©×•×¨ "×œ×—×™×“×•×© ×”××¨× ×§" ××• "×œ××™×©×•×¨ ×—×©×‘×•×Ÿ" - ×–×• ×”×•× ××”. ×‘×•×˜×™× ×¨×©×ž×™×™× ×©×œ SLH ×œ×¢×•×œ× ×œ× ×™×©×œ×—×• ×§×™×©×•×¨×™× ×›××œ×”.</div>
+        </div>
+    </div>
+
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+    <!-- 10. ×©××œ×•×ª × ×¤×•×¦×•×ª -->
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+    <div class="wg-section" id="faq">
+        <h2 class="wg-section-title"><i class="fas fa-circle-question"></i> ×©××œ×•×ª × ×¤×•×¦×•×ª</h2>
+
+        <details class="wg-faq">
+            <summary>×ž×” ×× ××™×‘×“×ª×™ ××ª ×›×ª×•×‘×ª ×”××¨× ×§?</summary>
+            <p>×œ× × ×•×¨×! ×›×ª×•×‘×ª ×”××¨× ×§ ×”×™× ×¦×™×‘×•×¨×™×ª ×•×œ× ×¡×•×“×™×ª. ×¤×©×•×˜ ×”×™×›× ×¡×• ×ž×—×“×© ×œ××¨× ×§ ×˜×œ×’×¨× (@wallet), ×œ×—×¦×• ×¢×œ TON &rarr; Receive, ×•×”×¢×ª×™×§×• ××ª ×”×›×ª×•×‘×ª ×©×•×‘. ×”×›×ª×•×‘×ª ×œ× ×ž×©×ª× ×”.</p>
+        </details>
+
+        <details class="wg-faq">
+            <summary>×›×ž×” ×¢×•×œ×” ×œ×”×¢×‘×™×¨ ×˜×•×§× ×™×?</summary>
+            <p>×”×¢×‘×¨×•×ª ×‘×ª×•×š ×ž×¢×¨×›×ª SLH (×‘×™×Ÿ ×ž×©×ª×ž×©×™× ×“×¨×š ×”×‘×•×˜) ×”×Ÿ ×œ×œ× ×¢×ž×œ×”. ×”×¢×‘×¨×•×ª ×‘×¨×©×ª ×”×‘×œ×•×§×¦'×™×™×Ÿ (TON ××• BSC) ×›×¨×•×›×•×ª ×‘×¢×ž×œ×ª ×¨×©×ª ×§×˜× ×” (×‘×“×¨×š ×›×œ×œ ×¤×—×•×ª ×ž-$0.10).</p>
+        </details>
+
+        <details class="wg-faq">
+            <summary>×”×× ×–×” ×‘×˜×•×—?</summary>
+            <p>××¨× ×§ ×˜×œ×’×¨× ×ž××•×‘×˜×— ×¢×œ ×™×“×™ ×˜×œ×’×¨× ×¢×¦×ž×”. ××¨× ×§×™× ×—×™×¦×•× ×™×™× ×›×ž×• Trust Wallet ×•-MetaMask ×”× ××¨× ×§×™× ×ž×•×›×¨×™× ×•×‘×˜×•×—×™×. ×”×¡×™×›×•×Ÿ ×”×¢×™×§×¨×™ ×”×•× ×ª×ž×™×“ ×ž×¦×“ ×”×ž×©×ª×ž×© - ×©×ž×™×¨×” ×œ× × ×›×•× ×” ×©×œ ×ž×™×œ×•×ª ×”×©×—×–×•×¨ ××• ×œ×—×™×¦×” ×¢×œ ×§×™×©×•×¨×™× ×ž×–×•×™×¤×™×. ×¢×§×‘×• ××—×¨×™ ×˜×™×¤×™ ×”××‘×˜×—×” ×œ×ž×¢×œ×”.</p>
+        </details>
+
+        <details class="wg-faq">
+            <summary>×”×× ××¤×©×¨ ×œ×”×©×ª×ž×© ×‘××¨× ×§ ××—×¨?</summary>
+            <p>×›×Ÿ. ×›×œ ××¨× ×§ ×©×ª×•×ž×š ×‘×¨×©×ª BSC (BNB Smart Chain) ×™×›×•×œ ×œ×”×—×–×™×§ ×˜×•×§× ×™ SLH. ××¨× ×§ ×˜×œ×’×¨× ×ž×•×ž×œ×¥ ×œ× ×•×—×•×ª, ××‘×œ Trust Wallet ×•-MetaMask ×”× ×’× ××¤×©×¨×•×™×•×ª ×ž×¦×•×™× ×•×ª.</p>
+        </details>
+
+        <details class="wg-faq">
+            <summary>××™×š ×× ×™ ×™×•×“×¢ ×©×§×™×‘×œ×ª×™ ×˜×•×§× ×™×?</summary>
+            <p>×ª×§×‘×œ×• ×”×ª×¨××” ×‘×‘×•×˜ SLH ×¢×œ ×›×œ ×¤×¢×•×œ×”. ×‘× ×•×¡×£, ×ª×•×›×œ×• ×œ×‘×“×•×§ ××ª ×”×™×ª×¨×” ×©×œ×›× ×“×¨×š ×”×“××©×‘×•×¨×“ ××• ×‘××¨× ×§ ×”×—×™×¦×•× ×™ ×©×œ×›× (×œ××—×¨ ×”×•×¡×¤×ª ×”×˜×•×§×Ÿ ×”×ž×•×ª××).</p>
+        </details>
+    </div>
+
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+    <!-- CTA -->
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+    <div class="wg-cta">
+        <h3>×”×’×“×¨×ª× ××¨× ×§? ×ž×¢×•×œ×”!</h3>
+        <p class="cta-sub">×¢×›×©×™×• ××ª× ×ž×•×›× ×™× ×œ×§×‘×œ ×˜×•×§× ×™ SLH, ×œ×”×©×ª×ª×£ ×‘×¡×˜×™×™×§×™× ×’ ×•×œ×”×¨×•×•×™×—.</p>
+        <div class="wg-cta-btns">
+            <a href="/dashboard.html" class="wg-cta-btn primary"><i class="fas fa-chart-line"></i> ×›× ×™×¡×” ×œ×“××©×‘×•×¨×“</a>
+            <a href="https://t.me/SLH_AIR_bot" class="wg-cta-btn secondary" target="_blank" rel="noopener"><i class="fab fa-telegram"></i> ×¤×ª×—×• ××ª ×‘×•×˜ SLH</a>
+        </div>
+    </div>
+
+</div><!-- /.wg-container -->
+
+<div id="bottomnav-root"></div>
+<div id="footer-root"></div>
+
+<script src="/js/translations.js?v=20260426e"></script>
+<script src="/js/shared.js?v=20260426e"></script>
+<script>
+    initShared({ activePage: 'guides' });
+</script>
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260426e"></script>
+</body>
+</html>

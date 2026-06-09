@@ -1,0 +1,61 @@
+{
+  "name": "SLH Spark System",
+  "short_name": "SLH Spark",
+  "description": "מערכת השקעות ישראלית בקריפטו — 6 טוקנים, 225+ endpoints, קהילה של ערכים.",
+  "start_url": "/?source=pwa",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#05080f",
+  "theme_color": "#00ff41",
+  "scope": "/",
+  "lang": "he",
+  "dir": "rtl",
+  "categories": ["finance", "productivity", "social"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "url": "/dashboard.html?source=pwa-shortcut",
+      "description": "לוח בקרה אישי"
+    },
+    {
+      "name": "תשלום",
+      "short_name": "Pay",
+      "url": "/pay.html?source=pwa-shortcut",
+      "description": "בצע תשלום חדש"
+    },
+    {
+      "name": "Community",
+      "short_name": "Community",
+      "url": "/community.html?source=pwa-shortcut",
+      "description": "פיד הקהילה"
+    },
+    {
+      "name": "קבלות",
+      "short_name": "Receipts",
+      "url": "/receipts.html?source=pwa-shortcut",
+      "description": "ההיסטוריה שלך"
+    }
+  ],
+  "prefer_related_applications": false
+}

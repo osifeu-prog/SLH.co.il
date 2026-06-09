@@ -1,0 +1,183 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Payment · SLH Spark</title>
+<meta name="description" content="Verify SLH payment flow — minimum transfer, no commitment.">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://slh-nft.com/pay-test.html">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="/css/shared.css?v=20260425">
+<style>
+  body { font-family:'Inter',system-ui,sans-serif; background:var(--bg,#0a0a0f); color:var(--text,#e0e0e0); margin:0; line-height:1.6; }
+  .wrap { max-width: 520px; margin: 0 auto; padding: 32px 20px 60px; }
+
+  .hero { text-align:center; margin-bottom:24px; }
+  .hero .eyebrow { display:inline-block; padding:4px 14px; background:rgba(0,255,65,.08); border:1px solid rgba(0,255,65,.3); border-radius:20px; font-size:11px; color:var(--accent,#00ff41); letter-spacing:.5px; margin-bottom:12px; text-transform:uppercase; }
+  .hero h1 { font-size:28px; font-weight:900; margin:0 0 8px; background:linear-gradient(135deg,#ffd700,#00e887); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+  .hero .sub { font-size:14px; color:var(--text2,#9a9aa8); }
+
+  .price-card { background:linear-gradient(135deg,rgba(0,232,135,.05),rgba(0,255,65,.03)); border:2px solid #00e887; border-radius:18px; padding:24px 22px; text-align:center; margin:24px 0; }
+  .price-card .amount-big { font-size:42px; font-weight:900; color:#00e887; line-height:1; }
+  .price-card .amount-sub { font-size:13px; color:var(--text2,#9a9aa8); margin-top:6px; }
+  .price-card .ils-equiv { margin-top:10px; font-size:12px; color:#ffd700; }
+
+  .uid-block { margin:20px 0; padding:16px 18px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.07); border-radius:12px; }
+  .uid-block label { display:block; font-size:12px; color:var(--text2,#9a9aa8); margin-bottom:6px; }
+  .uid-block input { width:100%; padding:10px 12px; background:rgba(0,0,0,.3); border:1px solid rgba(255,255,255,.1); border-radius:8px; color:var(--text); font-family:inherit; font-size:14px; box-sizing:border-box; direction:ltr; text-align:right; }
+  .uid-block .hint { font-size:11px; color:var(--text2,#9a9aa8); margin-top:6px; }
+  .uid-block a { color:#00e887; text-decoration:none; }
+
+  .pay-buttons { display:grid; gap:12px; margin:24px 0; }
+  .btn-pay { display:flex; align-items:center; justify-content:center; gap:12px; padding:18px 22px; border-radius:14px; font-size:17px; font-weight:800; text-decoration:none; cursor:pointer; border:none; transition:transform .15s; }
+  .btn-pay:hover { transform:translateY(-2px); }
+  .btn-pay:disabled { opacity:.5; cursor:not-allowed; transform:none; }
+  .btn-bnb { background:linear-gradient(135deg,#f3ba2f,#d69900); color:#000; }
+  .btn-ton { background:linear-gradient(135deg,#0098ea,#0077c2); color:#fff; }
+
+  .status { margin:20px 0; padding:16px; border-radius:10px; font-size:14px; display:none; }
+  .status.show { display:block; }
+  .status.info { background:rgba(0,152,234,.1); border:1px solid rgba(0,152,234,.3); color:#0098ea; }
+  .status.success { background:rgba(0,255,65,.1); border:1px solid rgba(0,255,65,.3); color:#00ff41; }
+  .status.error { background:rgba(255,71,87,.1); border:1px solid rgba(255,71,87,.3); color:#ff6b81; }
+  .status .tx { display:block; margin-top:6px; font-family:monospace; font-size:11px; color:var(--text2,#9a9aa8); word-break:break-all; }
+
+  .steps { margin-top:28px; padding:18px; background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.06); border-radius:12px; }
+  .steps h3 { margin:0 0 12px; font-size:14px; font-weight:700; color:var(--text2,#9a9aa8); text-transform:uppercase; letter-spacing:.5px; }
+  .steps ol { margin:0; padding-inline-start:20px; font-size:13px; color:var(--text,#e0e0e0); }
+  .steps li { margin-bottom:6px; }
+
+  .note { margin-top:24px; padding:14px; font-size:12px; color:var(--text2,#9a9aa8); text-align:center; border-top:1px solid rgba(255,255,255,.08); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="eyebrow">⚡ Test Flow · One-time</div>
+    <h1>בדיקת מערכת</h1>
+    <p class="sub">העברה מינימלית לאימות תקינות ה-flow. 30 שניות, אחרי זה premium access חי.</p>
+  </div>
+
+  <!-- Price card -->
+  <div class="price-card">
+    <div class="amount-big" id="main-amount">0.01 TON</div>
+    <div class="amount-sub">או 0.0005 BNB</div>
+    <div class="ils-equiv">≈ ₪0.06 (שש אגורות)</div>
+  </div>
+
+  <!-- User ID -->
+  <div class="uid-block">
+    <label for="uid-input">מזהה Telegram שלך (user_id):</label>
+    <input type="number" id="uid-input" placeholder="224223270" min="1000000">
+    <div class="hint">לא יודע את ה-ID? שלח <code>/start</code> ל-<a href="https://t.me/userinfobot" target="_blank">@userinfobot</a> והוא יחזיר לך.</div>
+  </div>
+
+  <!-- Pay buttons -->
+  <div class="pay-buttons">
+    <button class="btn-pay btn-bnb" id="btn-bnb">
+      <i class="fa-brands fa-ethereum" style="font-size:22px"></i>
+      שלם 0.0005 BNB עם MetaMask
+    </button>
+    <button class="btn-pay btn-ton" id="btn-ton">
+      <i class="fa-regular fa-paper-plane" style="font-size:20px"></i>
+      שלם 0.01 TON עם Tonkeeper / Wallet
+    </button>
+  </div>
+
+  <!-- Status -->
+  <div class="status" id="status"></div>
+
+  <!-- Steps explainer -->
+  <div class="steps">
+    <h3>מה קורה אחרי שתלחץ?</h3>
+    <ol>
+      <li>הארנק שלך נפתח עם ההעברה מוכנה</li>
+      <li>אתה מאשר — התשלום נשלח ל-blockchain</li>
+      <li>המערכת שלנו מזהה ומאמתת אוטומטית (30 שניות)</li>
+      <li>המשתמש שלך מקבל Premium Access חי</li>
+      <li>קבלה דיגיטלית נשמרת ב-dashboard</li>
+    </ol>
+  </div>
+
+  <div class="note">
+    💙 זו בדיקה אמיתית על mainnet — כסף אמיתי אבל מינימלי.<br>
+    קבלה חוקית מונפקת על שם SLH Spark (עוסק פטור).
+  </div>
+
+</div>
+
+<!-- Analytics -->
+<script src="/js/analytics.js"></script>
+<script>
+  const API = 'https://slh-api-production.up.railway.app';
+  const BSC_ADDR = '0xd061de73B06d5E91bfA46b35EfB7B08b16903da4';
+  const TON_ADDR = 'UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp';
+  const AMOUNT_BNB = 0.0005;
+  const AMOUNT_TON = 0.01;
+
+  const params = new URLSearchParams(location.search);
+  const urlUid = params.get('uid');
+  if (urlUid) document.getElementById('uid-input').value = urlUid;
+  const SRC = params.get('src') || 'direct';
+  const CAMPAIGN = params.get('campaign') || 'test-payment-v1';
+
+  if (window.SLH_Analytics) {
+    window.SLH_Analytics.trackEvent('pay_test_view', { uid: urlUid || 'anon', src: SRC, campaign: CAMPAIGN });
+  }
+
+  function getUid() {
+    const v = parseInt(document.getElementById('uid-input').value, 10);
+    if (!v || v < 1000000) {
+      showStatus('error', '❌ הזן מזהה Telegram תקין (מספר בן 9-10 ספרות)');
+      return null;
+    }
+    return v;
+  }
+
+  function showStatus(kind, html) {
+    const el = document.getElementById('status');
+    el.className = 'status show ' + kind;
+    el.innerHTML = html;
+  }
+
+  async function verifyPayment(method, txHash, uid) {
+    showStatus('info', '⏳ מאמת ב-' + (method === 'ton' ? 'TON Center' : 'BscScan') + ' (עד 30 שניות)...<span class="tx">tx: ' + txHash + '</span>');
+    const endpoint = method === 'ton' ? '/api/payment/ton/auto-verify' : '/api/payment/bsc/auto-verify';
+    const body = { user_id: uid, tx_hash: txHash, bot_name: 'ecosystem' };
+    if (method === 'ton') body.expected_amount_ton = AMOUNT_TON;
+    if (method === 'bnb') body.expected_min_bnb = AMOUNT_BNB;
+
+    try {
+      const r = await fetch(API + endpoint, {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(body)
+      });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.detail || 'Verification failed');
+      const amt = method === 'ton' ? (d.amount_ton + ' TON') : (d.amount_bnb + ' BNB');
+      const receipt = d.receipt ? ('<br>קבלה: ' + d.receipt.receipt_number) : '';
+      showStatus('success',
+        '✅ אומת! התקבלו ' + amt + receipt +
+        '<br><br>Premium Access הוענק ל-user ' + uid + '.' +
+        '<span class="tx">tx: ' + txHash + '</span>'
+      );
+      if (window.SLH_Analytics) {
+        window.SLH_Analytics.trackEvent('pay_test_verified', { uid, method, tx: txHash, src: SRC, campaign: CAMPAIGN });
+      }
+    } catch (e) {
+      showStatus('error', '❌ אימות נכשל: ' + e.message + '<br>המכשיר קלט את העסקה אבל הצד-השני לא מצא. חכה 30 שניות ונסה שוב.<span class="tx">tx: ' + txHash + '</span>');
+    }
+  }
+
+  // BNB via MetaMask
+  document.getElementById('btn-bnb').addEventListener('click', async () => {
+    const uid = getUid();
+    if (!uid) return;
+    if (!window.ethereum) {
+      showStatus('error', '❌ MetaMask לא מותקן. התקן מ-metamask.io או השתמש בטלפון.');
+      return;

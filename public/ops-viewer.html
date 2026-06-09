@@ -1,0 +1,478 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH · Ops Docs Viewer</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+<style>
+  :root {
+    --bg: #050810;
+    --bg2: #0c1018;
+    --bg3: #141924;
+    --accent: #00ff41;
+    --cyan: #00e5ff;
+    --gold: #ffd700;
+    --red: #ff0055;
+    --purple: #a855f7;
+    --text: #e0e0f0;
+    --text2: #8a8ab0;
+    --text3: #444466;
+    --border: rgba(0, 255, 65, 0.12);
+    --border2: rgba(255, 255, 255, 0.06);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Heebo', 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.7;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(1000px 500px at 20% 0%, rgba(0,255,65,.05), transparent 60%),
+      radial-gradient(900px 500px at 100% 100%, rgba(168,85,247,.04), transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .wrap {
+    position: relative; z-index: 1;
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  .hdr {
+    display: flex; align-items: center; gap: 14px;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, rgba(0,255,65,.04), rgba(168,85,247,.04));
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    margin-bottom: 20px;
+  }
+  .hdr .logo {
+    width: 42px; height: 42px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), var(--cyan));
+    display: grid; place-items: center;
+    color: #000; font-weight: 900; font-size: 20px;
+  }
+  .hdr h1 { font-size: 18px; font-weight: 800; color: var(--text); }
+  .hdr .sub { color: var(--text2); font-size: 12px; font-family: 'JetBrains Mono', monospace; }
+  .hdr-actions { margin-inline-start: auto; display: flex; gap: 8px; }
+  .btn {
+    padding: 8px 14px;
+    border-radius: 8px;
+    background: rgba(0,255,65,.08);
+    color: var(--accent);
+    border: 1px solid rgba(0,255,65,.25);
+    font-weight: 700;
+    font-size: 12px;
+    text-decoration: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: .15s;
+  }
+  .btn:hover { background: rgba(0,255,65,.18); }
+  .btn.sec { background: transparent; color: var(--text2); border-color: var(--border2); }
+  .btn.sec:hover { color: var(--text); border-color: var(--accent); }
+
+  /* Doc list */
+  .doc-list {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 20px;
+  }
+  .doc-list h3 {
+    font-size: 14px;
+    color: var(--cyan);
+    margin-bottom: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .doc-list ul { list-style: none; display: grid; gap: 6px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .doc-list a {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: var(--bg3);
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+    transition: .15s;
+    border: 1px solid transparent;
+  }
+  .doc-list a:hover { color: var(--accent); border-color: var(--accent); }
+  .doc-list a.active { color: var(--accent); background: rgba(0,255,65,.08); border-color: rgba(0,255,65,.3); }
+  .doc-list .all-docs { margin-top: 14px; border-top: 1px solid var(--border2); padding-top: 12px; }
+  .doc-list .all-docs summary {
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--cyan);
+    font-weight: 700;
+    padding: 6px 4px;
+    list-style: none;
+    user-select: none;
+  }
+  .doc-list .all-docs summary::-webkit-details-marker { display: none; }
+  .doc-list .all-docs summary::before { content: '▸ '; display: inline-block; transition: transform .15s; }
+  .doc-list .all-docs[open] summary::before { transform: rotate(90deg); }
+  .doc-list .all-docs summary:hover { color: var(--accent); }
+  .doc-list .all-docs ul { margin-top: 10px; }
+  .doc-list .muted { color: var(--text3); font-size: 12px; padding: 8px 12px; font-style: italic; }
+
+  /* Content */
+  .content {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 14px;
+    padding: 30px 36px;
+    min-height: 60vh;
+  }
+  .content.loading { display: grid; place-items: center; color: var(--text2); font-size: 14px; }
+  .content.error {
+    border-color: rgba(255,0,85,.3);
+    background: rgba(255,0,85,.04);
+    color: var(--red);
+    padding: 30px;
+  }
+
+  /* Markdown styling */
+  .md h1, .md h2, .md h3, .md h4 {
+    color: var(--text);
+    margin-top: 28px;
+    margin-bottom: 12px;
+    font-weight: 800;
+  }
+  .md h1 {
+    font-size: 28px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+    background: linear-gradient(135deg, var(--accent), var(--cyan));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .md h1:first-child { margin-top: 0; }
+  .md h2 { font-size: 22px; color: var(--cyan); padding-bottom: 6px; border-bottom: 1px solid var(--border2); }
+  .md h3 { font-size: 17px; color: var(--gold); }
+  .md h4 { font-size: 15px; color: var(--purple); }
+  .md p { margin-bottom: 14px; color: var(--text); }
+  .md a { color: var(--cyan); text-decoration: underline; text-underline-offset: 3px; }
+  .md a:hover { color: var(--accent); }
+  .md strong { color: var(--accent); font-weight: 700; }
+  .md em { color: var(--text); font-style: italic; }
+  .md ul, .md ol { margin: 10px 0 16px; padding-inline-start: 24px; color: var(--text); }
+  .md ul li, .md ol li { margin-bottom: 6px; }
+  .md code {
+    background: var(--bg3);
+    color: var(--accent);
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9em;
+    border: 1px solid var(--border2);
+  }
+  .md pre {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    margin: 16px 0;
+    direction: ltr;
+    text-align: left;
+  }
+  .md pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--text);
+    font-size: 12.5px;
+    line-height: 1.6;
+  }
+  .md blockquote {
+    border-inline-start: 3px solid var(--cyan);
+    padding: 8px 16px;
+    margin: 14px 0;
+    background: rgba(0,229,255,.04);
+    border-radius: 0 8px 8px 0;
+    color: var(--text);
+  }
+  .md table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    background: var(--bg3);
+    border-radius: 8px;
+    overflow: hidden;
+    font-size: 13px;
+  }
+  .md th, .md td {
+    padding: 10px 14px;
+    text-align: inherit;
+    border-bottom: 1px solid var(--border2);
+  }
+  .md th {
+    background: var(--bg);
+    color: var(--cyan);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+  }
+  .md tr:last-child td { border-bottom: none; }
+  .md tr:hover { background: rgba(0,255,65,.03); }
+  .md hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+  .md img { max-width: 100%; border-radius: 8px; }
+  .md :is(h1,h2,h3,h4) code { background: rgba(0,255,65,.08); color: var(--accent); font-size: inherit; }
+
+  /* Back to top */
+  .totop {
+    position: fixed;
+    bottom: 20px; inset-inline-end: 20px;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--bg3);
+    color: var(--accent);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    display: grid; place-items: center;
+    font-size: 16px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: .2s;
+    z-index: 99;
+  }
+  .totop.show { opacity: 1; transform: translateY(0); }
+  .totop:hover { color: #000; background: var(--accent); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="hdr">
+    <div class="logo">📄</div>
+    <div>
+      <h1>Ops Docs Viewer</h1>
+      <div class="sub">Markdown renderer · loads from GitHub raw · <span id="current-file">—</span></div>
+    </div>
+    <div class="hdr-actions">
+      <a class="btn" href="/command-center.html"><i class="fas fa-arrow-right"></i> Command Center</a>
+      <a class="btn sec" id="gh-link" href="https://github.com/osifeu-prog/slh-api/tree/master/ops" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+    </div>
+  </header>
+
+  <nav class="doc-list">
+    <h3><i class="fas fa-folder-tree"></i> Quick Jump — Featured</h3>
+    <ul id="doc-links">
+      <li><a href="?file=MASTER_FINAL_HANDOFF_20260425.md" data-doc="MASTER_FINAL_HANDOFF_20260425.md">🎯 MASTER FINAL HANDOFF — 25.4 (סופי)</a></li>
+      <li><a href="?file=WHAT_TO_DO_NOW_OSIF.md" data-doc="WHAT_TO_DO_NOW_OSIF.md">⭐ מה לעשות עכשיו — פשוט וצעד-צעד</a></li>
+      <li><a href="?file=SESSION_CLOSURE_20260424_FINAL.md" data-doc="SESSION_CLOSURE_20260424_FINAL.md">📘 Session Closure 24.4 Final</a></li>
+      <li><a href="?file=SYSTEM_ALIGNMENT_20260424.md" data-doc="SYSTEM_ALIGNMENT_20260424.md">🧭 System Alignment 24.4</a></li>
+      <li><a href="?file=AGENT_COORDINATION_20260424.md" data-doc="AGENT_COORDINATION_20260424.md">🤝 Agent Coordination 24.4</a></li>
+      <li><a href="?file=COMMAND_CENTER_SETUP_20260424.md" data-doc="COMMAND_CENTER_SETUP_20260424.md">⚙️ Command Center Setup (PowerShell)</a></li>
+      <li><a href="?file=AGENT_ALIGNMENT_PROMPT_GUARDIAN_ESP.md" data-doc="AGENT_ALIGNMENT_PROMPT_GUARDIAN_ESP.md">🎯 Alignment Prompt: Guardian ESP Agent</a></li>
+      <li><a href="?file=VOICE_STACK_COMPETITIVE_20260424.md" data-doc="VOICE_STACK_COMPETITIVE_20260424.md">📞 Voice Competitive Analysis</a></li>
+      <li><a href="?file=SWARM_V1_BLUEPRINT_20260424.md" data-doc="SWARM_V1_BLUEPRINT_20260424.md">🛰️ Swarm v1 Blueprint</a></li>
+      <li><a href="?file=SESSION_HANDOFF_20260424_VOICE_SWARM.md" data-doc="SESSION_HANDOFF_20260424_VOICE_SWARM.md">📋 Voice+Swarm Handoff</a></li>
+    </ul>
+    <details class="all-docs">
+      <summary><i class="fas fa-list"></i> All ops/*.md (auto-discovered)</summary>
+      <ul id="doc-links-auto">
+        <li class="muted"><i class="fas fa-spinner fa-spin"></i> Loading…</li>
+      </ul>
+    </details>
+  </nav>
+
+  <article class="content loading md" id="content">
+    <i class="fas fa-spinner fa-spin"></i> Loading...
+  </article>
+
+</div>
+
+<button class="totop" id="totop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">
+  <i class="fas fa-arrow-up"></i>
+</button>
+
+<script>
+// Local ops folder (mirrored from slh-api repo on each commit)
+const RAW_BASE = '/ops/';
+// GitHub blob URL (kept as fallback "view on GitHub" button — repo may be private)
+const GH_BASE = 'https://github.com/osifeu-prog/slh-api/blob/master/ops/';
+
+function getQueryParam(name) {
+  const u = new URL(window.location.href);
+  return u.searchParams.get(name);
+}
+
+function sanitizeFilename(f) {
+  // Allow only alphanumeric, dash, underscore, slash (for subpath), dot (for .md)
+  return (f || '').replace(/[^a-zA-Z0-9._\-\/]/g, '').replace(/\.\./g, '');
+}
+
+async function loadDoc(filename) {
+  const contentEl = document.getElementById('content');
+  const currentEl = document.getElementById('current-file');
+  const ghLink = document.getElementById('gh-link');
+
+  if (!filename) {
+    filename = 'SESSION_CLOSURE_20260424_FINAL.md';
+  }
+
+  filename = sanitizeFilename(filename);
+  currentEl.textContent = filename;
+
+  // Update GH link to point at current file
+  ghLink.href = GH_BASE + filename;
+
+  // Mark active link (across both featured and auto-discovered lists)
+  document.querySelectorAll('#doc-links a[data-doc], #doc-links-auto a[data-doc]').forEach(a => {
+    a.classList.toggle('active', a.dataset.doc === filename);
+  });
+
+  contentEl.classList.add('loading');
+  contentEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading ' + filename + '...';
+
+  try {
+    const url = RAW_BASE + filename + '?t=' + Date.now();
+    const r = await fetch(url);
+    if (!r.ok) {
+      throw new Error(`HTTP ${r.status}: ${r.statusText}`);
+    }
+    const md = await r.text();
+
+    // Configure marked for safer rendering
+    if (typeof marked !== 'undefined') {
+      marked.setOptions({
+        breaks: true,
+        gfm: true,
+        headerIds: true,
+        mangle: false
+      });
+      contentEl.innerHTML = marked.parse(md);
+    } else {
+      contentEl.innerHTML = '<pre>' + md.replace(/</g, '&lt;') + '</pre>';
+    }
+    contentEl.classList.remove('loading', 'error');
+    contentEl.classList.add('md');
+
+    // Fix inline links that use relative paths — turn them into GitHub links
+    contentEl.querySelectorAll('a[href]').forEach(a => {
+      const href = a.getAttribute('href');
+      if (!href || href.startsWith('#')) return;
+      if (href.startsWith('http://') || href.startsWith('https://')) return;
+      // If it looks like a local ops/ path or relative .md — send to ops-viewer
+      if (href.endsWith('.md') && !href.includes('://')) {
+        const parts = href.split('/');
+        const f = parts[parts.length - 1];
+        a.href = '/ops-viewer.html?file=' + encodeURIComponent(f);
+      }
+    });
+
+    // Strip GFM bare-URL autolinks that mistook filenames/dates/Hebrew for domains
+    const FILE_EXT_TLDS = new Set([
+      'py','md','js','ts','jsx','tsx','css','scss','html','json','yaml','yml',
+      'toml','sh','ps1','bat','env','txt','log','sql','xml','lock','go','rs',
+      'java','rb','php'
+    ]);
+    contentEl.querySelectorAll('a[href]').forEach(a => {
+      const href = a.getAttribute('href') || '';
+      const text = (a.textContent || '').trim();
+      // Only act on auto-generated links (text matches href, with or without protocol)
+      const stripped = href.replace(/^https?:\/\//i, '');
+      if (text !== href && text !== stripped) return;
+      const m = href.match(/^https?:\/\/([^\/?#]+)/i);
+      if (!m) return;
+      const domain = m[1];
+      const tld = (domain.split('.').pop() || '').toLowerCase();
+      if (FILE_EXT_TLDS.has(tld) || /[^\x00-\x7F]/.test(domain)) {
+        a.replaceWith(document.createTextNode(text));
+        return;
+      }
+      if (href.startsWith('http://')) {
+        a.setAttribute('href', 'https://' + href.slice(7));
+      }
+    });
+
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'auto' });
+    document.title = 'SLH · ' + filename;
+  } catch (err) {
+    contentEl.classList.remove('loading');
+    contentEl.classList.add('error');
+    contentEl.innerHTML = `
+      <h2><i class="fas fa-triangle-exclamation"></i> Failed to load</h2>
+      <p>${err.message}</p>
+      <p>File: <code>${filename}</code></p>
+      <p>Try: <a href="${GH_BASE + filename}" target="_blank">open on GitHub</a></p>
+    `;
+  }
+}
+
+// Back-to-top button visibility
+window.addEventListener('scroll', () => {
+  document.getElementById('totop').classList.toggle('show', window.scrollY > 300);
+});
+
+// Listen for browser back/forward
+window.addEventListener('popstate', () => {
+  loadDoc(getQueryParam('file'));
+});
+
+// Auto-discover ops/*.md from the public website repo (slh-api repo is private)
+async function loadDocIndex() {
+  const ul = document.getElementById('doc-links-auto');
+  if (!ul) return;
+  try {
+    const r = await fetch(
+      'https://api.github.com/repos/osifeu-prog/osifeu-prog.github.io/contents/ops',
+      { headers: { 'Accept': 'application/vnd.github+json' } }
+    );
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const items = await r.json();
+    const featured = new Set(
+      [...document.querySelectorAll('#doc-links a[data-doc]')].map(a => a.dataset.doc)
+    );
+    const docs = items
+      .filter(i => i.type === 'file' && i.name.endsWith('.md'))
+      .filter(i => !featured.has(i.name))
+      .sort((a, b) => b.name.localeCompare(a.name));
+    if (docs.length === 0) {
+      ul.innerHTML = '<li class="muted"><i class="fas fa-info-circle"></i> No additional docs found</li>';
+      return;
+    }
+    ul.innerHTML = docs.map(i => {
+      const safe = i.name.replace(/"/g, '&quot;');
+      return '<li><a href="?file=' + encodeURIComponent(i.name) + '" data-doc="' + safe + '">📄 ' + safe + '</a></li>';
+    }).join('');
+    // Re-mark active link in case current file is in the auto-discovered set
+    const current = getQueryParam('file');
+    if (current) {
+      ul.querySelectorAll('a[data-doc]').forEach(a => {
+        if (a.dataset.doc === current) a.classList.add('active');
+      });
+    }
+  } catch (err) {
+    ul.innerHTML = '<li class="muted"><i class="fas fa-info-circle"></i> All-docs index unavailable (rate limit or offline)</li>';
+  }
+}
+
+// Initial load
+loadDoc(getQueryParam('file'));
+loadDocIndex();
+</script>
+
+</body>
+</html>

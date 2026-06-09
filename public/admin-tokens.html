@@ -1,0 +1,497 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH Admin · ניהול טוקנים ומודלי AI</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+  --bg:#05080f; --bg2:#0c1018; --bg3:#141924; --bg4:#1a2030;
+  --accent:#00ff41; --cyan:#00e5ff; --gold:#ffd700;
+  --red:#ff0055; --purple:#a855f7; --blue:#3b82f6; --orange:#f97316; --rose:#ec4899;
+  --text:#e0e0f0; --text2:#8a8ab0; --text3:#444466;
+  --border:rgba(0,255,65,.12); --border2:rgba(255,255,255,.06);
+  --font:'Inter',system-ui,sans-serif; --mono:'Space Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6}
+body::before{content:'';position:fixed;inset:0;background:
+  radial-gradient(1000px 500px at 10% -5%, rgba(168,85,247,.05), transparent 60%),
+  radial-gradient(800px 500px at 95% 25%, rgba(0,255,65,.04), transparent 60%);
+  pointer-events:none;z-index:0}
+.wrap{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:20px 16px 60px}
+
+.hdr{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 22px;background:linear-gradient(135deg,rgba(168,85,247,.06),rgba(0,255,65,.04));border:1px solid var(--border2);border-radius:14px;margin-bottom:20px;flex-wrap:wrap}
+.hdr h1{font-size:22px;font-weight:800;background:linear-gradient(90deg,var(--purple),var(--cyan),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hdr .sub{color:var(--text2);font-size:12px;font-family:var(--mono)}
+.chip{padding:5px 12px;border-radius:999px;font-size:11px;font-weight:600;border:1px solid transparent}
+.chip.ok{background:rgba(0,255,65,.1);color:var(--accent);border-color:rgba(0,255,65,.3)}
+.chip.warn{background:rgba(255,215,0,.1);color:var(--gold);border-color:rgba(255,215,0,.3)}
+
+.login-gate{padding:30px;background:var(--bg2);border:1px solid var(--border2);border-radius:14px;text-align:center;max-width:420px;margin:40px auto}
+.login-gate input{width:100%;padding:12px;background:var(--bg);border:1px solid var(--border2);color:var(--text);border-radius:8px;font-family:var(--mono);margin-top:12px}
+.login-gate button{width:100%;padding:12px;background:var(--accent);color:#000;border:none;border-radius:8px;font-weight:800;margin-top:12px;cursor:pointer}
+
+.grid{display:grid;gap:16px;grid-template-columns:repeat(12,1fr)}
+.card{background:linear-gradient(180deg,var(--bg2),var(--bg3));border:1px solid var(--border2);border-radius:14px;padding:20px}
+.c12{grid-column:span 12}.c8{grid-column:span 8}.c6{grid-column:span 6}.c4{grid-column:span 4}.c3{grid-column:span 3}
+@media(max-width:900px){.c8,.c6,.c4,.c3{grid-column:span 12}}
+
+.card h2{font-size:13px;color:var(--text);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border2);display:flex;align-items:center;gap:8px;text-transform:uppercase;font-weight:700;letter-spacing:.8px}
+.card h2 i{color:var(--accent)}
+
+/* Token cards */
+.tokens-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.tk{background:var(--bg4);border:1px solid var(--border2);border-radius:12px;padding:16px;position:relative;overflow:hidden}
+.tk::before{content:'';position:absolute;top:0;right:0;width:4px;height:100%}
+.tk.slh::before{background:var(--gold)}
+.tk.mnh::before{background:var(--cyan)}
+.tk.zvk::before{background:var(--accent)}
+.tk.rep::before{background:var(--purple)}
+.tk.zuz::before{background:var(--red)}
+.tk.aic::before{background:var(--rose)}
+.tk .sym{font-size:16px;font-weight:900;color:#fff;font-family:var(--mono)}
+.tk .num{font-size:28px;font-weight:800;color:#fff;font-family:var(--mono);margin:6px 0 2px}
+.tk .role{font-size:11px;color:var(--text2)}
+.tk .live{font-size:10px;color:var(--text3);margin-top:8px;font-family:var(--mono)}
+
+/* AIC panel */
+.aic-hero{background:linear-gradient(135deg,rgba(236,72,153,.08),rgba(168,85,247,.06));border:1px solid rgba(236,72,153,.25);border-radius:14px;padding:22px;position:relative;overflow:hidden}
+.aic-hero::after{content:'🧠';position:absolute;top:-20px;left:-20px;font-size:140px;opacity:.04;pointer-events:none}
+.aic-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:14px}
+.metric{padding:10px;background:rgba(0,0,0,.25);border-radius:8px}
+.metric .lbl{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:1px}
+.metric .val{font-size:22px;color:#fff;font-weight:800;font-family:var(--mono);margin-top:4px}
+
+/* Prompt viewer */
+.prompt-box{background:var(--bg);border:1px solid var(--border2);border-radius:10px;padding:16px;font-family:var(--mono);font-size:12px;line-height:1.75;max-height:500px;overflow-y:auto;color:var(--text);white-space:pre-wrap;direction:ltr;text-align:left}
+.prompt-box::-webkit-scrollbar{width:8px}.prompt-box::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.copy-btn{padding:8px 16px;background:rgba(0,255,65,.1);color:var(--accent);border:1px solid rgba(0,255,65,.3);border-radius:8px;cursor:pointer;font-weight:700;font-size:12px;margin-bottom:10px}
+.copy-btn:hover{background:rgba(0,255,65,.2)}
+.copy-btn.ok{background:var(--accent);color:#000}
+
+/* Tables */
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:right;padding:10px;background:rgba(255,255,255,.03);color:var(--text2);font-size:10px;text-transform:uppercase;letter-spacing:1px}
+td{padding:10px;border-top:1px solid var(--border2)}
+td.mono{font-family:var(--mono);color:var(--cyan);font-size:11px}
+
+/* Input + btn */
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ipt{padding:10px 12px;background:var(--bg);border:1px solid var(--border2);color:var(--text);border-radius:8px;font-family:var(--mono);font-size:13px;flex:1;min-width:140px}
+.btn{padding:10px 16px;background:var(--accent);color:#000;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-family:var(--font);font-size:12px}
+.btn.sec{background:var(--bg3);color:var(--text);border:1px solid var(--border2)}
+.btn.warn{background:var(--gold);color:#000}
+
+.status{padding:10px;background:var(--bg4);border-radius:8px;font-size:12px;color:var(--text2);margin-top:10px}
+
+.nav{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.nav a{padding:8px 16px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:var(--text);text-decoration:none;font-size:13px}
+.nav a:hover{border-color:var(--accent);color:var(--accent)}
+
+.foot{margin-top:28px;text-align:center;color:var(--text3);font-size:11px;font-family:var(--mono);padding:15px;border-top:1px solid var(--border2)}
+</style>
+<meta name="slh-version" content="v1.0-flip">
+<script defer src="/js/slh-flip.js?v=20260426e"></script>
+</head>
+<body>
+<style>
+.slh-beta-banner{position:sticky;top:0;z-index:9998;background:linear-gradient(90deg,#ff9900,#ffd700,#00ff41);color:#000;font-weight:700;font-size:12px;padding:6px 14px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.slh-beta-banner a{color:#000;text-decoration:underline;font-weight:800}
+.slh-beta-banner button{background:rgba(0,0,0,.15);color:#000;border:none;padding:3px 10px;border-radius:12px;font-size:11px;cursor:pointer;font-weight:700}
+.slh-bug-fab{position:fixed;bottom:20px;left:20px;z-index:9999;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#ff4444,#ff9900);display:grid;place-items:center;font-size:24px;text-decoration:none;box-shadow:0 4px 20px rgba(255,68,68,.4);transition:transform .2s;animation:bugPulse 3s infinite}
+.slh-bug-fab:hover{transform:scale(1.1)}
+@keyframes bugPulse{0%,100%{box-shadow:0 4px 20px rgba(255,68,68,.4)}50%{box-shadow:0 4px 30px rgba(255,153,0,.6)}}
+@media(max-width:600px){.slh-bug-fab{bottom:80px;width:46px;height:46px;font-size:20px}}
+</style>
+<div class="slh-beta-banner" id="slhBeta">
+  <span>🚧 <b>BETA</b></span>
+  <span style="opacity:.85">אם משהו לא עובד —</span>
+  <a href="/bug-report.html">🐛 דווח באג</a>
+  <button onclick="localStorage.setItem('slh_beta_dismissed','1');this.parentElement.remove()">✕</button>
+</div>
+<a href="/bug-report.html" class="slh-bug-fab" title="דווח באג">🐛</a>
+<script>if(localStorage.getItem('slh_beta_dismissed')==='1'){var b=document.getElementById('slhBeta');if(b)b.remove();}</script>
+
+
+<div class="wrap" id="app" style="display:none">
+
+  <header class="hdr">
+    <div>
+      <h1>🏦 SLH · Token Control Center</h1>
+      <div class="sub">6 tokens · AI economy · agent prompts · admin-only</div>
+    </div>
+    <div class="row">
+      <span class="chip ok" id="apiChip"><i class="fa fa-heartbeat"></i> API live</span>
+      <span class="chip" style="background:var(--bg3);color:var(--text)" id="userChip">admin</span>
+      <button class="btn sec" onclick="refreshAll()"><i class="fa fa-rotate"></i> רענן</button>
+      <button class="btn sec" onclick="logout()">יציאה</button>
+    </div>
+  </header>
+
+  <div class="nav">
+    <a href="/admin.html"><i class="fa fa-arrow-right"></i> חזרה לאדמין</a>
+    <a href="/mission-control.html"><i class="fa fa-gauge"></i> Mission Control</a>
+    <a href="/agent-brief.html"><i class="fa fa-robot"></i> Agent Brief</a>
+    <a href="https://github.com/osifeu-prog/slh-api/blob/master/ops/MASTER_EXECUTOR_AGENT_PROMPT.md" target="_blank"><i class="fa-brands fa-github"></i> Master Prompt</a>
+    <a href="https://github.com/osifeu-prog/slh-api/blob/master/ops/AIC_TOKEN_DESIGN.md" target="_blank"><i class="fa fa-book"></i> AIC Design</a>
+  </div>
+
+  <div class="grid">
+
+    <!-- 6 tokens at a glance -->
+    <div class="card c12">
+      <h2><i class="fa fa-coins"></i>6 טוקנים במערכת</h2>
+      <div class="tokens-grid">
+        <div class="tk slh">
+          <div class="sym">SLH #1</div>
+          <div class="num">₪444</div>
+          <div class="role">Premium / Governance · BSC BEP-20</div>
+          <div class="live">Live on PancakeSwap</div>
+        </div>
+        <div class="tk mnh">
+          <div class="sym">MNH #2</div>
+          <div class="num">₪1</div>
+          <div class="role">Stablecoin · peg to ILS</div>
+          <div class="live">Internal only</div>
+        </div>
+        <div class="tk zvk">
+          <div class="sym">ZVK #3</div>
+          <div class="num">~₪4.4</div>
+          <div class="role">Activity Rewards</div>
+          <div class="live">Earned via engagement</div>
+        </div>
+        <div class="tk rep">
+          <div class="sym">REP #4</div>
+          <div class="num">0–1000+</div>
+          <div class="role">Reputation Score</div>
+          <div class="live">Trust metric</div>
+        </div>
+        <div class="tk zuz">
+          <div class="sym">ZUZ #5</div>
+          <div class="num">ban@100</div>
+          <div class="role">Anti-Fraud Mark</div>
+          <div class="live">Guardian system</div>
+        </div>
+        <div class="tk aic">
+          <div class="sym">AIC #6 <span style="color:var(--rose);font-size:10px;margin-right:4px">NEW</span></div>
+          <div class="num" id="aicSupply">--</div>
+          <div class="role">AI Credits · bridge to API costs</div>
+          <div class="live" id="aicWallets">-- wallets</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AIC details -->
+    <div class="card c8">
+      <h2><i class="fa fa-brain"></i>AIC · AI Credits · Live Metrics</h2>
+      <div class="aic-hero">
+        <div style="font-size:15px;color:var(--text)">
+          🧠 <b>AIC</b> = מטבע פנימי שמחבר פעילות משתמש → עלות API של AI → ערך חזרה.
+          כל שימוש ב‑ai-assistant / סיכומים / דוחות שורף AIC מול API אמיתי.
+          משתמש מרוויח AIC מ‑engagement (post/streak/referral/purchase/staking).
+        </div>
+        <div class="aic-metrics">
+          <div class="metric"><div class="lbl">Total Supply</div><div class="val" id="mSupply">--</div></div>
+          <div class="metric"><div class="lbl">Wallets</div><div class="val" id="mWallets">--</div></div>
+          <div class="metric"><div class="lbl">Earned 24h</div><div class="val" id="mEarn">--</div></div>
+          <div class="metric"><div class="lbl">Spent 24h</div><div class="val" id="mSpent">--</div></div>
+          <div class="metric"><div class="lbl">Reserve USD</div><div class="val" id="mReserve">--</div></div>
+          <div class="metric"><div class="lbl">Reserve Ratio</div><div class="val" id="mRatio">--</div></div>
+        </div>
+        <div style="margin-top:14px;padding:10px;background:rgba(0,0,0,.3);border-radius:8px;font-size:11px;color:var(--text2);font-family:var(--mono)">
+          1 AIC ≈ $0.001 of AI API cost · peg loose · decimals 4 · rules see <a href="https://github.com/osifeu-prog/slh-api/blob/master/ops/AIC_TOKEN_DESIGN.md" target="_blank" style="color:var(--cyan)">AIC_TOKEN_DESIGN.md</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top holders -->
+    <div class="card c4">
+      <h2><i class="fa fa-trophy"></i>Top AIC Holders</h2>
+      <table id="topHolders">
+        <thead><tr><th>User</th><th>Balance</th><th>Earned</th></tr></thead>
+        <tbody><tr><td colspan="3" style="color:var(--text2);padding:20px;text-align:center">טוען...</td></tr></tbody>
+      </table>
+    </div>
+
+    <!-- Admin mint -->
+    <div class="card c6">
+      <h2><i class="fa fa-plus-circle"></i>Mint AIC (Admin)</h2>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px;background:rgba(255,215,0,.08);padding:10px;border-radius:8px;border-right:3px solid var(--gold)">
+        💡 <b>הסבר:</b> יצירת AIC חדש למשתמש. ה-user_id הוא Telegram ID (לדוגמה 224223270 = Osif). ה-amount הוא כמות AIC (1 AIC ≈ $0.001). ה-reserve USD הוא <b>אופציונלי</b> — אם נשאר ריק, לא מתווסף כלום לרזרבה.
+      </div>
+      <label style="display:block;font-size:11px;color:var(--text2);margin-bottom:4px">Telegram User ID (מי יקבל)</label>
+      <input class="ipt" id="mintUserId" placeholder="224223270" type="number">
+      <label style="display:block;font-size:11px;color:var(--text2);margin:8px 0 4px">כמות AIC להנפיק (כל 1000 AIC ≈ 1 SLH)</label>
+      <input class="ipt" id="mintAmount" placeholder="100" type="number" step="0.0001">
+      <label style="display:block;font-size:11px;color:var(--text2);margin:8px 0 4px">Reserve USD — אופציונלי (השאר ריק אם לא מוסיפים כסף לרזרבה עכשיו)</label>
+      <input class="ipt" id="mintReserve" placeholder="0.10" type="number" step="0.01">
+      <label style="display:block;font-size:11px;color:var(--text2);margin:8px 0 4px">הערה (למה?)</label>
+      <input class="ipt" id="mintNote" placeholder="seed funding · מתנה · פיצוי">
+      <button class="btn" onclick="mintAic()" style="margin-top:10px;width:100%"><i class="fa fa-coins"></i> Mint AIC</button>
+      <div id="mintResult" class="status" style="display:none"></div>
+    </div>
+
+    <!-- Reserve -->
+    <div class="card c6">
+      <h2><i class="fa fa-vault"></i>Reserve (USD backing)</h2>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px;background:rgba(0,229,255,.08);padding:10px;border-radius:8px;border-right:3px solid var(--cyan)">
+        🏦 <b>הסבר:</b> הרזרבה היא <b>USD אמיתי</b> שיש ל-treasury כדי לגבות את ה-AIC. אם יש 100 AIC במחזור ו-$0.10 ברזרבה → כל AIC שווה $0.001. <b>אזהרה:</b> הזן דולרים אמיתיים שיש לך — לא מספר סתם. הזנה שגויה מנפחת את השוויות המצוטטת של AIC.
+      </div>
+      <label style="display:block;font-size:11px;color:var(--text2);margin-bottom:4px">USD שתוסיף לרזרבה (דולרים אמיתיים)</label>
+      <input class="ipt" id="resAmount" placeholder="10.00" type="number" step="0.01">
+      <label style="display:block;font-size:11px;color:var(--text2);margin:8px 0 4px">מקור</label>
+      <select class="ipt" id="resSource">
+        <option value="stripe_purchase">Stripe purchase (משתמש שילם בכרטיס)</option>
+        <option value="slh_swap">SLH swap (המרה מ-SLH ל-AIC)</option>
+        <option value="admin_injection">Admin injection (הוספה ידנית מה-treasury)</option>
+      </select>
+      <label style="display:block;font-size:11px;color:var(--text2);margin:8px 0 4px">הערה</label>
+      <input class="ipt" id="resNote" placeholder="למשל: הכנסה מהמכירה של 5 NFT היום">
+      <button class="btn warn" onclick="addReserve()" style="margin-top:10px;width:100%"><i class="fa fa-plus"></i> Add to Reserve</button>
+      <div id="reserveList" style="margin-top:12px;font-size:11px;color:var(--text2);font-family:var(--mono)">טוען...</div>
+    </div>
+
+    <!-- Lookup -->
+    <div class="card c12">
+      <h2><i class="fa fa-search"></i>User AIC Lookup</h2>
+      <div class="row">
+        <input class="ipt" id="lookupId" placeholder="user_id" type="number" style="flex:0 0 200px">
+        <button class="btn" onclick="lookupUser()"><i class="fa fa-search"></i> Lookup</button>
+      </div>
+      <div id="lookupResult" class="status" style="display:none"></div>
+      <table id="lookupTx" style="margin-top:14px;display:none">
+        <thead><tr><th>Time</th><th>Kind</th><th>Amount</th><th>Reason</th><th>Provider</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- Master Executor Prompt -->
+    <div class="card c12">
+      <h2><i class="fa fa-code"></i>Master Executor Agent Prompt · להעתיק לכל סוכן AI</h2>
+      <div style="margin-bottom:10px;font-size:13px;color:var(--text2)">
+        הדבק את הפרומפט הזה כ‑<b>system prompt</b> לכל סוכן AI שעובד על SLH — Claude, ChatGPT, Gemini, Cursor, Copilot Agent. הסוכן מקבל את כל ההקשר של הפרויקט מיידית.
+      </div>
+      <button class="copy-btn" onclick="copyPrompt()" id="copyBtn"><i class="fa fa-copy"></i> העתק פרומפט מלא</button>
+      <div class="prompt-box" id="promptBox">טוען פרומפט מ-GitHub...</div>
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+        <a class="btn sec" href="/prompts/MASTER_EXECUTOR_AGENT_PROMPT.md" target="_blank"><i class="fa fa-file-lines"></i> Raw (public copy)</a>
+        <a class="btn sec" href="/prompts/" target="_blank"><i class="fa fa-folder-open"></i> All 9 prompts</a>
+        <a class="btn sec" href="/agent-brief.html" target="_blank"><i class="fa fa-robot"></i> Agent Brief (short)</a>
+      </div>
+    </div>
+
+    <!-- Roadmap -->
+    <div class="card c12">
+      <h2><i class="fa fa-road"></i>AIC Rollout Roadmap</h2>
+      <table>
+        <thead><tr><th>Phase</th><th>Scope</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><b>1 · MVP</b></td><td>DB + balance/tx endpoints + admin dashboard</td><td><span class="chip ok">✅ שוחרר</span></td></tr>
+          <tr><td><b>2 · Earn engine</b></td><td>כללי earn אוטומטיים (post/streak/referral/expert)</td><td><span class="chip warn">🟡 בתכנון</span></td></tr>
+          <tr><td><b>3 · AI Gateway</b></td><td>Wrap /api/ai/chat עם AIC check+burn</td><td><span class="chip" style="background:var(--bg4);color:var(--text3)">⏳ חודש הבא</span></td></tr>
+          <tr><td><b>4 · Marketplace</b></td><td>Swap AIC ↔ SLH/MNH · AI-assisted services</td><td><span class="chip" style="background:var(--bg4);color:var(--text3)">⏳ Q2</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <div class="foot">
+    SLH Token Control Center · <a href="/admin.html" style="color:var(--text2)">Admin</a> · <a href="/mission-control.html" style="color:var(--text2)">Mission</a>
+  </div>
+
+</div>
+
+<!-- Login gate -->
+<div id="loginGate" class="login-gate">
+  <h2 style="color:var(--text);margin-bottom:6px">🔐 Admin Login</h2>
+  <p style="color:var(--text2);font-size:13px">דף זה לאדמינים בלבד. הזן את ה‑Admin API Key שלך.</p>
+  <input type="password" id="adminKey" placeholder="admin key">
+  <button onclick="login()">התחבר</button>
+  <div id="loginErr" style="color:var(--red);font-size:12px;margin-top:10px"></div>
+</div>
+
+<script>
+const API = 'https://slh-api-production.up.railway.app';
+const PROMPT_URL = '/prompts/MASTER_EXECUTOR_AGENT_PROMPT.md';
+let ADMIN_KEY = localStorage.getItem('slh_admin_password') || '';
+
+function getKey(){ return ADMIN_KEY; }
+
+async function login(){
+  const k = document.getElementById('adminKey').value.trim();
+  if(!k){ document.getElementById('loginErr').textContent = 'הזן מפתח'; return; }
+  // Try a simple admin endpoint to verify
+  const r = await fetch(API+'/api/admin/aic/reserve', { headers: {'X-Admin-Key': k} });
+  if(r.status === 403){
+    document.getElementById('loginErr').textContent = '❌ מפתח שגוי';
+    return;
+  }
+  ADMIN_KEY = k;
+  localStorage.setItem('slh_admin_password', k);
+  document.getElementById('loginGate').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  refreshAll();
+}
+
+function logout(){
+  localStorage.removeItem('slh_admin_password');
+  ADMIN_KEY = '';
+  location.reload();
+}
+
+async function loadStats(){
+  try{
+    const r = await fetch(API+'/api/aic/stats');
+    if(!r.ok) return;
+    const d = await r.json();
+    document.getElementById('aicSupply').textContent = d.total_supply.toFixed(1);
+    document.getElementById('aicWallets').textContent = d.wallets_count + ' wallets';
+    document.getElementById('mSupply').textContent = d.total_supply.toFixed(1);
+    document.getElementById('mWallets').textContent = d.wallets_count;
+    document.getElementById('mEarn').textContent = d.earned_24h.toFixed(1);
+    document.getElementById('mSpent').textContent = d.spent_24h.toFixed(1);
+    document.getElementById('mReserve').textContent = '$' + d.reserve_usd.toFixed(2);
+    document.getElementById('mRatio').textContent = d.reserve_ratio.toFixed(1) + '%';
+
+    const tbody = document.querySelector('#topHolders tbody');
+    if(d.top_holders.length === 0){
+      tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--text3);padding:20px">אין holders עדיין</td></tr>';
+    } else {
+      tbody.innerHTML = d.top_holders.map(h =>
+        `<tr><td class="mono">${h.user_id}</td><td class="mono">${h.balance.toFixed(2)}</td><td class="mono">${h.lifetime_earned.toFixed(2)}</td></tr>`
+      ).join('');
+    }
+  }catch(e){ console.warn('stats err', e); }
+}
+
+async function loadReserve(){
+  try{
+    const r = await fetch(API+'/api/admin/aic/reserve', { headers: {'X-Admin-Key': getKey()} });
+    if(!r.ok) return;
+    const d = await r.json();
+    const el = document.getElementById('reserveList');
+    if(d.recent.length === 0){
+      el.innerHTML = 'אין deposits עדיין';
+    } else {
+      el.innerHTML = '<div style="margin-bottom:6px">Total: <b style="color:var(--accent)">$'+d.total_usd.toFixed(2)+'</b></div>' +
+        d.recent.map(r => `<div>• $${r.usd_amount.toFixed(2)} · ${r.source} · ${new Date(r.recorded_at).toLocaleDateString('he-IL')}</div>`).join('');
+    }
+  }catch(e){}
+}
+
+async function mintAic(){
+  const uid = parseInt(document.getElementById('mintUserId').value, 10);
+  const amt = parseFloat(document.getElementById('mintAmount').value);
+  const rsv = parseFloat(document.getElementById('mintReserve').value) || 0;
+  const note = document.getElementById('mintNote').value.trim();
+  if(!uid || !amt){ alert('user_id + amount required'); return; }
+
+  const body = { user_id: uid, amount: amt };
+  if(rsv > 0) body.reserve_usd = rsv;
+  if(note) body.note = note;
+
+  const r = await fetch(API+'/api/admin/aic/mint', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json', 'X-Admin-Key': getKey()},
+    body: JSON.stringify(body)
+  });
+  const d = await r.json();
+  const el = document.getElementById('mintResult');
+  el.style.display = 'block';
+  if(r.ok){
+    el.style.color = 'var(--accent)';
+    el.innerHTML = `✅ Minted ${d.delta} AIC to user ${uid} · new balance: ${d.new_balance} · tx ${d.tx_id}`;
+    refreshAll();
+  } else {
+    el.style.color = 'var(--red)';
+    el.innerHTML = '❌ ' + (d.detail || r.status);
+  }
+}
+
+async function addReserve(){
+  const amt = parseFloat(document.getElementById('resAmount').value);
+  const src = document.getElementById('resSource').value;
+  const note = document.getElementById('resNote').value.trim();
+  if(!amt){ alert('amount required'); return; }
+
+  const r = await fetch(API+'/api/admin/aic/reserve/add', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json', 'X-Admin-Key': getKey()},
+    body: JSON.stringify({ usd_amount: amt, source: src, note })
+  });
+  if(r.ok){ loadReserve(); document.getElementById('resAmount').value = ''; document.getElementById('resNote').value = ''; }
+}
+
+async function lookupUser(){
+  const uid = parseInt(document.getElementById('lookupId').value, 10);
+  if(!uid){ return; }
+  const [bal, tx] = await Promise.all([
+    fetch(API+'/api/aic/balance/'+uid).then(r => r.json()),
+    fetch(API+'/api/aic/transactions/'+uid+'?limit=30').then(r => r.json())
+  ]);
+  const el = document.getElementById('lookupResult');
+  el.style.display = 'block';
+  if(!bal.has_wallet){
+    el.innerHTML = `<span style="color:var(--gold)">⚠ User ${uid} לא קיים ב-AIC (אין wallet עדיין). לחצץ mint כדי ליצור.</span>`;
+    document.getElementById('lookupTx').style.display = 'none';
+    return;
+  }
+  el.innerHTML = `
+    <b>User ${uid}</b> · Balance: <span style="color:var(--accent)">${bal.balance} AIC</span> ·
+    Lifetime earned: ${bal.lifetime_earned} · Lifetime spent: ${bal.lifetime_spent}
+  `;
+  const tbody = document.querySelector('#lookupTx tbody');
+  document.getElementById('lookupTx').style.display = 'table';
+  tbody.innerHTML = (tx.transactions || []).map(t =>
+    `<tr>
+      <td class="mono">${new Date(t.created_at).toLocaleString('he-IL')}</td>
+      <td>${t.kind}</td>
+      <td class="mono">${t.amount}</td>
+      <td>${t.reason}</td>
+      <td>${t.provider || '—'}</td>
+    </tr>`
+  ).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--text3)">No transactions</td></tr>';
+}
+
+async function loadPrompt(){
+  try{
+    const r = await fetch(PROMPT_URL, { cache: 'no-store' });
+    if(!r.ok) throw new Error(r.status);
+    const text = await r.text();
+    document.getElementById('promptBox').textContent = text;
+  }catch(e){
+    document.getElementById('promptBox').textContent = 'שגיאה בטעינת הפרומפט: ' + e.message + '\n\nלחץ על "Raw GitHub" למטה כדי לפתוח ידנית.';
+  }
+}
+
+function copyPrompt(){
+  const text = document.getElementById('promptBox').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const b = document.getElementById('copyBtn');
+    b.innerHTML = '✅ הועתק!'; b.classList.add('ok');
+    setTimeout(() => { b.innerHTML = '<i class="fa fa-copy"></i> העתק פרומפט מלא'; b.classList.remove('ok'); }, 2500);
+  });
+}
+
+function refreshAll(){
+  loadStats();
+  loadReserve();
+  loadPrompt();
+}
+
+// Auto-login if key exists
+if(ADMIN_KEY){
+  document.getElementById('loginGate').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  refreshAll();
+}
+</script>
+
+</body>
+</html>

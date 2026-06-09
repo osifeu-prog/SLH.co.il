@@ -1,0 +1,437 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLH Spark Referral Card Studio</title>
+    <meta name="description" content="Create and share your personalized SLH Spark referral card. Earn 15% commission on every referral.">
+    <link rel="canonical" href="https://slh-nft.com/referral-card.html">
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://slh-nft.com/referral-card.html">
+    <meta property="og:title" content="SLH Spark Referral Card Studio">
+    <meta property="og:description" content="Create personalized referral cards. Earn 15% commission.">
+    <meta property="og:image" content="https://slh-nft.com/assets/og/referral.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="he_IL">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SLH Spark Referral Card Studio">
+    <meta name="twitter:description" content="Create personalized referral cards. Earn 15% commission.">
+    <meta name="twitter:image" content="https://slh-nft.com/assets/og/referral.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon.png">
+    <meta name="theme-color" content="#0a0a0a">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/shared.css?v=20260426e">
+    <style>
+        :root{--bg:#050510;--bg2:#0c0c24;--accent:#6c5ce7;--accent2:#a29bfe;--gold:#ffd32a;--green:#00cec9;--cyan:#00b4d8;--pink:#fd79a8;--text:#eaeaf5;--text2:#7878a0;--card:rgba(255,255,255,0.03);--border:rgba(255,255,255,0.06)}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+        .bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(108,92,231,.12) 0%,transparent 60%),radial-gradient(ellipse 60% 80% at 80% 90%,rgba(0,206,201,.08) 0%,transparent 60%)}
+        .grid-ov{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.03;background-image:linear-gradient(rgba(255,255,255,.1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.1) 1px,transparent 1px);background-size:60px 60px}
+
+        .container{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:40px 20px}
+        .back-link{display:inline-flex;align-items:center;gap:8px;color:var(--text2);text-decoration:none;font-size:13px;margin-bottom:32px;transition:.3s}
+        .back-link:hover{color:var(--accent2)}
+
+        h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(28px,5vw,42px);font-weight:800;text-align:center;margin-bottom:8px;background:linear-gradient(135deg,var(--accent2),var(--cyan),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .subtitle{text-align:center;color:var(--text2);font-size:15px;margin-bottom:40px}
+
+        .form-section{max-width:500px;margin:0 auto 32px;text-align:center}
+        .form-label{display:block;font-size:14px;color:var(--text2);margin-bottom:8px;font-weight:500}
+        .form-input{width:100%;max-width:400px;padding:14px 20px;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:var(--text);font-size:16px;font-family:'Inter',sans-serif;outline:none;transition:.3s;text-align:center}
+        .form-input:focus{border-color:var(--accent);box-shadow:0 0 20px rgba(108,92,231,.2)}
+        .form-input::placeholder{color:var(--text2)}
+
+        .bot-select{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:20px 0}
+        .bot-chip{padding:8px 16px;border-radius:20px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;transition:.3s}
+        .bot-chip:hover{border-color:rgba(108,92,231,.3);color:var(--accent2)}
+        .bot-chip.active{background:linear-gradient(135deg,var(--accent),#8b5cf6);color:#fff;border-color:transparent}
+
+        .generate-btn{display:inline-flex;align-items:center;gap:8px;padding:16px 40px;border-radius:14px;font-size:16px;font-weight:700;border:none;cursor:pointer;transition:.3s;background:linear-gradient(135deg,var(--accent),#8b5cf6,var(--cyan));background-size:200% 200%;animation:gs 3s ease infinite;color:#fff;box-shadow:0 4px 30px rgba(108,92,231,.4);margin-top:20px}
+        .generate-btn:hover{transform:translateY(-3px);box-shadow:0 8px 50px rgba(108,92,231,.6)}
+        @keyframes gs{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+
+        .preview-area{text-align:center;margin-top:40px}
+        .preview-area canvas{max-width:100%;border-radius:16px;border:2px solid rgba(108,92,231,.2);box-shadow:0 8px 60px rgba(0,0,0,.5)}
+
+        .action-bar{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:24px}
+        .action-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:12px;font-size:14px;font-weight:600;border:none;cursor:pointer;transition:.3s;text-decoration:none;color:#fff}
+        .action-btn:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(0,0,0,.3)}
+        .btn-download{background:linear-gradient(135deg,var(--green),#00a0a0)}
+        .btn-telegram{background:#0088cc}
+        .btn-whatsapp{background:#25D366}
+        .btn-facebook{background:#1877F2}
+
+        .lang-bar{display:flex;gap:8px;justify-content:center;margin-bottom:32px}
+        .lang-btn{background:var(--card);border:1px solid var(--border);color:var(--text2);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:.3s}
+        .lang-btn:hover,.lang-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+        @media(max-width:600px){
+            .action-bar{flex-direction:column;align-items:stretch}
+            .action-btn{justify-content:center}
+        }
+    </style>
+</head>
+<body>
+<div id="topnav-root"></div>
+<div id="ticker-root"></div>
+
+<div class="bg-mesh"></div>
+<div class="grid-ov"></div>
+<div class="container">
+    <a href="index.html#referral" class="back-link">&larr; <span data-i18n="rc_back">Back to SLH Ecosystem</span></a>
+
+    <div class="lang-bar">
+        <button class="lang-btn" onclick="setLang('he')">HE</button>
+        <button class="lang-btn active" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('ru')">RU</button>
+        <button class="lang-btn" onclick="setLang('ar')">AR</button>
+        <button class="lang-btn" onclick="setLang('fr')">FR</button>
+    </div>
+
+    <h1 data-i18n="rc_title">Referral Card Studio</h1>
+    <p class="subtitle" data-i18n="rc_subtitle">Create a personalized referral card to share with friends and earn 15% commission</p>
+
+    <div class="form-section">
+        <label class="form-label" data-i18n="rc_username_label">Your Telegram Username</label>
+        <input type="text" class="form-input" id="rc-username" placeholder="@username or Telegram ID" data-i18n-placeholder="rc_username_placeholder">
+
+        <label class="form-label" style="margin-top:16px" data-i18n="rc_bot_label">Select Bot</label>
+        <div class="bot-select" id="rc-bot-select"></div>
+
+        <button class="generate-btn" onclick="generateCard()" data-i18n="rc_generate">Generate Referral Card</button>
+    </div>
+
+    <div class="preview-area" id="rc-preview" style="display:none">
+        <canvas id="rc-canvas" width="800" height="500"></canvas>
+        <div class="action-bar">
+            <button class="action-btn btn-download" onclick="downloadCard()" data-i18n="rc_download">Download PNG</button>
+            <a class="action-btn btn-telegram" href="#" onclick="shareTelegram()" data-i18n="rc_share_tg">Share on Telegram</a>
+            <a class="action-btn btn-whatsapp" href="#" onclick="shareWhatsApp()" data-i18n="rc_share_wa">Share on WhatsApp</a>
+            <a class="action-btn btn-facebook" href="#" onclick="shareFacebook()" data-i18n="rc_share_fb">Share on Facebook</a>
+        </div>
+    </div>
+</div>
+
+<script>
+const BOTS = {
+    airdrop: {name: "SLH Airdrop", username: "SLH_AIR_bot"},
+    wallet: {name: "SLH Wallet", username: "SLH_Wallet_bot"},
+    factory: {name: "SLH Factory", username: "Osifs_Factory_bot"},
+    guardian: {name: "Guardian", username: "Grdian_bot"},
+    community: {name: "Community", username: "SLH_community_bot"},
+    academia: {name: "Academia", username: "SLH_Academia_bot"},
+    botshop: {name: "BotShop", username: "BotShop_bot"},
+};
+
+let selectedBot = 'airdrop';
+let currentLang = 'en';
+
+// Namespaced page translations to avoid collision with global T in translations.js
+const PAGE_T = {
+    he: {
+        rc_back:"×—×–×¨×” ×œ××§×•×¡×™×¡×˜× SLH",rc_title:"×¡×˜×•×“×™×• ×›×¨×˜×™×¡ ×”×¤× ×™×”",
+        rc_subtitle:"×¦×•×¨ ×›×¨×˜×™×¡ ×”×¤× ×™×” ×ž×•×ª×× ××™×©×™×ª ×œ×©×™×ª×•×£ ×¢× ×—×‘×¨×™× ×•×”×¨×•×•×™×— 15% ×¢×ž×œ×”",
+        rc_username_label:"×©× ×”×ž×©×ª×ž×© ×©×œ×š ×‘×˜×œ×’×¨×",rc_username_placeholder:"@×©×_×ž×©×ª×ž×© ××• ×ž×–×”×” ×˜×œ×’×¨×",
+        rc_bot_label:"×‘×—×¨ ×‘×•×˜",rc_generate:"×¦×•×¨ ×›×¨×˜×™×¡ ×”×¤× ×™×”",rc_download:"×”×•×¨×“ PNG",
+        rc_share_tg:"×©×ª×£ ×‘×˜×œ×’×¨×",rc_share_wa:"×©×ª×£ ×‘×•×•××˜×¡××¤",rc_share_fb:"×©×ª×£ ×‘×¤×™×™×¡×‘×•×§",
+        rc_commission:"15% ×¢×ž×œ×” ×¢×œ ×›×œ ×”×¤× ×™×”",
+        rc_share_msg:"×”×¦×˜×¨×¤×• ×œ××§×•×¡×™×¡×˜× SLH! 20+ ×‘×•×˜×™× ×‘×˜×œ×’×¨×, ×”×©×§×¢×•×ª, ×§×¨×™×¤×˜×• ×•×¢×•×“. ×”×™×¨×©×ž×• ×“×¨×š ×”×§×™×©×•×¨ ×©×œ×™:",
+        rc_headline:"×”×¦×˜×¨×¤×• ×œ××§×•×¡×™×¡×˜× SLH",
+    },
+    en: {
+        rc_back:"Back to SLH Ecosystem",rc_title:"Referral Card Studio",
+        rc_subtitle:"Create a personalized referral card to share with friends and earn 15% commission",
+        rc_username_label:"Your Telegram Username",rc_username_placeholder:"@username or Telegram ID",
+        rc_bot_label:"Select Bot",rc_generate:"Generate Referral Card",rc_download:"Download PNG",
+        rc_share_tg:"Share on Telegram",rc_share_wa:"Share on WhatsApp",rc_share_fb:"Share on Facebook",
+        rc_commission:"15% commission on every referral",
+        rc_share_msg:"Join the SLH Ecosystem! 20+ Telegram bots, investments, crypto & more. Sign up with my link:",
+        rc_headline:"Join the SLH Ecosystem",
+    },
+    ru: {
+        rc_back:"\u041d\u0430\u0437\u0430\u0434 \u043a SLH",rc_title:"\u0421\u0442\u0443\u0434\u0438\u044f \u0440\u0435\u0444\u0435\u0440\u0430\u043b\u044c\u043d\u043e\u0439 \u043a\u0430\u0440\u0442\u044b",
+        rc_subtitle:"\u0421\u043e\u0437\u0434\u0430\u0439\u0442\u0435 \u043f\u0435\u0440\u0441\u043e\u043d\u0430\u043b\u044c\u043d\u0443\u044e \u0440\u0435\u0444\u0435\u0440\u0430\u043b\u044c\u043d\u0443\u044e \u043a\u0430\u0440\u0442\u0443 \u0438 \u0437\u0430\u0440\u0430\u0431\u0430\u0442\u044b\u0432\u0430\u0439\u0442\u0435 15% \u043a\u043e\u043c\u0438\u0441\u0441\u0438\u044e",
+        rc_username_label:"\u0412\u0430\u0448\u0435 \u0438\u043c\u044f \u0432 Telegram",rc_username_placeholder:"@\u0438\u043c\u044f \u0438\u043b\u0438 Telegram ID",
+        rc_bot_label:"\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0431\u043e\u0442",rc_generate:"\u0421\u043e\u0437\u0434\u0430\u0442\u044c \u043a\u0430\u0440\u0442\u0443",rc_download:"\u0421\u043a\u0430\u0447\u0430\u0442\u044c PNG",
+        rc_share_tg:"\u041f\u043e\u0434\u0435\u043b\u0438\u0442\u044c\u0441\u044f \u0432 Telegram",rc_share_wa:"\u041f\u043e\u0434\u0435\u043b\u0438\u0442\u044c\u0441\u044f \u0432 WhatsApp",rc_share_fb:"\u041f\u043e\u0434\u0435\u043b\u0438\u0442\u044c\u0441\u044f \u0432 Facebook",
+        rc_commission:"15% \u043a\u043e\u043c\u0438\u0441\u0441\u0438\u044f \u0437\u0430 \u043a\u0430\u0436\u0434\u043e\u0433\u043e",
+        rc_share_msg:"\u041f\u0440\u0438\u0441\u043e\u0435\u0434\u0438\u043d\u044f\u0439\u0442\u0435\u0441\u044c \u043a SLH! 20+ \u0431\u043e\u0442\u043e\u0432, \u0438\u043d\u0432\u0435\u0441\u0442\u0438\u0446\u0438\u0438, \u043a\u0440\u0438\u043f\u0442\u043e. \u0420\u0435\u0433\u0438\u0441\u0442\u0440\u0438\u0440\u0443\u0439\u0442\u0435\u0441\u044c:",
+        rc_headline:"\u041f\u0440\u0438\u0441\u043e\u0435\u0434\u0438\u043d\u044f\u0439\u0442\u0435\u0441\u044c \u043a SLH",
+    },
+    ar: {
+        rc_back:"\u0627\u0644\u0639\u0648\u062f\u0629 \u0625\u0644\u0649 SLH",rc_title:"\u0627\u0633\u062a\u0648\u062f\u064a\u0648 \u0628\u0637\u0627\u0642\u0629 \u0627\u0644\u0625\u062d\u0627\u0644\u0629",
+        rc_subtitle:"\u0623\u0646\u0634\u0626 \u0628\u0637\u0627\u0642\u0629 \u0625\u062d\u0627\u0644\u0629 \u0645\u062e\u0635\u0635\u0629 \u0648\u0627\u0631\u0628\u062d 15% \u0639\u0645\u0648\u0644\u0629",
+        rc_username_label:"\u0627\u0633\u0645 \u0645\u0633\u062a\u062e\u062f\u0645 \u062a\u0644\u064a\u062c\u0631\u0627\u0645",rc_username_placeholder:"@\u0627\u0644\u0627\u0633\u0645 \u0623\u0648 \u0645\u0639\u0631\u0641 \u062a\u0644\u064a\u062c\u0631\u0627\u0645",
+        rc_bot_label:"\u0627\u062e\u062a\u0631 \u0628\u0648\u062a",rc_generate:"\u0625\u0646\u0634\u0627\u0621 \u0628\u0637\u0627\u0642\u0629",rc_download:"\u062a\u062d\u0645\u064a\u0644 PNG",
+        rc_share_tg:"\u0645\u0634\u0627\u0631\u0643\u0629 \u0639\u0628\u0631 \u062a\u0644\u064a\u062c\u0631\u0627\u0645",rc_share_wa:"\u0645\u0634\u0627\u0631\u0643\u0629 \u0639\u0628\u0631 \u0648\u0627\u062a\u0633\u0627\u0628",rc_share_fb:"\u0645\u0634\u0627\u0631\u0643\u0629 \u0639\u0628\u0631 \u0641\u064a\u0633\u0628\u0648\u0643",
+        rc_commission:"15% \u0639\u0645\u0648\u0644\u0629 \u0639\u0644\u0649 \u0643\u0644 \u0625\u062d\u0627\u0644\u0629",
+        rc_share_msg:"\u0627\u0646\u0636\u0645 \u0625\u0644\u0649 SLH! 20+ \u0628\u0648\u062a\u060c \u0627\u0633\u062a\u062b\u0645\u0627\u0631\u0627\u062a\u060c \u0643\u0631\u064a\u0628\u062a\u0648. \u0633\u062c\u0644 \u0639\u0628\u0631 \u0631\u0627\u0628\u0637\u064a:",
+        rc_headline:"\u0627\u0646\u0636\u0645 \u0625\u0644\u0649 \u0645\u0646\u0638\u0648\u0645\u0629 SLH",
+    },
+    fr: {
+        rc_back:"Retour vers SLH",rc_title:"Studio carte de parrainage",
+        rc_subtitle:"Cr\u00e9ez une carte de parrainage personnalis\u00e9e et gagnez 15% de commission",
+        rc_username_label:"Votre nom Telegram",rc_username_placeholder:"@nom ou ID Telegram",
+        rc_bot_label:"Choisir un bot",rc_generate:"Cr\u00e9er la carte",rc_download:"T\u00e9l\u00e9charger PNG",
+        rc_share_tg:"Partager sur Telegram",rc_share_wa:"Partager sur WhatsApp",rc_share_fb:"Partager sur Facebook",
+        rc_commission:"15% de commission par parrainage",
+        rc_share_msg:"Rejoignez SLH ! 20+ bots Telegram, investissements, crypto. Inscrivez-vous via mon lien :",
+        rc_headline:"Rejoignez l'\u00e9cosyst\u00e8me SLH",
+    }
+};
+
+function setLang(lang) {
+    currentLang = lang;
+    const sl = PAGE_T[lang] || PAGE_T.en;
+    const isRTL = (lang === 'he' || lang === 'ar');
+    document.documentElement.lang = lang;
+    document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (sl[key]) el.textContent = sl[key];
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (sl[key]) el.placeholder = sl[key];
+    });
+
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent.trim().toLowerCase() === lang);
+    });
+}
+
+function renderBotChips() {
+    const container = document.getElementById('rc-bot-select');
+    container.innerHTML = Object.entries(BOTS).map(([key, bot]) =>
+        `<button class="bot-chip ${key === selectedBot ? 'active' : ''}" onclick="selectBot('${key}')">${bot.name}</button>`
+    ).join('');
+}
+
+function selectBot(key) {
+    selectedBot = key;
+    renderBotChips();
+}
+
+function getRefLink() {
+    const username = document.getElementById('rc-username').value.trim().replace('@', '') || 'YOUR_ID';
+    const bot = BOTS[selectedBot] || BOTS.airdrop;
+    return 'https://t.me/' + bot.username + '?start=ref_' + username;
+}
+
+function drawQR(ctx, data, x, y, size) {
+    const modules = 21;
+    const cellSize = size / modules;
+    let bits = [];
+    for (let i = 0; i < data.length; i++) {
+        let code = data.charCodeAt(i);
+        for (let b = 7; b >= 0; b--) bits.push((code >> b) & 1);
+    }
+    while (bits.length < modules * modules) bits.push(bits.length % 3 === 0 ? 1 : 0);
+
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(x, y, size, size);
+    ctx.fillStyle = '#000000';
+
+    function drawFinder(fx, fy) {
+        ctx.fillRect(fx, fy, cellSize * 7, cellSize * 7);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(fx + cellSize, fy + cellSize, cellSize * 5, cellSize * 5);
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(fx + cellSize * 2, fy + cellSize * 2, cellSize * 3, cellSize * 3);
+    }
+    drawFinder(x, y);
+    drawFinder(x + cellSize * (modules - 7), y);
+    drawFinder(x, y + cellSize * (modules - 7));
+
+    for (let row = 0; row < modules; row++) {
+        for (let col = 0; col < modules; col++) {
+            if ((row < 8 && col < 8) || (row < 8 && col >= modules - 8) || (row >= modules - 8 && col < 8)) continue;
+            let idx = row * modules + col;
+            if (bits[idx % bits.length]) {
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(x + col * cellSize, y + row * cellSize, cellSize, cellSize);
+            }
+        }
+    }
+}
+
+function generateCard() {
+    const canvas = document.getElementById('rc-canvas');
+    const ctx = canvas.getContext('2d');
+    const w = 800, h = 500;
+    canvas.width = w;
+    canvas.height = h;
+    const sl = PAGE_T[currentLang] || PAGE_T.en;
+    const refLink = getRefLink();
+    const username = document.getElementById('rc-username').value.trim() || 'YOUR_ID';
+    const bot = BOTS[selectedBot] || BOTS.airdrop;
+
+    // Background
+    const grad = ctx.createLinearGradient(0, 0, w, h);
+    grad.addColorStop(0, '#050510');
+    grad.addColorStop(0.3, '#0c0c24');
+    grad.addColorStop(0.7, '#0a0a1e');
+    grad.addColorStop(1, '#050510');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, w, h);
+
+    // Grid overlay
+    ctx.strokeStyle = 'rgba(255,255,255,0.02)';
+    ctx.lineWidth = 1;
+    for (let gx = 0; gx < w; gx += 40) {
+        ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, h); ctx.stroke();
+    }
+    for (let gy = 0; gy < h; gy += 40) {
+        ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(w, gy); ctx.stroke();
+    }
+
+    // Decorative orbs
+    const orbGrad = ctx.createRadialGradient(120, 80, 0, 120, 80, 220);
+    orbGrad.addColorStop(0, 'rgba(108,92,231,0.18)');
+    orbGrad.addColorStop(1, 'transparent');
+    ctx.fillStyle = orbGrad;
+    ctx.fillRect(0, 0, 400, 350);
+
+    const orbGrad2 = ctx.createRadialGradient(680, 420, 0, 680, 420, 200);
+    orbGrad2.addColorStop(0, 'rgba(0,206,201,0.12)');
+    orbGrad2.addColorStop(1, 'transparent');
+    ctx.fillStyle = orbGrad2;
+    ctx.fillRect(400, 200, 400, 300);
+
+    // Border
+    ctx.strokeStyle = '#6c5ce7';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(10, 10, w - 20, h - 20);
+    ctx.strokeStyle = 'rgba(0,206,201,0.3)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(16, 16, w - 32, h - 32);
+
+    // Top decorative line
+    const lineGrad = ctx.createLinearGradient(40, 30, w - 40, 30);
+    lineGrad.addColorStop(0, 'transparent');
+    lineGrad.addColorStop(0.2, '#6c5ce7');
+    lineGrad.addColorStop(0.8, '#00cec9');
+    lineGrad.addColorStop(1, 'transparent');
+    ctx.strokeStyle = lineGrad;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(40, 30);
+    ctx.lineTo(w - 40, 30);
+    ctx.stroke();
+
+    // Logo / Brand
+    ctx.textAlign = 'center';
+    ctx.font = 'bold 44px "Space Grotesk", sans-serif';
+    ctx.fillStyle = '#a29bfe';
+    ctx.fillText('SLH ECOSYSTEM', w / 2, 78);
+
+    ctx.font = 'bold 13px "Space Mono", monospace';
+    ctx.fillStyle = '#7878a0';
+    ctx.fillText('SPARK IND | Digital Investment House | Built in Israel', w / 2, 102);
+
+    // Headline
+    ctx.font = 'bold 32px "Space Grotesk", sans-serif';
+    const headGrad = ctx.createLinearGradient(180, 145, 620, 145);
+    headGrad.addColorStop(0, '#6c5ce7');
+    headGrad.addColorStop(0.5, '#00cec9');
+    headGrad.addColorStop(1, '#ffd32a');
+    ctx.fillStyle = headGrad;
+    ctx.fillText(sl.rc_headline || 'Join the SLH Ecosystem', w / 2, 152);
+
+    // Commission badge
+    ctx.font = 'bold 20px "Inter", sans-serif';
+    ctx.fillStyle = '#00cec9';
+    ctx.fillText(sl.rc_commission || '15% commission on every referral', w / 2, 192);
+
+    // Separator
+    ctx.strokeStyle = 'rgba(108,92,231,0.4)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(80, 215); ctx.lineTo(w - 80, 215); ctx.stroke();
+
+    // Bot info
+    ctx.font = '600 16px "Inter", sans-serif';
+    ctx.fillStyle = '#eaeaf5';
+    ctx.fillText('Bot: @' + bot.username, w / 2, 250);
+
+    // Referrer username
+    ctx.font = '500 14px "Inter", sans-serif';
+    ctx.fillStyle = '#a29bfe';
+    ctx.fillText('Invited by: ' + (username.startsWith('@') ? username : '@' + username), w / 2, 278);
+
+    // Referral link
+    ctx.font = '500 14px "Space Mono", monospace';
+    ctx.fillStyle = '#ffd32a';
+    ctx.fillText(refLink, w / 2, 310);
+
+    // QR Code (left-center area)
+    drawQR(ctx, refLink, w / 2 - 65, 330, 130);
+
+    // Bottom decorative line
+    ctx.strokeStyle = lineGrad;
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(40, h - 30); ctx.lineTo(w - 40, h - 30); ctx.stroke();
+
+    // Footer
+    ctx.font = '11px "Inter", sans-serif';
+    ctx.fillStyle = '#7878a0';
+    ctx.fillText('slh-nft.com | 20+ Telegram Bots | Blockchain Verified | @SLH_AIR_bot', w / 2, h - 16);
+
+    // Show
+    document.getElementById('rc-preview').style.display = 'block';
+    document.getElementById('rc-preview').scrollIntoView({behavior: 'smooth'});
+}
+
+function downloadCard() {
+    const canvas = document.getElementById('rc-canvas');
+    const link = document.createElement('a');
+    link.download = 'SLH-Referral-Card.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+}
+
+function shareTelegram() {
+    const link = getRefLink();
+    const sl = PAGE_T[currentLang] || PAGE_T.en;
+    const msg = (sl.rc_share_msg || 'Join SLH!') + ' ' + link;
+    window.open('https://t.me/share/url?url=' + encodeURIComponent(link) + '&text=' + encodeURIComponent(msg), '_blank');
+}
+
+function shareWhatsApp() {
+    const link = getRefLink();
+    const sl = PAGE_T[currentLang] || PAGE_T.en;
+    const msg = (sl.rc_share_msg || 'Join SLH!') + ' ' + link;
+    window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+}
+
+function shareFacebook() {
+    const link = getRefLink();
+    window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(link), '_blank');
+}
+
+// Init
+renderBotChips();
+
+// Check URL param for lang
+const urlLang = new URLSearchParams(window.location.search).get('lang');
+if (urlLang && T[urlLang]) setLang(urlLang);
+</script>
+
+<div id="bottomnav-root"></div>
+<div id="footer-root"></div>
+
+<script src="/js/translations.js?v=20260426e"></script>
+<script src="/js/shared.js?v=20260426e"></script>
+<script>
+    initShared({ activePage: 'referral-card' });
+</script>
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260413"></script>
+</body>
+</html>

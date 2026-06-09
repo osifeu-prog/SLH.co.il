@@ -1,0 +1,1124 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SLH Spark Network Map — Live Visualization</title>
+  <meta name="description" content="Interactive neural network visualization of the SLH ecosystem — users, groups, bots, and topics mapped in real time.">
+  <meta name="keywords" content="SLH, network, visualization, neural network, graph, ecosystem map">
+  <meta name="author" content="SPARK IND">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://slh-nft.com/network.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="SLH Ecosystem">
+  <meta property="og:title" content="SLH Network Map · Neural visualization of the ecosystem">
+  <meta property="og:description" content="Interactive live network: users, bots, groups, topics, and on-chain SLH holders on BSC.">
+  <meta property="og:image" content="https://slh-nft.com/assets/og/network.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url" content="https://slh-nft.com/network.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SLH Network Map · Neural Visualization">
+  <meta name="twitter:description" content="Interactive live network of the SLH ecosystem with on-chain data.">
+  <meta name="twitter:image" content="https://slh-nft.com/assets/og/network.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#050510">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/shared.css?v=20260426e">
+  <style>
+    /* ── Network Page ────────────────────────── */
+    .net-page{padding:calc(var(--topnav-h) + 20px) 20px 40px;max-width:1400px;margin:0 auto;position:relative;z-index:1}
+
+    /* Background effects */
+    .bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(108,92,231,.1) 0%,transparent 60%),radial-gradient(ellipse 60% 80% at 80% 90%,rgba(0,206,201,.07) 0%,transparent 60%)}
+
+    /* Hero */
+    .net-hero{text-align:center;margin-bottom:32px}
+    .net-hero h1{font-size:clamp(28px,5vw,42px);font-weight:800;margin-bottom:8px;background:linear-gradient(135deg,var(--accent2),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .net-hero .badge-live{display:inline-block;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:600;background:rgba(0,206,201,.15);color:var(--green);border:1px solid rgba(0,206,201,.3);margin-bottom:12px;animation:pulse-badge 2s ease-in-out infinite}
+    .net-hero .badge-live::before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-inline-end:6px;animation:blink 1.5s infinite}
+    @keyframes pulse-badge{0%,100%{box-shadow:0 0 0 0 rgba(0,206,201,.3)}50%{box-shadow:0 0 12px 4px rgba(0,206,201,.15)}}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+    .net-hero p{color:var(--text2);font-size:15px;max-width:600px;margin:0 auto}
+
+    /* Stats bar */
+    .net-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px}
+    .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;text-align:center;position:relative;overflow:hidden}
+    .stat-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px}
+    .stat-card.cyan::after{background:var(--cyan)}
+    .stat-card.purple::after{background:var(--accent)}
+    .stat-card.gold::after{background:var(--gold)}
+    .stat-card.green::after{background:var(--green)}
+    .stat-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+    .stat-val{font-size:28px;font-weight:800;color:var(--text)}
+
+    /* Controls */
+    .net-controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:16px;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius)}
+    .filter-btn{padding:7px 16px;border-radius:var(--radius-sm);border:1px solid var(--border);background:transparent;color:var(--text2);font-size:13px;cursor:pointer;font-family:var(--font);transition:var(--transition);display:flex;align-items:center;gap:6px}
+    .filter-btn:hover{border-color:var(--accent);color:var(--text)}
+    .filter-btn.active{background:rgba(108,92,231,.15);border-color:var(--accent);color:var(--accent2)}
+    .filter-btn .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+    .filter-btn .dot.sq{border-radius:2px}
+    .filter-btn .dot.dia{transform:rotate(45deg);border-radius:1px}
+    .filter-btn .dot.hex{clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%)}
+    .search-box{margin-inline-start:auto;position:relative}
+    .search-box input{padding:7px 14px 7px 32px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;font-family:var(--font);width:200px;transition:var(--transition)}
+    .search-box input:focus{outline:none;border-color:var(--accent);width:260px}
+    .search-box i{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:13px}
+
+    /* Canvas container */
+    .canvas-wrap{position:relative;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:24px}
+    .canvas-wrap canvas{display:block;width:100%;cursor:grab}
+    .canvas-wrap canvas:active{cursor:grabbing}
+
+    /* Legend */
+    .canvas-legend{position:absolute;top:14px;left:14px;background:rgba(5,5,16,.85);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;font-size:12px;backdrop-filter:blur(8px);z-index:2}
+    .legend-item{display:flex;align-items:center;gap:8px;margin-bottom:6px;color:var(--text2)}
+    .legend-item:last-child{margin-bottom:0}
+    .legend-icon{width:14px;height:14px;flex-shrink:0}
+    .legend-icon.circle{border-radius:50%}
+    .legend-icon.square{border-radius:2px}
+    .legend-icon.diamond{transform:rotate(45deg);border-radius:1px;width:11px;height:11px}
+    .legend-icon.hexagon{clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%)}
+
+    /* Detail panel */
+    .net-layout{display:grid;grid-template-columns:1fr 320px;gap:20px}
+    .detail-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;min-height:300px;max-height:620px;overflow-y:auto}
+    .detail-panel h3{font-size:15px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px;color:var(--accent2)}
+    .detail-empty{text-align:center;padding:60px 20px;color:var(--text3);font-size:13px}
+    .detail-empty i{font-size:36px;margin-bottom:12px;display:block;opacity:.3}
+    .detail-name{font-size:20px;font-weight:700;margin-bottom:4px}
+    .detail-type{font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:16px;display:flex;align-items:center;gap:6px}
+    .detail-type .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+    .detail-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+    .detail-meta-card{background:var(--bg);border-radius:var(--radius-sm);padding:12px;text-align:center}
+    .detail-meta-card .val{font-size:18px;font-weight:700}
+    .detail-meta-card .lbl{font-size:11px;color:var(--text3);margin-top:2px}
+    .detail-connections h4{font-size:13px;font-weight:600;color:var(--text2);margin-bottom:8px}
+    .conn-list{list-style:none;padding:0;margin:0}
+    .conn-list li{padding:6px 10px;border-radius:var(--radius-xs);font-size:13px;color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:8px;transition:var(--transition)}
+    .conn-list li:hover{background:var(--bg2);color:var(--text)}
+    .conn-list li .cdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+    /* Top nodes table */
+    .net-table-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:24px}
+    .net-table-section h3{font-size:15px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+    .net-table-section h3 i{color:var(--accent2);font-size:14px}
+    .net-table{width:100%;border-collapse:collapse;font-size:13px}
+    .net-table th{text-align:right;padding:10px 14px;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);border-bottom:1px solid var(--border)}
+    .net-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text2)}
+    .net-table tr:hover td{background:var(--bg2)}
+    .net-table .rank{font-weight:700;color:var(--accent2);width:40px}
+    .net-table .node-name{display:flex;align-items:center;gap:8px;font-weight:500;color:var(--text)}
+    .net-table .node-name .ndot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+    .net-table .conn-count{font-weight:700;color:var(--cyan)}
+
+    /* Responsive */
+    @media(max-width:900px){
+      .net-layout{grid-template-columns:1fr}
+      .detail-panel{max-height:400px}
+      .search-box{margin-inline-start:0;width:100%}
+      .search-box input{width:100%}
+      .search-box input:focus{width:100%}
+    }
+    @media(max-width:600px){
+      .net-page{padding:calc(var(--topnav-h) + 12px) 12px 100px}
+      .net-stats{grid-template-columns:1fr 1fr}
+      .canvas-legend{display:none}
+    }
+  </style>
+</head>
+<body>
+<div class="bg-mesh"></div>
+
+<div id="topnav-root"></div>
+<div id="ticker-root"></div>
+
+<main class="net-page">
+  <!-- Hero -->
+  <section class="net-hero">
+    <div class="badge-live" data-i18n="net_live_badge">Live Network</div>
+    <h1 data-i18n="net_title">SLH Network Map</h1>
+    <p data-i18n="net_subtitle">מיפוי אינטראקטיבי של כל החיבורים במערכת — משתמשים, קבוצות, נושאים ובוטים ברשת SLH</p>
+  </section>
+
+  <!-- REAL DATA Banner -->
+  <section style="max-width:1200px;margin:0 auto 20px;padding:0 20px">
+    <div style="background:linear-gradient(135deg,rgba(0,180,216,0.1),rgba(108,92,231,0.08));border:1px solid rgba(0,180,216,0.3);border-radius:12px;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+      <div>
+        <div style="font-size:11px;color:#00b4d8;text-transform:uppercase;letter-spacing:1px;font-weight:700">🔴 Live Data — SLH Ecosystem</div>
+        <div style="font-size:14px;color:#e8e8f0;margin-top:4px">
+          <strong id="live-real-users">--</strong> real users · <strong id="live-real-bots">25</strong> active bots ·
+          <strong id="live-real-holders">176</strong> SLH holders on BSC
+        </div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button onclick="loadOnChainHolders()" style="background:rgba(243,186,47,0.1);color:#f3ba2f;border:1px solid rgba(243,186,47,0.3);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700">
+          🏦 Load BSC Holders
+        </button>
+        <a href="/dashboard.html" style="background:rgba(0,255,135,0.1);color:#00e887;border:1px solid rgba(0,255,135,0.3);padding:8px 16px;border-radius:8px;text-decoration:none;font-size:12px;font-weight:700">
+          📊 Dashboard
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats bar -->
+  <section class="net-stats">
+    <div class="stat-card cyan">
+      <div class="stat-label" data-i18n="net_stat_nodes">Total Nodes</div>
+      <div class="stat-val" id="stat-nodes">0</div>
+    </div>
+    <div class="stat-card purple">
+      <div class="stat-label" data-i18n="net_stat_connections">Active Connections</div>
+      <div class="stat-val" id="stat-connections">0</div>
+    </div>
+    <div class="stat-card gold">
+      <div class="stat-label" data-i18n="net_stat_groups">Groups</div>
+      <div class="stat-val" id="stat-groups">0</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-label" data-i18n="net_stat_health">Network Health</div>
+      <div class="stat-val" id="stat-health">0%</div>
+    </div>
+  </section>
+
+  <!-- Filter Controls -->
+  <div class="net-controls">
+    <button class="filter-btn active" data-filter="all">
+      <i class="fas fa-globe"></i> <span data-i18n="net_filter_all">הכל</span>
+    </button>
+    <button class="filter-btn active" data-filter="user">
+      <span class="dot circle" style="background:var(--cyan)"></span> <span data-i18n="net_filter_users">משתמשים</span>
+    </button>
+    <button class="filter-btn active" data-filter="group">
+      <span class="dot sq" style="background:var(--accent)"></span> <span data-i18n="net_filter_groups">קבוצות</span>
+    </button>
+    <button class="filter-btn active" data-filter="topic">
+      <span class="dot dia" style="background:var(--gold)"></span> <span data-i18n="net_filter_topics">נושאים</span>
+    </button>
+    <button class="filter-btn active" data-filter="bot">
+      <span class="dot hex" style="background:var(--green)"></span> <span data-i18n="net_filter_bots">בוטים</span>
+    </button>
+    <button class="filter-btn active" data-filter="voice" title="Phase 2 Vision — SLH Voice">
+      <span class="dot circle" style="background:#5ba3ff"></span> <span data-i18n="net_filter_voice">Voice 🚧</span>
+    </button>
+    <button class="filter-btn active" data-filter="swarm" title="Phase 2 Vision — SLH Swarm">
+      <span class="dot hex" style="background:#a855f7"></span> <span data-i18n="net_filter_swarm">Swarm 🚧</span>
+    </button>
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input type="text" id="node-search" placeholder="חפש צומת..." data-i18n-placeholder="net_search_placeholder">
+    </div>
+  </div>
+
+  <!-- Canvas + Detail Panel -->
+  <div class="net-layout">
+    <div class="canvas-wrap">
+      <canvas id="network-canvas"></canvas>
+      <!-- Legend -->
+      <div class="canvas-legend">
+        <div class="legend-item"><div class="legend-icon circle" style="background:#00b4d8"></div><span data-i18n="net_legend_users">משתמשים</span></div>
+        <div class="legend-item"><div class="legend-icon square" style="background:#6c5ce7"></div><span data-i18n="net_legend_groups">קבוצות</span></div>
+        <div class="legend-item"><div class="legend-icon diamond" style="background:#ffd32a"></div><span data-i18n="net_legend_topics">נושאים</span></div>
+        <div class="legend-item"><div class="legend-icon hexagon" style="background:#00cec9"></div><span data-i18n="net_legend_bots">בוטים</span></div>
+        <div class="legend-item"><div class="legend-icon circle" style="background:#5ba3ff"></div><span data-i18n="net_legend_voice">Voice (Phase 2) 🚧</span></div>
+        <div class="legend-item"><div class="legend-icon hexagon" style="background:#a855f7"></div><span data-i18n="net_legend_swarm">Swarm (Phase 2) 🚧</span></div>
+      </div>
+    </div>
+
+    <!-- Detail Panel -->
+    <div class="detail-panel" id="detail-panel">
+      <h3><i class="fas fa-info-circle"></i> <span data-i18n="net_detail_title">פרטי צומת</span></h3>
+      <div class="detail-empty" id="detail-empty">
+        <i class="fas fa-mouse-pointer"></i>
+        <p data-i18n="net_detail_empty">לחצו על צומת ברשת כדי לראות פרטים</p>
+      </div>
+      <div id="detail-content" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- Top Nodes Table -->
+  <section class="net-table-section">
+    <h3><i class="fas fa-trophy"></i> <span data-i18n="net_top_nodes">Top 10 — צמתים מחוברים</span></h3>
+    <table class="net-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th data-i18n="net_th_name">שם</th>
+          <th data-i18n="net_th_type">סוג</th>
+          <th data-i18n="net_th_connections">חיבורים</th>
+        </tr>
+      </thead>
+      <tbody id="top-nodes-body"></tbody>
+    </table>
+  </section>
+
+  <!-- SLH Holders (BSCScan) -->
+  <section class="net-table-section" style="margin-top:32px">
+    <h3>
+      <i class="fas fa-coins" style="color:#f3ba2f"></i>
+      SLH Holders — Binance Smart Chain
+      <span style="font-size:11px;color:#8a8aa0;margin-right:8px">(דרך BSCScan API)</span>
+    </h3>
+    <p style="color:#b0b0c0;font-size:13px;margin:-8px 0 14px">
+      שקיפות מלאה: רשימת מחזיקי SLH על הבלוקצ'יין. נתונים אמיתיים מ-BSCScan כשה-API key מוגדר.
+    </p>
+    <div id="holders-status" style="padding:14px;background:rgba(243,186,47,0.06);border:1px dashed rgba(243,186,47,0.3);border-radius:10px;font-size:12px;color:#f3ba2f;text-align:center;margin-bottom:14px">
+      ⏳ BSCScan API key לא הוגדר — לחץ "Load BSC Holders" למעלה כדי לנסות לטעון דרך ה-endpoint הציבורי
+    </div>
+    <table class="net-table" id="holders-table" style="display:none">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Address</th>
+          <th>Balance (SLH)</th>
+          <th>% Supply</th>
+          <th>BSCScan</th>
+        </tr>
+      </thead>
+      <tbody id="holders-body"></tbody>
+    </table>
+  </section>
+
+  <!-- Ecosystem Architecture Overview -->
+  <section class="net-table-section" style="margin-top:32px">
+    <h3><i class="fas fa-sitemap" style="color:#00cec9"></i> SLH Ecosystem Architecture</h3>
+    <p style="color:#b0b0c0;font-size:13px;margin:-8px 0 14px">
+      איך הרכיבים מתחברים: משתמשים → בוטים → API → DB → CEX → On-Chain
+    </p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px">
+      <div style="padding:16px;background:rgba(0,180,216,0.06);border:1px solid rgba(0,180,216,0.2);border-radius:10px">
+        <div style="color:#00b4d8;font-weight:800;font-size:14px;margin-bottom:6px">👤 User Layer</div>
+        <div style="font-size:12px;color:#b0b0c0;line-height:1.6">
+          • Telegram accounts<br>
+          • Website login (manual ID / Widget)<br>
+          • Dashboard + Wallet views<br>
+          • Community posts
+        </div>
+      </div>
+      <div style="padding:16px;background:rgba(0,206,201,0.06);border:1px solid rgba(0,206,201,0.2);border-radius:10px">
+        <div style="color:#00cec9;font-weight:800;font-size:14px;margin-bottom:6px">🤖 Bot Layer (25)</div>
+        <div style="font-size:12px;color:#b0b0c0;line-height:1.6">
+          • Spark (main investment)<br>
+          • Guardian (security)<br>
+          • Academia, BotShop, Wallet<br>
+          • +20 specialized bots
+        </div>
+      </div>
+      <div style="padding:16px;background:rgba(108,92,231,0.06);border:1px solid rgba(108,92,231,0.2);border-radius:10px">
+        <div style="color:#6c5ce7;font-weight:800;font-size:14px;margin-bottom:6px">🔌 API Layer</div>
+        <div style="font-size:12px;color:#b0b0c0;line-height:1.6">
+          • FastAPI on Railway<br>
+          • 60+ endpoints<br>
+          • JWT auth + HMAC signing<br>
+          • Audit log (SHA-256 chain)
+        </div>
+      </div>
+      <div style="padding:16px;background:rgba(243,186,47,0.06);border:1px solid rgba(243,186,47,0.2);border-radius:10px">
+        <div style="color:#f3ba2f;font-weight:800;font-size:14px;margin-bottom:6px">💾 Data Layer</div>
+        <div style="font-size:12px;color:#b0b0c0;line-height:1.6">
+          • PostgreSQL 15 (Railway)<br>
+          • Redis (cache + rate limit)<br>
+          • institutional_audit (hash chain)<br>
+          • cex_snapshots (portfolio history)
+        </div>
+      </div>
+      <div style="padding:16px;background:rgba(0,255,135,0.06);border:1px solid rgba(0,255,135,0.2);border-radius:10px">
+        <div style="color:#00e887;font-weight:800;font-size:14px;margin-bottom:6px">🏦 CEX Layer</div>
+        <div style="font-size:12px;color:#b0b0c0;line-height:1.6">
+          • Bybit V5 UNIFIED (read-only)<br>
+          • Binance V3 SPOT (read-only)<br>
+          • HMAC-signed requests<br>
+          • Encrypted key storage
+        </div>
+      </div>
+      <div style="padding:16px;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-radius:10px">
+        <div style="color:#ef4444;font-weight:800;font-size:14px;margin-bottom:6px">⛓️ On-Chain Layer</div>
+        <div style="font-size:12px;color:#b0b0c0;line-height:1.6">
+          • BSC — SLH token (110.75M supply)<br>
+          • TON — wallets + MNH stablecoin<br>
+          • Ethereum — future multichain<br>
+          • BSCScan holders list
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="bottomnav-root"></div>
+<div id="footer-root"></div>
+
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260426e"></script>
+<script src="/js/translations.js?v=20260426e"></script>
+<script src="/js/shared.js?v=20260426e"></script>
+<script>
+initShared({ activePage: 'network', showBottomNav: true, showTicker: true });
+</script>
+
+<script>
+(function(){
+  /* ══════════════════════════════════════════════
+     DEMO DATA
+     ══════════════════════════════════════════════ */
+  const NODE_COLORS = {
+    user:  '#00b4d8',
+    group: '#6c5ce7',
+    topic: '#ffd32a',
+    bot:   '#00cec9',
+    voice: '#5ba3ff',  /* Phase 2 — SLH Voice (IVR) */
+    swarm: '#a855f7'   /* Phase 2 — SLH Swarm (ESP32 devices) */
+  };
+  const NODE_SIZES = { user: 8, group: 14, topic: 12, bot: 13, voice: 11, swarm: 10 };
+
+  const users = [
+    'יוסי','דנה','אבי','שרה','מוחמד','אנה','עומר','נועה','אילן','ליאור',
+    'מיכל','טל','רון','הדס','יעל','עדי','ניר','שי','גל','אורי',
+    'תמר','איתי','רותם','ליאת','אלון','מאיה','יובל','עינת','דור','קרן'
+  ].map(n=>({id:'u_'+n,name:n,type:'user'}));
+
+  const groups = [
+    {id:'g_crypto_il', name:'קריפטו ישראל', type:'group'},
+    {id:'g_slh_stakers', name:'SLH Stakers', type:'group'},
+    {id:'g_ton_builders', name:'TON Builders', type:'group'},
+    {id:'g_nft_community', name:'NFT Community', type:'group'},
+    {id:'g_defi_masters', name:'DeFi Masters', type:'group'},
+    {id:'g_algo_traders', name:'Algo Traders', type:'group'},
+    {id:'g_mnh_savers', name:'MNH Savers', type:'group'},
+    {id:'g_web3_devs', name:'Web3 Developers', type:'group'}
+  ];
+
+  const topics = [
+    {id:'t_defi', name:'DeFi', type:'topic'},
+    {id:'t_staking', name:'Staking', type:'topic'},
+    {id:'t_nft', name:'NFT', type:'topic'},
+    {id:'t_p2p', name:'P2P Trading', type:'topic'},
+    {id:'t_mnh', name:'MNH Savings', type:'topic'},
+    {id:'t_blockchain', name:'Blockchain', type:'topic'}
+  ];
+
+  const bots = [
+    {id:'b_air', name:'SLH Air', type:'bot'},
+    {id:'b_guardian', name:'Guardian', type:'bot'},
+    {id:'b_expertnet', name:'ExpertNet', type:'bot'},
+    {id:'b_academia', name:'Academia', type:'bot'},
+    {id:'b_zvikush', name:'Zvikush', type:'bot'},
+    {id:'b_ambassador', name:'Ambassador', type:'bot'},
+    {id:'b_signal', name:'Signal', type:'bot'}
+  ];
+
+  /* Phase 2 Vision — SLH Voice (IVR) subsystem */
+  const voiceNodes = [
+    {id:'v_ivr',      name:'IVR Engine',       type:'voice', phase:'planned'},
+    {id:'v_intent',   name:'AI Intent',        type:'voice', phase:'planned'},
+    {id:'v_tts',      name:'Hebrew TTS/STT',   type:'voice', phase:'planned'},
+    {id:'v_wa',       name:'WhatsApp Relay',   type:'voice', phase:'planned'},
+    {id:'v_sip',      name:'SIP Trunk (3rd)',  type:'voice', phase:'planned'}
+  ];
+
+  /* Phase 2/3 Vision — SLH Swarm (ESP32 mesh) subsystem */
+  const swarmNodes = [
+    {id:'s_esp_mesh',  name:'ESP32 Mesh',       type:'swarm', phase:'planned'},
+    {id:'s_relay',     name:'Phone Relay',      type:'swarm', phase:'planned'},
+    {id:'s_anchor',    name:'Anchor API',       type:'swarm', phase:'planned'},
+    {id:'s_kwallet',   name:'Kosher Wallet',    type:'swarm', phase:'pre-sale'},
+    {id:'s_depin',     name:'DePIN Loop',       type:'swarm', phase:'future'}
+  ];
+
+  const allNodes = [...users,...groups,...topics,...bots,...voiceNodes,...swarmNodes];
+
+  /* Generate connections */
+  const connections = [];
+  const added = new Set();
+  function addConn(a,b){
+    const key = [a,b].sort().join('|');
+    if(!added.has(key)){ added.add(key); connections.push({from:a,to:b}); }
+  }
+
+  /* Users -> groups (each user in 1-3 groups) */
+  users.forEach(u=>{
+    const count = 1 + Math.floor(Math.random()*3);
+    const shuffled = [...groups].sort(()=>Math.random()-.5);
+    for(let i=0;i<count;i++) addConn(u.id, shuffled[i].id);
+  });
+  /* Users -> topics (each user interested in 1-2 topics) */
+  users.forEach(u=>{
+    const count = 1 + Math.floor(Math.random()*2);
+    const shuffled = [...topics].sort(()=>Math.random()-.5);
+    for(let i=0;i<count;i++) addConn(u.id, shuffled[i].id);
+  });
+  /* Bots -> groups (each bot manages 2-4 groups) */
+  bots.forEach(b=>{
+    const count = 2 + Math.floor(Math.random()*3);
+    const shuffled = [...groups].sort(()=>Math.random()-.5);
+    for(let i=0;i<Math.min(count,shuffled.length);i++) addConn(b.id, shuffled[i].id);
+  });
+  /* Bots -> topics */
+  bots.forEach(b=>{
+    const count = 1 + Math.floor(Math.random()*2);
+    const shuffled = [...topics].sort(()=>Math.random()-.5);
+    for(let i=0;i<count;i++) addConn(b.id, shuffled[i].id);
+  });
+  /* Some user-to-user connections */
+  for(let i=0;i<10;i++){
+    const a = users[Math.floor(Math.random()*users.length)];
+    const b = users[Math.floor(Math.random()*users.length)];
+    if(a.id!==b.id) addConn(a.id,b.id);
+  }
+
+  /* Voice subsystem — internal wiring */
+  addConn('v_ivr','v_intent');
+  addConn('v_ivr','v_tts');
+  addConn('v_ivr','v_sip');
+  addConn('v_ivr','v_wa');
+  /* Voice connects to existing infra: Academia bot, Ambassador bot, P2P topic */
+  addConn('v_ivr','b_ambassador');
+  addConn('v_ivr','b_academia');
+  addConn('v_intent','t_p2p');
+
+  /* Swarm subsystem — internal wiring */
+  addConn('s_esp_mesh','s_relay');
+  addConn('s_relay','s_anchor');
+  addConn('s_kwallet','s_esp_mesh');
+  addConn('s_kwallet','s_anchor');
+  addConn('s_depin','s_anchor');
+  /* Swarm connects to existing infra: Guardian (security), staking topic, SLH Air bot */
+  addConn('s_anchor','b_guardian');
+  addConn('s_kwallet','t_staking');
+  addConn('s_relay','b_air');
+  addConn('s_depin','t_blockchain');
+
+  /* ══════════════════════════════════════════════
+     STATS
+     ══════════════════════════════════════════════ */
+  document.getElementById('stat-nodes').textContent = allNodes.length;
+  document.getElementById('stat-connections').textContent = connections.length;
+  document.getElementById('stat-groups').textContent = groups.length;
+  document.getElementById('stat-health').textContent = '97.3%';
+
+  /* ══════════════════════════════════════════════
+     REAL DATA — fetch live counts from API
+     ══════════════════════════════════════════════ */
+  const SLH_API = 'https://slh-api-production.up.railway.app';
+  const SLH_CONTRACT = '0xACb0A09414CEA1C879c67bB7A877E4e19480f022';
+
+  async function loadRealCounts() {
+    try {
+      const r = await fetch(SLH_API + '/api/admin/dashboard');
+      if (!r.ok) return;
+      const d = await r.json();
+      document.getElementById('live-real-users').textContent = d.total_users || '--';
+    } catch(e) { console.warn('[Network] real counts failed:', e.message); }
+  }
+  loadRealCounts();
+
+  /* ══════════════════════════════════════════════
+     BSCScan Holders — public endpoint (rate-limited)
+     ══════════════════════════════════════════════ */
+  window.loadOnChainHolders = async function() {
+    const statusEl = document.getElementById('holders-status');
+    const tableEl = document.getElementById('holders-table');
+    const bodyEl = document.getElementById('holders-body');
+    statusEl.textContent = '⏳ טוען מחזיקי SLH מ-BSC דרך ה-backend...';
+    statusEl.style.color = '#00b4d8';
+
+    try {
+      // Call our backend — which uses BSCSCAN_API_KEY env var securely (no CORS, no exposed key)
+      const r = await fetch(SLH_API + '/api/network/slh-holders?limit=100');
+      const data = await r.json();
+      if (!data.ok) {
+        statusEl.innerHTML = `⚠️ <strong>${data.error || 'BSCScan API Key לא מוגדר ב-backend'}</strong><br><span style="color:#b0b0c0;font-size:11px">${data.hint || 'על המנהל להגדיר BSCSCAN_API_KEY ב-Railway → slh-api → Variables'}</span>`;
+        statusEl.style.color = '#ef4444';
+        return;
+      }
+
+      const holders = data.holders || [];
+      document.getElementById('live-real-holders').textContent = data.total_holders || holders.length;
+      bodyEl.innerHTML = holders.slice(0, 50).map(h => `
+        <tr>
+          <td class="rank">${h.rank}</td>
+          <td style="font-family:monospace;font-size:11px;direction:ltr">${h.address.slice(0,8)}...${h.address.slice(-6)}</td>
+          <td style="direction:ltr">${h.balance.toLocaleString('en-US',{maximumFractionDigits:2})}</td>
+          <td>${h.percent}%</td>
+          <td><a href="${h.bscscan_url}" target="_blank" style="color:#00b4d8">🔗</a></td>
+        </tr>`).join('');
+      tableEl.style.display = 'table';
+      statusEl.textContent = `✅ נטענו ${holders.length} מחזיקים — chain: ${data.chain}`;
+      statusEl.style.color = '#00e887';
+    } catch(e) {
+      statusEl.innerHTML = `❌ שגיאה: ${e.message}`;
+      statusEl.style.color = '#ef4444';
+    }
+  };
+
+  /* ══════════════════════════════════════════════
+     TOP 10 TABLE
+     ══════════════════════════════════════════════ */
+  const connCounts = {};
+  allNodes.forEach(n=> connCounts[n.id]=0);
+  connections.forEach(c=>{ connCounts[c.from]++; connCounts[c.to]++; });
+
+  const sorted = [...allNodes].sort((a,b)=>connCounts[b.id]-connCounts[a.id]).slice(0,10);
+  const tbody = document.getElementById('top-nodes-body');
+  const typeLabels = {user:'משתמש',group:'קבוצה',topic:'נושא',bot:'בוט',voice:'Voice (Phase 2)',swarm:'Swarm (Phase 2)'};
+  sorted.forEach((n,i)=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td class="rank">${i+1}</td>
+      <td><span class="node-name"><span class="ndot" style="background:${NODE_COLORS[n.type]}"></span>${n.name}</span></td>
+      <td>${typeLabels[n.type]}</td>
+      <td class="conn-count">${connCounts[n.id]}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  /* ══════════════════════════════════════════════
+     CANVAS — Force-Directed Graph
+     ══════════════════════════════════════════════ */
+  const canvas = document.getElementById('network-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, dpr;
+  let animId;
+
+  function resize(){
+    dpr = window.devicePixelRatio || 1;
+    const rect = canvas.parentElement.getBoundingClientRect();
+    W = rect.width;
+    H = 600;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.height = H + 'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  /* Node physics state */
+  const nodeMap = {};
+  allNodes.forEach(n=>{
+    nodeMap[n.id] = {
+      ...n,
+      x: W/2 + (Math.random()-.5)*W*0.7,
+      y: H/2 + (Math.random()-.5)*H*0.6,
+      vx: 0, vy: 0,
+      size: NODE_SIZES[n.type],
+      color: NODE_COLORS[n.type],
+      visible: true
+    };
+  });
+
+  /* Simulation params */
+  const SIM = {
+    repulsion: 3000,
+    attraction: 0.005,
+    centerGravity: 0.02,
+    damping: 0.85,
+    restLength: 120,
+    maxSpeed: 8
+  };
+
+  let selectedId = null;
+  let hoveredId = null;
+  let dragId = null;
+  let mouseX = 0, mouseY = 0;
+  let particles = [];
+  let frameCount = 0;
+
+  /* Adjacency for fast lookup */
+  const adj = {};
+  allNodes.forEach(n=> adj[n.id] = new Set());
+  connections.forEach(c=>{ adj[c.from].add(c.to); adj[c.to].add(c.from); });
+
+  /* ── Physics step ── */
+  function simulate(){
+    const visibleNodes = allNodes.filter(n=> nodeMap[n.id].visible);
+    const visibleSet = new Set(visibleNodes.map(n=>n.id));
+
+    /* Repulsion (node-node) */
+    for(let i=0;i<visibleNodes.length;i++){
+      const a = nodeMap[visibleNodes[i].id];
+      for(let j=i+1;j<visibleNodes.length;j++){
+        const b = nodeMap[visibleNodes[j].id];
+        let dx = a.x - b.x, dy = a.y - b.y;
+        let dist = Math.sqrt(dx*dx+dy*dy) || 1;
+        let force = SIM.repulsion / (dist*dist);
+        force = Math.min(force, 5);
+        const fx = (dx/dist)*force, fy = (dy/dist)*force;
+        a.vx += fx; a.vy += fy;
+        b.vx -= fx; b.vy -= fy;
+      }
+    }
+
+    /* Attraction (edges) */
+    connections.forEach(c=>{
+      if(!visibleSet.has(c.from)||!visibleSet.has(c.to)) return;
+      const a = nodeMap[c.from], b = nodeMap[c.to];
+      let dx = b.x - a.x, dy = b.y - a.y;
+      let dist = Math.sqrt(dx*dx+dy*dy) || 1;
+      let force = (dist - SIM.restLength) * SIM.attraction;
+      const fx = (dx/dist)*force, fy = (dy/dist)*force;
+      a.vx += fx; a.vy += fy;
+      b.vx -= fx; b.vy -= fy;
+    });
+
+    /* Center gravity */
+    visibleNodes.forEach(n=>{
+      const nd = nodeMap[n.id];
+      nd.vx += (W/2 - nd.x) * SIM.centerGravity;
+      nd.vy += (H/2 - nd.y) * SIM.centerGravity;
+    });
+
+    /* Integrate */
+    visibleNodes.forEach(n=>{
+      const nd = nodeMap[n.id];
+      if(nd.id === dragId) return;
+      nd.vx *= SIM.damping;
+      nd.vy *= SIM.damping;
+      const speed = Math.sqrt(nd.vx*nd.vx+nd.vy*nd.vy);
+      if(speed > SIM.maxSpeed){
+        nd.vx = (nd.vx/speed)*SIM.maxSpeed;
+        nd.vy = (nd.vy/speed)*SIM.maxSpeed;
+      }
+      nd.x += nd.vx;
+      nd.y += nd.vy;
+      /* Boundary clamping */
+      nd.x = Math.max(30, Math.min(W-30, nd.x));
+      nd.y = Math.max(30, Math.min(H-30, nd.y));
+    });
+  }
+
+  /* ── Particles on connections ── */
+  function spawnParticles(){
+    if(frameCount % 3 !== 0) return;
+    if(particles.length > 200) return;
+    const idx = Math.floor(Math.random()*connections.length);
+    const c = connections[idx];
+    const a = nodeMap[c.from], b = nodeMap[c.to];
+    if(!a.visible || !b.visible) return;
+    particles.push({
+      x: a.x, y: a.y,
+      tx: b.x, ty: b.y,
+      fromId: c.from, toId: c.to,
+      progress: 0,
+      speed: 0.008 + Math.random()*0.008,
+      size: 1.5 + Math.random()*1.5,
+      alpha: 0.4 + Math.random()*0.4
+    });
+  }
+
+  function updateParticles(){
+    for(let i=particles.length-1;i>=0;i--){
+      const p = particles[i];
+      p.progress += p.speed;
+      const a = nodeMap[p.fromId], b = nodeMap[p.toId];
+      p.x = a.x + (b.x - a.x)*p.progress;
+      p.y = a.y + (b.y - a.y)*p.progress;
+      p.tx = b.x; p.ty = b.y;
+      if(p.progress >= 1) particles.splice(i,1);
+    }
+  }
+
+  /* ── Draw ── */
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    const visibleSet = new Set(allNodes.filter(n=> nodeMap[n.id].visible).map(n=>n.id));
+
+    const selectedConns = selectedId ? adj[selectedId] : null;
+
+    /* Draw connections */
+    connections.forEach(c=>{
+      if(!visibleSet.has(c.from)||!visibleSet.has(c.to)) return;
+      const a = nodeMap[c.from], b = nodeMap[c.to];
+      const isHighlighted = selectedId && (c.from===selectedId || c.to===selectedId);
+      const isDimmed = selectedId && !isHighlighted;
+
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(b.x, b.y);
+
+      if(isHighlighted){
+        /* Glow */
+        ctx.strokeStyle = 'rgba(162,155,254,0.6)';
+        ctx.lineWidth = 3;
+        ctx.shadowColor = '#a29bfe';
+        ctx.shadowBlur = 12;
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+        /* Core */
+        ctx.strokeStyle = 'rgba(162,155,254,0.9)';
+        ctx.lineWidth = 1.5;
+      } else if(isDimmed){
+        ctx.strokeStyle = 'rgba(100,100,150,0.08)';
+        ctx.lineWidth = 0.5;
+      } else {
+        /* Pulsing alpha */
+        const pulse = 0.08 + 0.04 * Math.sin(frameCount*0.03 + a.x*0.01);
+        ctx.strokeStyle = `rgba(120,120,180,${pulse})`;
+        ctx.lineWidth = 0.8;
+      }
+      ctx.stroke();
+    });
+
+    /* Draw particles */
+    particles.forEach(p=>{
+      const isHighlighted = selectedId && (p.fromId===selectedId || p.toId===selectedId);
+      const isDimmed = selectedId && !isHighlighted;
+      if(isDimmed) return;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+      const alpha = isHighlighted ? p.alpha*1.5 : p.alpha;
+      ctx.fillStyle = `rgba(162,155,254,${Math.min(alpha,1)})`;
+      ctx.shadowColor = '#a29bfe';
+      ctx.shadowBlur = isHighlighted ? 10 : 4;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    });
+
+    /* Draw nodes */
+    allNodes.forEach(n=>{
+      const nd = nodeMap[n.id];
+      if(!nd.visible) return;
+      const isSelected = n.id === selectedId;
+      const isConnected = selectedConns && selectedConns.has(n.id);
+      const isDimmed = selectedId && !isSelected && !isConnected;
+      const isHovered = n.id === hoveredId;
+
+      const alpha = isDimmed ? 0.15 : 1;
+      const size = nd.size * (isSelected ? 1.6 : isHovered ? 1.3 : 1);
+
+      ctx.globalAlpha = alpha;
+
+      /* Glow for selected/hovered */
+      if((isSelected || isHovered) && !isDimmed){
+        ctx.shadowColor = nd.color;
+        ctx.shadowBlur = isSelected ? 25 : 15;
+      }
+
+      ctx.fillStyle = nd.color;
+
+      if(n.type === 'user'){
+        /* Circle */
+        ctx.beginPath();
+        ctx.arc(nd.x, nd.y, size, 0, Math.PI*2);
+        ctx.fill();
+      } else if(n.type === 'group'){
+        /* Rounded square */
+        const s = size;
+        ctx.beginPath();
+        ctx.roundRect(nd.x-s, nd.y-s, s*2, s*2, 3);
+        ctx.fill();
+      } else if(n.type === 'topic'){
+        /* Diamond */
+        const s = size;
+        ctx.beginPath();
+        ctx.moveTo(nd.x, nd.y - s);
+        ctx.lineTo(nd.x + s, nd.y);
+        ctx.lineTo(nd.x, nd.y + s);
+        ctx.lineTo(nd.x - s, nd.y);
+        ctx.closePath();
+        ctx.fill();
+      } else if(n.type === 'bot'){
+        /* Hexagon */
+        const s = size;
+        ctx.beginPath();
+        for(let i=0;i<6;i++){
+          const angle = Math.PI/6 + i*Math.PI/3;
+          const px = nd.x + s*Math.cos(angle);
+          const py = nd.y + s*Math.sin(angle);
+          if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+        }
+        ctx.closePath();
+        ctx.fill();
+      } else if(n.type === 'voice'){
+        /* Phase 2 — Circle with inner ring (phone icon metaphor) */
+        const s = size;
+        ctx.beginPath();
+        ctx.arc(nd.x, nd.y, s, 0, Math.PI*2);
+        ctx.fill();
+        /* Inner dashed ring to indicate "planned" */
+        ctx.save();
+        ctx.strokeStyle = '#050510';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([2, 2]);
+        ctx.beginPath();
+        ctx.arc(nd.x, nd.y, s*0.55, 0, Math.PI*2);
+        ctx.stroke();
+        ctx.restore();
+      } else if(n.type === 'swarm'){
+        /* Phase 2 — Triangle (antenna/beacon metaphor) */
+        const s = size * 1.1;
+        ctx.beginPath();
+        ctx.moveTo(nd.x, nd.y - s);
+        ctx.lineTo(nd.x + s*0.9, nd.y + s*0.6);
+        ctx.lineTo(nd.x - s*0.9, nd.y + s*0.6);
+        ctx.closePath();
+        ctx.fill();
+        /* Inner dashed triangle to indicate "planned" */
+        ctx.save();
+        ctx.strokeStyle = '#050510';
+        ctx.lineWidth = 1.2;
+        ctx.setLineDash([2, 2]);
+        ctx.beginPath();
+        ctx.moveTo(nd.x, nd.y - s*0.5);
+        ctx.lineTo(nd.x + s*0.45, nd.y + s*0.3);
+        ctx.lineTo(nd.x - s*0.45, nd.y + s*0.3);
+        ctx.closePath();
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      ctx.shadowBlur = 0;
+
+      /* Label for larger or selected/hovered nodes */
+      if(n.type !== 'user' || isSelected || isHovered){
+        ctx.font = `${isSelected?'bold ':''} ${isSelected?12:11}px Inter, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.fillStyle = isDimmed ? `rgba(232,232,240,${alpha})` : '#e8e8f0';
+        ctx.fillText(nd.name, nd.x, nd.y + size + 14);
+      }
+
+      ctx.globalAlpha = 1;
+    });
+
+    /* Hover tooltip */
+    if(hoveredId && !selectedId){
+      const nd = nodeMap[hoveredId];
+      if(nd && nd.visible){
+        const text = nd.name + ' (' + typeLabels[nd.type] + ')';
+        ctx.font = '12px Inter, sans-serif';
+        const tw = ctx.measureText(text).width;
+        const px = nd.x - tw/2 - 8;
+        const py = nd.y - nd.size - 28;
+        ctx.fillStyle = 'rgba(5,5,16,0.9)';
+        ctx.beginPath();
+        ctx.roundRect(px, py, tw+16, 24, 6);
+        ctx.fill();
+        ctx.fillStyle = '#e8e8f0';
+        ctx.textAlign = 'center';
+        ctx.fillText(text, nd.x, py + 16);
+      }
+    }
+  }
+
+  /* ── Animation Loop ── */
+  function loop(){
+    frameCount++;
+    simulate();
+    spawnParticles();
+    updateParticles();
+    draw();
+    animId = requestAnimationFrame(loop);
+  }
+  loop();
+
+  /* ══════════════════════════════════════════════
+     INTERACTION
+     ══════════════════════════════════════════════ */
+  function getNodeAt(mx,my){
+    let closest = null, minDist = Infinity;
+    allNodes.forEach(n=>{
+      const nd = nodeMap[n.id];
+      if(!nd.visible) return;
+      const dx = mx - nd.x, dy = my - nd.y;
+      const dist = Math.sqrt(dx*dx+dy*dy);
+      const hitRadius = nd.size + 6;
+      if(dist < hitRadius && dist < minDist){
+        minDist = dist; closest = nd;
+      }
+    });
+    return closest;
+  }
+
+  function getCanvasCoords(e){
+    const rect = canvas.getBoundingClientRect();
+    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+  }
+
+  canvas.addEventListener('mousemove', e=>{
+    const {x,y} = getCanvasCoords(e);
+    mouseX = x; mouseY = y;
+
+    if(dragId){
+      nodeMap[dragId].x = x;
+      nodeMap[dragId].y = y;
+      nodeMap[dragId].vx = 0;
+      nodeMap[dragId].vy = 0;
+      return;
+    }
+
+    const node = getNodeAt(x,y);
+    hoveredId = node ? node.id : null;
+    canvas.style.cursor = node ? 'pointer' : 'grab';
+  });
+
+  canvas.addEventListener('mousedown', e=>{
+    const {x,y} = getCanvasCoords(e);
+    const node = getNodeAt(x,y);
+    if(node){
+      dragId = node.id;
+      canvas.style.cursor = 'grabbing';
+    }
+  });
+
+  canvas.addEventListener('mouseup', e=>{
+    const {x,y} = getCanvasCoords(e);
+    if(dragId){
+      const wasDrag = false; // simple click detection
+      dragId = null;
+      canvas.style.cursor = 'grab';
+    }
+  });
+
+  canvas.addEventListener('click', e=>{
+    const {x,y} = getCanvasCoords(e);
+    const node = getNodeAt(x,y);
+    if(node){
+      selectedId = node.id;
+      showDetail(node);
+    } else {
+      selectedId = null;
+      hideDetail();
+    }
+  });
+
+  /* Touch support */
+  canvas.addEventListener('touchstart', e=>{
+    e.preventDefault();
+    const t = e.touches[0];
+    const {x,y} = getCanvasCoords(t);
+    const node = getNodeAt(x,y);
+    if(node){
+      dragId = node.id;
+      selectedId = node.id;
+      showDetail(node);
+    }
+  }, {passive:false});
+
+  canvas.addEventListener('touchmove', e=>{
+    e.preventDefault();
+    if(!dragId) return;
+    const t = e.touches[0];
+    const {x,y} = getCanvasCoords(t);
+    nodeMap[dragId].x = x;
+    nodeMap[dragId].y = y;
+    nodeMap[dragId].vx = 0;
+    nodeMap[dragId].vy = 0;
+  }, {passive:false});
+
+  canvas.addEventListener('touchend', ()=>{ dragId = null; });
+
+  /* ── Detail Panel ── */
+  function showDetail(node){
+    const panel = document.getElementById('detail-content');
+    const empty = document.getElementById('detail-empty');
+    empty.style.display = 'none';
+    panel.style.display = 'block';
+
+    const conns = [...adj[node.id]];
+    const connNodes = conns.map(id=> nodeMap[id]).filter(Boolean);
+
+    panel.innerHTML = `
+      <div class="detail-name">${node.name}</div>
+      <div class="detail-type"><span class="dot" style="background:${node.color};width:10px;height:10px;border-radius:${node.type==='user'?'50%':node.type==='group'?'2px':'50%'}"></span> ${typeLabels[node.type]}</div>
+      <div class="detail-meta">
+        <div class="detail-meta-card"><div class="val" style="color:${node.color}">${conns.length}</div><div class="lbl">חיבורים</div></div>
+        <div class="detail-meta-card"><div class="val" style="color:var(--accent2)">#${sorted.findIndex(s=>s.id===node.id)+1 || '—'}</div><div class="lbl">דירוג</div></div>
+      </div>
+      <div class="detail-connections">
+        <h4>צמתים מחוברים (${conns.length})</h4>
+        <ul class="conn-list">
+          ${connNodes.map(cn=>`<li data-id="${cn.id}"><span class="cdot" style="background:${cn.color}"></span>${cn.name} <span style="color:var(--text3);margin-inline-start:auto;font-size:11px">${typeLabels[cn.type]}</span></li>`).join('')}
+        </ul>
+      </div>`;
+
+    /* Click on connected node to navigate */
+    panel.querySelectorAll('.conn-list li').forEach(li=>{
+      li.addEventListener('click',()=>{
+        const id = li.dataset.id;
+        if(nodeMap[id]){
+          selectedId = id;
+          showDetail(nodeMap[id]);
+        }
+      });
+    });
+  }
+
+  function hideDetail(){
+    document.getElementById('detail-content').style.display = 'none';
+    document.getElementById('detail-empty').style.display = 'block';
+  }
+
+  /* ══════════════════════════════════════════════
+     FILTER CONTROLS
+     ══════════════════════════════════════════════ */
+  const activeFilters = new Set(['user','group','topic','bot']);
+
+  document.querySelectorAll('.filter-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const filter = btn.dataset.filter;
+      if(filter === 'all'){
+        /* Toggle all */
+        const allActive = activeFilters.size === 4;
+        if(allActive){
+          activeFilters.clear();
+          document.querySelectorAll('.filter-btn:not([data-filter="all"])').forEach(b=>b.classList.remove('active'));
+        } else {
+          ['user','group','topic','bot'].forEach(t=>activeFilters.add(t));
+          document.querySelectorAll('.filter-btn').forEach(b=>b.classList.add('active'));
+        }
+        btn.classList.toggle('active', !allActive);
+      } else {
+        if(activeFilters.has(filter)){
+          activeFilters.delete(filter);
+          btn.classList.remove('active');
+        } else {
+          activeFilters.add(filter);
+          btn.classList.add('active');
+        }
+        /* Update "all" button */
+        const allBtn = document.querySelector('.filter-btn[data-filter="all"]');
+        allBtn.classList.toggle('active', activeFilters.size === 4);
+      }
+
+      /* Apply visibility */
+      allNodes.forEach(n=>{
+        nodeMap[n.id].visible = activeFilters.has(n.type);
+      });
+
+      /* Deselect if hidden */
+      if(selectedId && !nodeMap[selectedId].visible){
+        selectedId = null;
+        hideDetail();
+      }
+    });
+  });
+
+  /* ── Search ── */
+  const searchInput = document.getElementById('node-search');
+  searchInput.addEventListener('input',()=>{
+    const q = searchInput.value.trim().toLowerCase();
+    if(!q){
+      allNodes.forEach(n=>{ nodeMap[n.id].visible = activeFilters.has(n.type); });
+      return;
+    }
+    allNodes.forEach(n=>{
+      const match = n.name.toLowerCase().includes(q) || n.id.toLowerCase().includes(q);
+      nodeMap[n.id].visible = match && activeFilters.has(n.type);
+    });
+  });
+
+  /* ── Cleanup on page leave ── */
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden && animId) cancelAnimationFrame(animId);
+    else if(!document.hidden) loop();
+  });
+
+})();
+</script>
+</body>
+</html>

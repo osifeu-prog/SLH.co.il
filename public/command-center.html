@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" data-theme="neural">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SLH Command Center — Unified Control</title>
+  <meta name="description" content="Unified control center for the SLH Spark ecosystem.">
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/shared.css?v=20260427b">
+  <link rel="stylesheet" href="css/slh-neural.css?v=20260427b">
+
+  <style>
+    body { font-family: 'Heebo', system-ui, sans-serif; color: var(--text); background: var(--bg); margin: 0; min-height: 100vh; }
+    .cc-shell { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+    .cc-sidebar { background: var(--surface); border-inline-end: 1px solid var(--border); padding: 24px 18px; backdrop-filter: blur(12px); position: sticky; top: 0; align-self: start; height: 100vh; overflow-y: auto; }
+    .cc-brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.1rem; margin-bottom: 28px; color: var(--text); }
+    .cc-brand .logo { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: var(--bg); display: flex; align-items: center; justify-content: center; font-weight: 900; }
+    .cc-nav { display: flex; flex-direction: column; gap: 6px; }
+    .cc-nav-section { font-size: .72rem; font-weight: 600; text-transform: uppercase; letter-spacing: .12em; color: var(--text3); padding: 14px 12px 6px; }
+    .cc-nav a { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px; color: var(--text2); text-decoration: none; font-size: .92rem; transition: all .2s; cursor: pointer; }
+    .cc-nav a:hover { background: var(--surface2); color: var(--text); }
+    .cc-nav a.active { background: rgba(94,214,255,.1); color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); }
+    .cc-nav i { width: 18px; text-align: center; }
+
+    .cc-main { padding: 28px 36px; max-width: 1600px; }
+    @media (max-width: 720px) {
+      .cc-shell { grid-template-columns: 1fr; }
+      .cc-sidebar { position: relative; height: auto; }
+      .cc-main { padding: 20px; }
+    }
+
+    .cc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; flex-wrap: wrap; gap: 14px; }
+    .cc-header h1 { font-size: 1.8rem; font-weight: 800; margin: 0 0 4px; }
+    .cc-header .subtitle { color: var(--text2); font-size: .95rem; margin: 0; }
+    .cc-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    .kpi-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin-bottom: 32px; }
+    .kpi-tile { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px; position: relative; transition: all .25s; }
+    .kpi-tile:hover { border-color: var(--border2); transform: translateY(-2px); }
+    .kpi-tile .kpi-label { font-size: .78rem; color: var(--text3); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+    .kpi-tile .kpi-value { font-size: 2rem; font-weight: 800; font-variant-numeric: tabular-nums; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .kpi-tile .kpi-meta { font-size: .8rem; color: var(--text2); margin-top: 6px; }
+    .kpi-tile.crit .kpi-value { background: linear-gradient(135deg, var(--red), var(--orange)); -webkit-background-clip: text; background-clip: text; }
+    .kpi-tile.ok { border-left: 3px solid var(--green); }
+    .kpi-tile.warn { border-left: 3px solid var(--orange); }
+    .kpi-tile.crit { border-left: 3px solid var(--red); }
+
+    .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px; margin-bottom: 24px; }
+    .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 10px; }
+    .panel-header h2 { margin: 0; font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+    .panel-header h2 i { color: var(--accent); }
+
+    .bot-grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+    .bot-tile { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 14px; position: relative; transition: all .2s; }
+    .bot-tile:hover { border-color: var(--accent); }
+    .bot-tile .bot-name { font-weight: 700; font-size: .92rem; display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .bot-tile .bot-status-dot { width: 9px; height: 9px; border-radius: 50%; box-shadow: 0 0 6px currentColor; }
+    .bot-tile.up    .bot-status-dot { background: var(--green); color: var(--green); }
+    .bot-tile.warn  .bot-status-dot { background: var(--orange); color: var(--orange); }
+    .bot-tile.down  .bot-status-dot { background: var(--red); color: var(--red); animation: alertPulse 1s ease-in-out infinite; }
+    .bot-tile.unknown .bot-status-dot { background: var(--text3); color: var(--text3); }
+    @keyframes alertPulse { 50% { opacity: .3; } }
+    .bot-tile .bot-meta { font-size: .75rem; color: var(--text3); font-family: var(--font-mono); display: flex; justify-content: space-between; }
+    .bot-tile .bot-actions { display: flex; gap: 6px; margin-top: 10px; opacity: 0; transition: opacity .2s; }
+    .bot-tile:hover .bot-actions { opacity: 1; }
+    .bot-tile .bot-action-btn { flex: 1; padding: 4px 8px; background: transparent; border: 1px solid var(--border2); color: var(--text2); border-radius: 6px; font-size: .72rem; cursor: pointer; transition: all .2s; }
+    .bot-tile .bot-action-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .bot-tile .bot-action-btn.danger:hover { border-color: var(--red); color: var(--red); }
+
+    .log-feed { max-height: 320px; overflow-y: auto; font-family: var(--font-mono); font-size: .82rem; background: var(--bg); border-radius: 8px; padding: 12px; }
+    .log-entry { padding: 6px 0; border-bottom: 1px dashed var(--border); display: grid; grid-template-columns: 80px 80px 1fr; gap: 12px; align-items: baseline; }
+    .log-entry:last-child { border-bottom: none; }
+    .log-time { color: var(--text3); }
+    .log-level { font-weight: 600; }
+    .log-level.info  { color: var(--accent); }
+    .log-level.warn  { color: var(--orange); }
+    .log-level.error { color: var(--red); }
+    .log-level.ok    { color: var(--green); }
+    .log-msg { color: var(--text2); }
+
+    .emergency-btn { background: linear-gradient(135deg, #ff4757, #b71c1c); color: white; padding: 12px 20px; border: none; border-radius: 10px; font-weight: 700; font-size: .92rem; cursor: pointer; box-shadow: 0 4px 16px rgba(255,71,87,.4); transition: all .2s; display: inline-flex; align-items: center; gap: 8px; }
+    .emergency-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(255,71,87,.6); }
+
+    .refresh-indicator { display: inline-flex; align-items: center; gap: 6px; font-size: .75rem; color: var(--text3); font-family: var(--font-mono); }
+    .refresh-indicator.refreshing i { animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .empty { text-align: center; padding: 32px; color: var(--text3); }
+    .empty i { font-size: 2rem; margin-bottom: 10px; opacity: .5; }
+  </style>
+</head>
+<body>
+  <div class="neural-bg" aria-hidden="true"></div>
+
+  <div class="cc-shell">
+
+    <aside class="cc-sidebar">
+      <div class="cc-brand">
+        <span class="logo">SLH</span>
+        <span>Command Center</span>
+      </div>
+
+      <nav class="cc-nav">
+        <a class="active" onclick="showTab('overview', this)"><i class="fas fa-gauge"></i> Overview</a>
+        <a onclick="showTab('bots', this)"><i class="fas fa-robot"></i> Bots</a>
+        <a onclick="showTab('api', this)"><i class="fas fa-server"></i> API</a>
+        <a onclick="showTab('devices', this)"><i class="fas fa-microchip"></i> Devices (ESP)</a>
+        <a onclick="showTab('users', this)"><i class="fas fa-users"></i> Users</a>
+        <a onclick="showTab('onchain', this)"><i class="fab fa-bitcoin"></i> On-chain</a>
+        <a onclick="showTab('logs', this)"><i class="fas fa-scroll"></i> Activity Log</a>
+
+        <div class="cc-nav-section">Actions</div>
+        <a onclick="manualRefresh()"><i class="fas fa-arrows-rotate"></i> Refresh All</a>
+        <a href="/admin.html"><i class="fas fa-toolbox"></i> Admin Panel</a>
+        <a href="https://railway.com/project/97070988-27f9-4e0f-b76c-a75b5a7c9673" target="_blank" rel="noopener">
+          <i class="fas fa-up-right-from-square"></i> Railway
+        </a>
+
+        <div class="cc-nav-section">Status</div>
+        <div style="padding: 8px 12px; font-size:.78rem; color: var(--text2);">
+          <span class="refresh-indicator" id="refreshIndicator">
+            <i class="fas fa-arrows-rotate"></i> <span id="lastRefresh">never</span>
+          </span>
+        </div>
+      </nav>
+    </aside>
+
+    <main class="cc-main">
+
+      <div class="cc-header">
+        <div>
+          <h1>שליטה מאוחדת</h1>
+          <p class="subtitle">כל מצב המערכת במקום אחד · רענון כל 15 שניות · <span class="live-indicator">LIVE</span></p>
+        </div>
+        <div class="cc-actions">
+          <button class="emergency-btn" onclick="confirmEmergencyPause()">
+            <i class="fas fa-circle-stop"></i> השהה את כל הבוטים
+          </button>
+        </div>
+      </div>
+
+      <section id="tab-overview" class="tab-content">
+        <div class="kpi-grid">
+          <div class="kpi-tile" id="kpi-api">
+            <div class="kpi-label"><span>API</span> <span class="bot-status-dot" id="kpi-api-dot"></span></div>
+            <div class="kpi-value" id="kpi-api-val">…</div>
+            <div class="kpi-meta" id="kpi-api-meta">checking…</div>
+          </div>
+          <div class="kpi-tile" id="kpi-bots">
+            <div class="kpi-label">Bots Online</div>
+            <div class="kpi-value" id="kpi-bots-val">—</div>
+            <div class="kpi-meta" id="kpi-bots-meta">of 25 total</div>
+          </div>
+          <div class="kpi-tile" id="kpi-users">
+            <div class="kpi-label">Users (24h)</div>
+            <div class="kpi-value" id="kpi-users-val">—</div>
+            <div class="kpi-meta" id="kpi-users-meta">active sessions</div>
+          </div>
+          <div class="kpi-tile" id="kpi-devices">
+            <div class="kpi-label">Devices (ESP)</div>
+            <div class="kpi-value" id="kpi-devices-val">—</div>
+            <div class="kpi-meta" id="kpi-devices-meta">paired total</div>
+          </div>
+          <div class="kpi-tile" id="kpi-price">
+            <div class="kpi-label">SLH Price</div>
+            <div class="kpi-value" id="kpi-price-val">—</div>
+            <div class="kpi-meta" id="kpi-price-meta">vs target ₪444</div>
+          </div>
+          <div class="kpi-tile" id="kpi-tvl">
+            <div class="kpi-label">Pool TVL</div>
+            <div class="kpi-value" id="kpi-tvl-val">—</div>
+            <div class="kpi-meta" id="kpi-tvl-meta">PancakeSwap V2</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <h2><i class="fas fa-robot"></i> Bot Status (Live)</h2>
+            <span class="refresh-indicator"><i class="fas fa-arrows-rotate"></i> auto every 15s</span>
+          </div>
+          <div class="bot-grid" id="botGrid"></div>
+        </div>
+      </section>
+
+      <section id="tab-bots" class="tab-content" style="display:none;">
+        <div class="panel">
+          <div class="panel-header">
+            <h2><i class="fas fa-robot"></i> All Bots</h2>
+            <button class="bot-action-btn" onclick="restartAllBots()" style="padding:6px 12px;"><i class="fas fa-arrows-rotate"></i> Restart All</button>
+          </div>
+          <div class="bot-grid" id="botGridFull"></div>
+        </div>
+      </section>
+
+      <section id="tab-api" class="tab-content" style="display:none;">
+        <div class="panel">
+          <div class="panel-header"><h2><i class="fas fa-server"></i> API Health</h2></div>
+          <pre id="apiHealthDetail" style="font-family: var(--font-mono); font-size:.85rem; color: var(--text2); white-space:pre-wrap; overflow-x:auto; margin:0;">Loading…</pre>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><h2><i class="fas fa-database"></i> Database Stats</h2></div>
+          <div class="kpi-grid">
+            <div class="kpi-tile"><div class="kpi-label">Tables</div><div class="kpi-value" id="db-tables">—</div></div>
+            <div class="kpi-tile"><div class="kpi-label">Total Users</div><div class="kpi-value" id="db-users">—</div></div>
+            <div class="kpi-tile"><div class="kpi-label">Total Tx</div><div class="kpi-value" id="db-tx">—</div></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="tab-devices" class="tab-content" style="display:none;">
+        <div class="panel">
+          <div class="panel-header"><h2><i class="fas fa-microchip"></i> ESP32 Devices</h2></div>
+          <div id="devicesList" class="empty">
+            <i class="fas fa-microchip"></i>
+            <div>Devices endpoint not yet implemented — coming in Phase E1</div>
+            <div style="margin-top:10px; font-size:.85rem;">
+              <a href="ops/STRATEGIC_ROADMAP_2026-04-27.md" style="color: var(--accent);">Read the ESP roadmap</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="tab-users" class="tab-content" style="display:none;">
+        <div class="panel">
+          <div class="panel-header"><h2><i class="fas fa-users"></i> Recent Users</h2></div>
+          <div id="usersList" class="empty">
+            <i class="fas fa-user-clock"></i>
+            <div>Loading…</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="tab-onchain" class="tab-content" style="display:none;">
+        <div class="panel">
+          <div class="panel-header"><h2><i class="fab fa-bitcoin"></i> On-chain Snapshot</h2></div>
+          <div class="kpi-grid">
+            <div class="kpi-tile"><div class="kpi-label">Total Holders</div><div class="kpi-value" id="oc-holders">—</div></div>
+            <div class="kpi-tile"><div class="kpi-label">24h Volume</div><div class="kpi-value" id="oc-volume">—</div></div>
+            <div class="kpi-tile"><div class="kpi-label">Last Block</div><div class="kpi-value" id="oc-block">—</div></div>
+          </div>
+          <div style="margin-top:16px;">
+            <a href="https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022" target="_blank" rel="noopener" class="trust-badge" style="font-size:.85rem;">
+              <span class="badge-dot"></span> BscScan · 0xACb0…f022 <i class="fas fa-up-right-from-square" style="margin-inline-start:6px;"></i>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section id="tab-logs" class="tab-content" style="display:none;">
+        <div class="panel">
+          <div class="panel-header">
+            <h2><i class="fas fa-scroll"></i> Activity Log</h2>
+            <button class="bot-action-btn" onclick="clearLogs()" style="padding:6px 12px;"><i class="fas fa-trash"></i> Clear</button>
+          </div>
+          <div class="log-feed" id="logFeed">
+            <div class="log-entry"><span class="log-time">--:--:--</span><span class="log-level info">INIT</span><span class="log-msg">Command Center loaded. Awaiting first sync…</span></div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    const API_BASE = localStorage.getItem('slh_api_base') || 'https://slhcoil-production.up.railway.app';
+
+    const EXPECTED_BOTS = [
+      { name: 'core-bot',       container: 'slh-core' },
+      { name: 'guardian-bot',   container: 'slh-guardian' },
+      { name: 'botshop',        container: 'slh-botshop' },
+      { name: 'wallet-bot',     container: 'slh-wallet' },
+      { name: 'factory-bot',    container: 'slh-factory' },
+      { name: 'fun-bot',        container: 'slh-fun' },
+      { name: 'admin-bot',      container: 'slh-admin' },
+      { name: 'airdrop-bot',    container: 'slh-airdrop' },
+      { name: 'campaign-bot',   container: 'slh-campaign' },
+      { name: 'game-bot',       container: 'slh-game' },
+      { name: 'ton-mnh-bot',    container: 'slh-tonmnh' },
+      { name: 'slh-ton-bot',    container: 'slh-ton' },
+      { name: 'ledger-bot',     container: 'slh-ledger' },
+      { name: 'osif-shop-bot',  container: 'slh-osif-shop' },
+      { name: 'nifti-bot',      container: 'slh-nifti' },
+      { name: 'chance-bot',     container: 'slh-chance' },
+      { name: 'nfty-bot',       container: 'slh-nfty' },
+      { name: 'ts-set-bot',     container: 'slh-ts-set' },
+      { name: 'crazy-panel-bot',container: 'slh-crazy' },
+      { name: 'nft-shop-bot',   container: 'slh-nftshop' },
+      { name: 'beynonibank-bot',container: 'slh-bank' },
+      { name: 'test-bot',       container: 'slh-test' },
+      { name: 'claude-bot',     container: 'slh-claude' },
+      { name: 'academia-bot',   container: 'slh-academia' },
+      { name: 'expertnet-bot',  container: 'slh-expertnet' },
+    ];
+
+    let currentBots = EXPECTED_BOTS.map(b => ({ ...b, status: 'unknown', last_seen: null }));
+
+    function showTab(name, link) {
+      document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+      const target = document.getElementById('tab-' + name);
+      if (target) target.style.display = 'block';
+      document.querySelectorAll('.cc-nav a').forEach(a => a.classList.remove('active'));
+      if (link) link.classList.add('active');
+      if (name === 'bots') renderBotGrid('botGridFull', currentBots);
+    }
+
+    function log(level, msg) {
+      const feed = document.getElementById('logFeed');
+      const entry = document.createElement('div');
+      entry.className = 'log-entry';
+      const time = new Date().toLocaleTimeString('he-IL', { hour12: false });
+      entry.innerHTML = `<span class="log-time">${time}</span><span class="log-level ${level}">${level.toUpperCase()}</span><span class="log-msg">${msg}</span>`;
+      feed.insertBefore(entry, feed.firstChild);
+      while (feed.children.length > 100) feed.removeChild(feed.lastChild);
+    }
+
+    function clearLogs() {
+      document.getElementById('logFeed').innerHTML = '';
+      log('info', 'Logs cleared.');
+    }
+
+    function renderBotGrid(containerId, bots) {
+      const grid = document.getElementById(containerId);
+      if (!grid) return;
+      grid.innerHTML = bots.map(b => {
+        const statusClass = b.status || 'unknown';
+        const lastSeen = b.last_seen ? new Date(b.last_seen).toLocaleTimeString('he-IL', { hour12: false }) : '--:--';
+        return `<div class="bot-tile ${statusClass}">
+          <div class="bot-name"><span class="bot-status-dot"></span>${b.name}</div>
+          <div class="bot-meta"><span>${b.container || ''}</span><span>${lastSeen}</span></div>
+          <div class="bot-actions">
+            <button class="bot-action-btn" onclick="botAction('${b.name}', 'restart')">Restart</button>
+            <button class="bot-action-btn" onclick="botAction('${b.name}', 'logs')">Logs</button>
+            <button class="bot-action-btn danger" onclick="botAction('${b.name}', 'stop')">Stop</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function setKpi(tileId, value, meta, level) {
+      const tile = document.getElementById(tileId);
+      if (tile && level !== undefined) tile.className = 'kpi-tile' + (level ? ' ' + level : '');
+      const valEl = document.getElementById(tileId + '-val');
+      const metaEl = document.getElementById(tileId + '-meta');
+      if (valEl !== null && valEl !== undefined) valEl.textContent = value;
+      if (metaEl && meta !== undefined) metaEl.textContent = meta;
+    }
+
+    async function fetchHealth() {
+      try {
+        const r = await fetch(API_BASE + '/api/health', { cache: 'no-store' });
+        const data = await r.json();
+        const ok = data.ok === true || data.status === 'ok' || data.status === 'healthy';
+        setKpi('kpi-api', ok ? 'UP' : 'DOWN', API_BASE.replace('https://', ''), ok ? 'ok' : 'crit');
+        const dot = document.getElementById('kpi-api-dot');
+        if (dot) dot.style.background = ok ? 'var(--green)' : 'var(--red)';
+        document.getElementById('apiHealthDetail').textContent = JSON.stringify(data, null, 2);
+        log(ok ? 'ok' : 'warn', ok ? 'API healthy' : 'API status not ok');
+        return ok;
+      } catch (e) {
+        setKpi('kpi-api', 'DOWN', 'unreachable', 'crit');
+        const dot = document.getElementById('kpi-api-dot');
+        if (dot) dot.style.background = 'var(--red)';
+        document.getElementById('apiHealthDetail').textContent = 'Error: ' + e.message;
+        log('error', 'API unreachable: ' + e.message);
+        return false;
+      }
+    }
+
+    async function fetchBotsStatus() {
+      try {
+        const r = await fetch(API_BASE + '/api/system/bots', { cache: 'no-store' });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const data = await r.json();
+        if (data.bots && Array.isArray(data.bots)) {
+          currentBots = EXPECTED_BOTS.map(b => {
+            const live = data.bots.find(lb => lb.name === b.name);
+            return live ? { ...b, ...live } : { ...b, status: 'unknown' };
+          });
+          const online = currentBots.filter(b => b.status === 'up').length;
+          setKpi('kpi-bots', online, `of ${currentBots.length} total`, online === currentBots.length ? 'ok' : online > 0 ? 'warn' : 'crit');
+          renderBotGrid('botGrid', currentBots);
+          log('info', `Bots: ${online}/${currentBots.length} online`);
+        } else { throw new Error('Unexpected response'); }
+      } catch (e) {
+        setKpi('kpi-bots', '?', 'endpoint pending', 'warn');
+        renderBotGrid('botGrid', currentBots);
+        log('warn', 'Bot status endpoint unavailable — showing expected list');
+      }
+    }
+
+    async function fetchSystemStats() {
+      try {
+        const r = await fetch(API_BASE + '/api/system/stats', { cache: 'no-store' });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const d = await r.json();
+        if (d.users_total !== undefined)        document.getElementById('db-users').textContent = d.users_total;
+        if (d.users_active_24h !== undefined)   setKpi('kpi-users', d.users_active_24h, 'active sessions');
+        if (d.devices_total !== undefined)      setKpi('kpi-devices', d.devices_total, 'paired total');
+        if (d.tables !== undefined)             document.getElementById('db-tables').textContent = d.tables;
+        if (d.transactions_total !== undefined) document.getElementById('db-tx').textContent = d.transactions_total;
+        if (d.slh_price_ils !== undefined)      setKpi('kpi-price', '₪' + d.slh_price_ils, 'vs target ₪444');
+        if (d.pool_tvl_usd !== undefined)       setKpi('kpi-tvl', '$' + d.pool_tvl_usd, 'PancakeSwap V2');
+        log('info', 'System stats refreshed');
+      } catch (e) {
+        log('warn', 'System stats endpoint pending');
+      }
+    }
+
+    function getAdminKey() {
+      return localStorage.getItem('slh_admin_password') || prompt('Admin key:');
+    }
+
+    async function botAction(name, action) {
+      if (!confirm(`${action.toUpperCase()} bot "${name}"?`)) return;
+      const key = getAdminKey();
+      if (!key) return;
+      log('info', `Sending ${action} to ${name}…`);
+      try {
+        const r = await fetch(API_BASE + '/api/system/bots/' + action, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-Admin-Key': key },
+          body: JSON.stringify({ bot: name }),
+        });
+        const data = await r.json().catch(() => ({}));
+        if (r.ok) log('ok', `${name}: ${action} OK`);
+        else log('error', `${name}: ${action} failed — ${data.detail || r.status}`);
+      } catch (e) { log('error', `${name}: ${action} exception — ${e.message}`); }
+    }
+
+    async function restartAllBots() {
+      if (!confirm('Restart ALL bots?')) return;
+      log('warn', 'Restarting all bots…');
+      for (const b of currentBots) await botAction(b.name, 'restart');
+    }
+
+    async function confirmEmergencyPause() {
+      const code = prompt('Type "PAUSE ALL" to confirm:');
+      if (code !== 'PAUSE ALL') { log('info', 'Cancelled.'); return; }
+      log('error', '🚨 EMERGENCY PAUSE 🚨');
+      const key = getAdminKey();
+      try {
+        const r = await fetch(API_BASE + '/api/system/emergency-pause', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-Admin-Key': key },
+          body: JSON.stringify({ reason: 'manual cc' }),
+        });
+        const data = await r.json().catch(() => ({}));
+        log(r.ok ? 'error' : 'error', r.ok ? 'All bots paused' : 'Pause failed: ' + (data.detail || r.status));
+      } catch (e) { log('error', 'Emergency endpoint unreachable: ' + e.message); }
+    }
+
+    let refreshing = false;
+    async function manualRefresh() {
+      if (refreshing) return;
+      refreshing = true;
+      const ind = document.getElementById('refreshIndicator');
+      ind.classList.add('refreshing');
+      await fetchHealth();
+      await fetchBotsStatus();
+      await fetchSystemStats();
+      document.getElementById('lastRefresh').textContent = new Date().toLocaleTimeString('he-IL', { hour12: false });
+      ind.classList.remove('refreshing');
+      refreshing = false;
+    }
+
+    log('info', 'Connecting to ' + API_BASE);
+    manualRefresh();
+    setInterval(manualRefresh, 15000);
+  </script>
+</body>
+</html>

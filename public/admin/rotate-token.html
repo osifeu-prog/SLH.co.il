@@ -1,0 +1,576 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>סיבוב טוקן בוט · SLH Admin</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="icon" type="image/png" href="/favicon-32.png" />
+<style>
+  :root {
+    --bg:#0a0a0a;--bg2:#111;--bg3:#1a1a1a;
+    --accent:#00ff41;--cyan:#00e5ff;--gold:#ffd700;--red:#ff0055;
+    --text:#e8e8f0;--text2:#8a8aa0;--text-bright:#fff;
+    --border:rgba(0,255,65,.15);
+    --radius:8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif; min-height: 100vh; padding: 24px 16px;
+  }
+  a { color: var(--accent); text-decoration: none; }
+
+  .container { max-width: 720px; margin: 0 auto; }
+  header { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; }
+  h1 { font-size: 24px; color: var(--text-bright); }
+  h1 .pill { background: var(--red); color:#fff; font-size:11px; padding:3px 10px; border-radius:10px; vertical-align:middle; margin-left:8px; }
+  .nav-back { color: var(--text2); font-size:13px; }
+
+  .card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; }
+  .card h2 { font-size: 15px; color: var(--text-bright); margin-bottom:12px; }
+
+  .why { background: rgba(255,215,0,.06); border:1px solid rgba(255,215,0,.2); padding:14px 16px; border-radius:var(--radius); margin-bottom:20px; font-size:13px; line-height:1.6; color:var(--text); }
+  .why b { color: var(--gold); }
+
+  label { display:block; color: var(--text2); font-size:12px; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px; }
+  select, input[type="password"], input[type="text"] {
+    width:100%; background:var(--bg); color:var(--text-bright);
+    border:1px solid var(--border); border-radius:6px;
+    padding:12px; font-family:inherit; font-size:14px; margin-bottom:14px;
+  }
+  select:focus, input:focus { outline:none; border-color:var(--accent); }
+  input[type="password"] { font-family:'Space Mono', monospace; letter-spacing:1px; }
+
+  .btn {
+    background: var(--accent); color: #000; border:none; border-radius:6px;
+    padding: 12px 24px; font-weight:700; cursor:pointer; font-size:14px;
+    width:100%; transition:.2s;
+  }
+  .btn:hover { background:#39ff14; transform:translateY(-1px); }
+  .btn:disabled { opacity:.5; cursor:not-allowed; }
+  .btn.secondary { background: var(--bg3); color: var(--text); }
+  .btn.secondary:hover { background: var(--border); }
+
+  .status { padding: 10px 14px; border-radius:6px; font-size:13px; margin:14px 0; display:none; }
+  .status.ok { display:block; background:rgba(0,255,65,.08); border:1px solid var(--accent); color:var(--accent); }
+  .status.err { display:block; background:rgba(255,0,85,.08); border:1px solid var(--red); color:#ffb8c5; }
+  .status.info { display:block; background:rgba(0,229,255,.08); border:1px solid var(--cyan); color:var(--cyan); }
+
+  pre.cmd {
+    background:#000; color:var(--accent); padding:14px 16px; border-radius:6px;
+    overflow-x:auto; font-family:'Space Mono', monospace; font-size:12px; line-height:1.6;
+    border:1px solid var(--border); white-space:pre-wrap; word-break:break-all;
+  }
+
+  .step-num {
+    display:inline-block; width:24px; height:24px; line-height:24px; text-align:center;
+    background:var(--accent); color:#000; border-radius:50%; font-weight:700; margin-left:8px;
+  }
+  .step-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; font-size:14px; color:var(--text-bright); }
+
+  .grid { display:grid; gap:8px; grid-template-columns:1fr auto; }
+
+  .footer-note { color:var(--text2); font-size:11px; line-height:1.5; margin-top:24px; padding-top:16px; border-top:1px solid var(--border); }
+  .footer-note code { background:var(--bg3); color:var(--cyan); padding:1px 6px; border-radius:3px; font-size:11px; }
+
+  details { background: var(--bg3); border-radius:6px; padding: 12px 14px; margin-top:12px; }
+  details summary { cursor:pointer; color:var(--text2); font-size:12px; }
+  details[open] { background: var(--bg2); }
+  details pre { margin-top:10px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>🔑 סיבוב טוקן בוט<span class="pill">ADMIN</span></h1>
+  <a class="nav-back" href="/admin/tokens.html">← לרשימת הטוקנים</a>
+</header>
+
+<div class="why">
+  <b>למה הדף הזה קיים:</b> סיבוב טוקן ישירות במערכת. הדף מאמת את הטוקן מול שרתי Telegram, ואז מציע שני מצבים: <b>Pipeline אוטומטי</b> (דחיפה ל-Railway + redeploy + healthcheck + sync של setMyCommands — בלחיצה אחת) או <b>PowerShell מקומי</b> (הטוקן לא עוזב את הדפדפן — מקסימום אבטחה).
+</div>
+
+<section class="card" style="background:rgba(0,229,255,.04);border-color:var(--cyan)">
+  <h2 style="color:var(--cyan)">🛠 מצב סיבוב</h2>
+  <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin:6px 0;text-transform:none;letter-spacing:0;font-size:13px;color:var(--text-bright)">
+    <input type="radio" name="rotate-mode" value="pipeline" checked style="width:auto;margin:0;cursor:pointer" />
+    <span><b style="color:var(--cyan)">⚡ Pipeline אוטומטי</b> — הטוקן עובר דרך השרת ל-Railway. redeploy + healthcheck + audit אוטומטיים. (ברירת מחדל)</span>
+  </label>
+  <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin:6px 0;text-transform:none;letter-spacing:0;font-size:13px;color:var(--text-bright)">
+    <input type="radio" name="rotate-mode" value="local" style="width:auto;margin:0;cursor:pointer" />
+    <span><b style="color:var(--gold)">🛡 PowerShell מקומי</b> — הטוקן לא עוזב את הדפדפן. עליך להריץ פקודה ב-PowerShell. שירות Railway לא יתעדכן אוטומטית.</span>
+  </label>
+  <div id="tier-hint" style="margin-top:8px;padding:8px 10px;background:var(--bg3);border-radius:4px;font-size:12px;color:var(--text2);display:none"></div>
+</section>
+
+<section class="card">
+  <h2>שלב 1 — בחירת בוט</h2>
+  <label for="bot-select">איזה בוט מסבבים?</label>
+  <select id="bot-select"></select>
+
+  <label for="new-token">טוקן חדש מ-BotFather</label>
+  <input type="password" id="new-token" placeholder="123456789:AAH..." autocomplete="off" spellcheck="false" />
+
+  <label style="display:flex; align-items:center; gap:8px; cursor:pointer; margin:8px 0 14px; font-size:12px; text-transform:none; letter-spacing:0;">
+    <input type="checkbox" id="swap-mode" style="width:auto; margin:0; cursor:pointer;" />
+    <span style="color: var(--gold);">🔁 מצב החלפת בוט</span> — אני נותן טוקן של <b>בוט אחר</b> כדי שהשירות יעבור להשתמש בו במקום הבוט המקורי. שימושי כשהטוקן הישן דלף ולא רוצים לסבב פעם נוספת.
+  </label>
+
+  <button class="btn" id="validate-btn">✓ אמת טוקן מול Telegram</button>
+  <div class="status" id="validate-status"></div>
+</section>
+
+<section class="card" id="pipeline-card" style="display:none;border-color:var(--cyan)">
+  <h2 style="color:var(--cyan)">⚡ שלב 2 — בצע סיבוב Pipeline</h2>
+  <p style="color:var(--text2);font-size:13px;margin-bottom:14px;line-height:1.7">
+    הטוקן ייסע לשרת ב-HTTPS, יידחף ל-Railway, וה-redeploy יופעל. בסוף, healthcheck יוודא שהבוט מגיב + setMyCommands ייסונכרן ל-BotFather. הטוקן לא נשמר בשום מקום — רק 4 הספרות האחרונות נכנסות ל-audit log לזיהוי.
+  </p>
+  <button class="btn" id="pipeline-go-btn">🚀 בצע סיבוב מלא</button>
+  <pre class="cmd" id="pipeline-progress" style="display:none;margin-top:12px;max-height:300px;overflow-y:auto"></pre>
+  <div class="status" id="pipeline-status"></div>
+</section>
+
+<section class="card" id="cmd-card" style="display:none">
+  <h2>שלב 2 — הרץ את הפקודה ב-PowerShell</h2>
+  <p style="color:var(--text2);font-size:13px;margin-bottom:14px;">
+    העתק את הפקודה למטה, הדבק ב-PowerShell ולחץ Enter. היא:
+    1. מעדכנת את <code>.env</code> ידנית (חיפוש-החלפה של השורה הנכונה)
+    2. בונה ומפעילה מחדש את ה-container
+    3. בודקת ש-Telegram מקבל את הטוקן (<code>getMe</code>)
+  </p>
+  <pre class="cmd" id="cmd-text"></pre>
+  <div class="grid" style="margin-top:12px">
+    <button class="btn" id="copy-btn">📋 העתק לפקודות</button>
+    <button class="btn secondary" id="done-btn">✓ הרצתי, סגור</button>
+  </div>
+  <div class="status" id="copy-status"></div>
+</section>
+
+<section class="card" id="verify-card" style="display:none">
+  <h2>שלב 3 — אימות סופי</h2>
+  <p style="color:var(--text2);font-size:13px;margin-bottom:12px;">
+    הדפדפן בודק עכשיו ש-Telegram מזהה את הטוקן החדש. ירוק = הצלחה.
+  </p>
+  <button class="btn" id="verify-btn">בדוק עכשיו</button>
+  <div class="status" id="verify-status"></div>
+</section>
+
+<details>
+  <summary>למה הפקודה רצה דרכך ולא דרך כפתור באתר?</summary>
+  <p style="margin-top:10px;color:var(--text2);font-size:12px;line-height:1.6">
+    האתר רץ ב-GitHub Pages וב-Railway, לשניהם אין גישה ל-docker שרץ אצלך על המחשב המקומי. כדי שכפתור באתר יבצע את עצמו צריך agent מקומי שמאזין על localhost. זה <b>השלב הבא</b> בסיפור הזה — אתחיל לבנות אותו אם תאשר ("בנה bridge agent"). בינתיים, copy/paste של פקודה אחת ב-PowerShell הוא הצעד היחיד הידני, וזה הרבה יותר טוב מ-Notepad + 4 פקודות.
+  </p>
+</details>
+
+<div class="footer-note">
+  לוג הסיבובים נשמר ב-<code>localStorage.slh_token_rotations</code>.
+  סינכרון ל-<a href="/admin/tokens.html">/admin/tokens.html</a> אוטומטי.<br>
+  אם יש לך 2+ מכשירים — הסיבוב צריך להתבצע על המכשיר שמריץ את הבוט פיזית (זה שיש בו <code>D:\SLH_ECOSYSTEM\docker-compose.yml</code>).
+</div>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  // Bots are loaded from /api/admin/bots so adds/edits/deletes in tokens.html
+  // are reflected here automatically. Hardcoded list below is a fallback for
+  // when the API is unreachable (offline mode).
+  const FALLBACK_BOTS = [
+    { name: 'SLH Claude (executor — this AI)', handle: '@SLH_Claude_bot', env: 'SLH_CLAUDE_BOT_TOKEN', service: 'slh-claude-bot', priority: 1 },
+    { name: 'Academia / WEWORK',                handle: '@WEWORK_teamviwer_bot', env: 'ACADEMIA_BOT_TOKEN', service: 'slh-academia-bot' },
+    { name: 'SLH Core Bot',                     handle: '@SLH_Spark_bot', env: 'CORE_BOT_TOKEN', service: 'slh-core-bot' },
+    { name: 'Guardian',                         handle: '@Grdian_bot', env: 'GUARDIAN_BOT_TOKEN', service: 'slh-guardian-bot' },
+    { name: 'BotShop',                          handle: '@SLH_BotShop_bot', env: 'BOTSHOP_BOT_TOKEN', service: 'slh-botshop' },
+    { name: 'Wallet',                           handle: '@SLH_Wallet_bot', env: 'WALLET_BOT_TOKEN', service: 'slh-wallet' },
+    { name: 'Factory',                          handle: '@SLH_Factory_bot', env: 'FACTORY_BOT_TOKEN', service: 'slh-factory' },
+    { name: 'Admin',                            handle: '@SLH_Admin_bot', env: 'ADMIN_BOT_TOKEN', service: 'slh-admin' },
+    { name: 'Airdrop',                          handle: '@SLH_Airdrop_bot', env: 'AIRDROP_BOT_TOKEN', service: 'slh-airdrop' },
+    { name: 'Campaign',                         handle: '@SLH_Campaign_bot', env: 'CAMPAIGN_TOKEN', service: 'slh-campaign' },
+    { name: 'Fun / Game',                       handle: '@SLH_Fun_bot', env: 'FUN_BOT_TOKEN', service: 'slh-fun' },
+    { name: 'Game Bot',                         handle: '@SLH_Game_bot', env: 'GAME_BOT_TOKEN', service: 'slh-game' },
+    { name: 'TON-MNH',                          handle: '@TonMNH_bot', env: 'TON_MNH_TOKEN', service: 'slh-ton-mnh' },
+    { name: 'SLH TON',                          handle: '@SLH_Ton_bot', env: 'SLH_TON_TOKEN', service: 'slh-ton' },
+    { name: 'Ledger',                           handle: '@SLH_Ledger_bot', env: 'SLH_LEDGER_TOKEN', service: 'slh-ledger' },
+    { name: 'Osif Shop',                        handle: '@osif_shop_bot', env: 'OSIF_SHOP_TOKEN', service: 'slh-osif-shop' },
+    { name: 'Nifti Publisher',                  handle: '@Nifti_Publisher_bot', env: 'NIFTI_PUBLISHER_TOKEN', service: 'slh-nifti' },
+    { name: 'Chance Pais',                      handle: '@Chance_Pais_bot', env: 'CHANCE_PAIS_TOKEN', service: 'slh-chance' },
+    { name: 'NFTY Madness',                     handle: '@NFTY_Madness_bot', env: 'NFTY_MADNESS_TOKEN', service: 'slh-nfty' },
+    { name: 'TS Set',                           handle: '@TS_Set_bot', env: 'TS_SET_TOKEN', service: 'slh-ts-set' },
+    { name: 'Crazy Panel',                      handle: '@Crazy_Panel_bot', env: 'CRAZY_PANEL_TOKEN', service: 'slh-crazy-panel' },
+    { name: 'My NFT Shop',                      handle: '@MyNFTShop_bot', env: 'MY_NFT_SHOP_TOKEN', service: 'slh-nft-shop' },
+    { name: 'Beynonibank',                      handle: '@Beynonibank_bot', env: 'BEYNONIBANK_TOKEN', service: 'slh-beynonibank' },
+    { name: 'Test',                             handle: '@SLH_Test_bot', env: 'TEST_BOT_TOKEN', service: 'slh-test-bot' },
+  ];
+
+  let BOTS = FALLBACK_BOTS.slice();  // populated from API on load
+  const sel = document.getElementById('bot-select');
+
+  function populateSelect() {
+    sel.innerHTML = '';
+    BOTS.forEach((b, i) => {
+      const o = document.createElement('option');
+      o.value = i;
+      o.textContent = `${b.name}  ·  ${b.handle}`;
+      sel.appendChild(o);
+    });
+  }
+
+  // Try to load fresh list from the catalog API. Requires admin key.
+  // If it fails (no key / 403 / offline), we keep the FALLBACK_BOTS list.
+  async function loadFromCatalog() {
+    const k = sessionStorage.getItem('slh_admin_key') || localStorage.getItem('slh_admin_password');
+    if (!k) {
+      // No key cached — silently use fallback. User can refresh tokens.html
+      // page first to set the key in sessionStorage.
+      populateSelect();
+      return;
+    }
+    try {
+      const r = await fetch('https://slh-api-production.up.railway.app/api/admin/bots', {
+        headers: { 'X-Admin-Key': k },
+      });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const j = await r.json();
+      const apiBots = (j.bots || []).map(b => ({
+        id: b.id,
+        name: b.name + (b.status === 'swap-target' ? '  🔁' : ''),
+        handle: b.handle,
+        env: b.env_var,
+        service: b.service || ('slh-' + b.handle.replace('@','').toLowerCase().replace(/_bot$/,'').replace(/_/g,'-')),
+        priority: b.handle === '@SLH_Claude_bot' ? 1 : 99,
+      }));
+      if (apiBots.length > 0) {
+        // Sort: priority ascending, then by name
+        apiBots.sort((a, b) => (a.priority - b.priority) || a.name.localeCompare(b.name));
+        BOTS = apiBots;
+      }
+      populateSelect();
+    } catch (e) {
+      console.warn('[rotate] catalog API failed, using fallback list:', e.message);
+      populateSelect();
+    }
+  }
+  loadFromCatalog();
+
+  const tokenInput = document.getElementById('new-token');
+  const validateBtn = document.getElementById('validate-btn');
+  const validateStatus = document.getElementById('validate-status');
+  const cmdCard = document.getElementById('cmd-card');
+  const cmdText = document.getElementById('cmd-text');
+  const copyBtn = document.getElementById('copy-btn');
+  const doneBtn = document.getElementById('done-btn');
+  const copyStatus = document.getElementById('copy-status');
+  const verifyCard = document.getElementById('verify-card');
+  const verifyBtn = document.getElementById('verify-btn');
+  const verifyStatus = document.getElementById('verify-status');
+
+  let validated = null;  // { token, bot, telegramInfo }
+
+  function setStatus(el, msg, kind) {
+    el.textContent = msg;
+    el.className = 'status ' + (kind || 'info');
+  }
+
+  validateBtn.addEventListener('click', async () => {
+    const token = (tokenInput.value || '').trim();
+    if (!/^\d+:[A-Za-z0-9_-]{30,}$/.test(token)) {
+      setStatus(validateStatus, '❌ הטוקן לא בפורמט תקני (<id>:<hash>).', 'err');
+      return;
+    }
+    validateBtn.disabled = true;
+    validateBtn.textContent = 'בודק...';
+    try {
+      const r = await fetch(`https://api.telegram.org/bot${token}/getMe`);
+      const j = await r.json();
+      if (!j.ok) {
+        setStatus(validateStatus, `❌ Telegram דחה: ${j.description || 'unknown'}`, 'err');
+        return;
+      }
+      const bot = BOTS[parseInt(sel.value, 10)];
+      const expectedHandle = bot.handle.replace(/^@/, '').toLowerCase();
+      const actualHandle = (j.result.username || '').toLowerCase();
+      const swapMode = document.getElementById('swap-mode').checked;
+      if (expectedHandle !== actualHandle && !swapMode) {
+        setStatus(
+          validateStatus,
+          `⚠️ הטוקן של @${j.result.username} ולא של ${bot.handle}. אם אתה מחליף בוט בכוונה — סמן "מצב החלפת בוט" ונסה שוב. אחרת בחר את הבוט הנכון.`,
+          'err'
+        );
+        return;
+      }
+      validated = { token, bot, info: j.result, swap: expectedHandle !== actualHandle };
+      const swapNote = validated.swap
+        ? ` 🔁 SWAP: השירות "${bot.service}" יעבור להשתמש ב-@${j.result.username} במקום ${bot.handle}.`
+        : '';
+      setStatus(
+        validateStatus,
+        `✓ אומת: @${j.result.username} (${j.result.first_name || ''}, id=${j.result.id}).${swapNote}`,
+        'ok'
+      );
+      const mode = (document.querySelector('input[name="rotate-mode"]:checked') || {}).value || 'pipeline';
+      if (mode === 'pipeline') {
+        document.getElementById('pipeline-card').style.display = 'block';
+        cmdCard.style.display = 'none';
+        verifyCard.style.display = 'none';
+        window.scrollTo({ top: document.getElementById('pipeline-card').offsetTop - 20, behavior: 'smooth' });
+      } else {
+        generateCommand(bot, token);
+        cmdCard.style.display = 'block';
+        verifyCard.style.display = 'block';
+        document.getElementById('pipeline-card').style.display = 'none';
+        window.scrollTo({ top: cmdCard.offsetTop - 20, behavior: 'smooth' });
+      }
+    } catch (e) {
+      setStatus(validateStatus, '❌ שגיאת רשת: ' + e.message, 'err');
+    } finally {
+      validateBtn.disabled = false;
+      validateBtn.textContent = '✓ אמת טוקן מול Telegram';
+    }
+  });
+
+  // SECURITY: the displayed command shows a placeholder ONLY.
+  // The real token enters the clipboard exclusively via navigator.clipboard.writeText
+  // in the Copy button handler — NOT via the visible <pre>. This prevents the user
+  // from accidentally selecting/copying the visible command (which would otherwise
+  // contain the token) and pasting it into a chat / log / screenshot.
+  function buildCommand(bot, tokenOrPlaceholder) {
+    const escaped = tokenOrPlaceholder.replace(/'/g, "''");
+    // slh-claude-bot has its own .env (separate scope). All other docker-compose
+    // services read from the project-root .env. Path is computed cleanly per-bot.
+    const envPath = bot.service === 'slh-claude-bot'
+      ? 'D:\\SLH_ECOSYSTEM\\slh-claude-bot\\.env'
+      : 'D:\\SLH_ECOSYSTEM\\.env';
+    return `# סיבוב טוקן ${bot.handle} — ${new Date().toLocaleString('he-IL')}
+$tok='${escaped}'
+$envFile = '${envPath}'
+if (-not (Test-Path $envFile)) { Write-Host "[FAIL] env file not found: $envFile" -ForegroundColor Red; return }
+(Get-Content $envFile) -replace '^${bot.env}=.*', "${bot.env}=$tok" | Set-Content $envFile -NoNewline
+Write-Host "[OK] עודכן $envFile" -ForegroundColor Green
+cd D:\\SLH_ECOSYSTEM
+docker compose up -d --force-recreate ${bot.service}
+Start-Sleep -Seconds 4
+$resp = curl.exe -s "https://api.telegram.org/bot$tok/getMe"
+if ($resp -match '"ok":true') { Write-Host "[OK] ${bot.handle} מחובר ל-Telegram" -ForegroundColor Green }
+else { Write-Host "[FAIL] $resp" -ForegroundColor Red }`;
+  }
+
+  function generateCommand(bot, token) {
+    // What's displayed on screen has a redacted placeholder
+    cmdText.textContent = buildCommand(bot, '<TOKEN-HIDDEN-HIT-COPY>');
+    // The real token is stashed in a closure-private variable used ONLY by the
+    // Copy button. It does not exist in the DOM.
+    cmdText.dataset.realCmd = '__BLOCKED__';  // sentinel so casual select-and-copy doesn't grab it
+    pendingRealCommand = buildCommand(bot, token);
+  }
+  let pendingRealCommand = null;
+
+  copyBtn.addEventListener('click', async () => {
+    if (!pendingRealCommand) {
+      setStatus(copyStatus, '⚠️ עדיין לא אומת טוקן.', 'err');
+      return;
+    }
+    try {
+      // The REAL command (with token) goes ONLY to the clipboard.
+      // It never enters the DOM. Manual select-and-copy from the page yields
+      // the redacted placeholder version, which is harmless if pasted in chat.
+      await navigator.clipboard.writeText(pendingRealCommand);
+      setStatus(copyStatus, '✓ הפקודה (כולל הטוקן האמיתי) הועתקה ללוח. הדבק ישירות ב-PowerShell. אל תדביק בצ׳אט.', 'ok');
+    } catch (e) {
+      setStatus(
+        copyStatus,
+        '❌ הדפדפן חסם clipboard API. השתמש בדפדפן אחר (Chrome/Edge על HTTPS) או הוסף את הדומיין ל-clipboard permission. הטוקן לא יוצג כאן בטקסט נראה — מטעמי אבטחה.',
+        'err'
+      );
+    }
+  });
+
+  doneBtn.addEventListener('click', async () => {
+    if (!validated) return;
+    // Always save to localStorage as a backup
+    const log = JSON.parse(localStorage.getItem('slh_token_rotations') || '{}');
+    log[validated.bot.env] = {
+      handle: validated.bot.handle,
+      service: validated.bot.service,
+      rotated_at: new Date().toISOString(),
+      bot_id: validated.info.id,
+    };
+    localStorage.setItem('slh_token_rotations', JSON.stringify(log));
+
+    // ALSO push to /api/admin/bots/{id}/mark-rotated so it persists in DB
+    // and tokens.html shows the timestamp on every device.
+    let dbStatus = '';
+    if (validated.bot.id) {
+      const k = sessionStorage.getItem('slh_admin_key') || localStorage.getItem('slh_admin_password');
+      if (k) {
+        try {
+          const r = await fetch(
+            `https://slh-api-production.up.railway.app/api/admin/bots/${validated.bot.id}/mark-rotated`,
+            {
+              method: 'POST',
+              headers: { 'X-Admin-Key': k, 'Content-Type': 'application/json' },
+              body: JSON.stringify({ bot_id: validated.info.id }),
+            }
+          );
+          dbStatus = r.ok ? ' + DB updated' : ' (DB failed: HTTP ' + r.status + ')';
+        } catch (e) {
+          dbStatus = ' (DB error: ' + e.message + ')';
+        }
+      } else {
+        dbStatus = ' (no admin key for DB sync)';
+      }
+    }
+
+    cmdCard.style.display = 'none';
+    setStatus(
+      verifyStatus,
+      '✓ נרשם ב-localStorage' + dbStatus + '. אתה יכול לסגור את הדף או לעבור לאימות סופי למטה.',
+      'ok'
+    );
+    verifyCard.style.display = 'block';
+  });
+
+  verifyBtn.addEventListener('click', async () => {
+    if (!validated) return;
+    verifyBtn.disabled = true;
+    verifyBtn.textContent = 'בודק...';
+    try {
+      const r = await fetch(`https://api.telegram.org/bot${validated.token}/getMe`);
+      const j = await r.json();
+      if (j.ok) {
+        setStatus(verifyStatus, `✓ ${validated.bot.handle} מחובר. אפשר לסגור.`, 'ok');
+      } else {
+        setStatus(verifyStatus, `❌ ${j.description}`, 'err');
+      }
+    } catch (e) {
+      setStatus(verifyStatus, '❌ ' + e.message, 'err');
+    } finally {
+      verifyBtn.disabled = false;
+      verifyBtn.textContent = 'בדוק עכשיו';
+    }
+  });
+
+  // ─── Pipeline mode handler ─────────────────────────────────────────────
+  const pipelineBtn = document.getElementById('pipeline-go-btn');
+  const pipelineProgress = document.getElementById('pipeline-progress');
+  const pipelineStatus = document.getElementById('pipeline-status');
+  let _pipelineConfirmToken = null;
+
+  function appendPipeline(line) {
+    pipelineProgress.style.display = 'block';
+    pipelineProgress.textContent += line + '\n';
+    pipelineProgress.scrollTop = pipelineProgress.scrollHeight;
+  }
+
+  pipelineBtn.addEventListener('click', async () => {
+    if (!validated) {
+      setStatus(pipelineStatus, '❌ אמת טוקן קודם.', 'err');
+      return;
+    }
+    const k = sessionStorage.getItem('slh_admin_key') || localStorage.getItem('slh_admin_password');
+    if (!k) {
+      setStatus(pipelineStatus, '❌ אין X-Admin-Key במטמון. פתח /admin/tokens.html תחילה והזן מפתח.', 'err');
+      return;
+    }
+    pipelineBtn.disabled = true;
+    pipelineProgress.textContent = '';
+
+    const payload = {
+      env_var: validated.bot.env,
+      new_token: validated.token,
+      expect_handle: validated.bot.handle,
+      swap_mode: validated.swap,
+    };
+    if (_pipelineConfirmToken) payload.confirm_token = _pipelineConfirmToken;
+
+    appendPipeline(_pipelineConfirmToken ? '⏳ מאשר ומבצע...' : '⏳ שולח לשרת...');
+    let r, j;
+    try {
+      r = await fetch('https://slh-api-production.up.railway.app/api/admin/rotate-bot-token-pipeline', {
+        method: 'POST',
+        headers: { 'X-Admin-Key': k, 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      j = await r.json().catch(() => ({}));
+    } catch (e) {
+      appendPipeline('❌ שגיאת רשת: ' + e.message);
+      pipelineBtn.disabled = false;
+      return;
+    }
+    if (j.needs_confirm) {
+      _pipelineConfirmToken = j.confirm_token;
+      appendPipeline('🔐 ' + (j.message_he || 'Critical tier — לחץ שוב לאישור'));
+      pipelineBtn.disabled = false;
+      pipelineBtn.textContent = '✅ אשר וסובב';
+      pipelineBtn.style.background = 'var(--red)';
+      pipelineBtn.style.color = '#fff';
+      return;
+    }
+    if (!r.ok) {
+      appendPipeline('❌ HTTP ' + r.status + ': ' + (j.detail || JSON.stringify(j).slice(0,300)));
+      pipelineBtn.disabled = false;
+      return;
+    }
+    if (j.phase === 'healthcheck_failed') {
+      appendPipeline('🚨 Healthcheck נכשל. Variable + redeploy בוצעו אך הבוט לא מגיב.');
+      appendPipeline('   Deploy: ' + (j.deploy_id || '—'));
+      appendPipeline('   נדרשת התערבות ידנית.');
+      setStatus(pipelineStatus, '🚨 כשל healthcheck — בדוק Railway logs', 'err');
+      pipelineBtn.disabled = false;
+      pipelineBtn.textContent = 'סגור';
+      pipelineBtn.onclick = () => window.location.href = '/admin/tokens.html';
+      return;
+    }
+    if (j.ok) {
+      appendPipeline('✅ Variable עודכן ב-Railway');
+      appendPipeline('✅ Redeploy: ' + ((j.deploy_id || '').slice(0,16) || 'queued'));
+      appendPipeline('✅ Healthcheck (getMe): @' + (j.tg_username || '?'));
+      appendPipeline('✅ setMyCommands סונכרן ל-BotFather');
+      appendPipeline('✅ broadcast לאדמינים נשלח');
+      appendPipeline('✅ סיבוב הושלם! tier=' + j.tier + ' last4=…' + (j.last4 || ''));
+      setStatus(pipelineStatus, '✓ סיבוב Pipeline הסתיים בהצלחה.', 'ok');
+      // Update the catalog locally so user sees the green
+      try {
+        await fetch(`https://slh-api-production.up.railway.app/api/admin/bots/${validated.bot.id}/mark-rotated`, {
+          method: 'POST',
+          headers: { 'X-Admin-Key': k, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ bot_id: j.tg_bot_id }),
+        });
+      } catch (e) {}
+      return;
+    }
+    appendPipeline('⚠️ תשובה לא צפויה: ' + JSON.stringify(j).slice(0, 300));
+    pipelineBtn.disabled = false;
+  });
+
+  // ─── Tier hint when bot is selected ────────────────────────────────────
+  function updateTierHint() {
+    const bot = BOTS[parseInt(sel.value, 10)];
+    if (!bot) return;
+    const hint = document.getElementById('tier-hint');
+    // We don't know tier on FALLBACK bots; only API-loaded bots carry it.
+    // Best-effort — if known, show. Otherwise hide.
+    if (bot.tier) {
+      const m = {critical:'🚨 Critical — ידרוש אישור 60 שניות (Pipeline בלבד)',
+                 high:'⚠️ High — ביצוע מיידי, broadcast לאדמינים',
+                 medium:'🔹 Medium — ביצוע מיידי + audit',
+                 low:'⚪ Low — ביצוע מיידי, audit מינימלי'}[bot.tier] || '';
+      hint.textContent = m;
+      hint.style.display = m ? 'block' : 'none';
+    } else {
+      hint.style.display = 'none';
+    }
+  }
+  sel.addEventListener('change', updateTierHint);
+
+  // Default: SLH_Claude (the most-needed one right now)
+  sel.value = '0';
+  updateTierHint();
+  tokenInput.focus();
+})();
+</script>
+</body>
+</html>

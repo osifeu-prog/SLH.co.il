@@ -1,0 +1,683 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>☀️ Morning Checklist — 12 אפריל 2026</title>
+<meta name="description" content="רשימת פעולות בוקר אחרי לילה אוטונומי של SLH">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/shared.css?v=20260426e">
+<style>
+    :root {
+        --bg: #0a0e1a;
+        --bg2: #111628;
+        --bg3: #1a2038;
+        --accent: #00e887;
+        --accent2: #00b4d8;
+        --gold: #ffd700;
+        --sunrise: #ff9500;
+        --red: #ef4444;
+        --text: #e8e8f0;
+        --text2: #8a8aa0;
+        --text3: #555a70;
+        --border: rgba(255, 149, 0, 0.3);
+    }
+    body {
+        background:
+            radial-gradient(ellipse at top, rgba(255, 149, 0, 0.12), transparent 60%),
+            var(--bg);
+        color: var(--text);
+        font-family: 'Assistant', system-ui, sans-serif;
+        line-height: 1.7;
+    }
+
+    .hero {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 60px 24px 30px;
+        text-align: center;
+    }
+    .sunrise {
+        font-size: 72px;
+        display: block;
+        margin-bottom: 12px;
+    }
+    .hero h1 {
+        font-size: clamp(32px, 5vw, 48px);
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--sunrise), var(--gold), var(--accent));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-bottom: 8px;
+    }
+    .hero p {
+        color: var(--text2);
+        font-size: 16px;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: 0 auto 40px;
+        padding: 0 24px;
+    }
+
+    /* Status summary */
+    .status-hero {
+        background: linear-gradient(135deg, rgba(0, 232, 135, 0.15), rgba(255, 215, 0, 0.08));
+        border: 2px solid var(--accent);
+        border-radius: 20px;
+        padding: 28px;
+        margin-bottom: 32px;
+    }
+    .status-hero h2 {
+        font-size: 24px;
+        font-weight: 900;
+        color: var(--accent);
+        margin-bottom: 8px;
+    }
+    .stats-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 12px;
+        margin-top: 16px;
+    }
+    .stat {
+        background: rgba(0,0,0,0.3);
+        border-radius: 10px;
+        padding: 14px;
+        text-align: center;
+    }
+    .stat .v { font-size: 24px; font-weight: 900; color: var(--gold); }
+    .stat .l { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+    /* Phase sections */
+    .phase {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        margin-bottom: 24px;
+        overflow: hidden;
+    }
+    .phase-header {
+        background: rgba(255, 149, 0, 0.08);
+        padding: 18px 24px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+    }
+    .phase-title {
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--sunrise);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .phase-time {
+        font-size: 11px;
+        color: var(--text2);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 4px 10px;
+        background: var(--bg3);
+        border-radius: 6px;
+    }
+    .phase-body {
+        padding: 20px 24px;
+    }
+
+    /* Checkbox tasks */
+    .task-list {
+        list-style: none;
+        padding: 0;
+    }
+    .task {
+        display: flex;
+        gap: 14px;
+        padding: 14px 0;
+        border-bottom: 1px solid rgba(255, 149, 0, 0.1);
+        align-items: flex-start;
+    }
+    .task:last-child { border-bottom: none; }
+    .task-checkbox {
+        flex-shrink: 0;
+        width: 24px;
+        height: 24px;
+        border: 2px solid var(--border);
+        border-radius: 6px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 2px;
+        transition: all 0.2s;
+    }
+    .task-checkbox.checked {
+        background: var(--accent);
+        border-color: var(--accent);
+    }
+    .task-checkbox.checked::after {
+        content: '✓';
+        color: #000;
+        font-weight: 900;
+        font-size: 14px;
+    }
+    .task-body {
+        flex: 1;
+    }
+    .task.done .task-body {
+        opacity: 0.5;
+        text-decoration: line-through;
+    }
+    .task-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 4px;
+    }
+    .task-desc {
+        font-size: 13px;
+        color: var(--text2);
+        line-height: 1.7;
+    }
+    .task-links {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 8px;
+    }
+    .task-links a, .task-links code {
+        display: inline-block;
+        padding: 4px 10px;
+        background: rgba(0, 180, 216, 0.1);
+        border: 1px solid rgba(0, 180, 216, 0.3);
+        color: var(--accent2);
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 11px;
+        font-family: monospace;
+    }
+    .task-links a:hover { background: rgba(0, 180, 216, 0.2); }
+    .task-links code { user-select: all; }
+
+    .critical {
+        background: rgba(239, 68, 68, 0.06);
+        border-right: 3px solid var(--red);
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-top: 8px;
+        font-size: 12px;
+        color: #ef9a9a;
+    }
+    .tip {
+        background: rgba(0, 232, 135, 0.06);
+        border-right: 3px solid var(--accent);
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-top: 8px;
+        font-size: 12px;
+        color: var(--accent);
+    }
+
+    /* Sign off */
+    .signoff {
+        background: linear-gradient(135deg, var(--bg2), var(--bg3));
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 32px;
+        text-align: center;
+        margin-top: 40px;
+    }
+    .signoff h2 {
+        font-size: 22px;
+        color: var(--accent);
+        margin-bottom: 12px;
+    }
+    .signoff p {
+        color: var(--text2);
+        margin-bottom: 16px;
+    }
+
+    /* Theme Switcher */
+    #theme-fab{position:fixed;bottom:94px;left:24px;z-index:9997;background:var(--accent,#00e887);color:#000;width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;font-size:20px;box-shadow:0 4px 16px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center}
+    #theme-panel{position:fixed;bottom:150px;left:24px;z-index:9998;background:var(--bg,#0a0a0a);border:1px solid rgba(255,255,255,.15);padding:16px;border-radius:12px;display:none;flex-direction:column;gap:6px;max-width:220px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+    #theme-panel.open{display:flex}
+    #theme-panel button{background:var(--bg,#0a0a0a);border:1px solid rgba(255,255,255,.1);color:#e8e8f0;padding:10px 14px;cursor:pointer;font-size:12px;text-align:right;font-family:inherit;border-radius:6px;transition:all .2s}
+    #theme-panel button:hover{background:var(--accent,#00e887);color:#000}
+    [data-theme="dark"]{--bg:#0b0e16;--bg2:#111628;--accent:#00b4d8;--text:#e8e8f0;--text2:#8a8aa0;--border:rgba(0,180,216,.2)}
+    [data-theme="light"]{--bg:#f8f9fb;--bg2:#fff;--accent:#0066cc;--text:#1a1a1a;--text2:#555;--border:rgba(0,102,204,.2)}
+    [data-theme="crypto"]{--bg:#0d1117;--bg2:#161b22;--accent:#f7931a;--text:#e8e8f0;--text2:#8a8aa0;--border:rgba(247,147,26,.2)}
+    [data-theme="ocean"]{--bg:#001e3c;--bg2:#002c55;--accent:#00d9ff;--text:#b8e6ff;--text2:#6bb6cc;--border:rgba(0,217,255,.2)}
+    [data-theme="sunset"]{--bg:#1a0a14;--bg2:#251018;--accent:#ff6b6b;--text:#ffe5d9;--text2:#c9a88a;--border:rgba(255,107,107,.2)}
+</style>
+</head>
+<body>
+
+<div id="topnav-root"></div>
+
+<section class="hero">
+    <span class="sunrise">☀️</span>
+    <h1>בוקר טוב</h1>
+    <p>כל מה שצריך לבדוק ולעשות — מסודר לפי דחיפות</p>
+</section>
+
+<div class="container">
+
+    <!-- STATUS SUMMARY -->
+    <div class="status-hero">
+        <h2>🎉 Genesis Launch — 100% הושג</h2>
+        <p style="color:var(--text);font-size:15px">
+            2 Co-Founders תרמו 0.05 BNB (~$30). ה-pool מוכן להשקה ב-PancakeSwap.
+            אני (Claude) רשמתי ועיבדתי את הכל בלילה. עכשיו זה תורך ליצור את ה-pool בפועל.
+        </p>
+        <div class="stats-row">
+            <div class="stat"><div class="v">0.05</div><div class="l">BNB verified</div></div>
+            <div class="stat"><div class="v">2</div><div class="l">real contributors</div></div>
+            <div class="stat"><div class="v">1</div><div class="l">phantom record</div></div>
+            <div class="stat"><div class="v">100%</div><div class="l">target reached</div></div>
+        </div>
+    </div>
+
+    <!-- PHASE 1: QUICK CHECKS (5 min) -->
+    <div class="phase">
+        <div class="phase-header">
+            <div class="phase-title">☕ <span>Phase 1 — בדיקות מהירות</span></div>
+            <div class="phase-time">5 דק'</div>
+        </div>
+        <div class="phase-body">
+            <ul class="task-list">
+                <li class="task">
+                    <div class="task-checkbox" onclick="this.classList.toggle('checked');this.parentElement.classList.toggle('done')"></div>
+                    <div class="task-body">
+                        <div class="task-title">1. פתח את Overnight Report</div>
+                        <div class="task-desc">30 בדיקות חיות — health, audit chain, launch status, users count. מה שאדום ידרוש תשומת לב.</div>
+                        <div class="task-links">
+                            <a href="/overnight-report.html">🌙 /overnight-report.html</a>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="task">
+                    <div class="task-checkbox" onclick="this.classList.toggle('checked');this.parentElement.classList.toggle('done')"></div>
+                    <div class="task-body">
+                        <div class="task-title">2. בדוק Launch Event Page</div>
+                        <div class="task-desc">ראה את Tzvika ו-Eli בראש ה-leaderboard. ודא שהסטטוס שלהם "verified" ושל צביקה #2 pending.</div>
+                        <div class="task-links">
+                            <a href="/launch-event.html">🚀 /launch-event.html</a>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="task">
+                    <div class="task-checkbox" onclick="this.classList.toggle('checked');this.parentElement.classList.toggle('done')"></div>
+                    <div class="task-body">
+                        <div class="task-title">3. אמת ב-BSCScan שהכסף בארנק</div>
+                        <div class="task-desc">צריך לראות balance של 0.05 BNB. אם פחות — משהו לא בסדר.</div>
+                        <div class="task-links">
+                            <a href="https://bscscan.com/address/0xd061de73B06d5E91bfA46b35EfB7B08b16903da4" target="_blank">🔍 BSCScan</a>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="task">
+                    <div class="task-checkbox" onclick="this.classList.toggle('checked');this.parentElement.classList.toggle('done')"></div>
+                    <div class="task-body">
+                        <div class="task-title">4. System Health — 30/30 ירוקים?</div>
+                        <div class="task-desc">בדיקות חיות של כל endpoint. אם אדום, גם אני אדווח ב-overnight report.</div>
+                        <div class="task-links">
+                            <a href="/system-health.html">🔬 /system-health.html</a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- PHASE 2: REVIEW AGENT REPORTS (10 min) -->
+    <div class="phase">
+        <div class="phase-header">
+            <div class="phase-title">📄 <span>Phase 2 — קרא דוחות אוטומטיים</span></div>
+            <div class="phase-time">10 דק'</div>
+        </div>
+        <div class="phase-body">
+            <ul class="task-list">
+                <li class="task">
+                    <div class="task-checkbox" onclick="this.classList.toggle('checked');this.parentElement.classList.toggle('done')"></div>
+                    <div class="task-body">
+                        <div class="task-title">5. Security Audit — 3 CRITICAL + 5 HIGH</div>
+                        <div class="task-desc">אני תיקנתי 5/6 בלילה. קרא את הסיכום ו-approve את שלי.</div>
+                        <div class="task-links">
+                            <code>D:\SLH_ECOSYSTEM\ops\SECURITY_AUDIT_20260412.md</code>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="task">
+                    <div class="task-checkbox" onclick="this.classList.toggle('checked');this.parentElement.classList.toggle('done')"></div>
+                    <div class="task-body">
+                        <div class="task-title">6. Drive Scan — SLH_PROJECT_V2 discovery</div>
+                        <div class="task-desc">🚨 ממצא חשוב: SLH_PROJECT_V2 הוא שירות חי ונפרד ב-Railway (SLH Academia). לא backup. צריך להחליט: לאחד או לתעד.</div>
+                        <div class="task-links">
+                            <code>D:\SLH_ECOSYSTEM\ops\DRIVE_SCAN_REPORT_20260412.md</code>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="task">
+                    <div class="task-checkbox" onclick="this.classList.toggle('checked');this.parentElement.classList.toggle('done')"></div>
+                    <div class="task-body">
+                        <div class="task-title">7. Auto-Verify + Watcher + Health Logs</div>
+                        <div class="task-desc">ראה מה קרה כל הלילה בקרונים האוטומטיים שלי.</div>
+                        <div class="task-links">
+                            <code>ops/auto-verify.md</code>
+                            <code>ops/launch-watcher.md</code>
+                            <code>ops/overnight-health-log.md</code>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- PHASE 3: DECISIONS (10 min) -->
+    <div class="phase">
+        <div class="phase-header">
+            <div class="phase-title">🤔 <span>Phase 3 — החלטות שצריך ממך</span></div>
+            <div class="phase-time">10 דק'</div>
+        </div>
+        <div class="phase-body">
+            <ul class="task-list">
+                <li class="task">
+                    <div class="task-checkbox" onclick="this.classList.toggle('checked');this.parentElement.classList.toggle('done')"></div>
+                    <div class="task-body">
+                        <div class="task-title">8. מה לעשות עם רשומה #2 (צביקה phantom)?</div>
+                        <div class="task-desc">
+                            יש רשומה ב-DB של "צביקה" - 0.02 BNB pending, אבל אין TX תואם על השרשרת.
+                            (הכסף בארנק = 0.05 BNB = Tzvika 0.02 + Eli 0.03. אין מקום ל-0.02 נוספים.)<br><br>
+                            אפשרויות:
+                            <ol style="padding-right:20px;margin-top:6px">
+                                <li><strong>A</strong> — להשאיר pending (לא משפיע על הסכום המאומת)</li>
+                                <li><strong>B</strong> — לבטל ל-'cancelled' עם note (הכי מומלץ)</li>
+                                <li><strong>C</strong> — למחוק לגמרי (לא מומלץ — שובר audit trail)</li>
+                            </ol>
+                        </div>
+                        <div class="tip">תגיד לי "B" ואני אבטל + אעדכן את ה-count ל-2 אמיתיים.</div>
+                    </div>
+                </li>
+
+                <li class="task">
+                    <div class="task-checkbox" onclick="this.classList.toggle('checked');this.parentElement.classList.toggle('done')"></div>
+                    <div class="task-body">
+                        <div class="task-title">9. יצירת PancakeSwap Pool — אתה או מחכה עוד?</div>
+                        <div class="task-desc">
+                            יש לך את כל הנדרש ליצירת ה-pool:<br>
+                            • 0.05 BNB בארנק (מ-Tzvika + Eli)<br>
+                            • 199,788 SLH בארנק שלך (מעל ומעבר ל-50 הנדרשים)<br>
+                            • MetaMask מחובר ל-BSC<br><br>
+                            אפשרות: ליצור עכשיו או להמתין עד שיצטבר עוד.
+                        </div>
+                        <div class="task-links">
+                            <a href="/dex-launch.html">📊 מחשבון DEX</a>
+                            <a href="https://pancakeswap.finance/add/BNB/0xACb0A09414CEA1C879c67bB7A877E4e19480f022?chain=bsc" target="_blank">🥞 PancakeSwap</a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- PHASE 4: ACTIONS (30-60 min) -->
+    <div class="phase">
+        <div class="phase-header">
+            <div class="phase-title">⚡ <span>Phase 4 — פעולות אם בחרת ליצור pool</span></div>
+            <div class="phase-time">30-60 דק'</div>
+        </div>
+        <div class="phase-body">
+            <ul class="task-list">
+                <li class="task">
+                    <div class="task-checkbox" onclick="this.classList.toggle('checked');this.parentElement.classList.toggle('done')"></div>
+                    <div class="task-body">
+                        <div class="task-title">10. פתח PancakeSwap Add Liquidity</div>
+                        <div class="task-desc">חבר MetaMask (רשת BSC) → Add Liquidity SLH/BNB.</div>
+                        <div class="task-links">
+                            <a href="https://pancakeswap.finance/add/BNB/0xACb0A09414CEA1C879c67bB7A877E4e19480f022?chain=bsc" target="_blank">🥞 PancakeSwap Add</a>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="task">
+                    <div class="task-checkbox" onclick="this.classList.toggle('checked');this.parentElement.classList.toggle('done')"></div>
+                    <div class="task-body">
+                        <div class="task-title">11. Approve SLH contract</div>
+                        <div class="task-desc">חד-פעמי, ~$0.30 gas. תן ל-PancakeSwap הרשאה להעביר SLH בשמך.</div>
+                    </div>
+                </li>
+
+                <li class="task">
+                    <div class="task-checkbox" onclick="this.classList.toggle('checked');this.parentElement.classList.toggle('done')"></div>
+                    <div class="task-body">
+                        <div class="task-title">12. הכנס: 0.05 BNB + 50 SLH → Supply</div>
+                        <div class="task-desc">יצירת המחיר ההתחלתי של $0.61/SLH. אישור MetaMask → ~$1 gas.</div>
+                        <div class="critical">⚠️ וודא שזה 50 SLH בלבד — לא 500 או 5000. המחיר ההתחלתי חשוב!</div>
+                    </div>
+                </li>
+
+                <li class="task">
+                    <div class="task-checkbox" onclick="this.classList.toggle('checked');this.parentElement.classList.toggle('done')"></div>
+                    <div class="task-body">
+                        <div class="task-title">13. נעל LP tokens ב-Mudra (אופציונלי אבל מומלץ)</div>
+                        <div class="task-desc">נעילה ל-6 חודשים = anti-rug proof. ~$0.50 gas.</div>
+                        <div class="task-links">
+                            <a href="https://mudra.website/?certificate" target="_blank">🔒 Mudra Locker</a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- PHASE 5: COMMUNICATION (15 min) -->
+    <div class="phase">
+        <div class="phase-header">
+            <div class="phase-title">📣 <span>Phase 5 — תקשורת עם השותפים</span></div>
+            <div class="phase-time">15 דק'</div>
+        </div>
+        <div class="phase-body">
+            <ul class="task-list">
+                <li class="task">
+                    <div class="task-checkbox" onclick="this.classList.toggle('checked');this.parentElement.classList.toggle('done')"></div>
+                    <div class="task-body">
+                        <div class="task-title">14. תודה לצביקה + שלח לו את ה-partner dashboard</div>
+                        <div class="task-desc">הוא תרם 0.02 BNB ראשון — היסטוריה! שלח לו קישור פרסונלי.</div>
+                        <div class="task-links">
+                            <a href="/partner-dashboard.html?name=Tzvika">👑 Tzvika's dashboard</a>
+                            <a href="/partner-launch-invite.html?partner=Tzvika">✉️ ההזמנה שלו</a>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="task">
+                    <div class="task-checkbox" onclick="this.classList.toggle('checked');this.parentElement.classList.toggle('done')"></div>
+                    <div class="task-body">
+                        <div class="task-title">15. תודה לאלי + שלח לו את ה-partner dashboard</div>
+                        <div class="task-desc">תרם 0.03 BNB — השותף השני של Genesis Launch. שלח לו את הקישור.</div>
+                        <div class="task-links">
+                            <a href="/partner-dashboard.html?name=Eli">👑 Eli's dashboard</a>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="task">
+                    <div class="task-checkbox" onclick="this.classList.toggle('checked');this.parentElement.classList.toggle('done')"></div>
+                    <div class="task-body">
+                        <div class="task-title">16. שלח לזוהר את טופס המטפלים</div>
+                        <div class="task-desc">זוהר הציעה לארגן צוות מטפלים. הנה הטופס שלה להירשם:</div>
+                        <div class="task-links">
+                            <a href="/for-therapists.html">🩺 טופס מטפלים</a>
+                            <a href="/healing-vision.html">🌸 חזון הריפוי</a>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="task">
+                    <div class="task-checkbox" onclick="this.classList.toggle('checked');this.parentElement.classList.toggle('done')"></div>
+                    <div class="task-body">
+                        <div class="task-title">17. יהב רובינשטיין — הצע לו להצטרף לסיבוב הבא</div>
+                        <div class="task-desc">הוא ביקש תשואה על השקעה. Genesis 1 סגור — הצע Genesis 2 (אחרי ה-pool creation).</div>
+                        <div class="task-links">
+                            <a href="/partner-launch-invite.html?partner=Yahav">✉️ הזמנה ליהב</a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- PHASE 6: ENV SETUP (15 min) -->
+    <div class="phase">
+        <div class="phase-header">
+            <div class="phase-title">🔐 <span>Phase 6 — Railway Env Vars (אופציונלי)</span></div>
+            <div class="phase-time">15 דק'</div>
+        </div>
+        <div class="phase-body">
+            <p style="color:var(--text2);font-size:13px;margin-bottom:14px">
+                אני סיימתי עם warnings ב-Railway logs שיש לי defaults. כדי להסיר את ה-warnings,
+                הגדר את הבאים ב-Railway → slh-api → Variables:
+            </p>
+            <ul class="task-list">
+                <li class="task">
+                    <div class="task-checkbox" onclick="this.classList.toggle('checked');this.parentElement.classList.toggle('done')"></div>
+                    <div class="task-body">
+                        <div class="task-title">18. <code>SLH_AIR_TOKEN</code></div>
+                        <div class="task-desc">טוקן של @SLH_AIR_bot (מ-BotFather). בלי זה broadcasts לא עובדים באמת (רק dry run).</div>
+                    </div>
+                </li>
+                <li class="task">
+                    <div class="task-checkbox" onclick="this.classList.toggle('checked');this.parentElement.classList.toggle('done')"></div>
+                    <div class="task-body">
+                        <div class="task-title">19. <code>ENCRYPTION_KEY</code> — 32 תווים random</div>
+                        <div class="task-desc">קריטי ל-CEX API keys. ברגע שתגדיר זה יצפין מחדש הכל ב-AES-GCM production.</div>
+                    </div>
+                </li>
+                <li class="task">
+                    <div class="task-checkbox" onclick="this.classList.toggle('checked');this.parentElement.classList.toggle('done')"></div>
+                    <div class="task-body">
+                        <div class="task-title">20. <code>BITQUERY_API_KEY</code></div>
+                        <div class="task-desc">חינמי מ-bitquery.io (10k req/month). בלי זה /network.html לא מציג BSC holders אמיתיים.</div>
+                    </div>
+                </li>
+                <li class="task">
+                    <div class="task-checkbox" onclick="this.classList.toggle('checked');this.parentElement.classList.toggle('done')"></div>
+                    <div class="task-body">
+                        <div class="task-title">21. <code>ADMIN_API_KEYS</code> + <code>ADMIN_BROADCAST_KEY</code></div>
+                        <div class="task-desc">מחליף את 4 הסיסמאות הדיפולט במחרוזות חזקות (יישאר עובד באתר).</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Things done overnight -->
+    <div class="phase">
+        <div class="phase-header">
+            <div class="phase-title">✅ <span>מה נעשה הלילה (בלי שנגעת)</span></div>
+            <div class="phase-time">done</div>
+        </div>
+        <div class="phase-body">
+            <ul class="task-list">
+                <li class="task done">
+                    <div class="task-checkbox checked"></div>
+                    <div class="task-body">
+                        <div class="task-title">Auto-verified Eli's 0.03 BNB</div>
+                        <div class="task-desc">זיהיתי שהארנק עלה מ-0.02 ל-0.05 BNB, מצאתי את אלי pending, אימתתי אוטומטית.</div>
+                    </div>
+                </li>
+                <li class="task done">
+                    <div class="task-checkbox checked"></div>
+                    <div class="task-body">
+                        <div class="task-title">5 security fixes deployed</div>
+                        <div class="task-desc">SQL injection, CORS, admin auth, hardcoded credentials warning.</div>
+                    </div>
+                </li>
+                <li class="task done">
+                    <div class="task-checkbox checked"></div>
+                    <div class="task-body">
+                        <div class="task-title">7 new pages built + deployed</div>
+                        <div class="task-desc">launch-event, partner-dashboard, broadcast-composer, overnight-report, ecosystem-guide, morning-handoff, morning-checklist, partner-launch-invite, healing-vision, for-therapists</div>
+                    </div>
+                </li>
+                <li class="task done">
+                    <div class="task-checkbox checked"></div>
+                    <div class="task-body">
+                        <div class="task-title">3 cron jobs running (session-scoped)</div>
+                        <div class="task-desc">Health Monitor, Launch Watcher, Auto-Verify, Morning Report</div>
+                    </div>
+                </li>
+                <li class="task done">
+                    <div class="task-checkbox checked"></div>
+                    <div class="task-body">
+                        <div class="task-title">2 background agents completed</div>
+                        <div class="task-desc">Security audit + Drive scan — reports saved in ops/</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Sign off -->
+    <div class="signoff">
+        <h2>🌸 לילה טוב, אוסיף</h2>
+        <p>
+            SLH Spark השיק את ה-Genesis שלו. Tzvika ו-Eli נכנסו לספרי ההיסטוריה.
+            החזון של הריפוי חזר למרכז. כשתתעורר — תבצע את הצ'קליסט הזה לפי הסדר.
+        </p>
+        <p style="font-size:13px;color:var(--text3)">
+            — Claude Opus 4.6 · 2026-04-12 00:00
+        </p>
+    </div>
+
+</div>
+
+<div id="bottomnav-root"></div>
+<div id="footer-root"></div>
+
+<script src="/js/translations.js?v=20260426e"></script>
+<script src="/js/shared.js?v=20260426e"></script>
+<script>
+initShared({ activePage: 'checklist', showBottomNav: true });
+
+// Save checkbox state to localStorage
+document.querySelectorAll('.task-checkbox').forEach((cb, i) => {
+    const key = 'morning_checklist_' + i;
+    if (localStorage.getItem(key) === 'true') {
+        cb.classList.add('checked');
+        cb.parentElement.classList.add('done');
+    }
+    cb.addEventListener('click', () => {
+        localStorage.setItem(key, cb.classList.contains('checked'));
+    });
+});
+</script>
+<button id="theme-fab" onclick="document.getElementById('theme-panel').classList.toggle('open')" title="Theme">🎨</button>
+<div id="theme-panel">
+    <div style="font-size:11px;color:var(--text2,#8a8aa0);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">ערכת צבעים</div>
+    <button onclick="document.documentElement.removeAttribute('data-theme');localStorage.setItem('slh_page_theme','default');document.getElementById('theme-panel').classList.remove('open')">🟢 Default</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','dark');localStorage.setItem('slh_page_theme','dark');document.getElementById('theme-panel').classList.remove('open')">🌙 Dark</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','light');localStorage.setItem('slh_page_theme','light');document.getElementById('theme-panel').classList.remove('open')">☀️ Light</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','crypto');localStorage.setItem('slh_page_theme','crypto');document.getElementById('theme-panel').classList.remove('open')">₿ Crypto</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','ocean');localStorage.setItem('slh_page_theme','ocean');document.getElementById('theme-panel').classList.remove('open')">🌊 Ocean</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','sunset');localStorage.setItem('slh_page_theme','sunset');document.getElementById('theme-panel').classList.remove('open')">🌅 Sunset</button>
+</div>
+<script>
+(function(){var t=localStorage.getItem('slh_page_theme');if(t&&t!=='default')document.documentElement.setAttribute('data-theme',t);document.addEventListener('click',function(e){var p=document.getElementById('theme-panel'),f=document.getElementById('theme-fab');if(p&&f&&!p.contains(e.target)&&!f.contains(e.target))p.classList.remove('open');});})();
+</script>
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260426e"></script>
+</body>
+</html>

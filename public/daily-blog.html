@@ -1,0 +1,790 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <script>
+    // Restore saved theme before paint to prevent FOUC
+    try {
+      var t = localStorage.getItem('slh_theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch(e) {}
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SLH Spark Daily Blog — What We Shipped Today</title>
+  <meta name="description" content="בלוג יומי של SLH Spark — עדכונים יומיים על תיקונים, פיצ'רים חדשים, ותוכניות עבודה.">
+  <meta name="keywords" content="SLH, daily blog, updates, changelog, roadmap, development">
+  <meta name="author" content="SPARK IND">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://slh-nft.com/daily-blog.html">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="SLH Ecosystem">
+  <meta property="og:title" content="SLH Daily Blog - What we shipped today">
+  <meta property="og:description" content="Full transparency: every bug fix, feature, and deployment">
+  <meta property="og:image" content="https://slh-nft.com/assets/og/default.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url" content="https://slh-nft.com/daily-blog.html">
+  <meta property="og:locale" content="he_IL">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SLH Daily Blog - What we shipped today">
+  <meta name="twitter:description" content="Full transparency: every bug fix, feature, and deployment">
+  <meta name="twitter:image" content="https://slh-nft.com/assets/og/default.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Shared CSS -->
+  <link rel="stylesheet" href="/css/shared.css?v=20260426e">
+
+  <style>
+    .blog-hero {
+      text-align: center;
+      padding: 80px 20px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    .blog-hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(139,92,246,.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .blog-hero h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, var(--accent, #8b5cf6), var(--text, #fff));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .blog-hero p {
+      font-size: 1.15rem;
+      color: var(--muted, #a0a0b8);
+      max-width: 640px;
+      margin: 0 auto 24px;
+      line-height: 1.7;
+    }
+    .blog-hero-stats {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .blog-stat {
+      padding: 10px 18px;
+      background: rgba(139,92,246,.08);
+      border: 1px solid rgba(139,92,246,.25);
+      border-radius: 10px;
+      font-size: 13px;
+      color: var(--text, #fff);
+    }
+    .blog-stat strong {
+      color: var(--accent, #8b5cf6);
+      font-size: 16px;
+      display: block;
+    }
+
+    .blog-container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 20px 20px 80px;
+    }
+    .blog-entry {
+      background: var(--card-bg, rgba(20,20,30,.6));
+      border: 1px solid var(--border, rgba(139,92,246,.2));
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin-bottom: 28px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 4px 20px rgba(0,0,0,.2);
+      transition: transform .3s, border-color .3s, box-shadow .3s;
+    }
+    .blog-entry:hover {
+      transform: translateY(-2px);
+      border-color: rgba(139,92,246,.4);
+      box-shadow: 0 8px 32px rgba(139,92,246,.15);
+    }
+    .blog-entry h2 {
+      font-size: 1.5rem;
+      color: var(--accent, #8b5cf6);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .blog-entry h2 .date-badge {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 3px 10px;
+      background: rgba(139,92,246,.15);
+      border: 1px solid rgba(139,92,246,.3);
+      border-radius: 6px;
+      color: var(--text, #fff);
+      font-family: monospace;
+    }
+    .blog-entry h3 {
+      font-size: 1.05rem;
+      color: var(--text-bright, #fff);
+      margin: 22px 0 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .blog-entry p {
+      color: var(--text2, #c8c8dc);
+      line-height: 1.8;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+    .blog-entry ul {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 16px;
+    }
+    .blog-entry ul li {
+      padding: 8px 0 8px 24px;
+      position: relative;
+      color: var(--text2, #c8c8dc);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .blog-entry ul li::before {
+      content: '▸';
+      position: absolute;
+      right: 0;
+      color: var(--accent, #8b5cf6);
+      font-weight: 700;
+    }
+    .blog-entry ul li strong {
+      color: var(--text-bright, #fff);
+    }
+    .blog-entry code {
+      background: rgba(139,92,246,.12);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: var(--accent, #8b5cf6);
+      font-family: 'Space Mono', monospace;
+    }
+    .blog-theme {
+      padding: 12px 16px;
+      background: rgba(245,158,11,.08);
+      border-right: 3px solid #f59e0b;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      color: var(--text, #fff);
+    }
+    .blog-theme strong {
+      color: #f59e0b;
+    }
+
+    .section-shipped h3::before { content: '✅'; }
+    .section-progress h3::before { content: '🚧'; }
+    .section-coming h3::before { content: '📣'; }
+    .section-action h3::before { content: '🔐'; }
+
+    .blog-cta {
+      text-align: center;
+      padding: 40px 20px;
+      background: linear-gradient(135deg, rgba(139,92,246,.1), rgba(0,229,255,.06));
+      border: 1px solid rgba(139,92,246,.25);
+      border-radius: 16px;
+      margin: 40px 0 0;
+    }
+    .blog-cta h3 {
+      font-size: 1.4rem;
+      color: var(--accent, #8b5cf6);
+      margin-bottom: 10px;
+    }
+    .blog-cta p {
+      color: var(--text2, #c8c8dc);
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+    .blog-cta .btn-row {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 640px) {
+      .blog-entry {
+        padding: 20px 18px;
+      }
+      .blog-entry h2 {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="topnav-root"></div>
+  <div id="ticker-root"></div>
+
+  <div class="blog-hero">
+    <h1 data-i18n="blog_hero_title">📰 בלוג יומי — מה חדש היום?</h1>
+    <p data-i18n="blog_hero_sub">שקיפות מלאה: כל שינוי, תיקון ופיצ'ר חדש במערכת מתועד כאן בעדכון יומי.</p>
+    <div id="date-widget-root" style="margin:20px auto"></div>
+    <div class="blog-hero-stats">
+      <div class="blog-stat">
+        <strong id="blog-entries-count">--</strong>
+        <span data-i18n="blog_entries">ערכים</span>
+      </div>
+      <div class="blog-stat">
+        <strong id="blog-days-live">Day 3</strong>
+        <span data-i18n="blog_streak">רצף</span>
+      </div>
+      <div class="blog-stat">
+        <strong>
+          <a href="/roadmap.html" style="color:inherit;text-decoration:none">→</a>
+        </strong>
+        <span data-i18n="blog_see_roadmap">ראה מפת דרכים</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="blog-container" id="blog-container">
+    <!-- 🏆 FIRST SWAP — HISTORIC MOMENT ★★★ -->
+    <div style="background:linear-gradient(135deg,rgba(255,215,0,0.2),rgba(0,232,135,0.15),rgba(243,186,47,0.1));border:3px solid #ffd700;border-radius:16px;padding:28px;margin-bottom:24px;position:relative;overflow:hidden">
+      <div style="position:absolute;top:-20px;right:-20px;font-size:100px;opacity:0.1">🏆</div>
+      <div style="font-size:11px;color:#ffd700;text-transform:uppercase;letter-spacing:2px;font-weight:800;margin-bottom:4px">🏆 HISTORIC MOMENT · 12/04/2026 11:20</div>
+      <div style="font-size:26px;color:#fff;font-weight:900;margin-bottom:8px">SLH נסחר ציבורית — 2 Swaps + Liquidity Added!</div>
+      <div style="font-size:14px;color:#e8e8f0;margin-bottom:14px;line-height:1.8">
+        <strong style="color:#ffd700">Pool SLH/BNB חי ב-PancakeSwap V2</strong><br>
+        Pair: <code style="background:rgba(255,215,0,0.1);padding:2px 6px;border-radius:4px;color:#ffd700;font-size:12px">0xacea26b6...bbeE</code> · Block 92071485<br>
+        מחיר: <strong style="color:#00e887">$0.596/SLH</strong> · Market Cap: ~$66.3M<br><br>
+        <strong style="color:#ffd700">Swap ראשון:</strong> 0.001 BNB → 0.927 SLH · TX: 0xf0ea8b... · Impact: 2.37%<br>
+        <strong style="color:#ffd700">Co-Founders:</strong> Tzvika (0.02 BNB) + Eli (0.03 BNB) = 0.05 BNB Genesis Fund
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <a href="https://pancakeswap.finance/swap?outputCurrency=0xACb0A09414CEA1C879c67bB7A877E4e19480f022&chain=bsc" target="_blank" style="background:linear-gradient(135deg,#ffd700,#f3ba2f);color:#000;padding:12px 22px;border-radius:10px;text-decoration:none;font-weight:800;font-size:14px">🛒 קנה SLH ב-PancakeSwap →</a>
+        <a href="https://bscscan.com/address/0xacea26b6e132cd45f2b8a4754170d4d0d3b8bbee" target="_blank" style="background:transparent;border:1px solid #00e887;color:#00e887;padding:12px 22px;border-radius:10px;text-decoration:none;font-weight:700;font-size:13px">🔍 Pool ב-BSCScan</a>
+        <a href="/healing-vision.html" style="background:transparent;border:1px solid #ff6b9d;color:#ff6b9d;padding:12px 22px;border-radius:10px;text-decoration:none;font-weight:700;font-size:13px">🌸 חזון הריפוי</a>
+      </div>
+    </div>
+
+    <!-- === 2026-04-13 OVERNIGHT SESSION === -->
+    <article class="blog-entry">
+      <h2>
+        יום 7 — Buy Page, Login Fix, P2P Live, OG Images, 11 Users!
+        <span class="date-badge">2026-04-14 PM · Day 7</span>
+      </h2>
+      <div class="blog-theme">
+        <strong>נושא אחה"צ:</strong> דף רכישת SLH חדש, 6 שיטות תשלום, הרשמה חינם,
+        P2P LIVE, 22 תמונות OG, login פשוט, MetaMask auto-reconnect, 2 משתמשים חדשים!
+      </div>
+      <div class="section-shipped">
+        <h3>🚀 דפים חדשים ועדכונים</h3>
+        <ul>
+          <li><strong><a href="/buy.html">Buy SLH</a></strong> — שיטות תשלום: PancakeSwap, P2P, Genesis, USDT-TON, Telegram Wallet</li>
+          <li><strong><a href="/p2p.html">P2P Trading</a></strong> — LIVE! אפשר לפרסם ולקנות הצעות (Coming Soon הוסר!)</li>
+          <li><strong><a href="/launch-event.html">הרשמה חינם</a></strong> — אפשר להצטרף בלי הפקדת BNB (10 ZVK + NFT)</li>
+          <li><strong><a href="/dashboard.html">Login חדש</a></strong> — כפתור "התחבר דרך Telegram" (לא צריך לדעת ID!)</li>
+          <li><strong>22 OG Images</strong> — תמונות מקצועיות לשיתוף ברשתות חברתיות</li>
+          <li><strong>MetaMask</strong> — auto-reconnect + הסבר "Malicious Token" מורחב</li>
+          <li><strong>Dashboard</strong> — web3 Hebrew תוקן, Font Awesome נוסף</li>
+        </ul>
+      </div>
+      <div class="section-shipped">
+        <h3>👥 קהילה</h3>
+        <ul>
+          <li><strong>11 registered users</strong> (2 חדשים היום!)</li>
+          <li><strong>17 broadcasts</strong> נשלחו (100% delivery)</li>
+          <li><strong>Spam reported</strong> via Guardian (+20 ZUZ)</li>
+          <li><strong>Admin:</strong> Finance + Trust Network pages re-added</li>
+        </ul>
+      </div>
+      <div class="section-shipped">
+        <h3>💰 כלכלה</h3>
+        <ul>
+          <li>Genesis: <strong>0.082 BNB</strong> raised (8 contributors)</li>
+          <li>SLH→ZVK bonus: <strong>+10%</strong> על כל רכישת SLH</li>
+          <li>USDT-TON: תשלום יציב (צמוד לדולר) ישירות מארנק טלגרם</li>
+          <li>BSC wallet: 0.072 BNB on-chain</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="blog-entry">
+      <h2>
+        יום 6 — P2P, CEX Guide, תיקונים קריטיים, משתמשים חדשים!
+        <span class="date-badge">2026-04-14 · Day 6</span>
+      </h2>
+      <div class="blog-theme">
+        <strong>נושא היום:</strong> תיקון בעיות שדיווחו משתמשים, שדרוגי ניווט,
+        מדריך CEX, שיפור חוויית משתמש, וקבלת הפקדה חדשה מצביקה!
+      </div>
+      <div class="section-shipped">
+        <h3>🚀 מה חדש</h3>
+        <ul>
+          <li><strong>שנת היובל + P2P + אודות</strong> — עכשיו בתפריט הראשי! 20 פריטי ניווט</li>
+          <li><strong>כפתור AI</strong> — עכשיו עם כיתוב "שיחה עם AI" (צביקה ביקש)</li>
+          <li><strong>תזכורת הפקדה</strong> — הבוט מזכיר לשלוח צילום מסך (אנשים שכחו)</li>
+          <li><strong>הפקדה חדשה!</strong> צביקה שלח 0.002 BNB — סה"כ 0.082 BNB raised</li>
+          <li><strong>25/25 בוטים</strong> רצים (כולל selha + userinfo שהופעלו מחדש)</li>
+          <li><strong>7 פוסטים מזויפים</strong> נמחקו מהקהילה — רק נתונים אמיתיים!</li>
+          <li><strong>Admin Panel</strong> — encoding עברית תוקן, Hebrew נקי</li>
+        </ul>
+      </div>
+      <div class="section-shipped">
+        <h3>👥 קהילה גדלה!</h3>
+        <ul>
+          <li><strong>משווק קהילתי</strong> — פרסם את האתר לקהילה שלו</li>
+          <li><strong>ברוקר פיננסי חרדי</strong> — מעוניין בניהול תיקים דיגיטליים</li>
+          <li><strong>משתמש חדש</strong> — ניסה להירשם, צריך תיקון כפתור ID</li>
+          <li><strong>יערה קייזר</strong> — רוצה להעלות קורס דיגיטלי</li>
+          <li>8 contributors, 11 registered users, 17 broadcasts sent</li>
+        </ul>
+      </div>
+      <div class="section-shipped">
+        <h3>🔗 לינקים חשובים</h3>
+        <ul>
+          <li><a href="/liquidity.html">💧 מדריך נזילות</a> — איך להרוויח מ-LP</li>
+          <li><a href="/about.html">🔍 אודות ושקיפות</a> — הצוות, אימות עצמאי</li>
+          <li><a href="/challenge.html">🧘 אתגר 21 יום</a> — יום 2: עמידות ידיים</li>
+          <li><a href="/jubilee.html">🕊 שנת היובל</a> — החזון הרוחני</li>
+          <li><a href="/referral.html">👥 הפניות</a> — הרוויחו מפרסום!</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="blog-entry">
+      <h2>
+        יום עבודה מלא — Swap #2, Liquidity, About Page, אתגר יום 2
+        <span class="date-badge">2026-04-13 PM · Day 5.5</span>
+      </h2>
+      <div class="blog-theme">
+        <strong>נושא היום:</strong> הוספת נזילות ל-PancakeSwap, Swap #2 בוצע,
+        דף About & Transparency, מדריך נזילות מלא, אתגר 21 יום עודכן ליום 2 (עמידות ידיים).
+      </div>
+      <div class="section-shipped">
+        <h3>🚀 הישגים</h3>
+        <ul>
+          <li><strong>Liquidity Added:</strong> 0.014 BNB + 189,250 SLH לפול PancakeSwap — Price Impact ירד מ-99% ל-6%!</li>
+          <li><strong>Swap #2:</strong> 0.001 BNB → 12,608 SLH — <a href="https://bscscan.com/tx/0xf5513d8afa1400132b6df01186cb31edd1420a35ec270335ad5417e365fea3f9" target="_blank">TX on BSCScan</a></li>
+          <li><strong>Broadcast #8+#10:</strong> Genesis Sunday promo + LP guide to Tzvika (18/18 delivered)</li>
+          <li><strong>9 Staking Plans:</strong> TON (48-Variable Yield (4-12%)) + SLH (36-48%) + BNB (30-36%)</li>
+          <li><strong>Bots:</strong> 24/25 UP, selha + userinfo restarted, airdrop group-filter fix</li>
+        </ul>
+      </div>
+      <div class="section-shipped">
+        <h3>📄 דפים חדשים</h3>
+        <ul>
+          <li><a href="/liquidity.html">liquidity.html</a> — מדריך נזילות + staking + FAQ + PancakeSwap cards</li>
+          <li><a href="/about.html">about.html</a> — צוות, אימות עצמאי, מודל כלכלי, disclaimers</li>
+          <li><a href="/ops-dashboard.html">ops-dashboard.html</a> — מוניטורינג חי של כל המערכת</li>
+        </ul>
+      </div>
+      <div class="section-shipped">
+        <h3>🏋️ אתגר 21 יום — עדכון יום 2</h3>
+        <ul>
+          <li>מימד חדש: <strong>עמידות ידיים</strong> — מדריך מלא למתחילים</li>
+          <li>חימום (10-15 דק'), 3 שלבי התקדמות (L → גב לקיר → חופשי)</li>
+          <li>קשר ל-CBT: נוירופלסטיות, זרימת דם מוחית, התמודדות עם פחד</li>
+          <li><a href="/challenge.html">עבור לדף האתגר →</a></li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="blog-entry">
+      <h2>
+        סשן לילה — Guardian ZUZ, Ops Dashboard, אבטחה, 43 דפים מעודכנים
+        <span class="date-badge">2026-04-13 · Day 5</span>
+      </h2>
+
+      <div class="blog-theme">
+        <strong>נושא הלילה:</strong> שדרוג מערכתי מקיף — מערכת Guardian חדשה עם
+        מטבע ZUZ ("אות קין") לסימון הונאות, Ops Dashboard חי עם מוניטורינג בזמן אמת,
+        תיקוני אבטחה (הסרת סיסמאות מ-HTML), ו-analytics + AI assistant על כל 43 הדפים.
+      </div>
+
+      <div class="section-shipped">
+        <h3>🚀 מה נבנה הלילה</h3>
+        <ul>
+          <li><strong>מטבע ZUZ — "אות קין":</strong> מטבע שלילי חדש במערכת. כל דיווח על הונאה מעניק ZUZ לסקאמר. ב-100 ZUZ — חסימה אוטומטית בכל הקבוצות</li>
+          <li><strong>מערכת Guardian:</strong> 5 endpoints חדשים — דיווח הונאות, סריקת הודעות בזמן אמת, blacklist חוצה-קבוצות, Risk Score אוטומטי</li>
+          <li><strong>Ops Dashboard:</strong> דף מוניטורינג חי — <a href="/ops-dashboard.html">slh-nft.com/ops-dashboard.html</a> — KPIs, סטטוס כל 43 דפים, 108 endpoints, sprint progress</li>
+          <li><strong>אבטחה:</strong> הסרת כל הסיסמאות הגלויות מ-6 קבצי HTML ציבוריים</li>
+          <li><strong>Analytics + AI:</strong> עכשיו על כל 43 הדפים (100% כיסוי)</li>
+          <li><strong>תיקוני זוהר:</strong> מספר שותפים (5 במקום 7), "פאול" → "פּוּל", הסבר על BSCScan</li>
+          <li><strong>טופס תרומה:</strong> מילוי אוטומטי, כפתורי סכום מהירים, תצוגת מחיר USD</li>
+          <li><strong>Admin Panel:</strong> Site Map (כל 43 דפים), Rewards Admin, Manual Credit</li>
+        </ul>
+      </div>
+
+      <div class="section-shipped">
+        <h3>🔗 שנת היובל — הקשר רוחני</h3>
+        <p>פוסט רלוונטי מאד לעשייה שלנו בהקשר של שנת היובל:</p>
+        <p><a href="https://www.facebook.com/osif.e.ungar/posts/pfbid034WmYRwPcnvkosZ2JNiWotFHh43VWvZy4gsbwM7k2XQMX8fAGqfVvVsVEN8kZJ1y4l" target="_blank" rel="noopener" style="color:var(--accent2)">
+          📘 ראו את הפוסט המלא בפייסבוק →
+        </a></p>
+      </div>
+
+      <div class="section-shipped">
+        <h3>🛡️ כלכלת 5 מטבעות</h3>
+        <ul>
+          <li><strong>SLH</strong> — מטבע פרימיום, ממשל, יעד ₪444</li>
+          <li><strong>MNH</strong> — Stablecoin צמוד ₪1</li>
+          <li><strong>ZVK</strong> — תגמולי פעילות, ~₪4.4</li>
+          <li><strong>REP</strong> — מוניטין אישי (Basic → Elder)</li>
+          <li><strong>ZUZ</strong> — אות קין, סימון הונאות (חדש!)</li>
+        </ul>
+      </div>
+
+      <div class="section-shipped">
+        <h3>📊 מספרים</h3>
+        <ul>
+          <li>108 API endpoints (92% עובדים)</li>
+          <li>43 דפי HTML (100% analytics coverage)</li>
+          <li>25 בוטי טלגרם</li>
+          <li>6,932 שורות קוד API</li>
+          <li>30+ טבלאות DB</li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- === 2026-04-12 FULL DAY ENTRY === -->
+    <article class="blog-entry">
+      <h2>
+        היום הגדול — Pool חי, Swap ראשון, Member Cards, שנת היובל
+        <span class="date-badge">2026-04-12 · Day 4</span>
+      </h2>
+
+      <div class="blog-theme">
+        <strong>נושא היום:</strong> SLH Spark עבר מפרויקט לטוקן נסחר ציבורית.
+        Pool SLH/BNB חי ב-PancakeSwap V2, Swap ראשון בוצע, 3 co-founders מאומתים,
+        Member Cards לכל חבר, מערכת REP אישית, עמוד שנת היובל, P2P + Buy Crypto,
+        ו-4 broadcasts ל-8 משתמשים (32/32 delivered).
+      </div>
+
+      <div class="section-shipped">
+        <h3>🚀 הישגים היסטוריים</h3>
+        <ul>
+          <li><strong>Pool SLH/BNB חי:</strong> PancakeSwap V2, Pair <code>0xacea26b6...bbeE</code>, Block 92071485. מחיר: $0.596/SLH. Market Cap: ~$66.3M.</li>
+          <li><strong>Swap ראשון:</strong> 0.001 BNB → 0.927 SLH. TX: <code>0xf0ea8b...</code>. Price Impact: 2.37%.</li>
+          <li><strong>Zohar Shefa Dror:</strong> Co-Founder #3 הצטרפה (0.01 BNB). Auto-verified on-chain. סה"כ: 0.06 BNB.</li>
+          <li><strong>Member Cards:</strong> כל חבר מקבל כרטיס זהות דיגיטלי עם 3D flip, אפקט הולוגרפי, QR code, ו-NFT number ייחודי.</li>
+          <li><strong>REP System:</strong> מוניטין אישי לכל חבר. 4 דרגות: Basic → Active → Senior → Elder. Founder = Elder (1005 REP).</li>
+          <li><strong>שנת היובל:</strong> עמוד premium עם scroll-reveal, glass-morphism, timeline (2020→2026), מקורות מקראיים, Sefaria links.</li>
+          <li><strong>P2P + Buy Crypto:</strong> Changelly widget (BNB/ETH/BTC/TON), Gas Calculator, מדריך חינוכי (CEX vs DEX vs P2P).</li>
+        </ul>
+      </div>
+
+      <div class="section-shipped">
+        <h3>🔧 שיפורים ותיקונים (13 agents)</h3>
+        <ul>
+          <li><strong>earn.html:</strong> הוסרו כל הנתונים המזויפים, חובר ל-API אמיתי, 50 SLH → 500 ZVK.</li>
+          <li><strong>Wallet UX:</strong> modal + mobile banner למי שאין MetaMask.</li>
+          <li><strong>PancakeSwap:</strong> תוקנו 8 links מ-chain=eth ל-chain=bsc.</li>
+          <li><strong>OG Images:</strong> שודרגו ל-rich visuals (41-45KB, gradients, circles, icons).</li>
+          <li><strong>SEO:</strong> 29 קבצים — meta tags, canonical, OG, Twitter Cards, JSON-LD.</li>
+          <li><strong>Security:</strong> SQL injection fix, CORS tightening, admin auth, AES-GCM.</li>
+          <li><strong>Healing Vision:</strong> 4-token economy diagram + REP preview + Jubilee connection.</li>
+          <li><strong>Theme Switcher:</strong> נוסף ל-healing-vision, jubilee.</li>
+        </ul>
+      </div>
+
+      <div class="section-shipped">
+        <h3>📣 Broadcasts (4 היום)</h3>
+        <ul>
+          <li>#4 Major System Update — 8/8 ✅</li>
+          <li>#5 SLH LIVE on PancakeSwap — 8/8 ✅</li>
+          <li>#6 First Swap Historic — 8/8 ✅</li>
+          <li>#7 Final Comprehensive + Member Cards — 8/8 ✅</li>
+        </ul>
+      </div>
+
+      <div class="section-coming">
+        <h3>📅 מה בהמשך</h3>
+        <ul>
+          <li><strong>ימים הקרובים:</strong> LP Lock ב-Mudra, Add more liquidity, P2P order book activation.</li>
+          <li><strong>שבועות הקרובים:</strong> GemPad presale round 2, Webhook migration, Strategy Engine execution.</li>
+          <li><strong>חודשים הקרובים:</strong> Multi-exchange listing (MEXC, Gate.io), Fireblocks custody, Sumsub KYC, Mobile app.</li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- ★ Pinned Report Link ★ -->
+    <div style="background:linear-gradient(135deg,rgba(0,232,135,0.1),rgba(0,180,216,0.1));border:1px solid rgba(0,232,135,0.3);border-radius:12px;padding:20px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+      <div>
+        <div style="font-size:11px;color:#00e887;text-transform:uppercase;letter-spacing:1px;font-weight:700">⭐ דוח ביצוע מפורט</div>
+        <div style="font-size:16px;color:#e8e8f0;font-weight:700;margin-top:4px">שלב מוסדי — 14 משימות הושלמו ב-11/04/2026</div>
+        <div style="font-size:13px;color:#b0b0c0;margin-top:4px">Audit chain · CEX integration · Admin panel · Fix critical bugs · Content updates</div>
+      </div>
+      <a href="/ops-report-20260411.html" style="background:#00e887;color:#000;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:700;font-size:14px;white-space:nowrap">
+        📄 קרא את הדוח המלא →
+      </a>
+    </div>
+
+    <!-- === 2026-04-11 === -->
+    <article class="blog-entry">
+      <h2>
+        שלב מוסדי — מערכת ברמה רגולטורית + תיקון באג קריטי
+        <span class="date-badge">2026-04-11 · ערב</span>
+      </h2>
+
+      <div class="blog-theme">
+        <strong>נושא היום:</strong> בעקבות חשיפה של רישיונות בינלאומיים + 10
+        משקיעים של מיליון ומעלה, המערכת עוברת שדרוג לרמה מוסדית: יומן ביקורת
+        בלתי-שביר, אינטגרציות CEX (Bybit + Binance) עם API Keys בקריאה בלבד,
+        פורטל ניהולי ייעודי. במקביל, תוקן באג קריטי שגרם להיעלמות משתמשים.
+      </div>
+
+      <div class="section-shipped">
+        <h3>שוחרר היום</h3>
+        <ul>
+          <li><strong>🏛 פאנל מוסדי ב-/admin.html:</strong> 4 דפים חדשים — Overview (סטטוס שרשרת + checklist תקינות), Audit Log (כפתור verify-chain + filtered entries), CEX Integrations (ניהול מפתחות Bybit/Binance), Portfolio (תצוגה מאוחדת), Compliance (checklist רגולטורית).</li>
+          <li><strong>🔒 Immutable Audit Log:</strong> טבלת <code>institutional_audit</code> עם SHA-256 hash chain, endpoint <code>/api/audit/verify-chain</code> שמאפשר לרגולטור לאמת שלא נערך שום שינוי היסטורי. כל פעולה (user.ensure, cex.key.link, cex.snapshot) כתובה כאן.</li>
+          <li><strong>🏦 CEX Integrations:</strong> <code>/api/cex/add-key</code>, <code>/api/cex/keys/{user_id}</code>, <code>/api/cex/sync/{key_id}</code>, <code>/api/cex/portfolio/{user_id}</code>. חתימות HMAC-SHA256 ל-Bybit V5 + Binance V3. מפתחות מוצפנים ב-DB (XOR+env key — שדרוג ל-AES-GCM בעבודה).</li>
+          <li><strong>💼 Wallet Page — תיק CEX מלא:</strong> סקציה חדשה שמציגה את <em>כל המטבעות</em> שלך מ-Bybit/Binance (לא רק TON) עם שווי USD + ILS, סנכרון ידני, והצגת breakdown מסודר לכל בורסה.</li>
+          <li><strong>🐛 CRITICAL FIX — "משתמשים נעלמים":</strong> כאשר משתמש התחבר עם Telegram ID ידני, המערכת שמרה ב-localStorage אבל <em>לא</em> שלחה ל-DB. כעת <code>/api/user/ensure</code> יוצר את המשתמש ב-<code>web_users</code> מיידית.</li>
+          <li><strong>🛡 Leaderboard:</strong> סינון test IDs (100001-299999, group chats) — מציג רק משתמשי Telegram אמיתיים (>= 1M).</li>
+          <li><strong>📊 Admin Dashboard counts:</strong> כולל רק real users בכל המטריקות (total_users, premium, staked, deposits, pending).</li>
+          <li><strong>🎨 Content:</strong> כותרת ראשית "SLH — האקוסיסטם של העולם החדש" (היה "בית ההשקעות הדיגיטלי"). nav: "להרוויח" (היה "הרוויח").</li>
+          <li><strong>🧹 Dashboard Portfolio:</strong> הוסר seed data (BTC/ETH/SOL/SLH mocks). התיק מתחיל ריק ומציג רק נכסים אמיתיים.</li>
+        </ul>
+      </div>
+
+      <div class="section-progress">
+        <h3>בעבודה עכשיו</h3>
+        <ul>
+          <li><strong>Phase B — Strategy Engine:</strong> מנוע אסטרטגיות מסחר אלגוריתמי + backtesting. התוצאות מזינות את Revenue Share Pool של Dynamic Yield — לא הבטחה ליעד תשואה למשתמשים.</li>
+          <li><strong>Phase C — Webhooks:</strong> מעבר מ-polling ל-webhooks לבוטים ב-Railway.</li>
+          <li><strong>Phase D — Sumsub KYC:</strong> scaffolding מוכן, מחכה ל-API credentials.</li>
+          <li><strong>Phase E — Fireblocks Custody:</strong> scaffolding מוכן, מחכה לחוזה.</li>
+          <li><strong>AES-GCM Encryption Upgrade:</strong> החלפת ה-XOR הזמני ב-AES-GCM + KMS לפני production.</li>
+        </ul>
+      </div>
+
+      <div class="section-coming">
+        <h3>צפוי השבוע</h3>
+        <ul>
+          <li>השלמת כל בוטים "COMING" — 20+ בוטים מסומנים כ-active.</li>
+          <li>PancakeSwap Pool ל-SLH/BNB — ליסטינג DEX ראשון.</li>
+          <li>Network page: הרחבת אנימציית נוירונים + מחזיקי SLH מ-Binance.</li>
+          <li>Community: העלאת קבצים וקישורים.</li>
+          <li>מיזוג מדריכים לדף מרכזי אחד + תיקון theme switcher.</li>
+        </ul>
+      </div>
+
+      <div class="section-action">
+        <h3>פעולה שנדרשת ממך</h3>
+        <ul>
+          <li><strong>בדיקת הפאנל המוסדי:</strong> /admin.html → לחץ "Institutional" בצד ימין → verify-chain button.</li>
+          <li><strong>חיבור API Keys:</strong> /wallet.html → "תיק CEX מלא" → "חבר API Key חדש" (Bybit או Binance, READ-ONLY!).</li>
+          <li><strong>בדוק שמשתמשים לא נעלמים:</strong> התחבר עם ID ידני ממחשב אחר ← ודא שמופיע ב-/admin → Users.</li>
+          <li><strong>ספק נתונים למיליונים:</strong> כדי להכניס 10 חשבונות גדולים למערכת — חבר את מפתחות ה-API שלהם דרך /wallet.html או ישירות דרך ה-admin panel.</li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- === 2026-04-10 === -->
+    <article class="blog-entry">
+      <h2>
+        Genesis 49 + רוטציית טוקנים + ZVK Pivot
+        <span class="date-badge">2026-04-10</span>
+      </h2>
+
+      <div class="blog-theme">
+        <strong>נושא היום:</strong> מסע השקה של 49 המשתמשים הראשונים (Genesis 49) —
+        כל אחד מקבל NFT ייחודי + 10 ZVK כמתנה, דרך קוד GENESIS49 שמתמלא אוטומטית מה-URL.
+        במקביל, רוטציה מלאה של 25 tokens של בוטים דרך BotFather,
+        ומעבר מ-SLH כאסימון תגמולים (יקר, 444₪) ל-ZVK (זמין, ~4.4₪).
+      </div>
+
+      <div class="section-shipped">
+        <h3>שוחרר היום</h3>
+        <ul>
+          <li><strong>Genesis 49 Landing:</strong> עמוד <code>onboarding.html</code> עם 4 כרטיסי תגמולים, cookie banner (GDPR), 7-theme switcher, accessibility toolbar (WCAG 2.1).</li>
+          <li><strong>getting-started.html:</strong> מדריך 7-שלבים (Genesis → Telegram → ID → Dashboard → Coupon → Display name → Wallet).</li>
+          <li><strong>Token Rotation:</strong> החלפה מלאה של 25 Telegram bot tokens דרך BotFather (כולל Guardian שנכשל פעמיים ורוטר שוב).</li>
+          <li><strong>ZVK Cashback Tiers:</strong> 100/50/150/500/1200/3000 ZVK לפי threshold של 1/5/10/25/50/100 distributions.</li>
+          <li><strong>Dashboard Bug Fix:</strong> תיקון <code>&lt;/script&gt;</code> inside template literal שהרס את הדף. manualLogin עם validation קפדני (7-10 ספרות).</li>
+          <li><strong>Amount Correction:</strong> הורדת 3 אפסים מכל ה-ZVK amounts (10,000 → 10, 100,000 → 100) בהתאם ל-ZVK ≈ 4.4 ₪.</li>
+          <li><strong>ZVK Strategic Pivot:</strong> החלפת SLH (444₪, יקר) ל-ZVK כאסימון תגמולים — שומר את SLH לאליטה ומאפשר distribution רחב.</li>
+        </ul>
+      </div>
+
+      <div class="section-progress">
+        <h3>בעבודה עכשיו</h3>
+        <ul>
+          <li>חיווט external wallets — תצוגת יתרות מ-Bybit/Binance דרך CEX API.</li>
+          <li>Railway API deployment + health monitoring.</li>
+          <li>Ops scripts: <code>slh-clean.ps1</code>, <code>slh-rebuild.ps1</code>, <code>slh-backup.ps1</code>.</li>
+        </ul>
+      </div>
+
+      <div class="section-action">
+        <h3>פעולה שנדרשת ממך</h3>
+        <ul>
+          <li>אשר את Genesis 49 flow — נכנס לעמוד onboarding, לחץ על קוד GENESIS49, ראה שהמשתמש קיבל 10 ZVK.</li>
+          <li>בדוק את הפאנל המנהל: /admin.html (דרוש התחברות).</li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- === 2026-04-09 (evening) === -->
+    <article class="blog-entry">
+      <h2>
+        חיווט Web3 הושלם — יתרות אמיתיות מהבלוקצ'יין
+        <span class="date-badge">2026-04-09 · ערב</span>
+      </h2>
+
+      <div class="blog-theme">
+        <strong>נושא היום:</strong> לקוחות רואים עכשיו יתרות אמיתיות על השרשרת
+        בדשבורד ובדף הארנק. זו התשתית למסחר P2P: אם משתמשים לא יכולים לסמוך על
+        המספרים — הם לא יסחרו.
+      </div>
+
+      <div class="section-shipped">
+        <h3>שוחרר בפגישה הזו</h3>
+        <ul>
+          <li><strong>Web3:</strong> מודול <code>js/web3.js</code> מבוסס ethers.js v6 — חיבור ל-MetaMask / Trust Wallet, קריאת יתרות מ-BSC (SLH, BNB, USDT) ו-Ethereum (ETH), חיבור אוטומטי חוזר, תגובה להחלפת חשבונות.</li>
+          <li><strong>דשבורד:</strong> פאנל Web3 מלא בין כרטיסי ההפניות לפעילות אחרונה — כפתור חיבור כתום, שבב כתובת מקוצרת, רשת יתרות ל-4 טוקנים, גבולות בצבעי המטבעות.</li>
+          <li><strong>דף ארנק:</strong> אותו פאנל Web3 ישר מתחת לכותרת, מחליף את ה-placeholder הריק הישן.</li>
+          <li><strong>API:</strong> <code>POST /api/user/link-wallet</code>, <code>GET /api/user/wallet/{id}</code>, ו-<code>POST /api/user/unlink-wallet</code> — מאמת פורמט כתובת, מונע שיוך של אותו ארנק לשני חשבונות, שומר אותיות קטנות.</li>
+          <li><strong>DB:</strong> מיגרציה אוטומטית מוסיפה עמודות <code>eth_wallet</code>, <code>ton_wallet</code> ואינדקסים חלקיים ל-<code>web_users</code>. גם נוצר SQL עצמאי ב-<code>ops/migrations/20260409_web3_wallet.sql</code>.</li>
+          <li><strong>i18n:</strong> תרגומי פאנל Web3 בכל 5 השפות (HE/EN/RU/AR/FR).</li>
+        </ul>
+      </div>
+
+      <div class="section-progress">
+        <h3>עדיין בעבודה</h3>
+        <ul>
+          <li>חיבור ארנק TON דרך TonConnect (הפאנל כרגע מציג רק שרשראות EVM).</li>
+          <li>הוכחת בעלות על ארנק באמצעות חתימה (לרישום P2P).</li>
+          <li>רישום אוטומטי: <code>/start</code> בבוט מסנכרן משתמש ל-DB של האתר.</li>
+          <li>Course marketplace — קורסים דיגיטליים.</li>
+        </ul>
+      </div>
+
+      <div class="section-coming">
+        <h3>צפוי השבוע</h3>
+        <ul>
+          <li><strong>ממשק P2P marketplace:</strong> רשום SLH במחיר שלך, חתום הצעה עם הארנק.</li>
+          <li>החלפה מלאה של 20 tokens של בוטים דרך @BotFather.</li>
+          <li>צ'אט בזמן אמת בקהילה (WebSocket).</li>
+          <li>קורס לדוגמה ראשון חינמי לבדיקת ה-marketplace.</li>
+        </ul>
+      </div>
+
+      <div class="section-action">
+        <h3>פעולה שנדרשת ממך</h3>
+        <ul>
+          <li>החלף את כל ה-tokens של הבוטים דרך @BotFather (ראה SECURITY_TOKEN_ROTATION.md).</li>
+          <li>בדוק את הפאנל החדש: dashboard.html → "חבר ארנק" → ודא שיתרות BSC + ETH אמיתיות מופיעות.</li>
+          <li>צור Facebook App ב-<code>developers.facebook.com</code> לאינטגרציית פיד.</li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- === 2026-04-09 === -->
+    <article class="blog-entry">
+      <h2>
+        תיקונים קריטיים לאחר אתחול
+        <span class="date-badge">2026-04-09</span>
+      </h2>
+
+      <div class="blog-theme">
+        <strong>נושא היום:</strong> לאחר אתחול מערכת ובדיקה מקצה לקצה, תיקנו את
+        הבאגים הנראים ביותר שהמשתמשים דיווחו עליהם, התחלנו תוכנית עבודה מובנית
+        והכנו את התשתית לשלב הבא.
+      </div>
+
+      <div class="section-shipped">
+        <h3>שוחרר היום</h3>
+        <ul>
+          <li><strong>אבטחה:</strong> נוצר מסמך <code>SECURITY_TOKEN_ROTATION.md</code> — יש להחליף את כל ה-tokens של הבוטים דרך BotFather השבוע.</li>
+          <li><strong>אתר:</strong> תוקן הקישור השבור <code>@osifeu</code> ב-4 דפים (dashboard, index, privacy, terms) — כעת מצביע ל-<code>@osifeu_prog</code> ול-<code>@TON_MNH_bot</code>.</li>
+          <li><strong>דשבורד:</strong> תוקן הבאג של <code>#undefined</code> במזהה המשתמש. session לא תקין מנוקה אוטומטית, קישורי deep-link תומכים בפרמטרים נוספים.</li>
+          <li><strong>תרגום:</strong> תוקנו מפתחות i18n גולמיים (<code>nav_home</code>, <code>footer_rights</code> וכו') שהופיעו בדף המדריכים ובעוד דפים. מנוע התרגום שומר כעת על הטקסט המקורי כאשר המפתח חסר.</li>
+          <li><strong>עיצוב:</strong> יוּפָּה ה-widget של תאריך/שעון בקהילה — זכוכית, גרדיאנט, אפקט ריחוף — משתלב בעיצוב הכללי.</li>
+          <li><strong>Ops:</strong> נוצר <code>WORK_PLAN_2026-04.md</code> — תוכנית מובנית של 4 sprints שכוללת תיקונים קריטיים, אינטגרציית Web3, מקסום בוטים ומנוע הכנסות.</li>
+        </ul>
+      </div>
+
+      <div class="section-progress">
+        <h3>בעבודה עכשיו</h3>
+        <ul>
+          <li>חיבור ארנק Web3 (MetaMask / Trust Wallet) בדשבורד.</li>
+          <li>סכמה ו-API ל-Course Marketplace (קורסים דיגיטליים).</li>
+          <li>חיווט דף הבלוג היומי לאתר (הדף שאתה צופה בו עכשיו).</li>
+          <li>קידום Roadmap / Guides לניווט הראשי.</li>
+        </ul>
+      </div>
+
+      <div class="section-coming">
+        <h3>צפוי השבוע</h3>
+        <ul>
+          <li><strong>רישום אוטומטי:</strong> <code>/start</code> בבוט יסנכרן את המשתמש ל-DB של האתר אוטומטית, ללא הרשמה נפרדת.</li>
+          <li><strong>יתרות אמיתיות on-chain:</strong> BSC SLH + TON לצד יתרות פנימיות.</li>
+          <li><strong>P2P marketplace:</strong> רשום את הטוקנים שלך למכירה במחיר שלך.</li>
+          <li><strong>קורס לדוגמה ראשון:</strong> חינמי כדי לבדוק את ה-marketplace.</li>
+        </ul>
+      </div>
+
+      <div class="section-action">
+        <h3>פעולה שנדרשת ממך</h3>
+        <ul>
+          <li>החלף את כל ה-tokens של הבוטים דרך @BotFather (ראה SECURITY_TOKEN_ROTATION.md).</li>
+          <li>צור Facebook App ב-<code>developers.facebook.com</code> לאינטגרציית פיד.</li>
+          <li>אשר: האם @Chance_Pais_bot צריך לעבור להיות בוט שיקום מהימורים?</li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- Placeholder for future entries — auto-populated from ops/DAILY_BLOG.md -->
+
+    <div class="blog-cta">
+      <h3>💡 רוצה לעקוב?</h3>
+      <p>עקוב אחר התוכנית המלאה במפת הדרכים, או הירשם לדיוור בטלגרם כדי לקבל עדכון יומי אוטומטי.</p>
+      <div class="btn-row">
+        <a href="/roadmap.html" class="btn btn-primary">📍 מפת דרכים</a>
+        <a href="https://t.me/SLH_AIR_bot" target="_blank" rel="noopener" class="btn btn-outline">
+          <i class="fab fa-telegram"></i> עקוב בטלגרם
+        </a>
+        <a href="/guides.html" class="btn btn-outline">📖 מדריכים</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/translations.js?v=20260426e"></script>
+  <script src="/js/shared.js?v=20260426e"></script>
+  <script>
+    initShared({ activePage: 'blog' });
+    // Render date widget in hero
+    if (typeof renderDateWidget === 'function') {
+      renderDateWidget('date-widget-root');
+    }
+    // Count entries dynamically
+    const entries = document.querySelectorAll('.blog-entry').length;
+    const el = document.getElementById('blog-entries-count');
+    if (el) el.textContent = entries;
+  </script>
+
+  <div id="footer-root"></div>
+  <div id="bottomnav-root"></div>
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260426e"></script>
+<script src="/js/web3-wallet.js?v=20260426e" defer></script>
+</body>
+</html>

@@ -1,0 +1,548 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH · Mission Control</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+  --bg:#05080f; --bg2:#0c1018; --bg3:#141924; --bg4:#1a2030;
+  --accent:#00ff41; --cyan:#00e5ff; --gold:#ffd700;
+  --red:#ff0055; --purple:#a855f7; --blue:#3b82f6; --orange:#f97316;
+  --text:#e0e0f0; --text2:#8a8ab0; --text3:#444466;
+  --border:rgba(0,255,65,.1); --border2:rgba(255,255,255,.06);
+  --glow:0 0 24px rgba(0,255,65,.2);
+  --font:'Inter',system-ui,sans-serif; --mono:'Space Mono',monospace;
+  --radius:12px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;padding-bottom:60px}
+a{color:var(--accent);text-decoration:none}
+a:hover{opacity:.8}
+body::before{content:'';position:fixed;inset:0;background:
+  radial-gradient(1200px 500px at 20% -10%, rgba(0,255,65,.05), transparent 60%),
+  radial-gradient(900px 500px at 100% 20%, rgba(168,85,247,.05), transparent 60%),
+  linear-gradient(rgba(0,255,65,.015) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(0,255,65,.015) 1px,transparent 1px);
+  background-size:auto,auto,44px 44px,44px 44px;
+  pointer-events:none;z-index:0;animation:drift 22s linear infinite}
+@keyframes drift{to{background-position:0 0,0 0,44px 44px,44px 44px}}
+
+.wrap{position:relative;z-index:1;max-width:1600px;margin:0 auto;padding:20px 20px 80px}
+
+/* Header */
+.hdr{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 20px;background:linear-gradient(135deg,rgba(0,255,65,.04),rgba(168,85,247,.04));border:1px solid var(--border);border-radius:14px;margin-bottom:20px;backdrop-filter:blur(10px)}
+.hdr-l{display:flex;align-items:center;gap:14px}
+.logo{width:46px;height:46px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--cyan),var(--purple));display:grid;place-items:center;color:#000;font-weight:900;font-size:22px;box-shadow:var(--glow)}
+.hdr h1{font-size:22px;font-weight:800;background:linear-gradient(90deg,var(--accent),var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-.4px}
+.hdr .sub{color:var(--text2);font-size:12px;font-family:var(--mono)}
+.hdr-r{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;font-size:11px;font-weight:600;border:1px solid transparent}
+.chip.ok{background:rgba(0,255,65,.08);color:var(--accent);border-color:rgba(0,255,65,.25)}
+.chip.warn{background:rgba(255,215,0,.08);color:var(--gold);border-color:rgba(255,215,0,.25)}
+.chip.err{background:rgba(255,0,85,.08);color:var(--red);border-color:rgba(255,0,85,.25)}
+.chip.off{background:rgba(255,255,255,.04);color:var(--text2);border-color:rgba(255,255,255,.08)}
+.dot{width:8px;height:8px;border-radius:50%;background:currentColor;animation:pulse 2s infinite}
+@keyframes pulse{50%{opacity:.35}}
+.btn{padding:7px 14px;border-radius:8px;background:rgba(0,255,65,.08);color:var(--accent);border:1px solid rgba(0,255,65,.25);cursor:pointer;font-weight:600;font-size:12px;font-family:var(--font);transition:.15s}
+.btn:hover{background:rgba(0,255,65,.18);box-shadow:var(--glow)}
+.btn.sec{background:rgba(255,255,255,.03);color:var(--text);border-color:var(--border2)}
+.btn.sec:hover{background:rgba(255,255,255,.07)}
+
+/* Grid */
+.grid{display:grid;gap:18px;grid-template-columns:repeat(12,1fr)}
+.card{background:linear-gradient(180deg,var(--bg2),var(--bg3));border:1px solid var(--border2);border-radius:var(--radius);padding:18px;position:relative;overflow:hidden;transition:.2s}
+.card:hover{border-color:rgba(0,255,65,.2)}
+.card.glow::before{content:'';position:absolute;inset:0;border-radius:var(--radius);padding:1px;background:linear-gradient(135deg,rgba(0,255,65,.3),transparent 50%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.c12{grid-column:span 12}.c8{grid-column:span 8}.c6{grid-column:span 6}.c4{grid-column:span 4}.c3{grid-column:span 3}
+@media(max-width:960px){.c8,.c6,.c4,.c3{grid-column:span 12}}
+
+.card h2{font-size:13px;color:var(--text);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border2);display:flex;justify-content:space-between;align-items:center;letter-spacing:.5px;text-transform:uppercase;font-weight:700}
+.card h2 i{color:var(--accent);margin-left:8px}
+.card h2 .act{font-size:11px;color:var(--text2);text-transform:none;letter-spacing:0;font-weight:500;cursor:pointer}
+.card h2 .act:hover{color:var(--accent)}
+
+/* KPIs */
+.kpis{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+.kpi{background:var(--bg4);border:1px solid var(--border2);border-radius:10px;padding:14px;position:relative;overflow:hidden}
+.kpi::after{content:'';position:absolute;top:0;right:0;width:3px;height:100%}
+.kpi.g::after{background:var(--accent)}.kpi.c::after{background:var(--cyan)}.kpi.y::after{background:var(--gold)}.kpi.r::after{background:var(--red)}.kpi.p::after{background:var(--purple)}.kpi.b::after{background:var(--blue)}
+.kpi .lbl{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:6px}
+.kpi .val{font-size:26px;font-weight:800;color:#fff;font-family:var(--mono);line-height:1.1}
+.kpi .sub{font-size:10px;color:var(--text2);margin-top:4px}
+
+/* Table */
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{text-align:right;padding:8px 10px;background:rgba(255,255,255,.02);color:var(--text2);font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.tbl td{padding:9px 10px;border-top:1px solid var(--border2);vertical-align:middle}
+.tbl tr:hover td{background:rgba(0,255,65,.02)}
+.tbl td.mono{font-family:var(--mono);font-size:11px;color:var(--cyan)}
+
+/* List items */
+.li{padding:10px 12px;border-radius:8px;background:rgba(255,255,255,.02);border:1px solid var(--border2);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px}
+.li.ok{border-color:rgba(0,255,65,.2)}.li.warn{border-color:rgba(255,215,0,.2)}.li.err{border-color:rgba(255,0,85,.2)}
+.li .txt{flex:1;min-width:0}
+.li .t1{color:var(--text);font-weight:600;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.li .t2{color:var(--text2);font-size:11px;font-family:var(--mono)}
+
+/* Progress */
+.progrow{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:12px}
+.progrow .pl{width:140px;color:var(--text2);flex-shrink:0}
+.progrow .pb{flex:1;height:8px;background:var(--bg4);border-radius:4px;overflow:hidden}
+.progrow .pf{height:100%;background:linear-gradient(90deg,var(--accent),var(--cyan));border-radius:4px;transition:width .6s}
+.progrow .pv{width:50px;text-align:left;color:var(--text);font-weight:600;font-family:var(--mono);font-size:11px}
+
+/* Heart pulse */
+.heart{font-size:42px;text-align:center;margin:8px 0;animation:hb 1.2s ease-in-out infinite}
+@keyframes hb{0%,60%,100%{transform:scale(1)}30%{transform:scale(1.12)}}
+
+/* Tag */
+.tag{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;margin-right:4px;font-family:var(--mono)}
+.tag.g{background:rgba(0,255,65,.1);color:var(--accent)}
+.tag.y{background:rgba(255,215,0,.1);color:var(--gold)}
+.tag.r{background:rgba(255,0,85,.1);color:var(--red)}
+.tag.c{background:rgba(0,229,255,.1);color:var(--cyan)}
+.tag.p{background:rgba(168,85,247,.1);color:var(--purple)}
+
+/* Empty */
+.empty{text-align:center;color:var(--text3);padding:20px;font-size:12px}
+
+/* Footer */
+.foot{margin-top:24px;padding:14px;text-align:center;color:var(--text3);font-size:11px;font-family:var(--mono);border-top:1px solid var(--border2)}
+.foot a{color:var(--text2)}
+
+/* Refresh spin */
+.spin{animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+</style>
+<meta name="slh-version" content="v1.0-flip">
+<script defer src="/js/slh-flip.js?v=20260426e"></script>
+</head>
+<body>
+<style>
+.slh-beta-banner{position:sticky;top:0;z-index:9998;background:linear-gradient(90deg,#ff9900,#ffd700,#00ff41);color:#000;font-weight:700;font-size:12px;padding:6px 14px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.slh-beta-banner a{color:#000;text-decoration:underline;font-weight:800}
+.slh-beta-banner button{background:rgba(0,0,0,.15);color:#000;border:none;padding:3px 10px;border-radius:12px;font-size:11px;cursor:pointer;font-weight:700}
+.slh-bug-fab{position:fixed;bottom:20px;left:20px;z-index:9999;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#ff4444,#ff9900);display:grid;place-items:center;font-size:24px;text-decoration:none;box-shadow:0 4px 20px rgba(255,68,68,.4);transition:transform .2s;animation:bugPulse 3s infinite}
+.slh-bug-fab:hover{transform:scale(1.1)}
+@keyframes bugPulse{0%,100%{box-shadow:0 4px 20px rgba(255,68,68,.4)}50%{box-shadow:0 4px 30px rgba(255,153,0,.6)}}
+@media(max-width:600px){.slh-bug-fab{bottom:80px;width:46px;height:46px;font-size:20px}}
+</style>
+<div class="slh-beta-banner" id="slhBeta">
+  <span>🚧 <b>BETA</b></span>
+  <span style="opacity:.85">אם משהו לא עובד —</span>
+  <a href="/bug-report.html">🐛 דווח באג</a>
+  <button onclick="localStorage.setItem('slh_beta_dismissed','1');this.parentElement.remove()">✕</button>
+</div>
+<a href="/bug-report.html" class="slh-bug-fab" title="דווח באג">🐛</a>
+<script>if(localStorage.getItem('slh_beta_dismissed')==='1'){var b=document.getElementById('slhBeta');if(b)b.remove();}</script>
+
+
+<div class="wrap">
+
+  <!-- Header -->
+  <header class="hdr">
+    <div class="hdr-l">
+      <div class="logo">♥</div>
+      <div>
+        <h1>SLH · Mission Control</h1>
+        <div class="sub" id="timeStamp">--</div>
+      </div>
+    </div>
+    <div class="hdr-r">
+      <span class="chip ok" id="apiChip"><span class="dot"></span> API</span>
+      <span class="chip ok" id="dbChip"><span class="dot"></span> DB</span>
+      <span class="chip warn" id="railwayChip"><span class="dot"></span> Railway</span>
+      <span class="chip off" id="gitChip"><span class="dot"></span> Git</span>
+      <button class="btn" onclick="loadAll()"><i class="fa fa-rotate" id="refreshIcon"></i> רענן</button>
+      <button class="btn sec" onclick="toggleAuto()" id="autoBtn"><i class="fa fa-clock"></i> <span id="autoTxt">אוטו·כבוי</span></button>
+    </div>
+  </header>
+
+  <!-- The Heart -->
+  <div class="grid">
+
+    <div class="card glow c4">
+      <h2><span><i class="fa fa-heart-pulse"></i>הלב</span>
+          <span class="act" onclick="loadHealth()">רענן</span></h2>
+      <div class="heart">♥</div>
+      <div style="text-align:center">
+        <div id="heartStatus" class="tag g">LIVE</div>
+        <div style="margin-top:10px;font-family:var(--mono);font-size:12px;color:var(--text2)" id="heartLine">version 1.0.0 · db connected</div>
+        <div style="margin-top:14px;font-size:11px;color:var(--text3);font-family:var(--mono)" id="heartUrl">slh-api-production.up.railway.app</div>
+      </div>
+    </div>
+
+    <div class="card c8">
+      <h2><span><i class="fa fa-chart-line"></i>KPIs · נתונים חיים</span>
+          <span class="act" onclick="loadStats()">רענן</span></h2>
+      <div class="kpis" id="kpis">
+        <div class="kpi g"><div class="lbl">משתמשים</div><div class="val" id="kpiUsers">--</div><div class="sub">total registered</div></div>
+        <div class="kpi c"><div class="lbl">Premium</div><div class="val" id="kpiPremium">--</div><div class="sub">paid users</div></div>
+        <div class="kpi y"><div class="lbl">Staked TON</div><div class="val" id="kpiStaked">--</div><div class="sub">locked</div></div>
+        <div class="kpi p"><div class="lbl">Bots Live</div><div class="val" id="kpiBots">--</div><div class="sub">currently running</div></div>
+        <div class="kpi b"><div class="lbl">Endpoints</div><div class="val" id="kpiEndpoints">--</div><div class="sub">openapi paths</div></div>
+        <div class="kpi r"><div class="lbl">Open Blockers</div><div class="val" id="kpiBlockers">7</div><div class="sub">waiting on Osif</div></div>
+      </div>
+    </div>
+
+    <!-- Tokens -->
+    <div class="card c6">
+      <h2><span><i class="fa fa-coins"></i>5 טוקנים</span><span class="act" onclick="alert('ממוקד על Token 1-4 בסדר עבודה')">פרטים</span></h2>
+      <table class="tbl">
+        <tr><th>טוקן</th><th>תפקיד</th><th>סטטוס</th><th>יעד</th></tr>
+        <tr><td><b>SLH</b> <span class="tag g">#1</span></td><td>Premium / Governance</td><td><span class="chip ok"><span class="dot"></span>Live BSC</span></td><td class="mono">₪444</td></tr>
+        <tr><td><b>MNH</b> <span class="tag c">#2</span></td><td>Stablecoin</td><td><span class="chip warn">Internal</span></td><td class="mono">₪1 peg</td></tr>
+        <tr><td><b>ZVK</b> <span class="tag y">#3</span></td><td>Activity Rewards</td><td><span class="chip warn">Internal</span></td><td class="mono">~₪4.4</td></tr>
+        <tr><td><b>REP</b> <span class="tag p">#4</span></td><td>Reputation</td><td><span class="chip warn">Internal</span></td><td class="mono">0-1000+</td></tr>
+        <tr><td><b>ZUZ</b> <span class="tag r">#5</span></td><td>Anti-Fraud</td><td><span class="chip warn">Internal</span></td><td class="mono">ban@100</td></tr>
+      </table>
+    </div>
+
+    <!-- Progress -->
+    <div class="card c6">
+      <h2><span><i class="fa fa-diagram-project"></i>כיסוי / התקדמות</span></h2>
+      <div class="progrow"><div class="pl">AI Assistant</div><div class="pb"><div class="pf" style="width:100%"></div></div><div class="pv">100%</div></div>
+      <div class="progrow"><div class="pl">Analytics</div><div class="pb"><div class="pf" style="width:100%"></div></div><div class="pv">100%</div></div>
+      <div class="progrow"><div class="pl">Theme switcher</div><div class="pb"><div class="pf" style="width:42%"></div></div><div class="pv">42%</div></div>
+      <div class="progrow"><div class="pl">i18n</div><div class="pb"><div class="pf" style="width:37%"></div></div><div class="pv">37%</div></div>
+      <div class="progrow"><div class="pl">Bots stabilized</div><div class="pb"><div class="pf" style="width:76%"></div></div><div class="pv">76%</div></div>
+      <div class="progrow"><div class="pl">Secrets rotated</div><div class="pb"><div class="pf" style="width:0%"></div></div><div class="pv">0%</div></div>
+      <div style="margin-top:12px;padding:8px 12px;background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.2);border-radius:8px;font-size:11px;color:var(--gold)">
+        ⚠ 31 בוטים צריכים סיבוב טוקן — חובה דרך BotFather
+      </div>
+    </div>
+
+    <!-- Blockers -->
+    <div class="card c6">
+      <h2><span><i class="fa fa-triangle-exclamation"></i>חסמים על אוסיף</span>
+          <span class="act" onclick="window.location='/admin.html'">אדמין</span></h2>
+      <div class="li err"><div class="txt"><div class="t1">🔑 Rotate ADMIN_API_KEYS</div><div class="t2">Railway → Variables</div></div><span class="tag r">BLOCKED</span></div>
+      <div class="li err"><div class="txt"><div class="t1">🔕 SILENT_MODE=1</div><div class="t2">Railway → Variables (kill-switch)</div></div><span class="tag r">BLOCKED</span></div>
+      <div class="li warn"><div class="txt"><div class="t1">📱 Twilio API key</div><div class="t2">~/.claude/slh-secrets.json</div></div><span class="tag y">PENDING</span></div>
+      <div class="li warn"><div class="txt"><div class="t1">🤖 Rotate 31 bot tokens</div><div class="t2">@BotFather → /revoke</div></div><span class="tag y">PENDING</span></div>
+      <div class="li warn"><div class="txt"><div class="t1">⚡ Set BotFather commands</div><div class="t2">/setcommands per bot</div></div><span class="tag y">PENDING</span></div>
+      <div class="li warn"><div class="txt"><div class="t1">🐳 docker-compose regression</div><div class="t2">445→58 lines. decide: revert or keep</div></div><span class="tag y">REVIEW</span></div>
+      <div class="li warn"><div class="txt"><div class="t1">🧬 shared/bot_template.py regression</div><div class="t2">241→52 lines. has PowerShell-escape bug</div></div><span class="tag y">REVIEW</span></div>
+    </div>
+
+    <!-- Agents -->
+    <div class="card c6">
+      <h2><span><i class="fa fa-robot"></i>סוכנים</span></h2>
+      <div class="li ok"><div class="txt"><div class="t1">Claude Opus / Code (local CLI)</div><div class="t2">read_write · git · docker · API</div></div><span class="tag g">ACTIVE</span></div>
+      <div class="li"><div class="txt"><div class="t1">SLH Core Assistant (Telegram)</div><div class="t2">code-gen advisor · PS/Python/PlatformIO</div></div><span class="tag c">ADVISOR</span></div>
+      <div class="li ok"><div class="txt"><div class="t1">Osif Ungar (human)</div><div class="t2">BotFather · Railway UI · ESP32 · approvals</div></div><span class="tag g">OWNER</span></div>
+      <div style="margin-top:8px;padding:8px;font-size:11px;color:var(--text2);background:var(--bg4);border-radius:6px;font-family:var(--mono)">
+        SSoT: ops/SESSION_STATUS.md · Registry: ops/AGENT_REGISTRY.json
+      </div>
+    </div>
+
+    <!-- Endpoints Monitor -->
+    <div class="card c6">
+      <h2><span><i class="fa fa-plug"></i>Endpoints · בדיקות חיות</span>
+          <span class="act" onclick="loadEndpoints()">בדוק שוב</span></h2>
+      <table class="tbl" id="endpointsTbl">
+        <tr><th>Endpoint</th><th>Method</th><th>Status</th><th>זמן</th></tr>
+      </table>
+    </div>
+
+    <!-- Bots -->
+    <div class="card c6">
+      <h2><span><i class="fa fa-microchip"></i>25 בוטים · Docker</span></h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:6px;font-size:11px" id="botsGrid">
+        <!-- populated by JS -->
+      </div>
+      <div style="margin-top:10px;font-size:11px;color:var(--text2);font-family:var(--mono)">
+        <span class="tag g">●</span>=live <span class="tag r">●</span>=stopped <span class="tag y">●</span>=collision
+      </div>
+    </div>
+
+    <!-- Scheduled Jobs ("Kernel Orders") -->
+    <div class="card c12">
+      <h2><span><i class="fa fa-terminal"></i>Kernel Orders · פקודות חוזרות שמזינות את הלב</span></h2>
+      <table class="tbl">
+        <tr><th>#</th><th>תיאור</th><th>פקודה</th><th>מחזוריות</th><th>איפה רץ</th><th>אחרון</th></tr>
+        <tr><td>1</td><td>API health ping</td><td class="mono">GET /api/health</td><td>per-session start</td><td>Osif local</td><td class="mono" id="lastHealth">--</td></tr>
+        <tr><td>2</td><td>Git sync root↔api</td><td class="mono">cp api/main.py main.py</td><td>before push</td><td>Osif local</td><td class="mono">17.4 04:06</td></tr>
+        <tr><td>3</td><td>Railway auto-deploy</td><td class="mono">git push origin master</td><td>on commit</td><td>Railway CI</td><td class="mono">17.4 04:20</td></tr>
+        <tr><td>4</td><td>GitHub Pages deploy</td><td class="mono">push website/ main</td><td>on commit</td><td>GH Pages CI</td><td class="mono">17.4 03:49</td></tr>
+        <tr><td>5</td><td>Device verify expiry</td><td class="mono">_ensure_device_tables + 5min TTL</td><td>on first hit</td><td>FastAPI startup</td><td class="mono">17.4 auto</td></tr>
+        <tr><td>6</td><td>Bug Telegram alert</td><td class="mono">POST /api/bugs/report → TG admin</td><td>on event</td><td>Railway API</td><td class="mono">--</td></tr>
+        <tr><td>7</td><td>SILENT_MODE kill-switch</td><td class="mono">env SILENT_MODE=1</td><td>manual</td><td>Railway</td><td class="mono"><span class="tag r">NOT SET</span></td></tr>
+        <tr><td>8</td><td>Rate-limit Telegram alerts</td><td class="mono">5/min per endpoint</td><td>continuous</td><td>Railway API</td><td class="mono"><span class="tag g">ACTIVE</span></td></tr>
+        <tr><td>9</td><td>Overnight health log</td><td class="mono">ops/overnight-health-log.md</td><td>per night</td><td>Osif local</td><td class="mono">14.4</td></tr>
+        <tr><td>10</td><td>Session handoff write</td><td class="mono">ops/SESSION_STATUS.md commit</td><td>end of session</td><td>any agent</td><td class="mono">17.4 morning</td></tr>
+      </table>
+      <div style="margin-top:10px;padding:10px;background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.2);border-radius:8px;font-size:11px;color:var(--cyan)">
+        💡 הוספת Cron אמיתי דורש Railway scheduled job או local Task Scheduler. כרגע רוב הפעולות הן event-driven ולא time-driven.
+      </div>
+    </div>
+
+    <!-- Docs -->
+    <div class="card c6">
+      <h2><span><i class="fa fa-book-bookmark"></i>מסמכי-על</span></h2>
+      <a href="https://github.com/osifeu-prog/slh-api/blob/master/ops/SESSION_STATUS.md" target="_blank" class="li ok"><div class="txt"><div class="t1">SESSION_STATUS.md</div><div class="t2">Single Source of Truth</div></div><i class="fa fa-external-link-alt" style="color:var(--text2)"></i></a>
+      <a href="https://github.com/osifeu-prog/slh-api/blob/master/ops/MORNING_REPORT_20260417.md" target="_blank" class="li"><div class="txt"><div class="t1">MORNING_REPORT_20260417</div><div class="t2">night session deliverables</div></div><i class="fa fa-external-link-alt" style="color:var(--text2)"></i></a>
+      <a href="https://github.com/osifeu-prog/slh-api/blob/master/ops/REGRESSIONS_FLAG_20260417.md" target="_blank" class="li warn"><div class="txt"><div class="t1">REGRESSIONS_FLAG_20260417</div><div class="t2">2 files need your decision</div></div><i class="fa fa-external-link-alt" style="color:var(--text2)"></i></a>
+      <a href="https://github.com/osifeu-prog/slh-api/blob/master/ops/DECISIONS.md" target="_blank" class="li"><div class="txt"><div class="t1">DECISIONS.md</div><div class="t2">append-only decision log</div></div><i class="fa fa-external-link-alt" style="color:var(--text2)"></i></a>
+      <a href="https://github.com/osifeu-prog/slh-api/blob/master/ops/TEAM_TASKS.md" target="_blank" class="li"><div class="txt"><div class="t1">TEAM_TASKS.md</div><div class="t2">per-role task cards</div></div><i class="fa fa-external-link-alt" style="color:var(--text2)"></i></a>
+      <a href="https://github.com/osifeu-prog/slh-api/blob/master/ops/AGENT_REGISTRY.json" target="_blank" class="li"><div class="txt"><div class="t1">AGENT_REGISTRY.json</div><div class="t2">who does what (machine-readable)</div></div><i class="fa fa-external-link-alt" style="color:var(--text2)"></i></a>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="card c6">
+      <h2><span><i class="fa fa-bolt"></i>פעולות מהירות</span></h2>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
+        <a class="btn" href="/pay.html" target="_blank" style="background:linear-gradient(135deg,#00ff41,#00e5ff);color:#000">💳 תשלום</a>
+        <a class="btn" href="/sudoku.html" target="_blank">🧩 סודוקו</a>
+        <a class="btn" href="/dating.html" target="_blank" style="background:rgba(236,72,153,.1);color:#ec4899;border-color:rgba(236,72,153,.3)">💘 Dating</a>
+        <a class="btn" href="/learning-path.html" target="_blank">📚 Learning</a>
+        <a class="btn" href="/admin.html" target="_blank"><i class="fa fa-user-shield"></i> Admin</a>
+        <a class="btn" href="/admin-bugs.html" target="_blank"><i class="fa fa-bug"></i> Bug+AI</a>
+        <a class="btn" href="/admin-tokens.html" target="_blank"><i class="fa fa-coins"></i> Tokens</a>
+        <a class="btn" href="/admin-experts.html" target="_blank">🎓 Experts</a>
+        <a class="btn sec" href="/agent-brief.html" target="_blank"><i class="fa fa-robot"></i> Agents</a>
+        <a class="btn sec" href="/prompts/" target="_blank">📋 Prompts</a>
+        <a class="btn sec" href="https://github.com/osifeu-prog/slh-api/commits/master" target="_blank"><i class="fa-brands fa-github"></i> API log</a>
+        <a class="btn sec" href="https://t.me/slhniffty" target="_blank"><i class="fa-brands fa-telegram"></i> slhniffty</a>
+      </div>
+    </div>
+
+    <!-- New Features Widget (Sudoku + Dating live metrics) -->
+    <div class="card c12">
+      <h2><span><i class="fa fa-gamepad"></i>פיצ'רים חדשים · Live</span></h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px">
+        <div style="padding:16px;background:rgba(168,85,247,.06);border:1px solid rgba(168,85,247,.2);border-radius:12px">
+          <div style="font-size:22px;margin-bottom:4px">🧩 Sudoku</div>
+          <div id="sudokuStats" style="font-size:12px;color:var(--text2);line-height:1.8">טוען...</div>
+          <a href="/sudoku.html" target="_blank" style="display:block;margin-top:8px;padding:6px 12px;background:rgba(168,85,247,.15);color:#a855f7;border-radius:6px;font-size:11px;text-align:center;font-weight:600">Play →</a>
+        </div>
+        <div style="padding:16px;background:rgba(236,72,153,.06);border:1px solid rgba(236,72,153,.2);border-radius:12px">
+          <div style="font-size:22px;margin-bottom:4px">💘 Dating</div>
+          <div id="datingStats" style="font-size:12px;color:var(--text2);line-height:1.8">טוען...</div>
+          <a href="/dating.html" target="_blank" style="display:block;margin-top:8px;padding:6px 12px;background:rgba(236,72,153,.15);color:#ec4899;border-radius:6px;font-size:11px;text-align:center;font-weight:600">Dating →</a>
+        </div>
+        <div style="padding:16px;background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.2);border-radius:12px">
+          <div style="font-size:22px;margin-bottom:4px">🧠 AIC</div>
+          <div id="aicStats" style="font-size:12px;color:var(--text2);line-height:1.8">טוען...</div>
+          <a href="/admin-tokens.html" target="_blank" style="display:block;margin-top:8px;padding:6px 12px;background:rgba(255,215,0,.15);color:#ffd700;border-radius:6px;font-size:11px;text-align:center;font-weight:600">Manage →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Token Focus -->
+    <div class="card glow c12">
+      <h2><span><i class="fa fa-bullseye"></i>פוקוס לילה הבא · טוקן 1-4</span></h2>
+      <div style="display:grid;gap:12px;grid-template-columns:repeat(4,1fr);margin-top:4px" id="tokenFocus">
+        <div style="padding:14px;border:1px solid rgba(0,255,65,.25);border-radius:10px;background:rgba(0,255,65,.04)">
+          <div style="font-weight:800;color:var(--accent);margin-bottom:6px">#1 SLH · Premium</div>
+          <div style="font-size:11px;color:var(--text2);line-height:1.7">
+            • TON auto-verify endpoint<br>
+            • Premium approve backlog<br>
+            • PancakeSwap stats dashboard<br>
+            • Buyer-journey E2E test
+          </div>
+        </div>
+        <div style="padding:14px;border:1px solid rgba(0,229,255,.25);border-radius:10px;background:rgba(0,229,255,.04)">
+          <div style="font-weight:800;color:var(--cyan);margin-bottom:6px">#2 MNH · Stable</div>
+          <div style="font-size:11px;color:var(--text2);line-height:1.7">
+            • Peg dashboard<br>
+            • MNH↔ILS exchange UI<br>
+            • Internal ledger audit<br>
+            • Minting rules doc
+          </div>
+        </div>
+        <div style="padding:14px;border:1px solid rgba(255,215,0,.25);border-radius:10px;background:rgba(255,215,0,.04)">
+          <div style="font-weight:800;color:var(--gold);margin-bottom:6px">#3 ZVK · Rewards</div>
+          <div style="font-size:11px;color:var(--text2);line-height:1.7">
+            • Mass-gift verification<br>
+            • Referral reward auto-trigger<br>
+            • Daily rewards cron<br>
+            • Balance sync bug
+          </div>
+        </div>
+        <div style="padding:14px;border:1px solid rgba(168,85,247,.25);border-radius:10px;background:rgba(168,85,247,.04)">
+          <div style="font-weight:800;color:var(--purple);margin-bottom:6px">#4 REP · Reputation</div>
+          <div style="font-size:11px;color:var(--text2);line-height:1.7">
+            • Tier progression rules<br>
+            • Community voting API<br>
+            • REP leaderboard<br>
+            • Decay formula
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:14px;padding:12px;background:rgba(255,255,255,.02);border-radius:8px;font-size:12px;color:var(--text2);line-height:1.6">
+        <b style="color:var(--text)">⚠ חשוב:</b> אני רץ רק כאשר Claude Code פתוח ויש תור פעיל. לא ארוץ 19 שעות אוטומטית בלי אחת מ-3 אופציות:
+        <ol style="margin:8px 20px 0;padding:0">
+          <li>השארת ה-CLI פתוח + מצב auto-approve (נדרש למשימות ארוכות)</li>
+          <li>Scheduled Cron task (דרך CronCreate) לבדיקות חיוּת חוזרות</li>
+          <li>Railway scheduled job (דרוש Railway plan)</li>
+        </ol>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="foot">
+    SLH · Mission Control · אתה הלב · I serve the heart.<br>
+    <a href="/CLAUDE.md">CLAUDE.md</a> · <a href="https://github.com/osifeu-prog/slh-api">API Repo</a> · <a href="https://github.com/osifeu-prog/osifeu-prog.github.io">Web Repo</a>
+  </footer>
+
+</div>
+
+<script>
+const API = 'https://slh-api-production.up.railway.app';
+
+function stamp(){ document.getElementById('timeStamp').textContent = new Date().toLocaleString('he-IL'); }
+
+async function loadHealth(){
+  try{
+    const r = await fetch(API+'/api/health',{cache:'no-store'});
+    const d = await r.json();
+    document.getElementById('heartStatus').textContent = d.status==='ok' ? 'LIVE' : 'DEGRADED';
+    document.getElementById('heartStatus').className = 'tag ' + (d.status==='ok'?'g':'y');
+    document.getElementById('heartLine').textContent = `version ${d.version} · db ${d.db}`;
+    document.getElementById('apiChip').className = 'chip ok';
+    document.getElementById('apiChip').innerHTML = '<span class="dot"></span> API ' + d.version;
+    document.getElementById('dbChip').className = 'chip ok';
+    document.getElementById('dbChip').innerHTML = '<span class="dot"></span> DB ' + d.db;
+    document.getElementById('lastHealth').textContent = new Date().toLocaleTimeString('he-IL');
+  }catch(e){
+    document.getElementById('heartStatus').textContent = 'DOWN';
+    document.getElementById('heartStatus').className = 'tag r';
+    document.getElementById('apiChip').className = 'chip err';
+    document.getElementById('apiChip').innerHTML = '<span class="dot"></span> API DOWN';
+  }
+}
+
+async function loadStats(){
+  try{
+    const r = await fetch(API+'/api/stats',{cache:'no-store'});
+    const d = await r.json();
+    document.getElementById('kpiUsers').textContent = d.total_users ?? '--';
+    document.getElementById('kpiPremium').textContent = d.premium_users ?? '--';
+    document.getElementById('kpiStaked').textContent = (d.total_staked_ton ?? 0).toFixed(1);
+    document.getElementById('kpiBots').textContent = d.bots_live ?? '--';
+  }catch(e){}
+}
+
+async function loadEndpointsCount(){
+  try{
+    const r = await fetch(API+'/openapi.json',{cache:'no-store'});
+    const d = await r.json();
+    document.getElementById('kpiEndpoints').textContent = Object.keys(d.paths||{}).length;
+  }catch(e){}
+}
+
+const MONITORED = [
+  {path:'/api/health', method:'GET'},
+  {path:'/api/stats', method:'GET'},
+  {path:'/api/ai/providers', method:'GET'},
+  {path:'/api/device/register', method:'POST', body:{phone:'0500000000',device_id:'MC_PROBE',device_type:'pc_windows'}}
+];
+
+async function loadEndpoints(){
+  const tbl = document.getElementById('endpointsTbl');
+  tbl.innerHTML = '<tr><th>Endpoint</th><th>Method</th><th>Status</th><th>זמן</th></tr>';
+  for(const e of MONITORED){
+    const row = tbl.insertRow();
+    const t0 = performance.now();
+    try{
+      const opts = {method:e.method, cache:'no-store'};
+      if(e.body){ opts.headers={'Content-Type':'application/json'}; opts.body=JSON.stringify(e.body); }
+      const r = await fetch(API+e.path, opts);
+      const ms = Math.round(performance.now()-t0);
+      row.innerHTML = `<td class="mono">${e.path}</td><td>${e.method}</td><td><span class="tag ${r.ok?'g':'r'}">${r.status}</span></td><td class="mono">${ms}ms</td>`;
+    }catch(err){
+      row.innerHTML = `<td class="mono">${e.path}</td><td>${e.method}</td><td><span class="tag r">ERR</span></td><td class="mono">--</td>`;
+    }
+  }
+}
+
+const BOTS = [
+  {n:'ledger',s:'ok'},{n:'core',s:'off'},{n:'guardian',s:'off'},{n:'botshop',s:'off'},
+  {n:'wallet',s:'off'},{n:'factory',s:'off'},{n:'fun',s:'ok'},{n:'admin',s:'off'},
+  {n:'expertnet',s:'warn'},{n:'airdrop',s:'warn'},{n:'campaign',s:'warn'},{n:'game',s:'off'},
+  {n:'ton-mnh',s:'off'},{n:'slh-ton',s:'off'},{n:'osif-shop',s:'off'},{n:'nifti',s:'off'},
+  {n:'chance',s:'off'},{n:'nfty',s:'off'},{n:'selha',s:'warn'},{n:'userinfo',s:'warn'},
+  {n:'ts-set',s:'off'},{n:'crazy-panel',s:'off'},{n:'nft-shop',s:'off'},{n:'beynonibank',s:'off'},
+  {n:'test',s:'off'}
+];
+
+function loadBots(){
+  const g = document.getElementById('botsGrid');
+  g.innerHTML = BOTS.map(b=>{
+    const color = b.s==='ok'?'var(--accent)':b.s==='warn'?'var(--gold)':'var(--text3)';
+    return `<div style="padding:6px 8px;background:var(--bg4);border:1px solid var(--border2);border-radius:6px;display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px"><span style="width:8px;height:8px;border-radius:50%;background:${color}"></span>${b.n}</div>`;
+  }).join('');
+}
+
+async function loadSudokuStats(){
+  try{
+    const r = await fetch(API+'/api/sudoku/stats',{cache:'no-store'});
+    if(!r.ok) return;
+    const d = await r.json();
+    document.getElementById('sudokuStats').innerHTML =
+      '🎯 <b>'+(d.total_solved||0)+'</b> פתרונות · '+
+      '👥 <b>'+(d.unique_solvers||0)+'</b> פותרים · '+
+      '💰 <b>'+(d.total_aic_issued||0).toFixed(1)+'</b> AIC הונפקו';
+  }catch(e){}
+}
+async function loadDatingStats(){
+  try{
+    const r = await fetch(API+'/api/dating/stats',{cache:'no-store'});
+    if(!r.ok) return;
+    const d = await r.json();
+    document.getElementById('datingStats').innerHTML =
+      '👤 <b>'+(d.active_profiles||0)+'</b> פרופילים · '+
+      '✓ <b>'+(d.verified_profiles||0)+'</b> מאומתים · '+
+      '💘 <b>'+(d.matches_this_week||0)+'</b> התאמות השבוע';
+  }catch(e){}
+}
+async function loadAicStats(){
+  try{
+    const r = await fetch(API+'/api/aic/stats',{cache:'no-store'});
+    if(!r.ok) return;
+    const d = await r.json();
+    document.getElementById('aicStats').innerHTML =
+      '💎 supply: <b>'+(d.total_supply||0).toFixed(1)+'</b> · '+
+      '👛 <b>'+(d.wallets_count||0)+'</b> wallets · '+
+      '📈 earn 24h: <b>'+(d.earned_24h||0).toFixed(1)+'</b>';
+  }catch(e){}
+}
+
+async function loadAll(){
+  const icon = document.getElementById('refreshIcon');
+  icon.classList.add('spin');
+  stamp();
+  await Promise.all([
+    loadHealth(), loadStats(), loadEndpointsCount(), loadEndpoints(),
+    loadSudokuStats(), loadDatingStats(), loadAicStats()
+  ]);
+  loadBots();
+  setTimeout(()=>icon.classList.remove('spin'), 600);
+}
+
+let autoTimer = null;
+function toggleAuto(){
+  const btn = document.getElementById('autoBtn');
+  const txt = document.getElementById('autoTxt');
+  if(autoTimer){
+    clearInterval(autoTimer); autoTimer=null;
+    txt.textContent='אוטו·כבוי'; btn.classList.add('sec');
+  }else{
+    autoTimer = setInterval(loadAll, 30000);
+    txt.textContent='אוטו·30ש'; btn.classList.remove('sec');
+  }
+}
+
+// init
+loadAll();
+</script>
+
+</body>
+</html>

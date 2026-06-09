@@ -1,0 +1,452 @@
+/* ============================================================
+   SLH Neural — Design System Extension
+   Theme: DNA + Neural Networks
+   For: SLH Spark Investor-Grade UI/UX
+   Author: Claude (2026-04-27)
+   Loads AFTER shared.css. Adds [data-theme="neural"] + components.
+   ============================================================ */
+
+/* ── 1. Neural Theme (extends shared.css) ───────────────── */
+
+[data-theme="neural"] {
+  /* Deep cosmic backgrounds — feels like the brain at night */
+  --bg: #03060f;
+  --bg2: #060b1c;
+  --bg3: #0a1230;
+  --surface: rgba(15, 24, 56, 0.65);
+  --surface2: rgba(22, 35, 80, 0.78);
+  --border: rgba(94, 214, 255, 0.18);
+  --border2: rgba(94, 214, 255, 0.35);
+
+  /* Synapse-glow text — bright but readable */
+  --text: #e7f1ff;
+  --text2: #9bb3d4;
+  --text3: #5a7090;
+
+  /* Primary: synaptic cyan + electric purple */
+  --accent: #5ed6ff;          /* synapse pulse */
+  --accent2: #b18bff;         /* neuron glow */
+  --gold: #ffd166;            /* SLH premium */
+  --green: #4ade80;           /* ZVK reward */
+  --cyan: #5ed6ff;
+  --red: #ff5e87;             /* ZUZ warning */
+  --orange: #ff9a3c;
+
+  /* Per-token accents (used in node visualization) */
+  --token-slh:  #ffd166;
+  --token-mnh:  #c0c5cf;       /* metallic stable */
+  --token-zvk:  #4ade80;
+  --token-rep:  #5ed6ff;
+  --token-zuz:  #ff5e87;
+
+  /* Soft shadows + neon glows */
+  --shadow:    0 4px 24px rgba(94, 214, 255, .08);
+  --shadow-lg: 0 12px 60px rgba(177, 139, 255, .14);
+  --glow-cyan: 0 0 24px rgba(94, 214, 255, 0.45);
+  --glow-purple: 0 0 24px rgba(177, 139, 255, 0.45);
+  --glow-gold: 0 0 24px rgba(255, 209, 102, 0.55);
+
+  --radius: 14px;
+  --radius-sm: 10px;
+  --radius-xs: 6px;
+}
+
+/* ── 2. Background — ambient neural canvas ───────────────── */
+
+.neural-bg {
+  position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(94, 214, 255, 0.12), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 90%, rgba(177, 139, 255, 0.10), transparent 60%),
+    radial-gradient(ellipse 100% 50% at 50% 50%, rgba(10, 18, 48, 0.6), transparent 70%),
+    var(--bg);
+  overflow: hidden;
+}
+.neural-bg::before {
+  /* Animated grid representing neural lattice */
+  content: '';
+  position: absolute; inset: -2px;
+  background-image:
+    linear-gradient(rgba(94, 214, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(94, 214, 255, 0.04) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 70% 50% at 50% 40%, #000 30%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 50% at 50% 40%, #000 30%, transparent 80%);
+  animation: neuralPan 60s linear infinite;
+}
+@keyframes neuralPan {
+  from { background-position: 0 0, 0 0; }
+  to   { background-position: 64px 64px, 64px 64px; }
+}
+
+/* ── 3. SVG building blocks ─────────────────────────────── */
+
+.synapse-line {
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  fill: none;
+  stroke-dasharray: 4 6;
+  animation: synapseFlow 3s linear infinite;
+  filter: drop-shadow(0 0 4px var(--accent));
+  opacity: .6;
+}
+@keyframes synapseFlow {
+  to { stroke-dashoffset: -40; }
+}
+
+.neuron-node {
+  fill: var(--surface2);
+  stroke: var(--accent);
+  stroke-width: 2;
+  filter: drop-shadow(0 0 10px var(--accent));
+  transition: all .3s ease;
+}
+.neuron-node:hover {
+  fill: var(--accent);
+  filter: drop-shadow(0 0 20px var(--accent));
+  cursor: pointer;
+}
+
+/* ── 4. Token nodes — each token a distinct neuron ──────── */
+
+.token-node {
+  position: relative;
+  width: 96px; height: 96px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 1.4rem;
+  color: var(--bg);
+  background: radial-gradient(circle at 30% 30%, currentColor, rgba(0,0,0,.4));
+  box-shadow:
+    inset 0 0 20px rgba(255,255,255,.2),
+    0 0 30px currentColor;
+  transition: transform .3s ease;
+  cursor: pointer;
+}
+.token-node::before {
+  content: '';
+  position: absolute; inset: -8px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  opacity: .5;
+  animation: tokenPulse 2.5s ease-in-out infinite;
+}
+.token-node::after {
+  content: '';
+  position: absolute; inset: -16px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  opacity: .25;
+  animation: tokenPulse 2.5s ease-in-out infinite .8s;
+}
+.token-node:hover { transform: scale(1.1); }
+@keyframes tokenPulse {
+  0%, 100% { transform: scale(1); opacity: .5; }
+  50%      { transform: scale(1.15); opacity: 0; }
+}
+
+.token-node[data-token="SLH"] { color: var(--token-slh); }
+.token-node[data-token="MNH"] { color: var(--token-mnh); }
+.token-node[data-token="ZVK"] { color: var(--token-zvk); }
+.token-node[data-token="REP"] { color: var(--token-rep); }
+.token-node[data-token="ZUZ"] { color: var(--token-zuz); }
+
+/* ── 5. Glassmorphism cards (investor-grade) ────────────── */
+
+.neural-card {
+  background: var(--surface);
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+  transition: all .35s var(--transition);
+}
+.neural-card::before {
+  /* subtle scan line for tech feel */
+  content: '';
+  position: absolute; top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(94,214,255,.06), transparent);
+  transition: left .8s ease;
+}
+.neural-card:hover {
+  border-color: var(--border2);
+  box-shadow: var(--shadow-lg), var(--glow-cyan);
+  transform: translateY(-2px);
+}
+.neural-card:hover::before { left: 100%; }
+
+.neural-card .card-icon {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  margin-bottom: 18px;
+  font-size: 1.4rem;
+  color: var(--bg);
+  box-shadow: var(--glow-cyan);
+}
+
+/* ── 6. Hero / headlines ────────────────────────────────── */
+
+.neural-headline {
+  font-weight: 800;
+  font-size: clamp(2.4rem, 6vw, 4.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  background: linear-gradient(120deg, #fff 0%, var(--accent) 40%, var(--accent2) 70%, var(--gold) 100%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0 0 20px;
+}
+
+.neural-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 14px;
+  font-size: .8rem; font-weight: 600; letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: rgba(94, 214, 255, 0.08);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  margin-bottom: 18px;
+}
+.neural-eyebrow::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent); box-shadow: 0 0 8px var(--accent);
+  animation: eyebrowPulse 1.6s ease-in-out infinite;
+}
+@keyframes eyebrowPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: .4; transform: scale(.7); }
+}
+
+/* ── 7. Buttons (CTA grade) ─────────────────────────────── */
+
+.neural-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 28px;
+  font-family: var(--font); font-weight: 700; font-size: 1rem;
+  border: none; border-radius: 12px;
+  cursor: pointer;
+  transition: all .25s var(--transition);
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+.neural-btn-primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: var(--bg);
+  box-shadow: var(--glow-cyan);
+}
+.neural-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--glow-cyan), 0 8px 32px rgba(94,214,255,.35);
+}
+.neural-btn-ghost {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border2);
+}
+.neural-btn-ghost:hover {
+  background: var(--surface2);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.neural-btn-gold {
+  background: linear-gradient(135deg, #ffe18a, var(--gold));
+  color: #2a1f00;
+  box-shadow: var(--glow-gold);
+}
+
+/* ── 8. Stat / KPI tile ─────────────────────────────────── */
+
+.neural-stat {
+  text-align: center;
+  padding: 20px;
+}
+.neural-stat .stat-value {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 4px;
+}
+.neural-stat .stat-label {
+  font-size: .85rem; color: var(--text2);
+  text-transform: uppercase; letter-spacing: .08em;
+}
+
+/* ── 9. Trust badges (audits, contracts) ────────────────── */
+
+.trust-badge {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 10px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: .9rem;
+  color: var(--text2);
+  font-family: var(--font-mono);
+}
+.trust-badge .badge-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--green); box-shadow: 0 0 8px var(--green);
+}
+
+/* ── 10. DNA helix divider ──────────────────────────────── */
+
+.dna-divider {
+  height: 60px;
+  position: relative;
+  margin: 80px 0;
+  overflow: hidden;
+}
+.dna-divider svg { width: 100%; height: 100%; }
+.dna-strand {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  opacity: .6;
+}
+.dna-strand-2 {
+  stroke: var(--accent2);
+}
+.dna-rung {
+  stroke: var(--gold);
+  stroke-width: 1.5;
+  opacity: .4;
+}
+
+/* ── 11. Layout containers ──────────────────────────────── */
+
+.neural-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.neural-grid {
+  display: grid;
+  gap: 24px;
+}
+.neural-grid-2 { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+.neural-grid-3 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.neural-grid-4 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+
+.neural-section {
+  padding: 80px 0;
+  position: relative;
+}
+
+/* ── 12. Roadmap timeline ───────────────────────────────── */
+
+.roadmap-timeline {
+  position: relative;
+  padding-inline-start: 32px;
+  border-inline-start: 2px solid var(--border2);
+}
+.roadmap-item {
+  position: relative;
+  padding-bottom: 32px;
+}
+.roadmap-item::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: -42px; top: 4px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 2px solid var(--accent);
+  box-shadow: var(--glow-cyan);
+}
+.roadmap-item.done::before {
+  background: var(--green);
+  border-color: var(--green);
+  box-shadow: 0 0 12px var(--green);
+}
+.roadmap-item.active::before {
+  animation: tokenPulse 2s ease-in-out infinite;
+}
+.roadmap-item h4 {
+  margin: 0 0 4px;
+  font-size: 1.1rem;
+  color: var(--text);
+}
+.roadmap-item p {
+  margin: 0;
+  color: var(--text2);
+  font-size: .92rem;
+  line-height: 1.6;
+}
+.roadmap-item .roadmap-date {
+  font-family: var(--font-mono);
+  font-size: .8rem;
+  color: var(--accent);
+  margin-bottom: 6px;
+  display: block;
+}
+
+/* ── 13. Section header ─────────────────────────────────── */
+
+.section-header {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 56px;
+}
+.section-header h2 {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 700;
+  margin: 12px 0;
+  color: var(--text);
+}
+.section-header p {
+  color: var(--text2);
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+/* ── 14. Live indicator (animated dot) ──────────────────── */
+
+.live-indicator {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-mono); font-size: .8rem;
+  color: var(--green);
+}
+.live-indicator::before {
+  content: ''; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 0 0 rgba(74, 222, 128, .6);
+  animation: liveBlink 1.4s ease-in-out infinite;
+}
+@keyframes liveBlink {
+  0%   { box-shadow: 0 0 0 0 rgba(74, 222, 128, .6); }
+  70%  { box-shadow: 0 0 0 8px rgba(74, 222, 128, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+}
+
+/* ── 15. Responsive tweaks ──────────────────────────────── */
+
+@media (max-width: 720px) {
+  .neural-card { padding: 20px; }
+  .neural-section { padding: 56px 0; }
+  .neural-headline { font-size: clamp(1.8rem, 8vw, 2.6rem); }
+}
+
+/* ── 16. Reduced motion ─────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .neural-bg::before,
+  .synapse-line,
+  .token-node::before,
+  .token-node::after,
+  .neural-eyebrow::before,
+  .live-indicator::before,
+  .roadmap-item.active::before {
+    animation: none !important;
+  }
+}

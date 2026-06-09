@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🎨 מכור NFT · SLH Spark Marketplace</title>
+<meta name="description" content="העלה תמונה כ-NFT עם סיפור + מחיר + קישור לקורס. SLH Marketplace — כל תמונה היא שיעור, כל שיעור הוא השקעה.">
+<link rel="canonical" href="https://slh-nft.com/sell.html">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/slh-design-system.css">
+<meta name="slh-version" content="v1.0-flip">
+<script defer src="/js/slh-flip.js?v=20260417"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Rubik',system-ui,sans-serif;background:#05080f;color:#f5f5f8;min-height:100vh;padding:20px}
+.wrap{max-width:800px;margin:0 auto;padding:20px 16px 60px}
+.hdr{text-align:center;margin-bottom:30px}
+.hdr h1{font-size:clamp(28px,4vw,42px);font-weight:900;background:linear-gradient(135deg,#a855f7,#ec4899,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:0 0 8px}
+.hdr p{color:#9ba0b5;margin:0}
+
+.login-gate{background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.2);border-radius:14px;padding:24px;margin:20px 0;text-align:center}
+.login-gate input{padding:12px 16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.15);border-radius:8px;color:#fff;font-size:16px;width:280px;max-width:100%}
+.login-gate button{padding:12px 24px;background:linear-gradient(135deg,#00ff41,#00e5ff);color:#000;border:none;border-radius:8px;font-weight:700;cursor:pointer;margin-inline-start:8px}
+
+.form{display:none;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:24px;margin:20px 0}
+.form.on{display:block}
+
+label{display:block;font-size:13px;color:#9ba0b5;margin:16px 0 6px;font-weight:600}
+label .req{color:#ff4444}
+input[type=text], input[type=number], input[type=url], textarea, select{
+  width:100%;padding:12px 14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#f5f5f8;font-family:inherit;font-size:14px
+}
+textarea{resize:vertical;min-height:80px}
+.hint{font-size:11px;color:#5a6078;margin-top:4px}
+
+.image-drop{border:2px dashed rgba(255,255,255,.15);border-radius:12px;padding:40px 20px;text-align:center;cursor:pointer;transition:.2s}
+.image-drop:hover{border-color:#00e5ff;background:rgba(0,229,255,.03)}
+.image-drop.has{padding:10px}
+.image-drop img{max-width:100%;max-height:240px;border-radius:8px}
+.image-drop .txt{color:#9ba0b5;font-size:14px}
+
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.row{grid-template-columns:1fr}}
+
+.course-panel{background:rgba(168,85,247,.06);border:1px solid rgba(168,85,247,.2);border-radius:10px;padding:16px;margin-top:14px}
+.course-panel.hidden{display:none}
+
+.submit{width:100%;padding:16px;background:linear-gradient(135deg,#00ff41,#00e5ff);color:#000;border:none;border-radius:12px;font-size:16px;font-weight:900;cursor:pointer;margin-top:24px}
+.submit:hover{opacity:.9}
+.submit:disabled{opacity:.5;cursor:not-allowed}
+
+.result{background:rgba(0,255,65,.08);border:1px solid rgba(0,255,65,.3);border-radius:10px;padding:16px;margin-top:16px;display:none}
+.result.on{display:block}
+.result.err{background:rgba(255,68,68,.08);border-color:rgba(255,68,68,.3);color:#ff9999}
+
+.foot{text-align:center;margin-top:40px;color:#5a6078;font-size:12px}
+.foot a{color:#00e5ff}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hdr">
+    <h1 data-scramble="מכור NFT · SLH Spark">מכור NFT · SLH Spark</h1>
+    <p>כל תמונה היא סיפור · כל סיפור הוא שיעור · כל שיעור הוא השקעה</p>
+  </div>
+
+  <div id="login" class="login-gate">
+    <p style="margin-bottom:14px">הכנס Telegram ID שלך כדי להתחיל להעלות:</p>
+    <input id="tg-id" type="number" placeholder="224223270" inputmode="numeric" />
+    <button onclick="loginSeller()">אני מוכן ✓</button>
+    <p class="hint" style="margin-top:12px">לא יודע את ה-ID שלך? פתח <a href="https://t.me/userinfobot" style="color:#00e5ff">@userinfobot</a> בטלגרם.</p>
+  </div>
+
+  <div id="form" class="form">
+    <label>כותרת <span class="req">*</span></label>
+    <input id="f-title" type="text" placeholder="שם ה-NFT / הפריט" maxlength="200">
+
+    <label>הסיפור <span class="req">*</span></label>
+    <textarea id="f-story" placeholder="מה הסיפור מאחורי התמונה? למה נוצרה? מה היא מלמדת?" maxlength="2000"></textarea>
+    <div class="hint">הסיפור הזה יופיע יחד עם התמונה ב-marketplace וב-@slhniffty channel אחרי אישור.</div>
+
+    <label>תמונה <span class="req">*</span></label>
+    <div class="image-drop" id="drop" onclick="document.getElementById('file-input').click()">
+      <div class="txt">🖼 לחץ או גרור תמונה לכאן (מקסימום 2MB)</div>
+    </div>
+    <input id="file-input" type="file" accept="image/*" style="display:none" onchange="handleImage(event)">
+    <div class="hint">תומך ב-JPG / PNG / WEBP עד 2MB. למקסימום איכות — תעלה מקור.</div>
+
+    <div class="row">
+      <div>
+        <label>מחיר <span class="req">*</span></label>
+        <input id="f-price" type="number" min="0.01" step="0.01" placeholder="100">
+      </div>
+      <div>
+        <label>מטבע</label>
+        <select id="f-currency">
+          <option value="SLH">SLH</option>
+          <option value="TON">TON</option>
+          <option value="ILS" selected>ILS (שקל)</option>
+          <option value="USD">USD</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>קטגוריה</label>
+        <select id="f-category">
+          <option value="nft">NFT · אומנות דיגיטלית</option>
+          <option value="course">Course · שיעור</option>
+          <option value="digital">Digital · תוכן דיגיטלי</option>
+          <option value="physical">Physical · פיזי (משלוח)</option>
+          <option value="service">Service · שירות</option>
+          <option value="general">General · אחר</option>
+        </select>
+      </div>
+      <div>
+        <label>מלאי (כמה עותקים)</label>
+        <input id="f-stock" type="number" min="1" step="1" value="1">
+      </div>
+    </div>
+
+    <label>
+      <input type="checkbox" id="f-is-course" onchange="toggleCourse()" style="width:auto;margin-inline-end:8px">
+      זה חלק מקורס? (מציג כ-"שיעור" בגלריה)
+    </label>
+
+    <div id="course-panel" class="course-panel hidden">
+      <label>קישור לקורס המלא (אופציונלי)</label>
+      <input id="f-course-url" type="url" placeholder="https://slh-nft.com/learning-path.html#my-course">
+      <div class="hint">הקונה יקבל גישה לקישור זה לאחר הרכישה.</div>
+    </div>
+
+    <button class="submit" onclick="submitListing()" id="btn-submit">🚀 העלה לאישור</button>
+    <div id="result" class="result"></div>
+
+    <div class="hint" style="margin-top:16px;text-align:center">
+      הפריט יועבר לאישור ה-admin. אחרי אישור — אוטו-פוסט ל-<a href="https://t.me/slhniffty" style="color:#00e5ff">@slhniffty</a>.
+    </div>
+  </div>
+
+  <div class="foot">
+    <p>🎨 כל יוצר ב-SLH צובר XP על בסיס ROI · <a href="/gallery.html">הצג גלריה ציבורית</a> · <a href="/shop.html">החנות שלי</a></p>
+    <p style="margin-top:10px;opacity:.6">SLH Spark Marketplace · פריטים מאושרים מופיעים אוטומטית בגלריה</p>
+  </div>
+</div>
+
+<script>
+const API = 'https://slh-api-production.up.railway.app';
+let SELLER_ID = parseInt(localStorage.getItem('slh_tg_id') || '0') || null;
+let IMAGE_DATA = null;
+
+// Check URL param tg_id first, then localStorage
+(function(){
+  const p = new URLSearchParams(location.search);
+  const fromUrl = p.get('tg_id');
+  if (fromUrl && /^\d+$/.test(fromUrl)) {
+    SELLER_ID = parseInt(fromUrl);
+    localStorage.setItem('slh_tg_id', fromUrl);
+  }
+  if (SELLER_ID) {
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('form').classList.add('on');
+  }
+})();
+
+function loginSeller() {
+  const v = document.getElementById('tg-id').value.trim();
+  if (!v || !/^\d+$/.test(v)) return;
+  SELLER_ID = parseInt(v);
+  localStorage.setItem('slh_tg_id', v);
+  document.getElementById('login').style.display = 'none';
+  document.getElementById('form').classList.add('on');
+}
+
+function toggleCourse() {
+  const panel = document.getElementById('course-panel');
+  panel.classList.toggle('hidden', !document.getElementById('f-is-course').checked);
+}
+
+function handleImage(ev) {
+  const file = ev.target.files[0];
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) {
+    alert('הקובץ גדול מ-2MB. אנא בחר תמונה קטנה יותר.');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = e => {
+    IMAGE_DATA = e.target.result;
+    const drop = document.getElementById('drop');
+    drop.classList.add('has');
+    drop.innerHTML = `<img src="${IMAGE_DATA}" alt="preview"><div class="txt" style="margin-top:8px">✅ ${file.name} (${(file.size/1024).toFixed(0)} KB) · לחץ להחליף</div>`;
+  };
+  reader.readAsDataURL(file);
+}
+
+async function submitListing() {
+  if (!SELLER_ID) { alert('חסר Seller ID'); return; }
+  const title = document.getElementById('f-title').value.trim();
+  const story = document.getElementById('f-story').value.trim();
+  const price = parseFloat(document.getElementById('f-price').value);
+  const currency = document.getElementById('f-currency').value;
+  const category = document.getElementById('f-category').value;
+  const stock = parseInt(document.getElementById('f-stock').value || '1');
+  const isLesson = document.getElementById('f-is-course').checked;
+  const courseUrl = document.getElementById('f-course-url').value.trim();
+
+  if (!title || title.length < 3) return showResult('כותרת חייבת להיות לפחות 3 תווים', true);
+  if (!story || story.length < 10) return showResult('הסיפור חייב להיות לפחות 10 תווים', true);
+  if (!IMAGE_DATA) return showResult('צריך להעלות תמונה', true);
+  if (!price || price <= 0) return showResult('מחיר חייב להיות חיובי', true);
+
+  const btn = document.getElementById('btn-submit');
+  btn.disabled = true;
+  btn.textContent = '⏳ מעלה...';
+
+  const body = {
+    seller_id: SELLER_ID,
+    title: title,
+    description: story + (isLesson && courseUrl ? `\n\n🎓 קישור לקורס: ${courseUrl}` : ''),
+    price: price,
+    currency: currency,
+    category: isLesson ? 'course' : category,
+    stock: stock,
+    image_url: IMAGE_DATA,
+    promotion: 'none',
+  };
+
+  try {
+    const r = await fetch(API + '/api/marketplace/list', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const data = await r.json();
+    if (data.ok || data.item_id) {
+      showResult(`✅ הועלה! מספר פריט: #${data.item_id}. סטטוס: ${data.status}. אחרי אישור יופיע בגלריה וב-@slhniffty.`, false);
+      setTimeout(() => { location.href = `/shop.html?user=${SELLER_ID}`; }, 3000);
+    } else {
+      showResult('שגיאה: ' + (data.detail || data.message || JSON.stringify(data)), true);
+    }
+  } catch (e) {
+    showResult('שגיאה בחיבור ל-API: ' + e.message, true);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🚀 העלה לאישור';
+  }
+}
+
+function showResult(msg, isError) {
+  const el = document.getElementById('result');
+  el.textContent = msg;
+  el.classList.add('on');
+  el.classList.toggle('err', isError);
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+</script>
+</body>
+</html>

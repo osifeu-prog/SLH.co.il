@@ -1,0 +1,338 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>כלכלת תשואה דינמית — קורס #1 | SLH Academia</title>
+<meta name="description" content="הקורס הראשון של SLH Academia: איך לבנות כלכלת קריפטו שלא מתפרקת. נוסחאות, סימולציות, ומערכת חיה להדגמה. מחיר בש״ח או ב-SLH.">
+<meta name="keywords" content="כלכלת קריפטו, Dynamic Yield, staking, Ponzi detection, DeFi, ישראל, קורס">
+<link rel="canonical" href="https://slh-nft.com/academy/course-1-dynamic-yield.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Dynamic Yield Economics — Crypto That Doesn't Collapse">
+<meta property="og:description" content="6 modules. Real math. Live case study on SLH. Not a promise — a proof.">
+<meta property="og:image" content="https://slh-nft.com/assets/og/course-1-dynamic-yield.png">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/shared.css?v=20260426e">
+<style>
+:root{--bg:#050810;--bg2:#0d1220;--bg3:#151a2e;--gold:#ffd700;--green:#00e887;--red:#ff4444;--purple:#a855f7;--blue:#3b82f6;--cyan:#06b6d4;--text:#f5f5f8;--text2:#9ba0b5;--text3:#5a6078;--border:rgba(168,85,247,.25)}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Rubik',sans-serif;margin:0;min-height:100vh;line-height:1.6}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(circle at 15% 25%,rgba(168,85,247,.08),transparent 50%),radial-gradient(circle at 85% 75%,rgba(6,182,212,.06),transparent 50%)}
+
+.hero{max-width:1200px;margin:0 auto;padding:60px 20px 30px;text-align:center}
+.hero .tag{display:inline-block;padding:6px 14px;background:rgba(255,215,0,.12);border:1px solid rgba(255,215,0,.35);color:var(--gold);border-radius:20px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:18px}
+.hero h1{font-size:clamp(32px,5.5vw,56px);font-weight:900;background:linear-gradient(135deg,var(--purple),var(--cyan),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent;margin:0 0 14px;line-height:1.15}
+.hero .en-sub{font-size:15px;color:var(--text3);letter-spacing:1px;margin-bottom:20px;font-weight:600}
+.hero p.lead{font-size:17px;color:var(--text2);max-width:780px;margin:0 auto 28px;line-height:1.7}
+.hero p.lead strong{color:var(--gold);font-weight:800}
+
+.promise-grid{max-width:1000px;margin:10px auto 36px;padding:0 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.promise-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px 16px;text-align:right}
+.promise-card .ico{font-size:28px;color:var(--cyan);margin-bottom:8px}
+.promise-card h4{margin:0 0 6px;font-size:14px;font-weight:800;color:var(--text)}
+.promise-card p{margin:0;font-size:12px;color:var(--text2);line-height:1.6}
+
+.section{max-width:1100px;margin:40px auto;padding:0 20px}
+.section h2{font-size:clamp(24px,3.5vw,34px);margin:0 0 8px;font-weight:900;color:var(--text)}
+.section h2 i{color:var(--purple);margin-left:10px}
+.section .h2-sub{color:var(--text2);font-size:14px;margin:0 0 24px}
+
+/* Curriculum */
+.curriculum{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+.module{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:22px;position:relative;overflow:hidden;transition:all .25s}
+.module:hover{transform:translateY(-2px);border-color:var(--purple);box-shadow:0 10px 28px rgba(168,85,247,.15)}
+.module .num{position:absolute;top:14px;left:14px;width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--cyan));display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:#fff}
+.module h3{margin:0 0 8px 48px;font-size:17px;font-weight:800;color:var(--text)}
+.module .en{font-size:11px;color:var(--text3);margin:0 0 10px 48px;letter-spacing:.5px}
+.module p{margin:10px 0 0;font-size:13px;color:var(--text2);line-height:1.7}
+.module .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.module .tag-chip{font-size:10px;padding:3px 9px;background:rgba(6,182,212,.12);color:var(--cyan);border-radius:8px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.module.free::after{content:'חינם';position:absolute;top:14px;right:14px;padding:3px 10px;background:var(--green);color:#000;border-radius:8px;font-size:11px;font-weight:900}
+
+/* The one promise */
+.anti-promise{max-width:900px;margin:50px auto;padding:30px 28px;background:linear-gradient(135deg,rgba(255,68,68,.05),rgba(168,85,247,.05));border:1px solid rgba(255,68,68,.25);border-radius:18px;text-align:center}
+.anti-promise .ico{font-size:40px;color:var(--red);margin-bottom:12px}
+.anti-promise h3{margin:0 0 10px;font-size:22px;color:var(--text)}
+.anti-promise p{margin:0;color:var(--text2);font-size:15px;line-height:1.8}
+.anti-promise p strong{color:var(--gold)}
+
+/* Pricing */
+.pricing{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-top:24px}
+.tier{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:28px 24px;display:flex;flex-direction:column;position:relative}
+.tier.featured{border-color:var(--gold);box-shadow:0 0 40px rgba(255,215,0,.1);transform:scale(1.03)}
+.tier.featured::before{content:'מומלץ';position:absolute;top:-12px;right:50%;transform:translateX(50%);padding:4px 14px;background:var(--gold);color:#000;border-radius:10px;font-size:11px;font-weight:900;letter-spacing:1px}
+.tier h4{margin:0 0 4px;font-size:20px;font-weight:900;color:var(--text)}
+.tier .sub{font-size:12px;color:var(--text3);margin:0 0 18px}
+.tier .price{font-size:36px;font-weight:900;color:var(--gold);margin:0 0 4px}
+.tier .price small{font-size:14px;color:var(--text2);font-weight:600}
+.tier .alt-price{font-size:12px;color:var(--text2);margin-bottom:20px}
+.tier ul{list-style:none;padding:0;margin:0 0 24px;flex:1}
+.tier ul li{padding:7px 0;font-size:13px;color:var(--text2);display:flex;gap:8px;align-items:flex-start}
+.tier ul li i{color:var(--green);margin-top:3px;flex-shrink:0}
+.tier ul li.excluded{color:var(--text3);text-decoration:line-through}
+.tier ul li.excluded i{color:var(--text3)}
+.buy{display:block;padding:14px;background:linear-gradient(135deg,var(--purple),var(--cyan));color:#fff;border:none;border-radius:12px;font-weight:800;font-size:14px;cursor:pointer;text-decoration:none;text-align:center;font-family:inherit;transition:all .2s}
+.buy:hover{transform:translateY(-2px);box-shadow:0 10px 25px rgba(168,85,247,.35)}
+.tier.featured .buy{background:linear-gradient(135deg,var(--gold),#f59e0b);color:#000}
+
+/* Author */
+.author{max-width:900px;margin:50px auto;padding:28px;background:var(--bg2);border:1px solid var(--border);border-radius:18px;display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+.author .avatar{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900;color:#fff;flex-shrink:0}
+.author h4{margin:0 0 6px;font-size:18px;color:var(--text)}
+.author .bio{font-size:13px;color:var(--text2);line-height:1.7;margin:0;flex:1;min-width:200px}
+
+/* FAQ */
+.faq details{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:10px;cursor:pointer}
+.faq details summary{font-weight:800;color:var(--text);font-size:15px;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.faq details summary::-webkit-details-marker{display:none}
+.faq details summary::after{content:'+';font-size:22px;color:var(--cyan);transition:transform .2s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq details p{margin:12px 0 0;color:var(--text2);font-size:13px;line-height:1.8}
+
+/* Final CTA */
+.final-cta{max-width:900px;margin:60px auto;padding:40px 28px;background:linear-gradient(135deg,rgba(168,85,247,.08),rgba(6,182,212,.08));border:1px solid rgba(168,85,247,.3);border-radius:20px;text-align:center}
+.final-cta h2{margin:0 0 12px;color:var(--text)}
+.final-cta p{max-width:600px;margin:0 auto 20px;color:var(--text2)}
+.final-cta .buy{display:inline-block;padding:16px 36px;font-size:16px}
+
+footer{max-width:1200px;margin:40px auto 20px;padding:20px;text-align:center;color:var(--text3);font-size:12px;border-top:1px solid var(--border);line-height:2}
+footer a{color:var(--cyan);text-decoration:none;margin:0 10px}
+footer .disclaimer{margin-top:12px;font-size:11px;color:var(--text3);max-width:800px;margin-left:auto;margin-right:auto;line-height:1.7}
+
+@media (max-width:640px){
+  .tier.featured{transform:none}
+  .author{flex-direction:column;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<!-- Site nav (loaded by shared.js) -->
+<div id="slh-nav"></div>
+
+<section class="hero">
+  <span class="tag">Course #1 · SLH Academia</span>
+  <h1>כלכלת תשואה דינמית</h1>
+  <div class="en-sub">DYNAMIC YIELD ECONOMICS — CRYPTO THAT DOESN'T COLLAPSE</div>
+  <p class="lead">
+    הקורס הראשון של SLH Academia. 6 מודולים של <strong>נוסחאות אמיתיות, סימולציות בודקות-סיכון, וקריאה של מערכת חיה</strong> — SLH עצמה. אתה לא לומד תיאוריה. אתה לומד איך למדוד מערכת לפני שאתה שם בה כסף, ואיך לבנות אחת כזו בעצמך.
+  </p>
+  <div class="cta-row" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+    <a href="#pricing" class="buy" style="padding:14px 30px">רכוש גישה</a>
+    <a href="#curriculum" class="buy" style="background:var(--bg2);border:1px solid var(--border);padding:14px 30px">צפה בתוכנית</a>
+  </div>
+</section>
+
+<section class="promise-grid">
+  <div class="promise-card">
+    <div class="ico"><i class="fa-solid fa-calculator"></i></div>
+    <h4>נוסחאות, לא סלוגנים</h4>
+    <p>7 נוסחאות ליבה: P_t, CR_t, Run Threshold, Coverage Ratio. כל אחת עם דוגמה מספרית אמיתית.</p>
+  </div>
+  <div class="promise-card">
+    <div class="ico"><i class="fa-solid fa-chart-line"></i></div>
+    <h4>סימולטור מלא</h4>
+    <p>Python + מחשבון בדפדפן. הזן TVL והכנסות — ראה מתי המערכת קורסת.</p>
+  </div>
+  <div class="promise-card">
+    <div class="ico"><i class="fa-solid fa-eye"></i></div>
+    <h4>Case Study חי</h4>
+    <p>SLH עצמה היא מקרה המבחן. הדשבורד הציבורי שלנו מראה את כל מה שהקורס מלמד.</p>
+  </div>
+  <div class="promise-card">
+    <div class="ico"><i class="fa-solid fa-shield-halved"></i></div>
+    <h4>Circuit Breakers</h4>
+    <c4></c4>
+    <p>איך לזהות bank run לפני שהוא קורה, ומה מנגנוני ההגנה שעובדים בפועל.</p>
+  </div>
+</section>
+
+<section class="section" id="curriculum">
+  <h2><i class="fa-solid fa-graduation-cap"></i>תוכנית הלימוד</h2>
+  <p class="h2-sub">6 מודולים · ~8 שעות לימוד · קריאה + וידאו + תרגולים אינטראקטיביים</p>
+
+  <div class="curriculum">
+    <div class="module free">
+      <div class="num">1</div>
+      <h3>מסגרת זיהוי Ponzi</h3>
+      <div class="en">Ponzi Detection Framework</div>
+      <p>7 דגלים אדומים שכל משקיע צריך לבדוק ב-5 דקות. APY קבוע, referral עמוק, חוסר Treasury שקוף, ריכוז supply, ועוד. Case studies של 3 מערכות שקרסו — ולמה.</p>
+      <div class="tags"><span class="tag-chip">Free</span><span class="tag-chip">Checklist</span><span class="tag-chip">30 min</span></div>
+    </div>
+
+    <div class="module free">
+      <div class="num">2</div>
+      <h3>Revenue Engine vs Reward Engine</h3>
+      <div class="en">The Core Distinction</div>
+      <p>ההבחנה הקריטית: מערכת שמייצרת כסף חיצוני vs מערכת שרק מחלקת את מה שמשתמשים חדשים מביאים. Decision tree מעשי — שאלות לשאול על כל פרוטוקול לפני שנוגעים בו.</p>
+      <div class="tags"><span class="tag-chip">Free</span><span class="tag-chip">Framework</span><span class="tag-chip">45 min</span></div>
+    </div>
+
+    <div class="module">
+      <div class="num">3</div>
+      <h3>מתמטיקה של Dynamic Yield</h3>
+      <div class="en">The Formulas</div>
+      <p>הליבה הכמותית של הקורס. נוסחאות P_t = k·Net_t, Yield_user, APY_implied, Coverage Ratio. כולל <strong>מחשבון אינטראקטיבי</strong> — הזן מספרים של המערכת שלך וראה את התוצאה בזמן אמת.</p>
+      <div class="tags"><span class="tag-chip">Pro</span><span class="tag-chip">Calculator</span><span class="tag-chip">75 min</span></div>
+    </div>
+
+    <div class="module">
+      <div class="num">4</div>
+      <h3>Treasury ו-Coverage Ratio</h3>
+      <div class="en">Treasury Engineering</div>
+      <p>מתי לעצור חלוקה, איך מגדירים buffer שעומד ב-bank run, ואיך בונים Treasury רב-שכבתי (on-chain + fiat + liquid + illiquid). דוגמה: טיול מודרך בארנקי ה-Treasury של SLH.</p>
+      <div class="tags"><span class="tag-chip">Pro</span><span class="tag-chip">Live walkthrough</span><span class="tag-chip">90 min</span></div>
+    </div>
+
+    <div class="module">
+      <div class="num">5</div>
+      <h3>Circuit Breakers ומניעת ריצה</h3>
+      <div class="en">Run Protection</div>
+      <p>5 מנגנוני עצירה אוטומטיים: CR guardrail, withdrawal throttling, buffer recovery mode, oracle freeze, deposit pause. <strong>סימולטור Python</strong> להרצת תרחישי stress — Bear / Base / Bull / Crisis.</p>
+      <div class="tags"><span class="tag-chip">Pro</span><span class="tag-chip">Python</span><span class="tag-chip">90 min</span></div>
+    </div>
+
+    <div class="module">
+      <div class="num">6</div>
+      <h3>יישום: SLH בשידור חי</h3>
+      <div class="en">Live Case Study</div>
+      <p>כל מה שלמדת → איך SLH מיישמת את זה בפועל. סיור בקוד, ב-API, ובדשבורד הציבורי. איך לקרוא את `/status` ולדעת אם המערכת בריאה. כולל תבניות לבניית המערכת שלך.</p>
+      <div class="tags"><span class="tag-chip">Pro</span><span class="tag-chip">Code walk</span><span class="tag-chip">120 min</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="anti-promise">
+  <div class="ico"><i class="fa-solid fa-triangle-exclamation"></i></div>
+  <h3>מה אתה <em>לא</em> מקבל בקורס הזה</h3>
+  <p>
+    <strong>הבטחות תשואה.</strong> לא 48%, לא 55%, לא 60%, לא 65%.<br>
+    <strong>"פספסת ביטקוין" למכור לך FOMO.</strong><br>
+    <strong>עצה פיננסית.</strong> הקורס לומד אותך לחשוב, לא נותן לך סיגנלים.<br><br>
+    אם אתה מחפש APY מובטח — זה לא הקורס בשבילך. <em>ואם אתה מחפש APY מובטח, יש לך בעיה גדולה יותר.</em> ה-module הראשון (חינם) יסביר למה.
+  </p>
+</section>
+
+<section class="section" id="pricing">
+  <h2><i class="fa-solid fa-tag"></i>מסלולי גישה</h2>
+  <p class="h2-sub">מודולים 1-2 חינם לכולם. מודולים 3-6 בתשלום. מחיר בש״ח, SLH, TON, או ZVK.</p>
+
+  <div class="pricing">
+    <div class="tier">
+      <h4>Free</h4>
+      <div class="sub">התחל כאן — ללא תשלום</div>
+      <div class="price">₪0</div>
+      <div class="alt-price">לכל דורש</div>
+      <ul>
+        <li><i class="fa-solid fa-check"></i>מודול 1: Ponzi Detection Framework</li>
+        <li><i class="fa-solid fa-check"></i>מודול 2: Revenue vs Reward Engine</li>
+        <li><i class="fa-solid fa-check"></i>גישה לקהילת הקורס בטלגרם</li>
+        <li class="excluded"><i class="fa-solid fa-xmark"></i>מחשבון אינטראקטיבי</li>
+        <li class="excluded"><i class="fa-solid fa-xmark"></i>סימולטור Python</li>
+        <li class="excluded"><i class="fa-solid fa-xmark"></i>מודולים 3-6</li>
+        <li class="excluded"><i class="fa-solid fa-xmark"></i>Certificate NFT</li>
+      </ul>
+      <a href="/academy/course-1-dynamic-yield/module-1.html" class="buy">התחל חינם</a>
+    </div>
+
+    <div class="tier featured">
+      <h4>Pro</h4>
+      <div class="sub">הקורס המלא</div>
+      <div class="price">₪179 <small>/ פעם אחת</small></div>
+      <div class="alt-price">או ~0.4 SLH · ~8 TON · ~1,800 ZVK</div>
+      <ul>
+        <li><i class="fa-solid fa-check"></i>כל 6 המודולים (8 שעות תוכן)</li>
+        <li><i class="fa-solid fa-check"></i>מחשבון Dynamic Yield אינטראקטיבי</li>
+        <li><i class="fa-solid fa-check"></i>סימולטור Python מלא (download)</li>
+        <li><i class="fa-solid fa-check"></i>Certificate NFT על BSC</li>
+        <li><i class="fa-solid fa-check"></i>Case studies של 5 פרוטוקולים שקרסו</li>
+        <li><i class="fa-solid fa-check"></i>גישה לעדכוני תוכן עתידיים (12 חודש)</li>
+        <li><i class="fa-solid fa-check"></i>קהילת בוגרים בטלגרם</li>
+      </ul>
+      <a href="https://t.me/WEWORK_teamviwer_bot?start=buy_course_1_pro" class="buy">רכוש Pro</a>
+    </div>
+
+    <div class="tier">
+      <h4>VIP</h4>
+      <div class="sub">ליווי + early access</div>
+      <div class="price">₪549 <small>/ פעם אחת</small></div>
+      <div class="alt-price">או ~1.2 SLH · ~24 TON · ~5,500 ZVK</div>
+      <ul>
+        <li><i class="fa-solid fa-check"></i>כל מה שב-Pro</li>
+        <li><i class="fa-solid fa-check"></i>Q&A חי עם Osif (3 מפגשים · 60 דק')</li>
+        <li><i class="fa-solid fa-check"></i>Early access למודולים 7+ (Governance, On-chain oracles)</li>
+        <li><i class="fa-solid fa-check"></i>Review אישי של המודל הכלכלי שלך (עד שעה)</li>
+        <li><i class="fa-solid fa-check"></i>תג מיוחד בדשבורד SLH</li>
+        <li><i class="fa-solid fa-check"></i>+1 שנת עדכונים (12+12)</li>
+      </ul>
+      <a href="https://t.me/WEWORK_teamviwer_bot?start=buy_course_1_vip" class="buy">רכוש VIP</a>
+    </div>
+  </div>
+</section>
+
+<section class="author">
+  <div class="avatar">O</div>
+  <div>
+    <h4>Osif Kaufman Ungar — יוצר SLH Spark</h4>
+    <p class="bio">
+      סולו-דב שבנה את כל האקוסיסטם של SLH: 25 בוטים, 113 API endpoints, 43 דפי web, ו-5 טוקנים. הקורס הזה הוא התמצית של מה שלמדתי בדרך הקשה — איך לא לבנות עוד מערכת קריפטו שקורסת. הוא חושף את המודל הכלכלי של SLH עצמה, כולל את ה-Coverage Ratio, ה-Circuit Breakers, וה-Treasury בפועל. כל הוכחה מתיישבת חיה ב-<a href="/status.html" style="color:var(--cyan)">/status</a>.
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <h2><i class="fa-solid fa-circle-question"></i>שאלות נפוצות</h2>
+  <div class="faq">
+    <details>
+      <summary>האם זה קורס השקעה? מסביר לי איפה לשים כסף?</summary>
+      <p><strong>לא.</strong> זה קורס בכלכלה של מערכות קריפטו. הוא לומד אותך איך להעריך פרוטוקול, לא איזה פרוטוקול לקנות. אין סיגנלים, אין "אלטקוין של השבוע", ואין טיפים פיננסיים. רק framework אנליטי.</p>
+    </details>
+    <details>
+      <summary>מה רמת הידע הנדרשת?</summary>
+      <p>הבנה בסיסית של קריפטו (מה זה wallet, staking, liquidity pool). אם אתה יודע לקרוא Etherscan ולשים טוקן על PancakeSwap — מוכן. מודולים 3-5 כוללים מתמטיקה ברמת תיכון + לוגיקת תכנות בסיסית.</p>
+    </details>
+    <details>
+      <summary>למה הקורס הראשון דווקא על כלכלה ולא על טכנולוגיה?</summary>
+      <p>כי 95% מהקריסות בקריפטו הן כלכליות, לא טכניות. חוזה חכם יכול להיות מושלם טכנית ולהתפרק כי ה-tokenomics לא עובדת. אנחנו מתחילים מהשורש.</p>
+    </details>
+    <details>
+      <summary>מה קורה אם SLH עצמה מתפרקת?</summary>
+      <p>שאלה הוגנת — ובעצם אחד מהדברים שהקורס לומד אותך לבדוק. אם Coverage Ratio (CR_t) של SLH יורד מ-1.0 — החלוקות נעצרות אוטומטית (זה ה-Circuit Breaker במודול 5). תוכן הקורס נשאר זמין לכל מי שקנה. הסרטונים מאוחסנים ב-IPFS + mirror ב-YouTube פרטי.</p>
+    </details>
+    <details>
+      <summary>איך מקבלים את ה-Certificate NFT?</summary>
+      <p>בסיום מודול 6 ומילוי quiz עם ≥80% ציון. ה-NFT מונפק אוטומטית לארנק ה-BSC שציינת בהרשמה. גם משמש כ-utility לכל קורס עתידי של SLH Academia (הנחה של 20% לבעלי Certificate).</p>
+    </details>
+    <details>
+      <summary>המחיר ב-ZVK / SLH מוצג, אבל איך הוא מחושב?</summary>
+      <p>ב-checkout ה-@WEWORK_teamviwer_bot מושך את שער הטוקן החי מה-oracle של SLH ומקבע אותו ל-15 דקות. המחיר בש״ח הוא הנקודת ייחוס. השערים בטוקנים הם הערכה ונתונים לעדכון בכל ביקור.</p>
+    </details>
+    <details>
+      <summary>יש ערבות החזר?</summary>
+      <p>כן — 14 יום. אם לא אהבת, פנה ל-<a href="https://t.me/osifeu_prog" style="color:var(--cyan)">@osifeu_prog</a> וקבל החזר מלא, ללא שאלות. Certificate NFT מבוטל אם הוצא.</p>
+    </details>
+  </div>
+</section>
+
+<section class="final-cta">
+  <h2>הקורס הראשון — והיחיד שיגיד לך לא לקנות ממני</h2>
+  <p>
+    אם הקורס יוכיח ש-SLH לא עומדת במבחן הקריטריונים של עצמה — אני אגיד לך לא לשים בה כסף. זה לא מהלך שיווקי. זה כללי המשחק.
+  </p>
+  <a href="#pricing" class="buy">בחר מסלול והצטרף</a>
+</section>
+
+<footer>
+  <div>
+    <a href="/">בית</a> · <a href="/academia.html">חזרה לקטלוג</a> · <a href="/status.html">Status חי</a> · <a href="/terms.html">תנאים</a> · <a href="/risk.html">גילוי סיכון</a>
+  </div>
+  <div class="disclaimer">
+    SLH Spark היא אקוסיסטם קריפטו בשלבים מוקדמים. Dynamic Yield הוא מנגנון חלוקת הכנסות, לא מוצר פיננסי מובטח. חלוקות עבר לא מבטיחות חלוקות עתיד. אין זה ייעוץ השקעות. הקורס הוא תוכן חינוכי בלבד.
+  </div>
+</footer>
+
+<script src="/js/shared.js?v=20260426e" defer></script>
+</body>
+</html>

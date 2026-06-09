@@ -1,0 +1,1016 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLH Spark Staking — Earn Up to Variable Yield (4-12%)</title>
+    <meta name="description" content="Stake SLH tokens and participate in Revenue Share Pool. Dynamic Yield derived from real system revenue. 2-tier affiliate program. Pre-launch, not guaranteed.">
+    <meta name="keywords" content="SLH, staking, referral, passive income, TON, crypto, APY, SPARK IND, blockchain, investment">
+    <meta name="author" content="SPARK IND">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://slh-nft.com/staking.html">
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="SLH Ecosystem">
+    <meta property="og:title" content="SLH Spark Staking — Earn Up to Variable Yield (4-12%)">
+    <meta property="og:description" content="Stake SLH tokens. Earn 4%-Variable Yield (4-12%). 10-generation referral.">
+    <meta property="og:image" content="https://slh-nft.com/assets/og/default.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://slh-nft.com/staking.html">
+    <meta property="og:locale" content="he_IL">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SLH Spark Staking — Earn Up to Variable Yield (4-12%)">
+    <meta name="twitter:description" content="Stake SLH tokens. Earn 4%-Variable Yield (4-12%). 10-generation referral.">
+    <meta name="twitter:image" content="https://slh-nft.com/assets/og/default.png">
+    <!-- Icons & PWA -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0a0a0a">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/shared.css?v=20260426e">
+    <style>
+        :root{--bg:#050510;--bg2:#0c0c24;--accent:#6c5ce7;--accent2:#a29bfe;--gold:#ffd32a;--green:#00cec9;--cyan:#00b4d8;--pink:#fd79a8;--text:#eaeaf5;--text2:#7878a0;--card:rgba(255,255,255,0.03);--border:rgba(255,255,255,0.06)}
+        *{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+        .bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(108,92,231,.12) 0%,transparent 60%),radial-gradient(ellipse 60% 80% at 80% 90%,rgba(0,206,201,.08) 0%,transparent 60%),radial-gradient(ellipse 50% 50% at 50% 50%,rgba(253,121,168,.04) 0%,transparent 60%)}
+        .grid-ov{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.03;background-image:linear-gradient(rgba(255,255,255,.1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.1) 1px,transparent 1px);background-size:60px 60px}
+        .orb{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0}
+        .orb-1{width:400px;height:400px;background:rgba(108,92,231,.15);top:-10%;right:-5%;animation:of1 20s ease-in-out infinite}
+        .orb-2{width:300px;height:300px;background:rgba(0,206,201,.1);bottom:10%;left:-5%;animation:of2 25s ease-in-out infinite}
+        .orb-3{width:200px;height:200px;background:rgba(253,121,168,.08);top:50%;left:40%;animation:of3 18s ease-in-out infinite}
+        @keyframes of1{0%,100%{transform:translate(0,0)}50%{transform:translate(-60px,80px)}}
+        @keyframes of2{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,-60px)}}
+        @keyframes of3{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,40px)}}
+
+        .particle{position:fixed;width:3px;height:3px;background:var(--accent2);border-radius:50%;opacity:0.3;pointer-events:none;z-index:0}
+        .particle:nth-child(1){top:15%;left:10%;animation:pfloat 15s ease-in-out infinite}
+        .particle:nth-child(2){top:25%;left:80%;animation:pfloat 18s ease-in-out infinite 2s;width:4px;height:4px;background:var(--cyan)}
+        .particle:nth-child(3){top:45%;left:25%;animation:pfloat 12s ease-in-out infinite 1s;background:var(--gold)}
+        .particle:nth-child(4){top:60%;left:70%;animation:pfloat 20s ease-in-out infinite 3s;width:2px;height:2px}
+        .particle:nth-child(5){top:80%;left:15%;animation:pfloat 16s ease-in-out infinite 4s;background:var(--pink);width:4px;height:4px}
+        .particle:nth-child(6){top:10%;left:55%;animation:pfloat 14s ease-in-out infinite 1.5s;background:var(--green);width:2px;height:2px}
+        @keyframes pfloat{0%,100%{transform:translate(0,0) scale(1);opacity:0.3}25%{transform:translate(30px,-50px) scale(1.5);opacity:0.5}50%{transform:translate(-20px,-100px) scale(1);opacity:0.2}75%{transform:translate(40px,-50px) scale(1.3);opacity:0.4}}
+
+        .matrix-col{position:fixed;top:-100%;font-family:'Courier New',monospace;font-size:14px;color:rgba(0,206,201,0.06);writing-mode:vertical-rl;white-space:nowrap;z-index:0;pointer-events:none;animation:matrix-fall linear infinite}
+        @keyframes matrix-fall{0%{transform:translateY(-100%)}100%{transform:translateY(200vh)}}
+
+        .scroll-progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--cyan),var(--gold));z-index:200;width:0%;transition:width .1s linear;box-shadow:0 0 10px var(--accent)}
+
+        /* NAV */
+        nav{position:fixed;top:0;width:100%;z-index:100;padding:12px 28px;background:rgba(5,5,16,.7);backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;transition:.3s}
+        nav.scrolled{background:rgba(5,5,16,.95);padding:8px 28px}
+        .logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--text)}
+        .logo-d{width:30px;height:30px;background:linear-gradient(135deg,var(--accent),var(--cyan));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;transform:rotate(45deg)}
+        .logo-d span{transform:rotate(-45deg);color:#fff;font-weight:800}
+        .logo-t span{color:var(--accent2)}
+        .nav-mid{display:flex;gap:24px;align-items:center}
+        .nav-mid a{color:var(--text2);text-decoration:none;font-size:13px;font-weight:500;transition:.3s;position:relative}
+        .nav-mid a:hover,.nav-mid a.active{color:var(--text)}
+        .nav-mid a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;background:var(--accent);transition:.3s}
+        .nav-mid a:hover::after,.nav-mid a.active::after{width:100%}
+        .nav-right{display:flex;align-items:center;gap:12px}
+        .lang-btn{background:var(--card);border:1px solid var(--border);color:var(--text2);padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:.3s}
+        .lang-btn:hover,.lang-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+        .nav-cta{background:linear-gradient(135deg,var(--accent),#8b5cf6);color:#fff;padding:9px 22px;border-radius:10px;font-weight:600;text-decoration:none;font-size:13px;transition:.3s;box-shadow:0 2px 20px rgba(108,92,231,.3)}
+        .nav-cta:hover{transform:translateY(-2px);box-shadow:0 4px 30px rgba(108,92,231,.5)}
+
+        /* HAMBURGER & SIDEBAR */
+        .hamburger{display:none;background:none;border:1px solid var(--border);color:var(--text);width:36px;height:36px;border-radius:8px;font-size:20px;cursor:pointer;align-items:center;justify-content:center;transition:.3s;flex-shrink:0}
+        .hamburger:hover{border-color:var(--accent);color:var(--accent)}
+        .sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9998;opacity:0;pointer-events:none;transition:opacity .3s}
+        .sidebar-overlay.open{opacity:1;pointer-events:all}
+        .side-menu{position:fixed;top:0;right:-320px;width:300px;height:100vh;background:var(--bg2);border-left:1px solid var(--border);z-index:9999;overflow-y:auto;transition:right .3s ease;padding:0}
+        html[dir="ltr"] .side-menu{right:auto;left:-320px;border-left:none;border-right:1px solid var(--border)}
+        .side-menu.open{right:0}
+        html[dir="ltr"] .side-menu.open{left:0}
+        .side-link{display:flex;align-items:center;gap:12px;padding:12px 20px;color:var(--text);text-decoration:none;font-size:14px;transition:.2s;border-bottom:1px solid rgba(255,255,255,.03)}
+        .side-link:hover{background:rgba(108,92,231,.05);color:var(--accent)}
+        @media(max-width:900px){
+            .nav-mid,.nav-right{display:none !important}
+            .hamburger{display:flex}
+        }
+
+        /* SECTIONS */
+        section{padding:100px 20px;position:relative;z-index:1;max-width:1200px;margin:0 auto}
+        .stag{display:inline-block;padding:5px 14px;border-radius:6px;background:rgba(108,92,231,.1);border:1px solid rgba(108,92,231,.2);color:var(--accent2);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:14px}
+        .stitle{font-family:'Space Grotesk',sans-serif;font-size:clamp(28px,4vw,44px);font-weight:800;margin-bottom:14px;line-height:1.2;background:linear-gradient(135deg,#fff,var(--accent2),var(--cyan),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .ssub{color:var(--text2);font-size:16px;margin-bottom:56px;max-width:520px;line-height:1.7}
+        .sc{text-align:center}.sc .ssub{margin-left:auto;margin-right:auto}
+        section::before{content:'';display:block;width:60px;height:3px;background:linear-gradient(90deg,var(--accent),var(--cyan));border-radius:2px;margin:0 auto 40px;opacity:.5}
+        section:first-of-type::before{display:none}
+
+        .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;border-radius:12px;font-size:14px;font-weight:600;text-decoration:none;transition:.3s}
+        .btn-p{background:linear-gradient(135deg,var(--accent),#8b5cf6,var(--cyan));background-size:200% 200%;animation:gs 3s ease infinite;color:#fff;box-shadow:0 4px 30px rgba(108,92,231,.4)}
+        @keyframes gs{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+        .btn-p:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 8px 50px rgba(108,92,231,.6)}
+        .btn-o{background:transparent;color:var(--text);border:1.5px solid var(--border);backdrop-filter:blur(10px)}
+        .btn-o:hover{background:rgba(255,255,255,.05);transform:translateY(-3px);border-color:var(--accent)}
+
+        /* HERO BANNER */
+        .page-hero{min-height:50vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:120px 20px 60px;position:relative;z-index:1}
+        .page-hero h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(32px,6vw,64px);font-weight:900;line-height:1.1;margin-bottom:16px;background:linear-gradient(135deg,#fff,var(--accent2),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .page-hero p{font-size:17px;color:var(--text2);max-width:560px;line-height:1.8;margin-bottom:32px}
+        .page-hero .hero-stats{display:flex;gap:32px;flex-wrap:wrap;justify-content:center}
+        .page-hero .hero-stat{text-align:center}
+        .page-hero .hero-stat-val{font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:800;background:linear-gradient(135deg,var(--accent2),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .page-hero .hero-stat-lbl{font-size:12px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+
+        /* STAKING SECTION */
+        .staking-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:48px}
+        .stake-card{background:rgba(255,255,255,0.04);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:32px 24px;text-align:center;position:relative;overflow:hidden;transition:.4s cubic-bezier(.16,1,.3,1)}
+        .stake-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px}
+        .stake-card.tier-1::before{background:linear-gradient(90deg,var(--accent2),var(--accent))}
+        .stake-card.tier-2::before{background:linear-gradient(90deg,var(--cyan),var(--green))}
+        .stake-card.tier-3::before{background:linear-gradient(90deg,var(--gold),#ffaa00)}
+        .stake-card.tier-4::before{background:linear-gradient(90deg,var(--pink),#ff5555)}
+        .stake-card:hover{transform:translateY(-6px);border-color:rgba(108,92,231,.4);box-shadow:0 20px 60px rgba(108,92,231,.15)}
+        .stake-name{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--text2);margin-bottom:16px}
+        .stake-apy{font-family:'Space Grotesk',sans-serif;font-size:52px;font-weight:900;background:linear-gradient(135deg,var(--accent2),var(--cyan),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;margin-bottom:4px}
+        .stake-apy-label{font-size:12px;color:var(--text2);margin-bottom:20px;text-transform:uppercase;letter-spacing:1px}
+        .stake-info{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+        .stake-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+        .stake-row-label{font-size:12px;color:var(--text2)}
+        .stake-row-value{font-size:13px;font-weight:600;color:var(--text)}
+        .stake-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px 24px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#8b5cf6);color:#fff;font-size:13px;font-weight:600;text-decoration:none;transition:.3s;border:none;cursor:pointer}
+        .stake-btn:hover{transform:translateY(-2px);box-shadow:0 4px 30px rgba(108,92,231,.4)}
+
+        /* HOW TO EARN */
+        .earn-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px}
+        .earn-step{text-align:center;padding:32px 20px;background:rgba(255,255,255,0.04);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.08);border-radius:18px;transition:.3s}
+        .earn-step:hover{border-color:rgba(108,92,231,.3);transform:translateY(-4px)}
+        .earn-icon{font-size:40px;margin-bottom:16px}
+        .earn-step-num{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--cyan));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;margin:0 auto 12px;color:#fff}
+        .earn-step h4{font-size:15px;font-weight:700;margin-bottom:8px}
+        .earn-step p{font-size:13px;color:var(--text2);line-height:1.6}
+        .earn-step a{color:var(--accent2);text-decoration:none;font-weight:600;font-size:12px;display:inline-block;margin-top:8px;transition:.3s}
+        .earn-step a:hover{color:var(--cyan)}
+
+        /* REFERRAL SECTION */
+        .ref-rates{display:flex;flex-direction:column;gap:10px;max-width:700px;margin:0 auto 48px;padding:0 20px}
+        .ref-bar{display:flex;align-items:center;gap:12px;padding:10px 16px;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);transition:.3s}
+        .ref-bar:hover{border-color:rgba(108,92,231,.3);transform:translateX(-4px)}
+        html[dir="ltr"] .ref-bar:hover{transform:translateX(4px)}
+        .ref-bar-label{font-size:13px;font-weight:600;color:var(--text);min-width:80px;white-space:nowrap}
+        .ref-bar-track{flex:1;height:28px;border-radius:8px;position:relative;overflow:hidden;background:rgba(255,255,255,0.03)}
+        .ref-bar-fill{height:100%;border-radius:8px;display:flex;align-items:center;justify-content:flex-end;padding:0 10px;font-size:12px;font-weight:700;color:#fff;transition:width 1s cubic-bezier(.16,1,.3,1)}
+        .ref-bar:nth-child(1) .ref-bar-fill{width:100%;background:linear-gradient(90deg,var(--accent),#8b5cf6)}
+        .ref-bar:nth-child(2) .ref-bar-fill{width:50%;background:linear-gradient(90deg,#8b5cf6,var(--accent2))}
+        .ref-bar:nth-child(3) .ref-bar-fill{width:30%;background:linear-gradient(90deg,var(--accent2),var(--cyan))}
+        .ref-bar:nth-child(4) .ref-bar-fill{width:20%;background:linear-gradient(90deg,var(--cyan),var(--green))}
+        .ref-bar:nth-child(5) .ref-bar-fill{width:10%;background:linear-gradient(90deg,var(--green),var(--gold))}
+        .ref-bar:nth-child(6) .ref-bar-fill{width:5%;background:linear-gradient(90deg,var(--gold),#ffaa00)}
+        .ref-bar:nth-child(7) .ref-bar-fill{width:4%;background:linear-gradient(90deg,#ffaa00,var(--pink))}
+        .ref-bar:nth-child(8) .ref-bar-fill{width:3%;background:linear-gradient(90deg,var(--pink),#ff5555)}
+        .ref-bar:nth-child(9) .ref-bar-fill{width:2.5%;background:linear-gradient(90deg,#ff5555,var(--text2))}
+        .ref-bar:nth-child(10) .ref-bar-fill{width:2%;background:linear-gradient(90deg,var(--text2),#555)}
+        .ref-bar-pct{font-size:13px;font-weight:700;color:var(--accent2);min-width:50px;text-align:left}
+        html[dir="rtl"] .ref-bar-pct{text-align:right}
+
+        .ref-demo{max-width:700px;margin:0 auto 48px;padding:0 20px;text-align:center}
+        .ref-input{width:100%;max-width:320px;padding:14px 20px;border-radius:12px;background:rgba(255,255,255,0.04);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.08);color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:.3s;text-align:center}
+        .ref-input:focus{border-color:var(--accent);box-shadow:0 0 20px rgba(108,92,231,.2)}
+        .ref-input::placeholder{color:var(--text2)}
+        .ref-btn{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;border-radius:12px;font-size:14px;font-weight:600;border:none;cursor:pointer;transition:.3s;background:linear-gradient(135deg,var(--accent),#8b5cf6,var(--cyan));background-size:200% 200%;animation:gs 3s ease infinite;color:#fff;box-shadow:0 4px 30px rgba(108,92,231,.4);margin-top:12px}
+        .ref-btn:hover{transform:translateY(-3px);box-shadow:0 8px 50px rgba(108,92,231,.6)}
+
+        #ref-tree-display{margin-top:32px;text-align:center}
+        .ref-tree-node{display:inline-flex;flex-direction:column;align-items:center;margin:0 8px}
+        .ref-tree-card{padding:12px 18px;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);font-size:13px;color:var(--text);position:relative;min-width:120px;transition:.3s}
+        .ref-tree-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+        .ref-tree-name{font-weight:600;margin-bottom:4px}
+        .ref-tree-gen{display:inline-block;padding:2px 8px;border-radius:4px;background:rgba(108,92,231,.15);color:var(--accent2);font-size:10px;font-weight:700;margin-bottom:4px}
+        .ref-tree-desc{font-size:11px;color:var(--text2)}
+        .ref-tree-children{display:flex;justify-content:center;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.06);flex-wrap:wrap}
+        .ref-tree-line{width:1px;height:12px;background:rgba(108,92,231,.3);margin:0 auto}
+
+        #ref-stats-display{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:32px;max-width:700px;margin-left:auto;margin-right:auto}
+        .ref-stat-card{padding:24px 16px;border-radius:16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);text-align:center;transition:.3s}
+        .ref-stat-card:hover{border-color:rgba(108,92,231,.3);transform:translateY(-3px)}
+        .ref-stat-num{font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:800;background:linear-gradient(135deg,var(--accent2),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .ref-stat-label{font-size:12px;color:var(--text2);margin-top:4px;text-transform:uppercase;letter-spacing:1px}
+
+        .ref-link-box{max-width:700px;margin:0 auto;padding:0 20px;text-align:center}
+        .ref-link-box p{color:var(--text2);font-size:14px;margin-bottom:12px}
+        .ref-link-copy{display:flex;gap:8px;max-width:500px;margin:0 auto}
+        .ref-link-copy input{flex:1;padding:12px 16px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none}
+        .ref-link-copy button{padding:12px 24px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#8b5cf6);color:#fff;font-size:13px;font-weight:600;border:none;cursor:pointer;transition:.3s;white-space:nowrap}
+        .ref-link-copy button:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(108,92,231,.4)}
+
+        .ref-banner{position:fixed;top:60px;left:50%;transform:translateX(-50%);padding:10px 24px;border-radius:12px;background:linear-gradient(135deg,rgba(108,92,231,.9),rgba(0,206,201,.8));color:#fff;font-size:13px;font-weight:600;z-index:99;backdrop-filter:blur(10px);box-shadow:0 4px 30px rgba(108,92,231,.4);animation:fadeInDown .5s ease}
+
+        /* CTA */
+        .cta{text-align:center;padding:80px 28px;background:linear-gradient(135deg,rgba(108,92,231,.08),rgba(0,206,201,.05));border-radius:28px;margin:0 20px 80px;border:1px solid var(--border);position:relative;z-index:1;overflow:hidden;max-width:900px;margin-left:auto;margin-right:auto}
+        .cta h2{font-family:'Space Grotesk',sans-serif;font-size:clamp(24px,4vw,38px);font-weight:800;margin-bottom:14px}
+        .cta p{color:var(--text2);font-size:16px;margin-bottom:32px;max-width:460px;margin-left:auto;margin-right:auto}
+
+        /* FOOTER */
+        footer{text-align:center;padding:40px 20px;border-top:1px solid var(--border);color:var(--text2);font-size:12px;position:relative;z-index:1}
+        .fl{display:flex;justify-content:center;gap:20px;margin-bottom:12px;flex-wrap:wrap}
+        .fl a{color:var(--text2);text-decoration:none;transition:.3s;font-size:13px}.fl a:hover{color:var(--accent2)}
+
+        /* ASCII divider */
+        .ascii-divider{text-align:center;color:var(--accent);font-family:'Courier New',monospace;font-size:12px;opacity:0.3;margin:40px 0;letter-spacing:4px;user-select:none}
+
+        /* Terminal header */
+        .terminal-header{font-family:'Courier New',monospace;display:inline-block;padding:8px 20px;background:rgba(0,0,0,0.4);border:1px solid var(--accent);border-radius:4px;color:var(--green);font-size:13px;margin-bottom:16px;position:relative}
+        .terminal-header::before{content:'> ';color:var(--accent2)}
+        .terminal-header::after{content:'_';animation:blink 1s step-end infinite;color:var(--green)}
+        @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+        /* ANIMATIONS */
+        @keyframes fadeInUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes fadeInDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+        .rv{opacity:0;transform:translateY(30px);transition:.8s cubic-bezier(.16,1,.3,1)}.rv.vis{opacity:1;transform:translateY(0)}
+        .rd1{transition-delay:.1s}.rd2{transition-delay:.2s}.rd3{transition-delay:.3s}
+
+        /* RTL/LTR */
+        html[dir="ltr"] .nav-mid a::after{left:auto;right:0}
+
+        /* ============================================================
+           TERMINAL THEME
+           ============================================================ */
+        html[data-theme="terminal"]{--bg:#0a0a0a !important;--bg2:#0f0f0f !important;--accent:#00ff41 !important;--accent2:#39ff14 !important;--gold:#ffd700 !important;--green:#00ff41 !important;--cyan:#00e5ff !important;--pink:#ff0055 !important;--text:#00ff41 !important;--text2:#008f11 !important;--card:rgba(0,255,65,0.03) !important;--border:rgba(0,255,65,0.15) !important;--font-mono:'Space Mono','Courier New',monospace}
+        html[data-theme="terminal"] body{font-family:var(--font-mono) !important;background:#0a0a0a !important;color:#00ff41 !important;animation:crt-flicker 8s infinite}
+        html[data-theme="terminal"] body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.03) 0px,rgba(0,0,0,0.03) 1px,transparent 1px,transparent 3px);pointer-events:none;z-index:9999}
+        html[data-theme="terminal"] body::before{content:'';position:fixed;inset:-5px;border:2px solid rgba(0,255,65,0.1);border-radius:20px;box-shadow:inset 0 0 100px rgba(0,255,65,0.05),0 0 40px rgba(0,255,65,0.03);pointer-events:none;z-index:9998}
+        @keyframes crt-flicker{0%{opacity:0.98}5%{opacity:1}10%{opacity:0.98}15%{opacity:1}100%{opacity:1}}
+        html[data-theme="terminal"] nav{background:rgba(0,0,0,0.95) !important;backdrop-filter:none !important;border-bottom:1px solid #00ff41 !important;font-family:var(--font-mono) !important}
+        html[data-theme="terminal"] .nav-cta{background:transparent !important;border:1px solid #00ff41 !important;color:#00ff41 !important;box-shadow:0 0 10px rgba(0,255,65,0.2) !important;text-transform:uppercase !important;letter-spacing:2px !important;font-size:11px !important;border-radius:0 !important;font-family:var(--font-mono) !important}
+        html[data-theme="terminal"] .nav-cta:hover{background:#00ff41 !important;color:#000 !important;transform:none !important}
+        html[data-theme="terminal"] .lang-btn{border-color:rgba(0,255,65,0.15) !important;color:#008f11 !important;border-radius:0 !important;font-family:var(--font-mono) !important}
+        html[data-theme="terminal"] .lang-btn:hover,html[data-theme="terminal"] .lang-btn.active{background:#00ff41 !important;color:#000 !important;border-color:#00ff41 !important}
+        html[data-theme="terminal"] .logo-d{background:transparent !important;border:1px solid #00ff41 !important;border-radius:0 !important;transform:none !important}
+        html[data-theme="terminal"] .logo-d span{transform:none !important;color:#00ff41 !important;font-family:var(--font-mono) !important}
+        html[data-theme="terminal"] .logo-t{font-family:var(--font-mono) !important;color:#00ff41 !important}
+        html[data-theme="terminal"] .logo-t span{color:#008f11 !important}
+        html[data-theme="terminal"] .stitle{font-family:var(--font-mono) !important;background:none !important;-webkit-text-fill-color:#00ff41 !important;background-clip:unset !important}
+        html[data-theme="terminal"] .stag{background:rgba(0,255,65,0.05) !important;border-color:rgba(0,255,65,0.2) !important;color:#00ff41 !important;font-family:var(--font-mono) !important;border-radius:0 !important}
+        html[data-theme="terminal"] .ssub{color:#008f11 !important}
+        html[data-theme="terminal"] section::before{background:linear-gradient(90deg,#00ff41,#00e5ff) !important;opacity:0.3 !important}
+        html[data-theme="terminal"] .stake-card{background:rgba(0,255,65,0.02) !important;border-color:rgba(0,255,65,0.12) !important;border-radius:2px !important}
+        html[data-theme="terminal"] .stake-card:hover{border-color:#00ff41 !important;box-shadow:0 0 20px rgba(0,255,65,0.1) !important;transform:none !important}
+        html[data-theme="terminal"] .stake-apy{color:#00ff41 !important;-webkit-text-fill-color:#00ff41 !important;text-shadow:0 0 10px rgba(0,255,65,0.3);font-family:var(--font-mono) !important}
+        html[data-theme="terminal"] .stake-card::before{background:linear-gradient(90deg,#00ff41,#39ff14) !important}
+        html[data-theme="terminal"] .earn-steps{font-family:var(--font-mono) !important}
+        html[data-theme="terminal"] .earn-step{background:rgba(0,255,65,0.02) !important;border-color:rgba(0,255,65,0.12) !important;border-radius:2px !important}
+        html[data-theme="terminal"] .earn-step:hover{border-color:#00ff41 !important;transform:none !important}
+        html[data-theme="terminal"] .earn-step-num{background:transparent !important;border:2px solid #00ff41 !important;color:#00ff41 !important;border-radius:0 !important;font-family:var(--font-mono) !important}
+        html[data-theme="terminal"] .btn-p{background:transparent !important;border:1px solid #00ff41 !important;color:#00ff41 !important;box-shadow:0 0 15px rgba(0,255,65,0.15) !important;animation:none !important;text-transform:uppercase !important;letter-spacing:1px !important;font-family:var(--font-mono) !important;border-radius:2px !important}
+        html[data-theme="terminal"] .btn-p:hover{background:#00ff41 !important;color:#000 !important;box-shadow:0 0 30px rgba(0,255,65,0.4) !important;transform:none !important}
+        html[data-theme="terminal"] .btn{border-radius:2px !important}
+        html[data-theme="terminal"] .ref-link-copy input{background:rgba(0,255,65,0.03) !important;border-color:rgba(0,255,65,0.2) !important;color:#00ff41 !important;font-family:var(--font-mono) !important;border-radius:0 !important}
+        html[data-theme="terminal"] .ref-link-copy button{background:transparent !important;border:1px solid #00ff41 !important;color:#00ff41 !important;border-radius:0 !important;font-family:var(--font-mono) !important}
+        html[data-theme="terminal"] .ref-link-copy button:hover{background:#00ff41 !important;color:#000 !important;transform:none !important;box-shadow:0 0 20px rgba(0,255,65,0.3) !important}
+        html[data-theme="terminal"] .ref-link-box p{color:#008f11 !important}
+        html[data-theme="terminal"] .ref-banner{background:rgba(0,255,65,0.15) !important;border:1px solid #00ff41 !important;color:#00ff41 !important;border-radius:0 !important}
+        html[data-theme="terminal"] .cta{background:rgba(0,255,65,0.03) !important;border-color:rgba(0,255,65,0.15) !important;border-radius:2px !important}
+        html[data-theme="terminal"] .cta h2{font-family:var(--font-mono) !important;color:#00ff41 !important;-webkit-text-fill-color:#00ff41 !important}
+        html[data-theme="terminal"] .cta p{color:#008f11 !important}
+        html[data-theme="terminal"] footer{border-top-color:rgba(0,255,65,0.15) !important;color:#008f11 !important;font-family:var(--font-mono) !important}
+        html[data-theme="terminal"] .fl a{color:#008f11 !important}
+        html[data-theme="terminal"] .fl a:hover{color:#00ff41 !important}
+        html[data-theme="terminal"] .nav-mid a{color:#008f11 !important}
+        html[data-theme="terminal"] .nav-mid a:hover,html[data-theme="terminal"] .nav-mid a.active{color:#00ff41 !important}
+        html[data-theme="terminal"] .nav-mid a::after{background:#00ff41 !important}
+        html[data-theme="terminal"] .orb-1{background:rgba(0,255,65,0.08) !important}
+        html[data-theme="terminal"] .orb-2{background:rgba(0,229,255,0.05) !important}
+        html[data-theme="terminal"] .orb-3{background:rgba(255,0,85,0.04) !important}
+        html[data-theme="terminal"] .bg-mesh{background:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(0,255,65,.06) 0%,transparent 60%),radial-gradient(ellipse 60% 80% at 80% 90%,rgba(0,229,255,.04) 0%,transparent 60%) !important}
+        html[data-theme="terminal"] .grid-ov{opacity:0.02 !important;background-image:linear-gradient(rgba(0,255,65,.1) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,65,.1) 1px,transparent 1px) !important}
+        html[data-theme="terminal"] .matrix-col{color:rgba(0,255,65,0.08) !important}
+        html[data-theme="terminal"] .ascii-divider{color:#00ff41 !important;opacity:0.2 !important}
+        html[data-theme="terminal"] .terminal-header{background:rgba(0,255,65,0.03) !important;border-color:#00ff41 !important;color:#00ff41 !important;border-radius:0 !important}
+        html[data-theme="terminal"] .terminal-header::before{color:#39ff14 !important}
+        html[data-theme="terminal"] .terminal-header::after{color:#00ff41 !important}
+        html[data-theme="terminal"] .scroll-progress{background:linear-gradient(90deg,#00ff41,#39ff14,#00e5ff) !important;box-shadow:0 0 10px #00ff41 !important}
+        html[data-theme="terminal"] .particle{background:#00ff41 !important}
+        html[data-theme="terminal"] .particle:nth-child(2){background:#00e5ff !important}
+        html[data-theme="terminal"] .particle:nth-child(3){background:#ffd700 !important}
+        html[data-theme="terminal"] .particle:nth-child(5){background:#ff0055 !important}
+        html[data-theme="terminal"] .page-hero h1{background:none !important;-webkit-text-fill-color:#00ff41 !important;text-shadow:0 0 20px rgba(0,255,65,0.3)}
+        html[data-theme="terminal"] .page-hero p{color:#008f11 !important}
+        html[data-theme="terminal"] .page-hero .hero-stat-val{background:none !important;-webkit-text-fill-color:#00ff41 !important;text-shadow:0 0 15px rgba(0,255,65,0.4)}
+
+        /* CRYPTO THEME */
+        html[data-theme="crypto"]{--bg:#050510;--bg2:#0c0c24;--accent:#6c5ce7;--accent2:#a29bfe;--gold:#ffd32a;--green:#00cec9;--cyan:#00b4d8;--pink:#fd79a8;--text:#eaeaf5;--text2:#7878a0;--card:rgba(255,255,255,0.03);--border:rgba(255,255,255,0.06)}
+        html[data-theme="crypto"] body::after,html[data-theme="crypto"] body::before{display:none}
+        html[data-theme="crypto"] .matrix-col{display:none}
+        html[data-theme="crypto"] .ascii-divider{color:var(--accent)}
+        html[data-theme="crypto"] .stag,html[data-theme="crypto"] .stake-card{border-radius:18px !important}
+        html[data-theme="crypto"] .btn-p{border-radius:12px !important;background:linear-gradient(135deg,#6c5ce7,#8b5cf6,#00b4d8) !important;animation:gs 3s ease infinite !important}
+        html[data-theme="crypto"] .earn-step-num{border-radius:50% !important;background:linear-gradient(135deg,#6c5ce7,#00cec9) !important}
+        html[data-theme="crypto"] .stitle{background:linear-gradient(135deg,#fff,#a29bfe,#00b4d8,#ffd32a) !important;-webkit-background-clip:text !important;-webkit-text-fill-color:transparent !important}
+        html[data-theme="crypto"] .terminal-header::before,html[data-theme="crypto"] .terminal-header::after{display:none}
+        html[data-theme="crypto"] body{animation:none !important}
+
+        /* LIGHT THEME */
+        html[data-theme="light"]{--bg:#f5f5f7;--bg2:#ffffff;--accent:#2563eb;--accent2:#3b82f6;--gold:#f59e0b;--green:#10b981;--cyan:#06b6d4;--pink:#ec4899;--text:#1a1a2e;--text2:#6b7280;--card:rgba(0,0,0,0.02);--border:rgba(0,0,0,0.08)}
+        html[data-theme="light"] body{background:var(--bg);color:var(--text)}
+        html[data-theme="light"] body::after,html[data-theme="light"] body::before{display:none}
+        html[data-theme="light"] .matrix-col{display:none}
+        html[data-theme="light"] .bg-mesh,html[data-theme="light"] .grid-ov,html[data-theme="light"] .orb{display:none}
+        html[data-theme="light"] .particle{display:none}
+        html[data-theme="light"] nav{background:rgba(255,255,255,0.95) !important;border-bottom-color:var(--border) !important}
+        html[data-theme="light"] .logo-t,html[data-theme="light"] .nav-mid a{color:var(--text) !important}
+        html[data-theme="light"] .page-hero h1{-webkit-text-fill-color:var(--text) !important}
+        html[data-theme="light"] .stake-card,.earn-step{background:#fff !important;border-color:var(--border) !important;border-radius:16px !important}
+        html[data-theme="light"] .stitle{-webkit-text-fill-color:var(--text) !important}
+        html[data-theme="light"] .btn-p{background:var(--accent) !important;border-color:var(--accent) !important;color:#fff !important;border-radius:12px !important}
+        html[data-theme="light"] .earn-step-num{border-radius:50% !important;background:var(--accent) !important;border:none !important}
+        html[data-theme="light"] .cta{background:rgba(37,99,235,.05) !important;border-color:var(--border) !important}
+        html[data-theme="light"] footer{border-top-color:var(--border) !important}
+        html[data-theme="light"] .terminal-header::before,html[data-theme="light"] .terminal-header::after{display:none}
+        html[data-theme="light"] .ascii-divider{color:var(--border) !important}
+        html[data-theme="light"] body{animation:none !important}
+
+        /* SMOOTH THEME TRANSITIONS */
+        html{transition:all 0.5s ease}
+        body,nav,.stake-card,.earn-step,.cta,.btn,.stag{transition:background 0.8s ease,color 0.8s ease,border-color 0.8s ease,box-shadow 0.8s ease !important}
+        .stitle,.page-hero h1{transition:color 0.8s ease,-webkit-text-fill-color 0.8s ease,text-shadow 0.8s ease !important}
+
+        /* RESPONSIVE */
+        @media(max-width:768px){
+            .staking-grid{grid-template-columns:1fr}
+            .earn-steps{grid-template-columns:1fr}
+            #ref-stats-display{grid-template-columns:1fr}
+            .ref-link-copy{flex-direction:column}
+            .page-hero{padding:100px 14px 40px}
+            .page-hero .hero-stats{gap:20px}
+            .page-hero .hero-stat-val{font-size:28px}
+            .btn{padding:12px 24px;font-size:13px}
+        }
+    </style>
+</head>
+<body>
+<div id="topnav-root"></div>
+<div id="ticker-root"></div>
+
+<div class="scroll-progress" id="scroll-progress"></div>
+<div class="bg-mesh"></div><div class="grid-ov"></div>
+<div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+<div class="particle"></div><div class="particle"></div><div class="particle"></div>
+<div class="particle"></div><div class="particle"></div><div class="particle"></div>
+
+<div class="matrix-col" style="left:10%;animation-duration:25s">STAKE4%5.4%VariableAPYIELD01001</div>
+<div class="matrix-col" style="left:40%;animation-duration:22s;animation-delay:-10s">REFERRAL10GEN5%3%2%1%EARN01</div>
+<div class="matrix-col" style="left:70%;animation-duration:20s;animation-delay:-3s">TON01DEPOSIT01MONTHLY01ANNUAL</div>
+<div class="matrix-col" style="left:90%;animation-duration:18s;animation-delay:-8s">INVEST01EARN10GROW01SPARK10</div>
+
+<nav id="nb" role="navigation" aria-label="Main navigation">
+    <button class="hamburger" onclick="toggleSidebar()" aria-label="Open menu" aria-expanded="false">&#9776;</button>
+    <a href="/" class="logo"><div class="logo-d"><span>S</span></div><div class="logo-t">SLH <span>Ecosystem</span></div></a>
+    <div class="nav-mid">
+        <a href="/" data-i18n="nav_home">Home</a>
+        <a href="/blockchain.html" data-i18n="nav_bsc">Blockchain</a>
+        <a href="/staking.html" class="active" data-i18n="nav_staking">Staking</a>
+        <a href="/dashboard.html" data-i18n="nav_dash">Dashboard</a>
+        <a href="/whitepaper.html" data-i18n="nav_wp">Whitepaper</a>
+    </div>
+    <div class="nav-right">
+        <button class="lang-btn" onclick="setTheme('terminal')">&#128421;&#65039;</button>
+        <button class="lang-btn" onclick="setTheme('crypto')">&#128142;</button>
+        <button class="lang-btn" onclick="setTheme('light')">&#9728;&#65039;</button>
+        <span style="color:var(--text2);font-size:10px;opacity:.4">|</span>
+        <button class="lang-btn" onclick="setLang('he')">HE</button>
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('ru')">RU</button>
+        <button class="lang-btn" onclick="setLang('ar')">AR</button>
+        <button class="lang-btn" onclick="setLang('fr')">FR</button>
+        <span style="color:var(--text2);font-size:10px;opacity:.4">|</span>
+        <a href="https://t.me/SLH_AIR_bot" class="nav-cta" data-i18n="nav_cta">Try Free</a>
+    </div>
+</nav>
+
+<!-- SIDEBAR -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+<div class="side-menu" id="sideMenu" role="dialog" aria-label="Navigation menu">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border)">
+        <div style="display:flex;align-items:center;gap:10px">
+            <div class="logo-d" style="width:32px;height:32px;font-size:14px"><span>S</span></div>
+            <span style="font-weight:700;color:var(--text);font-size:14px">SLH Ecosystem</span>
+        </div>
+        <button onclick="toggleSidebar()" aria-label="Close menu" style="background:none;border:none;color:var(--text2);font-size:22px;cursor:pointer;padding:4px">&#10005;</button>
+    </div>
+    <div style="padding:8px 0">
+        <div style="padding:8px 20px;font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--text2);opacity:.6" data-i18n="side_nav">Navigation</div>
+        <a href="/" class="side-link" onclick="toggleSidebar()" data-i18n="nav_home">Home</a>
+        <a href="/blockchain.html" class="side-link" onclick="toggleSidebar()" data-i18n="nav_bsc">Blockchain</a>
+        <a href="/staking.html" class="side-link" onclick="toggleSidebar()" style="color:var(--accent)" data-i18n="nav_staking">Staking</a>
+        <a href="/dashboard.html" class="side-link" onclick="toggleSidebar()" data-i18n="nav_dash">Dashboard</a>
+        <a href="/whitepaper.html" class="side-link" onclick="toggleSidebar()" data-i18n="nav_wp">Whitepaper</a>
+    </div>
+    <div style="padding:8px 0;border-top:1px solid var(--border)">
+        <div style="padding:8px 20px;font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--text2);opacity:.6" data-i18n="side_theme">Theme</div>
+        <div style="display:flex;gap:8px;padding:8px 20px;flex-wrap:wrap">
+            <button class="lang-btn theme-btn" onclick="setTheme('terminal')">&#128421;&#65039; Terminal</button>
+            <button class="lang-btn theme-btn" onclick="setTheme('crypto')">&#128142; Crypto</button>
+            <button class="lang-btn theme-btn" onclick="setTheme('light')">&#9728;&#65039; Light</button>
+        </div>
+    </div>
+    <div style="padding:8px 0;border-top:1px solid var(--border)">
+        <div style="padding:8px 20px;font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--text2);opacity:.6" data-i18n="side_lang">Language</div>
+        <div style="display:flex;gap:8px;padding:8px 20px;flex-wrap:wrap">
+            <button class="lang-btn" onclick="setLang('he')">HE</button>
+            <button class="lang-btn" onclick="setLang('en')">EN</button>
+            <button class="lang-btn" onclick="setLang('ru')">RU</button>
+            <button class="lang-btn" onclick="setLang('ar')">AR</button>
+            <button class="lang-btn" onclick="setLang('fr')">FR</button>
+        </div>
+    </div>
+</div>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+    <h1 data-i18n="staking_hero_title">Staking & Referral</h1>
+    <p data-i18n="staking_hero_sub">Stake your SLH tokens, earn passive income, and build a 10-generation referral network.</p>
+    <div class="hero-stats">
+        <div class="hero-stat">
+            <div class="hero-stat-val">Variable</div>
+            <div class="hero-stat-lbl" data-i18n="st3">Max APY</div>
+        </div>
+        <div class="hero-stat">
+            <div class="hero-stat-val">4</div>
+            <div class="hero-stat-lbl" data-i18n="staking_plans_count">Staking Plans</div>
+        </div>
+        <div class="hero-stat">
+            <div class="hero-stat-val">10</div>
+            <div class="hero-stat-lbl" data-i18n="staking_gen_count">Referral Generations</div>
+        </div>
+    </div>
+</div>
+
+<div class="ascii-divider">==============================================</div>
+
+<!-- STAKING SECTION -->
+<section id="staking" aria-label="Staking">
+    <div class="sc">
+        <span class="stag rv terminal-header" data-i18n="staking_tag">Staking</span>
+        <h2 class="stitle rv" data-i18n="staking_title">Earn Passive Income</h2>
+        <p class="ssub rv" data-i18n="staking_sub">Stake SLH tokens to join the Revenue Share Pool. Yield is derived from real system revenue (Course sales, Marketplace fees, SaaS). Not a promise. See <a href="/academy/course-1-dynamic-yield.html" style="color:var(--cyan)">Course #1 — Dynamic Yield Economics</a>.</p>
+    </div>
+    <div class="staking-grid">
+        <div class="stake-card tier-1 rv">
+            <div class="stake-name" data-i18n="stake_monthly">Tier 1 · Monthly</div>
+            <div class="stake-apy" style="font-size:28px">Pool Share</div>
+            <div class="stake-apy-label" data-i18n="stake_apy_label">Dynamic Yield</div>
+            <div class="stake-info">
+                <div class="stake-row"><span class="stake-row-label">Pool weight</span><span class="stake-row-value">1×</span></div>
+                <div class="stake-row"><span class="stake-row-label" data-i18n="stake_lock">Lock Period</span><span class="stake-row-value" data-i18n="stake_30d">30 Days</span></div>
+                <div class="stake-row"><span class="stake-row-label" data-i18n="stake_min">Min Deposit</span><span class="stake-row-value">1 TON</span></div>
+            </div>
+            <a href="https://t.me/SLH_AIR_bot" class="stake-btn" data-i18n="stake_learn">Learn More</a>
+        </div>
+        <div class="stake-card tier-2 rv rd1">
+            <div class="stake-name" data-i18n="stake_quarterly">Tier 2 · Quarterly</div>
+            <div class="stake-apy" style="font-size:28px">Pool Share</div>
+            <div class="stake-apy-label" data-i18n="stake_apy_label">Dynamic Yield</div>
+            <div class="stake-info">
+                <div class="stake-row"><span class="stake-row-label">Pool weight</span><span class="stake-row-value">1.15×</span></div>
+                <div class="stake-row"><span class="stake-row-label" data-i18n="stake_lock">Lock Period</span><span class="stake-row-value" data-i18n="stake_90d">90 Days</span></div>
+                <div class="stake-row"><span class="stake-row-label" data-i18n="stake_min">Min Deposit</span><span class="stake-row-value">5 TON</span></div>
+            </div>
+            <a href="https://t.me/SLH_AIR_bot" class="stake-btn" data-i18n="stake_learn">Learn More</a>
+        </div>
+        <div class="stake-card tier-3 rv rd2">
+            <div class="stake-name" data-i18n="stake_semi">Tier 3 · Semi-Annual</div>
+            <div class="stake-apy" style="font-size:28px">Pool Share</div>
+            <div class="stake-apy-label" data-i18n="stake_apy_label">Dynamic Yield</div>
+            <div class="stake-info">
+                <div class="stake-row"><span class="stake-row-label">Pool weight</span><span class="stake-row-value">1.3×</span></div>
+                <div class="stake-row"><span class="stake-row-label" data-i18n="stake_lock">Lock Period</span><span class="stake-row-value" data-i18n="stake_180d">180 Days</span></div>
+                <div class="stake-row"><span class="stake-row-label" data-i18n="stake_min">Min Deposit</span><span class="stake-row-value">10 TON</span></div>
+            </div>
+            <a href="https://t.me/SLH_AIR_bot" class="stake-btn" data-i18n="stake_learn">Learn More</a>
+        </div>
+        <div class="stake-card tier-4 rv rd3">
+            <div class="stake-name" data-i18n="stake_annual">Tier 4 · Annual</div>
+            <div class="stake-apy" style="font-size:28px">Pool Share</div>
+            <div class="stake-apy-label" data-i18n="stake_apy_label">Dynamic Yield</div>
+            <div class="stake-info">
+                <div class="stake-row"><span class="stake-row-label">Pool weight</span><span class="stake-row-value">1.5×</span></div>
+                <div class="stake-row"><span class="stake-row-label" data-i18n="stake_lock">Lock Period</span><span class="stake-row-value" data-i18n="stake_365d">365 Days</span></div>
+                <div class="stake-row"><span class="stake-row-label" data-i18n="stake_min">Min Deposit</span><span class="stake-row-value">25 TON</span></div>
+            </div>
+            <a href="https://t.me/SLH_AIR_bot" class="stake-btn" data-i18n="stake_learn">Learn More</a>
+        </div>
+    </div>
+
+    <!-- HOW TO EARN -->
+    <div style="margin-top:80px">
+        <div class="sc">
+            <span class="stag rv" data-i18n="earn_tag">How to Earn</span>
+            <h2 class="stitle rv" data-i18n="earn_title">3 Simple Steps</h2>
+        </div>
+        <div class="earn-steps">
+            <div class="earn-step rv">
+                <div class="earn-step-num">1</div>
+                <div class="earn-icon">&#128091;</div>
+                <h4 data-i18n="earn_s1t">Connect Wallet</h4>
+                <p data-i18n="earn_s1p">Open the investment bot and connect your TON wallet to get started.</p>
+                <a href="https://t.me/SLH_AIR_bot" data-i18n="earn_s1a">Open @SLH_AIR_bot</a>
+            </div>
+            <div class="earn-step rv rd1">
+                <div class="earn-step-num">2</div>
+                <div class="earn-icon">&#128203;</div>
+                <h4 data-i18n="earn_s2t">Choose Plan</h4>
+                <p data-i18n="earn_s2p">Select your deposit duration and amount. From 30 days to 365 days.</p>
+                <a href="https://t.me/SLH_AIR_bot" data-i18n="earn_s2a">View Plans</a>
+            </div>
+            <div class="earn-step rv rd2">
+                <div class="earn-step-num">3</div>
+                <div class="earn-icon">&#128176;</div>
+                <h4 data-i18n="earn_s3t2">Earn Returns</h4>
+                <p data-i18n="earn_s3p2">Automatic monthly yield deposited directly to your account balance.</p>
+                <a href="https://t.me/SLH_AIR_bot" data-i18n="earn_s3a">Start Earning</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="ascii-divider">==============================================</div>
+
+<!-- REFERRAL SECTION -->
+<section id="referral" aria-label="Referral">
+    <div class="sc">
+        <span class="stag rv terminal-header" data-i18n="ref_tag">Referral Network</span>
+        <h2 class="stitle rv" data-i18n="ref_title">Two-Tier Affiliate Program</h2>
+        <p class="ssub rv" data-i18n="ref_sub">Invite friends. Earn 20% from direct referrals (Tier 1) and 5% from their referrals (Tier 2). Paid from referral budget, never from staker yield pool.</p>
+    </div>
+
+    <!-- ===== EXPANDED EXPLAINER — Multi-generation referral ===== -->
+    <div class="ref-explainer rv" style="max-width:800px;margin:24px auto 40px;padding:0 20px">
+      <div style="background:linear-gradient(135deg,rgba(108,92,231,.08),rgba(0,229,255,.05));border:1px solid rgba(108,92,231,.25);border-radius:16px;padding:28px 32px;backdrop-filter:blur(10px)">
+        <h3 style="color:var(--accent,#8b5cf6);font-size:18px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:10px">
+          <span style="font-size:22px">🌳</span>
+          <span data-i18n="ref_explainer_title">איך עובד תכנית השותפים של 2 רמות?</span>
+        </h3>
+        <p style="color:var(--text2);font-size:14px;line-height:1.9;margin-bottom:16px" data-i18n="ref_explainer_p1">
+          כל חבר שתביא למערכת הופך ל<strong>Tier 1</strong> שלך. כאשר הוא קונה קורס, מנוי, או שירות — אתה מרוויח <strong>20% מההכנסה</strong>.
+          כאשר <em>החבר שלו</em> (Tier 2) קונה — אתה מרוויח <strong>5% נוספים</strong>. זהו. שתי רמות, שקוף, ומנוהל מתוך budget referral נפרד — לא מהפקדות של משתמשים אחרים.
+        </p>
+
+        <div style="background:rgba(0,0,0,.25);border-radius:12px;padding:18px 22px;margin:18px 0;font-family:'Space Mono',monospace;font-size:13px;line-height:1.8;color:var(--text)">
+          <div style="color:var(--cyan,#00e5ff);margin-bottom:10px">📊 דוגמה מעשית:</div>
+          <div style="color:#b8b8d4">
+            אתה מזמין את יוסי → <span style="color:#00ff88">יוסי קונה קורס ב-₪179</span> → אתה מרוויח <strong style="color:var(--accent2,#00e5ff)">₪36 (20%)</strong><br>
+            יוסי מזמין את דנה → <span style="color:#00ff88">דנה קונה קורס ב-₪179</span> → אתה מרוויח <strong style="color:var(--accent2,#00e5ff)">₪9 (5%)</strong><br>
+            דנה מזמינה את רון → רון הוא Tier 3 → אתה מקבל <strong>0</strong> (מחוץ לטווח).
+          </div>
+          <div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.1);color:var(--gold,#ffd700)">
+            💰 מודל שקוף ותואם רגולציה. אין תשלום מהפקדות של אחרים — רק מרכישות בפועל.
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:20px">
+          <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px;text-align:center">
+            <div style="font-size:26px;margin-bottom:6px">👥</div>
+            <div style="font-size:12px;color:var(--text2)">חבר שמביא חבר</div>
+            <div style="font-size:13px;color:var(--text);font-weight:600;margin-top:4px">גם הוא מרוויח מההרשת שלו</div>
+          </div>
+          <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px;text-align:center">
+            <div style="font-size:26px;margin-bottom:6px">📈</div>
+            <div style="font-size:12px;color:var(--text2)">צמיחה אקספוננציאלית</div>
+            <div style="font-size:13px;color:var(--text);font-weight:600;margin-top:4px">10 חברים × 10 = 100 דור 2</div>
+          </div>
+          <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px;text-align:center">
+            <div style="font-size:26px;margin-bottom:6px">♾️</div>
+            <div style="font-size:12px;color:var(--text2)">הכנסה פסיבית</div>
+            <div style="font-size:13px;color:var(--text);font-weight:600;margin-top:4px">רשת עובדת 24/7</div>
+          </div>
+        </div>
+
+        <div style="background:rgba(255,221,0,.08);border:1px solid rgba(255,221,0,.25);border-radius:10px;padding:14px 18px;margin-top:20px;font-size:13px;color:var(--text);line-height:1.7">
+          <strong style="color:var(--gold,#ffd700)">💡 טיפ:</strong>
+          כל הפעולות של הרשת שלך נרשמות אוטומטית בבלוקצ'יין.
+          אתה יכול לצפות בעץ ההפניות המלא שלך בכל רגע מתחת לדף הזה.
+        </div>
+      </div>
+    </div>
+    <!-- ===== /EXPANDED EXPLAINER ===== -->
+
+    <!-- Commission rates visual -->
+    <div class="ref-rates rv" id="ref-rates"></div>
+
+    <!-- Referral tree visualization -->
+    <div class="ref-demo rv">
+        <input type="number" id="ref-uid" data-i18n-placeholder="ref_input_placeholder" placeholder="Enter your Telegram ID" class="ref-input">
+        <br>
+        <button onclick="loadRefTree()" class="ref-btn" data-i18n="ref_btn">View My Network</button>
+        <div id="ref-tree-display"></div>
+        <div id="ref-stats-display"></div>
+    </div>
+
+    <!-- Copy referral link -->
+    <div class="ref-link-box rv">
+        <p data-i18n="ref_link_label">Your referral link:</p>
+        <div class="ref-link-copy">
+            <input type="text" id="ref-link-text" readonly value="https://t.me/SLH_AIR_bot?start=YOUR_ID">
+            <button onclick="copyRefLink()" data-i18n="ref_copy">Copy</button>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<div class="cta rv">
+    <h2 data-i18n="cta_title">Start Staking Today</h2>
+    <p data-i18n="cta_sub">Open the bot, choose your plan, and start earning passive income.</p>
+    <a href="https://t.me/SLH_AIR_bot" class="btn btn-p" data-i18n="cta_btn">Try Free</a>
+</div>
+
+<footer role="contentinfo">
+    <div class="fl">
+        <a href="/">Home</a>
+        <a href="/blockchain.html">Blockchain</a>
+        <a href="/staking.html">Staking</a>
+        <a href="/dashboard.html">Dashboard</a>
+        <a href="/whitepaper.html">Whitepaper</a>
+        <a href="https://t.me/SLH_AIR_bot">Investment Bot</a>
+        <a href="https://slh-api-production.up.railway.app/docs" style="color:var(--accent2)">API Docs</a>
+    </div>
+    <p style="margin-top:12px">SLH Ecosystem | SPARK IND | Built in Israel</p>
+    <p style="margin-top:6px;opacity:.4">2026 SPARK IND. All rights reserved.</p>
+</footer>
+
+<script>
+// === TRANSLATIONS === (namespaced to avoid collision with global T in translations.js)
+const PAGE_T = {
+he: {
+    nav_home:"\u05d1\u05d9\u05ea",nav_bsc:"\u05d1\u05dc\u05d5\u05e7\u05e6'\u05d9\u05d9\u05df",nav_staking:"\u05e1\u05d8\u05d9\u05d9\u05e7\u05d9\u05e0\u05d2",nav_dash:"\u05dc\u05d5\u05d7 \u05d1\u05e7\u05e8\u05d4",nav_wp:"\u05de\u05e1\u05de\u05da \u05d8\u05db\u05e0\u05d9",nav_cta:"\u05e0\u05e1\u05d4 \u05d7\u05d9\u05e0\u05dd",
+    side_nav:"\u05e0\u05d9\u05d5\u05d5\u05d8",side_theme:"\u05e2\u05e8\u05db\u05ea \u05e0\u05d5\u05e9\u05d0",side_lang:"\u05e9\u05e4\u05d4",
+    st3:"\u05ea\u05e9\u05d5\u05d0\u05d4 \u05de\u05e7\u05e1\u05d9\u05de\u05dc\u05d9\u05ea",
+    staking_hero_title:"\u05e1\u05d8\u05d9\u05d9\u05e7\u05d9\u05e0\u05d2 \u05d5\u05d4\u05e4\u05e0\u05d9\u05d5\u05ea",
+    staking_hero_sub:"\u05d4\u05e9\u05e7\u05e2 \u05d8\u05d5\u05e7\u05e0\u05d9 SLH, \u05d4\u05e8\u05d5\u05d5\u05d7 \u05d4\u05db\u05e0\u05e1\u05d4 \u05e4\u05e1\u05d9\u05d1\u05d9\u05ea, \u05d5\u05d1\u05e0\u05d4 \u05e8\u05e9\u05ea \u05d4\u05e4\u05e0\u05d9\u05d5\u05ea \u05e9\u05dc 10 \u05d3\u05d5\u05e8\u05d5\u05ea.",
+    staking_plans_count:"\u05ea\u05d5\u05db\u05e0\u05d9\u05d5\u05ea \u05e1\u05d8\u05d9\u05d9\u05e7\u05d9\u05e0\u05d2",
+    staking_gen_count:"\u05d3\u05d5\u05e8\u05d5\u05ea \u05d4\u05e4\u05e0\u05d9\u05d4",
+    staking_tag:"\u05e1\u05d8\u05d9\u05d9\u05e7\u05d9\u05e0\u05d2",staking_title:"\u05d4\u05e8\u05d5\u05d5\u05d7 \u05d4\u05db\u05e0\u05e1\u05d4 \u05e4\u05e1\u05d9\u05d1\u05d9\u05ea",staking_sub:"\u05d4\u05e9\u05e7\u05e2 \u05d8\u05d5\u05e7\u05e0\u05d9 SLH \u05d5\u05d4\u05e8\u05d5\u05d5\u05d7 \u05e2\u05d3 Variable \u05ea\u05e9\u05d5\u05d0\u05d4 \u05e9\u05e0\u05ea\u05d9\u05ea. \u05d1\u05d7\u05e8 \u05ea\u05d5\u05db\u05e0\u05d9\u05ea \u05d5\u05d4\u05ea\u05d7\u05dc \u05dc\u05d4\u05e8\u05d5\u05d5\u05d9\u05d7 \u05d4\u05d9\u05d5\u05dd.",
+    stake_monthly:"\u05d7\u05d5\u05d3\u05e9\u05d9",stake_quarterly:"\u05e8\u05d1\u05e2\u05d5\u05e0\u05d9",stake_semi:"\u05d7\u05e6\u05d9 \u05e9\u05e0\u05ea\u05d9",stake_annual:"\u05e9\u05e0\u05ea\u05d9",
+    stake_apy_label:"\u05ea\u05e9\u05d5\u05d0\u05d4 \u05e9\u05e0\u05ea\u05d9\u05ea",stake_monthly_rate:"\u05ea\u05e9\u05d5\u05d0\u05d4 \u05d7\u05d5\u05d3\u05e9\u05d9\u05ea",stake_lock:"\u05ea\u05e7\u05d5\u05e4\u05ea \u05e0\u05e2\u05d9\u05dc\u05d4",stake_min:"\u05d4\u05e4\u05e7\u05d3\u05d4 \u05de\u05d9\u05e0\u05d9\u05de\u05dc\u05d9\u05ea",
+    stake_30d:"30 \u05d9\u05de\u05d9\u05dd",stake_90d:"90 \u05d9\u05de\u05d9\u05dd",stake_180d:"180 \u05d9\u05de\u05d9\u05dd",stake_365d:"365 \u05d9\u05de\u05d9\u05dd",
+    stake_learn:"\u05dc\u05de\u05d3 \u05e2\u05d5\u05d3",
+    earn_tag:"\u05d0\u05d9\u05da \u05de\u05e8\u05d5\u05d5\u05d9\u05d7\u05d9\u05dd",earn_title:"3 \u05e6\u05e2\u05d3\u05d9\u05dd \u05e4\u05e9\u05d5\u05d8\u05d9\u05dd",
+    earn_s1t:"\u05d7\u05d1\u05e8 \u05d0\u05e8\u05e0\u05e7",earn_s1p:"\u05e4\u05ea\u05d7 \u05d0\u05ea \u05d1\u05d5\u05d8 \u05d4\u05d4\u05e9\u05e7\u05e2\u05d5\u05ea \u05d5\u05d7\u05d1\u05e8 \u05d0\u05ea \u05d0\u05e8\u05e0\u05e7 \u05d4-TON \u05e9\u05dc\u05da.",earn_s1a:"\u05e4\u05ea\u05d7 @SLH_AIR_bot",
+    earn_s2t:"\u05d1\u05d7\u05e8 \u05ea\u05d5\u05db\u05e0\u05d9\u05ea",earn_s2p:"\u05d1\u05d7\u05e8 \u05d0\u05ea \u05de\u05e9\u05da \u05d4\u05d4\u05e4\u05e7\u05d3\u05d4 \u05d5\u05d4\u05e1\u05db\u05d5\u05dd. \u05de-30 \u05d9\u05de\u05d9\u05dd \u05e2\u05d3 365 \u05d9\u05de\u05d9\u05dd.",earn_s2a:"\u05e6\u05e4\u05d4 \u05d1\u05ea\u05d5\u05db\u05e0\u05d9\u05d5\u05ea",
+    earn_s3t2:"\u05d4\u05e8\u05d5\u05d5\u05d7 \u05ea\u05e9\u05d5\u05d0\u05d4",earn_s3p2:"\u05ea\u05e9\u05d5\u05d0\u05d4 \u05d7\u05d5\u05d3\u05e9\u05d9\u05ea \u05d0\u05d5\u05d8\u05d5\u05de\u05d8\u05d9\u05ea \u05d9\u05e9\u05d9\u05e8\u05d5\u05ea \u05dc\u05d9\u05ea\u05e8\u05ea \u05d4\u05d7\u05e9\u05d1\u05d5\u05df \u05e9\u05dc\u05da.",earn_s3a:"\u05d4\u05ea\u05d7\u05dc \u05dc\u05d4\u05e8\u05d5\u05d5\u05d9\u05d7",
+    ref_tag:"\u05e8\u05e9\u05ea \u05d4\u05e4\u05e0\u05d9\u05d5\u05ea",ref_title:"\u05d4\u05e8\u05d5\u05d5\u05d7 \u05e2\u05d3 10 \u05d3\u05d5\u05e8\u05d5\u05ea \u05e2\u05d5\u05de\u05e7",ref_sub:"\u05d4\u05d6\u05de\u05df \u05d7\u05d1\u05e8\u05d9\u05dd, \u05d4\u05e8\u05d5\u05d5\u05d7 \u05e2\u05de\u05dc\u05d5\u05ea \u05e2\u05dc \u05d4\u05e4\u05e2\u05d9\u05dc\u05d5\u05ea \u05e9\u05dc\u05d4\u05dd. \u05d4\u05e8\u05e9\u05ea \u05e9\u05dc\u05da \u05d2\u05d3\u05dc\u05d4 \u05d0\u05e7\u05e1\u05e4\u05d5\u05e0\u05e0\u05e6\u05d9\u05d0\u05dc\u05d9\u05ea.",
+    ref_input_placeholder:"\u05d4\u05db\u05e0\u05e1 \u05d0\u05ea \u05de\u05d6\u05d4\u05d4 \u05d4\u05d8\u05dc\u05d2\u05e8\u05dd \u05e9\u05dc\u05da",ref_btn:"\u05e6\u05e4\u05d4 \u05d1\u05e8\u05e9\u05ea \u05e9\u05dc\u05d9",
+    ref_link_label:"\u05e7\u05d9\u05e9\u05d5\u05e8 \u05d4\u05d4\u05e4\u05e0\u05d9\u05d4 \u05e9\u05dc\u05da:",ref_copy:"\u05d4\u05e2\u05ea\u05e7",
+    ref_gen:"\u05d3\u05d5\u05e8",ref_direct:"\u05d4\u05e4\u05e0\u05d9\u05d5\u05ea \u05d9\u05e9\u05d9\u05e8\u05d5\u05ea",ref_network:"\u05e1\u05d4\"\u05db \u05e8\u05e9\u05ea",ref_earned:"\u05e1\u05d4\"\u05db \u05d4\u05e8\u05d5\u05d5\u05d7",
+    ref_loading:"\u05d8\u05d5\u05e2\u05df...",ref_no_data:"\u05dc\u05d0 \u05e0\u05de\u05e6\u05d0\u05d5 \u05e0\u05ea\u05d5\u05e0\u05d9\u05dd",ref_descendants:"\u05e6\u05d0\u05e6\u05d0\u05d9\u05dd",ref_copied:"\u05d4\u05d5\u05e2\u05ea\u05e7!",
+    cta_title:"\u05d4\u05ea\u05d7\u05dc \u05dc\u05e2\u05e9\u05d5\u05ea \u05e1\u05d8\u05d9\u05d9\u05e7\u05d9\u05e0\u05d2 \u05d4\u05d9\u05d5\u05dd",cta_sub:"\u05e4\u05ea\u05d7 \u05d0\u05ea \u05d4\u05d1\u05d5\u05d8, \u05d1\u05d7\u05e8 \u05ea\u05d5\u05db\u05e0\u05d9\u05ea, \u05d5\u05d4\u05ea\u05d7\u05dc \u05dc\u05d4\u05e8\u05d5\u05d5\u05d9\u05d7 \u05d4\u05db\u05e0\u05e1\u05d4 \u05e4\u05e1\u05d9\u05d1\u05d9\u05ea.",cta_btn:"\u05e0\u05e1\u05d4 \u05d7\u05d9\u05e0\u05dd"
+},
+en: {
+    nav_home:"Home",nav_bsc:"Blockchain",nav_staking:"Staking",nav_dash:"Dashboard",nav_wp:"Whitepaper",nav_cta:"Try Free",
+    side_nav:"Navigation",side_theme:"Theme",side_lang:"Language",
+    st3:"Max APY",
+    staking_hero_title:"Staking & Referral",
+    staking_hero_sub:"Stake your SLH tokens, earn passive income, and build a 10-generation referral network.",
+    staking_plans_count:"Staking Plans",
+    staking_gen_count:"Referral Generations",
+    staking_tag:"Staking",staking_title:"Revenue Share Pool",staking_sub:"Stake SLH to join the Revenue Share Pool. Yield is derived from real system revenue (courses, marketplace, SaaS). Not guaranteed.",
+    stake_monthly:"Monthly",stake_quarterly:"Quarterly",stake_semi:"Semi-Annual",stake_annual:"Annual",
+    stake_apy_label:"Annual Yield",stake_monthly_rate:"Monthly Rate",stake_lock:"Lock Period",stake_min:"Min Deposit",
+    stake_30d:"30 Days",stake_90d:"90 Days",stake_180d:"180 Days",stake_365d:"365 Days",
+    stake_learn:"Learn More",
+    earn_tag:"How to Earn",earn_title:"3 Simple Steps",
+    earn_s1t:"Connect Wallet",earn_s1p:"Open the investment bot and connect your TON wallet to get started.",earn_s1a:"Open @SLH_AIR_bot",
+    earn_s2t:"Choose Plan",earn_s2p:"Select your deposit duration and amount. From 30 days to 365 days.",earn_s2a:"View Plans",
+    earn_s3t2:"Earn Returns",earn_s3p2:"Automatic monthly yield deposited directly to your account balance.",earn_s3a:"Start Earning",
+    ref_tag:"Referral Network",ref_title:"Earn Up to 10 Generations Deep",ref_sub:"Invite friends, earn commissions on their activity. Your network grows exponentially.",
+    ref_input_placeholder:"Enter your Telegram ID",ref_btn:"View My Network",
+    ref_link_label:"Your referral link:",ref_copy:"Copy",
+    ref_gen:"Gen",ref_direct:"Direct Referrals",ref_network:"Total Network",ref_earned:"Total Earned",
+    ref_loading:"Loading...",ref_no_data:"No data found",ref_descendants:"descendants",ref_copied:"Copied!",
+    cta_title:"Start Staking Today",cta_sub:"Open the bot, choose your plan, and start earning passive income.",cta_btn:"Try Free"
+},
+ru: {
+    nav_home:"\u0413\u043b\u0430\u0432\u043d\u0430\u044f",nav_bsc:"\u0411\u043b\u043e\u043a\u0447\u0435\u0439\u043d",nav_staking:"\u0421\u0442\u0435\u0439\u043a\u0438\u043d\u0433",nav_dash:"\u041f\u0430\u043d\u0435\u043b\u044c",nav_wp:"\u0412\u0430\u0439\u0442\u043f\u0435\u0439\u043f\u0435\u0440",nav_cta:"\u041f\u043e\u043f\u0440\u043e\u0431\u043e\u0432\u0430\u0442\u044c",
+    side_nav:"\u041d\u0430\u0432\u0438\u0433\u0430\u0446\u0438\u044f",side_theme:"\u0422\u0435\u043c\u0430",side_lang:"\u042f\u0437\u044b\u043a",
+    st3:"\u041c\u0430\u043a\u0441. \u0434\u043e\u0445\u043e\u0434",
+    staking_hero_title:"\u0421\u0442\u0435\u0439\u043a\u0438\u043d\u0433 \u0438 \u0440\u0435\u0444\u0435\u0440\u0430\u043b\u044b",
+    staking_hero_sub:"\u0421\u0442\u0435\u0439\u043a\u0430\u0439\u0442\u0435 \u0442\u043e\u043a\u0435\u043d\u044b SLH, \u043f\u043e\u043b\u0443\u0447\u0430\u0439\u0442\u0435 \u043f\u0430\u0441\u0441\u0438\u0432\u043d\u044b\u0439 \u0434\u043e\u0445\u043e\u0434 \u0438 \u0441\u0442\u0440\u043e\u0439\u0442\u0435 \u0440\u0435\u0444\u0435\u0440\u0430\u043b\u044c\u043d\u0443\u044e \u0441\u0435\u0442\u044c \u0434\u043e 10 \u043f\u043e\u043a\u043e\u043b\u0435\u043d\u0438\u0439.",
+    staking_plans_count:"\u041f\u043b\u0430\u043d\u044b \u0441\u0442\u0435\u0439\u043a\u0438\u043d\u0433\u0430",
+    staking_gen_count:"\u041f\u043e\u043a\u043e\u043b\u0435\u043d\u0438\u044f \u0440\u0435\u0444\u0435\u0440\u0430\u043b\u043e\u0432",
+    staking_tag:"\u0421\u0442\u0435\u0439\u043a\u0438\u043d\u0433",staking_title:"\u041f\u0430\u0441\u0441\u0438\u0432\u043d\u044b\u0439 \u0434\u043e\u0445\u043e\u0434",staking_sub:"\u0421\u0442\u0435\u0439\u043a\u0430\u0439\u0442\u0435 \u0442\u043e\u043a\u0435\u043d\u044b SLH \u0438 \u043f\u043e\u043b\u0443\u0447\u0430\u0439\u0442\u0435 \u0434\u043e Variable \u0433\u043e\u0434\u043e\u0432\u043e\u0433\u043e \u0434\u043e\u0445\u043e\u0434\u0430. \u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u043f\u043b\u0430\u043d \u0438 \u043d\u0430\u0447\u043d\u0438\u0442\u0435 \u0437\u0430\u0440\u0430\u0431\u0430\u0442\u044b\u0432\u0430\u0442\u044c.",
+    stake_monthly:"\u041c\u0435\u0441\u044f\u0447\u043d\u044b\u0439",stake_quarterly:"\u041a\u0432\u0430\u0440\u0442\u0430\u043b\u044c\u043d\u044b\u0439",stake_semi:"\u041f\u043e\u043b\u0443\u0433\u043e\u0434\u043e\u0432\u043e\u0439",stake_annual:"\u0413\u043e\u0434\u043e\u0432\u043e\u0439",
+    stake_apy_label:"\u0413\u043e\u0434\u043e\u0432\u043e\u0439 \u0434\u043e\u0445\u043e\u0434",stake_monthly_rate:"\u041c\u0435\u0441\u044f\u0447\u043d\u0430\u044f \u0441\u0442\u0430\u0432\u043a\u0430",stake_lock:"\u041f\u0435\u0440\u0438\u043e\u0434 \u0431\u043b\u043e\u043a\u0438\u0440\u043e\u0432\u043a\u0438",stake_min:"\u041c\u0438\u043d. \u0434\u0435\u043f\u043e\u0437\u0438\u0442",
+    stake_30d:"30 \u0434\u043d\u0435\u0439",stake_90d:"90 \u0434\u043d\u0435\u0439",stake_180d:"180 \u0434\u043d\u0435\u0439",stake_365d:"365 \u0434\u043d\u0435\u0439",
+    stake_learn:"\u041f\u043e\u0434\u0440\u043e\u0431\u043d\u0435\u0435",
+    earn_tag:"\u041a\u0430\u043a \u0437\u0430\u0440\u0430\u0431\u043e\u0442\u0430\u0442\u044c",earn_title:"3 \u043f\u0440\u043e\u0441\u0442\u044b\u0445 \u0448\u0430\u0433\u0430",
+    earn_s1t:"\u041f\u043e\u0434\u043a\u043b\u044e\u0447\u0438\u0442\u0435 \u043a\u043e\u0448\u0435\u043b\u0435\u043a",earn_s1p:"\u041e\u0442\u043a\u0440\u043e\u0439\u0442\u0435 \u0431\u043e\u0442 \u0438 \u043f\u043e\u0434\u043a\u043b\u044e\u0447\u0438\u0442\u0435 TON \u043a\u043e\u0448\u0435\u043b\u0435\u043a.",earn_s1a:"\u041e\u0442\u043a\u0440\u044b\u0442\u044c @SLH_AIR_bot",
+    earn_s2t:"\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u043f\u043b\u0430\u043d",earn_s2p:"\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0441\u0440\u043e\u043a \u0438 \u0441\u0443\u043c\u043c\u0443 \u0434\u0435\u043f\u043e\u0437\u0438\u0442\u0430. \u041e\u0442 30 \u0434\u043e 365 \u0434\u043d\u0435\u0439.",earn_s2a:"\u041f\u043e\u0441\u043c\u043e\u0442\u0440\u0435\u0442\u044c \u043f\u043b\u0430\u043d\u044b",
+    earn_s3t2:"\u041f\u043e\u043b\u0443\u0447\u0430\u0439\u0442\u0435 \u0434\u043e\u0445\u043e\u0434",earn_s3p2:"\u0410\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0438\u0439 \u0435\u0436\u0435\u043c\u0435\u0441\u044f\u0447\u043d\u044b\u0439 \u0434\u043e\u0445\u043e\u0434 \u043d\u0430 \u0432\u0430\u0448 \u0441\u0447\u0435\u0442.",earn_s3a:"\u041d\u0430\u0447\u0430\u0442\u044c",
+    ref_tag:"\u0420\u0435\u0444\u0435\u0440\u0430\u043b\u044c\u043d\u0430\u044f \u0441\u0435\u0442\u044c",ref_title:"\u0417\u0430\u0440\u0430\u0431\u0430\u0442\u044b\u0432\u0430\u0439\u0442\u0435 \u0434\u043e 10 \u043f\u043e\u043a\u043e\u043b\u0435\u043d\u0438\u0439 \u0432\u0433\u043b\u0443\u0431\u044c",ref_sub:"\u041f\u0440\u0438\u0433\u043b\u0430\u0448\u0430\u0439\u0442\u0435 \u0434\u0440\u0443\u0437\u0435\u0439, \u043f\u043e\u043b\u0443\u0447\u0430\u0439\u0442\u0435 \u043a\u043e\u043c\u0438\u0441\u0441\u0438\u044e \u0441 \u0438\u0445 \u0430\u043a\u0442\u0438\u0432\u043d\u043e\u0441\u0442\u0438. \u0412\u0430\u0448\u0430 \u0441\u0435\u0442\u044c \u0440\u0430\u0441\u0442\u0435\u0442 \u044d\u043a\u0441\u043f\u043e\u043d\u0435\u043d\u0446\u0438\u0430\u043b\u044c\u043d\u043e.",
+    ref_input_placeholder:"\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u0432\u0430\u0448 Telegram ID",ref_btn:"\u041f\u043e\u0441\u043c\u043e\u0442\u0440\u0435\u0442\u044c \u0441\u0435\u0442\u044c",
+    ref_link_label:"\u0412\u0430\u0448\u0430 \u0440\u0435\u0444\u0435\u0440\u0430\u043b\u044c\u043d\u0430\u044f \u0441\u0441\u044b\u043b\u043a\u0430:",ref_copy:"\u041a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c",
+    ref_gen:"\u041f\u043e\u043a.",ref_direct:"\u041f\u0440\u044f\u043c\u044b\u0435 \u0440\u0435\u0444\u0435\u0440\u0430\u043b\u044b",ref_network:"\u0412\u0441\u044f \u0441\u0435\u0442\u044c",ref_earned:"\u0412\u0441\u0435\u0433\u043e \u0437\u0430\u0440\u0430\u0431\u043e\u0442\u0430\u043d\u043e",
+    ref_loading:"\u0417\u0430\u0433\u0440\u0443\u0437\u043a\u0430...",ref_no_data:"\u0414\u0430\u043d\u043d\u044b\u0435 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u044b",ref_descendants:"\u043f\u043e\u0442\u043e\u043c\u043a\u043e\u0432",ref_copied:"\u0421\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u043e!",
+    cta_title:"\u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u0441\u0442\u0435\u0439\u043a\u0438\u043d\u0433 \u0441\u0435\u0433\u043e\u0434\u043d\u044f",cta_sub:"\u041e\u0442\u043a\u0440\u043e\u0439\u0442\u0435 \u0431\u043e\u0442, \u0432\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u043f\u043b\u0430\u043d \u0438 \u043d\u0430\u0447\u043d\u0438\u0442\u0435 \u043f\u043e\u043b\u0443\u0447\u0430\u0442\u044c \u043f\u0430\u0441\u0441\u0438\u0432\u043d\u044b\u0439 \u0434\u043e\u0445\u043e\u0434.",cta_btn:"\u041f\u043e\u043f\u0440\u043e\u0431\u043e\u0432\u0430\u0442\u044c \u0431\u0435\u0441\u043f\u043b\u0430\u0442\u043d\u043e"
+},
+ar: {
+    nav_home:"\u0627\u0644\u0631\u0626\u064a\u0633\u064a\u0629",nav_bsc:"\u0628\u0644\u0648\u0643\u062a\u0634\u064a\u0646",nav_staking:"\u062a\u062e\u0632\u064a\u0646",nav_dash:"\u0644\u0648\u062d\u0629 \u0627\u0644\u062a\u062d\u0643\u0645",nav_wp:"\u0627\u0644\u0648\u0631\u0642\u0629 \u0627\u0644\u0628\u064a\u0636\u0627\u0621",nav_cta:"\u062c\u0631\u0628 \u0645\u062c\u0627\u0646\u0627",
+    side_nav:"\u0627\u0644\u062a\u0646\u0642\u0644",side_theme:"\u0627\u0644\u0645\u0638\u0647\u0631",side_lang:"\u0627\u0644\u0644\u063a\u0629",
+    st3:"\u0623\u0642\u0635\u0649 \u0639\u0627\u0626\u062f",
+    staking_hero_title:"\u062a\u062e\u0632\u064a\u0646 \u0648\u0625\u062d\u0627\u0644\u0627\u062a",
+    staking_hero_sub:"\u062e\u0632\u0651\u0646 \u062a\u0648\u0643\u0646\u0627\u062a SLH\u060c \u0627\u0631\u0628\u062d \u062f\u062e\u0644 \u0633\u0644\u0628\u064a\u060c \u0648\u0627\u0628\u0646\u0650 \u0634\u0628\u0643\u0629 \u0625\u062d\u0627\u0644\u0627\u062a \u0645\u0646 10 \u0623\u062c\u064a\u0627\u0644.",
+    staking_plans_count:"\u062e\u0637\u0637 \u0627\u0644\u062a\u062e\u0632\u064a\u0646",
+    staking_gen_count:"\u0623\u062c\u064a\u0627\u0644 \u0627\u0644\u0625\u062d\u0627\u0644\u0629",
+    staking_tag:"\u062a\u062e\u0632\u064a\u0646",staking_title:"\u0627\u0631\u0628\u062d \u062f\u062e\u0644 \u0633\u0644\u0628\u064a",staking_sub:"\u062e\u0632\u0651\u0646 \u062a\u0648\u0643\u0646\u0627\u062a SLH \u0648\u0627\u0631\u0628\u062d \u062d\u062a\u0649 Variable \u0639\u0627\u0626\u062f \u0633\u0646\u0648\u064a. \u0627\u062e\u062a\u0631 \u062e\u0637\u062a\u0643 \u0648\u0627\u0628\u062f\u0623 \u0627\u0644\u064a\u0648\u0645.",
+    stake_monthly:"\u0634\u0647\u0631\u064a",stake_quarterly:"\u0631\u0628\u0639 \u0633\u0646\u0648\u064a",stake_semi:"\u0646\u0635\u0641 \u0633\u0646\u0648\u064a",stake_annual:"\u0633\u0646\u0648\u064a",
+    stake_apy_label:"\u0639\u0627\u0626\u062f \u0633\u0646\u0648\u064a",stake_monthly_rate:"\u0639\u0627\u0626\u062f \u0634\u0647\u0631\u064a",stake_lock:"\u0641\u062a\u0631\u0629 \u0627\u0644\u0642\u0641\u0644",stake_min:"\u062d\u062f \u0623\u062f\u0646\u0649",
+    stake_30d:"30 \u064a\u0648\u0645",stake_90d:"90 \u064a\u0648\u0645",stake_180d:"180 \u064a\u0648\u0645",stake_365d:"365 \u064a\u0648\u0645",
+    stake_learn:"\u0627\u0639\u0631\u0641 \u0627\u0643\u062b\u0631",
+    earn_tag:"\u0643\u064a\u0641 \u062a\u0631\u0628\u062d",earn_title:"3 \u062e\u0637\u0648\u0627\u062a \u0628\u0633\u064a\u0637\u0629",
+    earn_s1t:"\u0627\u0631\u0628\u0637 \u0627\u0644\u0645\u062d\u0641\u0638\u0629",earn_s1p:"\u0627\u0641\u062a\u062d \u0628\u0648\u062a \u0627\u0644\u0627\u0633\u062a\u062b\u0645\u0627\u0631 \u0648\u0627\u0631\u0628\u0637 \u0645\u062d\u0641\u0638\u0629 TON.",earn_s1a:"\u0627\u0641\u062a\u062d @SLH_AIR_bot",
+    earn_s2t:"\u0627\u062e\u062a\u0631 \u062e\u0637\u0629",earn_s2p:"\u0627\u062e\u062a\u0631 \u0645\u062f\u0629 \u0648\u0645\u0628\u0644\u063a \u0627\u0644\u0625\u064a\u062f\u0627\u0639. \u0645\u0646 30 \u0625\u0644\u0649 365 \u064a\u0648\u0645.",earn_s2a:"\u0639\u0631\u0636 \u0627\u0644\u062e\u0637\u0637",
+    earn_s3t2:"\u0627\u0631\u0628\u062d \u0639\u0648\u0627\u0626\u062f",earn_s3p2:"\u0639\u0627\u0626\u062f \u0634\u0647\u0631\u064a \u062a\u0644\u0642\u0627\u0626\u064a \u064a\u0636\u0627\u0641 \u0644\u062d\u0633\u0627\u0628\u0643 \u0645\u0628\u0627\u0634\u0631\u0629.",earn_s3a:"\u0627\u0628\u062f\u0623 \u0627\u0644\u0622\u0646",
+    ref_tag:"\u0634\u0628\u0643\u0629 \u0627\u0644\u0625\u062d\u0627\u0644\u0627\u062a",ref_title:"\u0627\u0631\u0628\u062d \u062d\u062a\u0649 10 \u0623\u062c\u064a\u0627\u0644 \u0639\u0645\u0642\u0627",ref_sub:"\u0627\u062f\u0639\u064f \u0623\u0635\u062f\u0642\u0627\u0621\u0643\u060c \u0648\u0627\u0631\u0628\u062d \u0639\u0645\u0648\u0644\u0627\u062a \u0639\u0644\u0649 \u0646\u0634\u0627\u0637\u0647\u0645. \u0634\u0628\u0643\u062a\u0643 \u062a\u0646\u0645\u0648 \u0628\u0634\u0643\u0644 \u0623\u0633\u064a.",
+    ref_input_placeholder:"\u0623\u062f\u062e\u0644 \u0645\u0639\u0631\u0641 \u062a\u0644\u064a\u062c\u0631\u0627\u0645",ref_btn:"\u0639\u0631\u0636 \u0634\u0628\u0643\u062a\u064a",
+    ref_link_label:"\u0631\u0627\u0628\u0637 \u0627\u0644\u0625\u062d\u0627\u0644\u0629 \u0627\u0644\u062e\u0627\u0635 \u0628\u0643:",ref_copy:"\u0646\u0633\u062e",
+    ref_gen:"\u062c\u064a\u0644",ref_direct:"\u0625\u062d\u0627\u0644\u0627\u062a \u0645\u0628\u0627\u0634\u0631\u0629",ref_network:"\u0625\u062c\u0645\u0627\u0644\u064a \u0627\u0644\u0634\u0628\u0643\u0629",ref_earned:"\u0625\u062c\u0645\u0627\u0644\u064a \u0627\u0644\u0623\u0631\u0628\u0627\u062d",
+    ref_loading:"\u062c\u0627\u0631\u064a \u0627\u0644\u062a\u062d\u0645\u064a\u0644...",ref_no_data:"\u0644\u0627 \u062a\u0648\u062c\u062f \u0628\u064a\u0627\u0646\u0627\u062a",ref_descendants:"\u0645\u062a\u0641\u0631\u0639\u064a\u0646",ref_copied:"\u062a\u0645 \u0627\u0644\u0646\u0633\u062e!",
+    cta_title:"\u0627\u0628\u062f\u0623 \u0627\u0644\u062a\u062e\u0632\u064a\u0646 \u0627\u0644\u064a\u0648\u0645",cta_sub:"\u0627\u0641\u062a\u062d \u0627\u0644\u0628\u0648\u062a\u060c \u0627\u062e\u062a\u0631 \u062e\u0637\u0629\u060c \u0648\u0627\u0628\u062f\u0623 \u0628\u0643\u0633\u0628 \u062f\u062e\u0644 \u0633\u0644\u0628\u064a.",cta_btn:"\u062c\u0631\u0628 \u0645\u062c\u0627\u0646\u0627"
+},
+fr: {
+    nav_home:"Accueil",nav_bsc:"Blockchain",nav_staking:"Staking",nav_dash:"Tableau de bord",nav_wp:"Whitepaper",nav_cta:"Essai gratuit",
+    side_nav:"Navigation",side_theme:"Th\u00e8me",side_lang:"Langue",
+    st3:"Rendement max",
+    staking_hero_title:"Staking & Parrainages",
+    staking_hero_sub:"Stakez vos jetons SLH, gagnez un revenu passif, et construisez un r\u00e9seau de parrainage \u00e0 10 niveaux.",
+    staking_plans_count:"Plans de staking",
+    staking_gen_count:"G\u00e9n\u00e9rations de parrainage",
+    staking_tag:"Staking",staking_title:"Gagnez un revenu passif",staking_sub:"Stakez des jetons SLH et gagnez jusqu'\u00e0 Variable de rendement annuel. Choisissez votre plan et commencez aujourd'hui.",
+    stake_monthly:"Mensuel",stake_quarterly:"Trimestriel",stake_semi:"Semestriel",stake_annual:"Annuel",
+    stake_apy_label:"Rendement annuel",stake_monthly_rate:"Rendement mensuel",stake_lock:"P\u00e9riode de verrouillage",stake_min:"D\u00e9p\u00f4t minimum",
+    stake_30d:"30 jours",stake_90d:"90 jours",stake_180d:"180 jours",stake_365d:"365 jours",
+    stake_learn:"En savoir plus",
+    earn_tag:"Comment gagner",earn_title:"3 \u00e9tapes simples",
+    earn_s1t:"Connectez le portefeuille",earn_s1p:"Ouvrez le bot d'investissement et connectez votre portefeuille TON.",earn_s1a:"Ouvrir @SLH_AIR_bot",
+    earn_s2t:"Choisissez un plan",earn_s2p:"S\u00e9lectionnez la dur\u00e9e et le montant. De 30 \u00e0 365 jours.",earn_s2a:"Voir les plans",
+    earn_s3t2:"Gagnez des rendements",earn_s3p2:"Rendements mensuels automatiques cr\u00e9dit\u00e9s directement.",earn_s3a:"Commencer",
+    ref_tag:"Parrainages",ref_title:"R\u00e9seau de parrainage \u00e0 10 niveaux",
+    ref_sub:"Partagez votre lien. Gagnez des commissions sur 10 g\u00e9n\u00e9rations. Chaque ami qui rejoint vous rapporte des TON.",
+    ref_input_placeholder:"Entrez votre ID Telegram",ref_btn:"Voir mon r\u00e9seau",
+    ref_link_label:"Votre lien de parrainage :",ref_copy:"Copier",
+    ref_gen:"G\u00e9n",ref_direct:"Parrainages directs",ref_network:"R\u00e9seau total",ref_earned:"Total gagn\u00e9",
+    ref_loading:"Chargement...",ref_no_data:"Aucune donn\u00e9e",ref_descendants:"descendants",ref_copied:"Copi\u00e9 !",
+    cta_title:"Commencez le staking aujourd'hui",cta_sub:"Ouvrez le bot, choisissez un plan, et commencez \u00e0 gagner un revenu passif.",cta_btn:"Essai gratuit"
+}
+};
+
+// === LANGUAGE ===
+let currentLang = localStorage.getItem('slh_lang') || 'he';
+
+function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('slh_lang', lang);
+    const rtl = lang === 'he' || lang === 'ar';
+    document.documentElement.dir = rtl ? 'rtl' : 'ltr';
+    document.documentElement.lang = lang;
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (PAGE_T[lang] && PAGE_T[lang][key]) el.textContent = PAGE_T[lang][key];
+    });
+
+    document.querySelectorAll('.lang-btn').forEach(b => {
+        if (!b.classList.contains('theme-btn')) {
+            b.classList.toggle('active', b.textContent.trim() === lang.toUpperCase());
+        }
+    });
+
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (PAGE_T[lang] && PAGE_T[lang][key]) el.placeholder = PAGE_T[lang][key];
+    });
+
+    renderRefRates();
+}
+
+// === THEME ===
+const THEMES = ['terminal', 'crypto', 'light'];
+let currentTheme = localStorage.getItem('slh_theme') || 'terminal';
+let unifiedInterval = null;
+
+function setTheme(theme) {
+    currentTheme = theme;
+    localStorage.setItem('slh_theme', theme);
+    if (unifiedInterval && theme !== 'unified') {
+        clearInterval(unifiedInterval);
+        unifiedInterval = null;
+    }
+    if (theme === 'unified') {
+        document.documentElement.style.transition = 'all 2s ease';
+        let uniIdx = 0;
+        const uniThemes = ['terminal', 'crypto', 'light'];
+        document.documentElement.setAttribute('data-theme', uniThemes[0]);
+        unifiedInterval = setInterval(() => {
+            uniIdx = (uniIdx + 1) % uniThemes.length;
+            document.documentElement.setAttribute('data-theme', uniThemes[uniIdx]);
+        }, 8000);
+    } else {
+        document.documentElement.style.transition = 'all 0.5s ease';
+        document.documentElement.setAttribute('data-theme', theme);
+    }
+    document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+    const activeBtn = document.querySelector('.theme-btn[onclick*="' + theme + '"]');
+    if (activeBtn) activeBtn.classList.add('active');
+}
+
+setTheme(currentTheme);
+
+// === SIDEBAR ===
+function toggleSidebar() {
+    var menu = document.getElementById('sideMenu');
+    var overlay = document.getElementById('sidebarOverlay');
+    var btn = document.querySelector('.hamburger');
+    var isOpen = menu.classList.toggle('open');
+    overlay.classList.toggle('open', isOpen);
+    if (btn) btn.setAttribute('aria-expanded', isOpen);
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+}
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && document.getElementById('sideMenu').classList.contains('open')) {
+        toggleSidebar();
+    }
+});
+
+// === SCROLL ===
+window.addEventListener('scroll', function() {
+    var nb = document.getElementById('nb');
+    if (nb) nb.classList.toggle('scrolled', window.scrollY > 60);
+    var sp = document.getElementById('scroll-progress');
+    if (sp) {
+        var h = document.documentElement.scrollHeight - window.innerHeight;
+        sp.style.width = h > 0 ? (window.scrollY / h * 100) + '%' : '0%';
+    }
+});
+
+// === INTERSECTION OBSERVER ===
+const obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('vis'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.rv').forEach(function(el) { obs.observe(el); });
+
+// === API ===
+const API = 'https://slh-api-production.up.railway.app';
+
+async function fetchStakingPlans() {
+    try {
+        const r = await fetch(API + '/api/staking/plans');
+        const d = await r.json();
+        window.slhPlans = d.plans;
+        const cards = document.querySelectorAll('.stake-card');
+        const planKeys = ['monthly', 'quarterly', 'semi_annual', 'annual'];
+        cards.forEach((card, i) => {
+            const plan = d.plans[planKeys[i]];
+            if (plan) {
+                const apy = card.querySelector('.stake-apy');
+                if (apy) apy.textContent = plan.apy_annual + '%';
+            }
+        });
+    } catch(e) { console.log('Plans fetch skipped'); }
+}
+fetchStakingPlans();
+
+// === REFERRAL ===
+const REF_RATES = [10, 5, 3, 2, 1, 0.5, 0.3, 0.2, 0.1, 0.05];
+
+function renderRefRates() {
+    const container = document.getElementById('ref-rates');
+    if (!container) return;
+    const sl = PAGE_T[currentLang] || PAGE_T.en;
+    const genLabel = sl.ref_gen || 'Gen';
+    container.innerHTML = REF_RATES.map((rate, i) => `
+        <div class="ref-bar">
+            <div class="ref-bar-label">${genLabel} ${i + 1}</div>
+            <div class="ref-bar-track"><div class="ref-bar-fill"></div></div>
+            <div class="ref-bar-pct">${rate}%</div>
+        </div>
+    `).join('');
+}
+
+async function loadRefTree() {
+    const uid = document.getElementById('ref-uid').value;
+    if (!uid) return;
+    const sl = PAGE_T[currentLang] || PAGE_T.en;
+    const treeEl = document.getElementById('ref-tree-display');
+    const statsEl = document.getElementById('ref-stats-display');
+    treeEl.innerHTML = '<p style="color:var(--text2)">' + (sl.ref_loading || 'Loading...') + '</p>';
+    statsEl.innerHTML = '';
+
+    document.getElementById('ref-link-text').value = 'https://t.me/SLH_AIR_bot?start=' + uid;
+
+    try {
+        const [treeRes, statsRes] = await Promise.all([
+            fetch(API + '/api/referral/tree/' + uid),
+            fetch(API + '/api/referral/stats/' + uid)
+        ]);
+        const treeData = await treeRes.json();
+        const statsData = await statsRes.json();
+
+        if (treeData && treeData.children && treeData.children.length > 0) {
+            treeEl.innerHTML = '';
+            renderTree(treeData.children, treeEl, 1);
+        } else {
+            treeEl.innerHTML = '<p style="color:var(--text2)">' + (sl.ref_no_data || 'No data found') + '</p>';
+        }
+
+        if (statsData) {
+            statsEl.innerHTML = `
+                <div class="ref-stat-card">
+                    <div class="ref-stat-num">${statsData.direct_referrals || 0}</div>
+                    <div class="ref-stat-label">${sl.ref_direct || 'Direct Referrals'}</div>
+                </div>
+                <div class="ref-stat-card">
+                    <div class="ref-stat-num">${statsData.total_network || 0}</div>
+                    <div class="ref-stat-label">${sl.ref_network || 'Total Network'}</div>
+                </div>
+                <div class="ref-stat-card">
+                    <div class="ref-stat-num">${statsData.total_earned_ton ? parseFloat(statsData.total_earned_ton).toFixed(2) : '0'} TON</div>
+                    <div class="ref-stat-label">${sl.ref_earned || 'Total Earned'}</div>
+                </div>
+            `;
+        }
+    } catch(e) {
+        treeEl.innerHTML = '<p style="color:var(--text2)">' + (sl.ref_no_data || 'No data found') + '</p>';
+        console.log('Referral fetch error:', e);
+    }
+}
+
+function renderTree(children, container, gen) {
+    if (!children || children.length === 0 || gen > 4) return;
+    const sl = PAGE_T[currentLang] || PAGE_T.en;
+    const genLabel = sl.ref_gen || 'Gen';
+    const descLabel = sl.ref_descendants || 'descendants';
+    const wrapper = document.createElement('div');
+    wrapper.className = 'ref-tree-children';
+    children.forEach(child => {
+        const node = document.createElement('div');
+        node.className = 'ref-tree-node';
+        const name = child.first_name || child.username || ('ID: ' + child.user_id);
+        const descCount = child.children ? child.children.length : 0;
+        node.innerHTML = `
+            <div class="ref-tree-line"></div>
+            <div class="ref-tree-card">
+                <div class="ref-tree-gen">${genLabel} ${gen}</div>
+                <div class="ref-tree-name">${name}</div>
+                <div class="ref-tree-desc">${descCount} ${descLabel}</div>
+            </div>
+        `;
+        wrapper.appendChild(node);
+        if (child.children && child.children.length > 0) {
+            renderTree(child.children, node, gen + 1);
+        }
+    });
+    container.appendChild(wrapper);
+}
+
+function copyRefLink() {
+    const sl = PAGE_T[currentLang] || PAGE_T.en;
+    const input = document.getElementById('ref-link-text');
+    input.select();
+    document.execCommand('copy');
+    const btn = input.nextElementSibling;
+    const orig = btn.textContent;
+    btn.textContent = sl.ref_copied || 'Copied!';
+    setTimeout(() => { btn.textContent = orig; }, 2000);
+}
+
+// Handle ?ref= URL parameter
+(function() {
+    const urlRef = new URLSearchParams(window.location.search).get('ref');
+    if (urlRef) {
+        const refInput = document.getElementById('ref-uid');
+        if (refInput) refInput.value = urlRef;
+        document.getElementById('ref-link-text').value = 'https://t.me/SLH_AIR_bot?start=' + urlRef;
+        const banner = document.createElement('div');
+        banner.className = 'ref-banner';
+        banner.textContent = 'You were invited by user #' + urlRef;
+        document.body.appendChild(banner);
+        setTimeout(() => { banner.remove(); }, 6000);
+    }
+})();
+
+// Init
+renderRefRates();
+setLang(currentLang);
+</script>
+
+<div id="bottomnav-root"></div>
+<div id="footer-root"></div>
+
+<script src="/js/translations.js?v=20260426e"></script>
+<script src="/js/shared.js?v=20260426e"></script>
+<script>
+    initShared({ activePage: 'staking', showTicker: true, showBottomNav: true });
+</script>
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260426e"></script>
+</body>
+</html>

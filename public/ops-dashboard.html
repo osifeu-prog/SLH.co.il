@@ -1,0 +1,459 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLH Spark — Ops Dashboard | System Status</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/png" href="/favicon-32.png">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/shared.css?v=20260426e">
+    <style>
+        :root{--bg:#0a0a0a;--bg2:#111;--bg3:#1a1a1a;--accent:#00ff41;--accent2:#39ff14;--cyan:#00e5ff;--gold:#ffd700;--red:#ff0055;--purple:#a855f7;--text:#e8e8f0;--text2:#8a8aa0;--text-bright:#fff;--card:rgba(0,255,65,.03);--border:rgba(0,255,65,.12);--font:'Inter',system-ui,sans-serif;--radius:8px}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh}
+        a{color:var(--accent);text-decoration:none}
+
+        .ops-header{max-width:1200px;margin:0 auto;padding:24px;text-align:center}
+        .ops-header h1{font-size:28px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+        .ops-header .sub{color:var(--text2);font-size:13px}
+        .ops-header .live-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;background:rgba(0,255,65,.08);border:1px solid rgba(0,255,65,.3);border-radius:20px;font-size:11px;color:var(--accent);margin-top:12px}
+        .ops-header .live-badge .pulse{width:8px;height:8px;background:var(--accent);border-radius:50%;animation:pulse 2s infinite}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+        .ops-grid{max-width:1200px;margin:0 auto;padding:0 24px 24px;display:grid;gap:20px}
+
+        /* KPI Row */
+        .kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+        .kpi-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;position:relative;overflow:hidden}
+        .kpi-card::before{content:'';position:absolute;top:0;right:0;width:3px;height:100%;border-radius:0 var(--radius) var(--radius) 0}
+        .kpi-card.green::before{background:var(--accent)}
+        .kpi-card.cyan::before{background:var(--cyan)}
+        .kpi-card.gold::before{background:var(--gold)}
+        .kpi-card.red::before{background:var(--red)}
+        .kpi-card.purple::before{background:var(--purple)}
+        .kpi-label{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+        .kpi-val{font-size:24px;font-weight:700;color:var(--text-bright)}
+        .kpi-sub{font-size:10px;color:var(--text2);margin-top:2px}
+
+        /* Section */
+        .ops-section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+        .ops-section h2{font-size:15px;color:var(--accent);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+        .ops-section h2 .badge{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:400}
+        .badge-ok{background:rgba(0,255,65,.12);color:var(--accent)}
+        .badge-warn{background:rgba(255,215,0,.12);color:var(--gold)}
+        .badge-err{background:rgba(255,0,85,.12);color:var(--red)}
+
+        /* Tables */
+        .ops-table{width:100%;border-collapse:collapse;font-size:12px}
+        .ops-table th{text-align:right;padding:8px 10px;background:var(--bg3);color:var(--text2);font-size:10px;text-transform:uppercase;letter-spacing:1px}
+        .ops-table td{padding:8px 10px;border-bottom:1px solid var(--border)}
+        .ops-table tr:hover td{background:var(--card)}
+        .status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-left:6px}
+        .status-dot.ok{background:var(--accent)}
+        .status-dot.warn{background:var(--gold)}
+        .status-dot.err{background:var(--red)}
+
+        /* Task list */
+        .task-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:12px;align-items:flex-start}
+        .task-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+        .task-text{flex:1}
+        .task-tag{font-size:9px;padding:2px 6px;border-radius:3px;text-transform:uppercase;letter-spacing:.5px}
+        .tag-done{background:rgba(0,255,65,.1);color:var(--accent)}
+        .tag-pending{background:rgba(255,215,0,.1);color:var(--gold)}
+        .tag-critical{background:rgba(255,0,85,.1);color:var(--red)}
+        .tag-blocked{background:rgba(168,85,247,.1);color:var(--purple)}
+
+        /* Progress bars */
+        .progress-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;font-size:12px}
+        .progress-label{width:140px;color:var(--text2);flex-shrink:0}
+        .progress-bar{flex:1;height:8px;background:var(--bg3);border-radius:4px;overflow:hidden}
+        .progress-fill{height:100%;border-radius:4px;transition:width .5s}
+        .progress-pct{width:40px;text-align:left;color:var(--text2);font-size:11px}
+
+        /* Two-col layout */
+        .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+        @media(max-width:768px){.two-col{grid-template-columns:1fr}}
+
+        /* Timestamp */
+        .timestamp{font-size:10px;color:var(--text2);text-align:center;padding:12px;opacity:.6}
+
+        /* Refresh button */
+        .refresh-btn{background:var(--accent);color:#000;border:none;padding:6px 14px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font)}
+        .refresh-btn:hover{background:var(--accent2)}
+    </style>
+</head>
+<body>
+
+<div id="topnav-root"></div>
+<div id="ticker-root"></div>
+
+<div class="ops-header">
+    <h1>SLH Spark — Ops Dashboard</h1>
+    <p class="sub">Real-time system status · API health · Task tracking · Coverage metrics</p>
+    <div class="live-badge"><span class="pulse"></span> LIVE · Auto-refresh 30s</div>
+    <div style="margin-top:10px;font-size:12px">
+        <a href="/chain-status.html" style="color:var(--accent);padding:4px 10px;border:1px solid var(--accent);border-radius:4px;margin-right:6px">⛓ Chain Status</a>
+        <a href="/system-audit.html" style="color:var(--text2);padding:4px 10px;border:1px solid var(--border);border-radius:4px;margin-right:6px">🔍 System Audit</a>
+        <a href="/treasury-health.html" style="color:var(--text2);padding:4px 10px;border:1px solid var(--border);border-radius:4px">💰 Treasury Health</a>
+    </div>
+</div>
+
+<div class="ops-grid">
+    <!-- KPI ROW -->
+    <div class="kpi-row">
+        <div class="kpi-card green"><div class="kpi-label">API Status</div><div class="kpi-val" id="k-api">--</div><div class="kpi-sub" id="k-api-ms"></div></div>
+        <div class="kpi-card cyan"><div class="kpi-label">Total Users</div><div class="kpi-val" id="k-users">--</div><div class="kpi-sub" id="k-users-sub"></div></div>
+        <div class="kpi-card gold"><div class="kpi-label">API Endpoints</div><div class="kpi-val" id="k-endpoints">--</div><div class="kpi-sub">production</div></div>
+        <div class="kpi-card purple"><div class="kpi-label">HTML Pages</div><div class="kpi-val">79</div><div class="kpi-sub">+ 15 blog posts</div></div>
+        <div class="kpi-card green"><div class="kpi-label">Bots</div><div class="kpi-val">25</div><div class="kpi-sub">+ @G4meb0t (new)</div></div>
+        <div class="kpi-card cyan"><div class="kpi-label">DB Tables</div><div class="kpi-val">40+</div><div class="kpi-sub">PostgreSQL 15</div></div>
+        <div class="kpi-card purple"><div class="kpi-label">Tokens</div><div class="kpi-val">6</div><div class="kpi-sub">SLH·MNH·ZVK·REP·ZUZ·AIC</div></div>
+        <div class="kpi-card gold"><div class="kpi-label">Genesis Raised</div><div class="kpi-val" id="k-raised">--</div><div class="kpi-sub" id="k-raised-sub"></div></div>
+        <div class="kpi-card red"><div class="kpi-label">Audit Chain</div><div class="kpi-val" id="k-audit">--</div><div class="kpi-sub" id="k-audit-sub"></div></div>
+    </div>
+
+    <!-- COVERAGE SECTION -->
+    <div class="ops-section">
+        <h2>Feature Coverage <span class="badge badge-ok" id="coverage-badge">Loading...</span></h2>
+        <div class="progress-row"><div class="progress-label">shared.js</div><div class="progress-bar"><div class="progress-fill" style="width:91%;background:var(--accent)"></div></div><div class="progress-pct">91%</div></div>
+        <div class="progress-row"><div class="progress-label">initShared()</div><div class="progress-bar"><div class="progress-fill" style="width:81%;background:var(--accent)"></div></div><div class="progress-pct">81%</div></div>
+        <div class="progress-row"><div class="progress-label">Theme Switcher</div><div class="progress-bar"><div class="progress-fill" style="width:100%;background:var(--gold)"></div></div><div class="progress-pct">100%</div></div>
+        <div class="progress-row"><div class="progress-label">i18n Tags</div><div class="progress-bar"><div class="progress-fill" style="width:37%;background:var(--gold)"></div></div><div class="progress-pct">37%</div></div>
+        <div class="progress-row"><div class="progress-label">Analytics</div><div class="progress-bar"><div class="progress-fill" style="width:100%;background:var(--cyan)"></div></div><div class="progress-pct">100%</div></div>
+        <div class="progress-row"><div class="progress-label">AI Assistant</div><div class="progress-bar"><div class="progress-fill" style="width:100%;background:var(--cyan)"></div></div><div class="progress-pct">42%</div></div>
+        <div class="progress-row"><div class="progress-label">Tasks Done</div><div class="progress-bar"><div class="progress-fill" style="width:50%;background:var(--purple)"></div></div><div class="progress-pct">50%</div></div>
+    </div>
+
+    <!-- TWO COLUMN -->
+    <div class="two-col">
+        <!-- API HEALTH -->
+        <div class="ops-section">
+            <h2>API Endpoints <button class="refresh-btn" onclick="checkEndpoints()">Refresh</button></h2>
+            <div id="endpoints-list" style="max-height:500px;overflow-y:auto">
+                <div style="text-align:center;color:var(--text2);padding:20px">Loading endpoints...</div>
+            </div>
+        </div>
+
+        <!-- TASKS -->
+        <div class="ops-section">
+            <h2>Critical Tasks <span class="badge badge-warn" id="tasks-badge">--</span></h2>
+            <div id="tasks-list">
+                <div class="task-item"><div class="task-icon">🔴</div><div class="task-text">TX hash for Osif's BSC transfer → receipt #SLH-20260417-000001</div><span class="task-tag tag-done">DONE</span></div>
+                <div class="task-item"><div class="task-icon">🔴</div><div class="task-text">SILENT_MODE=1 + N8N_PASSWORD in Railway</div><span class="task-tag tag-blocked">BLOCKED</span></div>
+                <div class="task-item"><div class="task-icon">🔴</div><div class="task-text">Rotate 30 remaining bot tokens (1 rotated today: GAME_BOT)</div><span class="task-tag tag-critical">SEC</span></div>
+                <div class="task-item"><div class="task-icon">🔴</div><div class="task-text">AIC first mint via admin-tokens.html (supply=0)</div><span class="task-tag tag-blocked">BLOCKED</span></div>
+                <div class="task-item"><div class="task-icon">🟡</div><div class="task-text">ESP32 CYD screen colorTest confirmation</div><span class="task-tag tag-blocked">BLOCKED</span></div>
+                <div class="task-item"><div class="task-icon">🟡</div><div class="task-text">@G4meb0t_bot_bot deploy path decision</div><span class="task-tag tag-pending">PENDING</span></div>
+                <div class="task-item"><div class="task-icon">🟡</div><div class="task-text">docker-compose.yml regression decision (58 vs 445 lines)</div><span class="task-tag tag-pending">PENDING</span></div>
+                <div class="task-item"><div class="task-icon">🟡</div><div class="task-text">BotFather /setcommands for 12+ bots</div><span class="task-tag tag-pending">BOTS</span></div>
+                <div class="task-item"><div class="task-icon">🟡</div><div class="task-text">Theme switcher on 25 remaining pages</div><span class="task-tag tag-pending">UI</span></div>
+                <div class="task-item"><div class="task-icon">🟡</div><div class="task-text">i18n on 27 remaining pages</div><span class="task-tag tag-pending">i18n</span></div>
+                <div class="task-item"><div class="task-icon">🟡</div><div class="task-text">Payment /status endpoint fix deploy (Railway pending)</div><span class="task-tag tag-pending">INFRA</span></div>
+                <div class="task-item"><div class="task-icon">✅</div><div class="task-text">AIC (6th token) + /api/ai/chat-metered</div><span class="task-tag tag-done">DONE 17.4</span></div>
+                <div class="task-item"><div class="task-icon">✅</div><div class="task-text">Payment auto-verify TON+BSC (10 providers)</div><span class="task-tag tag-done">DONE 17.4</span></div>
+                <div class="task-item"><div class="task-icon">✅</div><div class="task-text">Dating API 8 endpoints + @G4meb0t_bot_bot</div><span class="task-tag tag-done">DONE 17.4</span></div>
+                <div class="task-item"><div class="task-icon">✅</div><div class="task-text">Sudoku 8 endpoints + frontend + leaderboard</div><span class="task-tag tag-done">DONE 17.4</span></div>
+                <div class="task-item"><div class="task-icon">✅</div><div class="task-text">Verified Experts + admin approval flow</div><span class="task-tag tag-done">DONE 17.4</span></div>
+                <div class="task-item"><div class="task-icon">✅</div><div class="task-text">Broadcast to 5 networks + RSS feed</div><span class="task-tag tag-done">DONE 17.4</span></div>
+                <div class="task-item"><div class="task-icon">✅</div><div class="task-text">Community reactions + threaded replies + presence</div><span class="task-tag tag-done">DONE 17.4</span></div>
+                <div class="task-item"><div class="task-icon">✅</div><div class="task-text">Design System v1.0 + unified nav + skeletons</div><span class="task-tag tag-done">DONE 17.4</span></div>
+                <div class="task-item"><div class="task-icon">✅</div><div class="task-text">Blog: 15 posts + sitemap 50 URLs</div><span class="task-tag tag-done">DONE 17.4</span></div>
+                <div class="task-item"><div class="task-icon">✅</div><div class="task-text">nfty-bot → @slhniffty auto-broadcast on approve</div><span class="task-tag tag-done">DONE 17.4</span></div>
+                <div class="task-item"><div class="task-icon">✅</div><div class="task-text">Device onboarding + bug debug system</div><span class="task-tag tag-done">DONE 17.4</span></div>
+                <div class="task-item"><div class="task-icon">✅</div><div class="task-text">First receipt issued: SLH-20260417-000001 (Osif)</div><span class="task-tag tag-done">DONE 17.4</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EVENTS (live ring-buffer from /api/admin/events) -->
+    <div class="ops-section">
+        <h2>Event Stream (24h) <button class="refresh-btn" onclick="loadEvents()">Refresh</button> <a href="/chain-status.html" style="margin-right:8px;color:var(--accent);font-size:11px">→ Full view</a></h2>
+        <div id="events-summary" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:14px">
+            <div class="kpi-card green"><div class="kpi-label">Events (total)</div><div class="kpi-val" id="ev-total">--</div><div class="kpi-sub" id="ev-total-sub">all-time</div></div>
+            <div class="kpi-card cyan"><div class="kpi-label">Events (24h)</div><div class="kpi-val" id="ev-24h">--</div><div class="kpi-sub" id="ev-24h-sub">last 24h</div></div>
+            <div class="kpi-card gold"><div class="kpi-label">Event Types</div><div class="kpi-val" id="ev-types">--</div><div class="kpi-sub">distinct in 24h</div></div>
+            <div class="kpi-card purple"><div class="kpi-label">Latest Event</div><div class="kpi-val" id="ev-latest" style="font-size:14px">--</div><div class="kpi-sub" id="ev-latest-time">--</div></div>
+        </div>
+        <div id="ev-breakdown" style="font-size:12px;color:var(--text2)">
+            <span style="color:var(--text2)">Paste your admin key once:</span>
+            <code style="background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:10px">localStorage.setItem('slh_admin_password','&lt;your-key&gt;')</code>
+        </div>
+    </div>
+
+    <!-- PAGE STATUS -->
+    <div class="ops-section">
+        <h2>All 79 Pages — Live Status <button class="refresh-btn" onclick="checkPages()">Check All</button></h2>
+        <table class="ops-table" id="pages-table">
+            <thead><tr><th>Page</th><th>Status</th><th>Nav</th><th>Theme</th><th>i18n</th><th>Analytics</th><th>AI</th></tr></thead>
+            <tbody id="pages-body"></tbody>
+        </table>
+    </div>
+
+    <!-- EXTERNAL SERVICES -->
+    <div class="ops-section">
+        <h2>External Services</h2>
+        <table class="ops-table">
+            <thead><tr><th>Service</th><th>URL</th><th>Status</th></tr></thead>
+            <tbody>
+                <tr><td>Railway API</td><td><a href="https://slh-api-production.up.railway.app/docs" target="_blank">slh-api-production.up.railway.app</a></td><td id="ext-api"><span class="status-dot warn"></span> Checking...</td></tr>
+                <tr><td>GitHub Pages</td><td><a href="https://slh-nft.com" target="_blank">slh-nft.com</a></td><td id="ext-site"><span class="status-dot warn"></span> Checking...</td></tr>
+                <tr><td>PancakeSwap Pool</td><td><a href="https://pancakeswap.finance/info/v2/pairs/0xacea26b6e132cd45f2b8a4754170d4d0d3b8bbee?chain=bsc" target="_blank">SLH/WBNB</a></td><td><span class="status-dot ok"></span> Active</td></tr>
+                <tr><td>BSCScan Token</td><td><a href="https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022" target="_blank">SLH BEP-20</a></td><td><span class="status-dot ok"></span> Live</td></tr>
+                <tr><td>CoinGecko API</td><td>Price feeds</td><td id="ext-cg"><span class="status-dot warn"></span> Checking...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- SPRINT PROGRESS -->
+    <div class="ops-section">
+        <h2>Sprint Roadmap</h2>
+        <div class="progress-row"><div class="progress-label">Sprint 1: Critical</div><div class="progress-bar"><div class="progress-fill" style="width:85%;background:var(--accent)"></div></div><div class="progress-pct">85%</div></div>
+        <div class="progress-row"><div class="progress-label">Sprint 2: Bots</div><div class="progress-bar"><div class="progress-fill" style="width:30%;background:var(--cyan)"></div></div><div class="progress-pct">30%</div></div>
+        <div class="progress-row"><div class="progress-label">Sprint 3: Polish</div><div class="progress-bar"><div class="progress-fill" style="width:15%;background:var(--gold)"></div></div><div class="progress-pct">15%</div></div>
+        <div class="progress-row"><div class="progress-label">Sprint 4: Revenue</div><div class="progress-bar"><div class="progress-fill" style="width:5%;background:var(--purple)"></div></div><div class="progress-pct">5%</div></div>
+    </div>
+</div>
+
+<div class="timestamp" id="last-update">Last updated: --</div>
+
+<div id="bottomnav-root"></div>
+<div id="footer-root"></div>
+
+<script src="/js/translations.js?v=20260426e"></script>
+<script src="/js/shared.js?v=20260426e"></script>
+<script>initShared({ activePage: 'tools' });</script>
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260426e"></script>
+
+<script>
+const API = 'https://slh-api-production.up.railway.app';
+
+// Page inventory with feature flags
+const PAGES = [
+    {name:'index.html',nav:1,theme:0,i18n:1,analytics:1,ai:1},
+    {name:'dashboard.html',nav:1,theme:0,i18n:1,analytics:1,ai:1},
+    {name:'trade.html',nav:1,theme:0,i18n:1,analytics:1,ai:1},
+    {name:'earn.html',nav:1,theme:0,i18n:1,analytics:1,ai:1},
+    {name:'wallet.html',nav:1,theme:0,i18n:1,analytics:1,ai:1},
+    {name:'bots.html',nav:1,theme:0,i18n:1,analytics:1,ai:1},
+    {name:'referral.html',nav:1,theme:0,i18n:1,analytics:1,ai:1},
+    {name:'community.html',nav:1,theme:0,i18n:1,analytics:1,ai:1},
+    {name:'daily-blog.html',nav:1,theme:0,i18n:1,analytics:0,ai:0},
+    {name:'guides.html',nav:1,theme:1,i18n:1,analytics:1,ai:1},
+    {name:'wallet-guide.html',nav:1,theme:0,i18n:0,analytics:1,ai:1},
+    {name:'blockchain.html',nav:1,theme:0,i18n:1,analytics:1,ai:1},
+    {name:'network.html',nav:1,theme:0,i18n:1,analytics:1,ai:1},
+    {name:'roadmap.html',nav:1,theme:0,i18n:1,analytics:0,ai:1},
+    {name:'staking.html',nav:1,theme:0,i18n:1,analytics:1,ai:1},
+    {name:'p2p.html',nav:1,theme:1,i18n:0,analytics:1,ai:1},
+    {name:'ecosystem-guide.html',nav:1,theme:1,i18n:0,analytics:0,ai:0},
+    {name:'whitepaper.html',nav:1,theme:0,i18n:1,analytics:1,ai:1},
+    {name:'healing-vision.html',nav:1,theme:1,i18n:0,analytics:0,ai:0},
+    {name:'challenge.html',nav:1,theme:1,i18n:0,analytics:1,ai:1},
+    {name:'for-therapists.html',nav:1,theme:1,i18n:0,analytics:0,ai:0},
+    {name:'invite.html',nav:1,theme:0,i18n:0,analytics:0,ai:0},
+    {name:'member.html',nav:1,theme:1,i18n:0,analytics:1,ai:0},
+    {name:'partner-dashboard.html',nav:1,theme:1,i18n:0,analytics:0,ai:0},
+    {name:'launch-event.html',nav:1,theme:1,i18n:0,analytics:0,ai:0},
+    {name:'dex-launch.html',nav:1,theme:1,i18n:0,analytics:0,ai:0},
+    {name:'partner-launch-invite.html',nav:0,theme:1,i18n:0,analytics:0,ai:0},
+    {name:'jubilee.html',nav:1,theme:1,i18n:0,analytics:1,ai:1},
+    {name:'admin.html',nav:1,theme:1,i18n:0,analytics:1,ai:1},
+    {name:'analytics.html',nav:1,theme:0,i18n:0,analytics:1,ai:1},
+    {name:'broadcast-composer.html',nav:0,theme:1,i18n:0,analytics:0,ai:0},
+    {name:'system-health.html',nav:1,theme:1,i18n:0,analytics:0,ai:0},
+    {name:'morning-checklist.html',nav:1,theme:1,i18n:0,analytics:0,ai:0},
+    {name:'morning-handoff.html',nav:1,theme:1,i18n:0,analytics:0,ai:0},
+    {name:'overnight-report.html',nav:1,theme:1,i18n:0,analytics:0,ai:0},
+    {name:'ops-report-20260411.html',nav:1,theme:1,i18n:0,analytics:0,ai:1},
+    {name:'onboarding.html',nav:0,theme:0,i18n:0,analytics:0,ai:0},
+    {name:'getting-started.html',nav:0,theme:0,i18n:0,analytics:0,ai:0},
+    {name:'referral-card.html',nav:1,theme:0,i18n:1,analytics:1,ai:0},
+    {name:'rotate.html',nav:0,theme:0,i18n:0,analytics:0,ai:0},
+    {name:'test-bots.html',nav:0,theme:0,i18n:0,analytics:0,ai:0},
+    {name:'privacy.html',nav:1,theme:0,i18n:0,analytics:1,ai:0},
+    {name:'terms.html',nav:1,theme:0,i18n:0,analytics:1,ai:0},
+];
+
+function dot(ok){ return `<span class="status-dot ${ok?'ok':'warn'}"></span> ${ok?'Yes':'No'}`; }
+
+function renderPages(){
+    const tbody = document.getElementById('pages-body');
+    tbody.innerHTML = PAGES.map(p => `
+        <tr>
+            <td><a href="/${p.name}" target="_blank">${p.name}</a></td>
+            <td class="page-check" data-url="/${p.name}"><span class="status-dot warn"></span></td>
+            <td>${dot(p.nav)}</td><td>${dot(p.theme)}</td><td>${dot(p.i18n)}</td>
+            <td>${dot(p.analytics)}</td><td>${dot(p.ai)}</td>
+        </tr>`).join('');
+}
+
+async function checkPages(){
+    const cells = document.querySelectorAll('.page-check');
+    for(const c of cells){
+        try{
+            const r = await fetch(c.dataset.url,{method:'HEAD',cache:'no-store'});
+            c.innerHTML = r.ok ? '<span class="status-dot ok"></span> 200' : `<span class="status-dot err"></span> ${r.status}`;
+        }catch(e){
+            c.innerHTML = '<span class="status-dot err"></span> ERR';
+        }
+    }
+}
+
+async function loadKPIs(){
+    try{
+        const t0 = Date.now();
+        const r = await fetch(API+'/api/health');
+        const ms = Date.now()-t0;
+        const d = await r.json();
+        document.getElementById('k-api').textContent = d.status==='ok'?'Healthy':'Down';
+        document.getElementById('k-api-ms').textContent = `${ms}ms · v${d.version}`;
+        document.getElementById('ext-api').innerHTML = '<span class="status-dot ok"></span> '+ms+'ms';
+    }catch(e){
+        document.getElementById('k-api').textContent = 'DOWN';
+        document.getElementById('k-api-ms').textContent = e.message;
+        document.getElementById('ext-api').innerHTML = '<span class="status-dot err"></span> Unreachable';
+    }
+
+    // Endpoints count
+    try{
+        const r = await fetch(API+'/openapi.json');
+        const d = await r.json();
+        document.getElementById('k-endpoints').textContent = Object.keys(d.paths).length;
+    }catch(e){}
+
+    // Users + Dashboard
+    try{
+        const key = localStorage.getItem('slh_admin_password')||'';
+        const r = await fetch(API+'/api/admin/dashboard',{headers:{'X-Admin-Key':key}});
+        const d = await r.json();
+        document.getElementById('k-users').textContent = d.total_users||'--';
+        document.getElementById('k-users-sub').textContent = `${d.premium_users||0} premium · ${d.today_signups||0} today`;
+    }catch(e){}
+
+    // Launch
+    try{
+        const r = await fetch(API+'/api/launch/status');
+        const d = await r.json();
+        document.getElementById('k-raised').textContent = (d.raised_bnb_verified||0).toFixed(4);
+        const active = (d.contributors||[]).filter(c=>c.status!=='cancelled');
+        document.getElementById('k-raised-sub').textContent = `${active.length} contributors · $${((d.raised_bnb_verified||0)*608).toFixed(0)}`;
+    }catch(e){}
+
+    // Audit chain
+    try{
+        const r = await fetch(API+'/api/audit/verify-chain?limit=1000');
+        const d = await r.json();
+        document.getElementById('k-audit').textContent = d.ok?'INTACT':'BROKEN';
+        document.getElementById('k-audit-sub').textContent = `${d.total||0} entries`;
+    }catch(e){}
+
+    // CoinGecko
+    try{
+        const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=binancecoin&vs_currencies=usd');
+        const d = await r.json();
+        document.getElementById('ext-cg').innerHTML = `<span class="status-dot ok"></span> BNB=$${d.binancecoin.usd}`;
+    }catch(e){
+        document.getElementById('ext-cg').innerHTML = '<span class="status-dot err"></span> Error';
+    }
+
+    // Website check
+    try{
+        const r = await fetch('/',{method:'HEAD'});
+        document.getElementById('ext-site').innerHTML = r.ok?'<span class="status-dot ok"></span> Live':'<span class="status-dot err"></span> '+r.status;
+    }catch(e){}
+
+    document.getElementById('last-update').textContent = 'Last updated: '+new Date().toLocaleString('he-IL');
+}
+
+async function checkEndpoints(){
+    const el = document.getElementById('endpoints-list');
+    el.innerHTML = '<div style="text-align:center;color:var(--gold);padding:10px">Checking endpoints...</div>';
+    try{
+        const r = await fetch(API+'/openapi.json');
+        const d = await r.json();
+        const paths = Object.keys(d.paths).sort();
+        let html = '<table class="ops-table"><thead><tr><th>Endpoint</th><th>Methods</th><th>Status</th></tr></thead><tbody>';
+        let ok=0,fail=0;
+        for(const p of paths){
+            const methods = Object.keys(d.paths[p]).filter(m=>['get','post','delete','put'].includes(m)).join(', ').toUpperCase();
+            const hasGet = d.paths[p].get;
+            let status = '<span class="status-dot warn"></span>';
+            if(hasGet && !p.includes('{') && !p.includes('verify')){
+                try{
+                    const tr = await fetch(API+p,{method:'GET'});
+                    if(tr.ok){status='<span class="status-dot ok"></span> '+tr.status;ok++;}
+                    else{status='<span class="status-dot err"></span> '+tr.status;fail++;}
+                }catch(e){status='<span class="status-dot err"></span>';fail++;}
+            } else {
+                status = '<span class="status-dot warn"></span> N/A';
+            }
+            html += `<tr><td style="font-family:monospace;font-size:11px;direction:ltr;text-align:left">${p}</td><td style="font-size:10px">${methods}</td><td>${status}</td></tr>`;
+        }
+        html += '</tbody></table>';
+        el.innerHTML = html;
+        document.getElementById('k-endpoints').textContent = paths.length;
+    }catch(e){
+        el.innerHTML = '<div style="color:var(--red);padding:10px">Error: '+e.message+'</div>';
+    }
+}
+
+// Init
+renderPages();
+loadKPIs();
+async function loadEvents(){
+    const el = document.getElementById('ev-breakdown');
+    const key = localStorage.getItem('slh_admin_password')||'';
+    if(!key){
+        el.innerHTML = '<span style="color:var(--gold)">⚠ No admin key in localStorage — paste one: </span><code style="background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:10px">localStorage.setItem(\'slh_admin_password\',\'your-key\')</code>';
+        return;
+    }
+    try{
+        const r = await fetch(API+'/api/admin/events?limit=1',{headers:{'X-Admin-Key':key}});
+        if(r.status === 403){
+            el.innerHTML = '<span style="color:var(--red)">✗ 403 — admin key rejected by server. Re-paste correct key in localStorage.</span>';
+            return;
+        }
+        const d = await r.json();
+        document.getElementById('ev-total').textContent = d.total_events ?? '--';
+        const byType = d.events_24h_by_type || {};
+        const types = Object.keys(byType);
+        const sum24h = types.reduce((a,k)=>a+byType[k],0);
+        document.getElementById('ev-24h').textContent = sum24h;
+        document.getElementById('ev-types').textContent = types.length;
+        const latest = (d.events||[])[0];
+        if(latest){
+            document.getElementById('ev-latest').textContent = latest.event_type;
+            const ts = new Date(latest.created_at);
+            document.getElementById('ev-latest-time').textContent = ts.toLocaleString('he-IL');
+        } else {
+            document.getElementById('ev-latest').textContent = '—';
+            document.getElementById('ev-latest-time').textContent = 'no events yet';
+        }
+        // Breakdown bar
+        if(types.length){
+            const max = Math.max(...types.map(k=>byType[k]));
+            const bars = types.sort((a,b)=>byType[b]-byType[a]).slice(0,8).map(k=>{
+                const pct = (byType[k]/max*100).toFixed(0);
+                return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;font-size:11px">
+                    <span style="flex-basis:180px;flex-shrink:0;color:var(--text2)">${k}</span>
+                    <div style="flex:1;background:var(--bg3);height:14px;border-radius:3px;overflow:hidden"><div style="width:${pct}%;height:100%;background:var(--accent)"></div></div>
+                    <span style="flex-basis:40px;text-align:right;color:var(--text-bright)">${byType[k]}</span>
+                </div>`;
+            }).join('');
+            el.innerHTML = '<div style="margin-top:8px">'+bars+'</div>';
+        } else {
+            el.innerHTML = '<span style="color:var(--text2)">No events in the last 24h.</span>';
+        }
+    }catch(e){
+        el.innerHTML = `<span style="color:var(--red)">✗ fetch failed: ${e.message}</span>`;
+    }
+}
+
+setInterval(loadKPIs, 30000);
+setInterval(loadEvents, 30000);
+loadEvents();
+</script>
+</body>
+</html>

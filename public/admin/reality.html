@@ -1,0 +1,463 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta name="robots" content="noindex,nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH Reality Dashboard — The Honest One</title>
+<meta name="description" content="Single source of truth admin. No phantom data.">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{--bg:#050810;--bg2:#0d1220;--bg3:#151a2e;--gold:#ffd700;--green:#00e887;--red:#ff4444;--orange:#ff9800;--yellow:#ffc107;--purple:#a855f7;--cyan:#06b6d4;--text:#f5f5f8;--text2:#9ba0b5;--text3:#5a6078;--border:rgba(168,85,247,.25)}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Rubik',sans-serif;margin:0;min-height:100vh;line-height:1.5}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(circle at 15% 25%,rgba(168,85,247,.04),transparent 50%),radial-gradient(circle at 85% 75%,rgba(6,182,212,.04),transparent 50%)}
+
+.wrap{max-width:1400px;margin:0 auto;padding:30px 20px}
+.header{margin-bottom:24px;padding:20px;background:var(--bg2);border:1px solid var(--border);border-radius:14px}
+.header h1{margin:0 0 6px;font-size:26px;color:var(--text)}
+.header h1 .badge{display:inline-block;padding:3px 10px;background:rgba(255,215,0,.15);color:var(--gold);border-radius:8px;font-size:11px;font-weight:800;letter-spacing:1px;vertical-align:middle;margin-right:8px}
+.header p{margin:0;font-size:13px;color:var(--text2)}
+.header .refresh-row{display:flex;gap:10px;align-items:center;margin-top:12px}
+.header input{flex:1;padding:10px 14px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:12px}
+.header button{padding:10px 20px;background:linear-gradient(135deg,var(--purple),var(--cyan));color:#fff;border:none;border-radius:8px;font-weight:800;cursor:pointer;font-family:inherit}
+.header button:disabled{opacity:.5;cursor:not-allowed}
+
+.tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.tab{padding:8px 14px;background:var(--bg2);border:1px solid var(--border);color:var(--text2);border-radius:10px;cursor:pointer;font-size:13px;font-weight:700;font-family:inherit}
+.tab.active{background:var(--purple);color:#fff;border-color:var(--purple)}
+.tab .count{display:inline-block;margin-right:6px;padding:1px 7px;background:rgba(0,0,0,.3);border-radius:8px;font-size:10px;font-family:'JetBrains Mono',monospace}
+
+.section{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px;display:none}
+.section.active{display:block}
+.section h2{margin:0 0 14px;font-size:16px;color:var(--text);display:flex;justify-content:space-between;align-items:center}
+.section h2 .meta{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;font-weight:500}
+
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:18px}
+.stat-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px}
+.stat-card .lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:6px}
+.stat-card .val{font-size:28px;font-weight:900;color:var(--text);font-family:'JetBrains Mono',monospace}
+.stat-card .val.red{color:var(--red)}.stat-card .val.orange{color:var(--orange)}.stat-card .val.green{color:var(--green)}.stat-card .val.gold{color:var(--gold)}
+.stat-card .sub{font-size:11px;color:var(--text2);margin-top:4px}
+
+table{width:100%;border-collapse:collapse;font-size:12px;font-family:'JetBrains Mono',monospace}
+th{text-align:start;padding:8px 10px;background:var(--bg3);color:var(--text2);font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);font-family:'Rubik',sans-serif}
+td{padding:8px 10px;border-bottom:1px solid rgba(168,85,247,.1);color:var(--text)}
+tr:hover td{background:rgba(168,85,247,.04)}
+.chip{display:inline-block;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;font-family:'Rubik',sans-serif}
+.chip-green{background:rgba(0,232,135,.15);color:var(--green)}
+.chip-red{background:rgba(255,68,68,.15);color:var(--red)}
+.chip-orange{background:rgba(255,152,0,.15);color:var(--orange)}
+.chip-gold{background:rgba(255,215,0,.15);color:var(--gold)}
+.chip-purple{background:rgba(168,85,247,.15);color:var(--purple)}
+.chip-gray{background:rgba(155,160,181,.12);color:var(--text2)}
+
+a{color:var(--cyan);text-decoration:none}
+a:hover{text-decoration:underline}
+.arkham{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.3);color:var(--gold);border-radius:6px;font-size:10px;font-weight:700;margin-right:4px}
+.arkham:hover{background:rgba(255,215,0,.15);text-decoration:none}
+
+.error{color:var(--red);padding:14px;background:rgba(255,68,68,.05);border:1px solid rgba(255,68,68,.3);border-radius:10px;margin-bottom:14px;font-family:'JetBrains Mono',monospace;font-size:13px}
+.info-banner{background:linear-gradient(135deg,rgba(168,85,247,.08),rgba(6,182,212,.06));border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:18px;font-size:13px;color:var(--text2)}
+.info-banner strong{color:var(--gold)}
+
+/* On-chain block */
+.onchain-tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-bottom:16px}
+.onchain-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px}
+.onchain-card h4{margin:0 0 6px;font-size:13px;color:var(--gold)}
+.onchain-card .addr{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text2);word-break:break-all;margin-bottom:6px}
+.onchain-card a{font-size:11px;margin-inline-end:6px}
+
+.empty{padding:40px;text-align:center;color:var(--text3);font-style:italic}
+
+@media (max-width:640px){
+  table{font-size:11px}
+  td,th{padding:6px 7px}
+}
+</style>
+</head>
+<body>
+
+<div id="topnav-root" data-page="reality"></div>
+<div id="ticker-root"></div>
+
+<div class="wrap">
+  <div class="header">
+    <h1><span class="badge">REALITY</span>SLH Admin — The Honest One</h1>
+    <p>Single source of truth. No phantom data. Every number queried fresh from Railway Postgres.</p>
+    <div class="refresh-row">
+      <input type="password" id="bkey" placeholder="ADMIN_BROADCAST_KEY (stored in localStorage)" autocomplete="off">
+      <button id="refresh-btn" onclick="refresh()">Refresh</button>
+      <span id="updated" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3)">Never</span>
+    </div>
+  </div>
+
+  <div class="info-banner">
+    💡 <strong>איך משתמשים:</strong> הכנס את ה-<code>ADMIN_BROADCAST_KEY</code> (מה-.env). לוחצים Refresh — הכל מתעדכן חי. הנתונים נטענים מ-<code>/api/ops/reality</code>.
+    כל כתובת on-chain מקושרת אוטומטית ל-<a href="https://intel.arkm.com" target="_blank">Arkham Intelligence</a> ו-BscScan/Tonviewer.
+  </div>
+
+  <div id="error-box"></div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="summary">Summary</div>
+    <div class="tab" data-tab="users">Users <span class="count" id="tab-users-count">-</span></div>
+    <div class="tab" data-tab="payments">Payments <span class="count" id="tab-payments-count">-</span></div>
+    <div class="tab" data-tab="licenses">Licenses <span class="count" id="tab-licenses-count">-</span></div>
+    <div class="tab" data-tab="courses">Courses <span class="count" id="tab-courses-count">-</span></div>
+    <div class="tab" data-tab="onchain">On-Chain <span class="count" id="tab-onchain-count">-</span></div>
+    <div class="tab" data-tab="broadcasts">Broadcasts <span class="count" id="tab-broadcasts-count">-</span></div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="section active" id="section-summary">
+    <h2>Reality Summary <span class="meta" id="summary-meta">—</span></h2>
+    <div class="summary-grid" id="summary-grid"></div>
+  </div>
+
+  <!-- USERS -->
+  <div class="section" id="section-users">
+    <h2>Users — Founders / Community / Test <span class="meta" id="users-meta">—</span></h2>
+    <div id="users-table"></div>
+  </div>
+
+  <!-- PAYMENTS -->
+  <div class="section" id="section-payments">
+    <h2>Payments — Real Customer Revenue Only <span class="meta" id="payments-meta">—</span></h2>
+    <div id="payments-table"></div>
+  </div>
+
+  <!-- LICENSES -->
+  <div class="section" id="section-licenses">
+    <h2>Academy Licenses <span class="meta" id="licenses-meta">—</span></h2>
+    <div id="licenses-table"></div>
+  </div>
+
+  <!-- COURSES -->
+  <div class="section" id="section-courses">
+    <h2>Academy Courses <span class="meta" id="courses-meta">—</span></h2>
+    <div id="courses-table"></div>
+  </div>
+
+  <!-- ON-CHAIN -->
+  <div class="section" id="section-onchain">
+    <h2>On-Chain Activity + Arkham Links <span class="meta" id="onchain-meta">—</span></h2>
+    <div class="onchain-tools" id="onchain-tools"></div>
+    <h3 style="margin:20px 0 10px;font-size:14px;color:var(--text2)">Deposits (DB)</h3>
+    <div id="deposits-table"></div>
+  </div>
+
+  <!-- BROADCASTS -->
+  <div class="section" id="section-broadcasts">
+    <h2>Recent Telegram Broadcasts <span class="meta" id="broadcasts-meta">—</span></h2>
+    <div id="broadcasts-table"></div>
+  </div>
+</div>
+
+<script>
+const API = 'https://slh-api-production.up.railway.app';
+
+// Core SLH on-chain addresses (from CLAUDE.md)
+const CORE_ADDRESSES = [
+  { label: 'SLH Token Contract (BSC)', chain: 'bsc', addr: '0xACb0A09414CEA1C879c67bB7A877E4e19480f022', role: 'contract' },
+  { label: 'PancakeSwap V2 Pool', chain: 'bsc', addr: '0xacea26b6e132cd45f2b8a4754170d4d0d3b8bbee', role: 'pool' },
+  { label: 'Genesis Wallet', chain: 'bsc', addr: '0xd061de73B06d5E91bfA46b35EfB7B08b16903da4', role: 'founder' },
+  { label: 'Main MetaMask (199K SLH)', chain: 'bsc', addr: '0xD0617B54FB4b6b66307846f217b4D685800E3dA4', role: 'founder' },
+  { label: 'TON Wallet (SLH payments)', chain: 'ton', addr: 'UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp', role: 'treasury' },
+];
+
+function arkhamLink(addr, chain) {
+  const c = chain === 'bsc' ? 'bsc' : (chain === 'ton' ? 'ton' : 'ethereum');
+  return `https://intel.arkm.com/explorer/address/${addr}`;
+}
+function bscScanLink(addr) { return `https://bscscan.com/address/${addr}`; }
+function tonViewerLink(addr) { return `https://tonviewer.com/${addr}`; }
+
+// localStorage for key
+const KEY_STORAGE = 'slh_broadcast_key';
+function loadKey() {
+  const k = localStorage.getItem(KEY_STORAGE);
+  if (k) document.getElementById('bkey').value = k;
+  return k;
+}
+function saveKey(k) { localStorage.setItem(KEY_STORAGE, k); }
+
+async function refresh() {
+  const key = document.getElementById('bkey').value.trim();
+  if (!key) { showError('Enter broadcast key first'); return; }
+  saveKey(key);
+
+  const btn = document.getElementById('refresh-btn');
+  btn.disabled = true;
+  btn.textContent = 'Loading...';
+
+  try {
+    const res = await fetch(`${API}/api/ops/reality`, {
+      headers: { 'X-Broadcast-Key': key }
+    });
+    if (!res.ok) {
+      const body = await res.text();
+      throw new Error(`HTTP ${res.status}: ${body}`);
+    }
+    const data = await res.json();
+    render(data);
+    document.getElementById('updated').textContent = `Updated ${new Date().toLocaleTimeString()}`;
+    clearError();
+  } catch (e) {
+    showError(`Failed to load: ${e.message}`);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Refresh';
+  }
+}
+
+function showError(msg) {
+  document.getElementById('error-box').innerHTML = `<div class="error">❌ ${msg}</div>`;
+}
+function clearError() { document.getElementById('error-box').innerHTML = ''; }
+
+function render(d) {
+  renderSummary(d.summary, d.generated_at);
+  renderUsers(d.users);
+  renderPayments(d.payments);
+  renderLicenses(d.licenses);
+  renderCourses(d.courses);
+  renderOnchain(d.deposits);
+  renderBroadcasts(d.recent_broadcasts || []);
+
+  document.getElementById('tab-users-count').textContent = d.summary.users.total;
+  document.getElementById('tab-payments-count').textContent = d.summary.payments.total_rows;
+  document.getElementById('tab-licenses-count').textContent = d.summary.licenses.total;
+  document.getElementById('tab-courses-count').textContent = d.summary.courses_active;
+  document.getElementById('tab-onchain-count').textContent = d.summary.deposits_onchain;
+  document.getElementById('tab-broadcasts-count').textContent = (d.recent_broadcasts || []).length;
+}
+
+function renderSummary(s, at) {
+  document.getElementById('summary-meta').textContent = `Generated: ${at}`;
+  const cards = [
+    { lbl: 'Total Users', val: s.users.total, cls: '', sub: `${s.users.real} real, ${s.users.test_or_fake} test` },
+    { lbl: 'Real Community', val: s.users.community, cls: 'green', sub: `${s.users.founders} founder accts excluded` },
+    { lbl: 'Genesis 49 Members', val: s.users.genesis49, cls: 'gold', sub: 'NFT coupon holders' },
+    { lbl: 'Real Customer Payments', val: s.payments.real_customer_payments, cls: s.payments.real_customer_payments === 0 ? 'red' : 'green', sub: `₪${s.payments.total_real_ils.toFixed(2)} lifetime` },
+    { lbl: 'Self-Test Payments', val: s.payments.founder_self_test, cls: 'orange', sub: `₪${s.payments.total_self_test_ils.toFixed(2)} (Osif dogfood)` },
+    { lbl: 'Licenses Issued', val: s.licenses.total, cls: '', sub: `${s.licenses.to_real_customers} to real customers` },
+    { lbl: 'Active Courses', val: s.courses_active, cls: '', sub: '' },
+    { lbl: 'On-Chain Deposits (DB)', val: s.deposits_onchain, cls: s.deposits_onchain === 0 ? 'red' : 'green', sub: 'Zero means API not indexing' },
+    { lbl: 'Marketplace Items', val: s.marketplace_items || 0, cls: '', sub: `${s.marketplace_orders || 0} orders` },
+    { lbl: 'Active Stakes', val: s.active_stakes ?? '—', cls: '', sub: '' },
+    { lbl: 'Users w/ Referral', val: s.users_with_referral ?? '—', cls: '', sub: '' },
+  ];
+
+  document.getElementById('summary-grid').innerHTML = cards.map(c => `
+    <div class="stat-card">
+      <div class="lbl">${c.lbl}</div>
+      <div class="val ${c.cls}">${c.val ?? '—'}</div>
+      ${c.sub ? `<div class="sub">${c.sub}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+function usersTable(rows, headerExtra='') {
+  if (!rows.length) return `<div class="empty">No rows</div>`;
+  return `<table>
+    <thead><tr>
+      <th>Telegram ID</th><th>Username / Name</th><th>Registered</th><th>Genesis 49</th><th>Last Login</th><th>Wallets</th><th>Arkham</th>
+    </tr></thead>
+    <tbody>${rows.map(u => {
+      const addrs = [
+        u.eth_wallet && `<a href="${arkhamLink(u.eth_wallet,'bsc')}" target="_blank" class="arkham">BSC</a>`,
+        u.ton_wallet && `<a href="${tonViewerLink(u.ton_wallet)}" target="_blank" class="arkham">TON</a>`,
+      ].filter(Boolean).join('') || '—';
+      return `<tr>
+        <td><strong>${u.telegram_id}</strong></td>
+        <td>${u.username ? '@'+u.username : ''} ${u.first_name || ''}</td>
+        <td>${u.is_registered ? '<span class="chip chip-green">YES</span>' : '<span class="chip chip-gray">NO</span>'}</td>
+        <td>${u.beta_user ? `<span class="chip chip-gold">#${u.beta_nft_number || '?'}</span>` : '—'}</td>
+        <td>${u.last_login ? u.last_login.split('T')[0] : '—'}</td>
+        <td>${addrs}</td>
+        <td><a href="https://t.me/user?id=${u.telegram_id}" target="_blank" class="arkham">TG</a></td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table>`;
+}
+
+function renderUsers(u) {
+  document.getElementById('users-meta').textContent = `Founders: ${u.founders.length} · Community: ${u.community.length} · Test/fake: ${u.test_or_fake.length}`;
+  const html = `
+    <h3 style="margin:16px 0 8px;font-size:14px;color:var(--cyan)">👑 Founder Accounts (${u.founders.length})</h3>
+    ${usersTable(u.founders)}
+    <h3 style="margin:20px 0 8px;font-size:14px;color:var(--green)">👥 Real Community Members (${u.community.length})</h3>
+    ${usersTable(u.community)}
+    <h3 style="margin:20px 0 8px;font-size:14px;color:var(--text3)">🧪 Test / Fake IDs (${u.test_or_fake.length})</h3>
+    ${usersTable(u.test_or_fake)}
+  `;
+  document.getElementById('users-table').innerHTML = html;
+}
+
+function paymentsTable(rows) {
+  if (!rows.length) return `<div class="empty">Zero payments in this bucket</div>`;
+  return `<table>
+    <thead><tr>
+      <th>Date</th><th>User</th><th>Amount</th><th>Provider</th><th>Tx ID</th><th>Plan</th><th>Status</th><th>Note</th>
+    </tr></thead>
+    <tbody>${rows.map(p => {
+      const meta = p.metadata || {};
+      const note = meta.self_test ? '🧪 self-test'
+        : meta.refund_status === 'pending_review' ? `⚠️ ${meta.refund_status}`
+        : (meta.classification || '—');
+      return `<tr>
+        <td>${p.created_at ? p.created_at.split('T')[0] : '—'}</td>
+        <td>${p.user_id}</td>
+        <td><strong>${parseFloat(p.amount).toFixed(2)} ${p.currency}</strong></td>
+        <td><span class="chip chip-purple">${p.provider}</span></td>
+        <td title="${p.provider_tx_id}">${(p.provider_tx_id || '').substr(0, 28)}…</td>
+        <td>${p.plan_key || '—'}</td>
+        <td><span class="chip chip-${p.status === 'approved' ? 'green' : 'gray'}">${p.status}</span></td>
+        <td style="font-size:10px">${note}</td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table>`;
+}
+
+function renderPayments(p) {
+  document.getElementById('payments-meta').textContent = `Real: ${p.real_customer.length} · Self-test: ${p.founder_self_test.length}`;
+  document.getElementById('payments-table').innerHTML = `
+    <h3 style="margin:16px 0 8px;font-size:14px;color:var(--green)">💰 Real Customer Payments (${p.real_customer.length})</h3>
+    ${paymentsTable(p.real_customer)}
+    <h3 style="margin:20px 0 8px;font-size:14px;color:var(--orange)">🧪 Founder Self-Tests (${p.founder_self_test.length})</h3>
+    ${paymentsTable(p.founder_self_test)}
+  `;
+}
+
+function renderLicenses(lics) {
+  if (!lics.length) {
+    document.getElementById('licenses-table').innerHTML = `<div class="empty">Zero licenses issued</div>`;
+    document.getElementById('licenses-meta').textContent = '0 total';
+    return;
+  }
+  document.getElementById('licenses-meta').textContent = `${lics.length} total`;
+  const html = `<table>
+    <thead><tr>
+      <th>ID</th><th>User</th><th>Course</th><th>Payment ID</th><th>Purchased</th><th>Status</th>
+    </tr></thead>
+    <tbody>${lics.map(l => `<tr>
+      <td>#${l.id}</td>
+      <td>${l.user_id}</td>
+      <td><strong>${l.title_he || l.slug || '?'}</strong><br><small style="color:var(--text3)">${l.slug || ''} · ₪${l.price_ils ?? '?'}</small></td>
+      <td style="font-size:10px">${l.payment_id || '—'}</td>
+      <td>${l.purchased_at ? l.purchased_at.split('T')[0] : '—'}</td>
+      <td><span class="chip chip-${l.status === 'active' ? 'green' : 'gray'}">${l.status}</span></td>
+    </tr>`).join('')}</tbody>
+  </table>`;
+  document.getElementById('licenses-table').innerHTML = html;
+}
+
+function renderCourses(cs) {
+  document.getElementById('courses-meta').textContent = `${cs.length} total, ${cs.filter(c => c.active).length} active`;
+  if (!cs.length) {
+    document.getElementById('courses-table').innerHTML = `<div class="empty">Zero courses</div>`;
+    return;
+  }
+  const html = `<table>
+    <thead><tr>
+      <th>ID</th><th>Slug</th><th>Title</th><th>Price (ILS)</th><th>Price (SLH)</th><th>Active</th><th>Approval</th><th>Lang</th>
+    </tr></thead>
+    <tbody>${cs.map(c => `<tr>
+      <td>#${c.id}</td>
+      <td><code style="font-size:10px">${c.slug}</code></td>
+      <td>${c.title_he}</td>
+      <td>${c.price_ils ?? '—'}</td>
+      <td>${c.price_slh ?? '—'}</td>
+      <td>${c.active ? '<span class="chip chip-green">YES</span>' : '<span class="chip chip-gray">NO</span>'}</td>
+      <td><span class="chip chip-${c.approval_status === 'approved' ? 'green' : 'orange'}">${c.approval_status || 'pending'}</span></td>
+      <td>${c.language || 'he'}</td>
+    </tr>`).join('')}</tbody>
+  </table>`;
+  document.getElementById('courses-table').innerHTML = html;
+}
+
+function renderOnchain(deps) {
+  // Core addresses with Arkham links
+  const tools = CORE_ADDRESSES.map(a => `
+    <div class="onchain-card">
+      <h4>${a.label}</h4>
+      <div class="addr">${a.addr}</div>
+      <a href="${arkhamLink(a.addr, a.chain)}" target="_blank" class="arkham">🔎 Arkham</a>
+      ${a.chain === 'bsc'
+        ? `<a href="${bscScanLink(a.addr)}" target="_blank" class="arkham">🔗 BscScan</a>`
+        : `<a href="${tonViewerLink(a.addr)}" target="_blank" class="arkham">🔗 TonViewer</a>`}
+    </div>
+  `).join('');
+  document.getElementById('onchain-tools').innerHTML = tools;
+
+  document.getElementById('onchain-meta').textContent = `Core addresses: ${CORE_ADDRESSES.length} · Deposits: ${deps.length}`;
+
+  if (!deps.length) {
+    document.getElementById('deposits-table').innerHTML = `<div class="empty">No on-chain deposits indexed by API yet.<br><br>⚠️ This doesn't mean no users deposited. It means the API isn't watching / recording deposits.<br>Check PancakeSwap directly via Arkham links above for real BSC activity.</div>`;
+    return;
+  }
+  const html = `<table>
+    <thead><tr>
+      <th>ID</th><th>User</th><th>Chain</th><th>Amount</th><th>Token</th><th>TX</th><th>Status</th><th>Confirmed</th>
+    </tr></thead>
+    <tbody>${deps.map(d => `<tr>
+      <td>#${d.id}</td>
+      <td>${d.user_id}</td>
+      <td><span class="chip chip-purple">${d.chain}</span></td>
+      <td>${d.amount}</td>
+      <td>${d.token}</td>
+      <td><a href="${d.chain === 'bsc' ? 'https://bscscan.com/tx/'+d.tx_hash : 'https://tonviewer.com/tx/'+d.tx_hash}" target="_blank">${d.tx_hash.substr(0, 10)}…</a></td>
+      <td><span class="chip chip-${d.status === 'confirmed' ? 'green' : 'orange'}">${d.status}</span></td>
+      <td>${d.confirmed_at ? d.confirmed_at.split('T')[0] : '—'}</td>
+    </tr>`).join('')}</tbody>
+  </table>`;
+  document.getElementById('deposits-table').innerHTML = html;
+}
+
+function renderBroadcasts(bs) {
+  document.getElementById('broadcasts-meta').textContent = `${bs.length} recent`;
+  if (!bs.length) {
+    document.getElementById('broadcasts-table').innerHTML = `<div class="empty">No broadcasts yet</div>`;
+    return;
+  }
+  const html = `<table>
+    <thead><tr>
+      <th>ID</th><th>Sent</th><th>Target</th><th>Recipients</th><th>✓ Success</th><th>✗ Failed</th><th>Message</th>
+    </tr></thead>
+    <tbody>${bs.map(b => `<tr>
+      <td>#${b.id}</td>
+      <td>${b.sent_at ? b.sent_at.replace('T', ' ').split('.')[0] : '—'}</td>
+      <td><span class="chip chip-purple">${b.target}</span></td>
+      <td>${b.total_targets}</td>
+      <td><span class="chip chip-green">${b.success_count || 0}</span></td>
+      <td>${b.fail_count > 0 ? `<span class="chip chip-red">${b.fail_count}</span>` : '0'}</td>
+      <td style="font-size:11px;max-width:400px">${(b.message_preview || '').substr(0, 80)}…</td>
+    </tr>`).join('')}</tbody>
+  </table>`;
+  document.getElementById('broadcasts-table').innerHTML = html;
+}
+
+// Tab switching
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById('section-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+// Auto-load saved key
+if (loadKey()) {
+  refresh();
+}
+</script>
+
+<div id="footer-root"></div>
+<div id="bottomnav-root"></div>
+<script src="/js/shared.js?v=20260426e" defer></script>
+</body>
+</html>

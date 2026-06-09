@@ -1,0 +1,360 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH · מסלול למידה אישי · Daily Learning</title>
+<meta name="description" content="מסלול למידה יומי: בלוג → אתגר 21 יום → קהילה. תגמולים ב-ZVK על כל שלב.">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+  --bg:#05080f; --bg2:#0c1018; --bg3:#141924; --bg4:#1a2030;
+  --accent:#00ff41; --cyan:#00e5ff; --gold:#ffd700;
+  --purple:#a855f7; --rose:#ec4899; --blue:#3b82f6; --orange:#f97316;
+  --text:#f5f5f8; --text2:#9ba0b5; --text3:#5a6078;
+  --border:rgba(0,255,65,.15); --border2:rgba(255,255,255,.06);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Rubik',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;padding-bottom:40px}
+a{color:var(--accent);text-decoration:none}
+body::before{content:'';position:fixed;inset:0;background:
+  radial-gradient(1000px 500px at 10% -5%, rgba(168,85,247,.07), transparent 60%),
+  radial-gradient(800px 500px at 90% 50%, rgba(0,255,65,.05), transparent 60%);
+  pointer-events:none;z-index:0}
+
+.wrap{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:20px 16px 40px}
+
+/* Hero */
+.hero{text-align:center;padding:20px 0 30px;position:relative}
+.hero .ring{display:inline-block;width:100px;height:100px;border-radius:50%;background:conic-gradient(var(--accent) 0%, var(--cyan) 25%, var(--gold) 50%, var(--purple) 75%, var(--rose) 100%);padding:4px;margin-bottom:14px;animation:spin 14s linear infinite}
+.hero .ring-inner{width:100%;height:100%;border-radius:50%;background:var(--bg);display:grid;place-items:center;font-size:50px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hero h1{font-size:34px;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--cyan),var(--purple),var(--rose));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;letter-spacing:-.5px}
+.hero .sub{color:var(--text2);font-size:16px;max-width:560px;margin:0 auto;line-height:1.7}
+
+/* Progress bar */
+.progress-card{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border2);border-radius:20px;padding:20px;margin-bottom:24px}
+.progress-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:12px;flex-wrap:wrap}
+.progress-head h2{font-size:18px;font-weight:800}
+.progress-head .streak{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.3);border-radius:999px;color:var(--gold);font-size:13px;font-weight:700}
+.progress-bar{height:12px;background:var(--bg4);border-radius:6px;overflow:hidden;margin-bottom:8px}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--cyan),var(--gold));border-radius:6px;transition:width .8s;position:relative;overflow:hidden}
+.progress-fill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);animation:shimmer 2s infinite}
+@keyframes shimmer{to{transform:translateX(100%)}}
+.progress-text{color:var(--text2);font-size:13px;text-align:center}
+
+/* Today's task */
+.today-card{background:linear-gradient(135deg,rgba(0,255,65,.05),rgba(0,229,255,.04));border:2px solid rgba(0,255,65,.25);border-radius:20px;padding:24px;margin-bottom:24px;box-shadow:0 0 40px rgba(0,255,65,.08);position:relative;overflow:hidden}
+.today-card::before{content:'';position:absolute;top:-50px;right:-50px;width:200px;height:200px;background:radial-gradient(circle,rgba(0,255,65,.15),transparent 70%);pointer-events:none}
+.today-badge{display:inline-block;padding:4px 12px;background:rgba(0,255,65,.15);color:var(--accent);border-radius:6px;font-size:11px;font-weight:800;letter-spacing:1px;margin-bottom:10px;text-transform:uppercase}
+.today-card h2{font-size:24px;font-weight:900;margin-bottom:8px}
+.today-card p{color:var(--text2);font-size:14px;margin-bottom:16px;line-height:1.8}
+.today-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:14px}
+.act-btn{display:block;padding:14px;background:var(--bg3);border:1px solid var(--border2);border-radius:12px;color:var(--text);text-decoration:none;text-align:center;font-size:14px;font-weight:700;transition:.2s}
+.act-btn:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 4px 20px rgba(0,255,65,.15)}
+.act-btn.primary{background:linear-gradient(135deg,var(--accent),#00c832);color:#000;border:none}
+.act-btn i{font-size:18px;margin-left:6px}
+
+/* 3 paths */
+.paths{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-bottom:24px}
+.path{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:22px;position:relative;overflow:hidden;transition:.2s;text-decoration:none;color:var(--text);display:block}
+.path:hover{border-color:rgba(0,255,65,.3);transform:translateY(-3px)}
+.path::before{content:'';position:absolute;top:0;right:0;width:3px;height:100%}
+.path.blog::before{background:var(--cyan)}
+.path.challenge::before{background:var(--purple)}
+.path.community::before{background:var(--gold)}
+.path .icon{font-size:36px;margin-bottom:10px;display:block}
+.path h3{font-size:18px;font-weight:800;margin-bottom:6px}
+.path p{color:var(--text2);font-size:13px;line-height:1.7;margin-bottom:14px}
+.path .meta{display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--text3);font-family:'Space Mono',monospace}
+.path .meta span{display:inline-flex;align-items:center;gap:4px}
+.path .cta{margin-top:12px;color:var(--accent);font-weight:700;font-size:13px}
+.path.blog .cta{color:var(--cyan)}
+.path.challenge .cta{color:var(--purple)}
+.path.community .cta{color:var(--gold)}
+
+/* 21 days grid */
+.days-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:16px}
+.day-cell{aspect-ratio:1;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;display:grid;place-items:center;font-size:11px;color:var(--text3);font-family:'Space Mono',monospace;transition:.15s;cursor:pointer;font-weight:700}
+.day-cell:hover{border-color:var(--border)}
+.day-cell.done{background:linear-gradient(135deg,var(--accent),#00c832);color:#000;border-color:var(--accent)}
+.day-cell.current{background:rgba(0,229,255,.15);border-color:var(--cyan);color:var(--cyan);animation:pulse 2s infinite}
+.day-cell.locked{opacity:.4;cursor:not-allowed}
+@keyframes pulse{50%{transform:scale(1.08);box-shadow:0 0 20px rgba(0,229,255,.4)}}
+
+/* Rewards */
+.rewards-card{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:20px;margin-bottom:24px}
+.rewards-card h3{font-size:16px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.rewards-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.reward{padding:12px;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;text-align:center;position:relative}
+.reward .amount{font-size:22px;font-weight:900;color:var(--gold);font-family:'Space Mono',monospace}
+.reward .label{font-size:11px;color:var(--text2);margin-top:4px}
+.reward.earned .amount{color:var(--accent)}
+.reward.earned::after{content:'✓';position:absolute;top:6px;left:6px;color:var(--accent);font-weight:900;font-size:14px}
+
+/* Nephew mode banner */
+.kids-banner{background:linear-gradient(135deg,rgba(236,72,153,.1),rgba(168,85,247,.08));border:1px solid rgba(236,72,153,.3);border-radius:14px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;gap:12px;font-size:13px;color:var(--rose)}
+
+.foot{text-align:center;color:var(--text3);font-size:11px;padding:20px 0;margin-top:30px;border-top:1px solid var(--border2);font-family:'Space Mono',monospace}
+</style>
+<meta name="slh-version" content="v1.0-flip">
+<script defer src="/js/slh-flip.js?v=20260426e"></script>
+</head>
+<body>
+<style>
+.slh-beta-banner{position:sticky;top:0;z-index:9998;background:linear-gradient(90deg,#ff9900,#ffd700,#00ff41);color:#000;font-weight:700;font-size:12px;padding:6px 14px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.slh-beta-banner a{color:#000;text-decoration:underline;font-weight:800}
+.slh-beta-banner button{background:rgba(0,0,0,.15);color:#000;border:none;padding:3px 10px;border-radius:12px;font-size:11px;cursor:pointer;font-weight:700}
+.slh-bug-fab{position:fixed;bottom:20px;left:20px;z-index:9999;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#ff4444,#ff9900);display:grid;place-items:center;font-size:24px;text-decoration:none;box-shadow:0 4px 20px rgba(255,68,68,.4);transition:transform .2s;animation:bugPulse 3s infinite}
+.slh-bug-fab:hover{transform:scale(1.1)}
+@keyframes bugPulse{0%,100%{box-shadow:0 4px 20px rgba(255,68,68,.4)}50%{box-shadow:0 4px 30px rgba(255,153,0,.6)}}
+@media(max-width:600px){.slh-bug-fab{bottom:80px;width:46px;height:46px;font-size:20px}}
+</style>
+<div class="slh-beta-banner" id="slhBeta">
+  <span>🚧 <b>BETA</b></span>
+  <span style="opacity:.85">אם משהו לא עובד —</span>
+  <a href="/bug-report.html">🐛 דווח באג</a>
+  <button onclick="localStorage.setItem('slh_beta_dismissed','1');this.parentElement.remove()">✕</button>
+</div>
+<a href="/bug-report.html" class="slh-bug-fab" title="דווח באג">🐛</a>
+<script>if(localStorage.getItem('slh_beta_dismissed')==='1'){var b=document.getElementById('slhBeta');if(b)b.remove();}</script>
+
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="ring"><div class="ring-inner">🌱</div></div>
+    <h1>מסלול למידה אישי</h1>
+    <p class="sub">21 יום. 3 מסלולים. יום אחד כל פעם. התקדמות אמיתית, תגמולים אמיתיים.</p>
+  </header>
+
+  <div class="kids-banner" id="kidsBanner" style="display:none">
+    <i class="fa fa-seedling" style="font-size:22px"></i>
+    <div>
+      <b>מצב נעורים פעיל</b> — ללא תוכן בוגרים, ללא פרסום כסף. רק למידה, תגמולי ZVK, וקהילה.
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-card">
+    <div class="progress-head">
+      <h2>🎯 ההתקדמות שלך</h2>
+      <div class="streak" id="streakBadge">🔥 streak: 0</div>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <div class="progress-text" id="progressText">יום 0 מתוך 21 · טרם התחלת</div>
+    <div class="days-grid" id="daysGrid"></div>
+  </div>
+
+  <!-- Today's task -->
+  <div class="today-card">
+    <div class="today-badge">היום</div>
+    <h2 id="todayTitle">📖 קרא פוסט בלוג אחד</h2>
+    <p id="todayDesc">התחל את היום עם 5 דקות קריאה על נושא חדש. כל פוסט = +5 ZVK. אחרי 3 פוסטים — פתח את אתגר 21 הימים.</p>
+    <div class="today-actions">
+      <a href="/daily-blog.html" class="act-btn primary" onclick="markTaskStarted('blog')"><i class="fa fa-book-open"></i> קרא פוסט היום</a>
+      <a href="/challenge.html" class="act-btn" onclick="markTaskStarted('challenge')"><i class="fa fa-yin-yang"></i> פתח אתגר 21</a>
+      <a href="/community.html" class="act-btn" onclick="markTaskStarted('community')"><i class="fa fa-users"></i> הצג קהילה</a>
+    </div>
+  </div>
+
+  <!-- 3 paths -->
+  <div class="paths">
+    <a href="/daily-blog.html" class="path blog">
+      <span class="icon">📰</span>
+      <h3>בלוג יומי</h3>
+      <p>רעיונות מעמיקים מאוסיף — נוירולוגיה, מדיטציה, מוזיקה, פילוסופיה מעשית. פוסט ביום, כ-5 דקות קריאה.</p>
+      <div class="meta">
+        <span><i class="fa fa-clock"></i> ~5 דקות</span>
+        <span><i class="fa fa-gem" style="color:var(--gold)"></i> 5 ZVK/פוסט</span>
+      </div>
+      <div class="cta">פתח את הבלוג →</div>
+    </a>
+
+    <a href="/challenge.html" class="path challenge">
+      <span class="icon">🧘</span>
+      <h3>אתגר 21 יום</h3>
+      <p>יוגה, מדיטציה, CBT, תרגילי נשימה. משימה יומית קצרה + קהילה שמעודדת. תגמול גבוה לסיום.</p>
+      <div class="meta">
+        <span><i class="fa fa-clock"></i> ~10 דקות/יום</span>
+        <span><i class="fa fa-trophy" style="color:var(--gold)"></i> 50 ZVK בסיום</span>
+      </div>
+      <div class="cta">הצטרף לאתגר →</div>
+    </a>
+
+    <a href="/community.html" class="path community">
+      <span class="icon">💬</span>
+      <h3>פיד הקהילה</h3>
+      <p>שתף מחשבה, הגב לאחרים, הצטרף לדיונים. כל פעילות נחשבת. פוסטים משמעותיים מקבלים תגמול.</p>
+      <div class="meta">
+        <span><i class="fa fa-heart" style="color:var(--rose)"></i> reactions</span>
+        <span><i class="fa fa-comment"></i> replies</span>
+      </div>
+      <div class="cta">פתח פיד →</div>
+    </a>
+  </div>
+
+  <!-- Rewards -->
+  <div class="rewards-card">
+    <h3><i class="fa fa-gift" style="color:var(--gold)"></i> תגמולים לאורך המסלול</h3>
+    <div class="rewards-list">
+      <div class="reward" id="reward-day1"><div class="amount">5</div><div class="label">יום 1 · פוסט ראשון</div></div>
+      <div class="reward" id="reward-day3"><div class="amount">20</div><div class="label">יום 3 · streak</div></div>
+      <div class="reward" id="reward-day7"><div class="amount">50</div><div class="label">שבוע ראשון</div></div>
+      <div class="reward" id="reward-day14"><div class="amount">100</div><div class="label">שבועיים</div></div>
+      <div class="reward" id="reward-day21"><div class="amount">250</div><div class="label">סיום מלא 🏆</div></div>
+    </div>
+    <div style="margin-top:12px;font-size:11px;color:var(--text3);text-align:center;font-family:'Space Mono',monospace">
+      ZVK זה טוקן פנימי · בעתיד ניתן להמיר ל-SLH/MNH דרך P2P
+    </div>
+  </div>
+
+  <!-- Links -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin-bottom:20px">
+    <a href="/dashboard.html" class="act-btn"><i class="fa fa-gauge"></i> הדשבורד שלי</a>
+    <a href="/wallet.html" class="act-btn"><i class="fa fa-wallet"></i> ארנק ZVK</a>
+    <a href="/invite.html" class="act-btn"><i class="fa fa-user-plus"></i> הזמן חברים</a>
+    <a href="/join-guide.html" class="act-btn"><i class="fa fa-compass"></i> מדריך הצטרפות</a>
+  </div>
+
+  <div class="foot">
+    SLH Learning Path · <a href="/">בית</a> · <a href="/community.html">קהילה</a> · <a href="/dashboard.html">דשבורד</a>
+  </div>
+
+</div>
+
+<script>
+const API = 'https://slh-api-production.up.railway.app';
+const LS_KEY = 'slh_learning_progress';
+
+function getProgress() {
+  try { return JSON.parse(localStorage.getItem(LS_KEY) || '{}'); }
+  catch(e) { return {}; }
+}
+function saveProgress(p) { localStorage.setItem(LS_KEY, JSON.stringify(p)); }
+
+function getUser() {
+  try { return JSON.parse(localStorage.getItem('slh_user') || '{}'); }
+  catch(e) { return {}; }
+}
+
+function daysSinceStart(progress) {
+  if (!progress.started_at) return 0;
+  const start = new Date(progress.started_at);
+  const diff = Math.floor((Date.now() - start.getTime()) / (1000 * 60 * 60 * 24));
+  return Math.min(diff + 1, 21);
+}
+
+function renderDaysGrid(progress) {
+  const grid = document.getElementById('daysGrid');
+  const current = daysSinceStart(progress);
+  const completed = progress.completed_days || [];
+  let html = '';
+  for (let i = 1; i <= 21; i++) {
+    let cls = '';
+    if (completed.includes(i)) cls = 'done';
+    else if (i === current) cls = 'current';
+    else if (i > current) cls = 'locked';
+    html += `<div class="day-cell ${cls}" onclick="openDay(${i})">${i}</div>`;
+  }
+  grid.innerHTML = html;
+}
+
+function renderRewards(progress) {
+  const streak = (progress.completed_days || []).length;
+  document.querySelectorAll('.reward').forEach(r => r.classList.remove('earned'));
+  if (streak >= 1) document.getElementById('reward-day1').classList.add('earned');
+  if (streak >= 3) document.getElementById('reward-day3').classList.add('earned');
+  if (streak >= 7) document.getElementById('reward-day7').classList.add('earned');
+  if (streak >= 14) document.getElementById('reward-day14').classList.add('earned');
+  if (streak >= 21) document.getElementById('reward-day21').classList.add('earned');
+}
+
+function renderProgress() {
+  const p = getProgress();
+  const streak = (p.completed_days || []).length;
+  const current = daysSinceStart(p);
+  const pct = Math.round((streak / 21) * 100);
+
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent =
+    streak === 0 ? 'טרם התחלת — לחץ על משימה להתחיל'
+                 : `יום ${current} מתוך 21 · ${streak} משימות הושלמו (${pct}%)`;
+  document.getElementById('streakBadge').textContent = `🔥 streak: ${streak}`;
+  renderDaysGrid(p);
+  renderRewards(p);
+
+  // Show nephew mode if user ID matches
+  const u = getUser();
+  if (u && (u.id === 6466974138 || u.telegram === 6466974138)) {
+    document.getElementById('kidsBanner').style.display = 'flex';
+  }
+}
+
+function markTaskStarted(type) {
+  const p = getProgress();
+  if (!p.started_at) {
+    p.started_at = new Date().toISOString();
+  }
+  const current = daysSinceStart(p);
+  if (!p.completed_days) p.completed_days = [];
+  p.last_action = { type, at: new Date().toISOString() };
+  // Naive completion: starting a task on a new day = completed for that day
+  if (!p.completed_days.includes(current)) {
+    p.completed_days.push(current);
+  }
+  saveProgress(p);
+  renderProgress();
+
+  // Log activity to server (best-effort)
+  const u = getUser();
+  if (u && u.id) {
+    fetch(API + '/api/analytics/event', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        user_id: u.id,
+        event: 'learning_path_step',
+        metadata: { type, day: current }
+      })
+    }).catch(() => {});
+  }
+}
+
+function openDay(day) {
+  const p = getProgress();
+  const current = daysSinceStart(p);
+  if (day > current) {
+    alert(`יום ${day} עדיין נעול. סיים את היום הנוכחי (יום ${current}) קודם.`);
+    return;
+  }
+  // For now, day 1 = blog, day 2-21 = challenge
+  if (day === 1) {
+    window.location.href = '/daily-blog.html';
+  } else {
+    window.location.href = `/challenge.html#day-${day}`;
+  }
+}
+
+// Heartbeat presence every 60s
+function heartbeat() {
+  const u = getUser();
+  if (!u || !u.username) return;
+  fetch(API + '/api/presence/heartbeat', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ username: u.username, user_id: u.id || null })
+  }).catch(() => {});
+}
+
+renderProgress();
+heartbeat();
+setInterval(heartbeat, 60000);
+</script>
+
+</body>
+</html>

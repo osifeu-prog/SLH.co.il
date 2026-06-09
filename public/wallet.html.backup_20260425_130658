@@ -1,0 +1,1549 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLH Spark Wallet — Send, Receive & Manage</title>
+    <meta name="description" content="SLH Wallet - Multi-currency wallet with TON & BSC support. Send, receive, and manage your SLH, TON, and BNB tokens.">
+    <link rel="canonical" href="https://slh-nft.com/wallet.html">
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://slh-nft.com/wallet.html">
+    <meta property="og:title" content="SLH Wallet - TON + BSC + CEX Portfolio">
+    <meta property="og:description" content="Multi-currency wallet with QR codes, Bybit/Binance integration">
+    <meta property="og:image" content="https://slh-nft.com/assets/og/wallet.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="he_IL">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SLH Wallet - TON + BSC + CEX Portfolio">
+    <meta name="twitter:description" content="Multi-currency wallet with QR codes, Bybit/Binance integration">
+    <meta name="twitter:image" content="https://slh-nft.com/assets/og/wallet.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <meta name="theme-color" content="#050510">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/shared.css?v=20260421a">
+    <style>
+        .wallet-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: calc(var(--topnav-h) + 24px) 24px 100px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .wallet-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .wallet-header h1 {
+            font-size: 24px;
+            font-weight: 800;
+        }
+        .wallet-header i {
+            font-size: 28px;
+            color: var(--accent);
+        }
+
+        /* ── Balance Cards ── */
+        .balance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+        }
+        .balance-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: all var(--transition);
+        }
+        .balance-card:hover {
+            border-color: var(--accent);
+        }
+        .balance-token {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text3);
+        }
+        .balance-token .token-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #fff;
+            font-weight: 700;
+        }
+        .token-slh { background: linear-gradient(135deg, var(--accent), var(--accent2)); }
+        .token-ton { background: linear-gradient(135deg, var(--cyan), #0088cc); }
+        .token-bnb { background: linear-gradient(135deg, #F0B90B, #F8D12F); }
+        .token-locked { background: linear-gradient(135deg, var(--red), #cc3344); }
+
+        .balance-amount {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text);
+            line-height: 1.1;
+        }
+        .balance-fiat {
+            font-size: 13px;
+            color: var(--text3);
+        }
+
+        /* ── Send/Receive Tabs ── */
+        .action-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+        .action-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+        }
+        .action-tab {
+            flex: 1;
+            padding: 14px;
+            text-align: center;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text3);
+            cursor: pointer;
+            transition: all var(--transition);
+            border: none;
+            background: none;
+        }
+        .action-tab:hover {
+            color: var(--text);
+        }
+        .action-tab.active {
+            color: var(--accent);
+            background: var(--bg3);
+            box-shadow: inset 0 -2px 0 var(--accent);
+        }
+        .action-body {
+            padding: 24px;
+        }
+        .action-panel {
+            display: none;
+        }
+        .action-panel.active {
+            display: block;
+        }
+
+        /* Send Form */
+        .send-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .send-form .form-row {
+            display: flex;
+            gap: 12px;
+        }
+        .send-form .form-row .form-group {
+            flex: 1;
+        }
+        .send-btn {
+            padding: 14px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all var(--transition);
+            width: 100%;
+        }
+        .send-btn:hover {
+            background: var(--accent2);
+            transform: translateY(-1px);
+        }
+
+        /* Receive */
+        .receive-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .address-block {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+        }
+        .address-label {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            color: var(--text3);
+            margin-bottom: 8px;
+        }
+        .address-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .address-value {
+            flex: 1;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--accent2);
+            word-break: break-all;
+        }
+        .address-copy-btn {
+            padding: 6px 14px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xs);
+            color: var(--text2);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition);
+            white-space: nowrap;
+        }
+        .address-copy-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        .qr-placeholder {
+            width: 160px;
+            height: 160px;
+            background: var(--bg3);
+            border: 2px dashed var(--border2);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text3);
+            font-size: 14px;
+            margin: 0 auto;
+        }
+
+        /* ── Transaction History ── */
+        .history-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+        .history-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .history-header h2 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .tx-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .tx-table th {
+            padding: 10px 16px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            color: var(--text3);
+            background: var(--bg2);
+            border-bottom: 1px solid var(--border);
+        }
+        [dir="rtl"] .tx-table th {
+            text-align: right;
+        }
+        .tx-table td {
+            padding: 12px 16px;
+            font-size: 14px;
+            color: var(--text);
+            border-bottom: 1px solid var(--border);
+        }
+        .tx-table tr:last-child td {
+            border-bottom: none;
+        }
+        .tx-table tr:hover td {
+            background: var(--surface);
+        }
+        .tx-type-in { color: var(--green); }
+        .tx-type-out { color: var(--red); }
+
+        /* ── Token Info ── */
+        .token-info-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .token-info-card .token-badge {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: 800;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .token-info-details {
+            flex: 1;
+            min-width: 200px;
+        }
+        .token-info-details .token-name {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .token-info-details .token-price-tag {
+            font-size: 14px;
+            color: var(--gold);
+            font-weight: 600;
+            margin-top: 2px;
+        }
+        .token-info-details .token-contract {
+            margin-top: 8px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text3);
+            word-break: break-all;
+        }
+        .token-info-details .token-contract a {
+            color: var(--accent2);
+        }
+
+        /* ── Loading / Status ── */
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            vertical-align: middle;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .api-status {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: var(--radius-xs);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-right: auto;
+        }
+        .api-status.online { color: var(--green); }
+        .api-status.offline { color: var(--red); }
+
+        @media (max-width: 768px) {
+            .wallet-container { padding: calc(var(--topnav-h) + 16px) 16px 100px; }
+            .balance-grid { grid-template-columns: repeat(2, 1fr); }
+            .send-form .form-row { flex-direction: column; }
+            .token-info-card { flex-direction: column; align-items: flex-start; }
+        }
+        @media (max-width: 480px) {
+            .balance-grid { grid-template-columns: 1fr; }
+        }
+
+        /* === WEB3 WALLET PANEL === */
+        .web3-panel{
+            background:linear-gradient(135deg,var(--bg2,#111),var(--bg3,#1a1a1a));
+            border:1px solid var(--border,rgba(255,255,255,.08));
+            border-radius:12px;padding:24px;position:relative;overflow:hidden;
+        }
+        .web3-panel::before{
+            content:'';position:absolute;top:0;left:0;right:0;height:3px;
+            background:linear-gradient(90deg,#f6851b,#e2761b,#00b4d8,#0077b6);
+        }
+        .web3-panel h3{
+            font-size:15px;margin:0 0 6px 0;color:var(--text-bright,#fff);
+            display:flex;align-items:center;gap:10px;
+        }
+        .web3-panel h3 .web3-badge{
+            font-size:9px;padding:3px 8px;border-radius:10px;
+            background:rgba(246,133,27,.15);color:#f6851b;
+            text-transform:uppercase;letter-spacing:1px;font-weight:700;
+        }
+        .web3-panel .web3-sub{font-size:12px;color:var(--text2,#888);margin-bottom:16px}
+        .btn-web3-connect{
+            background:linear-gradient(135deg,#f6851b,#e2761b);
+            color:#fff;border:none;padding:12px 24px;border-radius:10px;
+            font-size:14px;font-weight:700;cursor:pointer;
+            display:inline-flex;align-items:center;gap:10px;
+            transition:.2s;box-shadow:0 4px 12px rgba(246,133,27,.25);
+        }
+        .btn-web3-connect:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(246,133,27,.4)}
+        .web3-addr{
+            background:var(--card,rgba(255,255,255,.03));
+            border:1px solid var(--border,rgba(255,255,255,.08));border-radius:8px;
+            padding:10px 14px;font-family:'Space Mono',monospace;font-size:12px;
+            color:var(--cyan,#00e5ff);display:inline-flex;align-items:center;gap:8px;
+            margin-bottom:16px;
+        }
+        .web3-balance-grid{
+            display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+            gap:12px;margin-bottom:16px;
+        }
+        .web3-card{
+            background:var(--card,rgba(255,255,255,.03));
+            border:1px solid var(--border,rgba(255,255,255,.08));border-radius:10px;
+            padding:14px;position:relative;transition:.2s;
+        }
+        .web3-card:hover{border-color:var(--accent,#00ff41);transform:translateY(-1px)}
+        .web3-card .label{
+            font-size:10px;text-transform:uppercase;letter-spacing:1.2px;
+            color:var(--text2,#888);display:block;margin-bottom:6px;
+        }
+        .web3-card .amount{
+            font-size:18px;font-weight:700;color:var(--text-bright,#fff);
+            font-family:'Space Mono',monospace;
+        }
+        .web3-card[data-token="SLH"]{border-left:3px solid #ffd700}
+        .web3-card[data-token="BNB"]{border-left:3px solid #f3ba2f}
+        .web3-card[data-token="ETH"]{border-left:3px solid #627eea}
+        .web3-card[data-token="USDT"]{border-left:3px solid #26a17b}
+        .btn-web3-disconnect{
+            background:transparent;border:1px solid var(--border,rgba(255,255,255,.08));
+            color:var(--text2,#888);padding:6px 14px;border-radius:8px;
+            font-size:11px;cursor:pointer;transition:.2s;
+        }
+        .btn-web3-disconnect:hover{border-color:#ff0055;color:#ff0055}
+        .web3-hint{
+            margin-top:12px;padding:10px 14px;background:rgba(0,229,255,.05);
+            border:1px solid rgba(0,229,255,.15);border-radius:8px;
+            font-size:11px;color:var(--text2,#888);line-height:1.5;
+        }
+        @media(max-width:600px){
+            .web3-panel{padding:18px}
+            .web3-balance-grid{grid-template-columns:repeat(2,1fr)}
+        }
+    </style>
+    <!-- Web3 / ethers.js v6 for MetaMask + Trust Wallet -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.2/ethers.umd.min.js"></script>
+</head>
+<body>
+
+    <!-- Top Nav -->
+    <div id="topnav-root"></div>
+
+    <!-- Ticker -->
+    <div id="ticker-root"></div>
+
+    <!-- Wallet Content -->
+    <div class="wallet-container">
+
+        <!-- Header -->
+        <div class="wallet-header rv">
+            <i class="fas fa-wallet"></i>
+            <h1 data-i18n="wallet_title">Wallet</h1>
+            <span id="api-status" class="api-status"></span>
+        </div>
+
+        <!-- Web3 Wallet Connection -->
+        <div class="web3-panel rv" id="wallet-connect-section">
+            <h3>
+                <i class="fas fa-link"></i>
+                <span data-i18n="web3_title">יתרות אמיתיות מהבלוקצ'יין</span>
+                <span class="web3-badge">LIVE</span>
+            </h3>
+            <div class="web3-sub" data-i18n="web3_sub">חבר MetaMask, Trust Wallet או ארנק תואם WalletConnect כדי לראות את היתרות האמיתיות שלך ישירות מהרשת (BSC + ETH)</div>
+
+            <div id="web3-status">
+                <button id="btn-connect-wallet" class="btn-web3-connect">
+                    <i class="fas fa-wallet"></i> <span data-i18n="web3_connect">חבר ארנק</span>
+                </button>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+                    <span style="padding:5px 10px;background:rgba(246,133,27,0.12);border:1px solid rgba(246,133,27,0.3);border-radius:20px;font-size:11px;color:#f6851b;font-weight:700">🦊 MetaMask</span>
+                    <span style="padding:5px 10px;background:rgba(51,117,224,0.12);border:1px solid rgba(51,117,224,0.3);border-radius:20px;font-size:11px;color:#3375e0;font-weight:700">🛡 Trust Wallet</span>
+                    <span style="padding:5px 10px;background:rgba(54,174,248,0.12);border:1px solid rgba(54,174,248,0.3);border-radius:20px;font-size:11px;color:#36aef8;font-weight:700">🔵 TonConnect</span>
+                    <span style="padding:5px 10px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:20px;font-size:11px;color:var(--text2);font-weight:700">⚙ WalletConnect</span>
+                </div>
+                <div class="web3-hint" data-i18n="web3_hint" style="margin-top:12px">
+                    במובייל: פתח את Trust Wallet → DApp Browser → הכנס <code>slh-nft.com/wallet.html</code><br>
+                    <strong>האבטחה שלך מוגנת</strong> — אנחנו רק קוראים יתרות, לא שולחים עסקאות ולא מבקשים מפתחות.
+                </div>
+            </div>
+
+            <div id="web3-balances" style="display:none">
+                <div class="web3-addr">
+                    <i class="fas fa-link"></i>
+                    <span id="web3-addr-short">—</span>
+                </div>
+                <div class="web3-balance-grid">
+                    <div class="web3-card" data-token="SLH">
+                        <span class="label">SLH (BSC) 🔗</span>
+                        <span class="amount" id="w3-slh">—</span>
+                    </div>
+                    <div class="web3-card" data-token="BNB">
+                        <span class="label">BNB 🔗</span>
+                        <span class="amount" id="w3-bnb">—</span>
+                    </div>
+                    <div class="web3-card" data-token="ETH">
+                        <span class="label">ETH 🔗</span>
+                        <span class="amount" id="w3-eth">—</span>
+                    </div>
+                    <div class="web3-card" data-token="USDT">
+                        <span class="label">USDT (BSC) 🔗</span>
+                        <span class="amount" id="w3-usdt">—</span>
+                    </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px">
+                    <button id="btn-web3-refresh" class="btn-web3-connect" style="padding:6px 14px;font-size:12px" onclick="if(window.__slh_web3_last&&window.__slh_web3_last.address){renderWeb3Balances(window.__slh_web3_last.address);document.getElementById('web3-last-updated').textContent='רענון: '+new Date().toLocaleTimeString('he-IL')}">
+                        🔄 רענן יתרות
+                    </button>
+                    <a id="web3-bscscan-link" href="#" target="_blank" rel="noopener" style="font-size:12px;color:var(--accent);text-decoration:none;padding:6px 14px;border:1px solid var(--accent);border-radius:6px">
+                        🔍 הצג ארנק ב-BSCScan
+                    </a>
+                    <span id="web3-last-updated" style="font-size:11px;color:var(--text2);margin-right:auto"></span>
+                </div>
+                <button id="btn-disconnect-wallet" class="btn-web3-disconnect" data-i18n="web3_disconnect" style="margin-top:8px">
+                    ✕ נתק ארנק
+                </button>
+            </div>
+        </div>
+
+        <!-- Balance Cards -->
+        <div class="balance-grid rv">
+            <div class="balance-card">
+                <div class="balance-token">
+                    <span class="token-icon token-slh">S</span>
+                    <span>SLH</span>
+                </div>
+                <div class="balance-amount" id="bal-slh">--</div>
+                <div class="balance-fiat" id="bal-slh-fiat" data-i18n="wallet_available">Available</div>
+            </div>
+            <div class="balance-card">
+                <div class="balance-token">
+                    <span class="token-icon token-zvk" style="background:linear-gradient(135deg,#a855f7,#ec4899);color:#fff">Z</span>
+                    <span>ZVK</span>
+                </div>
+                <div class="balance-amount" id="bal-zvk">--</div>
+                <div class="balance-fiat" id="bal-zvk-fiat" data-i18n="zvk_balance">יתרת ZVK</div>
+            </div>
+            <div class="balance-card">
+                <div class="balance-token">
+                    <span class="token-icon token-ton"><i class="fas fa-gem" style="font-size:12px"></i></span>
+                    <span>TON</span>
+                </div>
+                <div class="balance-amount" id="bal-ton">--</div>
+                <div class="balance-fiat" id="bal-ton-fiat" data-i18n="wallet_available">Available</div>
+            </div>
+            <div class="balance-card">
+                <div class="balance-token">
+                    <span class="token-icon token-bnb"><i class="fas fa-coins" style="font-size:12px"></i></span>
+                    <span>BNB</span>
+                </div>
+                <div class="balance-amount" id="bal-bnb">--</div>
+                <div class="balance-fiat" id="bal-bnb-fiat" data-i18n="wallet_available">Available</div>
+            </div>
+            <div class="balance-card">
+                <div class="balance-token">
+                    <span class="token-icon token-locked"><i class="fas fa-lock" style="font-size:12px"></i></span>
+                    <span>TON <small data-i18n="wallet_locked">Locked</small></span>
+                </div>
+                <div class="balance-amount" id="bal-ton-locked">--</div>
+                <div class="balance-fiat" id="bal-ton-locked-fiat" data-i18n="wallet_locked">Locked</div>
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- EXTERNAL WALLETS — Bybit / Binance / Bitget / OKX / Self     -->
+        <!-- ============================================================ -->
+        <div class="web3-panel rv" style="margin-top:24px">
+            <h3>
+                <i class="fas fa-network-wired"></i>
+                <span>הארנקים החיצוניים שלי</span>
+                <span class="web3-badge" style="background:#00bcd4">READ-ONLY</span>
+            </h3>
+            <div class="web3-sub">
+                הוסף כתובות ארנק מ-Bybit, Binance, Bitget, OKX או ארנק עצמי — נציג את היתרות שלך במקום אחד.
+                <br><strong style="color:#22c55e">🔒 קריאה בלבד.</strong> אנחנו לא מבקשים מפתחות, חתימות או API keys.
+            </div>
+
+            <button onclick="openAddExternalWalletModal()" style="background:linear-gradient(135deg,#00bcd4,#0891b2);color:#fff;border:none;padding:12px 22px;font-weight:800;font-size:14px;border-radius:10px;cursor:pointer;margin:14px 0">
+                <i class="fas fa-plus"></i> הוסף ארנק חיצוני
+            </button>
+
+            <div id="ext-wallets-list" style="display:flex;flex-direction:column;gap:10px;margin-top:14px">
+                <div style="text-align:center;color:var(--text2);padding:18px;border:1px dashed rgba(255,255,255,0.1);border-radius:10px;font-size:13px">
+                    טוען...
+                </div>
+            </div>
+
+            <div id="ext-total" style="display:none;margin-top:16px;padding:14px;background:linear-gradient(135deg,rgba(34,197,94,0.1),rgba(0,188,212,0.1));border:1px solid rgba(34,197,94,0.3);border-radius:10px;text-align:center">
+                <div style="font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:1px">סה"כ ערך כל הארנקים החיצוניים</div>
+                <div style="font-size:24px;font-weight:900;color:#22c55e;margin-top:4px" id="ext-total-value">$0.00</div>
+                <div style="font-size:13px;color:var(--text2);margin-top:2px" id="ext-total-ils">≈ ₪0</div>
+            </div>
+        </div>
+
+        <!-- CEX PORTFOLIO (Bybit + Binance READ-ONLY API KEYS) -->
+        <div class="web3-card rv" style="margin-top:18px;border-color:rgba(255,215,0,0.3)">
+            <h3 class="web3-title" style="display:flex;align-items:center;gap:10px">
+                <span style="font-size:22px">🏦</span>
+                <span>תיק CEX מלא</span>
+                <span class="web3-badge" style="background:#ffd700;color:#000">READ-ONLY API</span>
+                <span class="web3-badge" style="background:#a855f7">חדש</span>
+            </h3>
+            <div class="web3-sub">
+                חבר את חשבונות <strong>Bybit</strong> ו-<strong>Binance</strong> שלך עם API Key בהרשאת <strong>קריאה בלבד</strong>.
+                המערכת תציג את <strong>כל המטבעות</strong> שלך — לא רק TON — כולל שווי USD ו-ILS מלא.
+                <br><span style="color:#ef4444;font-size:11px">⚠️ חובה API Key ב-Read-Only scope — אל תפעיל Trade או Withdraw.</span>
+            </div>
+
+            <!-- Idiot-proof tutorial accordion -->
+            <details style="margin:14px 0;background:rgba(0,188,212,0.05);border:1px solid rgba(0,188,212,0.3);border-radius:10px;padding:0">
+                <summary style="padding:14px 18px;cursor:pointer;font-weight:800;color:#00bcd4;font-size:14px;list-style:none;display:flex;justify-content:space-between;align-items:center">
+                    <span>📖 איך יוצרים API Key — מדריך שלב-אחר-שלב</span>
+                    <span style="font-size:12px;color:#8a8aa0">לחץ להרחבה ↓</span>
+                </summary>
+                <div style="padding:16px 18px;border-top:1px solid rgba(0,188,212,0.2);font-size:13px;line-height:1.9;color:#e8e8f0">
+                    <div style="background:rgba(255,215,0,0.05);border:1px solid rgba(255,215,0,0.3);padding:12px;border-radius:8px;margin-bottom:14px;font-size:12px">
+                        ⚠️ <strong style="color:#ffd700">חשוב:</strong> בזמן יצירת המפתח, סמן רק <strong>"Read-Only"</strong> / <strong>"Enable Reading"</strong>.
+                        <br>אל תסמן Trade, Withdraw, Transfer, או Margin. זה מונע כל סיכון — אנחנו רואים את היתרות אבל לא יכולים לגעת בכסף.
+                    </div>
+
+                    <details style="background:rgba(255,165,0,0.05);border:1px solid rgba(255,165,0,0.3);border-radius:8px;margin-bottom:10px">
+                        <summary style="padding:12px 14px;cursor:pointer;font-weight:700;color:#ffa500;list-style:none">🟠 Bybit — יצירת API Key</summary>
+                        <ol style="padding:10px 30px 14px;margin:0;color:#b0b0c0">
+                            <li>היכנס ל-<a href="https://www.bybit.com/app/user/api-management" target="_blank" style="color:#00bcd4">bybit.com/app/user/api-management</a></li>
+                            <li>לחץ <strong>Create New Key</strong></li>
+                            <li>בחר <strong>System-generated API Keys</strong></li>
+                            <li>API Key Usage: <strong>API Transaction</strong></li>
+                            <li>API Key Name: <code>SLH-ReadOnly</code></li>
+                            <li>Permissions → סמן רק: <strong>Read-Only</strong> → <strong>Wallet</strong></li>
+                            <li><strong>אל תסמן:</strong> Unified Trading / Derivatives / Spot Trading / Withdrawal</li>
+                            <li>IP Restriction: השאר לא מוגבל (או הוסף את ה-IP של Railway)</li>
+                            <li>אישור → סיסמת Google Authenticator / Email</li>
+                            <li>העתק את ה-<strong>API Key</strong> וה-<strong>Secret</strong> (הם יוצגו פעם אחת בלבד!)</li>
+                            <li>חזור לעמוד הזה → לחץ "🔑 חבר API Key חדש" → הדבק</li>
+                        </ol>
+                    </details>
+
+                    <details style="background:rgba(255,215,0,0.05);border:1px solid rgba(255,215,0,0.3);border-radius:8px;margin-bottom:10px">
+                        <summary style="padding:12px 14px;cursor:pointer;font-weight:700;color:#ffd700;list-style:none">🟡 Binance — יצירת API Key</summary>
+                        <ol style="padding:10px 30px 14px;margin:0;color:#b0b0c0">
+                            <li>היכנס ל-<a href="https://www.binance.com/en/my/settings/api-management" target="_blank" style="color:#00bcd4">binance.com/en/my/settings/api-management</a></li>
+                            <li>לחץ <strong>Create API</strong> → <strong>System generated</strong></li>
+                            <li>Label: <code>SLH-ReadOnly</code></li>
+                            <li>אישור סיסמה + 2FA</li>
+                            <li>בעמוד ה-API החדש → <strong>Edit restrictions</strong></li>
+                            <li>סמן רק: <strong>Enable Reading</strong></li>
+                            <li><strong>אל תסמן:</strong> Enable Spot & Margin Trading / Enable Withdrawals / Enable Internal Transfer</li>
+                            <li>IP Access: Unrestricted (או Restrict to trusted IPs)</li>
+                            <li>Save</li>
+                            <li>העתק את ה-<strong>API Key</strong> וה-<strong>Secret Key</strong></li>
+                            <li>חזור לעמוד הזה → לחץ "🔑 חבר API Key חדש" → הדבק</li>
+                        </ol>
+                    </details>
+
+                    <div style="margin-top:12px;padding:12px;background:rgba(0,232,135,0.05);border:1px solid rgba(0,232,135,0.3);border-radius:8px">
+                        <strong style="color:#00e887">🧪 בדיקה ראשונה (אופציונלי):</strong>
+                        אחרי שחיברת מפתח, לחץ <strong>🔄 סנכרן</strong> כדי לראות את כל המטבעות שלך. אם משהו לא עובד, המפתח יוצג עם הודעת השגיאה המדויקת.
+                    </div>
+                </div>
+            </details>
+
+            <!-- Alternative: Direct Transfer Flow -->
+            <details style="margin:14px 0;background:rgba(0,232,135,0.05);border:1px solid rgba(0,232,135,0.3);border-radius:10px;padding:0">
+                <summary style="padding:14px 18px;cursor:pointer;font-weight:800;color:#00e887;font-size:14px;list-style:none;display:flex;justify-content:space-between;align-items:center">
+                    <span>💰 או: העבר כסף ישירות לארנק SLH שלך (יותר פשוט)</span>
+                    <span style="font-size:12px;color:#8a8aa0">לחץ להרחבה ↓</span>
+                </summary>
+                <div style="padding:16px 18px;border-top:1px solid rgba(0,232,135,0.2);font-size:13px;line-height:1.9;color:#e8e8f0">
+                    <p>הדרך הכי פשוטה לראות את הכסף שלך במערכת SLH היא להעביר TON ישירות לאחד הארנקים שלך שכבר רשומים למעלה:</p>
+                    <ol style="padding:0 20px;color:#b0b0c0">
+                        <li>למעלה בעמוד הזה תחת "הארנקים החיצוניים שלי" — יש לך כבר <strong>Bybit ראשי</strong> ו-<strong>Binance ספוט</strong></li>
+                        <li>העתק את כתובת ה-TON של אחד מהם (לדוגמה: <code>UQCJ0UuC...ltq7Nh</code>)</li>
+                        <li>היכנס ל-Binance → Wallet → Spot → TON → <strong>Withdraw</strong></li>
+                        <li>הדבק את הכתובת + הוסף <strong>Memo/Comment</strong> (נדרש ל-Bybit TON deposits)</li>
+                        <li>סכום — למשל: 1 TON (~$1.43 במחיר נוכחי)</li>
+                        <li>אשר את ההעברה + 2FA</li>
+                        <li>חכה כ-30 שניות → חזור לעמוד הזה → לחץ "🔄 רענן" על הכרטיס של Bybit ראשי</li>
+                        <li>תראה את היתרה החדשה מתעדכנת</li>
+                    </ol>
+                    <div style="margin-top:12px;padding:12px;background:rgba(255,215,0,0.05);border:1px solid rgba(255,215,0,0.3);border-radius:8px">
+                        <strong style="color:#ffd700">⚠️ חשוב:</strong> ל-Bybit TON deposits <em>נדרש Memo/Comment</em>. בלי זה, ההעברה תיכשל או תיתקע. אתה יכול לקבל את ה-Memo המדויק בדף Bybit → Deposit → TON.
+                        <br><br>
+                        <strong>אלטרנטיבה בטוחה יותר:</strong> פתח Tonkeeper (<a href="https://tonkeeper.com" target="_blank" style="color:#00bcd4">tonkeeper.com</a>) על הטלפון → צור ארנק → הוסף את הכתובת שלו כ"ארנק עצמי" למעלה → העבר אליו מ-Binance. ל-Tonkeeper לא נדרש memo ואתה הבעלים היחיד של המפתחות.
+                    </div>
+                </div>
+            </details>
+
+            <div id="cex-portfolio-summary" style="display:none;margin:14px 0;padding:16px;background:linear-gradient(135deg,rgba(255,215,0,0.08),rgba(0,188,212,0.06));border:1px solid rgba(255,215,0,0.3);border-radius:12px;text-align:center">
+                <div style="font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:1px">סה"כ תיק CEX</div>
+                <div style="font-size:28px;font-weight:900;color:#ffd700;margin-top:4px" id="cex-total-usd">$0.00</div>
+                <div style="font-size:14px;color:var(--text2);margin-top:2px" id="cex-total-ils">≈ ₪0.00</div>
+                <div style="font-size:11px;color:var(--text3);margin-top:6px" id="cex-last-sync">לא סונכרן</div>
+            </div>
+
+            <div id="cex-keys-list" style="display:flex;flex-direction:column;gap:10px;margin-top:14px"></div>
+            <div id="cex-breakdown" style="margin-top:14px"></div>
+
+            <div style="display:flex;gap:10px;margin-top:14px">
+                <button onclick="openAddCexKeyModal()" style="flex:1;background:linear-gradient(135deg,#ffd700,#f59e0b);color:#000;border:none;padding:12px 22px;font-weight:800;font-size:14px;border-radius:10px;cursor:pointer">
+                    🔑 חבר API Key חדש
+                </button>
+                <button onclick="syncAllCexKeys()" style="background:rgba(0,188,212,0.15);color:#00bcd4;border:1px solid rgba(0,188,212,0.4);padding:12px 22px;font-weight:700;font-size:14px;border-radius:10px;cursor:pointer">
+                    🔄 סנכרן הכל
+                </button>
+            </div>
+        </div>
+
+        <!-- Add CEX Key Modal -->
+        <div id="cex-key-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:9999;align-items:center;justify-content:center;padding:20px">
+            <div style="background:var(--bg2,#111);border:2px solid #ffd700;border-radius:16px;padding:28px;max-width:520px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.7);max-height:90vh;overflow-y:auto">
+                <h3 style="margin:0 0 14px;color:#ffd700;font-size:20px">🔑 חבר API Key</h3>
+                <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3);padding:12px;border-radius:8px;margin-bottom:14px;font-size:12px;line-height:1.7">
+                    ⚠️ <strong style="color:#ef4444">חשוב מאוד:</strong><br>
+                    • המפתח חייב להיות <strong>Read-Only</strong> בלבד<br>
+                    • <strong>Bybit:</strong> Read-Only Wallet<br>
+                    • <strong>Binance:</strong> Enable Reading בלבד<br>
+                    • אל תאפשר Trade, Withdraw או Transfer<br>
+                    • המפתחות מוצפנים ב-DB. לא מוצגים ולא נשמרים בלוגים
+                </div>
+
+                <label style="display:block;font-size:12px;color:var(--text2);margin-bottom:6px">בורסה</label>
+                <select id="cex-exchange" style="width:100%;padding:11px;background:var(--bg);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:8px;margin-bottom:12px;font-size:14px">
+                    <option value="bybit">Bybit (UNIFIED)</option>
+                    <option value="binance">Binance (SPOT)</option>
+                </select>
+
+                <label style="display:block;font-size:12px;color:var(--text2);margin-bottom:6px">שם תיוג</label>
+                <input id="cex-label" type="text" placeholder="למשל: Bybit ראשי" style="width:100%;padding:11px;background:var(--bg);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:8px;margin-bottom:12px;font-size:14px">
+
+                <label style="display:block;font-size:12px;color:var(--text2);margin-bottom:6px">API Key</label>
+                <input id="cex-api-key" type="text" placeholder="..." dir="ltr" style="width:100%;padding:11px;background:var(--bg);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:8px;margin-bottom:12px;font-size:13px;font-family:monospace">
+
+                <label style="display:block;font-size:12px;color:var(--text2);margin-bottom:6px">API Secret</label>
+                <input id="cex-api-secret" type="password" placeholder="..." dir="ltr" style="width:100%;padding:11px;background:var(--bg);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:8px;margin-bottom:14px;font-size:13px;font-family:monospace">
+
+                <div style="display:flex;gap:10px">
+                    <button onclick="closeAddCexKeyModal()" style="flex:1;padding:13px;background:transparent;color:var(--text);border:1px solid rgba(255,255,255,0.15);border-radius:10px;cursor:pointer;font-weight:700">ביטול</button>
+                    <button onclick="saveCexKey()" style="flex:2;padding:13px;background:linear-gradient(135deg,#ffd700,#f59e0b);color:#000;border:none;border-radius:10px;cursor:pointer;font-weight:800">🔒 חבר והצפן</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add External Wallet Modal -->
+        <div id="ext-wallet-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;align-items:center;justify-content:center;padding:20px">
+            <div style="background:var(--bg2,#111);border:2px solid var(--accent);border-radius:16px;padding:28px;max-width:500px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.5)">
+                <h3 style="margin:0 0 16px;color:var(--accent);font-size:20px">➕ הוסף ארנק חיצוני</h3>
+
+                <label style="display:block;font-size:12px;color:var(--text2);margin-bottom:6px">📋 שם תיוג (לבחירתך)</label>
+                <input id="ext-label" type="text" placeholder="למשל: Bybit ראשי, Binance ספוט, ארנק קר" style="width:100%;padding:11px;background:var(--bg,#0a0a0a);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:8px;margin-bottom:14px;font-size:14px">
+
+                <label style="display:block;font-size:12px;color:var(--text2);margin-bottom:6px">🌐 רשת</label>
+                <select id="ext-network" style="width:100%;padding:11px;background:var(--bg,#0a0a0a);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:8px;margin-bottom:14px;font-size:14px">
+                    <option value="TON">TON Network</option>
+                    <option value="BSC">BSC (Binance Smart Chain)</option>
+                    <option value="ETH">Ethereum</option>
+                    <option value="BTC">Bitcoin</option>
+                </select>
+
+                <label style="display:block;font-size:12px;color:var(--text2);margin-bottom:6px">🏦 ספק (אופציונלי)</label>
+                <select id="ext-provider" style="width:100%;padding:11px;background:var(--bg,#0a0a0a);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:8px;margin-bottom:14px;font-size:14px">
+                    <option value="self">ארנק עצמי / Cold Wallet</option>
+                    <option value="bybit">Bybit</option>
+                    <option value="binance">Binance</option>
+                    <option value="bitget">Bitget</option>
+                    <option value="okx">OKX</option>
+                    <option value="kucoin">KuCoin</option>
+                </select>
+
+                <label style="display:block;font-size:12px;color:var(--text2);margin-bottom:6px">🔑 כתובת ציבורית</label>
+                <input id="ext-address" type="text" placeholder="UQCJ0UuC6RYsZ1Jwj2zFevsjQ8Q5hg3ml80xqH54nqltq7Nh" dir="ltr" style="width:100%;padding:11px;background:var(--bg,#0a0a0a);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:8px;margin-bottom:14px;font-size:13px;font-family:monospace">
+
+                <div style="font-size:11px;color:#22c55e;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.3);padding:10px;border-radius:8px;margin-bottom:14px;line-height:1.6">
+                    🔒 <strong>ביטחון מלא:</strong> הכתובת ציבורית — אין סיכון. אנחנו רק מציגים את היתרה שלך.<br>
+                    אף פעם אל תיתן למישהו את ה-Seed phrase או Private key שלך.
+                </div>
+
+                <div style="display:flex;gap:10px">
+                    <button onclick="closeExternalWalletModal()" style="flex:1;padding:13px;background:transparent;color:var(--text);border:1px solid rgba(255,255,255,0.15);border-radius:10px;cursor:pointer;font-weight:700">ביטול</button>
+                    <button onclick="saveExternalWallet()" style="flex:2;padding:13px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;border:none;border-radius:10px;cursor:pointer;font-weight:800">✅ הוסף + טען יתרה</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Buy Crypto CTA -->
+        <a href="/p2p.html" class="rv" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:16px 24px;background:linear-gradient(135deg,rgba(108,92,231,0.15),rgba(0,180,216,0.12));border:1px solid var(--accent);border-radius:var(--radius);text-decoration:none;color:var(--accent2);font-size:16px;font-weight:800;transition:all var(--transition);text-align:center">
+            <i class="fas fa-credit-card" style="font-size:20px"></i>
+            <span style="direction:ltr;display:inline">BNB/ETH/BTC</span>
+        </a>
+
+        <!-- Send / Receive -->
+        <div class="action-card rv">
+            <div class="action-tabs">
+                <button class="action-tab active" data-panel="send" onclick="switchPanel('send')" data-i18n="wallet_send">Send</button>
+                <button class="action-tab" data-panel="receive" onclick="switchPanel('receive')" data-i18n="wallet_receive">Receive</button>
+            </div>
+            <div class="action-body">
+                <!-- Send Panel -->
+                <div class="action-panel active" id="panel-send">
+                    <form class="send-form" onsubmit="handleSend(event)">
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="wallet_recipient">Recipient</label>
+                            <input type="text" class="form-input" id="send-to" data-i18n="wallet_recipient_placeholder" placeholder="Username or wallet address">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" data-i18n="common_amount">Amount</label>
+                                <input type="number" class="form-input" id="send-amount" placeholder="0.00" step="any" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" data-i18n="wallet_currency">Currency</label>
+                                <select class="form-select" id="send-currency">
+                                    <option value="SLH">SLH</option>
+                                    <option value="TON">TON</option>
+                                    <option value="BNB">BNB</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="send-btn" data-i18n="wallet_send">Send</button>
+                    </form>
+                </div>
+
+                <!-- Receive Panel -->
+                <div class="action-panel" id="panel-receive">
+                    <div class="receive-panel">
+                        <!-- Network Selector -->
+                        <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+                            <button onclick="showQr('ton')" id="qr-btn-ton" class="qr-net-btn active" style="flex:1;min-width:120px;padding:10px 14px;background:rgba(0,152,234,0.15);border:1px solid #0098ea;color:#0098ea;border-radius:8px;cursor:pointer;font-weight:700;font-size:13px">
+                                🔵 TON Network
+                            </button>
+                            <button onclick="showQr('bsc')" id="qr-btn-bsc" class="qr-net-btn" style="flex:1;min-width:120px;padding:10px 14px;background:rgba(243,186,47,0.15);border:1px solid #f3ba2f;color:#f3ba2f;border-radius:8px;cursor:pointer;font-weight:700;font-size:13px">
+                                🟡 BSC (BNB Chain)
+                            </button>
+                        </div>
+
+                        <!-- TON Receive Block -->
+                        <div id="qr-block-ton" class="qr-block">
+                            <div style="background:rgba(0,152,234,0.05);border:1px solid rgba(0,152,234,0.3);border-radius:12px;padding:20px;text-align:center">
+                                <div style="font-size:11px;color:#b0b0c0;text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:4px">TON Network</div>
+                                <div style="font-size:14px;color:#fff;font-weight:700;margin-bottom:14px">כתובת ההפקדה שלך</div>
+                                <!-- QR Code -->
+                                <div style="background:#fff;padding:14px;border-radius:10px;display:inline-block;margin-bottom:14px">
+                                    <img id="qr-img-ton" src="" alt="QR Code" style="display:block;width:200px;height:200px">
+                                </div>
+                                <!-- Address -->
+                                <div style="display:flex;gap:8px;align-items:center;background:rgba(0,0,0,0.3);padding:10px 12px;border-radius:8px;margin-bottom:12px">
+                                    <span style="flex:1;font-family:monospace;font-size:11px;color:#e8e8f0;direction:ltr;text-align:left;word-break:break-all" id="addr-ton">Loading...</span>
+                                    <button onclick="copyToClipboard(document.getElementById('addr-ton').textContent)" style="background:#0098ea;color:#fff;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700">📋 העתק</button>
+                                </div>
+                                <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+                                    <a href="#" id="tonkeeper-link" target="_blank" rel="noopener" style="background:#0098ea;color:#fff;padding:8px 14px;border-radius:6px;text-decoration:none;font-size:12px;font-weight:700">🔗 פתח ב-Tonkeeper</a>
+                                    <a href="#" id="tonscan-link" target="_blank" rel="noopener" style="background:rgba(0,152,234,0.15);color:#0098ea;padding:8px 14px;border-radius:6px;text-decoration:none;font-size:12px;font-weight:700;border:1px solid #0098ea">🔍 הצג ב-Tonscan</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- BSC Receive Block -->
+                        <div id="qr-block-bsc" class="qr-block" style="display:none">
+                            <div style="background:rgba(243,186,47,0.05);border:1px solid rgba(243,186,47,0.3);border-radius:12px;padding:20px;text-align:center">
+                                <div style="font-size:11px;color:#b0b0c0;text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:4px">BSC (BNB Smart Chain)</div>
+                                <div style="font-size:14px;color:#fff;font-weight:700;margin-bottom:14px">כתובת ההפקדה שלך</div>
+                                <div style="background:#fff;padding:14px;border-radius:10px;display:inline-block;margin-bottom:14px">
+                                    <img id="qr-img-bsc" src="" alt="QR Code" style="display:block;width:200px;height:200px">
+                                </div>
+                                <div style="display:flex;gap:8px;align-items:center;background:rgba(0,0,0,0.3);padding:10px 12px;border-radius:8px;margin-bottom:12px">
+                                    <span style="flex:1;font-family:monospace;font-size:11px;color:#e8e8f0;direction:ltr;text-align:left;word-break:break-all" id="addr-bsc">Loading...</span>
+                                    <button onclick="copyToClipboard(document.getElementById('addr-bsc').textContent)" style="background:#f3ba2f;color:#000;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700">📋 העתק</button>
+                                </div>
+                                <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+                                    <a href="#" id="metamask-link" target="_blank" rel="noopener" style="background:#f3ba2f;color:#000;padding:8px 14px;border-radius:6px;text-decoration:none;font-size:12px;font-weight:700">🦊 פתח ב-MetaMask</a>
+                                    <a href="#" id="bscscan-link" target="_blank" rel="noopener" style="background:rgba(243,186,47,0.15);color:#f3ba2f;padding:8px 14px;border-radius:6px;text-decoration:none;font-size:12px;font-weight:700;border:1px solid #f3ba2f">🔍 הצג ב-BSCScan</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Test Transfer Guide -->
+                        <div style="margin-top:16px;padding:14px;background:rgba(0,232,135,0.05);border:1px solid rgba(0,232,135,0.3);border-radius:10px">
+                            <div style="font-size:13px;color:#00e887;font-weight:800;margin-bottom:8px">🧪 בדיקה ראשונה — סכומי מינימום בטוחים</div>
+                            <div style="font-size:11px;color:#b0b0c0;line-height:1.8">
+                                <strong style="color:#fff">⚠️ 0.00001 TON לא יעבוד</strong> — עמלת הרשת (~0.01 TON) תאכל את ההעברה.<br>
+                                <strong style="color:#00e887">מינימום מומלץ לבדיקה:</strong>
+                                <ul style="padding-right:20px;margin:6px 0">
+                                    <li><strong>TON:</strong> 0.05 TON (~$0.07) — עמלה 0.005 TON</li>
+                                    <li><strong>BNB:</strong> 0.001 BNB (~$0.60) — עמלה 0.0002 BNB</li>
+                                    <li><strong>USDT on BSC:</strong> $1 — עמלה ~$0.20</li>
+                                    <li><strong>USDT on TRC20:</strong> $2 — עמלה ~$1</li>
+                                </ul>
+                                <strong>הכלל הזהב:</strong> סכום הבדיקה = 10× עמלת הרשת. יותר מדי נמוך = יתיישב ב-mempool או יידחה.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transaction History -->
+        <div class="history-card rv">
+            <div class="history-header">
+                <h2 data-i18n="wallet_history">Transaction History</h2>
+                <button class="btn btn-sm btn-outline" onclick="loadTransactions()" data-i18n="wallet_refresh">Refresh</button>
+            </div>
+            <div class="table-wrap">
+                <table class="tx-table">
+                    <thead>
+                        <tr>
+                            <th data-i18n="wallet_tx_type">Type</th>
+                            <th data-i18n="common_amount">Amount</th>
+                            <th data-i18n="wallet_tx_from_to">From/To</th>
+                            <th data-i18n="wallet_tx_date">Date</th>
+                            <th data-i18n="wallet_tx_status">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tx-body">
+                        <tr>
+                            <td colspan="5" style="text-align:center;padding:40px;color:var(--text3)">
+                                <span class="loading-spinner"></span>
+                                <span style="margin-right:8px">Loading...</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Token Info -->
+        <div class="token-info-card rv">
+            <div class="token-badge">S</div>
+            <div class="token-info-details">
+                <div class="token-name">SLH Token</div>
+                <div class="token-price-tag" id="slh-price-display">Price: 444 ILS</div>
+                <div class="token-contract">
+                    BSC: <a href="https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022" target="_blank" rel="noopener">0xACb0A09414CEA1C879c67bB7A877E4e19480f022</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div id="footer-root"></div>
+
+    <!-- Bottom Nav -->
+    <div id="bottomnav-root"></div>
+
+    <script src="https://unpkg.com/@tonconnect/ui@2/dist/tonconnect-ui.min.js"></script>
+    <script src="/js/translations.js?v=20260421a"></script>
+    <script src="/js/shared.js?v=20260421a"></script>
+    <script src="/js/web3-wallet.js?v=20260421a"></script>
+    <script src="/js/web3.js?v=20260421a"></script>
+    <script>
+    /* ── Wallet Constants ── */
+    const WALLET_API = 'https://slh-api-production.up.railway.app/api/wallet';
+    const BSC_CONTRACT_ADDR = '0xACb0A09414CEA1C879c67bB7A877E4e19480f022';
+    const TON_WALLET_ADDR   = 'UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp';
+    const FALLBACK_SLH_PRICE = 444;
+
+    let slhPriceILS = FALLBACK_SLH_PRICE;
+    let apiOnline = false;
+
+    /* ── Wallet API fetch helper ── */
+    async function walletFetch(endpoint) {
+        try {
+            const res = await fetch(`${WALLET_API}${endpoint}`, {
+                headers: { 'Content-Type': 'application/json' }
+            });
+            if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+            return await res.json();
+        } catch (err) {
+            console.warn('[Wallet API]', endpoint, err.message);
+            return null;
+        }
+    }
+
+    /* ── API Status Indicator ── */
+    function setApiStatus(online) {
+        apiOnline = online;
+        const el = document.getElementById('api-status');
+        if (!el) return;
+        if (online) {
+            el.className = 'api-status online';
+            el.innerHTML = '<i class="fas fa-circle" style="font-size:8px"></i> Live';
+        } else {
+            el.className = 'api-status offline';
+            el.innerHTML = '<i class="fas fa-circle" style="font-size:8px"></i> Offline';
+        }
+    }
+
+    /* ── Panel Switch ── */
+    function switchPanel(panel) {
+        document.querySelectorAll('.action-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.action-panel').forEach(p => p.classList.remove('active'));
+        document.querySelector(`.action-tab[data-panel="${panel}"]`).classList.add('active');
+        document.getElementById(`panel-${panel}`).classList.add('active');
+    }
+
+    /* ── Load SLH Price from API ── */
+    async function loadPrice() {
+        const data = await walletFetch('/price');
+        if (data && data.price_ils != null) {
+            slhPriceILS = data.price_ils;
+            setApiStatus(true);
+        } else {
+            slhPriceILS = FALLBACK_SLH_PRICE;
+        }
+        const priceEl = document.getElementById('slh-price-display');
+        if (priceEl) priceEl.textContent = `Price: ${formatNumber(slhPriceILS)} ILS`;
+        return !!data;
+    }
+
+    /* ── Load Balances ── */
+    // Uses /api/user/{id} because it includes TON_available/locked + SLH + ZVK
+    // in a single response. /api/wallet/{id}/balances only has SLH+ZVK.
+    async function loadBalances() {
+        const user = getCurrentUser();
+        if (!user) return;
+
+        let data = null;
+        try {
+            const res = await fetch(`${WALLET_API.replace('/api/wallet','')}/api/user/${user.id}`, {
+                headers: { 'Content-Type': 'application/json' }
+            });
+            if (res.ok) data = await res.json();
+        } catch (err) {
+            console.warn('[Wallet API] user endpoint', err.message);
+        }
+
+        if (data && data.balances) {
+            setApiStatus(true);
+
+            const bag = data.balances;
+            const slh  = parseFloat(bag.SLH || 0);
+            const zvk  = parseFloat(bag.ZVK || 0);
+            const ton  = parseFloat(bag.TON_available || bag.TON || 0);
+            const tonL = parseFloat(bag.TON_locked || bag.TON_LOCKED || 0);
+            // BNB is on-chain only — shown in Web3 panel when user connects MetaMask
+            const bnb  = parseFloat(bag.BNB || 0);
+
+            document.getElementById('bal-slh').textContent        = formatNumber(slh);
+            document.getElementById('bal-zvk').textContent        = formatNumber(zvk);
+            document.getElementById('bal-ton').textContent         = formatNumber(ton);
+            document.getElementById('bal-bnb').textContent         = formatNumber(bnb);
+            document.getElementById('bal-ton-locked').textContent  = formatNumber(tonL);
+
+            // Fiat equivalents
+            document.getElementById('bal-slh-fiat').textContent =
+                slh > 0 ? `~ ${formatNumber(slh * slhPriceILS)} ILS` : t('wallet_available');
+            document.getElementById('bal-zvk-fiat').textContent     = t('wallet_game_rewards') || 'Game Rewards';
+            document.getElementById('bal-ton-fiat').textContent     = t('wallet_available');
+            document.getElementById('bal-bnb-fiat').textContent     = bnb > 0 ? t('wallet_available') : 'Connect MetaMask ↑';
+            document.getElementById('bal-ton-locked-fiat').textContent = t('wallet_locked');
+        } else {
+            // Fallback: zeroes when API is down
+            setApiStatus(false);
+            ['bal-slh', 'bal-zvk', 'bal-ton', 'bal-bnb', 'bal-ton-locked'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = '0.00';
+            });
+        }
+    }
+
+    /* ── Load Deposit Addresses + QR Codes ── */
+    async function loadAddresses() {
+        const user = getCurrentUser();
+        if (!user) return;
+
+        const data = await walletFetch(`/${user.id}`);
+
+        const tonAddr = (data && (data.ton_address || data.deposit_address_ton)) || TON_WALLET_ADDR;
+        const bscAddr = (data && (data.bsc_address || data.deposit_address_bsc)) || BSC_CONTRACT_ADDR;
+
+        document.getElementById('addr-ton').textContent = tonAddr;
+        document.getElementById('addr-bsc').textContent = bscAddr;
+
+        // Generate QR codes via qrserver.com (privacy-safe: only public addresses are sent)
+        generateQrCodes(tonAddr, bscAddr);
+    }
+
+    /* ── QR Code Generation ──
+       Uses qrserver.com API (free, no key, public addresses only).
+       URI schemes follow standards:
+       - TON: ton://transfer/{address}
+       - BSC (EIP-681): ethereum:{address}@56 */
+    function generateQrCodes(tonAddr, bscAddr) {
+        const tonUri = 'ton://transfer/' + tonAddr;
+        const bscUri = 'ethereum:' + bscAddr + '@56';
+        const qrBase = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=2&format=png&data=';
+
+        const tonImg = document.getElementById('qr-img-ton');
+        const bscImg = document.getElementById('qr-img-bsc');
+        if (tonImg) tonImg.src = qrBase + encodeURIComponent(tonUri);
+        if (bscImg) bscImg.src = qrBase + encodeURIComponent(bscAddr);
+
+        // Deep links to popular apps
+        const tonkeeper = document.getElementById('tonkeeper-link');
+        const tonscan = document.getElementById('tonscan-link');
+        const metamask = document.getElementById('metamask-link');
+        const bscscan = document.getElementById('bscscan-link');
+        if (tonkeeper) tonkeeper.href = tonUri;
+        if (tonscan) tonscan.href = 'https://tonscan.org/address/' + tonAddr;
+        if (metamask) metamask.href = 'https://metamask.app.link/send/' + bscAddr + '@56';
+        if (bscscan) bscscan.href = 'https://bscscan.com/address/' + bscAddr;
+    }
+
+    /* ── Switch QR Network Display ── */
+    window.showQr = function(network) {
+        document.getElementById('qr-block-ton').style.display = network === 'ton' ? 'block' : 'none';
+        document.getElementById('qr-block-bsc').style.display = network === 'bsc' ? 'block' : 'none';
+        const tonBtn = document.getElementById('qr-btn-ton');
+        const bscBtn = document.getElementById('qr-btn-bsc');
+        if (tonBtn) tonBtn.classList.toggle('active', network === 'ton');
+        if (bscBtn) bscBtn.classList.toggle('active', network === 'bsc');
+    };
+
+    /* ── Send ── */
+    async function handleSend(e) {
+        e.preventDefault();
+        const toVal    = document.getElementById('send-to').value.trim();
+        const amount   = parseFloat(document.getElementById('send-amount').value);
+        const currency = document.getElementById('send-currency').value;
+        const user     = getCurrentUser();
+
+        if (!toVal || !amount || amount <= 0) {
+            showToast(t('common_error'), true);
+            return;
+        }
+
+        const result = await apiPost('/api/wallet/send', {
+            from_id: user.id,
+            to: toVal,
+            amount,
+            currency
+        });
+
+        if (result && result.success) {
+            showToast(t('common_success'));
+            document.getElementById('send-to').value = '';
+            document.getElementById('send-amount').value = '';
+            loadBalances();
+            loadTransactions();
+        } else {
+            showToast(result?.error || t('common_error'), true);
+        }
+    }
+
+    /* ── Load Transactions ── */
+    async function loadTransactions() {
+        const user = getCurrentUser();
+        if (!user) return;
+
+        const raw = await walletFetch(`/${user.id}/transactions`);
+        const tbody = document.getElementById('tx-body');
+
+        // Normalize: API may return array or { transactions: [] }
+        const txList = Array.isArray(raw) ? raw
+                     : (raw?.transactions || raw?.items || []);
+
+        if (!txList.length) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--text3)">
+                <i class="fas fa-inbox" style="font-size:32px;opacity:.4;display:block;margin-bottom:8px"></i>
+                <span data-i18n="wallet_no_tx">${t('wallet_no_tx') || 'No transactions yet'}</span>
+            </td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = txList.map(tx => {
+            const isIn = tx.type === 'receive' || tx.type === 'deposit' || tx.type === 'in';
+            const typeClass = isIn ? 'tx-type-in' : 'tx-type-out';
+            const arrow = isIn ? '+' : '-';
+            const statusBadge = (tx.status === 'completed' || tx.status === 'confirmed')
+                ? '<span class="badge badge-green">OK</span>'
+                : `<span class="badge">${tx.status || 'Pending'}</span>`;
+            const dateStr = tx.date || tx.created_at || tx.timestamp;
+
+            return `<tr>
+                <td class="${typeClass}"><i class="fas fa-arrow-${isIn ? 'down' : 'up'}"></i> ${tx.type}</td>
+                <td class="${typeClass}">${arrow}${formatNumber(tx.amount)} ${tx.currency || tx.token || ''}</td>
+                <td>${tx.counterparty || tx.from || tx.to || '-'}</td>
+                <td>${dateStr ? timeAgo(dateStr) : '-'}</td>
+                <td>${statusBadge}</td>
+            </tr>`;
+        }).join('');
+    }
+
+    /* ── Init ── */
+    initShared({ activePage: 'wallet', requireAuth: true, requireRegistered: true, showBottomNav: true });
+
+    // Web3 wallet connect buttons
+    if (typeof renderWalletConnectButtons === 'function') {
+      renderWalletConnectButtons('wallet-connect-section');
+    }
+
+    // Update BSCScan link + timestamp whenever web3 balances render
+    (function hookWeb3Updates(){
+      const updateExtras = () => {
+        const last = window.__slh_web3_last;
+        if (!last || !last.address) return;
+        const bscLink = document.getElementById('web3-bscscan-link');
+        if (bscLink) bscLink.href = `https://bscscan.com/address/${last.address}`;
+        const ts = document.getElementById('web3-last-updated');
+        if (ts) ts.textContent = 'עודכן: ' + new Date(last.at).toLocaleTimeString('he-IL');
+      };
+      // Poll every 5s — __slh_web3_last is set by renderWeb3Balances
+      setInterval(updateExtras, 5000);
+      updateExtras();
+    })();
+
+    // ============================================================
+    // EXTERNAL WALLETS — Bybit / Binance / Bitget / OKX / Self
+    // ============================================================
+    async function loadExternalWallets() {
+        const user = getCurrentUser();
+        if (!user) return;
+        const listEl = document.getElementById('ext-wallets-list');
+        if (!listEl) return;
+
+        try {
+            const res = await fetch(`${WALLET_API.replace('/api/wallet','')}/api/external-wallets/${user.id}`);
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const data = await res.json();
+
+            if (!data.wallets || data.wallets.length === 0) {
+                listEl.innerHTML = `
+                    <div style="text-align:center;color:var(--text2);padding:24px;border:1px dashed rgba(255,255,255,0.1);border-radius:10px;font-size:13px">
+                        <div style="font-size:32px;margin-bottom:8px">🪙</div>
+                        עדיין לא הוספת ארנקים חיצוניים<br>
+                        <span style="font-size:11px">לחץ "הוסף ארנק חיצוני" כדי להתחיל</span>
+                    </div>`;
+                document.getElementById('ext-total').style.display = 'none';
+                return;
+            }
+
+            const providerIcons = {bybit:'🟠', binance:'🟡', bitget:'🔵', okx:'⚫', kucoin:'🟢', self:'🛡️'};
+            const networkColors = {TON:'#0098ea', BSC:'#f3ba2f', ETH:'#627eea', BTC:'#f7931a'};
+
+            let totalUsd = 0;
+            listEl.innerHTML = data.wallets.map(w => {
+                const icon = providerIcons[w.provider] || '🛡️';
+                const color = networkColors[w.network] || '#888';
+                const native = parseFloat(w.last_balance_native || 0);
+                totalUsd += parseFloat(w.last_balance_usdt || 0);
+                const lastChecked = w.last_checked ? new Date(w.last_checked).toLocaleString('he-IL') : 'אף פעם';
+                const shortAddr = w.address.length > 20 ? w.address.slice(0,8) + '...' + w.address.slice(-6) : w.address;
+                return `
+                    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-right:3px solid ${color};border-radius:10px;padding:14px 16px">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                            <div style="font-weight:800;color:#fff;font-size:14px">${icon} ${w.label}</div>
+                            <button onclick="deleteExternalWallet(${w.id})" style="background:transparent;border:1px solid rgba(239,68,68,0.3);color:#ef4444;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:11px">🗑️ הסר</button>
+                        </div>
+                        <div style="font-family:monospace;font-size:11px;color:var(--text2);margin-bottom:8px;direction:ltr;text-align:left">${shortAddr}</div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                            <span style="font-size:11px;color:${color};font-weight:700;text-transform:uppercase">${w.network}</span>
+                            <span style="font-size:18px;font-weight:900;color:#fff">${native.toFixed(4)}</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;align-items:center">
+                            <span style="font-size:10px;color:var(--text3)">עודכן: ${lastChecked}</span>
+                            <button onclick="refreshExternalWallet(${w.id})" style="background:rgba(0,188,212,0.1);color:#00bcd4;border:1px solid rgba(0,188,212,0.3);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:11px">🔄 רענן</button>
+                        </div>
+                    </div>`;
+            }).join('');
+
+            const totalEl = document.getElementById('ext-total');
+            const totalValEl = document.getElementById('ext-total-value');
+            const totalIlsEl = document.getElementById('ext-total-ils');
+            if (totalEl) totalEl.style.display = totalUsd > 0 ? 'block' : 'none';
+            if (totalValEl) totalValEl.textContent = '$' + totalUsd.toFixed(2);
+            if (totalIlsEl) totalIlsEl.textContent = '≈ ₪' + (totalUsd * 3.65).toFixed(2);
+        } catch (err) {
+            console.warn('[ExtWallets] Error:', err);
+            listEl.innerHTML = `<div style="color:#ef4444;padding:14px;font-size:13px">⚠️ שגיאה בטעינת הארנקים</div>`;
+        }
+    }
+
+    function openAddExternalWalletModal() {
+        document.getElementById('ext-wallet-modal').style.display = 'flex';
+        document.getElementById('ext-label').value = '';
+        document.getElementById('ext-address').value = '';
+        document.getElementById('ext-network').value = 'TON';
+        document.getElementById('ext-provider').value = 'self';
+    }
+
+    function closeExternalWalletModal() {
+        document.getElementById('ext-wallet-modal').style.display = 'none';
+    }
+
+    async function saveExternalWallet() {
+        const user = getCurrentUser();
+        if (!user) return showToast('יש להתחבר תחילה', true);
+        const label = document.getElementById('ext-label').value.trim();
+        const network = document.getElementById('ext-network').value;
+        const provider = document.getElementById('ext-provider').value;
+        const address = document.getElementById('ext-address').value.trim();
+        if (!label) return showToast('תן תווית לארנק', true);
+        if (!address || address.length < 10) return showToast('כתובת לא תקינה', true);
+        try {
+            const res = await fetch(`${WALLET_API.replace('/api/wallet','')}/api/external-wallets/add`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({user_id: user.id, label, network, provider, address})
+            });
+            const data = await res.json();
+            if (!res.ok || !data.ok) throw new Error(data.detail || 'Failed');
+            showToast('✅ נוסף! טוען יתרה...');
+            closeExternalWalletModal();
+            // Refresh balance immediately
+            await fetch(`${WALLET_API.replace('/api/wallet','')}/api/external-wallets/refresh/${data.wallet_id}`, {method: 'POST'});
+            await loadExternalWallets();
+        } catch (err) {
+            showToast('שגיאה: ' + err.message, true);
+        }
+    }
+
+    async function deleteExternalWallet(walletId) {
+        if (!confirm('להסיר את הארנק הזה?')) return;
+        const user = getCurrentUser();
+        if (!user) return;
+        try {
+            await fetch(`${WALLET_API.replace('/api/wallet','')}/api/external-wallets/${walletId}?user_id=${user.id}`, {method: 'DELETE'});
+            showToast('הוסר');
+            await loadExternalWallets();
+        } catch(e) { showToast('שגיאה', true); }
+    }
+
+    async function refreshExternalWallet(walletId) {
+        try {
+            showToast('🔄 מרענן יתרה...');
+            await fetch(`${WALLET_API.replace('/api/wallet','')}/api/external-wallets/refresh/${walletId}`, {method: 'POST'});
+            await loadExternalWallets();
+        } catch(e) { showToast('שגיאה', true); }
+    }
+
+    // ============================================================
+    // CEX PORTFOLIO — Bybit + Binance API Keys (READ-ONLY)
+    // ============================================================
+    const CEX_API = WALLET_API.replace('/api/wallet','');
+
+    async function loadCexPortfolio() {
+        const user = getCurrentUser();
+        if (!user) return;
+        const keysEl = document.getElementById('cex-keys-list');
+        const breakdownEl = document.getElementById('cex-breakdown');
+        const summaryEl = document.getElementById('cex-portfolio-summary');
+        if (!keysEl) return;
+
+        try {
+            // 1) List all keys for this user
+            const keysRes = await fetch(`${CEX_API}/api/cex/keys/${user.id}`);
+            const keysData = await keysRes.json();
+            const keys = keysData.keys || [];
+
+            if (keys.length === 0) {
+                keysEl.innerHTML = `
+                    <div style="text-align:center;color:var(--text2);padding:20px;border:1px dashed rgba(255,215,0,0.2);border-radius:10px;font-size:13px">
+                        <div style="font-size:32px;margin-bottom:8px">🔐</div>
+                        עדיין לא חיברת API Keys<br>
+                        <span style="font-size:11px">חבר Bybit / Binance לראות את כל הנכסים שלך</span>
+                    </div>`;
+                breakdownEl.innerHTML = '';
+                summaryEl.style.display = 'none';
+                return;
+            }
+
+            keysEl.innerHTML = keys.map(k => {
+                const emoji = k.exchange === 'bybit' ? '🟠' : '🟡';
+                const lastUsed = k.last_used_at ? new Date(k.last_used_at).toLocaleString('he-IL') : 'אף פעם';
+                const errBadge = k.last_error ? `<span style="color:#ef4444;font-size:10px">⚠️ ${k.last_error.substring(0,40)}</span>` : '';
+                return `
+                    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,215,0,0.2);border-right:3px solid #ffd700;border-radius:10px;padding:14px 16px">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                            <div style="font-weight:800;color:#fff;font-size:14px">${emoji} ${k.label}</div>
+                            <div style="display:flex;gap:6px">
+                                <button onclick="syncCexKey(${k.id})" style="background:rgba(0,188,212,0.1);color:#00bcd4;border:1px solid rgba(0,188,212,0.3);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:11px">🔄 סנכרן</button>
+                                <button onclick="deleteCexKey(${k.id})" style="background:transparent;border:1px solid rgba(239,68,68,0.3);color:#ef4444;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:11px">🗑️</button>
+                            </div>
+                        </div>
+                        <div style="font-family:monospace;font-size:11px;color:var(--text2);direction:ltr;text-align:left;margin-bottom:4px">${k.api_key_masked}</div>
+                        <div style="font-size:10px;color:var(--text3)">סנכרון אחרון: ${lastUsed}</div>
+                        ${errBadge}
+                    </div>`;
+            }).join('');
+
+            // 2) Fetch consolidated portfolio
+            const portRes = await fetch(`${CEX_API}/api/cex/portfolio/${user.id}`);
+            const port = await portRes.json();
+
+            if (port.total_usd > 0 || port.exchanges?.length) {
+                summaryEl.style.display = 'block';
+                document.getElementById('cex-total-usd').textContent = '$' + (port.total_usd || 0).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+                document.getElementById('cex-total-ils').textContent = '≈ ₪' + (port.total_ils || 0).toLocaleString('he-IL', {minimumFractionDigits:2, maximumFractionDigits:2});
+                const lastSync = port.exchanges?.length ? port.exchanges[0].snapshot_at : null;
+                document.getElementById('cex-last-sync').textContent = lastSync ? 'עודכן: ' + new Date(lastSync).toLocaleString('he-IL') : 'לא סונכרן';
+            } else {
+                summaryEl.style.display = 'none';
+            }
+
+            // 3) Render breakdown per exchange
+            if (!port.exchanges || port.exchanges.length === 0) {
+                breakdownEl.innerHTML = '';
+                return;
+            }
+            breakdownEl.innerHTML = port.exchanges.map(ex => {
+                let balances = ex.spot_balances || {};
+                if (typeof balances === 'string') { try { balances = JSON.parse(balances); } catch(e) { balances = {}; } }
+                const entries = Object.entries(balances).sort((a,b)=>(b[1].usd_value||0)-(a[1].usd_value||0));
+                const emoji = ex.exchange === 'bybit' ? '🟠' : '🟡';
+                return `
+                    <div style="margin-top:14px;padding:14px;background:rgba(0,0,0,0.3);border-radius:10px;border:1px solid rgba(255,255,255,0.08)">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+                            <h4 style="color:#ffd700;font-size:14px;margin:0">${emoji} ${ex.exchange.toUpperCase()}</h4>
+                            <div style="font-weight:800;color:#22c55e;font-size:15px">$${(ex.total_usd || 0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
+                        </div>
+                        ${entries.length ? `
+                            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px">
+                                ${entries.map(([sym, b]) => {
+                                    const balance = b.balance || ((b.free || 0) + (b.locked || 0));
+                                    const usd = b.usd_value || 0;
+                                    return `
+                                        <div style="background:rgba(255,255,255,0.04);padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06)">
+                                            <div style="font-weight:800;color:#fff;font-size:13px">${sym}</div>
+                                            <div style="font-size:12px;color:var(--text2);direction:ltr">${Number(balance).toLocaleString('en-US',{maximumFractionDigits:8})}</div>
+                                            ${usd > 0 ? `<div style="font-size:11px;color:#22c55e">$${usd.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>` : ''}
+                                        </div>`;
+                                }).join('')}
+                            </div>
+                        ` : `<div style="color:var(--text3);font-size:12px;text-align:center;padding:14px">אין יתרות — לחץ סנכרן לטעינה</div>`}
+                    </div>`;
+            }).join('');
+        } catch (err) {
+            console.warn('[CEX] Error:', err);
+            keysEl.innerHTML = `<div style="color:#ef4444;padding:14px;font-size:13px">⚠️ שגיאה: ${err.message}</div>`;
+        }
+    }
+
+    function openAddCexKeyModal() {
+        document.getElementById('cex-key-modal').style.display = 'flex';
+        document.getElementById('cex-label').value = '';
+        document.getElementById('cex-api-key').value = '';
+        document.getElementById('cex-api-secret').value = '';
+    }
+    function closeAddCexKeyModal() {
+        document.getElementById('cex-key-modal').style.display = 'none';
+    }
+
+    async function saveCexKey() {
+        const user = getCurrentUser();
+        if (!user) return showToast('יש להתחבר תחילה', true);
+        const exchange = document.getElementById('cex-exchange').value;
+        const label = document.getElementById('cex-label').value.trim();
+        const api_key = document.getElementById('cex-api-key').value.trim();
+        const api_secret = document.getElementById('cex-api-secret').value.trim();
+        if (!label) return showToast('תן תווית', true);
+        if (api_key.length < 8) return showToast('API Key קצר מדי', true);
+        if (api_secret.length < 8) return showToast('Secret קצר מדי', true);
+
+        try {
+            const res = await fetch(`${CEX_API}/api/cex/add-key`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    user_id: user.id,
+                    exchange,
+                    label,
+                    api_key,
+                    api_secret,
+                    permissions: ['read']
+                })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.detail || 'Failed');
+            showToast('✅ נחבר! טוען יתרות...');
+            closeAddCexKeyModal();
+            // Immediate sync to load balances
+            if (data.key_id) {
+                await fetch(`${CEX_API}/api/cex/sync/${data.key_id}`, {method: 'POST'});
+            }
+            await loadCexPortfolio();
+        } catch (err) {
+            showToast('שגיאה: ' + err.message, true);
+        }
+    }
+
+    async function syncCexKey(keyId) {
+        showToast('🔄 מסנכרן...');
+        try {
+            const res = await fetch(`${CEX_API}/api/cex/sync/${keyId}`, {method: 'POST'});
+            const data = await res.json();
+            if (data.ok) {
+                showToast(`✅ סונכרן — ${data.assets_count || 0} נכסים, $${(data.total_usd || 0).toFixed(2)}`);
+            } else {
+                showToast(`⚠️ ${data.error || 'Sync failed'}`, true);
+            }
+            await loadCexPortfolio();
+        } catch (err) {
+            showToast('שגיאה: ' + err.message, true);
+        }
+    }
+
+    async function syncAllCexKeys() {
+        const user = getCurrentUser();
+        if (!user) return;
+        const keysRes = await fetch(`${CEX_API}/api/cex/keys/${user.id}`);
+        const keysData = await keysRes.json();
+        for (const k of (keysData.keys || [])) {
+            try { await fetch(`${CEX_API}/api/cex/sync/${k.id}`, {method: 'POST'}); } catch(e) {}
+        }
+        showToast('✅ כל המפתחות סונכרנו');
+        await loadCexPortfolio();
+    }
+
+    async function deleteCexKey(keyId) {
+        if (!confirm('להסיר את ה-API Key?')) return;
+        const user = getCurrentUser();
+        if (!user) return;
+        try {
+            await fetch(`${CEX_API}/api/cex/keys/${keyId}?user_id=${user.id}`, {method: 'DELETE'});
+            showToast('הוסר');
+            await loadCexPortfolio();
+        } catch(e) { showToast('שגיאה', true); }
+    }
+
+    // Load everything in parallel
+    Promise.all([
+        loadPrice(),
+        loadBalances(),
+        loadAddresses(),
+        loadTransactions(),
+        loadExternalWallets(),
+        loadCexPortfolio()
+    ]).then(() => {
+        console.log('[Wallet] Init complete, API:', apiOnline ? 'online' : 'offline');
+    });
+    </script>
+    <script src="/js/analytics.js?v=20260421a"></script>
+    <script src="/js/ai-assistant.js?v=20260421a"></script>
+</body>
+</html>
+
+

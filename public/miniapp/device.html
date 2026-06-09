@@ -1,0 +1,177 @@
+﻿<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>SLH — המכשיר שלי</title>
+  <link rel="stylesheet" href="miniapp.css" />
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    textarea {
+      width: 100%;
+      min-height: 80px;
+      background: var(--tg-bg);
+      color: var(--tg-fg);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 12px;
+      font-family: inherit;
+      font-size: 14px;
+      resize: vertical;
+      margin-bottom: 10px;
+    }
+    .result-line {
+      font-size: 12px;
+      color: var(--tg-hint);
+      margin-top: 8px;
+      min-height: 18px;
+    }
+    .result-line.ok { color: var(--slh-success); }
+    .result-line.err { color: var(--tg-destructive); }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <h1>המכשיר שלי</h1>
+      <div class="user" id="user-greeting">—</div>
+    </header>
+
+    <nav class="nav">
+      <a href="dashboard.html">סקירה</a>
+      <a href="wallet.html">ארנק</a>
+      <a href="device.html" class="active">מכשיר</a>
+      <a href="swarm.html">Swarm</a>
+    </nav>
+
+    <section class="card">
+      <h2>מצב המכשיר</h2>
+      <div id="device-info"><div class="placeholder">טוען...</div></div>
+    </section>
+
+    <section class="card">
+      <h2>שלח הודעה למסך</h2>
+      <textarea id="msg-text" placeholder="לדוגמה: SLH חי, 42 ZVK התקבלו"></textarea>
+      <button class="btn" id="send-btn" disabled>שלח</button>
+      <div class="result-line" id="send-result"></div>
+    </section>
+
+    <section class="card">
+      <h2>פעולות מהירות</h2>
+      <button class="btn secondary" id="refresh-btn" style="margin-bottom:8px">רענן יתרות למסך</button>
+      <button class="btn secondary" id="ping-btn">פינג למכשיר</button>
+      <div class="result-line" id="action-result"></div>
+    </section>
+  </div>
+
+  <script src="miniapp.js"></script>
+  <script>
+    (async function () {
+      const slh = window.SLH_init({ title: "SLH Device" });
+
+      const infoEl = document.getElementById("device-info");
+      const msgEl = document.getElementById("msg-text");
+      const sendBtn = document.getElementById("send-btn");
+      const sendResult = document.getElementById("send-result");
+      const refreshBtn = document.getElementById("refresh-btn");
+      const pingBtn = document.getElementById("ping-btn");
+      const actionResult = document.getElementById("action-result");
+
+      if (!slh.user) {
+        infoEl.innerHTML =
+          '<div class="placeholder">פתח מתוך בוט כדי להיות מזוהה.</div>';
+        return;
+      }
+
+      let deviceId = null;
+
+      try {
+        const me = await slh.api("/api/user/" + slh.user.id);
+        if (!me || !me.id) throw new Error("לא מזוהה במערכת");
+
+        const claim = await slh.api(
+          "/api/device/claim/" + encodeURIComponent("by_user_" + me.id)
+        ).catch(function () { return null; });
+
+        if (claim && claim.device_id) {
+          deviceId = claim.device_id;
+        }
+
+        if (!deviceId) {
+          infoEl.innerHTML =
+            '<div class="placeholder">לא מזוהה מכשיר משויך. אם יש לך ESP32 — סרוק את ה-QR בפעם הראשונה.</div>';
+          return;
+        }
+
+        const lastSeen = claim.last_seen_at
+          ? new Date(claim.last_seen_at).toLocaleString("he-IL")
+          : "--";
+        const online = claim.online || claim.is_online;
+        infoEl.innerHTML =
+          '<div class="row"><span class="label">מזהה</span><span class="value">' +
+            deviceId +
+          '</span></div>' +
+          '<div class="row"><span class="label">סטטוס</span><span class="value">' +
+            (online
+              ? '<span class="tag ok">חי</span>'
+              : '<span class="tag warn">לא פעיל</span>') +
+          '</span></div>' +
+          '<div class="row"><span class="label">נראה לאחרונה</span><span class="value">' +
+            lastSeen +
+          '</span></div>' +
+          (claim.firmware_version
+            ? '<div class="row"><span class="label">גרסה</span><span class="value">' +
+                claim.firmware_version +
+              "</span></div>"
+            : "");
+
+        sendBtn.disabled = false;
+      } catch (e) {
+        slh.renderErr(infoEl, e);
+      }
+
+      async function postCommand(payload, resultEl) {
+        resultEl.textContent = "";
+        resultEl.className = "result-line";
+        if (!deviceId) {
+          resultEl.textContent = "אין מכשיר משויך.";
+          resultEl.className = "result-line err";
+          return;
+        }
+        try {
+          const resp = await slh.api(
+            "/api/device/command/" + encodeURIComponent(deviceId),
+            { method: "POST", body: payload }
+          );
+          resultEl.textContent =
+            "פקודה נשלחה (#" +
+            (resp.command_id || "?") +
+            "). ההמתנה עד ה-heartbeat הבא.";
+          resultEl.className = "result-line ok";
+        } catch (e) {
+          resultEl.textContent = "שגיאה: " + e.message;
+          resultEl.className = "result-line err";
+        }
+      }
+
+      sendBtn.addEventListener("click", function () {
+        const text = (msgEl.value || "").trim();
+        if (!text) {
+          sendResult.textContent = "כתוב משהו לשליחה.";
+          sendResult.className = "result-line err";
+          return;
+        }
+        postCommand({ type: "show_message", text: text }, sendResult);
+      });
+
+      refreshBtn.addEventListener("click", function () {
+        postCommand({ type: "refresh_balances" }, actionResult);
+      });
+
+      pingBtn.addEventListener("click", function () {
+        postCommand({ type: "ping" }, actionResult);
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>פרופיל מומחה — SLH</title>
+<meta name="description" content="פרופיל מומחה SLH — תוכן חינמי + תוכן בתשלום + מסלול ייעוץ.">
+<meta property="og:type" content="profile">
+<meta property="og:title" content="פרופיל מומחה — SLH">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/shared.css?v=20260415">
+<style>
+:root{--bg:#050810;--bg2:#0d1220;--bg3:#151a2e;--gold:#ffd700;--green:#00e887;--red:#ff4444;--purple:#a855f7;--blue:#3b82f6;--cyan:#06b6d4;--text:#f5f5f8;--text2:#9ba0b5;--text3:#5a6078;--border:rgba(255,215,0,.2)}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Rubik',sans-serif;margin:0;min-height:100vh;line-height:1.6}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(ellipse at 20% 10%,rgba(255,215,0,.06),transparent 50%),radial-gradient(ellipse at 85% 80%,rgba(168,85,247,.05),transparent 50%)}
+
+.cover{background:linear-gradient(135deg,var(--gold) 0%,var(--green) 50%,var(--purple) 100%);height:240px;position:relative;overflow:hidden}
+.cover::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,var(--bg) 100%)}
+
+.profile-main{max-width:960px;margin:-120px auto 40px;padding:0 20px;position:relative;z-index:2}
+
+.profile-card{background:var(--bg2);border:1px solid var(--border);border-radius:24px;padding:30px;display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center}
+.avatar{width:140px;height:140px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--green));display:flex;align-items:center;justify-content:center;font-size:60px;font-weight:900;color:#000;border:6px solid var(--bg);box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.avatar img{width:100%;height:100%;border-radius:50%;object-fit:cover}
+.profile-info h1{margin:0 0 4px;font-size:32px;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--green));-webkit-background-clip:text;background-clip:text;color:transparent}
+.profile-info .handle{font-size:14px;color:var(--cyan);margin-bottom:8px}
+.profile-info .badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.b-verified{padding:3px 10px;background:var(--green);color:#000;border-radius:10px;font-size:11px;font-weight:900}
+.b-featured{padding:3px 10px;background:var(--gold);color:#000;border-radius:10px;font-size:11px;font-weight:900}
+.b-rating{padding:3px 10px;background:rgba(255,215,0,.15);color:var(--gold);border-radius:10px;font-size:11px;font-weight:800}
+.profile-info .bio{font-size:14px;color:var(--text2);line-height:1.7}
+
+.tabs{display:flex;gap:6px;margin:24px 0 18px;flex-wrap:wrap}
+.tab{padding:10px 18px;background:var(--bg2);border:1px solid var(--border);color:var(--text2);border-radius:22px;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit;transition:all .2s}
+.tab.active{background:var(--gold);color:#000;border-color:var(--gold)}
+.tab:hover{color:var(--text)}
+
+.section-card{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:24px;margin-bottom:18px}
+.section-card h2{margin:0 0 14px;font-size:18px;color:var(--gold);font-weight:900}
+
+.product-card{background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+.product-card.locked{border-left:4px solid var(--gold);background:linear-gradient(135deg,rgba(255,215,0,.04),var(--bg))}
+.product-card.free{border-left:4px solid var(--green)}
+.product-card .info h3{margin:0 0 4px;font-size:16px;color:var(--text);font-weight:800}
+.product-card .info p{margin:0;font-size:13px;color:var(--text2)}
+.product-card .price{font-size:24px;font-weight:900;color:var(--gold);font-family:'JetBrains Mono',monospace}
+.product-card .price.free{color:var(--green)}
+.product-card .buy-btn{padding:10px 18px;background:linear-gradient(135deg,var(--gold),var(--green));color:#000;border:none;border-radius:10px;font-weight:900;font-size:13px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;font-family:inherit}
+.product-card .free-btn{padding:10px 18px;background:var(--green);color:#000;border:none;border-radius:10px;font-weight:900;font-size:13px;cursor:pointer;text-decoration:none}
+
+.links-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.link-item{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:14px;text-decoration:none;color:var(--text);display:flex;align-items:center;gap:10px;transition:all .2s}
+.link-item:hover{border-color:var(--gold);transform:translateY(-2px)}
+.link-item i{font-size:20px;color:var(--gold);width:28px;text-align:center}
+.link-item .text{flex:1}
+.link-item .text .label{font-weight:800;font-size:13px}
+.link-item .text .url{font-size:11px;color:var(--text2)}
+
+.payment-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.pay-option{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center;cursor:pointer;transition:all .2s}
+.pay-option:hover{border-color:var(--gold)}
+.pay-option .ico{font-size:32px;color:var(--gold);margin-bottom:8px}
+.pay-option .name{font-weight:800;font-size:13px}
+.pay-option .detail{font-size:11px;color:var(--text2);margin-top:4px}
+
+.template-banner{background:linear-gradient(135deg,rgba(168,85,247,.1),rgba(0,232,135,.05));border:2px dashed var(--purple);border-radius:18px;padding:24px;text-align:center;margin-bottom:24px}
+.template-banner h3{margin:0 0 8px;color:var(--purple);font-size:20px}
+.template-banner a{color:var(--gold);font-weight:700;text-decoration:none}
+
+.empty-tab{text-align:center;padding:40px 20px;color:var(--text2);font-style:italic}
+
+@media(max-width:640px){
+  .profile-card{grid-template-columns:1fr;text-align:center}
+  .avatar{margin:0 auto}
+}
+</style>
+</head>
+<body>
+
+<div id="topnav-root"></div>
+
+<div class="cover"></div>
+
+<div class="profile-main">
+  <!-- Loaded from API -->
+  <div id="profile-card" class="profile-card">
+    <div class="avatar" id="avatar">?</div>
+    <div class="profile-info">
+      <h1 id="name">טוען...</h1>
+      <div class="handle" id="handle"></div>
+      <div class="badges" id="badges"></div>
+      <div class="bio" id="bio"></div>
+    </div>
+  </div>
+
+  <!-- Template banner (shows for non-owners) -->
+  <div class="template-banner" id="template-banner" style="display:none">
+    <h3>🎨 רוצה פרופיל כזה משלך?</h3>
+    <p style="font-size:13px;color:var(--text2);margin:0 0 14px">כל מומחה רשום מקבל פרופיל אישי כזה — בחר מה חינמי ומה בתשלום, חבר חשבון בנק, מכר קורסים.</p>
+    <a href="/experts.html#register" style="display:inline-block;padding:12px 24px;background:linear-gradient(135deg,var(--purple),var(--cyan));color:#fff;border-radius:12px;font-weight:900;text-decoration:none">צור פרופיל משלך ←</a>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="about" onclick="switchTab('about')">📖 אודות</button>
+    <button class="tab" data-tab="services" onclick="switchTab('services')">💼 שירותים</button>
+    <button class="tab" data-tab="courses" onclick="switchTab('courses')">📚 קורסים</button>
+    <button class="tab" data-tab="links" onclick="switchTab('links')">🔗 קישורים</button>
+    <button class="tab" data-tab="reviews" onclick="switchTab('reviews')">⭐ ביקורות</button>
+    <button class="tab" data-tab="contact" onclick="switchTab('contact')">📞 צור קשר</button>
+  </div>
+
+  <!-- ABOUT TAB -->
+  <div id="tab-about" class="tab-content">
+    <div class="section-card">
+      <h2><i class="fas fa-info-circle"></i> אודות</h2>
+      <div id="full-bio" style="font-size:14px;color:var(--text);line-height:1.9">טוען מידע...</div>
+    </div>
+    <div class="section-card">
+      <h2><i class="fas fa-tags"></i> תחומי מומחיות</h2>
+      <div id="domains-list" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+    </div>
+    <div class="section-card">
+      <h2><i class="fas fa-language"></i> שפות</h2>
+      <div id="langs-list" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+    </div>
+  </div>
+
+  <!-- SERVICES TAB -->
+  <div id="tab-services" class="tab-content" style="display:none">
+    <div class="section-card">
+      <h2><i class="fas fa-handshake"></i> שירותי ייעוץ</h2>
+      <div class="product-card free">
+        <div class="info">
+          <h3>שיחת היכרות (15 דקות)</h3>
+          <p>הכרות ראשונית לבדיקת התאמה — ללא התחייבות</p>
+        </div>
+        <span class="price free">חינם</span>
+        <a href="#" onclick="bookService('intro');return false" class="free-btn">קבע פגישה</a>
+      </div>
+      <div class="product-card locked">
+        <div class="info">
+          <h3>ייעוץ אישי (60 דקות)</h3>
+          <p>פגישת ייעוץ מקצועית בזום או טלפונית</p>
+        </div>
+        <span class="price">₪399</span>
+        <a href="#" onclick="bookService('consultation');return false" class="buy-btn"><i class="fas fa-calendar"></i> הזמן עכשיו</a>
+      </div>
+      <div class="product-card locked">
+        <div class="info">
+          <h3>ליווי חודשי (4 פגישות + WhatsApp)</h3>
+          <p>חבילת ליווי הכי פופולרית — חיסכון 30%</p>
+        </div>
+        <span class="price">₪1,099</span>
+        <a href="#" onclick="bookService('monthly');return false" class="buy-btn"><i class="fas fa-star"></i> הצטרף</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- COURSES TAB -->
+  <div id="tab-courses" class="tab-content" style="display:none">
+    <div class="section-card">
+      <h2><i class="fas fa-graduation-cap"></i> קורסים זמינים</h2>
+      <div class="product-card free">
+        <div class="info">
+          <h3>הקדמה ל-SLH (וידאו 20 דקות)</h3>
+          <p>סקירה כללית של המערכת</p>
+        </div>
+        <span class="price free">חינם</span>
+        <a href="#" class="free-btn">צפה</a>
+      </div>
+      <div class="product-card locked">
+        <div class="info">
+          <h3>קורס מקיף בקריפטו לישראלים</h3>
+          <p>10 שיעורים · תעודת סיום · גישה לקבוצת בוגרים</p>
+        </div>
+        <span class="price">₪199</span>
+        <a href="#" class="buy-btn"><i class="fas fa-shopping-cart"></i> רכוש</a>
+      </div>
+      <div class="product-card locked">
+        <div class="info">
+          <h3>מאסטרקלאס: בניית בוטים בטלגרם</h3>
+          <p>20 שיעורים מעמיקים · קוד פתוח · קוד פתוח</p>
+        </div>
+        <span class="price">₪499</span>
+        <a href="#" class="buy-btn"><i class="fas fa-shopping-cart"></i> רכוש</a>
+      </div>
+      <div style="text-align:center;margin-top:14px;font-size:12px;color:var(--text3)">
+        💡 70% מההכנסה למומחה · 30% למערכת SLH
+      </div>
+    </div>
+  </div>
+
+  <!-- LINKS TAB -->
+  <div id="tab-links" class="tab-content" style="display:none">
+    <div class="section-card">
+      <h2><i class="fas fa-link"></i> קישורים חיצוניים</h2>
+      <div id="external-links" class="links-grid"></div>
+    </div>
+  </div>
+
+  <!-- REVIEWS TAB -->
+  <div id="tab-reviews" class="tab-content" style="display:none">
+    <div class="section-card">
+      <h2><i class="fas fa-star"></i> ביקורות מהקהילה</h2>
+      <div id="reviews-list">
+        <div class="empty-tab">⏳ טוען ביקורות...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACT TAB -->
+  <div id="tab-contact" class="tab-content" style="display:none">
+    <div class="section-card">
+      <h2><i class="fas fa-envelope"></i> דרכי תקשורת</h2>
+      <div id="contact-options" class="payment-options"></div>
+    </div>
+    <div class="section-card">
+      <h2><i class="fas fa-credit-card"></i> אפשרויות תשלום</h2>
+      <div class="payment-options">
+        <div class="pay-option" onclick="alert('Telegram + bot — מומלץ')">
+          <div class="ico">🤖</div>
+          <div class="name">Telegram</div>
+          <div class="detail">דרך הבוט · מיידי</div>
+        </div>
+        <div class="pay-option" onclick="alert('TON wallet')">
+          <div class="ico">💎</div>
+          <div class="name">TON</div>
+          <div class="detail">ארנק קריפטו</div>
+        </div>
+        <div class="pay-option" onclick="alert('BNB wallet')">
+          <div class="ico">🟡</div>
+          <div class="name">BNB</div>
+          <div class="detail">MetaMask</div>
+        </div>
+        <div class="pay-option" onclick="alert('Bank transfer')">
+          <div class="ico">🏦</div>
+          <div class="name">העברה בנקאית</div>
+          <div class="detail">ישראל בלבד</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/shared.js?v=20260415"></script>
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260415"></script>
+
+<script>
+const API = 'https://slh-api-production.up.railway.app';
+const params = new URLSearchParams(location.search);
+const expertId = parseInt(params.get('id') || '1', 10);
+
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+  ['about','services','courses','links','reviews','contact'].forEach(n => {
+    document.getElementById('tab-' + n).style.display = (n === name ? 'block' : 'none');
+  });
+  if(name === 'reviews') loadReviews();
+}
+
+async function loadProfile(){
+  try {
+    const r = await fetch(`${API}/api/experts/list?limit=50`);
+    const d = await r.json();
+    const expert = (d.experts || []).find(e => e.id === expertId);
+    if(!expert){
+      document.getElementById('name').textContent = 'מומחה לא נמצא';
+      return;
+    }
+    document.title = `${expert.display_name} — פרופיל מומחה SLH`;
+
+    document.getElementById('avatar').textContent = (expert.display_name || '?').slice(0,1);
+    document.getElementById('name').textContent = expert.display_name;
+    document.getElementById('handle').textContent = expert.tg_username ? '@' + expert.tg_username : '';
+
+    const badges = document.getElementById('badges');
+    badges.innerHTML = '';
+    if(expert.verified) badges.innerHTML += '<span class="b-verified">✓ מאומת</span>';
+    if(expert.featured) badges.innerHTML += '<span class="b-featured">⭐ מומלץ</span>';
+    if(expert.avg_rating > 0) badges.innerHTML += `<span class="b-rating">⭐ ${expert.avg_rating.toFixed(1)} (${expert.reviews_count})</span>`;
+    badges.innerHTML += `<span class="b-rating">${expert.consultations_count || 0} ייעוצים</span>`;
+
+    document.getElementById('bio').textContent = expert.bio || 'מומחה בקהילת SLH';
+    document.getElementById('full-bio').textContent = expert.bio || 'אין תיאור מורחב כרגע.';
+
+    const domainsDiv = document.getElementById('domains-list');
+    domainsDiv.innerHTML = (expert.domains || []).map(d =>
+      `<span style="padding:6px 14px;background:rgba(168,85,247,.15);color:var(--purple);border-radius:12px;font-size:12px;font-weight:700">${d}</span>`
+    ).join('') || '<span style="color:var(--text3)">לא צוינו תחומים</span>';
+
+    const langsDiv = document.getElementById('langs-list');
+    langsDiv.innerHTML = (expert.languages || []).map(l =>
+      `<span style="padding:6px 14px;background:rgba(0,232,135,.15);color:var(--green);border-radius:12px;font-size:12px;font-weight:700">${l}</span>`
+    ).join('');
+
+    // External links (defaults if expert has them)
+    document.getElementById('external-links').innerHTML = `
+      ${expert.tg_username ? `
+        <a href="https://t.me/${expert.tg_username}" target="_blank" rel="noopener" class="link-item">
+          <i class="fab fa-telegram"></i>
+          <div class="text"><div class="label">Telegram</div><div class="url">@${expert.tg_username}</div></div>
+        </a>` : ''}
+      <a href="/experts.html" class="link-item">
+        <i class="fas fa-users"></i>
+        <div class="text"><div class="label">קטלוג המומחים</div><div class="url">חזרה לרשימה</div></div>
+      </a>
+      <a href="/dashboard.html" class="link-item">
+        <i class="fas fa-tachometer-alt"></i>
+        <div class="text"><div class="label">SLH Dashboard</div><div class="url">לוח בקרה</div></div>
+      </a>
+    `;
+
+    // Contact options
+    document.getElementById('contact-options').innerHTML = `
+      ${expert.tg_username ? `
+        <div class="pay-option" onclick="window.open('https://t.me/${expert.tg_username}','_blank')">
+          <div class="ico" style="color:var(--cyan)"><i class="fab fa-telegram"></i></div>
+          <div class="name">Telegram</div>
+          <div class="detail">@${expert.tg_username}</div>
+        </div>` : ''}
+      <div class="pay-option" onclick="window.open('https://t.me/SLH_community_bot','_blank')">
+        <div class="ico"><i class="fas fa-robot"></i></div>
+        <div class="name">בוט SLH</div>
+        <div class="detail">דרך המערכת</div>
+      </div>
+    `;
+
+    // Show "create your own" banner if not the user themselves
+    document.getElementById('template-banner').style.display = 'block';
+
+  } catch(e) {
+    document.getElementById('name').textContent = '⚠️ שגיאה';
+    document.getElementById('bio').textContent = e.message;
+  }
+}
+
+async function loadReviews(){
+  const div = document.getElementById('reviews-list');
+  div.innerHTML = '<div class="empty-tab">⏳ טוען...</div>';
+  try {
+    const r = await fetch(`${API}/api/experts/${expertId}/reviews`);
+    const d = await r.json();
+    const reviews = d.reviews || [];
+    if(reviews.length === 0){
+      div.innerHTML = '<div class="empty-tab">אין עדיין ביקורות. היה הראשון!</div>';
+      return;
+    }
+    div.innerHTML = `
+      <div style="text-align:center;margin-bottom:18px">
+        <div style="font-size:32px;font-weight:900;color:var(--gold)">${d.avg_rating.toFixed(1)}/5</div>
+        <div style="color:var(--text2);font-size:13px">${d.reviews_count} ביקורות · ${d.five_stars} × 5⭐</div>
+      </div>
+      ${reviews.map(rev => `
+        <div class="product-card free" style="flex-direction:column;align-items:flex-start">
+          <div style="display:flex;justify-content:space-between;width:100%;margin-bottom:6px">
+            <strong>${rev.reviewer_name || 'אנונימי'}</strong>
+            <span>${'⭐'.repeat(rev.rating)}</span>
+          </div>
+          ${rev.comment ? `<p style="margin:0;font-size:13px;color:var(--text2);line-height:1.7">${rev.comment}</p>` : '<em style="color:var(--text3)">ללא תגובה</em>'}
+          <div style="font-size:11px;color:var(--text3);margin-top:6px">${new Date(rev.created_at).toLocaleString('he-IL')}</div>
+        </div>
+      `).join('')}
+    `;
+  } catch(e) {
+    div.innerHTML = `<div class="empty-tab">שגיאה: ${e.message}</div>`;
+  }
+}
+
+function bookService(type){
+  alert(`📅 מערכת קביעת פגישות תוך זמן קצר.\n\nבינתיים — ${expertId === 1 ? 'התקשר ל-058-420-3384' : 'שלח הודעה דרך טלגרם'}`);
+}
+
+loadProfile();
+</script>
+
+</body>
+</html>

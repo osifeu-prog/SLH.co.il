@@ -1,0 +1,252 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>תשלום בכרטיס אשראי — SLH Kosher Wallet ₪888</title>
+<meta name="description" content="תשלום מאובטח בכרטיס אשראי לרכישת הארנק הכשר במחיר השקה.">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{--bg:#050810;--bg2:#0d1220;--gold:#ffd700;--green:#00e887;--red:#ff4444;--blue:#3b82f6;--purple:#a855f7;--text:#f5f5f8;--text2:#9ba0b5;--text3:#5a6078;--border:rgba(255,215,0,.25)}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Rubik',sans-serif;margin:0;min-height:100vh;line-height:1.5}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(ellipse at 20% 10%,rgba(255,215,0,.10),transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(59,130,246,.06),transparent 50%)}
+.container{max-width:540px;margin:30px auto;padding:0 20px}
+.header{text-align:center;margin-bottom:26px}
+.header h1{font-size:28px;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--green));-webkit-background-clip:text;background-clip:text;color:transparent;margin:0 0 6px}
+.header p{color:var(--text2);font-size:13px;margin:0}
+.trust-row{display:flex;gap:10px;justify-content:center;margin-bottom:20px;flex-wrap:wrap;font-size:11px;color:var(--text2)}
+.trust-row span{display:inline-flex;align-items:center;gap:6px}
+.trust-row i{color:var(--green)}
+.price-card{background:linear-gradient(135deg,rgba(255,215,0,.10),rgba(0,232,135,.04));border:2px solid var(--gold);border-radius:20px;padding:24px;margin-bottom:20px;text-align:center}
+.price-card .product{font-size:14px;color:var(--text2);margin-bottom:8px}
+.price-card .amount{font-size:44px;font-weight:900;color:var(--gold);font-family:'JetBrains Mono',monospace;line-height:1}
+.price-card .note{font-size:11px;color:var(--text2);margin-top:8px}
+.form-card{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:24px}
+label{display:block;font-size:11px;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:1.5px;font-weight:700}
+input,select{width:100%;padding:12px 14px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:12px}
+input:focus,select:focus{outline:none;border-color:var(--gold)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px}
+.card-preview{background:linear-gradient(135deg,#1a1f3a,#0a0e1f);border-radius:14px;padding:20px;margin:18px 0;position:relative;height:140px;display:flex;flex-direction:column;justify-content:space-between}
+.card-preview .chip{width:36px;height:26px;background:linear-gradient(135deg,#c9a040,#8b6f20);border-radius:4px}
+.card-preview .number{font-family:'JetBrains Mono',monospace;font-size:18px;letter-spacing:3px;color:var(--text)}
+.card-preview .footer{display:flex;justify-content:space-between;font-size:10px;color:var(--text2);text-transform:uppercase}
+.submit-btn{width:100%;padding:16px;background:linear-gradient(135deg,var(--gold),var(--green));color:#000;border:none;border-radius:14px;font-size:16px;font-weight:900;cursor:pointer;font-family:inherit;margin-top:14px;transition:all .2s}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(255,215,0,.3)}
+.submit-btn:disabled{opacity:.5;cursor:not-allowed}
+.alert{padding:12px;border-radius:10px;margin-top:14px;font-size:13px;display:none}
+.alert.success{background:rgba(0,232,135,.1);border:1px solid var(--green);color:var(--green);display:block}
+.alert.error{background:rgba(255,68,68,.1);border:1px solid var(--red);color:var(--red);display:block}
+.affiliate-note{background:rgba(168,85,247,.08);border:1px solid var(--purple);border-radius:12px;padding:14px;margin-bottom:18px;font-size:12px;color:var(--text);display:none}
+.affiliate-note.show{display:block}
+.sec-note{margin-top:18px;font-size:11px;color:var(--text3);text-align:center;line-height:1.7}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>💳 תשלום מאובטח</h1>
+    <p>Kosher Wallet · מכירה מוקדמת</p>
+  </div>
+
+  <div class="trust-row">
+    <span><i class="fas fa-lock"></i> SSL 256-bit</span>
+    <span><i class="fas fa-shield-alt"></i> PCI DSS</span>
+    <span><i class="fas fa-undo"></i> החזר 14 יום</span>
+    <span><i class="fas fa-user-shield"></i> אימות CVV</span>
+  </div>
+
+  <div class="price-card">
+    <div class="product" id="product-name">🕊️ Kosher Wallet — ESP32 Pre-order</div>
+    <div class="amount" id="display-amount">₪888</div>
+    <div class="note">ל-100 הראשונים · כולל משלוח + 2 SLH מצביקה</div>
+  </div>
+
+  <div id="affiliate-note" class="affiliate-note">
+    🤝 <strong>דרך ברוקר:</strong> <span id="broker-name">—</span>
+  </div>
+
+  <form id="payment-form" class="form-card" onsubmit="submitPayment(event)">
+    <label>שם מלא *</label>
+    <input type="text" id="buyer-name" required placeholder="השם כפי שמופיע בכרטיס">
+
+    <div class="row2">
+      <div>
+        <label>טלפון *</label>
+        <input type="tel" id="phone" required pattern="0[2-9]\d{7,8}" placeholder="0584203384">
+      </div>
+      <div>
+        <label>ת.ז. *</label>
+        <input type="text" id="id-number" required pattern="\d{5,9}" maxlength="9" placeholder="9 ספרות">
+      </div>
+    </div>
+
+    <label>אימייל (למשלוח חשבונית)</label>
+    <input type="email" id="email" placeholder="you@example.com">
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:18px 0">
+
+    <label>פרטי כרטיס האשראי</label>
+
+    <!-- Visual card preview -->
+    <div class="card-preview">
+      <div class="chip"></div>
+      <div class="number" id="card-preview-number">•••• •••• •••• ••••</div>
+      <div class="footer">
+        <span><span id="card-preview-name">שם בעל הכרטיס</span></span>
+        <span>EXP <span id="card-preview-exp">••/••</span></span>
+      </div>
+    </div>
+
+    <label>מספר כרטיס (16 ספרות) *</label>
+    <input type="text" id="card-full" required pattern="\d{13,19}" maxlength="19" placeholder="1234 5678 9012 3456" oninput="updateCardPreview()">
+
+    <div class="row3">
+      <div>
+        <label>שם בעל הכרטיס *</label>
+        <input type="text" id="card-holder" required placeholder="ISRAEL ISRAELI" oninput="updateCardPreview()">
+      </div>
+      <div>
+        <label>תוקף *</label>
+        <input type="text" id="card-exp" required pattern="\d{2}/\d{2}" maxlength="5" placeholder="12/28" oninput="formatExp(this)">
+      </div>
+      <div>
+        <label>CVV *</label>
+        <input type="text" id="card-cvv" required pattern="\d{3,4}" maxlength="4" placeholder="123">
+      </div>
+    </div>
+
+    <label>מספר תשלומים</label>
+    <select id="installments">
+      <option value="1">תשלום אחד — ₪888</option>
+      <option value="2">2 תשלומים — ₪444 × 2</option>
+      <option value="3">3 תשלומים — ₪296 × 3</option>
+      <option value="6">6 תשלומים — ₪148 × 6</option>
+      <option value="12">12 תשלומים — ₪74 × 12</option>
+    </select>
+
+    <button type="submit" class="submit-btn" id="submit-btn">
+      <i class="fas fa-lock"></i> אשר תשלום ₪888
+    </button>
+
+    <div id="alert-msg" class="alert"></div>
+
+    <div class="sec-note">
+      🔒 פרטי הכרטיס שלך נשלחים מוצפנים · הם לא נשמרים במערכת שלנו — רק 4 ספרות אחרונות לצורך זיהוי.
+      אישור התשלום ניתן תוך 24 שעות על ידי צוות הכספים.
+    </div>
+  </form>
+</div>
+
+<script>
+const API = 'https://slh-api-production.up.railway.app';
+const urlParams = new URLSearchParams(location.search);
+const product = urlParams.get('product') || 'kosher_wallet';
+const refCode = urlParams.get('ref') || '';
+const brokerId = urlParams.get('broker') || null;
+
+// Configure display based on product
+const PRODUCTS = {
+  kosher_wallet: {name:'🕊️ Kosher Wallet — ESP32 Pre-order', amount:888},
+  starter_pack: {name:'🛒 SLH Starter Pack', amount:22.221},
+  support_deal: {name:'💎 Support Deal (TRUST10)', amount:19.999}
+};
+const config = PRODUCTS[product] || PRODUCTS.kosher_wallet;
+document.getElementById('product-name').textContent = config.name;
+document.getElementById('display-amount').textContent = '₪' + config.amount;
+document.getElementById('submit-btn').innerHTML = `<i class="fas fa-lock"></i> אשר תשלום ₪${config.amount}`;
+
+// Show affiliate if present
+if(refCode || brokerId){
+  document.getElementById('affiliate-note').classList.add('show');
+  document.getElementById('broker-name').textContent = refCode || ('Broker #' + brokerId);
+}
+
+function updateCardPreview(){
+  const full = document.getElementById('card-full').value.replace(/\D/g,'');
+  const masked = full.length >= 4 ? '•••• •••• •••• ' + full.slice(-4) : '•••• •••• •••• ••••';
+  document.getElementById('card-preview-number').textContent = masked;
+  const holder = document.getElementById('card-holder').value || 'שם בעל הכרטיס';
+  document.getElementById('card-preview-name').textContent = holder.toUpperCase();
+  const exp = document.getElementById('card-exp').value || '••/••';
+  document.getElementById('card-preview-exp').textContent = exp;
+}
+
+function formatExp(input){
+  let v = input.value.replace(/\D/g,'');
+  if(v.length >= 3) v = v.slice(0,2) + '/' + v.slice(2,4);
+  input.value = v;
+  updateCardPreview();
+}
+
+function detectBrand(number){
+  const n = number.replace(/\D/g,'');
+  if(/^4/.test(n)) return 'Visa';
+  if(/^5[1-5]/.test(n)) return 'Mastercard';
+  if(/^3[47]/.test(n)) return 'AMEX';
+  if(/^6/.test(n)) return 'Discover';
+  return 'Unknown';
+}
+
+async function submitPayment(e){
+  e.preventDefault();
+  const btn = document.getElementById('submit-btn');
+  const alertEl = document.getElementById('alert-msg');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> שולח...';
+
+  const cardFull = document.getElementById('card-full').value.replace(/\D/g,'');
+  const body = {
+    buyer_name: document.getElementById('buyer-name').value.trim(),
+    phone: document.getElementById('phone').value.trim(),
+    email: document.getElementById('email').value.trim() || null,
+    id_number: document.getElementById('id-number').value.trim(),
+    amount_ils: config.amount,
+    installments: parseInt(document.getElementById('installments').value, 10),
+    product_type: product,
+    product_reference: refCode || null,
+    card_last4: cardFull.slice(-4),
+    card_brand: detectBrand(cardFull),
+    card_holder_name: document.getElementById('card-holder').value.trim(),
+    cvv_verified: !!document.getElementById('card-cvv').value,
+    broker_id: brokerId ? parseInt(brokerId, 10) : null
+  };
+
+  try {
+    const r = await fetch(`${API}/api/payment/credit-card/submit`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(body)
+    });
+    const d = await r.json();
+    if(r.ok){
+      alertEl.className = 'alert success';
+      alertEl.innerHTML = `✅ <strong>התשלום נקלט (ID: ${d.payment_id}).</strong><br>תקבל אישור תוך 24 שעות במייל/SMS.<br>תודה על האמון!`;
+      btn.innerHTML = '✅ נשלח בהצלחה';
+    } else {
+      throw new Error(d.detail || 'Payment failed');
+    }
+  } catch(err){
+    alertEl.className = 'alert error';
+    alertEl.innerHTML = `❌ שגיאה: ${err.message}`;
+    btn.disabled = false;
+    btn.innerHTML = `<i class="fas fa-lock"></i> אשר תשלום ₪${config.amount}`;
+  }
+}
+
+// Track click
+try {
+  fetch(`${API}/api/campaign/click`, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({campaign_id: 'card_payment_' + product, path_type: 'card_page', lang: 'he', ref_code: refCode})
+  }).catch(()=>{});
+} catch(e){}
+</script>
+<script src="/js/ai-assistant.js"></script>
+</body>
+</html>

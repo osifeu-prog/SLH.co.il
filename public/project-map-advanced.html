@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🗺️ Project Map — SLH Spark Live Dashboard</title>
+    <link rel="stylesheet" href="/css/shared.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.0.0/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        body[data-theme="light"] {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #00d4ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.8;
+            margin-bottom: 15px;
+        }
+
+        .timestamp {
+            font-size: 0.9em;
+            opacity: 0.6;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Main Metrics Grid */
+        .metrics-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .metric-card:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(0, 212, 255, 0.8);
+            transform: translateY(-5px);
+        }
+
+        .metric-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #00d4ff;
+        }
+
+        .metric-label {
+            font-size: 0.95em;
+            opacity: 0.7;
+            margin-bottom: 15px;
+        }
+
+        .metric-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .metric-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4ff, #00ff88);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        /* Charts Section */
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .chart-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .chart-card h3 {
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            color: #00d4ff;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+        }
+
+        /* Status Board */
+        .status-board {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+        }
+
+        .status-board h2 {
+            margin-bottom: 25px;
+            color: #00d4ff;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .status-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid;
+            transition: all 0.3s ease;
+        }
+
+        .status-item.complete {
+            border-left-color: #00ff88;
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        .status-item.in-progress {
+            border-left-color: #ffa500;
+            background: rgba(255, 165, 0, 0.05);
+        }
+
+        .status-item.pending {
+            border-left-color: #ff4444;
+            background: rgba(255, 68, 68, 0.05);
+        }
+
+        .status-item:hover {
+            transform: translateX(5px);
+        }
+
+        .status-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-icon {
+            font-size: 1.2em;
+        }
+
+        .status-desc {
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+
+        .status-progress {
+            margin-top: 10px;
+            font-size: 0.85em;
+            opacity: 0.6;
+        }
+
+        /* Timeline */
+        .timeline-container {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+        }
+
+        .timeline-container h2 {
+            margin-bottom: 25px;
+            color: #00d4ff;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, #00d4ff, #00ff88);
+        }
+
+        .timeline-item {
+            margin-bottom: 30px;
+            padding-right: 40px;
+            position: relative;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            right: -8px;
+            top: 5px;
+            width: 32px;
+            height: 32px;
+            background: #1a1a2e;
+            border: 3px solid #00d4ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+        }
+
+        .timeline-dot.completed {
+            background: #00ff88;
+            border-color: #00ff88;
+            color: #1a1a2e;
+        }
+
+        .timeline-date {
+            font-weight: bold;
+            color: #00d4ff;
+            margin-bottom: 5px;
+        }
+
+        .timeline-event {
+            font-size: 0.95em;
+            opacity: 0.8;
+        }
+
+        /* Achievement List */
+        .achievements-container {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+        }
+
+        .achievements-container h2 {
+            margin-bottom: 25px;
+            color: #00d4ff;
+        }
+
+        .achievement-section {
+            margin-bottom: 25px;
+        }
+
+        .achievement-section h3 {
+            font-size: 1.1em;
+            color: #00ff88;
+            margin-bottom: 15px;
+            padding-left: 20px;
+            border-left: 3px solid #00ff88;
+        }
+
+        .achievement-list {
+            list-style: none;
+        }
+
+        .achievement-item {
+            padding: 12px 0;
+            padding-right: 20px;
+            opacity: 0.85;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .achievement-item::before {
+            content: '✓';
+            color: #00ff88;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: 2px solid #00d4ff;
+            background: rgba(0, 212, 255, 0.1);
+            color: #00d4ff;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .btn:hover {
+            background: #00d4ff;
+            color: #1a1a2e;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #00d4ff, #00ff88);
+            border: none;
+            color: #1a1a2e;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00d4ff;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .metrics-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline::before {
+                left: 0;
+            }
+
+            .timeline-dot {
+                right: auto;
+                left: -16px;
+            }
+
+            .timeline-item {
+                padding-right: 0;
+                padding-left: 50px;
+            }
+        }
+
+        /* Dark Mode Override */
+        [data-theme="light"] .metric-card,
+        [data-theme="light"] .chart-card,
+        [data-theme="light"] .status-board,
+        [data-theme="light"] .timeline-container,
+        [data-theme="light"] .achievements-container {
+            background: rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 212, 255, 0.2);
+        }
+
+        [data-theme="light"] .header {
+            background: rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🗺️ SLH Spark — Project Map Live Dashboard</h1>
+            <p>Real-time project status, achievements, and completion tracking</p>
+            <div class="timestamp">
+                Last Updated: <span id="lastUpdated">Loading...</span>
+                <span class="loading" id="updateIndicator"></span>
+            </div>
+        </div>
+
+        <!-- Main Metrics -->
+        <div class="metrics-container">
+            <div class="metric-card">
+                <div class="metric-number" id="totalPages">--</div>
+                <div class="metric-label">סה"כ דפים</div>
+                <div class="metric-bar">
+                    <div class="metric-bar-fill" style="width: 100%"></div>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-number" id="completeCount">--</div>
+                <div class="metric-label">✅ מלאים (5/5)</div>
+                <div class="metric-bar">
+                    <div class="metric-bar-fill" style="width: 4%"></div>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-number" id="inProgressCount">--</div>
+                <div class="metric-label">⚙️ בתהליך (3-4/5)</div>
+                <div class="metric-bar">
+                    <div class="metric-bar-fill" style="width: 30%"></div>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-number" id="needsWorkCount">--</div>
+                <div class="metric-label">📝 דורש עבודה</div>
+                <div class="metric-bar">
+                    <div class="metric-bar-fill" style="width: 66%"></div>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-number" id="averageScore">2.6</div>
+                <div class="metric-label">/5 ציון ממוצע</div>
+                <div class="metric-bar">
+                    <div class="metric-bar-fill" style="width: 52%"></div>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-number" id="completionPercent">36</div>
+                <div class="metric-label">% סיום כללי</div>
+                <div class="metric-bar">
+                    <div class="metric-bar-fill" style="width: 36%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-container">
+            <div class="chart-card">
+                <h3>📊 סטטוס דפים</h3>
+                <div class="chart-wrapper">
+                    <canvas id="pageStatusChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3>🎯 כיסוי תכונות</h3>
+                <div class="chart-wrapper">
+                    <canvas id="featureCoverageChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3>📈 התקדמות שבועית</h3>
+                <div class="chart-wrapper">
+                    <canvas id="progressChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3>⏱️ לוח זמנים</h3>
+                <div class="chart-wrapper">
+                    <canvas id="timelineChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Board -->
+        <div class="status-board">
+            <h2>📋 סטטוס מערכות</h2>
+            <div class="status-grid" id="statusGrid">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="timeline-container">
+            <h2>📅 ציר הזמן</h2>
+            <div class="timeline" id="timeline">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Achievements -->
+        <div class="achievements-container">
+            <h2>🏆 הישגים</h2>
+            <div id="achievements">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="button-group">
+            <button class="btn btn-primary" onclick="refreshData()">🔄 עדכון עכשיו</button>
+            <button class="btn" onclick="downloadReport()">📥 הורד דוח</button>
+            <button class="btn" onclick="shareStatus()">📤 שתף</button>
+            <button class="btn" onclick="navigateToAdmin()">⚙️ ניהול משימות</button>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <script src="/js/shared.js"></script>
+    <script src="/js/analytics.js"></script>
+    <script src="/js/ai-assistant.js"></script>
+
+    <script>
+        // Live Data Management
+        const ProjectMap = {
+            data: {
+                totalPages: 50,
+                metrics: {
+                    complete: 2,
+                    inProgress: 15,
+                    needsWork: 33,
+                    averageScore: 2.6,
+                    completion: 36
+                },
+                features: {
+                    theme: 20,
+                    i18n: 56,
+                    analytics: 100,
+                    ai: 0
+                },
+                systems: [
+                    { name: 'NIFTII Bot', status: 'online', emoji: '🤖' },
+                    { name: 'Guardian Bot', status: 'online', emoji: '🛡️' },
+                    { name: 'PostgreSQL', status: 'healthy', emoji: '🗄️' },
+                    { name: 'Redis', status: 'healthy', emoji: '⚡' },
+                    { name: 'Railway API', status: 'running', emoji: '🚀' },
+                    { name: 'Broadcast', status: 'scheduled', emoji: '📢' }
+                ],
+                timeline: [
+                    { date: 'Apr 18', event: '✅ Core systems live', status: 'completed', progress: 36 },
+                    { date: 'Apr 24', event: '⚙️ Website pages 50%', status: 'in-progress', progress: 45 },
+                    { date: 'May 15', event: '📊 Full feature coverage', status: 'pending', progress: 60 },
+                    { date: 'Jun 30', event: '🚀 Launch ready', status: 'pending', progress: 95 }
+                ],
+                achievements: {
+                    'Bots & Systems': [
+                        'NIFTII Bot marketplace live',
+                        'Guardian Bot anti-fraud active',
+                        'Broadcast automation ready',
+                        '25 bots deployed'
+                    ],
+                    'Infrastructure': [
+                        'PostgreSQL + Redis healthy',
+                        '113 API endpoints',
+                        '8 registered users',
+                        'Audit log active'
+                    ],
+                    'Hardware (ESP32)': [
+                        'WiFi selector complete',
+                        'Backlight control fixed',
+                        'Baud rate optimized',
+                        'Ready for deployment'
+                    ]
+                }
+            },
+
+            init() {
+                this.renderMetrics();
+                this.renderCharts();
+                this.renderStatus();
+                this.renderTimeline();
+                this.renderAchievements();
+                this.updateTimestamp();
+                this.setupAutoRefresh();
+            },
+
+            renderMetrics() {
+                document.getElementById('totalPages').textContent = this.data.totalPages;
+                document.getElementById('completeCount').textContent = this.data.metrics.complete;
+                document.getElementById('inProgressCount').textContent = this.data.metrics.inProgress;
+                document.getElementById('needsWorkCount').textContent = this.data.metrics.needsWork;
+                document.getElementById('averageScore').textContent = this.data.metrics.averageScore;
+                document.getElementById('completionPercent').textContent = this.data.metrics.completion;
+            },
+
+            renderCharts() {
+                // Page Status Chart
+                const ctxPageStatus = document.getElementById('pageStatusChart').getContext('2d');
+                new Chart(ctxPageStatus, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['✅ מלאים', '⚙️ בתהליך', '📝 דורש עבודה'],
+                        datasets: [{
+                            data: [
+                                this.data.metrics.complete,
+                                this.data.metrics.inProgress,
+                                this.data.metrics.needsWork
+                            ],
+                            backgroundColor: ['#00ff88', '#ffa500', '#ff4444'],
+                            borderColor: 'rgba(255,255,255,0.1)',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: { color: '#fff', font: { size: 12 } }
+                            }
+                        }
+                    }
+                });
+
+                // Feature Coverage Chart
+                const ctxFeatures = document.getElementById('featureCoverageChart').getContext('2d');
+                new Chart(ctxFeatures, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Theme', 'i18n', 'Analytics', 'AI'],
+                        datasets: [{
+                            label: '% Coverage',
+                            data: [
+                                this.data.features.theme,
+                                this.data.features.i18n,
+                                this.data.features.analytics,
+                                this.data.features.ai
+                            ],
+                            backgroundColor: ['#00d4ff', '#00ff88', '#ffa500', '#ff4444'],
+                            borderRadius: 5
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            x: {
+                                max: 100,
+                                ticks: { color: '#fff' },
+                                grid: { color: 'rgba(255,255,255,0.1)' }
+                            },
+                            y: {
+                                ticks: { color: '#fff' }
+                            }
+                        }
+                    }
+                });
+
+                // Progress Chart
+                const ctxProgress = document.getElementById('progressChart').getContext('2d');
+                new Chart(ctxProgress, {
+                    type: 'line',
+                    data: {
+                        labels: ['Apr 18', 'Apr 24', 'May 15', 'Jun 30'],
+                        datasets: [{
+                            label: 'Completion %',
+                            data: [36, 45, 60, 95],
+                            borderColor: '#00d4ff',
+                            backgroundColor: 'rgba(0, 212, 255, 0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: '#00ff88',
+                            pointBorderColor: '#fff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { labels: { color: '#fff' } } },
+                        scales: {
+                            y: {
+                                max: 100,
+                                ticks: { color: '#fff' },
+                                grid: { color: 'rgba(255,255,255,0.1)' }
+                            },
+                            x: {
+                                ticks: { color: '#fff' }
+                            }
+                        }
+                    }
+                });
+
+                // Timeline Chart
+                const ctxTimeline = document.getElementById('timelineChart').getContext('2d');
+                new Chart(ctxTimeline, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Completed', 'In Progress', 'Planned'],
+                        datasets: [{
+                            label: 'Milestones',
+                            data: [1, 1, 2],
+                            backgroundColor: ['#00ff88', '#ffa500', '#00d4ff']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { labels: { color: '#fff' } } },
+                        scales: {
+                            y: {
+                                ticks: { color: '#fff' },
+                                grid: { color: 'rgba(255,255,255,0.1)' }
+                            },
+                            x: {
+                                ticks: { color: '#fff' }
+                            }
+                        }
+                    }
+                });
+            },
+
+            renderStatus() {
+                const grid = document.getElementById('statusGrid');
+                grid.innerHTML = this.data.systems.map(system => {
+                    const statusClass = system.status === 'online' || system.status === 'healthy' ? 'complete' :
+                                       system.status === 'in-progress' ? 'in-progress' : 'pending';
+                    const statusText = {
+                        'online': '🟢 Online',
+                        'healthy': '🟢 Healthy',
+                        'running': '🟢 Running',
+                        'scheduled': '🟡 Scheduled',
+                        'in-progress': '🟡 In Progress'
+                    }[system.status] || system.status;
+
+                    return `
+                        <div class="status-item ${statusClass}">
+                            <div class="status-title">
+                                <span class="status-icon">${system.emoji}</span>
+                                ${system.name}
+                            </div>
+                            <div class="status-desc">${statusText}</div>
+                        </div>
+                    `;
+                }).join('');
+            },
+
+            renderTimeline() {
+                const timeline = document.getElementById('timeline');
+                timeline.innerHTML = this.data.timeline.map(item => `
+                    <div class="timeline-item">
+                        <div class="timeline-dot ${item.status === 'completed' ? 'completed' : ''}">
+                            ${item.status === 'completed' ? '✓' : '◯'}
+                        </div>
+                        <div class="timeline-date">${item.date}</div>
+                        <div class="timeline-event">${item.event}</div>
+                        <div class="status-progress">${item.progress}% Complete</div>
+                    </div>
+                `).join('');
+            },
+
+            renderAchievements() {
+                const container = document.getElementById('achievements');
+                container.innerHTML = Object.entries(this.data.achievements).map(([section, items]) => `
+                    <div class="achievement-section">
+                        <h3>${section}</h3>
+                        <ul class="achievement-list">
+                            ${items.map(item => `
+                                <li class="achievement-item">${item}</li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                `).join('');
+            },
+
+            updateTimestamp() {
+                const now = new Date();
+                document.getElementById('lastUpdated').textContent = now.toLocaleString('he-IL');
+            },
+
+            setupAutoRefresh() {
+                setInterval(() => {
+                    this.updateTimestamp();
+                    // Fetch live data from API
+                    this.fetchLiveData();
+                }, 30000); // Refresh every 30 seconds
+            },
+
+            async fetchLiveData() {
+                try {
+                    // In production, fetch from your API
+                    // const response = await axios.get('/api/project-status');
+                    // this.data = response.data;
+                    // this.renderAll();
+                } catch (error) {
+                    console.error('Failed to fetch live data:', error);
+                }
+            }
+        };
+
+        // Action Functions
+        function refreshData() {
+            ProjectMap.fetchLiveData();
+            ProjectMap.updateTimestamp();
+            alert('✓ נתונים עודכנו!');
+        }
+
+        function downloadReport() {
+            const report = `SLH Spark Project Status Report
+Date: ${new Date().toLocaleString('he-IL')}
+
+Metrics:
+- Total Pages: ${ProjectMap.data.totalPages}
+- Complete: ${ProjectMap.data.metrics.complete}
+- In Progress: ${ProjectMap.data.metrics.inProgress}
+- Average Score: ${ProjectMap.data.metrics.averageScore}/5
+- Completion: ${ProjectMap.data.metrics.completion}%
+
+Feature Coverage:
+- Theme: ${ProjectMap.data.features.theme}%
+- i18n: ${ProjectMap.data.features.i18n}%
+- Analytics: ${ProjectMap.data.features.analytics}%
+- AI: ${ProjectMap.data.features.ai}%`;
+
+            const blob = new Blob([report], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'project-status.txt';
+            a.click();
+        }
+
+        function shareStatus() {
+            const text = `🗺️ SLH Spark Project Status
+${ProjectMap.data.metrics.completion}% Complete
+Score: ${ProjectMap.data.metrics.averageScore}/5
+Updated: ${new Date().toLocaleString('he-IL')}`;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: 'SLH Project Status',
+                    text: text
+                });
+            } else {
+                alert(text);
+            }
+        }
+
+        function navigateToAdmin() {
+            window.location.href = '/admin.html';
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            ProjectMap.init();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,212 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🔴 LIVE עכשיו · SLH Spark · הצטרף לקהילה</title>
+<meta name="description" content="SLH Spark LIVE — ראה את המערכת בפעולה. 6 טוקנים, 225+ endpoints, קבלות דיגיטליות בזמן אמת, קהילה שצומחת. הצטרף עכשיו ב-3 דקות.">
+<meta name="keywords" content="SLH Live, קריפטו ישראל, Spark live, השקעה, קהילה">
+<link rel="canonical" href="https://slh-nft.com/live.html">
+<meta property="og:title" content="🔴 LIVE עכשיו · SLH Spark">
+<meta property="og:description" content="מערכת ההשקעות הישראלית בלייב. הצטרף ב-3 דקות.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://slh-nft.com/live.html">
+<meta property="og:image" content="https://slh-nft.com/assets/og/live.png">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/slh-design-system.css">
+<meta name="slh-version" content="v1.0-flip">
+<script defer src="/js/slh-flip.js?v=20260426e"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Rubik',system-ui,sans-serif;background:#05080f;color:#f5f5f8;min-height:100vh;overflow-x:hidden}
+.pulse-bg{position:fixed;inset:0;z-index:-1;background:
+  radial-gradient(800px 500px at 50% 0%, rgba(255,0,85,.12), transparent 60%),
+  radial-gradient(600px 400px at 100% 50%, rgba(168,85,247,.08), transparent 60%),
+  radial-gradient(600px 400px at 0% 50%, rgba(0,229,255,.06), transparent 60%)}
+
+.wrap{max-width:1100px;margin:0 auto;padding:20px 16px 60px;position:relative}
+
+.hero{text-align:center;padding:60px 20px}
+.live-badge{display:inline-flex;align-items:center;gap:10px;padding:10px 20px;background:rgba(255,0,85,.12);border:2px solid rgba(255,0,85,.5);border-radius:50px;font-size:14px;font-weight:900;color:#ff0055;text-transform:uppercase;letter-spacing:2px;animation:live-pulse 1.5s infinite}
+.live-badge .dot{width:12px;height:12px;background:#ff0055;border-radius:50%;box-shadow:0 0 10px #ff0055}
+@keyframes live-pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,0,85,.5)}50%{box-shadow:0 0 0 12px rgba(255,0,85,0)}}
+
+h1{font-size:clamp(36px,6vw,72px);font-weight:900;line-height:1.1;margin:20px 0;background:linear-gradient(135deg,#00ff41,#00e5ff,#a855f7,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.tagline{font-size:20px;color:#9ba0b5;max-width:650px;margin:0 auto 30px}
+
+.cta-primary{display:inline-block;padding:18px 40px;background:linear-gradient(135deg,#00ff41,#00e5ff);color:#000;border:none;border-radius:50px;font-size:18px;font-weight:900;cursor:pointer;text-decoration:none;transition:.2s;margin:8px}
+.cta-primary:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,255,65,.3)}
+.cta-secondary{display:inline-block;padding:18px 40px;background:transparent;color:#00e5ff;border:2px solid #00e5ff;border-radius:50px;font-size:18px;font-weight:700;cursor:pointer;text-decoration:none;margin:8px}
+
+.stats-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin:40px auto;max-width:900px}
+.stat{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:20px;text-align:center}
+.stat .num{font-size:32px;font-weight:900;color:#00e5ff;font-family:'JetBrains Mono',monospace}
+.stat .lbl{font-size:11px;color:#9ba0b5;text-transform:uppercase;letter-spacing:1.5px;margin-top:4px}
+
+.benefits{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;margin:40px 0}
+.benefit{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:24px}
+.benefit .icon{font-size:32px;margin-bottom:10px}
+.benefit h3{color:#00ff41;margin-bottom:8px;font-size:18px}
+.benefit p{color:#9ba0b5;font-size:14px;line-height:1.6}
+
+.urgent{background:rgba(255,215,0,.08);border:2px solid rgba(255,215,0,.4);border-radius:14px;padding:24px;margin:30px 0;text-align:center}
+.urgent h2{color:#ffd700;font-size:22px;margin-bottom:10px}
+.urgent p{color:#f5f5f8;font-size:15px}
+.urgent .count{font-size:48px;font-weight:900;color:#ffd700;font-family:'JetBrains Mono',monospace;margin:10px 0}
+
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:30px 0}
+.step{background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.2);border-radius:14px;padding:20px;text-align:center;position:relative}
+.step-num{position:absolute;top:-14px;right:14px;width:28px;height:28px;background:#00e5ff;color:#000;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px}
+.step h3{color:#fff;margin-bottom:6px;font-size:16px}
+.step p{color:#9ba0b5;font-size:13px}
+
+.fb-note{background:rgba(24,119,242,.08);border:1px solid rgba(24,119,242,.3);border-radius:14px;padding:20px;margin:30px 0;text-align:center}
+.fb-note p{color:#9ba0b5;font-size:14px}
+.fb-note strong{color:#1877f2}
+
+.foot{text-align:center;margin-top:60px;color:#5a6078;font-size:13px;padding-top:30px;border-top:1px solid rgba(255,255,255,.08)}
+.foot a{color:#00e5ff;margin:0 8px}
+</style>
+</head>
+<body>
+<div class="pulse-bg"></div>
+
+<div class="wrap">
+
+<section class="hero">
+  <div class="live-badge"><span class="dot"></span> LIVE עכשיו</div>
+  <h1 data-scramble="SLH Spark System">SLH Spark System</h1>
+  <p class="tagline">מערכת השקעות ישראלית בקריפטו · 6 טוקנים · 225+ endpoints · קהילה של ערכים · ללא אלגוריתם רעיל</p>
+  <div style="margin-top:20px">
+    <a href="/getting-started.html?ref=fb-live&from=facebook" class="cta-primary">🚀 הצטרף עכשיו · 3 דקות</a>
+    <a href="/tour.html?ref=fb-live&from=facebook" class="cta-secondary">🎬 סיור באתר (8 תחנות)</a>
+  </div>
+</section>
+
+<section class="stats-strip">
+  <div class="stat"><div class="num" id="users">—</div><div class="lbl">משתמשים</div></div>
+  <div class="stat"><div class="num" id="endpoints">225+</div><div class="lbl">Endpoints</div></div>
+  <div class="stat"><div class="num" id="tokens">6</div><div class="lbl">טוקנים</div></div>
+  <div class="stat"><div class="num" id="bots">25</div><div class="lbl">בוטים</div></div>
+</section>
+
+<section class="urgent">
+  <h2>🎁 4 המצטרפים הראשונים מהלייב</h2>
+  <p>מקבלים:</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-top:14px">
+    <div><strong style="color:#ffd700">10 AIC</strong><br><span style="font-size:12px;color:#9ba0b5">Welcome gift</span></div>
+    <div><strong style="color:#00ff41">0.1 SLH</strong><br><span style="font-size:12px;color:#9ba0b5">הרשמה בונוס</span></div>
+    <div><strong style="color:#00e5ff">Verified tag</strong><br><span style="font-size:12px;color:#9ba0b5">Early adopter</span></div>
+    <div><strong style="color:#a855f7">REP +50</strong><br><span style="font-size:12px;color:#9ba0b5">Founder member</span></div>
+  </div>
+</section>
+
+<section class="benefits">
+  <div class="benefit">
+    <div class="icon">🧾</div>
+    <h3>קבלה דיגיטלית</h3>
+    <p>כל תשלום מקבל קבלה אוטומטית שנשמרת לנצח ב-DB. פתח /receipts.html עם ה-TG ID שלך כדי לראות.</p>
+  </div>
+  <div class="benefit">
+    <div class="icon">🎓</div>
+    <h3>Verified Experts</h3>
+    <p>30 תחומים, אימות אמיתי (LinkedIn/Portfolio/YouTube), לא אלגוריתם פופולריות. אתה מומחה? שלח בקשה.</p>
+  </div>
+  <div class="benefit">
+    <div class="icon">🧩</div>
+    <h3>Sudoku + AIC</h3>
+    <p>פתרון יומי = 2-10 AIC. אין אויבים, אין RNG, רק מתמטיקה נקייה. ~200 AIC בחודש ממוצע.</p>
+  </div>
+  <div class="benefit">
+    <div class="icon">💝</div>
+    <h3>Dating Bot</h3>
+    <p>@G4meb0t_bot_bot — Interest-overlap matching, לא תמונות. 18+ גייט קפוד. עברית ראשית.</p>
+  </div>
+  <div class="benefit">
+    <div class="icon">🏦</div>
+    <h3>Treasury Transparency</h3>
+    <p>כל עסקה, burn, ו-buyback מתועדים ב-/api/treasury. שקיפות טוטאלית — כל אחד יכול לראות.</p>
+  </div>
+  <div class="benefit">
+    <div class="icon">🚪</div>
+    <h3>ללא פייסבוק</h3>
+    <p>אנחנו לא משתמשים ב-algoritm engagement. טלגרם, RSS, broadcast ל-5 רשתות. הקצב שלך מנהל אותך.</p>
+  </div>
+</section>
+
+<section>
+  <h2 style="text-align:center;color:#00ff41;margin:30px 0 20px">איך מצטרפים ב-3 דקות?</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h3>הרשמה</h3>
+      <p>מלא שם + אימייל ב-<a href="/getting-started.html?ref=fb-live">getting-started</a>. תקבל 5 AIC welcome.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h3>טלגרם</h3>
+      <p>הצטרף ל-<a href="https://t.me/slhniffty">@slhniffty</a> + פתח את <a href="https://t.me/G4meb0t_bot_bot?start=224223270">@G4meb0t_bot_bot</a></p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h3>תרומה</h3>
+      <p>פוסט ראשון ב-<a href="/community.html">community</a>, סודוקו יומי, או Bug report — כולם מזכים.</p>
+    </div>
+  </div>
+</section>
+
+<div class="fb-note">
+  <p><strong>📺 הגעת מפייסבוק לייב?</strong> כתוב "הגעתי מהלייב" בהודעה הראשונה שלך ל-<a href="https://t.me/osifeu_prog">@osifeu_prog</a> ואוסיף ייתן לך את הבונוס הכפול.</p>
+</div>
+
+<div style="text-align:center;margin:40px 0">
+  <a href="/getting-started.html?ref=fb-live&from=facebook" class="cta-primary">🚀 בוא נתחיל</a>
+</div>
+
+<div class="foot">
+  <p>הגעת דרך לייב פייסבוק · <span data-scramble="SLH Spark System v0.9-alpha"></span></p>
+  <p style="margin-top:10px">
+    <a href="/">Home</a> ·
+    <a href="/about.html">אודות</a> ·
+    <a href="/whitepaper.html">Whitepaper</a> ·
+    <a href="/pay.html">תשלום</a> ·
+    <a href="/experts.html">מומחים</a> ·
+    <a href="/dating.html">דייטינג</a>
+  </p>
+  <p style="margin-top:10px;opacity:.6">© 2026 SLH Spark · slh-nft.com · בהנהלת Osif Kaufman Ungar</p>
+</div>
+
+</div>
+
+<script>
+// Fetch live stats
+(async () => {
+  try {
+    const r = await fetch('https://slh-api-production.up.railway.app/api/stats');
+    const d = await r.json();
+    if (d.users_count) document.getElementById('users').textContent = d.users_count;
+  } catch (e) {}
+})();
+
+// Persist referral source in localStorage + analytics
+(() => {
+  const params = new URLSearchParams(location.search);
+  if (params.get('ref')) {
+    localStorage.setItem('slh_referral_source', params.get('ref'));
+    localStorage.setItem('slh_referral_at', new Date().toISOString());
+  }
+  if (params.get('from')) localStorage.setItem('slh_utm_source', params.get('from'));
+  // Fire-and-forget analytics beacon
+  try {
+    fetch('https://slh-api-production.up.railway.app/api/analytics/event', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ event: 'live_page_view', source: params.get('from') || 'direct', ref: params.get('ref') || '' })
+    }).catch(() => {});
+  } catch(e) {}
+})();
+</script>
+
+</body>
+</html>

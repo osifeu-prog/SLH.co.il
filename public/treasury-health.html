@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLH Treasury Health — שקיפות פיננסית</title>
+    <meta name="description" content="Single Truth Test: R / P / W / Buffer בזמן אמת למערכת SLH Spark">
+    <link rel="icon" type="image/png" href="/favicon-32.png">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0e16; --bg2: #111628; --bg3: #1a2038;
+            --accent: #00b4d8; --accent2: #90e0ef;
+            --green: #10b981; --yellow: #f59e0b; --red: #ef4444; --blue: #3b82f6;
+            --text: #e8e8f0; --text2: #8a8aa0; --text-bright: #ffffff;
+            --card: rgba(0, 180, 216, .04);
+            --border: rgba(0, 180, 216, .2);
+            --font: 'Inter', system-ui, sans-serif;
+            --mono: 'Space Mono', 'Courier New', monospace;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 24px;
+            line-height: 1.6;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header {
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 24px;
+            margin-bottom: 32px;
+        }
+        h1 { font-size: 28px; color: var(--text-bright); margin-bottom: 8px; }
+        .subtitle { color: var(--text2); font-size: 14px; }
+        .subtitle code { font-family: var(--mono); color: var(--accent2); }
+
+        .status-banner {
+            margin: 24px 0;
+            padding: 20px 24px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 16px;
+        }
+        .status-banner.green { background: rgba(16, 185, 129, .1); border: 1px solid var(--green); }
+        .status-banner.yellow { background: rgba(245, 158, 11, .1); border: 1px solid var(--yellow); }
+        .status-banner.red { background: rgba(239, 68, 68, .1); border: 1px solid var(--red); }
+        .status-banner.blue { background: rgba(59, 130, 246, .1); border: 1px solid var(--blue); }
+        .status-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+        .status-dot.green { background: var(--green); box-shadow: 0 0 12px var(--green); }
+        .status-dot.yellow { background: var(--yellow); box-shadow: 0 0 12px var(--yellow); }
+        .status-dot.red { background: var(--red); box-shadow: 0 0 12px var(--red); }
+        .status-dot.blue { background: var(--blue); box-shadow: 0 0 12px var(--blue); }
+        .status-label { font-size: 18px; font-weight: 600; color: var(--text-bright); }
+        .status-meta { color: var(--text2); font-size: 13px; margin-right: auto; font-family: var(--mono); }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .card h2 {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text2);
+            margin-bottom: 8px;
+            font-family: var(--mono);
+        }
+        .card .big {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-bright);
+            font-family: var(--mono);
+            margin-bottom: 4px;
+        }
+        .card .label { font-size: 12px; color: var(--text2); margin-bottom: 16px; }
+        .card .breakdown { font-size: 13px; color: var(--text); }
+        .card .breakdown .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px dashed var(--border);
+        }
+        .card .breakdown .row:last-child { border-bottom: none; }
+        .card .breakdown .val { font-family: var(--mono); color: var(--accent2); }
+
+        .section { margin-top: 32px; }
+        .section h3 { font-size: 18px; color: var(--text-bright); margin-bottom: 12px; }
+        .section .desc { color: var(--text2); font-size: 13px; margin-bottom: 12px; }
+
+        .rates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 8px;
+            font-size: 12px;
+            font-family: var(--mono);
+        }
+        .rates-grid .rate {
+            background: var(--bg3);
+            padding: 8px 12px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .rates-grid .rate .t { color: var(--text2); }
+        .rates-grid .rate .v { color: var(--accent2); }
+
+        /* Breakeven bars */
+        .be-row { margin-bottom: 14px; }
+        .be-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+        .be-label .be-pct { font-family: var(--mono); color: var(--accent2); font-weight: 600; }
+        .be-bar {
+            width: 100%;
+            height: 10px;
+            background: var(--bg3);
+            border-radius: 5px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        .be-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 5px;
+            transition: width .6s ease-out;
+        }
+        .be-fill.green { background: linear-gradient(90deg, var(--green), #34d399); }
+        .be-fill.yellow { background: linear-gradient(90deg, var(--yellow), #fbbf24); }
+        .be-fill.blue { background: linear-gradient(90deg, var(--blue), #60a5fa); }
+        .be-gap { font-size: 11px; color: var(--text2); font-family: var(--mono); margin-top: 3px; }
+        .be-next {
+            margin-top: 14px;
+            padding: 10px 14px;
+            background: var(--bg3);
+            border-right: 3px solid var(--accent);
+            border-radius: 4px;
+            font-size: 13px;
+            color: var(--text);
+        }
+        .be-next strong { color: var(--accent2); font-family: var(--mono); }
+
+        .notes {
+            background: var(--bg2);
+            border-right: 3px solid var(--accent);
+            padding: 16px 20px;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+        .notes ul { padding-right: 20px; }
+        .notes li { margin: 6px 0; color: var(--text); }
+
+        .footer {
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            color: var(--text2);
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .footer a { color: var(--accent2); text-decoration: none; }
+        .footer a:hover { color: var(--accent); }
+        .refresh-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+            margin-left: 6px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: .3; }
+            50% { opacity: 1; }
+        }
+        .error {
+            background: rgba(239, 68, 68, .1);
+            border: 1px solid var(--red);
+            padding: 16px;
+            border-radius: 8px;
+            color: var(--red);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SLH Treasury Health <span class="refresh-indicator"></span></h1>
+            <div class="subtitle">
+                Single Truth Test — שקיפות בזמן אמת.
+                המשוואה: <code>R (הכנסות) ≥ P (התחייבות מותנית) + W (תזרים יוצא)</code>
+            </div>
+        </header>
+
+        <div id="status-banner" class="status-banner blue">
+            <div class="status-dot blue"></div>
+            <div class="status-label">טוען...</div>
+            <div class="status-meta" id="status-meta"></div>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h2>R · הכנסות (ILS)</h2>
+                <div class="big" id="R-today">—</div>
+                <div class="label">היום</div>
+                <div class="breakdown">
+                    <div class="row"><span>7 ימים</span><span class="val" id="R-7d">—</span></div>
+                    <div class="row"><span>30 ימים</span><span class="val" id="R-30d">—</span></div>
+                    <div class="row"><span>מתחילת הדרך</span><span class="val" id="R-life">—</span></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>P · התחייבות מותנית (ILS)</h2>
+                <div class="big" id="P-total">—</div>
+                <div class="label">סה״כ מחויב</div>
+                <div class="breakdown">
+                    <div class="row"><span>ZVK פעיל ביחידות</span><span class="val" id="zvk-units">—</span></div>
+                    <div class="row"><span>ZVK שווי ב-ILS</span><span class="val" id="zvk-ils">—</span></div>
+                    <div class="row"><span>Buyback עתידי</span><span class="val" id="buyback-upcoming">—</span></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>W · תזרים יוצא שבוצע</h2>
+                <div class="big" id="W-total">—</div>
+                <div class="label">ILS (buybacks + burns)</div>
+                <div class="breakdown">
+                    <div class="row"><span>Buybacks בוצעו</span><span class="val" id="buyback-exec">—</span></div>
+                    <div class="row"><span>SLH נרכש</span><span class="val" id="slh-bought">—</span></div>
+                    <div class="row"><span>Burns (שווי ILS)</span><span class="val" id="burns-ils">—</span></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Buffer · כרית נזילות</h2>
+                <div class="big" id="buffer-total">—</div>
+                <div class="label">ILS (reserve + treasury float)</div>
+                <div class="breakdown">
+                    <div class="row"><span>AIC Reserve (USD)</span><span class="val" id="reserve-usd">—</span></div>
+                    <div class="row"><span>Net Treasury ILS</span><span class="val" id="net-treasury">—</span></div>
+                    <div class="row"><span>יחס כיסוי (Buffer/P)</span><span class="val" id="coverage">—</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>Break-Even — כמה רחוק מהיעדים</h3>
+            <div class="desc">המודל לקוח מ-<code>ops/LEVEL_5_SLH_BREAKEVEN_MODEL.md</code>. השוואה לפי R ב-30 הימים האחרונים.</div>
+            <div id="breakeven-wrap">
+                <div class="be-row" id="be-survival">
+                    <div class="be-label"><span>Survival — 1,000 ILS/mo</span><span class="be-pct">—</span></div>
+                    <div class="be-bar"><div class="be-fill green"></div></div>
+                    <div class="be-gap">—</div>
+                </div>
+                <div class="be-row" id="be-sustainable">
+                    <div class="be-label"><span>Sustainable — 5,000 ILS/mo</span><span class="be-pct">—</span></div>
+                    <div class="be-bar"><div class="be-fill yellow"></div></div>
+                    <div class="be-gap">—</div>
+                </div>
+                <div class="be-row" id="be-thriving">
+                    <div class="be-label"><span>Thriving — 20,000 ILS/mo</span><span class="be-pct">—</span></div>
+                    <div class="be-bar"><div class="be-fill blue"></div></div>
+                    <div class="be-gap">—</div>
+                </div>
+                <div class="be-next" id="be-next">—</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>שערי המרה משומשים (לשקיפות)</h3>
+            <div class="desc">הנתונים מחושבים על שערים קבועים. ניתן לעדכן דרך משתני-סביבה ב-Railway.</div>
+            <div class="rates-grid" id="rates-grid"></div>
+        </div>
+
+        <div class="section">
+            <h3>הערות</h3>
+            <div class="notes"><ul id="notes-list"></ul></div>
+        </div>
+
+        <div class="footer">
+            <div>
+                Endpoint: <a href="https://slh-api-production.up.railway.app/api/treasury/health" target="_blank">/api/treasury/health</a>
+                · עדכון אוטומטי כל 30 שניות
+            </div>
+            <div>
+                <a href="/admin.html">ניהול →</a> ·
+                <a href="/">חזרה לבית</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function () {
+        const API = (window.SLH_API_BASE || 'https://slh-api-production.up.railway.app');
+        const fmt = (n, digits = 2) => {
+            if (n === null || n === undefined) return '—';
+            const v = Number(n);
+            if (!isFinite(v)) return '—';
+            return v.toLocaleString('he-IL', { minimumFractionDigits: digits, maximumFractionDigits: digits });
+        };
+        const fmt0 = (n) => fmt(n, 0);
+
+        function setStatus(s) {
+            const banner = document.getElementById('status-banner');
+            const dot = banner.querySelector('.status-dot');
+            const label = banner.querySelector('.status-label');
+            banner.className = 'status-banner ' + (s.color || 'blue');
+            dot.className = 'status-dot ' + (s.color || 'blue');
+            const codeMap = {
+                pre_revenue: 'מצב טרום-הכנסות · המערכת לא בסכנה, אבל R עדיין אפסי',
+                healthy: 'בריא · Buffer ≥ 20% מהתחייבות',
+                caution: 'זהירות · Buffer בין 10%-20%',
+                undercollateralized: 'חשיפה · Buffer מתחת ל-10% מהתחייבות — פעולה דרושה',
+            };
+            label.textContent = codeMap[s.code] || s.code;
+            const cov = s.coverage_ratio == null ? '—' : (s.coverage_ratio * 100).toFixed(1) + '%';
+            document.getElementById('status-meta').textContent = 'יחס כיסוי: ' + cov;
+        }
+
+        function render(data) {
+            setStatus(data.status || {});
+
+            // R
+            document.getElementById('R-today').textContent = fmt0(data.R_revenue.ils_today);
+            document.getElementById('R-7d').textContent = fmt0(data.R_revenue.ils_7d);
+            document.getElementById('R-30d').textContent = fmt0(data.R_revenue.ils_30d);
+            document.getElementById('R-life').textContent = fmt0(data.R_revenue.ils_lifetime);
+
+            // P
+            document.getElementById('P-total').textContent = fmt0(data.P_contingent_obligations.ils_total);
+            document.getElementById('zvk-units').textContent = fmt(data.P_contingent_obligations.zvk_outstanding_units, 2);
+            document.getElementById('zvk-ils').textContent = fmt0(data.P_contingent_obligations.zvk_contingent_ils);
+            document.getElementById('buyback-upcoming').textContent = fmt0(data.P_contingent_obligations.upcoming_slh_buyback_ils);
+
+            // W
+            document.getElementById('W-total').textContent = fmt0(data.W_outflows.ils_total);
+            document.getElementById('buyback-exec').textContent = fmt0(data.W_outflows.buybacks_executed_ils);
+            document.getElementById('slh-bought').textContent = fmt(data.W_outflows.buybacks_slh_bought, 4) + ' SLH';
+            document.getElementById('burns-ils').textContent = fmt0(data.W_outflows.burns_ils_equiv);
+
+            // Buffer
+            document.getElementById('buffer-total').textContent = fmt0(data.buffer.ils_total);
+            document.getElementById('reserve-usd').textContent = '$' + fmt(data.buffer.reserve_usd, 2);
+            document.getElementById('net-treasury').textContent = fmt0(data.buffer.net_treasury_ils);
+            const covPct = data.status.coverage_ratio == null ? '—' : (data.status.coverage_ratio * 100).toFixed(1) + '%';
+            document.getElementById('coverage').textContent = covPct;
+
+            // Breakeven (Level 5)
+            if (data.breakeven) {
+                const be = data.breakeven;
+                const setBar = (id, pct, gap) => {
+                    const row = document.getElementById(id);
+                    row.querySelector('.be-pct').textContent = (pct == null ? '—' : pct.toFixed(1) + '%');
+                    row.querySelector('.be-fill').style.width = Math.min(100, Math.max(0, pct || 0)) + '%';
+                    row.querySelector('.be-gap').textContent = (gap != null && gap > 0)
+                        ? 'פער ליעד: ' + fmt0(gap) + ' ILS'
+                        : (pct >= 100 ? 'הושג ✓' : '—');
+                };
+                const g = (target) => Math.max(0, (target || 0) - (be.current_r_ils_30d || 0));
+                setBar('be-survival',    be.progress_pct.survival,    g(be.targets_ils_per_mo.survival));
+                setBar('be-sustainable', be.progress_pct.sustainable, g(be.targets_ils_per_mo.sustainable));
+                setBar('be-thriving',    be.progress_pct.thriving,    g(be.targets_ils_per_mo.thriving));
+
+                const tierLabel = {
+                    survival:        'Survival (1,000 ILS/mo)',
+                    sustainable:     'Sustainable (5,000 ILS/mo)',
+                    thriving:        'Thriving (20,000 ILS/mo)',
+                    above_thriving:  'מעל Thriving — איזור הצמיחה',
+                }[be.next_milestone] || be.next_milestone;
+                const gapTxt = be.gap_to_next_ils > 0
+                    ? 'פער: <strong>' + fmt0(be.gap_to_next_ils) + ' ILS/חודש</strong>'
+                    : '<strong>הושג ✓</strong>';
+                document.getElementById('be-next').innerHTML =
+                    'יעד הבא: <strong>' + tierLabel + '</strong> · ' + gapTxt +
+                    ' · R_30d: <strong>' + fmt0(be.current_r_ils_30d) + ' ILS</strong>';
+            }
+
+            // Rates
+            const rg = document.getElementById('rates-grid');
+            rg.innerHTML = '';
+            Object.entries(data.rates_ils || {}).forEach(([k, v]) => {
+                const el = document.createElement('div');
+                el.className = 'rate';
+                el.innerHTML = '<span class="t">' + k + '</span><span class="v">' + fmt(v, 2) + ' ILS</span>';
+                rg.appendChild(el);
+            });
+
+            // Notes
+            const nl = document.getElementById('notes-list');
+            nl.innerHTML = '';
+            (data.notes || []).forEach(n => {
+                const li = document.createElement('li');
+                li.textContent = n;
+                nl.appendChild(li);
+            });
+        }
+
+        async function load() {
+            try {
+                const res = await fetch(API + '/api/treasury/health', { cache: 'no-store' });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const data = await res.json();
+                render(data);
+            } catch (e) {
+                const banner = document.getElementById('status-banner');
+                banner.className = 'status-banner red';
+                banner.querySelector('.status-dot').className = 'status-dot red';
+                banner.querySelector('.status-label').textContent = 'שגיאה בטעינה: ' + e.message;
+            }
+        }
+
+        load();
+        setInterval(load, 30000);
+    })();
+    </script>
+</body>
+</html>

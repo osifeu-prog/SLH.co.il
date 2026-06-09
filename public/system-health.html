@@ -1,0 +1,462 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Health â€” SLH Ecosystem Verification</title>
+<meta name="description" content="×‘×“×™×§×•×ª ×—×™×•×ª ×©×œ ×›×œ ×¨×›×™×‘×™ ×”×ž×¢×¨×›×ª â€” API, DB, CEX, Blockchain, Bots, Audit Log">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css?v=20260426e">
+<style>
+    :root {
+        --bg: #0a0e1a;
+        --bg2: #111628;
+        --bg3: #1a2038;
+        --green: #00e887;
+        --yellow: #ffd700;
+        --red: #ef4444;
+        --blue: #00b4d8;
+        --purple: #a855f7;
+        --text: #e8e8f0;
+        --text2: #8a8aa0;
+        --text3: #555a70;
+        --border: rgba(0, 180, 216, 0.2);
+    }
+    body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'Inter', system-ui, sans-serif;
+        line-height: 1.6;
+    }
+    .hero {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 60px 24px 30px;
+        text-align: center;
+    }
+    .hero h1 {
+        font-size: clamp(28px, 4vw, 44px);
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--blue), var(--green));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-bottom: 12px;
+    }
+    .hero p {
+        color: var(--text2);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .overall-status {
+        max-width: 1200px;
+        margin: 0 auto 30px;
+        padding: 20px 24px;
+    }
+    .status-badge {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: var(--bg2);
+        border: 2px solid var(--border);
+        border-radius: 16px;
+        padding: 20px 28px;
+    }
+    .status-badge.healthy { border-color: var(--green); }
+    .status-badge.degraded { border-color: var(--yellow); }
+    .status-badge.down { border-color: var(--red); }
+    .status-left .label {
+        font-size: 11px;
+        color: var(--text2);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+    .status-left .value {
+        font-size: 28px;
+        font-weight: 900;
+        margin-top: 4px;
+    }
+    .status-right {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+    .status-right .count {
+        text-align: center;
+    }
+    .status-right .count .n {
+        font-size: 24px;
+        font-weight: 900;
+    }
+    .status-right .count .lbl {
+        font-size: 10px;
+        color: var(--text2);
+        text-transform: uppercase;
+    }
+
+    .section {
+        max-width: 1200px;
+        margin: 0 auto 24px;
+        padding: 0 24px;
+    }
+    .section h2 {
+        font-size: 20px;
+        font-weight: 800;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .checks-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: 14px;
+    }
+    .check-card {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 18px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        position: relative;
+        overflow: hidden;
+    }
+    .check-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 3px;
+        height: 100%;
+        background: var(--text3);
+    }
+    .check-card.pass::before { background: var(--green); }
+    .check-card.warn::before { background: var(--yellow); }
+    .check-card.fail::before { background: var(--red); }
+    .check-card.loading::before { background: var(--blue); animation: pulse 1s infinite; }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+    }
+
+    .check-name {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text);
+    }
+    .check-desc {
+        font-size: 11px;
+        color: var(--text2);
+        margin-top: 2px;
+    }
+    .check-status {
+        font-size: 11px;
+        font-weight: 700;
+        padding: 6px 12px;
+        border-radius: 6px;
+        flex-shrink: 0;
+    }
+    .status-pass { background: rgba(0, 232, 135, 0.15); color: var(--green); }
+    .status-warn { background: rgba(255, 215, 0, 0.15); color: var(--yellow); }
+    .status-fail { background: rgba(239, 68, 68, 0.15); color: var(--red); }
+    .status-loading { background: rgba(0, 180, 216, 0.15); color: var(--blue); }
+
+    .check-detail {
+        font-size: 10px;
+        color: var(--text3);
+        font-family: 'Space Mono', monospace;
+        margin-top: 6px;
+    }
+
+    .refresh-bar {
+        max-width: 1200px;
+        margin: 0 auto 20px;
+        padding: 0 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .refresh-btn {
+        background: var(--blue);
+        color: #000;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 10px;
+        font-weight: 800;
+        cursor: pointer;
+        font-size: 14px;
+    }
+    .refresh-btn:hover { background: var(--green); }
+
+    .last-check {
+        font-size: 12px;
+        color: var(--text2);
+    }
+
+    /* Theme Switcher */
+    #theme-fab{position:fixed;bottom:94px;left:24px;z-index:9997;background:var(--accent,#00e887);color:#000;width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;font-size:20px;box-shadow:0 4px 16px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center}
+    #theme-panel{position:fixed;bottom:150px;left:24px;z-index:9998;background:var(--bg,#0a0a0a);border:1px solid rgba(255,255,255,.15);padding:16px;border-radius:12px;display:none;flex-direction:column;gap:6px;max-width:220px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+    #theme-panel.open{display:flex}
+    #theme-panel button{background:var(--bg,#0a0a0a);border:1px solid rgba(255,255,255,.1);color:#e8e8f0;padding:10px 14px;cursor:pointer;font-size:12px;text-align:right;font-family:inherit;border-radius:6px;transition:all .2s}
+    #theme-panel button:hover{background:var(--accent,#00e887);color:#000}
+    [data-theme="dark"]{--bg:#0b0e16;--bg2:#111628;--accent:#00b4d8;--text:#e8e8f0;--text2:#8a8aa0;--border:rgba(0,180,216,.2)}
+    [data-theme="light"]{--bg:#f8f9fb;--bg2:#fff;--accent:#0066cc;--text:#1a1a1a;--text2:#555;--border:rgba(0,102,204,.2)}
+    [data-theme="crypto"]{--bg:#0d1117;--bg2:#161b22;--accent:#f7931a;--text:#e8e8f0;--text2:#8a8aa0;--border:rgba(247,147,26,.2)}
+    [data-theme="ocean"]{--bg:#001e3c;--bg2:#002c55;--accent:#00d9ff;--text:#b8e6ff;--text2:#6bb6cc;--border:rgba(0,217,255,.2)}
+    [data-theme="sunset"]{--bg:#1a0a14;--bg2:#251018;--accent:#ff6b6b;--text:#ffe5d9;--text2:#c9a88a;--border:rgba(255,107,107,.2)}
+</style>
+</head>
+<body>
+
+<div id="topnav-root"></div>
+
+<section class="hero">
+    <h1>ðŸ”¬ System Health Verification</h1>
+    <p>×‘×“×™×§×•×ª ×—×™×•×ª ×©×œ ×›×œ ×¨×›×™×‘×™ ×”×ž×¢×¨×›×ª â€” × ×¢×©×•×ª ×‘×–×ž×Ÿ ××ž×ª, ×œ× cached.</p>
+</section>
+
+<section class="overall-status">
+    <div class="status-badge loading" id="overall-badge">
+        <div class="status-left">
+            <div class="label">Overall Status</div>
+            <div class="value" id="overall-text" style="color:var(--blue)">×‘×•×“×§...</div>
+        </div>
+        <div class="status-right">
+            <div class="count">
+                <div class="n" id="count-pass" style="color:var(--green)">0</div>
+                <div class="lbl">Pass</div>
+            </div>
+            <div class="count">
+                <div class="n" id="count-warn" style="color:var(--yellow)">0</div>
+                <div class="lbl">Warn</div>
+            </div>
+            <div class="count">
+                <div class="n" id="count-fail" style="color:var(--red)">0</div>
+                <div class="lbl">Fail</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="refresh-bar">
+    <div class="last-check">Last check: <span id="last-check-time">--</span></div>
+    <button class="refresh-btn" onclick="runAllChecks()">ðŸ”„ Run All Checks</button>
+</div>
+
+<!-- API Checks -->
+<section class="section">
+    <h2>ðŸŒ API Health</h2>
+    <div class="checks-grid" id="api-checks"></div>
+</section>
+
+<!-- Institutional -->
+<section class="section">
+    <h2>ðŸ› Institutional / Compliance</h2>
+    <div class="checks-grid" id="inst-checks"></div>
+</section>
+
+<!-- Data -->
+<section class="section">
+    <h2>ðŸ’¾ Data Layer</h2>
+    <div class="checks-grid" id="data-checks"></div>
+</section>
+
+<!-- Integrations -->
+<section class="section">
+    <h2>ðŸ”Œ External Integrations</h2>
+    <div class="checks-grid" id="integ-checks"></div>
+</section>
+
+<!-- Pages -->
+<section class="section">
+    <h2>ðŸ“„ Website Pages</h2>
+    <div class="checks-grid" id="pages-checks"></div>
+</section>
+
+<div id="bottomnav-root"></div>
+<div id="footer-root"></div>
+
+<script src="/js/translations.js?v=20260426e"></script>
+<script src="/js/shared.js?v=20260426e"></script>
+<script>
+    initShared({ activePage: 'health', showBottomNav: true });
+
+    const API = 'https://slh-api-production.up.railway.app';
+
+    const CHECKS = {
+        api: [
+            { name: 'API Root', url: API + '/api/health', desc: 'FastAPI service responding' },
+            { name: 'Admin Dashboard', url: API + '/api/admin/dashboard', desc: 'Aggregated stats endpoint', auth: true },
+            { name: 'User Stats', url: API + '/api/stats', desc: 'Public stats endpoint' },
+            { name: 'Prices', url: API + '/api/prices', desc: 'Market prices feed' },
+            { name: 'Staking Plans', url: API + '/api/staking/plans', desc: 'Available staking plans' },
+        ],
+        inst: [
+            { name: 'Audit Chain Verify', url: API + '/api/audit/verify-chain', desc: 'SHA-256 hash chain integrity', check: d => d.ok },
+            { name: 'Audit Recent', url: API + '/api/audit/recent?limit=1', desc: 'Audit entries feed' },
+            { name: 'Beta Coupons (Genesis 49)', url: API + '/api/beta/status', desc: 'Genesis 49 coupon remaining', check: d => d.total_remaining !== undefined },
+            { name: 'CEX Portfolio (sample)', url: API + '/api/cex/portfolio/224223270', desc: 'Portfolio consolidation endpoint' },
+        ],
+        data: [
+            { name: 'User Profile (full)', url: API + '/api/user/full/224223270', desc: 'User/wallets/balances/deposits', check: d => d.profile && d.profile.telegram_id },
+            { name: 'Cashback Tiers', url: API + '/api/cashback/224223270', desc: 'Distribution tier tracking' },
+            { name: 'Referral Leaderboard', url: API + '/api/referral/leaderboard?limit=5', desc: 'Top referrers' },
+            { name: 'Global Leaderboard', url: API + '/api/leaderboard?category=xp&limit=5', desc: 'Real users only filter' },
+            { name: 'Community Stats', url: API + '/api/community/stats', desc: 'Community engagement' },
+            { name: 'Analytics Stats', url: API + '/api/analytics/stats', desc: 'Website traffic stats' },
+        ],
+        integ: [
+            { name: 'External Wallets (TON)', url: API + '/api/external-wallets/224223270', desc: 'TON wallet tracking' },
+            { name: 'CEX Keys List', url: API + '/api/cex/keys/224223270', desc: 'User CEX keys (encrypted)' },
+            { name: 'BSC Holders (Moralis/Etherscan)', url: API + '/api/network/slh-holders?limit=5', desc: 'On-chain holder data', optional: true },
+        ],
+        pages: [
+            { name: 'Home', url: '/index.html', desc: 'Landing page' },
+            { name: 'Dashboard', url: '/dashboard.html', desc: 'User dashboard' },
+            { name: 'Wallet', url: '/wallet.html', desc: 'Wallet with QR + CEX portfolio' },
+            { name: 'Admin Panel', url: '/admin.html', desc: 'Institutional admin (with theme switcher)' },
+            { name: 'Network Map', url: '/network.html', desc: 'Ecosystem architecture' },
+            { name: 'DEX Launch', url: '/dex-launch.html', desc: 'PancakeSwap pool creator' },
+            { name: 'Ops Report', url: '/ops-report-20260411.html', desc: 'Detailed execution report' },
+            { name: 'Daily Blog', url: '/daily-blog.html', desc: 'Changelog' },
+            { name: 'Roadmap', url: '/roadmap.html', desc: 'Milestones timeline' },
+            { name: 'Community', url: '/community.html', desc: 'Posts + link upload' },
+            { name: 'Guides', url: '/guides.html', desc: 'Tutorials with theme switcher' },
+            { name: 'Bots', url: '/bots.html', desc: '25 bots with BETA/LIVE/WIP badges' },
+        ],
+    };
+
+    let stats = { pass: 0, warn: 0, fail: 0 };
+
+    // Admin key for authenticated endpoints (from localStorage or default)
+    const HEALTH_ADMIN_KEY = localStorage.getItem('slh_admin_password') || '';
+
+    async function checkEndpoint(check) {
+        const start = Date.now();
+        try {
+            const headers = {};
+            if (check.auth) headers['X-Admin-Key'] = HEALTH_ADMIN_KEY;
+            const r = await fetch(check.url, { cache: 'no-store', headers });
+            const ms = Date.now() - start;
+            if (!r.ok) return { status: 'fail', detail: 'HTTP ' + r.status + ' â€” ' + ms + 'ms' };
+
+            // For JSON endpoints, try parsing
+            let data = null;
+            const ct = r.headers.get('content-type') || '';
+            if (ct.includes('json')) {
+                try { data = await r.json(); } catch(e) {}
+            }
+
+            // Custom check function
+            if (check.check && data) {
+                if (!check.check(data)) return { status: 'warn', detail: 'Endpoint up but data unexpected', ms };
+            }
+
+            return { status: 'pass', detail: ms + 'ms Â· ' + (ct.split(';')[0] || 'OK'), data };
+        } catch (e) {
+            return { status: check.optional ? 'warn' : 'fail', detail: e.message };
+        }
+    }
+
+    function renderCheck(check, result, containerId) {
+        const container = document.getElementById(containerId);
+        const card = document.createElement('div');
+        const statusClass = result.status;
+        card.className = 'check-card ' + statusClass;
+
+        const statusLabel = {pass:'âœ“ PASS', warn:'âš  WARN', fail:'âœ— FAIL', loading:'â³ LOADING'}[statusClass];
+        const statusClassName = 'status-' + statusClass;
+
+        card.innerHTML = `
+            <div style="flex:1;min-width:0">
+                <div class="check-name">${check.name}</div>
+                <div class="check-desc">${check.desc}</div>
+                <div class="check-detail">${result.detail || ''}</div>
+            </div>
+            <div class="check-status ${statusClassName}">${statusLabel}</div>
+        `;
+        container.appendChild(card);
+        if (statusClass === 'pass') stats.pass++;
+        else if (statusClass === 'warn') stats.warn++;
+        else if (statusClass === 'fail') stats.fail++;
+    }
+
+    async function runAllChecks() {
+        stats = { pass: 0, warn: 0, fail: 0 };
+        // Clear all containers
+        ['api-checks', 'inst-checks', 'data-checks', 'integ-checks', 'pages-checks'].forEach(id => {
+            document.getElementById(id).innerHTML = '';
+        });
+
+        document.getElementById('overall-text').textContent = '×‘×•×“×§...';
+        document.getElementById('overall-text').style.color = 'var(--blue)';
+        document.getElementById('overall-badge').className = 'status-badge loading';
+
+        // Run all checks in parallel per category
+        const categories = [
+            { key: 'api', container: 'api-checks' },
+            { key: 'inst', container: 'inst-checks' },
+            { key: 'data', container: 'data-checks' },
+            { key: 'integ', container: 'integ-checks' },
+            { key: 'pages', container: 'pages-checks' },
+        ];
+
+        for (const cat of categories) {
+            const checks = CHECKS[cat.key];
+            const results = await Promise.all(checks.map(c => checkEndpoint(c)));
+            checks.forEach((c, i) => renderCheck(c, results[i], cat.container));
+        }
+
+        // Update overall
+        document.getElementById('count-pass').textContent = stats.pass;
+        document.getElementById('count-warn').textContent = stats.warn;
+        document.getElementById('count-fail').textContent = stats.fail;
+        document.getElementById('last-check-time').textContent = new Date().toLocaleString('he-IL');
+
+        const badge = document.getElementById('overall-badge');
+        const text = document.getElementById('overall-text');
+        if (stats.fail > 0) {
+            badge.className = 'status-badge down';
+            text.textContent = 'âŒ DOWN â€” ' + stats.fail + ' failures';
+            text.style.color = 'var(--red)';
+        } else if (stats.warn > 0) {
+            badge.className = 'status-badge degraded';
+            text.textContent = 'âš ï¸ DEGRADED â€” ' + stats.warn + ' warnings';
+            text.style.color = 'var(--yellow)';
+        } else {
+            badge.className = 'status-badge healthy';
+            text.textContent = 'âœ… ALL SYSTEMS HEALTHY';
+            text.style.color = 'var(--green)';
+        }
+    }
+
+    // Auto-run on load
+    runAllChecks();
+    // Auto-refresh every 60 seconds
+    setInterval(runAllChecks, 60000);
+</script>
+<button id="theme-fab" onclick="document.getElementById('theme-panel').classList.toggle('open')" title="Theme">ðŸŽ¨</button>
+<div id="theme-panel">
+    <div style="font-size:11px;color:var(--text2,#8a8aa0);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">×¢×¨×›×ª ×¦×‘×¢×™×</div>
+    <button onclick="document.documentElement.removeAttribute('data-theme');localStorage.setItem('slh_page_theme','default');document.getElementById('theme-panel').classList.remove('open')">ðŸŸ¢ Default</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','dark');localStorage.setItem('slh_page_theme','dark');document.getElementById('theme-panel').classList.remove('open')">ðŸŒ™ Dark</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','light');localStorage.setItem('slh_page_theme','light');document.getElementById('theme-panel').classList.remove('open')">â˜€ï¸ Light</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','crypto');localStorage.setItem('slh_page_theme','crypto');document.getElementById('theme-panel').classList.remove('open')">â‚¿ Crypto</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','ocean');localStorage.setItem('slh_page_theme','ocean');document.getElementById('theme-panel').classList.remove('open')">ðŸŒŠ Ocean</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','sunset');localStorage.setItem('slh_page_theme','sunset');document.getElementById('theme-panel').classList.remove('open')">ðŸŒ… Sunset</button>
+</div>
+<script>
+(function(){var t=localStorage.getItem('slh_page_theme');if(t&&t!=='default')document.documentElement.setAttribute('data-theme',t);document.addEventListener('click',function(e){var p=document.getElementById('theme-panel'),f=document.getElementById('theme-fab');if(p&&f&&!p.contains(e.target)&&!f.contains(e.target))p.classList.remove('open');});})();
+</script>
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260413"></script>
+</body>
+</html>

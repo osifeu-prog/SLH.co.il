@@ -1,0 +1,298 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH Admin · אישור מומחים</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+  --bg:#05080f; --bg2:#0c1018; --bg3:#141924; --bg4:#1a2030;
+  --accent:#00ff41; --cyan:#00e5ff; --gold:#ffd700;
+  --red:#ff0055; --purple:#a855f7;
+  --text:#e0e0f0; --text2:#8a8ab0; --text3:#444466;
+  --border2:rgba(255,255,255,.06);
+  --font:'Inter',system-ui,sans-serif; --mono:'Space Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6}
+.wrap{max-width:1200px;margin:0 auto;padding:20px 16px 60px}
+
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;background:linear-gradient(135deg,rgba(168,85,247,.06),rgba(0,255,65,.04));border:1px solid var(--border2);border-radius:14px;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.hdr h1{font-size:22px;font-weight:800;background:linear-gradient(90deg,var(--purple),var(--cyan),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hdr .sub{color:var(--text2);font-size:12px;font-family:var(--mono)}
+.btn{padding:8px 16px;background:rgba(0,255,65,.08);color:var(--accent);border:1px solid rgba(0,255,65,.25);border-radius:8px;cursor:pointer;font-weight:600;font-size:12px;font-family:inherit;text-decoration:none;display:inline-block}
+.btn.sec{background:var(--bg3);color:var(--text);border-color:var(--border2)}
+.btn.warn{background:rgba(255,215,0,.08);color:var(--gold);border-color:rgba(255,215,0,.3)}
+.btn.danger{background:rgba(255,0,85,.08);color:var(--red);border-color:rgba(255,0,85,.3)}
+
+.login-gate{max-width:420px;margin:60px auto;padding:30px;background:var(--bg2);border:1px solid var(--border2);border-radius:14px;text-align:center}
+.login-gate h2{margin-bottom:6px}
+.login-gate p{color:var(--text2);font-size:13px;margin-bottom:14px}
+.login-gate input{width:100%;padding:12px;background:var(--bg);border:1px solid var(--border2);color:var(--text);border-radius:8px;font-family:var(--mono);margin-bottom:12px}
+.login-gate button{width:100%;padding:12px;background:var(--accent);color:#000;border:none;border-radius:8px;font-weight:800;cursor:pointer}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
+.stat{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:14px;text-align:center}
+.stat .n{font-size:26px;font-weight:800;font-family:var(--mono);color:#fff}
+.stat .l{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+
+.expert-card{background:linear-gradient(180deg,var(--bg2),var(--bg3));border:1px solid var(--border2);border-radius:14px;padding:20px;margin-bottom:16px;transition:.2s}
+.expert-card:hover{border-color:rgba(0,255,65,.2)}
+.expert-card.rejected{opacity:.5}
+
+.ec-head{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.ec-avatar{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--cyan));display:grid;place-items:center;color:#fff;font-size:24px;font-weight:900;flex-shrink:0}
+.ec-main h3{font-size:18px;margin-bottom:3px}
+.ec-meta{font-size:11px;color:var(--text2);font-family:var(--mono)}
+.ec-status{padding:4px 10px;border-radius:6px;font-size:10px;font-weight:700;font-family:var(--mono);margin-right:auto}
+.st-pending{background:rgba(255,215,0,.1);color:var(--gold)}
+.st-approved{background:rgba(0,255,65,.1);color:var(--accent)}
+.st-rejected{background:rgba(255,0,85,.1);color:var(--red)}
+.st-needs-info{background:rgba(0,229,255,.1);color:var(--cyan)}
+
+.ec-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+@media(max-width:700px){.ec-grid{grid-template-columns:1fr}}
+.ec-field{background:var(--bg4);padding:10px 12px;border-radius:8px;font-size:13px}
+.ec-field .lbl{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+.ec-field .val{color:var(--text);word-break:break-word}
+.ec-field .val a{color:var(--cyan);font-family:var(--mono);font-size:11px}
+
+.ec-bio{background:var(--bg4);padding:12px;border-radius:8px;font-size:13px;line-height:1.8;color:var(--text);margin-bottom:14px;border-right:3px solid var(--cyan)}
+
+.ec-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.ec-actions textarea{flex:1;min-width:200px;padding:10px;background:var(--bg);border:1px solid var(--border2);color:var(--text);border-radius:8px;font-size:12px;font-family:inherit;resize:vertical;min-height:42px}
+.ec-actions button{padding:10px 18px;border-radius:8px;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700}
+
+.chips{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.chip{padding:2px 8px;background:rgba(168,85,247,.12);color:var(--purple);border-radius:4px;font-size:10px;font-weight:700}
+
+.empty{text-align:center;padding:40px;color:var(--text3);font-size:14px}
+
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);padding:14px 24px;background:var(--accent);color:#000;border-radius:10px;font-weight:700;box-shadow:0 6px 30px rgba(0,255,65,.3);z-index:9999;display:none}
+.toast.show{display:block;animation:slideUp .3s}
+.toast.err{background:var(--red);color:#fff}
+@keyframes slideUp{from{transform:translate(-50%,30px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+
+.filters{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.filters button{padding:8px 14px;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:20px;cursor:pointer;font-size:12px;font-family:inherit}
+.filters button.active{background:rgba(0,255,65,.08);color:var(--accent);border-color:rgba(0,255,65,.3)}
+</style>
+</head>
+<body>
+<style>
+.slh-beta-banner{position:sticky;top:0;z-index:9998;background:linear-gradient(90deg,#ff9900,#ffd700,#00ff41);color:#000;font-weight:700;font-size:12px;padding:6px 14px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.slh-beta-banner a{color:#000;text-decoration:underline;font-weight:800}
+.slh-beta-banner button{background:rgba(0,0,0,.15);color:#000;border:none;padding:3px 10px;border-radius:12px;font-size:11px;cursor:pointer;font-weight:700}
+.slh-bug-fab{position:fixed;bottom:20px;left:20px;z-index:9999;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#ff4444,#ff9900);display:grid;place-items:center;font-size:24px;text-decoration:none;box-shadow:0 4px 20px rgba(255,68,68,.4);transition:transform .2s;animation:bugPulse 3s infinite}
+.slh-bug-fab:hover{transform:scale(1.1)}
+@keyframes bugPulse{0%,100%{box-shadow:0 4px 20px rgba(255,68,68,.4)}50%{box-shadow:0 4px 30px rgba(255,153,0,.6)}}
+@media(max-width:600px){.slh-bug-fab{bottom:80px;width:46px;height:46px;font-size:20px}}
+</style>
+<div class="slh-beta-banner" id="slhBeta">
+  <span>🚧 <b>BETA</b></span>
+  <span style="opacity:.85">אם משהו לא עובד —</span>
+  <a href="/bug-report.html">🐛 דווח באג</a>
+  <button onclick="localStorage.setItem('slh_beta_dismissed','1');this.parentElement.remove()">✕</button>
+</div>
+<a href="/bug-report.html" class="slh-bug-fab" title="דווח באג">🐛</a>
+<script>if(localStorage.getItem('slh_beta_dismissed')==='1'){var b=document.getElementById('slhBeta');if(b)b.remove();}</script>
+
+
+<div id="loginGate" class="login-gate">
+  <h2 style="color:#fff">🔐 Admin Access</h2>
+  <p>דף אישור מומחים לאדמינים בלבד.</p>
+  <input type="password" id="adminKey" placeholder="Admin API Key">
+  <button onclick="login()">התחבר</button>
+  <div id="loginErr" style="color:var(--red);font-size:12px;margin-top:10px"></div>
+</div>
+
+<div id="app" class="wrap" style="display:none">
+
+  <header class="hdr">
+    <div>
+      <h1>🎓 אישור מומחים · Admin</h1>
+      <div class="sub">review · approve · reject · request-info</div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <a class="btn sec" href="/experts.html">🔍 Public Experts</a>
+      <a class="btn sec" href="/admin.html">← Admin</a>
+      <button class="btn" onclick="load()"><i class="fa fa-rotate"></i> רענן</button>
+      <button class="btn sec" onclick="logout()">יציאה</button>
+    </div>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><div class="n" id="n-pending">--</div><div class="l">ממתינים</div></div>
+    <div class="stat"><div class="n" id="n-needs-info">--</div><div class="l">חסר מידע</div></div>
+    <div class="stat"><div class="n" id="n-approved">--</div><div class="l">אושרו</div></div>
+    <div class="stat"><div class="n" id="n-rejected">--</div><div class="l">נדחו</div></div>
+  </div>
+
+  <div class="filters">
+    <button class="active" data-filter="pending" onclick="setFilter('pending')">ממתינים</button>
+    <button data-filter="needs_info" onclick="setFilter('needs_info')">חסר מידע</button>
+    <button data-filter="all" onclick="setFilter('all')">הכל</button>
+  </div>
+
+  <div id="list"><div class="empty">טוען...</div></div>
+
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const API = 'https://slh-api-production.up.railway.app';
+let ADMIN_KEY = localStorage.getItem('slh_admin_password') || '';
+let experts = [];
+let currentFilter = 'pending';
+
+async function login(){
+  const k = document.getElementById('adminKey').value.trim();
+  if(!k){ document.getElementById('loginErr').textContent = 'הזן מפתח'; return; }
+  const r = await fetch(API+'/api/admin/experts/pending', { headers:{'X-Admin-Key': k} });
+  if(r.status === 403){ document.getElementById('loginErr').textContent = '❌ מפתח שגוי'; return; }
+  ADMIN_KEY = k;
+  localStorage.setItem('slh_admin_password', k);
+  document.getElementById('loginGate').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  load();
+}
+
+function logout(){ localStorage.removeItem('slh_admin_password'); location.reload(); }
+
+function setFilter(f){
+  currentFilter = f;
+  document.querySelectorAll('.filters button').forEach(b => b.classList.toggle('active', b.dataset.filter === f));
+  render();
+}
+
+function toast(msg, isErr){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (isErr ? ' err' : '');
+  setTimeout(() => t.className = 'toast', 3000);
+}
+
+async function load(){
+  try {
+    const r = await fetch(API+'/api/admin/experts/pending', { headers:{'X-Admin-Key': ADMIN_KEY} });
+    if(!r.ok){
+      document.getElementById('list').innerHTML = '<div class="empty">❌ שגיאה: ' + r.status + '</div>';
+      return;
+    }
+    const d = await r.json();
+    experts = d.pending || [];
+    // Also fetch approved + rejected for counts
+    const r2 = await fetch(API+'/api/experts/list?limit=500');
+    const d2 = await r2.json();
+    const all = d2.experts || [];
+    const appr = all.filter(e => e.verified).length;
+    const pending = experts.filter(e => e.verification_status === 'pending').length;
+    const needInfo = experts.filter(e => e.verification_status === 'needs_info').length;
+    document.getElementById('n-pending').textContent = pending;
+    document.getElementById('n-needs-info').textContent = needInfo;
+    document.getElementById('n-approved').textContent = appr;
+    document.getElementById('n-rejected').textContent = '--';
+    render();
+  } catch(e){
+    document.getElementById('list').innerHTML = '<div class="empty">❌ ' + e.message + '</div>';
+  }
+}
+
+function render(){
+  let filtered = experts;
+  if(currentFilter !== 'all'){
+    filtered = experts.filter(e => e.verification_status === currentFilter);
+  }
+  if(filtered.length === 0){
+    document.getElementById('list').innerHTML = '<div class="empty">✨ אין מומחים בקטגוריה הזו</div>';
+    return;
+  }
+  document.getElementById('list').innerHTML = filtered.map(renderCard).join('');
+}
+
+function renderCard(e){
+  const initial = (e.display_name || '?').charAt(0);
+  const statusClass = { pending: 'pending', needs_info: 'needs-info', approved: 'approved', rejected: 'rejected' }[e.verification_status] || 'pending';
+  const statusLabel = { pending: 'ממתין', needs_info: 'חסר מידע', approved: 'אושר', rejected: 'נדחה' }[e.verification_status] || e.verification_status;
+
+  const linkedinLink = e.linkedin_url ? `<a href="${e.linkedin_url}" target="_blank">${e.linkedin_url}</a>` : '<span style="color:var(--text3)">—</span>';
+  const websiteLink = e.website_url ? `<a href="${e.website_url}" target="_blank">${e.website_url}</a>` : '<span style="color:var(--text3)">—</span>';
+  const youtubeLink = e.youtube_url ? `<a href="${e.youtube_url}" target="_blank">${e.youtube_url}</a>` : '<span style="color:var(--text3)">—</span>';
+
+  const domains = (e.domains || []).map(d => `<span class="chip">${d}</span>`).join('');
+
+  return `
+    <div class="expert-card" id="card-${e.id}">
+      <div class="ec-head">
+        <div class="ec-avatar">${initial}</div>
+        <div class="ec-main">
+          <h3>${e.display_name || '—'}</h3>
+          <div class="ec-meta">
+            ID ${e.id} ·
+            ${e.tg_username ? '@' + e.tg_username + ' · ' : ''}
+            ${e.phone || '—'} ·
+            ${e.email || '—'} ·
+            ${new Date(e.created_at).toLocaleDateString('he-IL')}
+          </div>
+          <div class="chips">${domains}</div>
+        </div>
+        <span class="ec-status st-${statusClass}">${statusLabel}</span>
+      </div>
+
+      ${e.bio ? `<div class="ec-bio">${e.bio}</div>` : ''}
+
+      <div class="ec-grid">
+        <div class="ec-field"><div class="lbl">LinkedIn</div><div class="val">${linkedinLink}</div></div>
+        <div class="ec-field"><div class="lbl">אתר / פורטפוליו</div><div class="val">${websiteLink}</div></div>
+        <div class="ec-field"><div class="lbl">YouTube</div><div class="val">${youtubeLink}</div></div>
+        <div class="ec-field"><div class="lbl">שנות ניסיון</div><div class="val">${e.years_experience || '—'}</div></div>
+      </div>
+
+      ${e.credentials ? `<div class="ec-bio"><b>תעודות:</b> ${e.credentials}</div>` : ''}
+      ${e.verification_note ? `<div style="padding:10px;background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.2);border-radius:8px;font-size:12px;color:var(--gold);margin-bottom:12px">📝 הערה קודמת: ${e.verification_note}</div>` : ''}
+
+      <div class="ec-actions">
+        <textarea id="note-${e.id}" placeholder="הערה לאישור / דחיה / בקשת מידע (רשות)"></textarea>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="btn" onclick="decide(${e.id}, 'approved', false)">✅ אשר</button>
+          <button class="btn warn" onclick="decide(${e.id}, 'approved', true)">⭐ אשר + Featured</button>
+          <button class="btn sec" onclick="decide(${e.id}, 'needs_info', false)">ℹ חסר מידע</button>
+          <button class="btn danger" onclick="decide(${e.id}, 'rejected', false)">❌ דחה</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+async function decide(expertId, decision, featured){
+  const note = document.getElementById('note-'+expertId).value.trim();
+  const body = { expert_id: expertId, decision, note: note || null, featured };
+  try {
+    const r = await fetch(API+'/api/admin/experts/approve', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Admin-Key':ADMIN_KEY},
+      body: JSON.stringify(body)
+    });
+    const d = await r.json();
+    if(!r.ok) throw new Error(d.detail || r.status);
+    toast(d.message);
+    load();
+  } catch(e){
+    toast('❌ ' + e.message, true);
+  }
+}
+
+if(ADMIN_KEY){
+  document.getElementById('loginGate').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  load();
+}
+</script>
+
+</body>
+</html>

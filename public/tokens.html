@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>הטוקנים של SLH Spark · SLH / MNH / ZVK / REP / ZUZ</title>
+<meta name="description" content="חמישה טוקנים מאקוסיסטם SLH Spark - SLH על BSC, MNH על TON, ZVK תורמים, REP מוניטין, ZUZ יחידת חשבון. כולם עם תפקיד ושקיפות מלאה.">
+<meta name="keywords" content="SLH, MNH, ZVK, REP, ZUZ, SLH Spark, BSC, TON, BEP-20, טוקנים בעברית, מולטי-טוקן">
+<link rel="canonical" href="https://slh-nft.com/tokens.html">
+
+<meta property="og:url" content="https://slh-nft.com/tokens.html">
+<meta property="og:title" content="הטוקנים של SLH Spark - 5 טוקנים, מערכת אחת">
+<meta property="og:description" content="SLH על BSC (110.75M supply), MNH stablecoin על TON, ZVK תורמים, REP, ZUZ. כולם עם תפקיד ברור.">
+<meta property="og:image" content="https://slh-nft.com/assets/og/blog.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="הטוקנים של SLH Spark">
+<meta name="twitter:description" content="SLH על BSC (110.75M supply), MNH stablecoin על TON, ZVK תורמים, REP, ZUZ.">
+<meta name="twitter:image" content="https://slh-nft.com/assets/og/blog.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#05080f; --bg2:#0c1018; --bg3:#141924; --bg4:#1a2030;
+  --text:#e6edf7; --text-bright:#fff; --text2:#9aa4b8; --text3:#6b7488;
+  --accent:#00ff41; --cyan:#00e5ff; --gold:#ffd700;
+  --red:#ff0055; --purple:#a855f7; --blue:#3b82f6; --orange:#f97316;
+  --border:rgba(0,255,65,.12); --border2:rgba(255,255,255,.06);
+  --font:'Inter',system-ui,sans-serif; --mono:'Space Mono',monospace;
+  --token-slh:#ffd700; --token-mnh:#00e5ff; --token-zvk:#a855f7; --token-rep:#3b82f6; --token-zuz:#f97316;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;font-size:14px;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background:
+  radial-gradient(1000px 500px at 10% -5%, rgba(168,85,247,.05), transparent 60%),
+  radial-gradient(800px 500px at 95% 25%, rgba(0,255,65,.04), transparent 60%);
+  pointer-events:none;z-index:0}
+a{color:var(--cyan);text-decoration:none}
+a:hover{color:var(--accent)}
+
+.wrap{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:24px 16px 60px}
+
+/* Top bar */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:linear-gradient(135deg,rgba(168,85,247,.05),rgba(0,255,65,.03));border:1px solid var(--border2);border-radius:12px;margin-bottom:24px}
+.topbar .brand{font-weight:800;color:var(--accent);font-size:16px}
+.topbar .brand span{color:var(--text2);font-weight:500;margin-inline-start:8px;font-size:13px}
+.topbar nav{display:flex;gap:6px;flex-wrap:wrap}
+.topbar nav a{padding:6px 12px;border:1px solid var(--border2);border-radius:6px;color:var(--text2);font-size:12px}
+.topbar nav a:hover{color:var(--accent);border-color:var(--accent)}
+
+/* Hero */
+.hero{text-align:center;padding:36px 20px 28px;background:linear-gradient(135deg,rgba(255,215,0,.04),rgba(0,229,255,.04));border:1px solid var(--border2);border-radius:14px;margin-bottom:28px}
+.hero h1{font-size:30px;font-weight:800;background:linear-gradient(90deg,var(--gold),var(--cyan),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px;line-height:1.2}
+.hero .sub{color:var(--text2);font-size:15px;max-width:680px;margin:0 auto 18px}
+.hero .pill{display:inline-block;padding:5px 12px;background:rgba(0,229,255,.08);border:1px solid var(--cyan);border-radius:20px;color:var(--cyan);font-size:11px;font-family:var(--mono);margin:0 4px 4px}
+
+/* Section title */
+.section-title{font-size:18px;font-weight:700;color:var(--text-bright);margin:32px 0 16px;display:flex;align-items:center;gap:10px}
+.section-title::before{content:'';width:3px;height:18px;background:var(--accent);border-radius:2px}
+
+/* Token grid */
+.tokens{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.token{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:22px;transition:transform .15s,border-color .15s}
+.token:hover{transform:translateY(-2px);border-color:var(--accent)}
+.token .head{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.token .icon{width:54px;height:54px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;font-family:var(--mono);flex-shrink:0}
+.token-slh .icon{background:linear-gradient(135deg,#ffe18a,var(--token-slh));color:#2a1f00}
+.token-mnh .icon{background:linear-gradient(135deg,#7defff,var(--token-mnh));color:#003344}
+.token-zvk .icon{background:linear-gradient(135deg,#d1a8ff,var(--token-zvk));color:#2a0044}
+.token-rep .icon{background:linear-gradient(135deg,#9bbfff,var(--token-rep));color:#001f44}
+.token-zuz .icon{background:linear-gradient(135deg,#ffc591,var(--token-zuz));color:#3d1900}
+.token h3{font-size:16px;font-weight:800;color:var(--text-bright);margin-bottom:2px}
+.token .symbol{font-family:var(--mono);font-size:11px;color:var(--text2);letter-spacing:1px}
+.token .desc{font-size:13px;color:var(--text2);line-height:1.65;margin-bottom:14px}
+.token .meta{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;font-size:12px;border-top:1px solid var(--border2);padding-top:12px}
+.token .meta .label{color:var(--text3);font-size:11px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.token .meta .val{color:var(--text);font-family:var(--mono);font-size:12px;word-break:break-all}
+.token .links{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--border2)}
+.token .links a{padding:5px 10px;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;font-size:11px;color:var(--text2);transition:all .15s}
+.token .links a:hover{color:var(--accent);border-color:var(--accent)}
+.token .badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;font-family:var(--mono);text-transform:uppercase;margin-inline-start:6px}
+.badge-live{background:rgba(0,255,65,.12);color:var(--accent);border:1px solid var(--accent)}
+.badge-pre{background:rgba(255,215,0,.1);color:var(--gold);border:1px solid var(--gold)}
+.badge-internal{background:rgba(168,85,247,.1);color:var(--purple);border:1px solid var(--purple)}
+
+/* Earn block */
+.earn-block{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:22px;margin-top:28px}
+.earn-block h2{font-size:17px;font-weight:700;color:var(--text-bright);margin-bottom:8px}
+.earn-block p{color:var(--text2);font-size:13px;margin-bottom:14px}
+.earn-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.earn-item{background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:14px}
+.earn-item .ttl{font-weight:600;color:var(--text-bright);font-size:13px;margin-bottom:4px}
+.earn-item .desc{color:var(--text2);font-size:12px;line-height:1.5}
+.earn-item a{color:var(--cyan);font-size:11px;font-family:var(--mono)}
+
+/* CTA */
+.cta{text-align:center;padding:30px 20px;background:linear-gradient(135deg,rgba(0,255,65,.05),rgba(0,229,255,.04));border:1px solid var(--accent);border-radius:14px;margin-top:32px}
+.cta h2{font-size:20px;font-weight:800;color:var(--text-bright);margin-bottom:8px}
+.cta p{color:var(--text2);margin-bottom:18px;font-size:13px}
+.cta .btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.cta .btn{padding:11px 22px;border-radius:8px;font-weight:600;font-size:13px;transition:all .15s;border:1px solid var(--accent)}
+.cta .btn.primary{background:var(--accent);color:#000}
+.cta .btn.primary:hover{background:#00cc35}
+.cta .btn.secondary{background:transparent;color:var(--accent)}
+.cta .btn.secondary:hover{background:rgba(0,255,65,.08)}
+
+/* Footer */
+footer{margin-top:36px;padding:18px 0;text-align:center;color:var(--text3);font-size:12px;border-top:1px solid var(--border2)}
+footer a{color:var(--text2);margin:0 8px}
+footer a:hover{color:var(--accent)}
+.disclaimer{margin-top:24px;padding:14px 18px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.25);border-radius:10px;font-size:11px;color:var(--text2);line-height:1.65}
+.disclaimer strong{color:var(--gold)}
+
+/* English abstract */
+.abstract{margin-top:24px;padding:18px 22px;background:rgba(0,229,255,.04);border-inline-start:3px solid var(--cyan);border-radius:8px;direction:ltr;text-align:left;font-size:13px}
+.abstract h2{font-size:15px;color:var(--cyan);margin-bottom:8px;font-weight:700}
+.abstract p{color:var(--text2);line-height:1.7;margin-bottom:8px}
+
+@media (max-width:680px){
+  .hero h1{font-size:24px}
+  .topbar{flex-direction:column;gap:10px;align-items:stretch}
+  .topbar nav{justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="brand">SLH Spark <span>· אקוסיסטם הטוקנים</span></div>
+    <nav>
+      <a href="/index.html">בית</a>
+      <a href="/buy.html">קנייה</a>
+      <a href="/staking.html">סטייקינג</a>
+      <a href="/whitepaper.html">Whitepaper</a>
+    </nav>
+  </div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>5 טוקנים. אקוסיסטם אחד. שקיפות מלאה.</h1>
+    <p class="sub">SLH Spark פועל על מודל מולטי-טוקן — כל טוקן עם תפקיד ברור בתוך המערכת. אין כפילות, אין בלבול. כל המידע on-chain וניתן לבדיקה.</p>
+    <div>
+      <span class="pill">BSC + TON</span>
+      <span class="pill">5 tokens</span>
+      <span class="pill">BEP-20 + Native</span>
+      <span class="pill">110.75M SLH supply</span>
+    </div>
+  </section>
+
+  <!-- Tokens grid -->
+  <h2 class="section-title">חמשת הטוקנים</h2>
+  <div class="tokens">
+
+    <!-- SLH -->
+    <article class="token token-slh">
+      <div class="head">
+        <div class="icon">SLH</div>
+        <div>
+          <h3>SLH Spark <span class="badge badge-live">live</span></h3>
+          <div class="symbol">SLH · BEP-20 · BSC</div>
+        </div>
+      </div>
+      <p class="desc">טוקן הליבה של האקוסיסטם. משמש לסטייקינג (Revenue Share Pool), זכויות הצבעה (החלטות מערכת, פיצ'רים, תיעדוף שותפים) ושכבת הערך הראשי — כל הפעולות בסוף, גם דרך טוקן אחר, נמדדות ב-SLH.</p>
+      <div class="meta">
+        <div>
+          <div class="label">Network</div>
+          <div class="val">BSC (BEP-20)</div>
+        </div>
+        <div>
+          <div class="label">Total supply</div>
+          <div class="val">110.75M</div>
+        </div>
+        <div>
+          <div class="label">Decimals</div>
+          <div class="val">15</div>
+        </div>
+        <div>
+          <div class="label">Target price</div>
+          <div class="val">444 ILS</div>
+        </div>
+        <div style="grid-column:1/-1">
+          <div class="label">Contract</div>
+          <div class="val">0xACb0A09414CEA1C879c67bB7A877E4e19480f022</div>
+        </div>
+      </div>
+      <div class="links">
+        <a href="https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022" target="_blank" rel="noopener">BSCScan</a>
+        <a href="https://pancakeswap.finance/swap?outputCurrency=0xACb0A09414CEA1C879c67bB7A877E4e19480f022&chain=bsc" target="_blank" rel="noopener">PancakeSwap</a>
+        <a href="/buy.html">קנה SLH</a>
+        <a href="/blog/slh-token-for-beginners.html">מדריך מתחילים</a>
+      </div>
+    </article>
+
+    <!-- MNH -->
+    <article class="token token-mnh">
+      <div class="head">
+        <div class="icon">MNH</div>
+        <div>
+          <h3>Mana Health <span class="badge badge-live">live</span></h3>
+          <div class="symbol">MNH · TON</div>
+        </div>
+      </div>
+      <p class="desc">Stablecoin על רשת TON. משמש לתשלומים יציבים בתוך הקהילה — שכר תורמים, תשלום בעבור שירותים. הבחירה ב-TON מאפשרת עמלות נמוכות ומהירות גבוהה.</p>
+      <div class="meta">
+        <div>
+          <div class="label">Network</div>
+          <div class="val">TON</div>
+        </div>
+        <div>
+          <div class="label">Type</div>
+          <div class="val">Stablecoin</div>
+        </div>
+      </div>
+      <div class="links">
+        <a href="/wallet-guide.html">ארנק TON</a>
+        <a href="/buy.html">תשלום ב-TON</a>
+      </div>
+    </article>
+
+    <!-- ZVK -->
+    <article class="token token-zvk">
+      <div class="head">
+        <div class="icon">ZVK</div>
+        <div>
+          <h3>Z-Vika <span class="badge badge-live">live</span></h3>
+          <div class="symbol">ZVK · contributor token</div>
+        </div>
+      </div>
+      <p class="desc">טוקן תגמול לתורמים פעילים באקוסיסטם — קוד, תרגום, תיק, יצירת תוכן. ניתן להמרה ל-SLH לפי תקרות שנקבעו לכל סבב. מודל הוגן שמתגמל מי שבונה.</p>
+      <div class="meta">
+        <div>
+          <div class="label">Purpose</div>
+          <div class="val">Contributor rewards</div>
+        </div>
+        <div>
+          <div class="label">Convertible to</div>
+          <div class="val">SLH</div>
+        </div>
+      </div>
+      <div class="links">
+        <a href="/community.html">איך תורמים</a>
+        <a href="/experts.html">מומחים</a>
+      </div>
+    </article>
+
+    <!-- REP -->
+    <article class="token token-rep">
+      <div class="head">
+        <div class="icon">REP</div>
+        <div>
+          <h3>Reputation <span class="badge badge-internal">internal</span></h3>
+          <div class="symbol">REP · reputation score</div>
+        </div>
+      </div>
+      <p class="desc">ציון מוניטין פנימי, אינו ניתן להעברה בין משתמשים. מתקבל באמצעות פעולות שבונות אמינות. מהווה גורם הצבעה בעל משקל - יותר תרומה איכותית לאורך זמן, ביטוי, גישה לתפקידי גוורנס מתקדמים.</p>
+      <div class="meta">
+        <div>
+          <div class="label">Type</div>
+          <div class="val">Soulbound score</div>
+        </div>
+        <div>
+          <div class="label">Tradable</div>
+          <div class="val">No</div>
+        </div>
+      </div>
+      <div class="links">
+        <a href="/profile.html">המוניטין שלי</a>
+        <a href="/community.html">איסוף נקודות</a>
+      </div>
+    </article>
+
+    <!-- ZUZ -->
+    <article class="token token-zuz">
+      <div class="head">
+        <div class="icon">ZUZ</div>
+        <div>
+          <h3>Zuz <span class="badge badge-internal">internal</span></h3>
+          <div class="symbol">ZUZ · accounting unit</div>
+        </div>
+      </div>
+      <p class="desc">יחידת חשבון פנימית עבור הצגת מחיר, חישוב עמלות פנים, וחישוב יתרות בתוך האקוסיסטם. שקופה מול ערכים חיצוניים בתבנית קצרה אחת לחוויה משתמש אחידה.</p>
+      <div class="meta">
+        <div>
+          <div class="label">Pegged to</div>
+          <div class="val">ILS (~)</div>
+        </div>
+        <div>
+          <div class="label">Use</div>
+          <div class="val">Internal accounting</div>
+        </div>
+      </div>
+      <div class="links">
+        <a href="/wallet.html">היתרה שלי</a>
+        <a href="/promo-shekel.html">דוגמת חיוב</a>
+      </div>
+    </article>
+
+  </div>
+
+  <!-- How to earn -->
+  <section class="earn-block">
+    <h2>איך מרוויחים באקוסיסטם בלי לקנות</h2>
+    <p>SLH Spark פועל לפי מודל פעולה שווה ערך. ארבע דרכים לאקוסיסטם בלא רכישה ראשונית:</p>
+    <div class="earn-grid">
+      <div class="earn-item">
+        <div class="ttl">Staking</div>
+        <div class="desc">נעילת SLH ושיתוף ב-Revenue Share Pool. <a href="/staking.html">staking.html →</a></div>
+      </div>
+      <div class="earn-item">
+        <div class="ttl">Referrals</div>
+        <div class="desc">הזמן חברים, קבל אחוז מהפעילות שלהם. <a href="/referral.html">referral.html →</a></div>
+      </div>
+      <div class="earn-item">
+        <div class="ttl">Contributions</div>
+        <div class="desc">תרום קוד או תוכן, קבל ZVK להמרה ל-SLH. <a href="/community.html">community.html →</a></div>
+      </div>
+      <div class="earn-item">
+        <div class="ttl">Sudoku + AIC</div>
+        <div class="desc">משחקים חינמיים ופוייטס AIC לטעינה. <a href="/sudoku.html">sudoku.html →</a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <h2>מוכן להתחיל?</h2>
+    <p>התחל עם micro-test (0.01 TON או 0.0005 BNB) כדי לבדוק את המערכת לפני שיוצרים סכום גדול.</p>
+    <div class="btns">
+      <a href="/buy.html" class="btn primary">קנה SLH</a>
+      <a href="/getting-started.html" class="btn secondary">מדריך מהיר</a>
+      <a href="/whitepaper.html" class="btn secondary">Whitepaper</a>
+    </div>
+  </section>
+
+  <!-- Disclaimer -->
+  <div class="disclaimer">
+    <strong>גילוי מלא.</strong> הדף הזה הוא חומר חינוכי על מבנה הטוקנים של SLH Spark, ולא ייעוץ פיננסי או השקעתי. אף ערוץ אינו מבטיח תשואה כלשהי. השקע רק כסף שאתה יכול להפסיד. SLH Spark הוא פרויקט קהילתי עם <a href="/whitepaper.html">whitepaper פתוח</a>, <a href="/bot-registry.html">25 בוטים פעילים</a>, ו-<a href="/blog/">תיעוד מלא</a>. אין הבטחת תשואה. רווח מ-Revenue Share Pool תלוי בהכנסות בפועל מהפרוטוקול (קורסים, marketplace, SaaS) ולפי משקל הסטייקינג של כל משתמש.
+  </div>
+
+  <!-- English abstract -->
+  <div class="abstract">
+    <h2>English Abstract</h2>
+    <p>SLH Spark operates a 5-token ecosystem: <strong>SLH</strong> (BEP-20 governance/utility on BSC, 110.75M supply, contract <code>0xACb0A09...</code>), <strong>MNH</strong> (TON-native stablecoin for healthcare/community payments), <strong>ZVK</strong> (contributor rewards, convertible to SLH), <strong>REP</strong> (non-transferable reputation score), and <strong>ZUZ</strong> (ILS-pegged internal accounting unit).</p>
+    <p>Four earn paths require no purchase: staking (Revenue Share Pool), referrals, contributions (ZVK), and Sudoku-to-AIC gameplay. Newcomers should start with the micro-test tier (0.01 TON or 0.0005 BNB) before scaling up. No yield guarantees - the Revenue Share Pool distributes real protocol earnings (course sales, marketplace fees, SaaS revenue) by stake weight.</p>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div>
+      <a href="/index.html">בית</a>
+      <a href="/about.html">אודות</a>
+      <a href="/whitepaper.html">Whitepaper</a>
+      <a href="/community.html">קהילה</a>
+      <a href="/buy.html">קנייה</a>
+      <a href="/staking.html">סטייקינג</a>
+      <a href="/disclosure.html">גילוי מלא</a>
+      <a href="/privacy.html">פרטיות</a>
+      <a href="/terms.html">תנאי שימוש</a>
+    </div>
+    <div style="margin-top:10px">© SLH Spark · אקוסיסטם הטוקנים בעברית</div>
+  </footer>
+
+</div>
+
+</body>
+</html>

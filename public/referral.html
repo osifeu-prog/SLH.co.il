@@ -1,0 +1,579 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLH Spark Referral â€” Two-Tier Affiliate Program</title>
+    <meta name="description" content="SLH Affiliate Program â€” 20% commission on direct referrals (Tier 1) + 5% on Tier 2 purchases. Transparent, regulation-aligned.">
+    <link rel="canonical" href="https://slh-nft.com/referral.html">
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://slh-nft.com/referral.html">
+    <meta property="og:title" content="SLH Affiliate Program â€” 2 Tiers">
+    <meta property="og:description" content="Earn 20% on Tier 1 (direct) + 5% on Tier 2 purchases. Paid from real revenue.">
+    <meta property="og:image" content="https://slh-nft.com/assets/og/referral.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="he_IL">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SLH Referral Program - 10 Generations">
+    <meta name="twitter:description" content="Earn commissions on direct referrals and 9 levels deep">
+    <meta name="twitter:image" content="https://slh-nft.com/assets/og/referral.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <meta name="theme-color" content="#050510">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/shared.css?v=20260426e">
+    <style>
+        .ref-hero {
+            text-align: center;
+            padding: 80px 24px 48px;
+        }
+        .ref-hero h1 {
+            font-size: clamp(26px, 5vw, 44px);
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--gold), var(--orange), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .ref-hero p {
+            font-size: 18px;
+            color: var(--text2);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .ref-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px 80px;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        /* â”€â”€ Link Generator â”€â”€ */
+        .link-gen-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px;
+        }
+        .link-gen-card h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        .link-gen-row {
+            display: flex;
+            gap: 12px;
+            align-items: stretch;
+        }
+        .link-gen-row .form-input {
+            flex: 1;
+        }
+        .link-output {
+            margin-top: 16px;
+            padding: 14px 18px;
+            background: var(--bg3);
+            border: 1px solid var(--border2);
+            border-radius: var(--radius-sm);
+            font-family: var(--font-mono);
+            font-size: 14px;
+            color: var(--accent2);
+            word-break: break-all;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .link-output.visible {
+            display: flex;
+        }
+        .copy-big-btn {
+            padding: 12px 32px;
+            background: var(--gold);
+            color: #000;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all var(--transition);
+            white-space: nowrap;
+        }
+        .copy-big-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(255, 211, 42, .35);
+        }
+
+        /* â”€â”€ Commission Table â”€â”€ */
+        .commission-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px;
+        }
+        .commission-card h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        .commission-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .commission-table th,
+        .commission-table td {
+            padding: 12px 16px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+        .commission-table th {
+            background: var(--bg2);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            color: var(--text3);
+        }
+        .commission-table td {
+            color: var(--text);
+        }
+        .commission-table .rate {
+            font-weight: 700;
+            color: var(--gold);
+            font-size: 16px;
+        }
+        .commission-table tr:hover td {
+            background: var(--surface);
+        }
+
+        /* â”€â”€ Share Tools â”€â”€ */
+        .share-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px;
+        }
+        .share-card h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        .share-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .share-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all var(--transition);
+            color: #fff;
+            text-decoration: none;
+        }
+        .share-btn:hover {
+            transform: translateY(-2px);
+            color: #fff;
+        }
+        .share-btn i {
+            font-size: 20px;
+        }
+        .share-telegram { background: #0088cc; }
+        .share-telegram:hover { box-shadow: 0 4px 20px rgba(0, 136, 204, .4); }
+        .share-whatsapp { background: #25d366; }
+        .share-whatsapp:hover { box-shadow: 0 4px 20px rgba(37, 211, 102, .4); }
+        .share-facebook { background: #1877f2; }
+        .share-facebook:hover { box-shadow: 0 4px 20px rgba(24, 119, 242, .4); }
+
+        /* â”€â”€ Bot Links â”€â”€ */
+        .bot-links-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px;
+        }
+        .bot-links-card h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        .bot-link-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .bot-link-row:last-child {
+            border-bottom: none;
+        }
+        .bot-link-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text);
+            min-width: 140px;
+        }
+        .bot-link-url {
+            flex: 1;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--accent2);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .bot-link-copy {
+            padding: 6px 16px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xs);
+            color: var(--text2);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition);
+            white-space: nowrap;
+        }
+        .bot-link-copy:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* â”€â”€ Stats â”€â”€ */
+        .stats-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px;
+        }
+        .stats-card h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        .ref-stat {
+            background: var(--bg3);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            text-align: center;
+        }
+        .ref-stat .stat-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--gold);
+        }
+        .ref-stat .stat-label {
+            font-size: 13px;
+            color: var(--text3);
+            margin-top: 4px;
+        }
+
+        /* â”€â”€ Card Studio Link â”€â”€ */
+        .card-studio-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--accent), var(--cyan));
+            border-radius: var(--radius);
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all var(--transition);
+        }
+        .card-studio-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(108, 92, 231, .3);
+            color: #fff;
+        }
+
+        .login-gate {
+            text-align: center;
+            padding: 40px;
+            color: var(--text3);
+        }
+        .login-gate i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: .5;
+        }
+        .login-gate p {
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .ref-hero { padding: 70px 16px 32px; }
+            .ref-content { padding: 0 16px 80px; }
+            .link-gen-row { flex-direction: column; }
+            .share-buttons { flex-direction: column; }
+            .share-btn { justify-content: center; }
+            .bot-link-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+            .bot-link-name { min-width: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Nav -->
+    <div id="topnav-root"></div>
+
+    <!-- Ticker -->
+    <div id="ticker-root"></div>
+
+    <!-- Hero -->
+    <section class="ref-hero rv">
+        <h1 data-i18n="ref_hero_title">Earn Up to 10 Generations Deep â€” 15% Commission</h1>
+        <p data-i18n="ref_sub">Invite friends and earn commissions on every level.</p>
+    </section>
+
+    <!-- Content -->
+    <div class="ref-content">
+
+        <!-- Link Generator -->
+        <div class="link-gen-card rv">
+            <h2 data-i18n="ref_your_link">Your Referral Link</h2>
+            <div class="link-gen-row">
+                <input type="text" class="form-input" id="ref-username" data-i18n="ref_username_placeholder" placeholder="Telegram ID (e.g. 224223270)">
+                <button class="btn btn-primary" onclick="generateLink()" data-i18n="ref_generate">Generate Link</button>
+            </div>
+            <div class="link-output" id="link-output">
+                <span id="ref-link-text"></span>
+                <button class="copy-big-btn" onclick="copyRefLink()" data-i18n="common_copy">COPY</button>
+            </div>
+        </div>
+
+        <!-- Commission Table -->
+        <div class="commission-card rv">
+            <h2 data-i18n="ref_commission">Commission Structure</h2>
+            <div class="table-wrap">
+                <table class="commission-table">
+                    <thead>
+                        <tr>
+                            <th data-i18n="ref_gen">Generation</th>
+                            <th data-i18n="ref_commission">Commission</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Gen 1</td><td class="rate">10%</td></tr>
+                        <tr><td>Gen 2</td><td class="rate">5%</td></tr>
+                        <tr><td>Gen 3</td><td class="rate">3%</td></tr>
+                        <tr><td>Gen 4</td><td class="rate">2%</td></tr>
+                        <tr><td>Gen 5</td><td class="rate">1%</td></tr>
+                        <tr><td>Gen 6</td><td class="rate">0.5%</td></tr>
+                        <tr><td>Gen 7</td><td class="rate">0.3%</td></tr>
+                        <tr><td>Gen 8</td><td class="rate">0.2%</td></tr>
+                        <tr><td>Gen 9</td><td class="rate">0.1%</td></tr>
+                        <tr><td>Gen 10</td><td class="rate">0.05%</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Share Tools -->
+        <div class="share-card rv">
+            <h2 data-i18n="ref_share">Share Your Link</h2>
+            <div class="share-buttons">
+                <a href="#" class="share-btn share-telegram" id="share-tg" target="_blank" rel="noopener">
+                    <i class="fab fa-telegram"></i>
+                    <span>Telegram</span>
+                </a>
+                <a href="#" class="share-btn share-whatsapp" id="share-wa" target="_blank" rel="noopener">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>WhatsApp</span>
+                </a>
+                <a href="#" class="share-btn share-facebook" id="share-fb" target="_blank" rel="noopener">
+                    <i class="fab fa-facebook"></i>
+                    <span>Facebook</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Bot Referral Links -->
+        <div class="bot-links-card rv">
+            <h2 data-i18n="ref_bot_links">Bot Referral Links</h2>
+            <div id="bot-links-list"></div>
+        </div>
+
+        <!-- Stats (auth-gated) -->
+        <div class="stats-card rv" id="stats-section" style="display:none;">
+            <h2 data-i18n="ref_stats">Referral Statistics</h2>
+            <div class="stats-grid">
+                <div class="ref-stat">
+                    <div class="stat-value" id="stat-direct">0</div>
+                    <div class="stat-label" data-i18n="ref_direct">Direct Referrals</div>
+                </div>
+                <div class="ref-stat">
+                    <div class="stat-value" id="stat-network">0</div>
+                    <div class="stat-label" data-i18n="ref_network">Total Network</div>
+                </div>
+                <div class="ref-stat">
+                    <div class="stat-value" id="stat-earned">0 SLH</div>
+                    <div class="stat-label" data-i18n="ref_earned">Total Earned</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Studio Link -->
+        <a href="/referral-card.html" class="card-studio-link rv">
+            <i class="fas fa-id-card"></i>
+            <span data-i18n="ref_card_studio">Open Referral Card Studio</span>
+            <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+
+    <!-- Footer -->
+    <div id="footer-root"></div>
+
+    <!-- Bottom Nav -->
+    <div id="bottomnav-root"></div>
+
+    <script src="/js/translations.js?v=20260426e"></script>
+    <script src="/js/shared.js?v=20260426e"></script>
+    <script>
+    const MAIN_BOTS = [
+        { name: 'SLH Investment', handle: 'SLH_AIR_bot' },
+        { name: 'Guardian', handle: 'Grdian_bot' },
+        { name: 'Academy', handle: 'SLH_Academia_bot' },
+        { name: 'BotShop', handle: 'Buy_My_Shop_bot' },
+        { name: 'Wallet', handle: 'SLH_Wallet_bot' },
+        { name: 'Community', handle: 'SLH_community_bot' },
+        { name: 'Game Bot', handle: 'G4meb0t_bot_bot' }
+    ];
+
+    let currentRefLink = '';
+
+    // Read user from localStorage as primary source for Telegram ID
+    const _slhUser = JSON.parse(localStorage.getItem('slh_user') || '{}');
+    const _userId = _slhUser.id || _slhUser.telegram_id || '';
+
+    function getRefId() {
+        // 1. Try shared.js getCurrentUser
+        if (typeof getCurrentUser === 'function') {
+            const user = getCurrentUser();
+            if (user && user.id) return String(user.id);
+        }
+        // 2. Fallback to localStorage slh_user
+        if (_userId) return String(_userId);
+        // 3. Fallback: manual input (if user typed their telegram ID)
+        return document.getElementById('ref-username').value.trim().replace('@', '');
+    }
+
+    function generateLink() {
+        const refId = getRefId();
+        if (!refId) {
+            showToast(t('common_error'), true);
+            return;
+        }
+        currentRefLink = `https://t.me/SLH_AIR_bot?start=ref_${refId}`;
+        const output = document.getElementById('link-output');
+        document.getElementById('ref-link-text').textContent = currentRefLink;
+        output.classList.add('visible');
+        updateShareLinks(refId);
+        renderBotLinks(refId);
+    }
+
+    function copyRefLink() {
+        if (currentRefLink) {
+            copyToClipboard(currentRefLink);
+        }
+    }
+
+    function updateShareLinks(refId) {
+        const link = `https://t.me/SLH_AIR_bot?start=ref_${refId}`;
+        const msg = encodeURIComponent(`Join me on SLH Ecosystem and start earning! ${link}`);
+
+        document.getElementById('share-tg').href = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent('Join SLH Ecosystem - earn crypto with Telegram bots!')}`;
+        document.getElementById('share-wa').href = `https://wa.me/?text=${msg}`;
+        document.getElementById('share-fb').href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}`;
+    }
+
+    function renderBotLinks(refId) {
+        const container = document.getElementById('bot-links-list');
+        if (!refId) {
+            refId = getRefId() || 'your_id';
+        }
+        container.innerHTML = MAIN_BOTS.map(bot => {
+            const link = `https://t.me/${bot.handle}?start=ref_${refId}`;
+            return `
+            <div class="bot-link-row">
+                <span class="bot-link-name">${bot.name}</span>
+                <span class="bot-link-url">${link}</span>
+                <button class="bot-link-copy" onclick="copyToClipboard('${link}')" data-i18n="common_copy">${t('common_copy')}</button>
+            </div>`;
+        }).join('');
+    }
+
+    async function loadStats() {
+        if (!isLoggedIn()) return;
+        const user = getCurrentUser();
+        const section = document.getElementById('stats-section');
+        section.style.display = 'block';
+
+        const data = await apiGet(`/referral/stats/${user.id}`);
+        if (data) {
+            document.getElementById('stat-direct').textContent = formatNumber(data.direct || 0);
+            document.getElementById('stat-network').textContent = formatNumber(data.network || 0);
+            document.getElementById('stat-earned').textContent = `${formatNumber(data.earned || 0)} SLH`;
+        }
+    }
+
+    /* â”€â”€ Init â”€â”€ */
+    initShared({ activePage: 'referral', requireAuth: true, requireRegistered: true, showTicker: true });
+
+    // Prefill from getCurrentUser OR localStorage fallback
+    const _initUser = (typeof getCurrentUser === 'function' && getCurrentUser()) || null;
+    const _initId = (_initUser && _initUser.id) ? String(_initUser.id) : (_userId || '');
+    if (_initId) {
+        document.getElementById('ref-username').value = _initId;
+        generateLink();
+    }
+
+    renderBotLinks(_initId);
+
+    // Fetch real referral stats from API
+    if (_initId) {
+        const statsSection = document.getElementById('stats-section');
+        if (statsSection) statsSection.style.display = 'block';
+        fetch('https://slh-api-production.up.railway.app/api/referral/stats/' + _initId)
+            .then(r => r.json())
+            .then(data => {
+                if (data) {
+                    const direct = document.getElementById('stat-direct');
+                    const network = document.getElementById('stat-network');
+                    const earned = document.getElementById('stat-earned');
+                    if (direct) direct.textContent = (data.direct || 0).toLocaleString();
+                    if (network) network.textContent = (data.network || 0).toLocaleString();
+                    if (earned) earned.textContent = (data.earned || 0).toLocaleString() + ' SLH';
+                }
+            })
+            .catch(e => console.warn('[Referral] stats fetch error:', e));
+    }
+    // Also call shared loadStats if available
+    loadStats();
+    </script>
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260426e"></script>
+</body>
+</html>

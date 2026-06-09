@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>להרוויח קריפטו מסודוקו — הדרך הכי רגועה להתחיל · SLH Spark</title>
+<meta name="description" content="פתור סודוקו יומי, הרווח AIC. איך המשחק הכי פשוט בעולם הפך לצינור הכנסה פסיבית באקוסיסטם SLH.">
+<meta name="keywords" content="סודוקו, קריפטו, AIC, להרוויח, play-to-earn, SLH">
+<link rel="canonical" href="https://slh-nft.com/blog/earn-crypto-sudoku.html">
+<link rel="alternate" type="application/rss+xml" href="/api/community/rss" />
+<link rel="stylesheet" href="/css/slh-design-system.css">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta property="og:title" content="להרוויח קריפטו מסודוקו — SLH Spark" />
+<meta property="og:description" content="איך המשחק הכי פשוט בעולם הפך להכנסה פסיבית." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://slh-nft.com/blog/earn-crypto-sudoku.html" />
+<meta property="og:image" content="https://slh-nft.com/assets/og/blog.png" />
+<style>
+.blog-post{max-width:760px;margin:0 auto;padding:var(--space-8) var(--space-4);line-height:var(--line-height-relaxed)}
+.blog-post h1{font-size:var(--font-size-3xl);background:linear-gradient(90deg,var(--color-brand-purple,#a855f7),var(--color-brand-secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:var(--space-4)}
+.blog-post h2{font-size:var(--font-size-xl);color:var(--color-brand-primary);margin-top:var(--space-8);margin-bottom:var(--space-3)}
+.blog-post p{margin-bottom:var(--space-4)}
+.blog-post ul{padding-inline-start:var(--space-6);margin-bottom:var(--space-4)}
+.blog-post hr{border:none;border-top:1px solid var(--color-border-subtle);margin:var(--space-8) 0}
+.blog-post a{color:var(--color-brand-secondary);text-decoration:none}
+.blog-post a:hover{text-decoration:underline}
+.abstract{background:rgba(0,229,255,.05);border-inline-start:4px solid var(--color-brand-secondary);padding:var(--space-4);border-radius:var(--radius-md);direction:ltr;text-align:left;margin-top:var(--space-8)}
+</style>
+</head>
+<body>
+<article class="blog-post">
+<h1>להרוויח קריפטו מסודוקו — הדרך הכי רגועה להתחיל</h1>
+
+<p>רוב ה-Play-to-Earn מסתיים באחד משניים: הרבה לחץ, או הרבה זבל. אנחנו בנינו את השלישי — <strong>סודוקו + AIC</strong>. פשוט, שקט, עובד.</p>
+
+<hr/>
+
+<h2>למה סודוקו?</h2>
+
+<p>כי זה המשחק היחיד שבו אתה לא מתחרה באף אחד, רק במוח שלך. אין opponents שמרמים. אין RNG מעצבן. רק חידה מתמטית נקייה — ואתה מול עצמך.</p>
+
+<p>בשביל אקוסיסטם שמטרתו "שקט דיגיטלי" (ראה <a href="/blog/anti-facebook-manifesto.html">מניפסט אנטי-פייסבוק</a>), זו הבחירה הטבעית.</p>
+
+<h2>איך זה עובד?</h2>
+
+<p>3 שלבים:</p>
+
+<ol>
+<li>היכנס ל-<a href="/sudoku.html">sudoku.html</a> ובחר רמת קושי (קל / בינוני / קשה)</li>
+<li>פתור את הלוח. אם תקוע — אפשר לקנות רמז בעלות 1 AIC</li>
+<li>כשהפתרון נכון — המערכת מאמתת אוטו ומזכה AIC + REP</li>
+</ol>
+
+<p>יש גם <strong>חידה יומית</strong> (Daily Puzzle) — אותה חידה לכל המשתמשים. הראשונים לפתור מקבלים בונוס. דירוג שבועי ב-<a href="/community.html">community sidebar</a>.</p>
+
+<h2>כמה מרוויחים?</h2>
+
+<ul>
+<li>קל: 2 AIC</li>
+<li>בינוני: 5 AIC</li>
+<li>קשה: 10 AIC</li>
+<li>יומי ראשון: +5 AIC בונוס</li>
+<li>סדרה של 7 ימים: +15 AIC בונוס</li>
+</ul>
+
+<p>משתמש ממוצע שמשחק יומיומית ל-30 יום → ~200 AIC, שווה ערך לשיחה ארוכה עם הצ׳אטבוט או להמרה ל-SLH.</p>
+
+<h2>האלגוריתם</h2>
+
+<p>הפותר שלנו משתמש ב-<strong>backtracking</strong> קלאסי עם המיטוב "naked twins" ו-"hidden singles". זה מאפשר לייצר לוחות עם רמת קושי מדויקת — לא אקראית.</p>
+
+<p>כל לוח נשמר ב-DB עם ה-solution. זה אומר שני דברים:</p>
+
+<ul>
+<li>אי אפשר לרמות (solution מוסתר מה-frontend)</li>
+<li>בדיקת פתרון היא בסיסית ומהירה — &lt;100ms</li>
+</ul>
+
+<h2>מה עוד קורה בסודוקו?</h2>
+
+<p>השנה נוסיף:</p>
+
+<ul>
+<li>תחרויות שבועיות עם פרס SLH למוביל</li>
+<li>Solve-together — שני משתמשים פותרים לוח במקביל, מחליפים תאים</li>
+<li>גיבוי קהילתי: אם כל הקהילה פותרת יומיומי ביחד → mass mint של AIC</li>
+</ul>
+
+<h2>Leaderboard</h2>
+
+<p>ה-API: <code>GET /api/sudoku/leaderboard?period=weekly&amp;limit=20</code> — 20 הפותרים הכי מהירים השבוע. מוצג גם בסיידבר של <a href="/community.html">community.html</a>.</p>
+
+<hr/>
+
+<h2>מתאים לך אם...</h2>
+
+<ul>
+<li>אתה רוצה להתחיל לצבור קריפטו בלי להכניס כסף</li>
+<li>אתה אוהב חידות מתמטיות</li>
+<li>אתה מעדיף "זיעה" קוגניטיבית על זעזועים רגשיים של שוק</li>
+<li>אתה אוהב 10-15 דקות שקטות ביום שמתורגמות לערך</li>
+</ul>
+
+<div class="abstract">
+<h3>English Abstract</h3>
+<p>SLH's Sudoku integration is a play-to-earn path optimized for calm: no opponents, no RNG, just a pure math puzzle that rewards AIC (the ecosystem's AI-credit token) and REP (reputation). Three difficulty levels give 2/5/10 AIC plus daily and streak bonuses. Solutions are validated server-side (backtracking solver with naked-twins/hidden-singles), making cheating impossible. Average player earns ~200 AIC over 30 days — convertible to SLH or spent on Claude-powered chat. Weekly leaderboard visible in the community sidebar. Endpoint: GET /api/sudoku/leaderboard?period=weekly&amp;limit=20.</p>
+</div>
+
+<p style="margin-top:var(--space-8);color:var(--color-text-muted);font-size:var(--font-size-sm)">
+📅 17 אפריל 2026 · ⏱ 4 דק׳ קריאה · 🏷 <a href="/blog/">כל הפוסטים</a>
+</p>
+</article>
+</body>
+</html>

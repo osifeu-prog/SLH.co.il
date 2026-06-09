@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>דווח על באג / תקלה — SLH</title>
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{--bg:#050810;--bg2:#0d1220;--gold:#ffd700;--green:#00e887;--red:#ff4444;--orange:#ff9800;--text:#f5f5f8;--text2:#9ba0b5;--border:rgba(255,68,68,.2)}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Rubik',sans-serif;margin:0;min-height:100vh;line-height:1.5}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(circle at 50% 0,rgba(255,68,68,.06),transparent 60%)}
+.container{max-width:680px;margin:40px auto;padding:0 20px}
+.header{text-align:center;margin-bottom:30px}
+.header h1{font-size:32px;font-weight:900;background:linear-gradient(135deg,var(--red),var(--orange));-webkit-background-clip:text;background-clip:text;color:transparent;margin:0 0 8px}
+.header p{color:var(--text2);font-size:14px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:30px}
+label{display:block;font-size:12px;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:1.5px;font-weight:700}
+input,textarea,select{width:100%;padding:12px 14px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:14px}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--red)}
+textarea{resize:vertical;min-height:90px}
+.severity-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.severity-row button{padding:10px;background:var(--bg);border:1px solid var(--border);color:var(--text2);border-radius:10px;cursor:pointer;font-weight:700;font-size:12px;font-family:inherit}
+.severity-row button.active{color:#fff}
+.severity-row button.active.low{background:var(--green);border-color:var(--green);color:#000}
+.severity-row button.active.medium{background:var(--gold);border-color:var(--gold);color:#000}
+.severity-row button.active.high{background:var(--orange);border-color:var(--orange);color:#fff}
+.severity-row button.active.critical{background:var(--red);border-color:var(--red);color:#fff}
+.btn-submit{width:100%;padding:16px;background:linear-gradient(135deg,var(--red),var(--orange));color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:900;cursor:pointer;font-family:inherit}
+.btn-submit:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(255,68,68,.3)}
+.success{background:var(--green);color:#000;padding:20px;border-radius:14px;font-weight:900;text-align:center;margin-top:20px;display:none}
+.success.show{display:block}
+.success .id{font-family:monospace;background:rgba(0,0,0,.15);padding:6px 12px;border-radius:6px;display:inline-block;margin-top:8px}
+.tip{background:rgba(255,215,0,.06);border:1px solid var(--gold);border-radius:12px;padding:14px;margin-bottom:18px;font-size:13px;color:var(--gold)}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>🐛 דווח על באג / תקלה</h1>
+    <p>עזור לנו לשפר! דיווחים מטופלים תוך 24 שעות.</p>
+  </div>
+
+  <div class="tip">
+    💡 <strong>טיפ:</strong> אפשר גם פשוט לפתוח את ה-AI Assistant בפינה הימנית התחתונה ולכתוב "באג" — הוא יפתח את הטופס אוטומטית עם כל הפרטים.
+  </div>
+
+  <div class="card">
+    <label>סוג הבעיה *</label>
+    <select id="category">
+      <option value="">בחר...</option>
+      <option value="visual">תצוגה / עיצוב</option>
+      <option value="functional">פונקציונליות לא עובדת</option>
+      <option value="payment">בעיה בתשלום</option>
+      <option value="login">בעיה בכניסה / סיסמה</option>
+      <option value="bot">בעיה בטלגרם בוט</option>
+      <option value="content">תוכן שגוי / חסר</option>
+      <option value="performance">איטיות</option>
+      <option value="security">חשד לבעיה אבטחה</option>
+      <option value="other">אחר</option>
+    </select>
+
+    <label>חומרה</label>
+    <div class="severity-row" id="severity-buttons">
+      <button data-sev="low">נמוכה</button>
+      <button data-sev="medium" class="active medium">בינונית</button>
+      <button data-sev="high">גבוהה</button>
+      <button data-sev="critical">קריטית</button>
+    </div>
+
+    <label>כותרת קצרה *</label>
+    <input type="text" id="title" placeholder="לדוגמה: כפתור 'התחל' לא עובד בדף הרכישה">
+
+    <label>תיאור מפורט *</label>
+    <textarea id="description" placeholder="ספר מה קרה, מה ניסית לעשות, ומה היית מצפה שיקרה..."></textarea>
+
+    <label>שלבי שחזור (אופציונלי)</label>
+    <textarea id="steps" placeholder="1. נכנסתי ל-...&#10;2. לחצתי על...&#10;3. ואז קרה..."></textarea>
+
+    <label>שם (אופציונלי)</label>
+    <input type="text" id="reporter-name" placeholder="להשארת קרדיט">
+
+    <label>אימייל / טלפון (אופציונלי, לחזרה)</label>
+    <input type="text" id="reporter-contact" placeholder="לעדכון על תיקון">
+
+    <label>איזה דף? (זה ייתפס אוטומטית)</label>
+    <input type="text" id="page-url" readonly>
+
+    <button class="btn-submit" onclick="submit()">
+      <i class="fas fa-paper-plane"></i> שלח דיווח
+    </button>
+  </div>
+
+  <div id="success" class="success">
+    ✅ הדיווח נקלט בהצלחה!<br>
+    <span class="id" id="success-id"></span><br>
+    <span style="font-weight:400;font-size:13px">תודה על העזרה לשיפור המערכת</span>
+  </div>
+</div>
+
+<div id="topnav-root"></div>
+<script src="/js/shared.js?v=20260426e"></script>
+<script src="/js/analytics.js"></script>
+
+<script>
+const API = 'https://slh-api-production.up.railway.app';
+let severity = 'medium';
+
+document.querySelectorAll('#severity-buttons button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#severity-buttons button').forEach(x => {
+      x.className = '';
+    });
+    b.classList.add('active', b.dataset.sev);
+    severity = b.dataset.sev;
+  });
+});
+
+// Pre-fill page URL from query param if available
+const urlParams = new URLSearchParams(location.search);
+document.getElementById('page-url').value = urlParams.get('from') || document.referrer || 'unknown';
+if(urlParams.get('title')) document.getElementById('title').value = urlParams.get('title');
+
+async function submit(){
+  const body = {
+    title: document.getElementById('title').value.trim(),
+    description: document.getElementById('description').value.trim(),
+    severity,
+    category: document.getElementById('category').value,
+    steps_to_reproduce: document.getElementById('steps').value.trim(),
+    reporter_name: document.getElementById('reporter-name').value.trim(),
+    reporter_email: document.getElementById('reporter-contact').value.trim(),
+    page_url: document.getElementById('page-url').value
+  };
+  if(!body.title || !body.description){ alert('כותרת ותיאור הם שדות חובה'); return; }
+  if(!body.category){ alert('בחר סוג בעיה'); return; }
+  try {
+    const r = await fetch(`${API}/api/bugs/report`, {
+      method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)
+    });
+    const d = await r.json();
+    if(!r.ok){ throw new Error(d.detail || 'API error'); }
+    document.getElementById('success-id').textContent = d.tracking || ('#' + d.bug_id);
+    document.getElementById('success').classList.add('show');
+    // Reset form
+    document.getElementById('title').value = '';
+    document.getElementById('description').value = '';
+    document.getElementById('steps').value = '';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch(e) {
+    alert('❌ שגיאה: ' + e.message);
+  }
+}
+</script>
+
+<script src="/js/ai-assistant.js"></script>
+</body>
+</html>

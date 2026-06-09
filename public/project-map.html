@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH Project Map — מפת הפרויקט והסטטוס</title>
+<meta name="description" content="Admin dashboard - מפה מלאה של 79 הדפים, סטטוס, ופרומפטים מוכנים לכל דף">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/shared.css?v=20260415">
+<style>
+:root {
+  --bg: #050810;
+  --bg2: #0d1220;
+  --bg3: #151a2e;
+  --gold: #ffd700;
+  --green: #00e887;
+  --red: #ff4444;
+  --orange: #ff9800;
+  --purple: #a855f7;
+  --blue: #3b82f6;
+  --cyan: #06b6d4;
+  --text: #f5f5f8;
+  --text2: #9ba0b5;
+  --text3: #5a6078;
+  --border: rgba(255,215,0,.18);
+}
+*{box-sizing:border-box}
+body{
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Rubik','Inter',sans-serif;
+  margin:0; min-height:100vh;
+  line-height:1.5;
+}
+body::before {
+  content:''; position:fixed; inset:0; z-index:-1;
+  background:
+    radial-gradient(circle at 15% 25%, rgba(255,215,0,.06), transparent 50%),
+    radial-gradient(circle at 85% 75%, rgba(0,232,135,.05), transparent 50%);
+  pointer-events:none;
+}
+
+/* Header */
+.pm-header {
+  max-width: 1400px; margin: 0 auto;
+  padding: 30px 20px 20px;
+  display: flex; flex-wrap: wrap;
+  align-items: center; justify-content: space-between;
+  gap: 16px;
+}
+.pm-title {
+  font-size: 32px; font-weight: 900;
+  background: linear-gradient(135deg, var(--gold), var(--green));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  margin: 0;
+}
+.pm-sub { font-size: 13px; color: var(--text2); margin-top: 4px; }
+.pm-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.pm-btn {
+  padding: 10px 18px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 13px;
+  font-family: inherit;
+  transition: all .2s;
+  text-decoration: none;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.pm-btn:hover { border-color: var(--gold); color: var(--gold); }
+.pm-btn.primary { background: linear-gradient(135deg, var(--gold), var(--green)); color: #000; border: none; }
+
+/* KPIs */
+.pm-kpis {
+  max-width: 1400px; margin: 0 auto 20px; padding: 0 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+.kpi {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  text-align: center;
+}
+.kpi .v { font-size: 28px; font-weight: 900; color: var(--gold); line-height: 1; }
+.kpi .l { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 6px; }
+.kpi.green .v { color: var(--green); }
+.kpi.red .v { color: var(--red); }
+.kpi.purple .v { color: var(--purple); }
+.kpi.blue .v { color: var(--blue); }
+
+/* Filters */
+.pm-filters {
+  max-width: 1400px; margin: 0 auto 20px; padding: 0 20px;
+  display: flex; gap: 10px; flex-wrap: wrap;
+  align-items: center;
+}
+.pm-search {
+  flex: 1; min-width: 220px;
+  padding: 12px 16px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 12px;
+  font-size: 14px;
+  font-family: inherit;
+}
+.pm-search:focus { outline: none; border-color: var(--gold); }
+.role-chip {
+  padding: 8px 16px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .2s;
+  font-family: inherit;
+}
+.role-chip:hover { color: var(--text); border-color: var(--gold); }
+.role-chip.active { background: var(--gold); color: #000; border-color: var(--gold); }
+.role-chip[data-role="admin"].active { background: var(--red); border-color: var(--red); color: #fff; }
+.role-chip[data-role="ops"].active { background: var(--orange); border-color: var(--orange); color: #000; }
+.role-chip[data-role="user"].active { background: var(--blue); border-color: var(--blue); color: #fff; }
+.role-chip[data-role="marketing"].active { background: var(--purple); border-color: var(--purple); color: #fff; }
+.role-chip[data-role="promo"].active { background: var(--green); border-color: var(--green); color: #000; }
+
+/* Grid */
+.pm-grid {
+  max-width: 1400px; margin: 0 auto 60px; padding: 0 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 14px;
+}
+.page-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px;
+  display: flex; flex-direction: column;
+  transition: all .2s;
+  position: relative;
+  overflow: hidden;
+}
+.page-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0,0,0,.4);
+}
+.page-card.score-5 { border-left: 4px solid var(--green); }
+.page-card.score-4 { border-left: 4px solid #aaff00; }
+.page-card.score-3 { border-left: 4px solid var(--gold); }
+.page-card.score-2 { border-left: 4px solid var(--orange); }
+.page-card.score-1 { border-left: 4px solid var(--red); }
+.page-card.score-0 { border-left: 4px solid var(--red); }
+
+.page-card-head {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 8px; margin-bottom: 8px;
+}
+.page-name {
+  font-size: 16px; font-weight: 800; color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  word-break: break-all;
+}
+.role-tag {
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 10px;
+  font-weight: 800;
+  text-transform: uppercase; letter-spacing: 1px;
+  flex-shrink: 0;
+}
+.role-tag.admin { background: rgba(255,68,68,.18); color: var(--red); }
+.role-tag.ops { background: rgba(255,152,0,.18); color: var(--orange); }
+.role-tag.user { background: rgba(59,130,246,.18); color: var(--blue); }
+.role-tag.marketing { background: rgba(168,85,247,.18); color: var(--purple); }
+.role-tag.promo { background: rgba(0,232,135,.18); color: var(--green); }
+.role-tag.public { background: rgba(255,215,0,.18); color: var(--gold); }
+
+.page-h1 {
+  font-size: 13px;
+  color: var(--text2);
+  margin: 0 0 12px;
+  min-height: 36px;
+  line-height: 1.4;
+}
+
+.feature-bar {
+  display: flex; gap: 4px; margin-bottom: 12px;
+}
+.feat {
+  flex: 1; height: 6px;
+  background: rgba(255,255,255,.08);
+  border-radius: 3px;
+  position: relative;
+  overflow: hidden;
+}
+.feat.on { background: var(--green); box-shadow: 0 0 8px rgba(0,232,135,.5); }
+.feat.off { background: rgba(255,68,68,.3); }
+
+.feature-labels {
+  display: flex; gap: 4px; margin-bottom: 14px;
+  font-size: 9px; color: var(--text3);
+  text-transform: uppercase; letter-spacing: 0.8px;
+}
+.feature-labels span { flex: 1; text-align: center; }
+
+.gap-text {
+  font-size: 12px; color: var(--text2);
+  background: rgba(255,68,68,.05);
+  border-right: 3px solid var(--red);
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  min-height: 36px;
+}
+.gap-text.complete {
+  color: var(--green);
+  background: rgba(0,232,135,.05);
+  border-right-color: var(--green);
+}
+
+.page-meta {
+  display: flex; justify-content: space-between;
+  font-size: 11px; color: var(--text3);
+  margin-bottom: 12px;
+}
+
+.page-actions {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+}
+.page-actions button, .page-actions a {
+  padding: 8px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: inherit;
+  transition: all .15s;
+  text-decoration: none;
+  text-align: center;
+  display: flex; align-items: center; justify-content: center; gap: 4px;
+}
+.page-actions a.open-btn:hover { background: var(--gold); color: #000; border-color: var(--gold); }
+.page-actions button.prompt-btn:hover { background: var(--green); color: #000; border-color: var(--green); }
+.page-actions button.share-btn:hover { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+/* Modal */
+.modal-bg {
+  position: fixed; inset: 0;
+  background: rgba(5,8,16,.85);
+  backdrop-filter: blur(6px);
+  z-index: 100;
+  display: none;
+  align-items: center; justify-content: center;
+  padding: 20px;
+}
+.modal-bg.open { display: flex; }
+.modal {
+  background: var(--bg2);
+  border: 1px solid var(--gold);
+  border-radius: 20px;
+  padding: 28px;
+  max-width: 720px; width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 30px 80px rgba(0,0,0,.6);
+}
+.modal h2 {
+  font-size: 22px; margin: 0 0 6px;
+  color: var(--gold);
+  font-family: 'JetBrains Mono', monospace;
+}
+.modal .modal-sub { font-size: 13px; color: var(--text2); margin-bottom: 20px; }
+.modal pre {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+.modal-actions {
+  display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap;
+}
+
+.toast {
+  position: fixed; bottom: 24px; left: 50%;
+  transform: translateX(-50%);
+  background: var(--green);
+  color: #000;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 800;
+  z-index: 200;
+  display: none;
+  box-shadow: 0 10px 30px rgba(0,232,135,.5);
+}
+.toast.show { display: block; animation: toastIn .3s ease-out; }
+@keyframes toastIn {
+  from { transform: translate(-50%, 20px); opacity: 0; }
+  to   { transform: translate(-50%, 0); opacity: 1; }
+}
+
+/* Login gate */
+.login-gate {
+  max-width: 460px; margin: 100px auto;
+  padding: 40px 32px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  text-align: center;
+}
+.login-gate h2 { color: var(--gold); margin-bottom: 12px; }
+.login-gate input {
+  width: 100%; padding: 14px;
+  background: var(--bg); border: 1px solid var(--border);
+  color: var(--text); border-radius: 12px;
+  font-size: 16px; margin-bottom: 14px;
+  font-family: inherit;
+}
+.login-gate button {
+  width: 100%; padding: 14px;
+  background: linear-gradient(135deg, var(--gold), var(--green));
+  color: #000; border: none; border-radius: 12px;
+  font-size: 16px; font-weight: 900; cursor: pointer;
+  font-family: inherit;
+}
+
+@media (max-width: 640px) {
+  .pm-grid { grid-template-columns: 1fr; }
+  .pm-kpis { grid-template-columns: repeat(2, 1fr); }
+  .modal { padding: 20px; }
+}
+</style>
+</head>
+<body>
+
+<div id="login-gate" class="login-gate" style="display:none">
+  <h2>🔐 Project Map — Admin Only</h2>
+  <p style="color:var(--text2);font-size:13px">הכנס סיסמת אדמין כדי לראות את מפת הפרויקט</p>
+  <input type="password" id="login-pwd" placeholder="סיסמה" autocomplete="current-password">
+  <button onclick="doLogin()">היכנס</button>
+</div>
+
+<div id="main-app" style="display:none">
+  <div id="topnav-root"></div>
+  <div class="pm-header">
+    <div>
+      <h1 class="pm-title">🗺️ Project Map</h1>
+      <p class="pm-sub">מפת מלוא 79 הדפים · סטטוס · פתיחה · פרומפטים מוכנים לסוכני AI</p>
+    </div>
+    <div class="pm-actions">
+      <a href="/admin.html" class="pm-btn"><i class="fas fa-arrow-right"></i> חזרה לאדמין</a>
+      <a href="/control-center.html" class="pm-btn"><i class="fas fa-satellite-dish"></i> Control Center</a>
+      <button class="pm-btn primary" onclick="openAllRoles()"><i class="fas fa-external-link-alt"></i> פתח את כל ה-OPS</button>
+    </div>
+  </div>
+
+  <div class="pm-kpis">
+    <div class="kpi"><div class="v" id="kpi-total">--</div><div class="l">סה"כ דפים</div></div>
+    <div class="kpi green"><div class="v" id="kpi-complete">2</div><div class="l">מלאים (5/5)</div></div>
+    <div class="kpi"><div class="v" id="kpi-theme">28%</div><div class="l">Theme Coverage</div></div>
+    <div class="kpi"><div class="v" id="kpi-i18n">59%</div><div class="l">i18n Coverage</div></div>
+    <div class="kpi green"><div class="v" id="kpi-analytics">100%</div><div class="l">Analytics</div></div>
+    <div class="kpi red"><div class="v" id="kpi-ai">14%</div><div class="l">AI Assistant</div></div>
+    <div class="kpi blue"><div class="v" id="kpi-avg">3.1</div><div class="l">ציון ממוצע</div></div>
+  </div>
+
+  <div class="pm-filters">
+    <input type="text" id="search" class="pm-search" placeholder="🔍 חיפוש דף (שם / כותרת / חוסר)...">
+    <button class="role-chip active" data-role="all">הכל</button>
+    <button class="role-chip" data-role="public">Public</button>
+    <button class="role-chip" data-role="user">User</button>
+    <button class="role-chip" data-role="admin">Admin</button>
+    <button class="role-chip" data-role="ops">Ops</button>
+    <button class="role-chip" data-role="marketing">Marketing</button>
+    <button class="role-chip" data-role="promo">Promo</button>
+  </div>
+
+  <div id="grid" class="pm-grid"></div>
+</div>
+
+<!-- Modal for AI Prompt -->
+<div id="modal-bg" class="modal-bg" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <h2 id="modal-title">filename.html</h2>
+    <p class="modal-sub" id="modal-sub">פרומפט מוכן לסוכן AI / איש צוות</p>
+    <pre id="modal-prompt"></pre>
+    <div class="modal-actions">
+      <button class="pm-btn primary" onclick="copyPrompt()"><i class="fas fa-copy"></i> העתק לקליפבורד</button>
+      <a id="modal-open-btn" class="pm-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> פתח דף</a>
+      <button class="pm-btn" onclick="shareWA()"><i class="fab fa-whatsapp"></i> שתף ב-WhatsApp</button>
+      <button class="pm-btn" onclick="closeModal()">סגור</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast">✅ הועתק לקליפבורד</div>
+
+<script>
+/* === DATA: 49 pages crawled from website/ === */
+const PAGES = [
+  {f:"about.html",t:"About & Transparency",h1:"אודות SLH Spark — שקיפות מלאה",r:"marketing",theme:false,i18n:false,analytics:true,ai:true,nav:true,web3:false,lines:246,gap:"חסר theme switcher, חסר תרגום ל-5 שפות"},
+  {f:"admin.html",t:"Admin | Backoffice",h1:"Admin Dashboard",r:"admin",theme:true,i18n:true,analytics:true,ai:true,nav:true,web3:false,lines:2330,gap:"עמוד מלא ומוכן"},
+  {f:"analytics.html",t:"Analytics Dashboard",h1:"Analytics Dashboard",r:"admin",theme:false,i18n:false,analytics:true,ai:true,nav:true,web3:false,lines:489,gap:"חסר theme switcher, חסר תרגום"},
+  {f:"blockchain.html",t:"Blockchain Explorer",h1:"SLH on BSC — Live Blockchain",r:"public",theme:true,i18n:true,analytics:true,ai:false,nav:true,web3:false,lines:1409,gap:"חסר web3 integration"},
+  {f:"bots.html",t:"Bots — 25+ Telegram Bots",h1:"20+ Telegram Bots — Every Bot is a Business",r:"public",theme:false,i18n:true,analytics:true,ai:false,nav:true,web3:false,lines:426,gap:"חסר theme switcher, חסר ai-assistant"},
+  {f:"broadcast-composer.html",t:"Broadcast Composer — Admin Only",h1:"Broadcast Composer",r:"admin",theme:true,i18n:false,analytics:true,ai:false,nav:true,web3:false,lines:464,gap:"חסר תרגום, חסר ai-assistant"},
+  {f:"buy.html",t:"Buy SLH Tokens",h1:"רכישת מטבעות SLH",r:"public",theme:false,i18n:true,analytics:true,ai:false,nav:true,web3:false,lines:483,gap:"חסר theme switcher, חסר web3 integration"},
+  {f:"challenge.html",t:"21-Day Challenge",h1:"אתגר 21 יום",r:"user",theme:true,i18n:false,analytics:true,ai:false,nav:true,web3:false,lines:814,gap:"חסר תרגום, חסר ai-assistant"},
+  {f:"community.html",t:"Community — Posts & Events",h1:"SLH Community",r:"marketing",theme:true,i18n:true,analytics:true,ai:false,nav:true,web3:false,lines:2634,gap:"חסר ai-assistant"},
+  {f:"control-center.html",t:"Control Center",h1:"SLH Control Center",r:"ops",theme:true,i18n:false,analytics:true,ai:false,nav:true,web3:false,lines:715,gap:"חסר תרגום, חסר ai-assistant"},
+  {f:"daily-blog.html",t:"Daily Blog",h1:"בלוג יומי — מה חדש היום?",r:"marketing",theme:false,i18n:true,analytics:true,ai:true,nav:true,web3:false,lines:785,gap:"חסר theme switcher"},
+  {f:"dashboard.html",t:"Dashboard — My Account",h1:"Dashboard",r:"user",theme:true,i18n:true,analytics:true,ai:true,nav:true,web3:true,lines:3288,gap:"עמוד מלא ומוכן"},
+  {f:"dex-launch.html",t:"DEX Launch",h1:"יצירת Pool ראשוני של SLH",r:"promo",theme:false,i18n:false,analytics:true,ai:false,nav:true,web3:false,lines:792,gap:"חסר theme, תרגום, ai-assistant"},
+  {f:"earn.html",t:"Earn — Staking & Variable Yield (4-12%)",h1:"Earn",r:"user",theme:false,i18n:true,analytics:true,ai:false,nav:true,web3:false,lines:1753,gap:"חסר theme switcher, חסר ai-assistant"},
+  {f:"ecosystem-guide.html",t:"Ecosystem Guide",h1:"SLH Ecosystem Guide",r:"public",theme:true,i18n:true,analytics:true,ai:false,nav:true,web3:false,lines:560,gap:"חסר ai-assistant"},
+  {f:"for-therapists.html",t:"For Therapists",h1:"רשת המטפלים של SLH",r:"marketing",theme:false,i18n:false,analytics:true,ai:false,nav:true,web3:false,lines:382,gap:"חסר theme, תרגום, ai-assistant"},
+  {f:"getting-started.html",t:"Getting Started",h1:"איך המערכת עובדת?",r:"user",theme:false,i18n:true,analytics:true,ai:false,nav:true,web3:false,lines:527,gap:"חסר theme switcher, חסר ai-assistant"},
+  {f:"guides.html",t:"Guides — Step-by-Step",h1:"USER GUIDES",r:"marketing",theme:false,i18n:true,analytics:true,ai:false,nav:true,web3:false,lines:1075,gap:"חסר theme switcher, חסר ai-assistant"},
+  {f:"healing-vision.html",t:"Healing Vision",h1:"המטבע של הריפוי",r:"marketing",theme:true,i18n:false,analytics:true,ai:false,nav:true,web3:false,lines:576,gap:"חסר תרגום, חסר ai-assistant"},
+  {f:"index.html",t:"Home — Digital Investment",h1:"SLH — The Ecosystem of the New World",r:"public",theme:false,i18n:true,analytics:true,ai:false,nav:true,web3:false,lines:738,gap:"חסר theme switcher, חסר ai-assistant"},
+  {f:"invite.html",t:"Invite — Refer Friends",h1:"הזמן חברים. קבל הטבות.",r:"user",theme:false,i18n:false,analytics:true,ai:false,nav:true,web3:false,lines:689,gap:"חסר theme, תרגום, ai-assistant"},
+  {f:"jubilee.html",t:"שנת היובל",h1:"שנת היובל — שיקום ישראל דרך אחדות וריפוי",r:"marketing",theme:true,i18n:false,analytics:true,ai:false,nav:true,web3:false,lines:1593,gap:"חסר תרגום, חסר ai-assistant"},
+  {f:"launch-event.html",t:"Genesis Launch",h1:"Genesis Launch",r:"promo",theme:true,i18n:true,analytics:true,ai:false,nav:true,web3:false,lines:925,gap:"חסר ai-assistant"},
+  {f:"liquidity.html",t:"Liquidity & Staking",h1:"נזילות וסטייקינג",r:"public",theme:false,i18n:true,analytics:true,ai:false,nav:true,web3:false,lines:381,gap:"חסר theme switcher, חסר ai-assistant"},
+  {f:"member.html",t:"Member Card",h1:"Member card",r:"user",theme:true,i18n:false,analytics:true,ai:false,nav:true,web3:false,lines:1023,gap:"חסר תרגום, חסר ai-assistant"},
+  {f:"morning-checklist.html",t:"Morning Checklist",h1:"בוקר טוב",r:"ops",theme:false,i18n:false,analytics:true,ai:true,nav:true,web3:false,lines:684,gap:"חסר theme switcher, חסר תרגום"},
+  {f:"morning-handoff.html",t:"Morning Handoff",h1:"בוקר טוב, אוסיף",r:"ops",theme:true,i18n:false,analytics:true,ai:false,nav:true,web3:false,lines:458,gap:"חסר תרגום, חסר ai-assistant"},
+  {f:"network.html",t:"Network Map",h1:"SLH Network Map",r:"public",theme:false,i18n:true,analytics:true,ai:false,nav:true,web3:false,lines:1039,gap:"חסר theme switcher, חסר ai-assistant"},
+  {f:"onboarding.html",t:"Genesis 49 — Join First",h1:"ברוכים הבאים ל-SLH Spark",r:"user",theme:true,i18n:false,analytics:true,ai:false,nav:true,web3:false,lines:1055,gap:"חסר תרגום, חסר ai-assistant"},
+  {f:"ops-dashboard.html",t:"Ops Dashboard",h1:"Ops Dashboard",r:"ops",theme:false,i18n:true,analytics:true,ai:false,nav:true,web3:false,lines:381,gap:"חסר theme switcher, חסר ai-assistant"},
+  {f:"ops-report-20260411.html",t:"דוח ביצוע — 11 אפריל",h1:"SLH Ecosystem — שלב מוסדי",r:"ops",theme:true,i18n:false,analytics:true,ai:false,nav:true,web3:false,lines:924,gap:"חסר תרגום, חסר ai-assistant"},
+  {f:"overnight-report.html",t:"Overnight Report",h1:"Overnight Report",r:"ops",theme:true,i18n:false,analytics:true,ai:false,nav:true,web3:false,lines:525,gap:"חסר תרגום, חסר ai-assistant"},
+  {f:"p2p.html",t:"P2P Trading",h1:"P2P Trading & Buy Crypto",r:"user",theme:true,i18n:true,analytics:true,ai:false,nav:true,web3:false,lines:1341,gap:"חסר ai-assistant"},
+  {f:"partner-dashboard.html",t:"Partner Dashboard",h1:"Partner Dashboard",r:"user",theme:true,i18n:false,analytics:true,ai:false,nav:true,web3:false,lines:452,gap:"חסר תרגום, חסר ai-assistant"},
+  {f:"partner-launch-invite.html",t:"הזמנה אישית — Genesis",h1:"הזמנה אישית",r:"promo",theme:true,i18n:false,analytics:true,ai:false,nav:true,web3:false,lines:391,gap:"חסר תרגום, חסר ai-assistant"},
+  {f:"privacy.html",t:"Privacy Policy",h1:"מדיניות פרטיות",r:"public",theme:false,i18n:true,analytics:true,ai:false,nav:true,web3:false,lines:521,gap:"חסר theme switcher, חסר ai-assistant"},
+  {f:"promo-shekel.html",t:"דולר חלש שקל חזק",h1:"הדולר נחלש. השקל התחזק.",r:"promo",theme:false,i18n:true,analytics:true,ai:false,nav:false,web3:false,lines:907,gap:"חסר theme switcher, חסר ai-assistant"},
+  {f:"referral-card.html",t:"Referral Card Studio",h1:"Referral Card Studio",r:"user",theme:false,i18n:true,analytics:true,ai:false,nav:true,web3:false,lines:438,gap:"חסר theme switcher, חסר ai-assistant"},
+  {f:"referral.html",t:"Referral — 10-Generation",h1:"Earn Up to 10 Generations Deep",r:"user",theme:false,i18n:true,analytics:true,ai:false,nav:true,web3:false,lines:580,gap:"חסר theme switcher, חסר ai-assistant"},
+  {f:"risk-dashboard.html",t:"Risk Dashboard",h1:"SLH Risk Dashboard",r:"ops",theme:false,i18n:false,analytics:true,ai:false,nav:false,web3:false,lines:110,gap:"חסר הכל — דורש שיקום מלא"},
+  {f:"roadmap.html",t:"Roadmap — Development",h1:"מפת הדרכים של SLH",r:"public",theme:false,i18n:true,analytics:true,ai:false,nav:true,web3:false,lines:698,gap:"חסר theme switcher, חסר ai-assistant"},
+  {f:"rotate.html",t:"Token Rotation Tool",h1:"Token Rotation Tool",r:"user",theme:false,i18n:true,analytics:true,ai:false,nav:true,web3:false,lines:661,gap:"חסר theme switcher, חסר ai-assistant"},
+  {f:"staking.html",t:"Staking — Variable Yield (4-12%)",h1:"Staking & Referral",r:"user",theme:true,i18n:true,analytics:true,ai:false,nav:true,web3:false,lines:1018,gap:"חסר ai-assistant"},
+  {f:"system-health.html",t:"System Health",h1:"System Health Verification",r:"ops",theme:false,i18n:false,analytics:true,ai:true,nav:true,web3:false,lines:463,gap:"חסר theme switcher, חסר תרגום"},
+  {f:"terms.html",t:"Terms of Service",h1:"תנאי שימוש",r:"public",theme:false,i18n:true,analytics:true,ai:false,nav:true,web3:false,lines:448,gap:"חסר theme switcher, חסר ai-assistant"},
+  {f:"test-bots.html",t:"Bot QA — בדיקת בוטים",h1:"SLH Bot QA — בדיקת בוטים",r:"ops",theme:false,i18n:false,analytics:true,ai:false,nav:true,web3:false,lines:474,gap:"חסר theme, תרגום, ai-assistant"},
+  {f:"trade.html",t:"Trade — Live Prices",h1:"Trade",r:"user",theme:false,i18n:true,analytics:true,ai:false,nav:true,web3:false,lines:1968,gap:"חסר theme switcher, חסר ai-assistant"},
+  {f:"wallet-guide.html",t:"Wallet Guide — Telegram",h1:"מדריך ארנק טלגרם",r:"user",theme:false,i18n:true,analytics:true,ai:false,nav:true,web3:false,lines:660,gap:"חסר theme switcher, חסר ai-assistant"},
+  {f:"wallet.html",t:"Wallet — Send & Receive",h1:"Wallet",r:"user",theme:false,i18n:true,analytics:true,ai:true,nav:true,web3:true,lines:1526,gap:"חסר theme switcher"},
+  {f:"whitepaper.html",t:"Whitepaper",h1:"SLH Ecosystem Whitepaper",r:"public",theme:false,i18n:true,analytics:true,ai:false,nav:true,web3:false,lines:668,gap:"חסר theme switcher, חסר ai-assistant"},
+  {f:"voice.html",t:"SLH Voice — Smart IVR (Phase 2)",h1:"SLH Voice — מרכזייה חכמה מהדור הבא",r:"public",theme:true,i18n:false,analytics:true,ai:true,nav:true,web3:false,lines:548,gap:"Phase 2 vision page — לא זמין מסחרית. Blueprint: ops/VOICE_STACK_COMPETITIVE_20260424.md"},
+  {f:"swarm.html",t:"SLH Swarm — ESP32 Mesh (Phase 2)",h1:"SLH Swarm — רשת פיזית מבוזרת",r:"public",theme:true,i18n:false,analytics:true,ai:true,nav:true,web3:false,lines:640,gap:"Phase 2/3 vision page — אין חומרה פעילה. Blueprint: ops/SWARM_V1_BLUEPRINT_20260424.md"},
+  /* Added 2026-04-28 — Founder Brain stack */
+  {f:"founder.html",t:"Founder Control Panel ⭐",h1:"מרכז שליטה · Founder",r:"ops",theme:true,i18n:false,analytics:false,ai:false,nav:true,web3:false,lines:445,gap:"⭐ Decision Strip + Brain Memory + Treasury + IDO live. השער הראשי לשליטה במערכת — דורש admin key ב-localStorage."},
+  {f:"ido.html",t:"IDO Public Landing",h1:"SLH IDO — Initial DEX Offering",r:"public",theme:true,i18n:false,analytics:true,ai:false,nav:false,web3:false,lines:1368,gap:"Live progress bars מ-/api/ido/stats. כולל Marshall Islands DAO, Treasury Safe, vesting schedule, FAQ."},
+  {f:"admin/ido-mission-control.html",t:"IDO Mission Control",h1:"IDO Mission Control · SLH Spark",r:"admin",theme:true,i18n:false,analytics:false,ai:false,nav:false,web3:false,lines:0,gap:"Internal IDO progress tracking · Marshall Islands DAO LLC + PinkSale params"},
+  {f:"admin/bot-registry.html",t:"Bot Registry (Admin)",h1:"Bot Registry · Admin",r:"admin",theme:true,i18n:false,analytics:false,ai:false,nav:false,web3:false,lines:207,gap:"Live status of all 25 bots from /api/bots/list + static known list. Includes rotation steps."}
+];
+
+/* Compute scores */
+PAGES.forEach(p => {
+  p.score = (p.theme?1:0) + (p.i18n?1:0) + (p.analytics?1:0) + (p.ai?1:0) + (p.nav?1:0);
+});
+
+/* === Login gate === */
+function checkAuth() {
+  const pwd = localStorage.getItem('slh_admin_password');
+  if (pwd && pwd.length >= 6) {
+    document.getElementById('login-gate').style.display = 'none';
+    document.getElementById('main-app').style.display = 'block';
+    render();
+    return true;
+  }
+  document.getElementById('login-gate').style.display = 'block';
+  document.getElementById('main-app').style.display = 'none';
+  return false;
+}
+function doLogin() {
+  const pwd = document.getElementById('login-pwd').value;
+  if (pwd && pwd.length >= 6) {
+    localStorage.setItem('slh_admin_password', pwd);
+    checkAuth();
+  } else {
+    alert('סיסמה צריכה להיות לפחות 6 תווים');
+  }
+}
+document.getElementById('login-pwd').addEventListener('keypress', e => { if (e.key === 'Enter') doLogin(); });
+
+/* === Filters === */
+let activeRole = 'all';
+let searchQ = '';
+
+document.querySelectorAll('.role-chip').forEach(c => {
+  c.addEventListener('click', () => {
+    document.querySelectorAll('.role-chip').forEach(x => x.classList.remove('active'));
+    c.classList.add('active');
+    activeRole = c.dataset.role;
+    render();
+  });
+});
+document.getElementById('search').addEventListener('input', e => {
+  searchQ = e.target.value.toLowerCase();
+  render();
+});
+
+/* === Render === */
+function render() {
+  const grid = document.getElementById('grid');
+  let pages = PAGES.slice();
+  if (activeRole !== 'all') pages = pages.filter(p => p.r === activeRole);
+  if (searchQ) pages = pages.filter(p =>
+    p.f.toLowerCase().includes(searchQ) ||
+    p.t.toLowerCase().includes(searchQ) ||
+    p.h1.toLowerCase().includes(searchQ) ||
+    p.gap.toLowerCase().includes(searchQ)
+  );
+
+  grid.innerHTML = pages.map(p => `
+    <div class="page-card score-${p.score}">
+      <div class="page-card-head">
+        <div class="page-name">${p.f}</div>
+        <span class="role-tag ${p.r}">${p.r}</span>
+      </div>
+      <div class="page-h1">${escapeHTML(p.h1).slice(0,80)}</div>
+      <div class="feature-bar">
+        <div class="feat ${p.theme?'on':'off'}" title="Theme: ${p.theme}"></div>
+        <div class="feat ${p.i18n?'on':'off'}" title="i18n: ${p.i18n}"></div>
+        <div class="feat ${p.analytics?'on':'off'}" title="Analytics: ${p.analytics}"></div>
+        <div class="feat ${p.ai?'on':'off'}" title="AI: ${p.ai}"></div>
+        <div class="feat ${p.nav?'on':'off'}" title="Nav: ${p.nav}"></div>
+      </div>
+      <div class="feature-labels">
+        <span>Theme</span><span>i18n</span><span>Analytics</span><span>AI</span><span>Nav</span>
+      </div>
+      <div class="gap-text ${p.score===5?'complete':''}">${p.gap}</div>
+      <div class="page-meta">
+        <span><i class="fas fa-code"></i> ${p.lines} lines</span>
+        <span><i class="fas fa-chart-line"></i> Score ${p.score}/5</span>
+      </div>
+      <div class="page-actions">
+        <a class="open-btn" href="/${p.f}" target="_blank" rel="noopener" title="פתח דף">
+          <i class="fas fa-external-link-alt"></i> פתח
+        </a>
+        <button class="prompt-btn" onclick='showPrompt(${JSON.stringify(p.f)})' title="פרומפט מוכן ל-AI">
+          <i class="fas fa-robot"></i> פרומפט
+        </button>
+        <button class="share-btn" onclick='sharePage(${JSON.stringify(p.f)})' title="שתף עם איש צוות">
+          <i class="fas fa-share"></i> שתף
+        </button>
+      </div>
+    </div>
+  `).join('');
+
+  /* Update KPIs */
+  const total = PAGES.length;
+  const complete = PAGES.filter(p => p.score === 5).length;
+  const themeCnt = PAGES.filter(p => p.theme).length;
+  const i18nCnt = PAGES.filter(p => p.i18n).length;
+  const analCnt = PAGES.filter(p => p.analytics).length;
+  const aiCnt = PAGES.filter(p => p.ai).length;
+  const avgScore = (PAGES.reduce((s,p) => s+p.score, 0) / total).toFixed(1);
+  document.getElementById('kpi-total').textContent = total;
+  document.getElementById('kpi-complete').textContent = complete;
+  document.getElementById('kpi-theme').textContent = Math.round(themeCnt/total*100) + '%';
+  document.getElementById('kpi-i18n').textContent = Math.round(i18nCnt/total*100) + '%';
+  document.getElementById('kpi-analytics').textContent = Math.round(analCnt/total*100) + '%';
+  document.getElementById('kpi-ai').textContent = Math.round(aiCnt/total*100) + '%';
+  document.getElementById('kpi-avg').textContent = avgScore;
+}
+
+function escapeHTML(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* === Prompt generation === */
+function generatePrompt(p) {
+  const missing = [];
+  if (!p.theme) missing.push('Theme switcher (data-theme attribute, applyTheme() from /js/shared.js)');
+  if (!p.i18n) missing.push('i18n — translations.js integration with data-i18n attributes for he/en/ru/ar/fr');
+  if (!p.analytics) missing.push('analytics.js include in <head>');
+  if (!p.ai) missing.push('ai-assistant.js include + chat widget bottom-right');
+  if (!p.nav) missing.push('shared.js + topnav-root div for unified navigation');
+  if (!p.web3 && (p.r === 'user' || p.f === 'wallet.html')) missing.push('web3-wallet.js for on-chain balance display');
+
+  const role_context = {
+    admin: 'דף ניהול עם אימות אדמין (קורא מ-localStorage.slh_admin_password ו-X-Admin-Key header)',
+    ops: 'דף תפעול / מוניטורינג עם נתונים real-time',
+    user: 'דף משתמש מחובר עם נתוני חשבון אישיים',
+    marketing: 'דף שיווקי/תוכן עם דגש על SEO ושיתוף',
+    promo: 'דף קמפיין עם CTA חזק והמרה גבוהה',
+    public: 'דף ציבורי לכל מבקר'
+  }[p.r] || 'דף כללי';
+
+  return `# משימה: שיפור הדף ${p.f}
+
+## הקשר
+- **נתיב:** D:/SLH_ECOSYSTEM/website/${p.f}
+- **תפקיד:** ${p.r} (${role_context})
+- **כותרת:** ${p.h1}
+- **גודל קיים:** ${p.lines} שורות
+- **ציון נוכחי:** ${p.score}/5
+
+## מצב נוכחי (Status)
+| יכולת | מצב |
+|-------|------|
+| Theme switcher | ${p.theme ? '✅' : '❌'} |
+| i18n (5 שפות) | ${p.i18n ? '✅' : '❌'} |
+| Analytics | ${p.analytics ? '✅' : '❌'} |
+| AI Assistant | ${p.ai ? '✅' : '❌'} |
+| Shared Nav | ${p.nav ? '✅' : '❌'} |
+| Web3 Wallet | ${p.web3 ? '✅' : '❌'} |
+
+## מה חסר
+${missing.length === 0 ? '✅ הדף מלא — נדרשת רק תחזוקה שוטפת ועדכון תוכן.' : missing.map((m,i) => `${i+1}. ${m}`).join('\n')}
+
+## הוראות ביצוע
+1. קרא את הקובץ הקיים: D:/SLH_ECOSYSTEM/website/${p.f}
+2. בדוק דף קיים שיש בו את התכונה החסרה (לדוגמה: dashboard.html יש בו הכל) ולמד את ה-pattern
+3. הוסף את הקוד החסר תוך שמירה על:
+   - שפה: עברית UI, אנגלית בקוד והערות
+   - אין סיסמאות hardcoded — קריאה מ-localStorage.getItem('slh_admin_password')
+   - אין נתונים מזויפים — שימוש ב-API חי או [DEMO] tag
+   - שמירה על ה-design system (משתנים מ-shared.css)
+4. בדיקה: פתח את הדף ב-Launch preview ובדוק:
+   - אין שגיאות בקונסול
+   - כל הכפתורים עובדים
+   - תרגום עובד אם הוספת i18n
+5. Commit + push ל-website repo: \`git add ${p.f} && git commit -m "feat(${p.f}): ${missing[0] || 'maintenance'}" && git push\`
+
+## נכסים זמינים
+- /css/shared.css — design system
+- /js/shared.js — navigation + theme + auth
+- /js/translations.js — TR object עם 5 שפות
+- /js/analytics.js — page tracking
+- /js/ai-assistant.js — AI chat widget
+- /js/web3-wallet.js — MetaMask/TrustWallet integration
+- /assets/img/ — תמונות מוכנות (butterfly, phoenix, cyberpunk, trading)
+- /assets/og/ — תמונות OG לכל דף
+
+## סטנדרט להשוואה
+דפים מלאים (5/5): admin.html, dashboard.html — השווה אליהם
+
+---
+**עודכן ע"י Project Map · ${new Date().toISOString().slice(0,10)}**`;
+}
+
+/* === Modal === */
+let currentPrompt = '';
+let currentFile = '';
+function showPrompt(filename) {
+  const p = PAGES.find(x => x.f === filename);
+  if (!p) return;
+  currentFile = filename;
+  currentPrompt = generatePrompt(p);
+  document.getElementById('modal-title').textContent = filename;
+  document.getElementById('modal-sub').textContent = `${p.r} · ${p.lines} lines · Score ${p.score}/5`;
+  document.getElementById('modal-prompt').textContent = currentPrompt;
+  document.getElementById('modal-open-btn').href = '/' + filename;
+  document.getElementById('modal-bg').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modal-bg').classList.remove('open');
+}
+function copyPrompt() {
+  navigator.clipboard.writeText(currentPrompt).then(() => {
+    showToast('✅ הפרומפט הועתק לקליפבורד');
+  });
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function sharePage(filename) {
+  const p = PAGES.find(x => x.f === filename);
+  const url = `https://slh-nft.com/${filename}`;
+  const text = `🔗 ${p.f} — ${p.h1}\nציון: ${p.score}/5 · חוסר: ${p.gap}\n${url}`;
+  navigator.clipboard.writeText(text).then(() => showToast('✅ הקישור והפרטים הועתקו'));
+}
+
+function shareWA() {
+  const p = PAGES.find(x => x.f === currentFile);
+  const txt = encodeURIComponent(`היי, אנא תעבוד על הדף ${p.f} (ציון נוכחי ${p.score}/5).\nחסר: ${p.gap}\nראה פרומפט מלא:\nhttps://slh-nft.com/project-map.html\n\n${currentPrompt.slice(0, 600)}...`);
+  window.open(`https://wa.me/?text=${txt}`, '_blank');
+}
+
+function openAllRoles() {
+  const opsPages = PAGES.filter(p => p.r === 'ops');
+  if (!confirm(`לפתוח ${opsPages.length} דפי OPS בכרטיסיות חדשות?`)) return;
+  opsPages.forEach((p, i) => {
+    setTimeout(() => window.open('/' + p.f, '_blank'), i * 200);
+  });
+}
+
+/* === Init === */
+checkAuth();
+</script>
+
+</body>
+</html>

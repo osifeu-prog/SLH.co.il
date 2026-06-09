@@ -1,0 +1,426 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH Spark Partner Dashboard — Co-Founders</title>
+<meta name="description" content="SLH Spark partner dashboard: track contributions, NFTs, SLH tokens, and co-founder status in real time.">
+<link rel="canonical" href="https://slh-nft.com/partner-dashboard.html">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="SLH Spark Partner Dashboard — Co-Founders">
+<meta property="og:description" content="Track contributions, NFTs, SLH tokens, and co-founder status">
+<meta property="og:image" content="https://slh-nft.com/assets/og/default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://slh-nft.com/partner-dashboard.html">
+<meta property="og:locale" content="he_IL">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SLH Spark Partner Dashboard — Co-Founders">
+<meta name="twitter:description" content="Track contributions, NFTs, SLH tokens, and co-founder status">
+<meta name="twitter:image" content="https://slh-nft.com/assets/og/default.png">
+
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/shared.css?v=20260426e">
+
+<style>
+    :root {
+        --bg: #0a0e1a;
+        --bg2: #111628;
+        --bg3: #1a2038;
+        --gold: #ffd700;
+        --accent: #f3ba2f;
+        --accent2: #00e887;
+        --purple: #a855f7;
+        --text: #e8e8f0;
+        --text2: #8a8aa0;
+        --border: rgba(255, 215, 0, 0.25);
+    }
+    body {
+        background:
+            radial-gradient(circle at 30% 20%, rgba(255, 215, 0, 0.06), transparent 50%),
+            var(--bg);
+        color: var(--text);
+        font-family: 'Inter', system-ui, sans-serif;
+        line-height: 1.6;
+    }
+
+    .hero {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 60px 24px 30px;
+        text-align: center;
+    }
+    .hero h1 {
+        font-size: clamp(32px, 5vw, 48px);
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--gold), var(--accent));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+    .hero p { color: var(--text2); max-width: 600px; margin: 8px auto 0; }
+
+    .section {
+        max-width: 1200px;
+        margin: 0 auto 32px;
+        padding: 0 24px;
+    }
+
+    /* Login gate */
+    .login-gate {
+        max-width: 500px;
+        margin: 40px auto;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 32px;
+        text-align: center;
+    }
+    .login-gate h2 {
+        font-size: 22px;
+        color: var(--gold);
+        margin-bottom: 12px;
+    }
+    .login-gate input {
+        width: 100%;
+        padding: 14px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        color: var(--text);
+        font-size: 14px;
+        margin: 12px 0;
+    }
+    .login-gate button {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, var(--gold), var(--accent));
+        color: #000;
+        border: none;
+        border-radius: 10px;
+        font-weight: 800;
+        font-size: 15px;
+        cursor: pointer;
+    }
+
+    /* Dashboard */
+    .dashboard { display: none; }
+    .dashboard.active { display: block; }
+
+    .status-card {
+        background: linear-gradient(135deg, rgba(255, 215, 0, 0.08), rgba(0, 232, 135, 0.04));
+        border: 2px solid var(--gold);
+        border-radius: 20px;
+        padding: 32px;
+        margin-bottom: 24px;
+        text-align: center;
+    }
+    .status-card .role {
+        display: inline-block;
+        padding: 6px 20px;
+        background: var(--gold);
+        color: #000;
+        border-radius: 24px;
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 16px;
+    }
+    .status-card h2 {
+        font-size: 32px;
+        font-weight: 900;
+        margin-bottom: 4px;
+    }
+    .status-card .handle {
+        color: var(--text2);
+        margin-bottom: 16px;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+    .stat-card {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px;
+    }
+    .stat-label {
+        font-size: 11px;
+        color: var(--text2);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 6px;
+    }
+    .stat-value {
+        font-size: 28px;
+        font-weight: 900;
+        color: var(--gold);
+    }
+    .stat-sub {
+        font-size: 11px;
+        color: var(--text2);
+        margin-top: 4px;
+    }
+
+    .activity {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 24px;
+    }
+    .activity h3 {
+        font-size: 14px;
+        color: var(--accent2);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 12px;
+    }
+    .activity-item {
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border);
+        font-size: 13px;
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+    }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-item .label { color: var(--text); }
+    .activity-item .time { color: var(--text2); font-size: 11px; }
+
+    .badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: 800;
+    }
+    .badge-verified { background: rgba(0, 232, 135, 0.15); color: var(--accent2); }
+    .badge-pending { background: rgba(255, 215, 0, 0.15); color: var(--gold); }
+
+    .empty {
+        text-align: center;
+        padding: 40px 20px;
+        color: var(--text2);
+    }
+    .empty h3 {
+        font-size: 18px;
+        margin-bottom: 8px;
+        color: var(--text);
+    }
+    .empty a.btn {
+        display: inline-block;
+        margin-top: 16px;
+        padding: 12px 24px;
+        background: var(--gold);
+        color: #000;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 800;
+    }
+
+    /* Theme Switcher */
+    #theme-fab{position:fixed;bottom:94px;left:24px;z-index:9997;background:var(--accent,#00e887);color:#000;width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;font-size:20px;box-shadow:0 4px 16px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center}
+    #theme-panel{position:fixed;bottom:150px;left:24px;z-index:9998;background:var(--bg,#0a0a0a);border:1px solid rgba(255,255,255,.15);padding:16px;border-radius:12px;display:none;flex-direction:column;gap:6px;max-width:220px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+    #theme-panel.open{display:flex}
+    #theme-panel button{background:var(--bg,#0a0a0a);border:1px solid rgba(255,255,255,.1);color:#e8e8f0;padding:10px 14px;cursor:pointer;font-size:12px;text-align:right;font-family:inherit;border-radius:6px;transition:all .2s}
+    #theme-panel button:hover{background:var(--accent,#00e887);color:#000}
+    [data-theme="dark"]{--bg:#0b0e16;--bg2:#111628;--accent:#00b4d8;--text:#e8e8f0;--text2:#8a8aa0;--border:rgba(0,180,216,.2)}
+    [data-theme="light"]{--bg:#f8f9fb;--bg2:#fff;--accent:#0066cc;--text:#1a1a1a;--text2:#555;--border:rgba(0,102,204,.2)}
+    [data-theme="crypto"]{--bg:#0d1117;--bg2:#161b22;--accent:#f7931a;--text:#e8e8f0;--text2:#8a8aa0;--border:rgba(247,147,26,.2)}
+    [data-theme="ocean"]{--bg:#001e3c;--bg2:#002c55;--accent:#00d9ff;--text:#b8e6ff;--text2:#6bb6cc;--border:rgba(0,217,255,.2)}
+    [data-theme="sunset"]{--bg:#1a0a14;--bg2:#251018;--accent:#ff6b6b;--text:#ffe5d9;--text2:#c9a88a;--border:rgba(255,107,107,.2)}
+</style>
+</head>
+<body>
+
+<div id="topnav-root"></div>
+
+<section class="hero">
+    <h1>👑 Partner Dashboard</h1>
+    <p>מעקב אחרי התרומות, ה-NFT, וסטטוס Co-Founder של SLH Spark Genesis Launch</p>
+</section>
+
+<!-- Login Gate -->
+<div class="section">
+    <div class="login-gate" id="login-gate">
+        <h2>🔍 מצא את החשבון שלך</h2>
+        <p style="color:var(--text2);font-size:13px;margin-bottom:12px">הכנס את השם או ה-handle שלך מההרשמה:</p>
+        <input type="text" id="search-name" placeholder="Tzvika, @tzvika_slh, etc." oninput="">
+        <button onclick="findPartner()">חפש</button>
+        <p style="color:var(--text2);font-size:11px;margin-top:12px">
+            או <a href="/launch-event.html" style="color:var(--accent2)">הירשם עכשיו כ-Genesis Contributor</a>
+        </p>
+    </div>
+</div>
+
+<!-- Dashboard (hidden until login) -->
+<div class="dashboard" id="dashboard">
+    <div class="section">
+        <div class="status-card">
+            <div class="role" id="partner-role">Co-Founder</div>
+            <h2 id="partner-name">--</h2>
+            <div class="handle" id="partner-handle">--</div>
+            <div id="partner-status"></div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Amount Contributed</div>
+                <div class="stat-value" id="stat-amount">--</div>
+                <div class="stat-sub" id="stat-amount-usd">--</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Rewards Issued</div>
+                <div class="stat-value" id="stat-rewards">--</div>
+                <div class="stat-sub">Genesis NFT + 500 ZVK</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Audit Entry #</div>
+                <div class="stat-value" id="stat-audit">--</div>
+                <div class="stat-sub">SHA-256 hash chain</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Your Rank</div>
+                <div class="stat-value" id="stat-rank">--</div>
+                <div class="stat-sub" id="stat-rank-sub">out of total contributors</div>
+            </div>
+        </div>
+
+        <div class="activity">
+            <h3>Contribution Details</h3>
+            <div class="activity-item">
+                <span class="label">Joined at</span>
+                <span class="time" id="detail-joined">--</span>
+            </div>
+            <div class="activity-item">
+                <span class="label">Verified at</span>
+                <span class="time" id="detail-verified">--</span>
+            </div>
+            <div class="activity-item">
+                <span class="label">Transaction hash</span>
+                <span class="time" id="detail-tx">--</span>
+            </div>
+            <div class="activity-item">
+                <span class="label">Wallet address</span>
+                <span class="time" id="detail-wallet">--</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="activity">
+            <h3>🏆 All Genesis Contributors</h3>
+            <div id="contributors-leaderboard"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Not found view -->
+<div class="section" id="not-found" style="display:none">
+    <div class="empty">
+        <h3>🔍 לא מצאתי את החשבון שלך</h3>
+        <p>ייתכן שעדיין לא רשמת את התרומה שלך. הירשם עכשיו:</p>
+        <a href="/launch-event.html" class="btn">🚀 רישום Genesis Contributor</a>
+    </div>
+</div>
+
+<div id="bottomnav-root"></div>
+<div id="footer-root"></div>
+
+<script src="/js/translations.js?v=20260426e"></script>
+<script src="/js/shared.js?v=20260426e"></script>
+<script>
+initShared({ activePage: 'partner', showBottomNav: true });
+
+const API = 'https://slh-api-production.up.railway.app';
+
+async function findPartner() {
+    const query = document.getElementById('search-name').value.trim().toLowerCase();
+    if (!query) return alert('הכנס שם או handle');
+
+    try {
+        const r = await fetch(API + '/api/launch/status', { cache: 'no-store' });
+        const d = await r.json();
+
+        // Find match by name or handle
+        const match = (d.contributors || []).find(c =>
+            (c.name || '').toLowerCase().includes(query) ||
+            (c.handle || '').toLowerCase().replace('@','').includes(query.replace('@',''))
+        );
+
+        if (!match) {
+            document.getElementById('login-gate').style.display = 'none';
+            document.getElementById('not-found').style.display = 'block';
+            return;
+        }
+
+        // Sort by created_at to determine rank
+        const sorted = [...d.contributors].sort((a,b) => new Date(a.joined_at) - new Date(b.joined_at));
+        const rank = sorted.findIndex(c => c.id === match.id) + 1;
+
+        // Render dashboard
+        document.getElementById('login-gate').style.display = 'none';
+        document.getElementById('dashboard').classList.add('active');
+
+        document.getElementById('partner-name').textContent = match.name;
+        document.getElementById('partner-handle').textContent = match.handle || '';
+        document.getElementById('partner-role').textContent = (match.role || 'contributor').toUpperCase();
+
+        // Status
+        const statusEl = document.getElementById('partner-status');
+        if (match.status === 'verified') {
+            statusEl.innerHTML = '<span class="badge badge-verified">✓ VERIFIED</span>';
+        } else {
+            statusEl.innerHTML = '<span class="badge badge-pending">⏳ PENDING VERIFICATION</span>';
+        }
+
+        document.getElementById('stat-amount').textContent = match.amount_bnb.toFixed(4) + ' BNB';
+        document.getElementById('stat-amount-usd').textContent = '$' + (match.amount_usd || 0).toFixed(2);
+        document.getElementById('stat-rewards').textContent = match.rewards_issued ? '✅' : '⏳';
+        document.getElementById('stat-audit').textContent = '#' + match.id;
+        document.getElementById('stat-rank').textContent = '#' + rank;
+        document.getElementById('stat-rank-sub').textContent = 'out of ' + d.contributors.length + ' contributors';
+
+        document.getElementById('detail-joined').textContent = match.joined_at ? new Date(match.joined_at).toLocaleString('he-IL') : '--';
+        document.getElementById('detail-verified').textContent = match.verified_at ? new Date(match.verified_at).toLocaleString('he-IL') : 'Not yet';
+        document.getElementById('detail-tx').innerHTML = match.tx_hash ?
+            `<a href="https://bscscan.com/tx/${match.tx_hash}" target="_blank" style="color:var(--accent2);font-family:monospace;font-size:10px">${match.tx_hash.slice(0,12)}...${match.tx_hash.slice(-8)}</a>` :
+            '<span style="color:var(--text2)">not provided</span>';
+        document.getElementById('detail-wallet').textContent = '—';
+
+        // Render leaderboard
+        const lb = document.getElementById('contributors-leaderboard');
+        lb.innerHTML = sorted.map((c, i) => `
+            <div class="activity-item">
+                <span class="label">#${i+1} · ${escapeHtml(c.name)} ${c.handle ? '<span style="color:var(--text3);font-size:11px">' + escapeHtml(c.handle) + '</span>' : ''} <span class="badge badge-${c.status}">${c.status}</span></span>
+                <span class="time">${c.amount_bnb.toFixed(4)} BNB</span>
+            </div>
+        `).join('');
+
+    } catch(e) {
+        alert('שגיאה: ' + e.message);
+    }
+}
+
+function escapeHtml(s) {
+    const d = document.createElement('div');
+    d.textContent = s || '';
+    return d.innerHTML;
+}
+
+// Auto-search if ?name=... in URL
+const params = new URLSearchParams(window.location.search);
+if (params.get('name')) {
+    document.getElementById('search-name').value = params.get('name');

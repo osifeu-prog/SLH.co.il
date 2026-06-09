@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" data-theme="neural">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SLH Spark Whitepaper v2.0 — Architecture, Tokenomics, IDO, Risk</title>
+  <meta name="description" content="SLH Spark Whitepaper v2.0 — מבנה דו-שכבתי (SPARK IND + MIDAO), tokenomics 110.75M, IDO mechanics, מס ישראלי, סיכונים, וריפיקציה עצמית. גרסה למשקיעים מוסדיים.">
+  <meta name="keywords" content="SLH Spark whitepaper, SLH tokenomics, BSC BEP-20, Marshall Islands DAO, IDO PinkSale, institutional investor, due diligence">
+  <meta name="slh:contract" content="0xACb0A09414CEA1C879c67bB7A877E4e19480f022">
+  <meta name="slh:supply" content="110750000">
+  <meta name="slh:blockchain" content="Binance Smart Chain (BSC)">
+  <link rel="canonical" href="https://slh-nft.com/whitepaper.html">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="SLH Spark Whitepaper v2.0">
+  <meta property="og:description" content="Institutional-grade whitepaper: dual-entity structure, 110.75M supply, IDO via Marshall Islands DAO, SolidProof audit, LP locked 365 days.">
+  <meta property="og:image" content="https://slh-nft.com/assets/og/default.png">
+  <meta property="og:url" content="https://slh-nft.com/whitepaper.html">
+
+  <link rel="icon" type="image/png" href="/favicon-32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/shared.css?v=20260428a">
+  <link rel="stylesheet" href="/css/slh-neural.css?v=20260428a">
+
+  <style>
+    body {
+      font-family: 'Heebo', system-ui, sans-serif;
+      background: var(--bg); color: var(--text);
+      line-height: 1.75; margin: 0; -webkit-font-smoothing: antialiased;
+    }
+    .wp { max-width: 920px; margin: 0 auto; padding: 40px 24px 80px; }
+    .back {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--text2); text-decoration: none; font-size: .9rem;
+      margin-bottom: 32px; transition: .2s;
+    }
+    .back:hover { color: var(--accent); }
+
+    /* Header */
+    .wp-header {
+      padding: 32px; margin-bottom: 32px;
+      background: linear-gradient(135deg, rgba(255, 209, 102, .08), rgba(94, 214, 255, .06));
+      border: 1px solid var(--border); border-radius: 16px;
+    }
+    .badge {
+      display: inline-block; padding: 5px 14px;
+      background: rgba(255, 209, 102, .12); color: var(--accent);
+      border-radius: 999px; font-size: .8rem; font-weight: 700;
+      letter-spacing: .12em; text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-size: clamp(2rem, 5vw, 3rem); font-weight: 900;
+      margin: 0 0 12px; line-height: 1.15;
+      background: linear-gradient(135deg, var(--text), var(--accent));
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .subtitle {
+      font-size: 1.1rem; color: var(--text2);
+      margin: 0 0 20px; line-height: 1.65;
+    }
+    .meta {
+      display: flex; gap: 24px; flex-wrap: wrap;
+      padding-top: 18px; border-top: 1px solid var(--border);
+      font-size: .9rem; color: var(--text2);
+    }
+    .meta strong { color: var(--text); }
+
+    /* Reading guide */
+    .reading-guide {
+      padding: 22px 26px; margin-bottom: 28px;
+      background: rgba(94, 214, 255, .06);
+      border: 1px solid rgba(94, 214, 255, .25);
+      border-radius: 12px;
+    }
+    .reading-guide h3 {
+      margin: 0 0 12px; color: #5ed6ff; font-size: 1rem;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .reading-guide ul {
+      margin: 0; padding-inline-start: 22px;
+      color: var(--text2); font-size: .92rem; line-height: 1.7;
+    }
+
+    /* TOC */
+    .toc {
+      background: rgba(255, 255, 255, .025);
+      border: 1px solid var(--border); border-radius: 12px;
+      padding: 24px 28px; margin-bottom: 36px;
+    }
+    .toc h3 {
+      margin: 0 0 12px; font-size: 1rem; color: var(--text);
+    }
+    .toc ol {
+      margin: 0; padding-inline-start: 22px; columns: 2;
+      column-gap: 32px; font-size: .92rem;
+    }
+    @media (max-width: 720px) { .toc ol { columns: 1; } }
+    .toc li { margin-bottom: 6px; break-inside: avoid; }
+    .toc a { color: var(--text2); text-decoration: none; }
+    .toc a:hover { color: var(--accent); text-decoration: underline; }
+
+    /* Headings */
+    h2 {
+      margin: 48px 0 16px; font-size: 1.6rem; font-weight: 800;
+      padding: 18px 0 10px; border-top: 1px solid var(--border);
+      display: flex; align-items: center; gap: 12px;
+    }
+    h2 .num {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: var(--bg); border-radius: 8px;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: .95rem; flex-shrink: 0; font-weight: 900;
+    }
+    h3 { margin: 28px 0 10px; font-size: 1.2rem; color: var(--accent); }
+    h4 { margin: 20px 0 8px; font-size: 1.05rem; color: var(--text); }
+    p { margin: 0 0 14px; color: var(--text); font-size: 1rem; line-height: 1.75; }
+    ul, ol { margin: 0 0 14px; padding-inline-start: 24px; }
+    li { margin-bottom: 6px; font-size: 1rem; color: var(--text); }
+    a { color: var(--accent); text-decoration: underline; }
+    code {
+      background: var(--bg2); padding: 2px 8px; border-radius: 4px;
+      color: var(--accent); font-family: 'JetBrains Mono', monospace;
+      font-size: .9em; word-break: break-all;
+    }
+    strong, b { color: var(--text); }
+
+    /* Tables */
+    table {
+      width: 100%; border-collapse: collapse; margin: 20px 0;
+      font-size: .92rem;
+    }
+    th {
+      text-align: right; padding: 12px 14px;
+      background: rgba(255, 255, 255, .04);
+      border-bottom: 1px solid var(--border2);
+      font-weight: 700; color: var(--text2);
+    }
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+    tr:last-child td { border-bottom: none; }
+
+    /* Stat cards */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 14px; margin: 20px 0;
+    }
+    .stat-box {
+      padding: 22px 18px;
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid var(--border); border-radius: 12px;
+      text-align: center;
+    }
+    .stat-box .val {
+      font-family: 'JetBrains Mono', monospace; font-size: 1.6rem;
+      font-weight: 700; color: var(--accent);
+      margin-bottom: 4px;
+    }
+    .stat-box .lbl {
+      font-size: .78rem; color: var(--text3);
+      text-transform: uppercase; letter-spacing: .1em;
+    }
+
+    /* Highlight box */
+    .highlight {
+      padding: 22px 26px; margin: 24px 0;
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid var(--border); border-radius: 12px;
+    }
+    .highlight h4 {
+      margin: 0 0 10px; color: var(--accent); font-size: 1rem;
+    }
+
+    /* Alert variants */
+    .alert {
+      padding: 18px 22px; margin: 20px 0;
+      border-radius: 12px; display: flex; align-items: flex-start; gap: 14px;
+      line-height: 1.65;
+    }
+    .alert i { font-size: 1.3rem; flex-shrink: 0; margin-top: 2px; }
+    .alert.warning { background: rgba(245, 158, 11, .08); border: 1px solid rgba(245, 158, 11, .3); }
+    .alert.warning i { color: #fbbf24; }
+    .alert.danger { background: rgba(220, 38, 38, .08); border: 1px solid rgba(220, 38, 38, .3); }
+    .alert.danger i { color: #ff6b6b; }
+    .alert.info { background: rgba(94, 214, 255, .08); border: 1px solid rgba(94, 214, 255, .25); }
+    .alert.info i { color: #5ed6ff; }
+    .alert.ok { background: rgba(34, 197, 94, .08); border: 1px solid rgba(34, 197, 94, .3); }
+    .alert.ok i { color: #4ade80; }
+
+    /* Risk cards */
+    .risk-card {
+      padding: 14px 18px;
+      background: rgba(220, 38, 38, .04);
+      border-inline-start: 3px solid #ff6b6b;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    .risk-card h4 { margin: 0 0 4px; color: #ffaaaa; font-size: .98rem; }
+    .risk-card p { margin: 0; font-size: .92rem; line-height: 1.6; }
+
+    /* Verify rows */
+    .verify-row {
+      display: grid; grid-template-columns: 200px 1fr auto;
+      align-items: center; gap: 14px;
+      padding: 12px 0;
+      border-bottom: 1px dashed var(--border);
+      font-size: .92rem;
+    }
+    .verify-row:last-child { border-bottom: none; }
+    .verify-row .label { color: var(--text3); }
+    .verify-row .value {
+      font-family: 'JetBrains Mono', monospace; font-size: .85rem;
+      word-break: break-all; color: var(--text);
+    }
+    .verify-row a { font-size: .82rem; white-space: nowrap; }
+    @media (max-width: 720px) {
+      .verify-row { grid-template-columns: 1fr; gap: 4px; }
+    }
+
+    /* CTA */
+    .cta-box {
+      padding: 36px; margin: 40px 0;
+      background: linear-gradient(135deg, rgba(255, 209, 102, .08), rgba(94, 214, 255, .06));
+      border: 1px solid var(--border); border-radius: 16px;
+      text-align: center;
+    }
+    .cta-box h3 { margin: 0 0 10px; color: var(--text); }
+    .cta-box p { color: var(--text2); margin: 0 0 18px; }
+    .cta-buttons {
+      display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+    }
+
+    /* Bilingual block */
+    .bilingual {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0; margin: 24px 0;
+      border: 1px solid var(--border); border-radius: 12px;
+      overflow: hidden;
+    }
+    @media (max-width: 760px) { .bilingual { grid-template-columns: 1fr; } }
+    .bilingual .he, .bilingual .en { padding: 22px 24px; font-size: .9rem; }
+    .bilingual .he {
+      background: rgba(255, 255, 255, .025);
+      border-inline-end: 1px solid var(--border);
+    }
+    @media (max-width: 760px) {
+      .bilingual .he { border-inline-end: none; border-bottom: 1px solid var(--border); }
+    }
+    .bilingual .en {
+      direction: ltr; text-align: left;
+      background: rgba(255, 255, 255, .015);
+    }
+    .lang-tag {
+      display: inline-block; padding: 2px 8px;
+      background: var(--accent); color: var(--bg);
+      border-radius: 4px; font-size: .7rem; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    /* Footer */
+    .wp-footer {
+      margin-top: 60px; padding-top: 30px;
+      border-top: 1px solid var(--border);
+      text-align: center; color: var(--text3); font-size: .85rem;
+    }
+    .wp-footer a { color: var(--text2); }
+  </style>
+</head>
+<body>
+  <div class="neural-bg" aria-hidden="true"></div>
+
+  <div class="wp">
+    <a href="/" class="back"><i class="fas fa-arrow-right"></i> חזרה לאתר</a>
+
+    <!-- Header -->
+    <div class="wp-header">
+      <div class="badge">Whitepaper v2.0 · Institutional Grade</div>
+      <h1>SLH Spark Whitepaper</h1>
+      <p class="subtitle">
+        מסמך טכני ועסקי מקיף של SLH Spark — אקוסיסטם השקעות דיגיטלי הבנוי על Telegram ו-Binance Smart Chain.
+        מסמך זה מתאר את <strong>המצב האמיתי של המערכת</strong> נכון ל-28 באפריל 2026, ללא אינפלציה שיווקית.
+        מיועד למשקיעים מוסדיים, due-diligence, ושותפים אסטרטגיים.
+      </p>
+      <div class="meta">
+        <div><strong>גרסה:</strong> 2.0</div>
+        <div><strong>תאריך:</strong> 28 באפריל 2026</div>
+        <div><strong>מחבר:</strong> Osif Kaufman Ungar (SPARK IND)</div>
+        <div><strong>סטטוס:</strong> Pre-IDO Live</div>
+      </div>
+    </div>
+
+    <!-- Reading guide -->
+    <div class="reading-guide">
+      <h3><i class="fas fa-route"></i> איך לקרוא את המסמך הזה</h3>
+      <ul>
+        <li><strong>משקיע מוסדי / DD:</strong> סקציות 3 (מבנה ישויות) → 5 (טוקנומיקס) → 9 (סיכונים) → 11 (השקעה) → 13 (וריפיקציה).</li>
+        <li><strong>משקיע IDO רגיל (BNB):</strong> סקציות 1 (תקציר) → 6 (IDO mechanics) → 10 (מס ישראלי) → 12 (צוות וקשר). עוד הסבר ב-<a href="/ido.html">/ido.html</a>.</li>
+        <li><strong>שותף עסקי SPARK IND:</strong> סקציות 3 (מבנה) → 7 (revenue) → 11 (השקעה) → 12 (קשר). עוד ב-<a href="/disclosure.html#partners-business">/disclosure.html</a>.</li>
+        <li><strong>מפתח / crypto-native:</strong> סקציות 4 (architecture) → 5 (tokenomics) → 8 (technical) → 13 (verification).</li>
+      </ul>
+    </div>
+
+    <!-- TOC -->
+    <div class="toc">
+      <h3>📑 תוכן עניינים</h3>
+      <ol>
+        <li><a href="#abstract">תקציר מנהלי</a></li>
+        <li><a href="#problem">הגדרת הבעיה</a></li>
+        <li><a href="#legal-structure">מבנה משפטי דו-שכבתי</a></li>
+        <li><a href="#solution">ארכיטקטורה ופתרון</a></li>
+        <li><a href="#tokenomics">טוקנומיקס</a></li>
+        <li><a href="#ido">מנגנון ה-IDO</a></li>
+        <li><a href="#products">סוויטת המוצרים</a></li>
+        <li><a href="#tech">תשתית טכנית</a></li>
+        <li><a href="#risks">סיכונים</a></li>
+        <li><a href="#tax">מיסוי בישראל (תקציר)</a></li>
+        <li><a href="#investment">הזדמנות השקעה</a></li>
+        <li><a href="#team">צוות ויצירת קשר</a></li>
+        <li><a href="#verify">וריפיקציה עצמית</a></li>
+        <li><a href="#legal">גילוי משפטי דו-לשוני</a></li>
+      </ol>
+    </div>
+
+    <!-- ============= 1. EXECUTIVE SUMMARY ============= -->
+    <h2 id="abstract"><span class="num">01</span> תקציר מנהלי</h2>
+    <p>
+      <strong>SLH Spark</strong> הוא אקוסיסטם השקעות דיגיטלי המופעל על שילוב של Telegram ו-Binance Smart Chain.
+      הפלטפורמה כוללת 25 בוטים מתמחים, ~230 API endpoints (FastAPI / 11,765 שורות), 140+ דפי אתר,
+      וטוקן SLH (BEP-20, supply 110.75M) שכבר נסחר ב-PancakeSwap V2.
+    </p>
+    <p>
+      הפרוייקט נבנה <em>סולו</em> במשך 7 חודשים על ידי <strong>Osif Kaufman Ungar</strong>, מפתח ישראלי שלאחר אובדן ₪250K
+      בהונאת ZOOZ ויציאה מ-Bitnest, החליט לבנות ספק תשתית קריפטו עם <strong>אנטי-הונאה כליבת המוצר</strong> ולא
+      כתוסף שיווקי. אסטרטגיית הגיוס (אושרה 27.4.2026) היא Marshall Islands DAO LLC + IDO ב-PinkSale, target ₪500K.
+    </p>
+
+    <div class="stat-grid">
+      <div class="stat-box"><div class="val">110.75M</div><div class="lbl">SLH Total Supply</div></div>
+      <div class="stat-box"><div class="val">25</div><div class="lbl">Active Bots</div></div>
+      <div class="stat-box"><div class="val">230+</div><div class="lbl">API Endpoints</div></div>
+      <div class="stat-box"><div class="val">140+</div><div class="lbl">HTML Pages</div></div>
+      <div class="stat-box"><div class="val">5</div><div class="lbl">Token Economy</div></div>
+      <div class="stat-box"><div class="val">9</div><div class="lbl">Registered Users</div></div>
+    </div>
+
+    <div class="alert info">
+      <i class="fas fa-circle-info"></i>
+      <div>
+        <strong>שקיפות מלאה:</strong> 9 משתמשים רשומים זה מספר אמיתי, לא pre-launch הייפ. ה-IDO נועד לבנות את הקהילה הראשונה.
+        אנחנו לא מעמידים פנים שיש 100,000 משתמשים — אנחנו בונים אקוסיסטם שיגדל אורגנית. רק 5 contributors מאומתים
+        (Tzvika, Eli, Zohar, Yakir, Osif), ו-0.08 BNB גויס ב-Genesis הפרטי. כל מספר בדף ניתן לאימות עצמאי בסקציה 13.
+      </div>
+    </div>
+
+    <!-- ============= 2. PROBLEM ============= -->
+    <h2 id="problem"><span class="num">02</span> הגדרת הבעיה</h2>
+    <p>
+      פלטפורמות הקריפטו הקיימות סובלות מ-3 בעיות מרכזיות שמונעות אימוץ רחב, במיוחד בקרב הציבור הישראלי:
+    </p>
+    <ol>
+      <li>
+        <strong>Fragmentation (פיצול חוויה):</strong> משתמש קריפטו ישראלי טיפוסי משתמש ב-4-6 אפליקציות נפרדות —
+        בורסה ישראלית (Bit2C), בורסה זרה (Binance), ארנק (MetaMask/Trust), DEX (PancakeSwap), DApp (לסטייקינג),
+        בלוקצ'יין explorer (BscScan). חוסר אינטגרציה = שגיאות אנושיות = הפסדים.
+      </li>
+      <li>
+        <strong>Trust deficit (חוסר אמון):</strong> ההונאות הגדולות בשוק הישראלי (ZOOZ, Bitnest, פלטפורמות אחרות)
+        השאירו ציבור פגוע ופחדן. גם משקיעים שעדיין משקיעים — לא בוטחים. הם לא יודעים מי בנה, מי מנהל, איך לבדוק.
+      </li>
+      <li>
+        <strong>Regulatory ambiguity (אי-בהירות רגולטורית):</strong> רגולציה ישראלית לא מוגדרת לקריפטו, רגולציה
+        אמריקאית מגבילה (SEC, OFAC), מדינות רבות מפלות (FATF). ישויות "ישראלי בלבד" סופגות סיכון רגולטורי
+        חריג; פלטפורמות "מדבייה" סופגות חוסר אמון.
+      </li>
+    </ol>
+
+    <p>
+      SLH פותרת את שלושת אלה: <strong>חוויה אחת בטלגרם</strong> (לא 6 אפליקציות),
+      <strong>שקיפות וריפיקציה</strong> (כל מספר ניתן לבדיקה on-chain), <strong>מבנה דו-שכבתי</strong>
+      (פיתוח ישראלי + טוקן ב-Marshall Islands DAO LLC).
+    </p>
+
+    <!-- ============= 3. LEGAL STRUCTURE ============= -->
+    <h2 id="legal-structure"><span class="num">03</span> מבנה משפטי דו-שכבתי</h2>
+    <p>
+      SLH Spark פועל ב-<strong>שתי ישויות משפטיות נפרדות</strong>. הבחנה זו קריטית להבנת ה-due-diligence:
+    </p>
+
+    <table>
+      <thead>
+        <tr><th>ישות</th><th>מדינה</th><th>פעילות</th><th>חוקים חלים</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>SPARK IND</strong></td>
+          <td>ישראל</td>
+          <td>פיתוח, תפעול, אקדמיה, marketplace, שותפויות עסקיות פרטיות</td>
+          <td>חוק ניירות ערך 1968 (פטור 35 משקיעים), מס הכנסה, מע"מ</td>
+        </tr>
+        <tr>
+          <td><strong>SLH Sovereign DAO LLC</strong></td>
+          <td>איי מרשל (MIDAO #pending)</td>
+          <td>הנפקת והחזקת SLH token, ניהול Treasury, ביצוע IDO</td>
+          <td>MIDAO Act 2022, smart contract, OFAC sanctions</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>למה דו-שכבתי?</h3>
+    <ul>
+      <li>הפעילות הישראלית (קוד, אקדמיה, שותפויות) נשארת תחת חוק ישראל — שקוף לרשויות, מס מלא משולם.</li>
+      <li>הטוקן עצמו — חזות בלוקצ'יין גלובלית — מוחזק תחת ישות שמתאימה ל-DeFi, עם MIDAO Act 2022 שמכיר ב-DAO כ-LLC.</li>
+      <li>זה <strong>לא</strong> רואי במס. זה <strong>פיצול אחריות</strong> ברור, מקובל בתעשייה (לדוגמה: Maker DAO, Aave DAO).</li>
+    </ul>
+
+    <h3>Treasury Multisig</h3>
+    <p>
+      ה-treasury של DAO מוחזק ב-<strong>Gnosis Safe multisig (2/3)</strong> ב-BSC:
+      <code>0x9DD8aF7Ac0f601CD473422311b2942DAE9D0BD09</code>.
+      Signers: Osif (founder) + Tzvika (co-founder) + recovery hardware.
+      <strong>שום משיכה ללא 2 חתימות + audit log on-chain.</strong>
+    </p>
+
+    <!-- ============= 4. SOLUTION / ARCHITECTURE ============= -->
+    <h2 id="solution"><span class="num">04</span> ארכיטקטורה ופתרון</h2>
+
+    <h3>4.1 עקרונות ארכיטקטוניים</h3>
+    <ul>
+      <li><strong>Telegram-Native:</strong> אין הורדת אפליקציה — הכל בתוך Telegram.</li>
+      <li><strong>Modular Microservices:</strong> 25 בוטים, כל אחד Docker container עצמאי עם codebase משלו.</li>
+      <li><strong>Shared Economy:</strong> 5 טוקנים (SLH/MNH/ZVK/REP/ZUZ) זורמים בין כל הבוטים.</li>
+      <li><strong>Double-Entry Ledger:</strong> חשבונאות בנקאית — כל transaction עם debit + credit מאוזנים.</li>
+      <li><strong>Multi-Language:</strong> עברית, אנגלית, רוסית, ערבית, צרפתית. RTL מובנה.</li>
+      <li><strong>SHA-256 audit chain:</strong> כל פעולה ב-Treasury מתועדת on-chain עם hash.</li>
+    </ul>
+
+    <h3>4.2 Stack טכנולוגי</h3>
+    <div class="highlight">
+      <h4>Production stack</h4>
+      <p style="font-family: 'JetBrains Mono', monospace; font-size: .9rem; color: var(--text2); margin: 0;">
+        Python 3.11 · FastAPI · aiogram 3.x · PostgreSQL 15 · Redis 7 · Docker Compose ·
+        web3.py · TonCenter API · STON.fi DEX · CoinGecko · Cloudflare · GitHub Pages · Railway
+      </p>
+    </div>
+
+    <h3>4.3 Anti-Fraud Layer (Guardian)</h3>
+    <p>
+      Guardian הוא הליבה של SLH — מערך אנטי-הונאה אוטומטי שעוקב אחר כל פעילות באקוסיסטם:
+    </p>
+    <ul>
+      <li><strong>Wallet sanctions screening:</strong> כל ארנק שתורם נסרק מול OFAC + Chainabuse + cluster analysis.</li>
+      <li><strong>ZUZ scoring:</strong> טוקן "סימן קין" — ארנקים/משתמשים מקבלים נקודות שליליות על פעילות חשודה.</li>
+      <li><strong>100 ZUZ threshold:</strong> חסימה אוטומטית מכל הקהילה האקוסיסטם.</li>
+      <li><strong>Cross-bot intelligence:</strong> scammer שמסומן בבוט אחד — חסום בכולם.</li>
+    </ul>
+
+    <!-- ============= 5. TOKENOMICS ============= -->
+    <h2 id="tokenomics"><span class="num">05</span> טוקנומיקס</h2>
+
+    <h3>5.1 כלכלת 5 טוקנים</h3>
+    <table>
+      <thead>
+        <tr><th>טוקן</th><th>סוג</th><th>תפקיד</th><th>Supply</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>SLH</strong></td>
+          <td>BEP-20 (BSC)</td>
+          <td>Premium / governance / IDO</td>
+          <td><strong>110,750,000</strong> (verified on-chain)</td>
+        </tr>
+        <tr>
+          <td><strong>MNH</strong></td>
+          <td>פנימי (off-chain)</td>
+          <td>Stablecoin פגג ל-1 ₪</td>
+          <td>Internal mint/burn</td>
+        </tr>
+        <tr>
+          <td><strong>ZVK</strong></td>
+          <td>פנימי (off-chain)</td>
+          <td>פעילות / משחקים / rewards</td>
+          <td>Inflationary (~₪4.4 בסיס)</td>
+        </tr>
+        <tr>
+          <td><strong>REP</strong></td>
+          <td>פנימי (off-chain)</td>
+          <td>ציון מוניטין אישי (0-1000+)</td>
+          <td>Per-user</td>
+        </tr>
+        <tr>
+          <td><strong>ZUZ</strong></td>
+          <td>פנימי (off-chain)</td>
+          <td>"סימן קין" anti-fraud</td>
+          <td>Per-incident</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="alert warning">
+      <i class="fas fa-circle-exclamation"></i>
+      <div>
+        <strong>תיקון לעומת גרסאות קודמות:</strong> Whitepaper v1.0 (אפריל 2026 מוקדם) רשם 1,000,000,000 כ-supply.
+        זאת היתה הערכה מוקדמת לפני הנפקה. <strong>ה-supply הסופי שנפרס on-chain הוא 110,750,000 SLH.</strong>
+        ניתן לאימות ב-<a href="https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022" target="_blank">BscScan</a>.
+      </div>
+    </div>
+
+    <h3>5.2 SLH Token Distribution</h3>
+    <table>
+      <thead>
+        <tr><th>הקצאה</th><th>אחוז</th><th>כמות</th><th>Vesting</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>IDO Pool (PinkSale)</strong></td>
+          <td>~22%</td>
+          <td>~24.5M</td>
+          <td>20% TGE + 20% × 4 חודשים</td>
+        </tr>
+        <tr>
+          <td><strong>Liquidity Pool (PancakeSwap)</strong></td>
+          <td>~13%</td>
+          <td>~14.5M</td>
+          <td>LP locked 365 ימים @ PinkLock</td>
+        </tr>
+        <tr>
+          <td><strong>Team & Founders</strong></td>
+          <td>~15%</td>
+          <td>~16.5M</td>
+          <td>vesting 12 חודשים (long-term align)</td>
+        </tr>
+        <tr>
+          <td><strong>Ecosystem rewards (ZVK conversions, airdrops)</strong></td>
+          <td>~25%</td>
+          <td>~27.5M</td>
+          <td>Gradual, governance-controlled</td>
+        </tr>
+        <tr>
+          <td><strong>DAO Treasury</strong></td>
+          <td>~15%</td>
+          <td>~16.5M</td>
+          <td>Multisig 2/3, audit log</td>
+        </tr>
+        <tr>
+          <td><strong>Strategic partners / advisors</strong></td>
+          <td>~5%</td>
+          <td>~5.5M</td>
+          <td>case-by-case</td>
+        </tr>
+        <tr>
+          <td><strong>Community marketing / referrals</strong></td>
+          <td>~5%</td>
+          <td>~5.5M</td>
+          <td>Performance-based</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>5.3 SLH Use Cases</h3>
+    <ul>
+      <li><strong>Premium subscriptions</strong> ב-25 הבוטים (1-5 SLH/חודש לפי בוט).</li>
+      <li><strong>Governance voting</strong> על הצעות ב-DAO (משלב Q3 2026).</li>
+      <li><strong>P2P transfers</strong> בין משתמשים (אפס עמלה).</li>
+      <li><strong>Cross-bot payments</strong> — תשלום ב-Academia → ZVK ב-Game → ‎SLH ב-Marketplace.</li>
+      <li><strong>Staking rewards</strong> ב-Variable Yield 4-12% (Q3 2026 onwards).</li>
+    </ul>
+
+    <!-- ============= 6. IDO MECHANICS ============= -->
+    <h2 id="ido"><span class="num">06</span> מנגנון ה-IDO</h2>
+    <p>
+      ה-IDO מתבצע דרך <strong>PinkSale</strong> — launchpad מוביל ב-BSC עם 8000+ launches מצליחות.
+      אנחנו לא כותבים smart contracts מאפס — אנחנו משתמשים בתשתית מאומתת ובדוקה.
+    </p>
+
+    <h3>6.1 פרמטרים</h3>
+    <table>
+      <tbody>
+        <tr><td><strong>Soft Cap</strong></td><td>20 BNB (~₪50,000)</td></tr>
+        <tr><td><strong>Hard Cap</strong></td><td>150 BNB (~₪370,000)</td></tr>
+        <tr><td><strong>Token Price</strong></td><td>0.000004 BNB / SLH (~₪0.05) — 25% הנחה לעומת השוק</td></tr>
+        <tr><td><strong>Listing Price</strong></td><td>0.000005 BNB / SLH (~₪0.066)</td></tr>
+        <tr><td><strong>Min / Max Buy</strong></td><td>0.05 / 5 BNB per wallet</td></tr>
+        <tr><td><strong>Vesting</strong></td><td>20% TGE + 20% × 4 חודשים</td></tr>
+        <tr><td><strong>LP Lock</strong></td><td>365 ימים @ PinkLock</td></tr>
+        <tr><td><strong>Audit</strong></td><td>SolidProof — דוח public 48 שעות לפני go-live</td></tr>
+        <tr><td><strong>Whitelist</strong></td><td>30 דקות ראשונות, אחר כך פתוח</td></tr>
+      </tbody>
+    </table>
+
+    <h3>6.2 פיצול הכספים שיגויסו</h3>
+    <ul>
+      <li><strong>50% → Liquidity Pool</strong> ב-PancakeSwap, נעולים 365 ימים. מאפשר סחירות חופשית של SLH.</li>
+      <li><strong>50% → DAO Treasury</strong> ב-Gnosis Safe multisig. מימון פיתוח, תשתית, שיווק, audits.</li>
+    </ul>
+
+    <h3>6.3 Refund Logic</h3>
+    <ul>
+      <li><strong>Soft Cap לא נסגר תוך 30 ימים</strong> → refund אוטומטי לכל המשתתפים. אין פעולה נדרשת.</li>
+      <li><strong>Hard Cap נסגר</strong> → ה-IDO מסתיים מוקדם, TGE מתבצע.</li>
+      <li><strong>ארנק תחת סנקציות</strong> → refund + חסימה.</li>
+    </ul>
+
+    <p>
+      פירוט מלא ב-<a href="/ido.html">/ido.html</a>.
+    </p>
+
+    <!-- ============= 7. PRODUCTS ============= -->
+    <h2 id="products"><span class="num">07</span> סוויטת המוצרים</h2>
+
+    <h3>Tier 1: ליבה פיננסית</h3>
+    <table>
+      <thead>
+        <tr><th>מוצר</th><th>בוט</th><th>סטטוס</th><th>תיאור</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Investment House</td><td>@SLH_AIR_bot</td><td>LIVE</td><td>Variable Yield 4-12%, 12 מטבעות, swap, limit orders, double-entry ledger</td></tr>
+        <tr><td>Multi-Chain Wallet</td><td>@SLH_Wallet_bot</td><td>LIVE</td><td>TON + BNB wallet, community card, QR sharing</td></tr>
+        <tr><td>TON Tools</td><td>@TON_MNH_bot</td><td>LIVE</td><td>Balance check, TX tracking, marketplace, VIP group</td></tr>
+        <tr><td>Staking Factory</td><td>@Osifs_Factory_bot</td><td>BETA</td><td>SLH staking pools, yield farming</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Tier 2: SaaS וקומרס</h3>
+    <table>
+      <thead>
+        <tr><th>מוצר</th><th>בוט</th><th>סטטוס</th><th>תיאור</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Inventory SaaS</td><td>@OsifShop_bot</td><td>LIVE</td><td>Camera barcode, stock management, CSV export, Mini App</td></tr>
+        <tr><td>NFT Marketplace</td><td>@NIFTI_Publisher_Bot</td><td>LIVE</td><td>Digital assets, virtual pet companion</td></tr>
+        <tr><td>Bot Shop</td><td>@BotShop_bot</td><td>LIVE</td><td>AI market analysis, trading sim, wallet</td></tr>
+        <tr><td>Campaign SaaS</td><td>@SLH_Campaign_bot</td><td>LIVE</td><td>CRM, surveys, broadcasts</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Tier 3: קהילה ו-engagement</h3>
+    <table>
+      <thead>
+        <tr><th>מוצר</th><th>בוט</th><th>סטטוס</th><th>תיאור</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Education</td><td>@SLH_Academia_bot</td><td>LIVE</td><td>קורסים, airdrops, leaderboard, referrals</td></tr>
+        <tr><td>Games</td><td>@SLH_Game_bot</td><td>BETA</td><td>Slots, dice, basketball — ZVK rewards</td></tr>
+        <tr><td>Security (Guardian)</td><td>@SLH_Guardian_bot</td><td>LIVE</td><td>Anti-spam, ZUZ scoring, system health</td></tr>
+        <tr><td>Macro Insights</td><td>@SLH_macro_bot</td><td>LIVE</td><td>Market analysis, daily briefings (separate codebase at SLH.co.il)</td></tr>
+      </tbody>
+    </table>
+
+    <p>
+      <strong>סך הכל: 25 בוטים פעילים</strong>, מצביעים מבוססי-Docker, deploy אחד-עם-לחיצה לכל בוט חדש.
+    </p>
+
+    <!-- ============= 8. TECHNICAL ============= -->
+    <h2 id="tech"><span class="num">08</span> תשתית טכנית</h2>
+    <ul>
+      <li><strong>FastAPI core:</strong> 230+ endpoints, 11,765 שורות ב-main.py. PostgreSQL 15 + Redis 7.</li>
+      <li><strong>25 Docker containers</strong> orchestrated דרך docker-compose.yml אחד.</li>
+      <li><strong>Auto-restart</strong> on crash + exponential backoff.</li>
+      <li><strong>Double-entry ledger</strong> — מתמטית מאוזנת. Mismatch = שגיאה אוטומטית.</li>
+      <li><strong>PBKDF2 + XOR encryption</strong> לנתונים רגישים (private keys, KYC משקיעים פרטיים).</li>
+      <li><strong>SHA-256 audit chain</strong> על כל פעולה ב-treasury.</li>
+      <li><strong>ESP32 hardware:</strong> רשת מכשירים פיזיים (קוסחר ארנק, IoT) מקושרת לאקוסיסטם.</li>
+    </ul>
+
+    <h3>8.1 Blockchain Integration</h3>
+    <div class="highlight">
+      <h4>Live integrations</h4>
+      <p style="margin: 0;"><strong>BSC (BNB Chain):</strong> SLH BEP-20 token, balance queries via web3.py, PancakeSwap V2 swaps</p>
+      <p style="margin: 6px 0 0;"><strong>TON Network:</strong> Deposit verification, wallet management, payment processing via TonCenter</p>
+      <p style="margin: 6px 0 0;"><strong>STON.fi:</strong> DEX swap quotes for TON pairs</p>
+      <p style="margin: 6px 0 0;"><strong>CoinGecko:</strong> Live pricing for 12 cryptocurrencies, 60s refresh</p>
+      <p style="margin: 6px 0 0;"><strong>BscScan:</strong> verified contract source, holders, transactions</p>
+    </div>
+
+    <!-- ============= 9. RISKS ============= -->
+    <h2 id="risks"><span class="num">09</span> סיכונים</h2>
+    <p>
+      תקציר 10 הסיכונים המרכזיים. פירוט מלא ב-<a href="/disclosure.html#ido-risks">/disclosure.html</a>.
+    </p>
+
+    <div class="risk-card">
+      <h4>1. אובדן הון מלא</h4>
+      <p>ערך SLH יכול לרדת לאפס. אין הבטחה לרווחים. אם הקהילה לא בונה ערך — הטוקן יכול להיות שווה $0.</p>
+    </div>
+
+    <div class="risk-card">
+      <h4>2. סיכון Smart Contract</h4>
+      <p>גם חוזים שעברו audit (SolidProof) יכולים להכיל באגים שלא נתגלו. Compound, Wormhole, Ronin — כל אלה היו "audited" לפני exploits.</p>
+    </div>
+
+    <div class="risk-card">
+      <h4>3. סיכון רגולטורי בישראל</h4>
+      <p>רשות ניירות ערך יכולה להחליט ש-SLH הוא "נייר ערך" — מה שיגביל סחירות, יחייב רישוי, או יחסום בורסות ישראליות.</p>
+    </div>
+
+    <div class="risk-card">
+      <h4>4. סיכון רגולטורי בינלאומי (SEC, FATF)</h4>
+      <p>SEC רואה רוב IDOs כניירות ערך לא רשומים. FATF מפרסמת המלצות שמדינות מאמצות. שינויים → השפעה על מבנה MIDAO.</p>
+    </div>
+
+    <div class="risk-card">
+      <h4>5. תנודתיות שוק קריפטו</h4>
+      <p>BNB עצמו תנודתי, SLH הרבה יותר. ירידה של 50% תוך שבוע היא אירוע רגיל בקריפטו.</p>
+    </div>
+
+    <div class="risk-card">
+      <h4>6. סיכון Vesting</h4>
+      <p>80% מה-SLH של מחזיקי IDO נעולים 4 חודשים. אם המחיר נופל — לא ניתן למכור הכל מיד.</p>
+    </div>
+
+    <div class="risk-card">
+      <h4>7. סיכון תפעולי (Solo Founder)</h4>
+      <p>Osif בונה סולו. אם משהו יקרה לו (תאונה, מחלה) — ההמשכיות בסכנה. הקוד פתוח (BscScan), ה-Treasury multisig, אבל הידע התפעולי מרוכז. אנחנו פועלים להוסיף 1-2 co-developers ב-Q3 2026.</p>
+    </div>
+
+    <div class="risk-card">
+      <h4>8. סיכון Phishing וגניבת ארנקים</h4>
+      <p>הסיכון הגדול ביותר אינו טכני — חברתי. אנשים שולחים seed לתמיכה. <strong>אנחנו לעולם לא נשלח DM ראשון. לעולם לא נבקש seed.</strong></p>
+    </div>
+
+    <div class="risk-card">
+      <h4>9. סיכון תלות בספקי צד-שלישי</h4>
+      <p>Anthropic (AI), OpenAI (חלקי), Telegram, Cloudflare, Railway. נפילה של אחד מהם → שירותים מסוימים נפגעים.</p>
+    </div>
+
+    <div class="risk-card">
+      <h4>10. סיכון רגולטורי באיי מרשל</h4>
+      <p>MIDAO Act 2022 חוק חדש. שינוי או ביטול → מבנה משפטי חדש נדרש. הטוקן ימשיך לפעול on-chain אבל מבנה הניהול ישתנה.</p>
+    </div>
+
+    <div class="alert danger">
+      <i class="fas fa-ban"></i>
+      <div>
+        <strong>לא זמין לתושבי OFAC:</strong> ארה"ב, איראן, צפון קוריאה, סוריה, קובה, אזורים ברוסיה.
+        זאת הגבלה חוקית, לא אופציונלית.
+      </div>
+    </div>
+
+    <!-- ============= 10. TAX ============= -->
+    <h2 id="tax"><span class="num">10</span> מיסוי בישראל (תקציר)</h2>
+    <p>
+      רשות המסים בישראל רואה ב-SLH ובכל מטבע קריפטו <strong>"נכס" לעניין מס רווחי הון</strong>.
+    </p>
+    <ul>
+      <li><strong>קניית SLH:</strong> אין מס</li>
+      <li><strong>מכירה ברווח (משקיע פרטי):</strong> 25% מס רווחי הון</li>
+      <li><strong>סוחר מקצועי</strong> (>100 עסקאות/שנה): מדרגות מס הכנסה (10%-50%)</li>
+      <li><strong>airdrops / staking rewards:</strong> מס הכנסה ביום הקבלה + מס הון בעת מכירה</li>
+      <li><strong>חובת דיווח:</strong> דוח 1301, נספח 1322, טופס 5329 לעסקאות > ₪50K</li>
+    </ul>
+    <p>
+      פירוט מלא + טבלאות + חישוב לדוגמה: <a href="/ido.html#tax">/ido.html#tax</a> ו-<a href="/disclosure.html#tax-israel">/disclosure.html#tax-israel</a>.
+    </p>
+
+    <!-- ============= 11. INVESTMENT ============= -->
+    <h2 id="investment"><span class="num">11</span> הזדמנות השקעה</h2>
+    <p>
+      <strong>2 מסלולים נפרדים</strong> להשקעה ב-SLH:
+    </p>
+
+    <h3>11.1 מסלול A: IDO רטייל (כל אחד)</h3>
+    <ul>
+      <li><strong>מי:</strong> כל אדם בעולם (פרט לתושבי OFAC).</li>
+      <li><strong>איך:</strong> דרך PinkSale — מחבר ארנק MetaMask, שולח BNB, מקבל SLH.</li>
+      <li><strong>מינימום:</strong> 0.05 BNB (~₪125). מקסימום: 5 BNB (~₪12,500) per wallet.</li>
+      <li><strong>הנחה:</strong> ~25% לעומת מחיר השוק (0.000004 vs 0.000005 BNB).</li>
+      <li><strong>Vesting:</strong> 20% TGE + 20% × 4 חודשים.</li>
+    </ul>
+
+    <h3>11.2 מסלול B: שותפות עסקית עם SPARK IND</h3>
+    <ul>
+      <li><strong>מי:</strong> משקיע מוסדי או פרטי (פחות מ-35 בסך הכל לפי חוק 1968).</li>
+      <li><strong>איך:</strong> חוזה אישי + KYC מלא + הסכם שותפות.</li>
+      <li><strong>מינימום:</strong> ₪50,000.</li>
+      <li><strong>תשואה:</strong> חלק יחסי מהרווח הנקי של SPARK IND (אקדמיה, marketplace, SaaS, consulting).</li>
+      <li><strong>אין הבטחת תשואה.</strong> אם אין רווח — אין תשלום.</li>
+    </ul>
+
+    <p>
+      פירוט מלא: <a href="/disclosure.html#partners-business">/disclosure.html#partners-business</a>.
+    </p>
+
+    <h3>11.3 Use of IDO Funds</h3>
+    <table>
+      <thead>
+        <tr><th>קטגוריה</th><th>אחוז</th><th>פירוט</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Engineering</td><td>40%</td><td>Co-developers, security audits, web app, automated blockchain verification</td></tr>
+        <tr><td>Marketing</td><td>30%</td><td>Community growth, Telegram Ads, conference presence, content</td></tr>
+        <tr><td>Operations</td><td>20%</td><td>Cloud infra (Railway, Cloudflare), legal entity maintenance, customer support</td></tr>
+        <tr><td>Legal & Compliance</td><td>10%</td><td>MIDAO renewal, regulatory opinions, terms of service updates</td></tr>
+      </tbody>
+    </table>
+
+    <div class="cta-box">
+      <h3>מעוניינים להשקיע / לדעת עוד?</h3>
+      <p>הצטרפו ל-IDO רטייל דרך דף ה-IDO, או צרו קשר לשותפות עסקית.</p>
+      <div class="cta-buttons">
+        <a href="/ido.html" class="neural-btn neural-btn-gold" style="padding: 12px 24px;">
+          <i class="fas fa-rocket"></i> דף IDO מלא
+        </a>
+        <a href="mailto:osif.erez.ungar@gmail.com" class="neural-btn neural-btn-ghost" style="padding: 12px 24px;">
+          <i class="fas fa-envelope"></i> שותפות עסקית
+        </a>
+        <a href="https://t.me/SLH_AIR_bot" target="_blank" class="neural-btn neural-btn-ghost" style="padding: 12px 24px;">
+          <i class="fab fa-telegram"></i> @SLH_AIR_bot
+        </a>
+      </div>
+    </div>
+
+    <!-- ============= 12. TEAM ============= -->
+    <h2 id="team"><span class="num">12</span> צוות ויצירת קשר</h2>
+
+    <h3>12.1 הצוות</h3>
+    <ul>
+      <li>
+        <strong>Osif Kaufman Ungar</strong> (אוסיף קאופמן אונגר) — Founder & Lead Developer.
+        מפתח ישראלי סולו. רקע ב-full-stack development, blockchain, Telegram bots, FastAPI.
+        Telegram: <a href="https://t.me/osifeu_prog" target="_blank">@osifeu_prog</a>.
+        Email: <a href="mailto:osif.erez.ungar@gmail.com">osif.erez.ungar@gmail.com</a>.
+      </li>
+      <li>
+        <strong>Tzvika Kaufman</strong> (צביקה) — Co-founder, crypto trader, ExpertNet ambassador.
+        Telegram: <a href="https://t.me/tzvika21truestory" target="_blank">@tzvika21truestory</a>.
+      </li>
+      <li>
+        <strong>Eli</strong> — Contributor (Genesis investor + community).
+      </li>
+      <li>
+        <strong>Zohar Shefa Dror</strong> — Active contributor (QA + community questions).
+      </li>
+      <li>
+        <strong>Yakir Lisha</strong> — Contributor (Genesis investor).
+      </li>
+    </ul>
+
+    <div class="alert info">
+      <i class="fas fa-circle-info"></i>
+      <div>
+        <strong>הערה לבעלי due-diligence:</strong> הצוות הוא <em>קטן</em> בכוונה. SLH נבנה כפלטפורמה
+        לא תלויה באדם בודד — הקוד פתוח (BscScan), ה-Treasury multisig (2/3), והפרוטוקולים
+        אוטונומיים. הסיכון התפעולי (סקציה 9.7) מטופל באמצעות הוספת co-developers ב-Q3 2026.
+      </div>
+    </div>
+
+    <h3>12.2 ערוצי קשר רשמיים</h3>
+    <ul>
+      <li><strong>Email:</strong> <a href="mailto:osif.erez.ungar@gmail.com">osif.erez.ungar@gmail.com</a></li>
+      <li><strong>Founder Telegram:</strong> <a href="https://t.me/osifeu_prog" target="_blank">@osifeu_prog</a></li>
+      <li><strong>Community Bot:</strong> <a href="https://t.me/SLH_AIR_bot" target="_blank">@SLH_AIR_bot</a></li>
+      <li><strong>Website:</strong> <a href="https://slh-nft.com">slh-nft.com</a> — בלבד. כל וריאציה אחרת = הונאה.</li>
+    </ul>
+
+    <div class="alert danger">
+      <i class="fas fa-circle-exclamation"></i>
+      <div>
+        <strong>אזהרה קריטית:</strong> אנחנו לעולם לא נשלח DM ראשון. אנחנו לעולם לא נבקש seed phrase.
+        אם מישהו טוען שהוא "Osif" או "תמיכת SLH" ופונה ב-DM שלא ביקשתם — זאת הונאה.
+      </div>
+    </div>
+
+    <!-- ============= 13. VERIFY ============= -->
+    <h2 id="verify"><span class="num">13</span> וריפיקציה עצמית</h2>
+    <p>
+      כל הטענות במסמך זה ניתנות לאימות עצמאי. אל תסמכו עלינו, סמכו על הקוד:
+    </p>
+
+    <div style="background: rgba(94, 214, 255, .04); border: 1px solid rgba(94, 214, 255, .2); border-radius: 12px; padding: 20px 24px; margin: 16px 0;">
+      <div class="verify-row">
+        <span class="label">SLH Token Contract</span>
+        <span class="value">0xACb0A09414CEA1C879c67bB7A877E4e19480f022</span>
+        <a href="https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022" target="_blank" rel="noopener">→ BscScan</a>
+      </div>
+      <div class="verify-row">
+        <span class="label">Total Supply</span>
+        <span class="value">110,750,000 SLH</span>
+        <a href="https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022#readContract" target="_blank" rel="noopener">→ Read Contract</a>
+      </div>
+      <div class="verify-row">
+        <span class="label">Decimals</span>
+        <span class="value">15</span>
+        <a href="https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022#readContract" target="_blank" rel="noopener">→ Read Contract</a>
+      </div>
+      <div class="verify-row">
+        <span class="label">Treasury Safe (BSC)</span>
+        <span class="value">0x9DD8aF7Ac0f601CD473422311b2942DAE9D0BD09</span>
+        <a href="https://app.safe.global/home?safe=bnb:0x9DD8aF7Ac0f601CD473422311b2942DAE9D0BD09" target="_blank" rel="noopener">→ Gnosis Safe</a>
+      </div>
+      <div class="verify-row">
+        <span class="label">PancakeSwap Pool</span>
+        <span class="value">0xacea26b6e132cd45f2b8a4754170d4d0d3b8bbee</span>
+        <a href="https://pancakeswap.finance/info/v2/pool/0xacea26b6e132cd45f2b8a4754170d4d0d3b8bbee" target="_blank" rel="noopener">→ Pancake Info</a>
+      </div>
+      <div class="verify-row">
+        <span class="label">MIDAO Registry</span>
+        <span class="value">SLH Sovereign DAO LLC (#pending)</span>
+        <a href="https://midao.org/" target="_blank" rel="noopener">→ midao.org</a>
+      </div>
+      <div class="verify-row">
+        <span class="label">SolidProof Audit</span>
+        <span class="value">Day 12 (2026-05-10) — TBD</span>
+        <a href="https://solidproof.io/" target="_blank" rel="noopener">→ solidproof.io</a>
+      </div>
+      <div class="verify-row">
+        <span class="label">PinkLock LP Lock</span>
+        <span class="value">Day 14 (2026-05-12) — 365d</span>
+        <a href="https://www.pinksale.finance/pinklock" target="_blank" rel="noopener">→ PinkLock</a>
+      </div>
+    </div>
+
+    <p>
+      8-step checklist מלא לפני השקעה: <a href="/ido.html#verify">/ido.html#verify</a>.
+    </p>
+
+    <!-- ============= 14. LEGAL BILINGUAL ============= -->
+    <h2 id="legal"><span class="num">14</span> גילוי משפטי דו-לשוני</h2>
+    <div class="bilingual">
+      <div class="he">
+        <span class="lang-tag">עברית</span>
+        <p style="margin: 0 0 10px;">
+          <strong>SLH Spark</strong> מופעל על ידי <strong>SLH Sovereign DAO LLC</strong>, איי מרשל (MIDAO #pending),
+          עבור פעילות ה-IDO; ועל ידי <strong>SPARK IND</strong> (Osif Kaufman Ungar) בישראל,
+          עבור פיתוח, אקדמיה, marketplace, ושותפויות עסקיות.
+        </p>
+        <p style="margin: 0 0 10px;">
+          השקעה ב-SLH טומנת בחובה <strong>סיכון אובדן הון מלא</strong>. ערך הטוקן יכול לרדת לאפס.
+          אין הבטחה לרווחים.
+        </p>
+        <p style="margin: 0 0 10px;">
+          <strong>לא זמין במדינות תחת סנקציות OFAC.</strong>
+          חבות מס בישראל: 25% מס רווחי הון על מכירה ברווח (משקיע פרטי).
+        </p>
+        <p style="margin: 0;">
+          התוכן במסמך זה איננו ייעוץ השקעות, ייעוץ מס, או המלצה לרכישה.
+          <strong>התייעצו עם רואה חשבון ועורך דין</strong> לפני השקעה משמעותית.
+          המסמך לצורכי מידע בלבד ואינו מהווה הצעת ניירות ערך.
+        </p>
+      </div>
+      <div class="en">
+        <span class="lang-tag">English</span>
+        <p style="margin: 0 0 10px;">
+          <strong>SLH Spark</strong> is operated by <strong>SLH Sovereign DAO LLC</strong>, Marshall Islands
+          (MIDAO #pending), for IDO activity; and by <strong>SPARK IND</strong> (Osif Kaufman Ungar) in Israel,
+          for development, academy, marketplace, and business partnerships.
+        </p>
+        <p style="margin: 0 0 10px;">
+          Investment in SLH carries <strong>full risk of capital loss</strong>. Token value may fall to zero.
+          No guaranteed returns.
+        </p>
+        <p style="margin: 0 0 10px;">
+          <strong>Not available in OFAC-sanctioned jurisdictions.</strong>
+          Israeli tax liability: 25% capital gains tax on profitable sales (individual investor).
+        </p>
+        <p style="margin: 0;">
+          Content in this document is not investment advice, tax advice, or a purchase recommendation.
+          <strong>Consult a CPA and lawyer</strong> before significant investment.
+          For informational purposes only — not a securities offering.
+        </p>
+      </div>
+    </div>
+
+    <div class="wp-footer">
+      <p>
+        <a href="/">slh-nft.com</a> ·
+        <a href="/ido.html">דף IDO</a> ·
+        <a href="/disclosure.html">גילוי סיכון מלא</a> ·
+        <a href="https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022" target="_blank">BscScan</a> ·
+        <a href="https://t.me/SLH_AIR_bot" target="_blank">Telegram</a>
+      </p>
+      <p style="margin-top: 12px;">
+        © 2026 SLH Spark · SPARK IND · SLH Sovereign DAO LLC · Built in Israel · Whitepaper v2.0 · 28.4.2026
+      </p>
+    </div>
+  </div>
+
+  <div id="bottomnav-root"></div>
+  <div id="footer-root"></div>
+
+  <script src="/js/translations.js?v=20260428a"></script>
+  <script src="/js/shared.js?v=20260428a"></script>
+  <script>
+    // Smooth scroll for TOC
+    document.querySelectorAll('.toc a, .reading-guide a').forEach(a => {
+      a.addEventListener('click', e => {
+        const href = a.getAttribute('href');
+        if (href && href.startsWith('#') && href.length > 1) {
+          const target = document.querySelector(href);
+          if (target) {
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
+      });
+    });
+
+    if (typeof initShared === 'function') {
+      initShared({ activePage: 'whitepaper', showBottomNav: true });
+    }
+  </script>
+</body>
+</html>

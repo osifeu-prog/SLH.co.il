@@ -1,0 +1,813 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH Spark 21-Day Challenge — ריפוי · מדיטציה · קהילה</title>
+<meta name="description" content="אתגר 21 יום של SLH Spark: יוגה, מדיטציה, CBT, NLP, ובניית הרגלים בריאים. הצטרפו לקהילה והרוויחו ZVK + REP.">
+<link rel="canonical" href="https://slh-nft.com/challenge.html">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="SLH 21-Day Challenge — Transform Your Life">
+<meta property="og:description" content="21 days of yoga, meditation, CBT techniques, and community healing. Earn ZVK + REP rewards.">
+<meta property="og:image" content="https://slh-nft.com/assets/og/healing.png">
+<meta property="og:url" content="https://slh-nft.com/challenge.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://slh-nft.com/assets/og/healing.png">
+
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700;800;900&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/shared.css?v=20260426e">
+
+<style>
+    :root {
+        --bg: #0a1018;
+        --bg2: #0f1a26;
+        --bg3: #162438;
+        --accent: #7cb342;
+        --accent2: #00e887;
+        --gold: #ffd700;
+        --pink: #ff6b9d;
+        --purple: #a855f7;
+        --text: #e8f4ff;
+        --text2: #9cb8d6;
+        --border: rgba(124, 179, 66, 0.3);
+    }
+    body {
+        background:
+            radial-gradient(ellipse at 30% 20%, rgba(124, 179, 66, 0.1), transparent 60%),
+            radial-gradient(ellipse at 70% 80%, rgba(255, 215, 0, 0.06), transparent 60%),
+            var(--bg);
+        color: var(--text);
+        font-family: 'Assistant', system-ui, sans-serif;
+        line-height: 1.8;
+    }
+
+    .hero {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 80px 24px 40px;
+        text-align: center;
+    }
+    .hero-icon { font-size: 80px; margin-bottom: 16px; display: block; }
+    .hero h1 {
+        font-size: clamp(36px, 6vw, 56px);
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--accent), var(--gold), var(--pink));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-bottom: 12px;
+    }
+    .hero .tagline {
+        font-size: 20px;
+        color: var(--text);
+        font-weight: 500;
+        max-width: 600px;
+        margin: 0 auto 12px;
+    }
+    .hero .sub {
+        font-size: 14px;
+        color: var(--text2);
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .section {
+        max-width: 900px;
+        margin: 0 auto 40px;
+        padding: 0 24px;
+    }
+    .section-title {
+        font-size: 28px;
+        font-weight: 900;
+        text-align: center;
+        margin-bottom: 24px;
+    }
+    .section-title span {
+        background: linear-gradient(135deg, var(--accent), var(--gold));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    /* Progress tracker */
+    .progress-card {
+        background: var(--bg2);
+        border: 2px solid var(--accent);
+        border-radius: 20px;
+        padding: 28px;
+        text-align: center;
+        margin-bottom: 32px;
+    }
+    .progress-day {
+        font-size: 48px;
+        font-weight: 900;
+        color: var(--accent);
+    }
+    .progress-bar-wrap {
+        width: 100%;
+        height: 12px;
+        background: var(--bg3);
+        border-radius: 6px;
+        overflow: hidden;
+        margin: 16px 0;
+    }
+    .progress-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent), var(--gold));
+        border-radius: 6px;
+        transition: width 1s;
+    }
+
+    /* Week cards */
+    .weeks {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 20px;
+    }
+    .week-card {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 24px;
+        position: relative;
+        overflow: hidden;
+    }
+    .week-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        height: 4px;
+    }
+    .week-card.w1::before { background: var(--accent); }
+    .week-card.w2::before { background: var(--gold); }
+    .week-card.w3::before { background: var(--pink); }
+    .week-card h3 {
+        font-size: 20px;
+        font-weight: 800;
+        margin-bottom: 12px;
+    }
+    .week-card ul {
+        padding-right: 18px;
+        font-size: 13px;
+        color: var(--text2);
+        line-height: 2;
+    }
+
+    /* Daily tasks */
+    .daily-tasks {
+        display: grid;
+        gap: 12px;
+    }
+    .task-item {
+        display: flex;
+        gap: 14px;
+        padding: 16px;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .task-item:hover { border-color: var(--accent); transform: translateX(-4px); }
+    .task-item.done { opacity: 0.5; border-color: var(--accent); }
+    .task-check {
+        width: 28px;
+        height: 28px;
+        border: 2px solid var(--border);
+        border-radius: 50%;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+    }
+    .task-item.done .task-check {
+        background: var(--accent);
+        border-color: var(--accent);
+    }
+    .task-item.done .task-check::after { content: '✓'; color: #000; font-weight: 900; }
+    .task-title { font-weight: 700; color: var(--text); }
+    .task-duration { font-size: 12px; color: var(--text2); }
+
+    /* Rewards */
+    .rewards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 14px;
+    }
+    .reward {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 18px;
+        text-align: center;
+    }
+    .reward .icon { font-size: 32px; margin-bottom: 6px; }
+    .reward .value { font-size: 20px; font-weight: 900; color: var(--gold); }
+    .reward .label { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; }
+
+    /* CTA */
+    .cta-section {
+        background: linear-gradient(135deg, rgba(124, 179, 66, 0.15), rgba(255, 215, 0, 0.08));
+        border: 2px solid var(--accent);
+        border-radius: 20px;
+        padding: 36px;
+        text-align: center;
+    }
+    .cta-section h2 { font-size: 26px; color: var(--accent); margin-bottom: 12px; }
+    .cta-btn {
+        display: inline-block;
+        padding: 16px 32px;
+        background: linear-gradient(135deg, var(--accent), var(--gold));
+        color: #000;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 900;
+        font-size: 16px;
+        margin: 8px;
+    }
+
+    /* Theme */
+    #theme-fab{position:fixed;bottom:94px;left:24px;z-index:9997;background:var(--accent);color:#000;width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;font-size:20px;box-shadow:0 4px 16px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center}
+    #theme-panel{position:fixed;bottom:150px;left:24px;z-index:9998;background:var(--bg);border:1px solid var(--border);padding:16px;border-radius:12px;display:none;flex-direction:column;gap:6px;max-width:220px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+    #theme-panel.open{display:flex}
+    #theme-panel button{background:var(--bg);border:1px solid var(--border);color:var(--text);padding:10px 14px;cursor:pointer;font-size:12px;text-align:right;font-family:inherit;border-radius:6px;transition:all .2s}
+    #theme-panel button:hover{background:var(--accent);color:#000}
+    [data-theme="dark"]{--bg:#0b0e16;--bg2:#111628;--accent:#00b4d8;--text:#e8e8f0;--text2:#8a8aa0;--border:rgba(0,180,216,.2)}
+    [data-theme="light"]{--bg:#f8f9fb;--bg2:#fff;--accent:#0066cc;--text:#1a1a1a;--text2:#555;--border:rgba(0,102,204,.2)}
+    [data-theme="ocean"]{--bg:#001e3c;--bg2:#002c55;--accent:#00d9ff;--text:#b8e6ff;--text2:#6bb6cc;--border:rgba(0,217,255,.2)}
+</style>
+</head>
+<body>
+
+<div id="topnav-root"></div>
+<div id="ticker-root"></div>
+
+<section class="hero">
+    <span class="hero-icon">🧘</span>
+    <h1>אתגר 21 יום</h1>
+    <p class="tagline">ריפוי · מדיטציה · קהילה · צמיחה</p>
+    <p class="sub">
+        21 ימים של שגרת בוקר בריאה — יוגה, מדיטציה, CBT, ו-NLP.
+        כל יום שתשלימו מעניק ZVK + REP. בסוף — NFT ייחודי + דירוג Elder.
+    </p>
+</section>
+
+<!-- Progress Tracker -->
+<section class="section">
+    <div class="progress-card">
+        <div style="font-size:12px;color:var(--text2);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px">ההתקדמות שלך</div>
+        <div class="progress-day" id="progress-day">יום 0 / 21</div>
+        <div class="progress-bar-wrap">
+            <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+        </div>
+        <div style="font-size:13px;color:var(--text2)" id="progress-status">לא התחלת עדיין — לחץ "הצטרף" למטה</div>
+    </div>
+</section>
+
+<!-- 3 Weeks -->
+<section class="section">
+    <h2 class="section-title">📅 <span>3 שבועות של שינוי</span></h2>
+    <div class="weeks">
+        <div class="week-card w1">
+            <h3 style="color:var(--accent)">🌱 שבוע 1: יסודות</h3>
+            <ul>
+                <li>יוגה 15 דק' בבוקר</li>
+                <li>מדיטציה 5 דק' (נשימה)</li>
+                <li>יומן הכרת תודה (3 דברים)</li>
+                <li>תרגילי נשימה CBT דרך @NFTY_madness_bot</li>
+                <li><strong>+10 ZVK ליום</strong></li>
+            </ul>
+        </div>
+        <div class="week-card w2">
+            <h3 style="color:var(--gold)">🌿 שבוע 2: העמקה</h3>
+            <ul>
+                <li>יוגה 25 דק' בבוקר</li>
+                <li>מדיטציה 10 דק' (מיינדפולנס)</li>
+                <li>יומן רגשי (NLP — שער הלב)</li>
+                <li>שיתוף בקהילה (פוסט יומי)</li>
+                <li><strong>+15 ZVK ליום + 5 REP</strong></li>
+            </ul>
+        </div>
+        <div class="week-card w3">
+            <h3 style="color:var(--pink)">🌸 שבוע 3: שליטה</h3>
+            <ul>
+                <li>יוגה 30 דק' + מדיטציה 15 דק'</li>
+                <li>הדרכת חבר חדש (mentoring)</li>
+                <li>שיתוף סיכום אישי</li>
+                <li>הוכחת שינוי (before/after)</li>
+                <li><strong>+20 ZVK ליום + 10 REP + Genesis NFT</strong></li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- Today's Tasks -->
+<section class="section">
+    <h2 class="section-title">☀️ <span>המשימות של היום</span></h2>
+    <div class="daily-tasks" id="daily-tasks">
+        <div class="task-item" onclick="toggleTask(this, 'yoga')">
+            <div class="task-check"></div>
+            <div>
+                <div class="task-title">🧘 יוגה בבוקר</div>
+                <div class="task-duration">15-30 דק' לפי השבוע</div>
+            </div>
+        </div>
+        <div class="task-item" onclick="toggleTask(this, 'meditation')">
+            <div class="task-check"></div>
+            <div>
+                <div class="task-title">🧠 מדיטציה / נשימה</div>
+                <div class="task-duration">5-15 דק' · אפשר דרך @NFTY_madness_bot</div>
+            </div>
+        </div>
+        <div class="task-item" onclick="toggleTask(this, 'journal')">
+            <div class="task-check"></div>
+            <div>
+                <div class="task-title">📝 יומן (הכרת תודה / רגשי)</div>
+                <div class="task-duration">5 דק' · 3 דברים שאני אסיר תודה עליהם</div>
+            </div>
+        </div>
+        <div class="task-item" onclick="toggleTask(this, 'community')">
+            <div class="task-check"></div>
+            <div>
+                <div class="task-title">💬 שיתוף בקהילה</div>
+                <div class="task-duration">פוסט / תגובה / עידוד חבר</div>
+            </div>
+        </div>
+        <div class="task-item" onclick="toggleTask(this, 'learning')">
+            <div class="task-check"></div>
+            <div>
+                <div class="task-title">📚 למידה (CBT / NLP / שער הלב)</div>
+                <div class="task-duration">10 דק' · צפייה בסרטון על ויפאסנה ומדיטציית תובנה</div>
+            </div>
+        </div>
+        <div class="task-item" onclick="toggleTask(this, 'handstand')">
+            <div class="task-check"></div>
+            <div>
+                <div class="task-title">🧘 ויפאסנה — מדיטציית תובנה</div>
+                <div class="task-duration">20 דק' · Anapana 5' + Body Scan 10' + מטא 5'</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Day 2 Update: Handstand Guide -->
+<section class="section">
+    <h2 class="section-title">🔄 <span>עדכון יום 3: ויפאסנה — מדיטציית תובנה</span></h2>
+    <div style="background:linear-gradient(135deg,rgba(0,180,216,.08),rgba(168,85,247,.05));border:1px solid rgba(0,180,216,.3);border-radius:16px;padding:28px;margin-bottom:20px">
+        <p style="font-size:15px;color:var(--text);line-height:1.8;margin-bottom:16px">
+            היום אנחנו מתעמקים ב-<strong style="color:var(--cyan,#00b4d8)">ויפאסנה</strong> — אחת הטכניקות העתיקות והחזקות ביותר למדיטציה. המילה פירושה <strong>"לראות דברים כפי שהם באמת"</strong>. זו לא רלקסציה — זו עבודה פנימית עמוקה.
+        </p>
+
+        <h3 style="color:var(--cyan);font-size:16px;margin:20px 0 12px">🧘 מה זה ויפאסנה?</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px">
+            <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px">
+                <div style="font-weight:700;color:var(--text);margin-bottom:6px">📍 מקור</div>
+                <div style="font-size:12px;color:var(--text2);line-height:1.8">טכניקה בת 2,500 שנה מהודו. הובאה מחדש לעולם ע"י ס.נ. גואנקה. נלמדת בקורסים של 10 ימים בשתיקה מוחלטת.</div>
+            </div>
+            <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px">
+                <div style="font-weight:700;color:var(--text);margin-bottom:6px">🎯 עיקרון</div>
+                <div style="font-size:12px;color:var(--text2);line-height:1.8">התבוננות בתחושות הגוף ללא תגובה. לא לברוח מכאב, לא להיצמד להנאה. שוויון נפשי (equanimity) = חופש.</div>
+            </div>
+            <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px">
+                <div style="font-weight:700;color:var(--text);margin-bottom:6px">🧠 קשר ל-CBT</div>
+                <div style="font-size:12px;color:var(--text2);line-height:1.8">כמו CBT, ויפאסנה מלמדת להפריד בין גירוי לתגובה. במקום "מחשבה → רגש → פעולה אוטומטית", יוצרים רווח של בחירה.</div>
+            </div>
+        </div>
+
+        <h3 style="color:var(--cyan);font-size:16px;margin:20px 0 12px">📋 תרגול יום 3 — Anapana + Body Scan (20 דק')</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin-bottom:16px">
+            <div style="background:var(--bg2);border:2px solid var(--cyan);border-radius:12px;padding:16px">
+                <div style="font-size:20px;font-weight:900;color:var(--cyan)">שלב 1</div>
+                <div style="font-weight:700;margin:6px 0">Anapana — נשימה (5 דק')</div>
+                <div style="font-size:12px;color:var(--text2);line-height:1.8">
+                    שבו בנוחות · עיניים עצומות<br>
+                    התמקדו <strong>רק</strong> בנשימה הטבעית<br>
+                    אזור מתחת לאף ומעל השפה העליונה<br>
+                    לא לשלוט — רק להתבונן
+                </div>
+            </div>
+            <div style="background:var(--bg2);border:2px solid var(--purple);border-radius:12px;padding:16px">
+                <div style="font-size:20px;font-weight:900;color:var(--purple)">שלב 2</div>
+                <div style="font-weight:700;margin:6px 0">Body Scan (10 דק')</div>
+                <div style="font-size:12px;color:var(--text2);line-height:1.8">
+                    סרקו את הגוף מהראש לרגליים<br>
+                    שימו לב לכל תחושה: חום, קור, לחץ, עקצוץ<br>
+                    <strong>אל תגיבו</strong> — רק התבוננו<br>
+                    "זה יעבור" (אניצ'ה = אי-קביעות)
+                </div>
+            </div>
+            <div style="background:var(--bg2);border:2px solid var(--accent);border-radius:12px;padding:16px">
+                <div style="font-size:20px;font-weight:900;color:var(--accent)">שלב 3</div>
+                <div style="font-weight:700;margin:6px 0">מטא — אהבה חמה (5 דק')</div>
+                <div style="font-size:12px;color:var(--text2);line-height:1.8">
+                    שלחו אהבה לעצמכם<br>
+                    שלחו אהבה למשפחה ולחברים<br>
+                    שלחו אהבה לכל היצורים<br>
+                    "שכל היצורים יהיו שמחים ומשוחררים"
+                </div>
+            </div>
+        </div>
+
+        <h3 style="color:var(--cyan);font-size:16px;margin:20px 0 12px">🌟 3 עקרונות הויפאסנה</h3>
+        <div style="font-size:13px;color:var(--text2);line-height:2;max-width:700px">
+            <strong style="color:var(--text)">1. אניצ'ה (אי-קביעות)</strong> — כל תחושה, מחשבה ורגש חולפים. כאב עובר, הנאה עוברת. זו תובנה שמשחררת.<br>
+            <strong style="color:var(--text)">2. דוקהא (סבל)</strong> — הסבל נוצר מההיצמדות ("אני רוצה שזה יישאר") ומהדחייה ("אני רוצה שזה ייעלם"). שוויון נפשי = חופש מסבל.<br>
+            <strong style="color:var(--text)">3. אנאטה (אין-עצמי)</strong> — "האני" הוא תהליך מתמשך, לא דבר קבוע. התבוננות בזה משחררת אגו ופותחת דלת לחמלה.
+        </div>
+
+        <div style="margin-top:16px;padding:14px;background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.2);border-radius:10px;font-size:12px;color:var(--text2)">
+            🔗 <strong style="color:#ffd700">למד עוד:</strong>
+            <a href="https://www.dhamma.org/he/" target="_blank" rel="noopener" style="color:var(--cyan)">dhamma.org — אתר ויפאסנה הרשמי</a> ·
+            <a href="https://www.youtube.com/results?search_query=vipassana+meditation+guided+hebrew" target="_blank" rel="noopener" style="color:var(--cyan)">מדיטציות מודרכות בעברית (YouTube)</a>
+        </div>
+    </div>
+</section>
+
+<!-- Day 2 Section (kept for reference) -->
+<section class="section">
+    <h2 class="section-title">📦 <span>ארכיון — ימים קודמים (למכירה)</span></h2>
+    <div style="background:linear-gradient(135deg,rgba(255,215,0,.08),rgba(168,85,247,.04));border:2px solid var(--gold);border-radius:16px;padding:20px;margin-bottom:20px;text-align:center">
+        <div style="font-size:16px;font-weight:800;color:var(--gold);margin-bottom:8px">🔒 תוכן פרימיום — ימים 1-2</div>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:12px">פספסת את הימים הראשונים? רכוש את התוכן המלא ב-₪24.99 וקבל גישה לכל 21 הימים!</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+            <a href="/buy.html" style="padding:12px 24px;background:var(--gold);color:#000;border-radius:10px;font-weight:800;text-decoration:none">💎 רכוש קורס מלא — ₪24.99</a>
+            <a href="/p2p.html" style="padding:12px 24px;background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:10px;font-weight:700;text-decoration:none">🤝 רכוש ב-P2P</a>
+        </div>
+        <div style="margin-top:8px;font-size:11px;color:var(--text2)">חברי Genesis רשומים מקבלים גישה חינם!</div>
+    </div>
+
+    <details style="margin-bottom:16px">
+    <summary style="font-size:14px;font-weight:700;color:var(--purple);cursor:pointer;padding:12px;background:var(--bg2);border-radius:10px">📖 יום 2: עמידות ידיים (לחץ לפתיחה)</summary>
+    <div style="padding:16px 0">
+    <h3 style="color:var(--purple);font-size:16px;margin-bottom:12px">🔄 עדכון יום 2: עמידות ידיים</h3>
+    <div style="background:linear-gradient(135deg,rgba(168,85,247,.08),rgba(255,107,157,.05));border:1px solid rgba(168,85,247,.3);border-radius:16px;padding:28px;margin-bottom:20px">
+        <p style="font-size:15px;color:var(--text);line-height:1.8;margin-bottom:16px">
+            היום אנחנו מוסיפים מימד חדש: <strong style="color:var(--purple)">עמידות ידיים</strong> — תרגול שמחזק את הגוף, מאמן את המוח ומחבר אותנו לתחושת משחקיות וכוח פנימי. <strong>בטיחות היא המטרה הראשונה</strong> — נתרגל רק עם קיר, בצורה הדרגתית.
+        </p>
+
+        <h3 style="color:var(--accent);font-size:16px;margin:20px 0 12px">📋 חימום (10-15 דק') — חובה!</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px">
+            <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px">
+                <div style="font-weight:700;color:var(--text);margin-bottom:6px">🔹 כפות ידיים (5-10')</div>
+                <div style="font-size:12px;color:var(--text2);line-height:1.8">
+                    • סיבובי כף יד — 10 לכל כיוון<br>
+                    • כיפוף ושיחרור — 10 חזרות<br>
+                    • הטיות לצדדים — 15-20"<br>
+                    • שכיבות מקצות אצבעות — 2×10"
+                </div>
+            </div>
+            <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px">
+                <div style="font-weight:700;color:var(--text);margin-bottom:6px">🔹 כתפיים (5-8')</div>
+                <div style="font-size:12px;color:var(--text2);line-height:1.8">
+                    • החלקות שכם על קיר — 3×10<br>
+                    • הרמות כתף בפלאנק — 3×10<br>
+                    • הקשות כתף בקיר — 3×20
+                </div>
+            </div>
+            <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px">
+                <div style="font-weight:700;color:var(--text);margin-bottom:6px">🔹 ליבה</div>
+                <div style="font-size:12px;color:var(--text2);line-height:1.8">
+                    • Hollow body hold — 3×30-45"<br>
+                    • פלאנק קיר — 3×30-60"
+                </div>
+            </div>
+        </div>
+
+        <h3 style="color:var(--accent);font-size:16px;margin:20px 0 12px">🧱 3 שלבי התקדמות</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:16px">
+            <div style="background:var(--bg2);border:2px solid var(--accent);border-radius:12px;padding:16px;text-align:center">
+                <div style="font-size:24px;font-weight:900;color:var(--accent)">1</div>
+                <div style="font-weight:700;margin:6px 0">עמידת L</div>
+                <div style="font-size:12px;color:var(--text2);line-height:1.8">
+                    רגליים על הקיר בגובה המותן<br>גוף בצורת L · 3-15 נשימות<br><strong>הכי בטוח למתחילים</strong>
+                </div>
+            </div>
+            <div style="background:var(--bg2);border:2px solid var(--purple);border-radius:12px;padding:16px;text-align:center">
+                <div style="font-size:24px;font-weight:900;color:var(--purple)">2</div>
+                <div style="font-weight:700;margin:6px 0">גב לקיר</div>
+                <div style="font-size:12px;color:var(--text2);line-height:1.8">
+                    בעיטה הדרגתית · רגליים על הקיר<br>גוף מתוח · 10-20 שניות<br><strong>אחרי ביטחון בשלב 1</strong>
+                </div>
+            </div>
+            <div style="background:var(--bg2);border:2px solid var(--pink,#ff6b9d);border-radius:12px;padding:16px;text-align:center">
+                <div style="font-size:24px;font-weight:900;color:var(--pink,#ff6b9d)">3</div>
+                <div style="font-weight:700;margin:6px 0">עמידה חופשית</div>
+                <div style="font-size:12px;color:var(--text2);line-height:1.8">
+                    ניתוקים קצרים מהקיר<br>אחרי 2-3 שבועות תרגול<br><strong>למתקדמים</strong>
+                </div>
+            </div>
+        </div>
+
+        <h3 style="color:var(--accent);font-size:16px;margin:20px 0 12px">🧠 למה זה חשוב? (CBT + נוירופלסטיות)</h3>
+        <div style="font-size:13px;color:var(--text2);line-height:2;max-width:700px">
+            • <strong style="color:var(--text)">נוירופלסטיות</strong> — תבניות תנועה חדשות מגדילות מסלולים עצביים = "לגדל את המוח"<br>
+            • <strong style="color:var(--text)">זרימת דם מוחית</strong> — תרגול הפוך מגביר עירנות וריכוז<br>
+            • <strong style="color:var(--text)">הורדת קורטיזול</strong> — מפחית לחץ, מפתח סבלנות<br>
+            • <strong style="color:var(--text)">חשיפה לפחד</strong> — כמו טכניקות CBT, התמודדות מבוקרת עם פחד<br>
+            • <strong style="color:var(--text)">80% שרירים</strong> — מפעיל כתפיים, ליבה, זרועות, רגליים
+        </div>
+
+        <div style="margin-top:16px;padding:14px;background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.2);border-radius:10px;font-size:12px;color:var(--text2)">
+            ⚠️ <strong style="color:#ffd700">בטיחות:</strong> אין לדלג על החימום · אין לתרגל לבד בהתחלה · כאב = לעצור · התייעצו עם מומחה אם יש פציעות קודמות
+        </div>
+
+        <h3 style="color:var(--accent);font-size:16px;margin:20px 0 12px">💪 אילו שרירים מופעלים?</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:16px">
+            <div style="background:var(--bg2);border-radius:10px;padding:12px;text-align:center">
+                <div style="font-size:20px">🦴</div>
+                <div style="font-size:13px;font-weight:700;color:var(--text)">כתפיים</div>
+                <div style="font-size:11px;color:var(--text2)">דלתואיד, שרוול מסובב, טרפז</div>
+            </div>
+            <div style="background:var(--bg2);border-radius:10px;padding:12px;text-align:center">
+                <div style="font-size:20px">🏋️</div>
+                <div style="font-size:13px;font-weight:700;color:var(--text)">ליבה</div>
+                <div style="font-size:11px;color:var(--text2)">רקטוס, טרנסוורסוס, אלכסונים</div>
+            </div>
+            <div style="background:var(--bg2);border-radius:10px;padding:12px;text-align:center">
+                <div style="font-size:20px">💪</div>
+                <div style="font-size:13px;font-weight:700;color:var(--text)">זרועות</div>
+                <div style="font-size:11px;color:var(--text2)">תלת-ראשי, שרירי אמה</div>
+            </div>
+            <div style="background:var(--bg2);border-radius:10px;padding:12px;text-align:center">
+                <div style="font-size:20px">🦵</div>
+                <div style="font-size:13px;font-weight:700;color:var(--text)">רגליים</div>
+                <div style="font-size:11px;color:var(--text2)">רב-ראשי, גלוטאוס</div>
+            </div>
+        </div>
+        <div style="text-align:center;padding:10px;background:var(--bg2);border-radius:8px;font-size:13px;color:var(--accent);font-weight:700">
+            🔥 עובדה: עמידת ידיים מפעילה עד 80% מקבוצות השרירים העיקריות בגוף
+        </div>
+
+        <h3 style="color:var(--accent);font-size:16px;margin:20px 0 12px">📊 טבלת התקדמות שבועית</h3>
+        <div style="overflow-x:auto">
+            <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:500px">
+                <thead>
+                    <tr style="background:var(--bg2)">
+                        <th style="padding:10px;text-align:right;color:var(--text2);border-bottom:1px solid var(--border)">יום</th>
+                        <th style="padding:10px;text-align:right;color:var(--text2);border-bottom:1px solid var(--border)">יוגה</th>
+                        <th style="padding:10px;text-align:right;color:var(--text2);border-bottom:1px solid var(--border)">מדיטציה</th>
+                        <th style="padding:10px;text-align:right;color:var(--text2);border-bottom:1px solid var(--border)">עמידות ידיים</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px;color:var(--accent);font-weight:700">יום 1</td><td style="padding:8px">15' יוגה בוקר</td><td style="padding:8px">5' נשימה</td><td style="padding:8px;color:var(--text2)">—</td></tr>
+                    <tr style="border-bottom:1px solid var(--border);background:rgba(168,85,247,.05)"><td style="padding:8px;color:var(--purple);font-weight:700">יום 3 ← אתה כאן!</td><td style="padding:8px">15' יוגה</td><td style="padding:8px">5' מיינדפולנס</td><td style="padding:8px;font-weight:700">חימום 10' + 3× L-hold 15"</td></tr>
+                    <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px">יום 3</td><td style="padding:8px">15' יוגה</td><td style="padding:8px">5' נשימה</td><td style="padding:8px">Hollow body + Wall plank</td></tr>
+                    <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px">יום 4</td><td style="padding:8px">15' יוגה</td><td style="padding:8px">5'</td><td style="padding:8px">4× L-hold 20"</td></tr>
+                    <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px">יום 5</td><td style="padding:8px">15' יוגה</td><td style="padding:8px">5'</td><td style="padding:8px">3× Back-to-wall 10"</td></tr>
+                    <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px">יום 6</td><td style="padding:8px">15' יוגה</td><td style="padding:8px">5'</td><td style="padding:8px">3× Back-to-wall 15"</td></tr>
+                    <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px;color:var(--text2)">יום 7</td><td style="padding:8px;color:var(--text2)">מנוחה/מתיחות</td><td style="padding:8px">5'</td><td style="padding:8px;color:var(--text2)">—</td></tr>
+                    <tr style="border-bottom:1px solid var(--border);background:rgba(0,232,135,.03)"><td style="padding:8px;color:var(--accent)" colspan="4"><strong>שבוע 2: יוגה 25' + מדיטציה 10' + L-hold 30" + Back-to-wall 20" + ניתוקים</strong></td></tr>
+                    <tr style="border-bottom:1px solid var(--border);background:rgba(255,107,157,.03)"><td style="padding:8px;color:var(--pink,#ff6b9d)" colspan="4"><strong>שבוע 3: יוגה 30' + מדיטציה 15' + שילוב כל השלבים + הדרכת חבר + NFT!</strong></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 style="color:var(--accent);font-size:16px;margin:20px 0 12px">🔗 קישורים ומדריכים</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px">
+            <a href="https://www.onebody.co.il/handstand-guide/" target="_blank" rel="noopener" style="display:block;padding:14px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;text-decoration:none">
+                <div style="font-size:13px;font-weight:700;color:var(--text)">🇮🇱 המדריך המלא — וואן בודי</div>
+                <div style="font-size:11px;color:var(--text2)">חימום, גמישות כתפיים, שלבי תרגול</div>
+            </a>
+            <a href="https://stronger.co.il/%D7%A2%D7%9E%D7%99%D7%93%D7%AA-%D7%99%D7%93%D7%99%D7%99%D7%9D/" target="_blank" rel="noopener" style="display:block;padding:14px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;text-decoration:none">
+                <div style="font-size:13px;font-weight:700;color:var(--text)">🇮🇱 סטרונגר — 6 שלבים</div>
+                <div style="font-size:11px;color:var(--text2)">מיינדפולנס, NLP ובטיחות</div>
+            </a>
+            <a href="/healing-vision.html" style="display:block;padding:14px;background:var(--bg2);border:1px solid rgba(255,107,157,.3);border-radius:10px;text-decoration:none">
+                <div style="font-size:13px;font-weight:700;color:var(--pink,#ff6b9d)">🌸 חזון הריפוי של SLH</div>
+                <div style="font-size:11px;color:var(--text2)">הקשר בין ריפוי, קהילה ובלוקצ'יין</div>
+            </a>
+            <a href="/liquidity.html" style="display:block;padding:14px;background:var(--bg2);border:1px solid rgba(0,232,135,.3);border-radius:10px;text-decoration:none">
+                <div style="font-size:13px;font-weight:700;color:var(--accent)">💧 נזילות וסטייקינג</div>
+                <div style="font-size:11px;color:var(--text2)">איך להרוויח עד Variable Yield (4-12%)</div>
+            </a>
+            <a href="/about.html" style="display:block;padding:14px;background:var(--bg2);border:1px solid rgba(168,85,247,.3);border-radius:10px;text-decoration:none">
+                <div style="font-size:13px;font-weight:700;color:var(--purple)">🔍 אודות ושקיפות</div>
+                <div style="font-size:11px;color:var(--text2)">הצוות, אימות עצמאי, מודל כלכלי</div>
+            </a>
+            <a href="/community.html" style="display:block;padding:14px;background:var(--bg2);border:1px solid rgba(0,180,216,.3);border-radius:10px;text-decoration:none">
+                <div style="font-size:13px;font-weight:700;color:var(--blue,#00b4d8)">💬 קהילה</div>
+                <div style="font-size:11px;color:var(--text2)">שתפו את ההתקדמות שלכם</div>
+            </a>
+        </div>
+
+        <div style="margin-top:16px;padding:14px;background:var(--bg2);border-radius:10px;font-size:12px;color:var(--text2);line-height:1.8">
+            <strong style="color:var(--text)">📌 לתשומת לב:</strong> המידע במדריך זה מבוסס על מקורות מקצועיים ונועד למטרות חינוך והעשרה. מומלץ להתייעץ עם רופא או פיזיותרפיסט לפני תחילת תרגול מתקדם, במיוחד אם יש היסטוריה של פציעות. התרגול הוא באחריותך האישית.
+        </div>
+    </div>
+</section>
+
+<!-- Rewards -->
+<section class="section">
+    <h2 class="section-title">🎁 <span>מה מרוויחים</span></h2>
+    <div class="rewards-grid">
+        <div class="reward">
+            <div class="icon">⭐</div>
+            <div class="value">315 ZVK</div>
+            <div class="label">21 ימים מלאים</div>
+        </div>
+        <div class="reward">
+            <div class="icon">🏅</div>
+            <div class="value">+150 REP</div>
+            <div class="label">דירוג עולה</div>
+        </div>
+        <div class="reward">
+            <div class="icon">🖼️</div>
+            <div class="value">NFT</div>
+            <div class="label">תעודת בוגר</div>
+        </div>
+        <div class="reward">
+            <div class="icon">👑</div>
+            <div class="value">Elder</div>
+            <div class="label">דירוג מקסימלי</div>
+        </div>
+    </div>
+</section>
+
+<!-- Join CTA -->
+<section class="section">
+    <div class="cta-section">
+        <h2>💰 הקורס הראשון של SLH!
+    </h2>
+    <div style="background:linear-gradient(135deg,rgba(255,215,0,.08),rgba(0,232,135,.04));border:2px solid var(--gold);border-radius:16px;padding:24px;text-align:center;margin-bottom:24px">
+        <div style="font-size:32px;margin-bottom:8px">📚</div>
+        <h3 style="color:var(--gold);font-size:18px;margin-bottom:8px">אתגר 21 יום — הקורס המלא</h3>
+        <p style="font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:16px">
+            אחרי סיום האתגר, כל התוכן (21 ימים של יוגה, מדיטציה, ויפאסנה, עמידות ידיים, CBT ו-NLP) 
+            יהפוך ל<strong style="color:var(--text)">קורס דיגיטלי למכירה ב-₪24.99 בלבד</strong> למשתמשי המערכת.
+        </p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+            <a href="/p2p.html" style="padding:12px 24px;background:var(--gold);color:#000;border-radius:10px;font-weight:800;text-decoration:none">🛒 רכוש דרך P2P</a>
+            <a href="/buy.html" style="padding:12px 24px;background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:10px;font-weight:700;text-decoration:none">💎 רכוש SLH</a>
+        </div>
+        <div style="margin-top:12px;font-size:12px;color:var(--text2)">הצטרף עכשיו בחינם · הקורס ייסגר למכירה אחרי יום 21</div>
+    </div>
+</section>
+
+<!-- Telegram Groups -->
+<section class="section">
+    <h2 class="section-title">💬 <span>קבוצות וקהילה</span></h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
+        <a href="https://t.me/+AMbJe9hgowg3N2U0" target="_blank" rel="noopener" style="display:block;padding:16px;background:var(--bg2);border:2px solid rgba(255,107,157,.3);border-radius:12px;text-decoration:none;text-align:center">
+            <div style="font-size:24px;margin-bottom:6px">🧘</div>
+            <div style="font-size:14px;font-weight:700;color:var(--pink,#ff6b9d)">בריאות אנושית</div>
+            <div style="font-size:11px;color:var(--text2)">יוגה · מדיטציה · ריפוי</div>
+        </a>
+        <a href="https://t.me/+qon4jktYobA3Mjlk" target="_blank" rel="noopener" style="display:block;padding:16px;background:var(--bg2);border:2px solid rgba(0,255,65,.3);border-radius:12px;text-decoration:none;text-align:center">
+            <div style="font-size:24px;margin-bottom:6px">🌐</div>
+            <div style="font-size:14px;font-weight:700;color:var(--accent)">SLH System Bus</div>
+            <div style="font-size:11px;color:var(--text2)">הקבוצה הכללית של המערכת</div>
+        </a>
+        <a href="https://t.me/NIFTI_Publisher_Bot" target="_blank" rel="noopener" style="display:block;padding:16px;background:var(--bg2);border:2px solid rgba(168,85,247,.3);border-radius:12px;text-decoration:none;text-align:center">
+            <div style="font-size:24px;margin-bottom:6px">🤖</div>
+            <div style="font-size:14px;font-weight:700;color:var(--purple)">NIFTI Publisher Bot</div>
+            <div style="font-size:11px;color:var(--text2)">בוט בריאות ורווחה</div>
+        </a>
+    </div>
+</section>
+
+
+<!-- Share for Rewards -->
+<section class="section">
+    <h2 class="section-title">📣 <span>שתף והרוויח ZVK!</span></h2>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:24px;text-align:center">
+        <p style="font-size:14px;color:var(--text2);margin-bottom:16px">שתף את האתגר וקבל <strong style="color:var(--accent)">+5 ZVK</strong> על כל שיתוף!</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+            <a href="https://t.me/share/url?url=https://slh-nft.com/challenge.html&text=🧘 אתגר 21 יום — יוגה, מדיטציה, ויפאסנה! הצטרפו בחינם" target="_blank" rel="noopener" style="padding:12px 20px;background:#0088cc;color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:13px">📱 Telegram</a>
+            <a href="https://wa.me/?text=🧘 אתגר 21 יום — יוגה, מדיטציה, ויפאסנה! https://slh-nft.com/challenge.html" target="_blank" rel="noopener" style="padding:12px 20px;background:#25D366;color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:13px">💬 WhatsApp</a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://slh-nft.com/challenge.html" target="_blank" rel="noopener" style="padding:12px 20px;background:#1877F2;color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:13px">📘 Facebook</a>
+            <button onclick="navigator.clipboard.writeText('https://slh-nft.com/challenge.html');this.textContent='✅ הועתק!'" style="padding:12px 20px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;font-weight:700;font-size:13px;cursor:pointer">📋 העתק לינק</button>
+        </div>
+        <div style="margin-top:12px;font-size:11px;color:var(--text2)">כל שיתוף = +5 ZVK · חבר ישיר (Tier 1) = 20% מרכישותיו · Tier 2 = 5% (תכנית מוגבלת ל-2 רמות)</div>
+    </div>
+</section>
+
+<section class="section">
+    <h2 class="section-title">🧘 מוכנים להתחיל?</h2>
+        <p style="color:var(--text);margin-bottom:20px;font-size:15px">
+            הצטרפו לאתגר 21 היום. כל יום — 30 דקות. שינוי אמיתי.
+            הקהילה שלנו מלווה אתכם בכל צעד.
+        </p>
+        <a href="#" onclick="joinChallenge();return false;" class="cta-btn" id="join-btn">🌱 הצטרף לאתגר 21 יום</a>
+        <a href="/healing-vision.html" class="cta-btn" style="background:transparent;border:2px solid var(--accent);color:var(--accent)">🌸 חזון הריפוי</a>
+        <a href="https://t.me/NFTY_madness_bot" target="_blank" class="cta-btn" style="background:transparent;border:2px solid var(--gold);color:var(--gold)">🤖 תרגילי נשימה בבוט</a>
+    </div>
+</section>
+
+<div id="bottomnav-root"></div>
+<div id="footer-root"></div>
+
+<!-- Theme FAB -->
+<button id="theme-fab" onclick="document.getElementById('theme-panel').classList.toggle('open')">🎨</button>
+<div id="theme-panel">
+    <div style="font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">ערכת צבעים</div>
+    <button onclick="document.documentElement.removeAttribute('data-theme');localStorage.setItem('slh_page_theme','default');document.getElementById('theme-panel').classList.remove('open')">🌱 Default</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','dark');localStorage.setItem('slh_page_theme','dark');document.getElementById('theme-panel').classList.remove('open')">🌙 Dark</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','light');localStorage.setItem('slh_page_theme','light');document.getElementById('theme-panel').classList.remove('open')">☀️ Light</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','ocean');localStorage.setItem('slh_page_theme','ocean');document.getElementById('theme-panel').classList.remove('open')">🌊 Ocean</button>
+</div>
+
+<script src="/js/translations.js?v=20260426e"></script>
+<script src="/js/shared.js?v=20260426e"></script>
+<script>
+initShared({ activePage: 'challenge', showBottomNav: true, showTicker: true });
+
+// Theme restore
+(function(){var t=localStorage.getItem('slh_page_theme');if(t&&t!=='default')document.documentElement.setAttribute('data-theme',t);})();
+
+// Challenge state
+const CHALLENGE_KEY = 'slh_21day_challenge';
+const TASKS_KEY = 'slh_21day_tasks_';
+
+function getChallengeState() {
+    try { return JSON.parse(localStorage.getItem(CHALLENGE_KEY) || 'null'); } catch(e) { return null; }
+}
+
+function joinChallenge() {
+    const state = getChallengeState();
+    if (state) {
+        alert('כבר הצטרפת! המשך את המשימות היומיות.');
+        return;
+    }
+    const startDate = new Date().toISOString().slice(0, 10);
+    localStorage.setItem(CHALLENGE_KEY, JSON.stringify({ startDate, joined: true }));
+    document.getElementById('join-btn').textContent = '✅ הצטרפת!';
+    updateProgress();
+    alert('🌱 ברוך הבא לאתגר 21 יום! התחל את המשימות של היום.');
+}
+
+function updateProgress() {
+    let state = getChallengeState();
+    // Auto-start from April 12 for all visitors
+    if (!state) {
+        state = { startDate: '2026-04-12', joined: true };
+        localStorage.setItem(CHALLENGE_KEY, JSON.stringify(state));
+    }
+
+    const start = new Date(state.startDate);
+    const now = new Date();
+    const diff = Math.floor((now - start) / (1000 * 60 * 60 * 24)) + 1;
+    const day = Math.min(diff, 21);
+    const pct = Math.round((day / 21) * 100);
+
+    document.getElementById('progress-day').textContent = 'יום ' + day + ' / 21';
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-status').textContent =
+        day <= 7 ? '🌱 שבוע 1: יסודות — כל הכבוד!' :
+        day <= 14 ? '🌿 שבוע 2: העמקה — ממשיכים!' :
+        day <= 21 ? '🌸 שבוע 3: שליטה — כמעט שם!' :
+        '🏆 סיימת את האתגר!';
+
+    document.getElementById('join-btn').textContent = day <= 21 ? '🌱 יום ' + day + ' פעיל' : '🏆 סיימת!';
+
+    // Restore today's tasks
+    const today = now.toISOString().slice(0, 10);
+    const tasks = JSON.parse(localStorage.getItem(TASKS_KEY + today) || '{}');
+    document.querySelectorAll('.task-item').forEach(item => {
+        const key = item.getAttribute('onclick')?.match(/'(\w+)'/)?.[1];
+        if (key && tasks[key]) {
+            item.classList.add('done');
+        }
+    });
+}
+
+function toggleTask(el, key) {
+    const state = getChallengeState();
+    if (!state) {
+        alert('הצטרף לאתגר קודם!');
+        return;
+    }
+    el.classList.toggle('done');
+    const today = new Date().toISOString().slice(0, 10);
+    const tasks = JSON.parse(localStorage.getItem(TASKS_KEY + today) || '{}');
+    tasks[key] = el.classList.contains('done');
+    localStorage.setItem(TASKS_KEY + today, JSON.stringify(tasks));
+
+    // Count completed
+    const done = Object.values(tasks).filter(v => v).length;
+    if (done >= 5) {
+        // All tasks done — award ZVK (would call API in production)
+        document.getElementById('progress-status').textContent = '🎉 כל המשימות של היום הושלמו! +10 ZVK';
+    }
+}
+
+// Init
+updateProgress();
+// Close theme panel on outside click
+document.addEventListener('click', (e) => {
+    const p = document.getElementById('theme-panel');
+    const f = document.getElementById('theme-fab');
+    if (p && f && !p.contains(e.target) && !f.contains(e.target)) p.classList.remove('open');
+});
+</script>
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260426e"></script>
+</body>
+</html>

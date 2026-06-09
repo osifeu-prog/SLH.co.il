@@ -1,0 +1,500 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH Experts — מומחי הקהילה | מצא יועץ ושתף ידע</title>
+<meta name="description" content="מצא מומחים בקהילת SLH לפי תחום ושפה. שתף ידע, קבל ייעוץ, צמח ביחד.">
+<link rel="canonical" href="https://slh-nft.com/experts.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="SLH Experts — קהילת מומחים">
+<meta property="og:image" content="https://slh-nft.com/assets/og/community.png">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/shared.css?v=20260426e">
+<style>
+:root{--bg:#050810;--bg2:#0d1220;--bg3:#151a2e;--gold:#ffd700;--green:#00e887;--red:#ff4444;--purple:#a855f7;--blue:#3b82f6;--cyan:#06b6d4;--text:#f5f5f8;--text2:#9ba0b5;--text3:#5a6078;--border:rgba(168,85,247,.25)}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Rubik',sans-serif;margin:0;min-height:100vh;line-height:1.5}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(circle at 15% 25%,rgba(168,85,247,.06),transparent 50%),radial-gradient(circle at 85% 75%,rgba(6,182,212,.05),transparent 50%)}
+.header{max-width:1200px;margin:0 auto;padding:40px 20px 20px;text-align:center}
+.title{font-size:clamp(28px,5vw,44px);font-weight:900;background:linear-gradient(135deg,var(--purple),var(--cyan),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent;margin:0 0 10px}
+.sub{font-size:15px;color:var(--text2);max-width:620px;margin:0 auto 20px}
+.cta{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:linear-gradient(135deg,var(--purple),var(--cyan));color:#fff;text-decoration:none;border-radius:14px;font-weight:800;font-size:14px}
+.cta:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(168,85,247,.3)}
+.filters{max-width:1200px;margin:0 auto 24px;padding:0 20px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.search{flex:1;min-width:240px;padding:12px 16px;background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:12px;font-size:14px;font-family:inherit}
+.search:focus{outline:none;border-color:var(--purple)}
+.chip{padding:8px 14px;background:var(--bg2);border:1px solid var(--border);color:var(--text2);border-radius:18px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+.chip.active{background:var(--purple);color:#fff;border-color:var(--purple)}
+.experts-grid{max-width:1200px;margin:0 auto 40px;padding:0 20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.expert-card{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:22px;transition:all .25s;display:flex;flex-direction:column}
+.expert-card:hover{transform:translateY(-4px);border-color:var(--purple);box-shadow:0 14px 35px rgba(168,85,247,.15)}
+.expert-card.featured{border:2px solid var(--gold);background:linear-gradient(135deg,rgba(255,215,0,.04),var(--bg2))}
+.expert-head{display:flex;gap:14px;align-items:center;margin-bottom:14px}
+.expert-avatar{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:#fff;flex-shrink:0}
+.expert-info h3{margin:0 0 2px;font-size:17px;font-weight:900;color:var(--text)}
+.expert-info .handle{font-size:12px;color:var(--cyan)}
+.expert-bio{font-size:13px;color:var(--text2);margin-bottom:14px;min-height:50px;line-height:1.7}
+.expert-domains{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.domain-tag{font-size:11px;padding:3px 10px;background:rgba(168,85,247,.15);color:var(--purple);border-radius:8px;font-weight:700}
+.expert-stats{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);padding:10px 14px;background:var(--bg);border-radius:10px;margin-bottom:12px}
+.expert-stats b{color:var(--gold);font-weight:900}
+.expert-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.expert-actions button,.expert-actions a{padding:10px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;cursor:pointer;font-size:12px;font-weight:700;font-family:inherit;text-decoration:none;text-align:center;transition:all .15s}
+.expert-actions .consult-btn:hover{background:var(--purple);color:#fff;border-color:var(--purple)}
+.expert-actions .review-btn:hover{background:var(--gold);color:#000;border-color:var(--gold)}
+.featured-badge{display:inline-block;padding:3px 10px;background:var(--gold);color:#000;border-radius:8px;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:1px;margin-left:8px}
+.verified-badge{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;background:var(--green);color:#000;border-radius:8px;font-size:10px;font-weight:900;margin-left:6px}
+.modal-bg{position:fixed;inset:0;background:rgba(5,8,16,.85);backdrop-filter:blur(6px);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-bg.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--purple);border-radius:20px;padding:28px;max-width:520px;width:100%;max-height:85vh;overflow-y:auto}
+.modal h2{margin:0 0 14px;color:var(--purple)}
+.modal label{display:block;font-size:12px;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:1px;font-weight:700}
+.modal input,.modal textarea,.modal select{width:100%;padding:10px 12px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:12px}
+.modal textarea{resize:vertical;min-height:70px}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--green);color:#000;padding:12px 24px;border-radius:12px;font-weight:800;z-index:200;display:none}
+.toast.show{display:block}
+.empty-state{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text2)}
+.empty-state .ico{font-size:64px;margin-bottom:14px;color:var(--purple)}
+</style>
+</head>
+<body>
+
+<!-- Site nav (loaded by shared.js) -->
+<div id="topnav-root"></div>
+<div id="ticker-root"></div>
+
+<div class="header">
+  <h1 class="title">🎓 קהילת המומחים</h1>
+  <p class="sub">
+    מצא יועץ או מומחה בכל תחום — קריפטו, אבטחה, השקעות, פיננסים, יזמות, פיתוח.
+    <strong>זהו מנגנון שיתופי</strong> — חברי הקהילה הם המומחים שמסייעים זה לזה.
+  </p>
+  <a href="#register" class="cta" onclick="openRegister()">
+    <i class="fas fa-graduation-cap"></i> אני מומחה — הצטרף
+  </a>
+</div>
+
+<div class="filters">
+  <input type="text" id="search" class="search" placeholder="🔍 חיפוש לפי שם / תחום / מילת מפתח...">
+  <button class="chip active" data-domain="all">הכל</button>
+  <button class="chip" data-domain="crypto">קריפטו</button>
+  <button class="chip" data-domain="security">אבטחה</button>
+  <button class="chip" data-domain="finance">פיננסים</button>
+  <button class="chip" data-domain="trading">מסחר</button>
+  <button class="chip" data-domain="tech">פיתוח</button>
+  <button class="chip" data-domain="marketing">שיווק</button>
+  <button class="chip" data-domain="legal">משפט</button>
+  <button class="chip" data-domain="halacha">הלכה</button>
+</div>
+
+<div id="experts-grid" class="experts-grid"></div>
+
+<!-- Register Modal -->
+<div id="register-modal" class="modal-bg" onclick="if(event.target===this)closeRegister()">
+  <div class="modal">
+    <h2>🎓 הצטרפות כמומחה</h2>
+    <label>שם מלא *</label>
+    <input type="text" id="reg-name" placeholder="ישראל ישראלי" required>
+    <label>שם משתמש בטלגרם</label>
+    <input type="text" id="reg-tg" placeholder="@username">
+    <label>טלפון</label>
+    <input type="tel" id="reg-phone" placeholder="050-XXXXXXX">
+    <label>אימייל</label>
+    <input type="email" id="reg-email" placeholder="you@example.com">
+    <label>תחומי מומחיות (לחץ למספר)</label>
+    <div id="reg-domains" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
+      <button type="button" class="chip" onclick="toggleDomain(this,'crypto')">קריפטו</button>
+      <button type="button" class="chip" onclick="toggleDomain(this,'security')">אבטחה</button>
+      <button type="button" class="chip" onclick="toggleDomain(this,'finance')">פיננסים</button>
+      <button type="button" class="chip" onclick="toggleDomain(this,'trading')">מסחר</button>
+      <button type="button" class="chip" onclick="toggleDomain(this,'tech')">פיתוח</button>
+      <button type="button" class="chip" onclick="toggleDomain(this,'marketing')">שיווק</button>
+      <button type="button" class="chip" onclick="toggleDomain(this,'legal')">משפט</button>
+      <button type="button" class="chip" onclick="toggleDomain(this,'halacha')">הלכה</button>
+    </div>
+    <label>תיאור קצר (50-200 תווים)</label>
+    <textarea id="reg-bio" placeholder="ספר על הניסיון והידע שלך..."></textarea>
+
+    <!-- Proof-of-expertise section (required: at least one) -->
+    <div style="margin-top:18px;padding:14px;background:rgba(0,255,65,.04);border:1px solid rgba(0,255,65,.2);border-radius:10px">
+      <div style="font-size:13px;font-weight:800;color:var(--accent,#00ff41);margin-bottom:4px">🔒 הוכחת מומחיות (חובה לפחות אחת)</div>
+      <div style="font-size:11px;color:var(--text2);margin-bottom:12px">כדי לוודא איכות הקהילה — אימות אדמין ידני. אישור תוך 24-48 שעות.</div>
+
+      <label style="font-size:11px">LinkedIn URL</label>
+      <input type="url" id="reg-linkedin" placeholder="https://linkedin.com/in/your-profile">
+
+      <label style="font-size:11px">אתר אישי / פורטפוליו</label>
+      <input type="url" id="reg-website" placeholder="https://yoursite.com">
+
+      <label style="font-size:11px">YouTube / סרטון הרצאה</label>
+      <input type="url" id="reg-youtube" placeholder="https://youtube.com/watch?v=...">
+
+      <label style="font-size:11px">שנות ניסיון</label>
+      <input type="number" id="reg-years" placeholder="לדוגמה: 10" min="0" max="60">
+
+      <label style="font-size:11px">תעודות / הסמכות (חופשי)</label>
+      <textarea id="reg-credentials" placeholder="לדוגמה: PhD בפסיכולוגיה קלינית · מנצח תזמורת סימפונית · 500+ סדנאות יוגה" style="min-height:60px"></textarea>
+    </div>
+
+    <button class="cta" style="width:100%;margin-top:14px" onclick="submitRegister()">
+      <i class="fas fa-paper-plane"></i> שלח הרשמה לאימות
+    </button>
+    <div style="text-align:center;font-size:11px;color:var(--text3);margin-top:10px">
+      🎁 בונוס 100 ZVK להרשמה · אימות תוך 24-48 שעות · תגמול נוסף אחרי אישור
+    </div>
+  </div>
+</div>
+
+<!-- Consult Modal -->
+<div id="consult-modal" class="modal-bg" onclick="if(event.target===this)closeConsult()">
+  <div class="modal">
+    <h2>💬 בקש ייעוץ</h2>
+    <p style="color:var(--text2);font-size:13px;margin-bottom:14px">המומחה <strong id="consult-expert-name"></strong> ייצור איתך קשר תוך 48 שעות.</p>
+    <label>שמך *</label>
+    <input type="text" id="consult-name" required>
+    <label>טלפון</label>
+    <input type="tel" id="consult-phone" placeholder="050-XXXXXXX">
+    <label>נושא הייעוץ *</label>
+    <textarea id="consult-topic" placeholder="ספר במילים בודדות מה אתה צריך..."></textarea>
+    <label>שפה מועדפת</label>
+    <select id="consult-lang">
+      <option value="he">עברית</option>
+      <option value="en">English</option>
+      <option value="ru">Русский</option>
+      <option value="ar">العربية</option>
+      <option value="fr">Français</option>
+    </select>
+    <button class="cta" style="width:100%" onclick="submitConsult()">
+      <i class="fas fa-paper-plane"></i> שלח בקשת ייעוץ
+    </button>
+  </div>
+</div>
+
+<div id="toast" class="toast">✅</div>
+
+<div id="topnav-root"></div>
+<script src="/js/shared.js?v=20260426e"></script>
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260426e"></script>
+
+<script>
+const API = 'https://slh-api-production.up.railway.app';
+let activeFilter = 'all', searchQ = '', selectedDomains = [], currentExpertId = null;
+
+document.querySelectorAll('.filters .chip').forEach(c => c.addEventListener('click', () => {
+  document.querySelectorAll('.filters .chip').forEach(x => x.classList.remove('active'));
+  c.classList.add('active');
+  activeFilter = c.dataset.domain;
+  renderExperts();
+}));
+document.getElementById('search').addEventListener('input', e => { searchQ = e.target.value.toLowerCase(); renderExperts(); });
+
+function toggleDomain(btn, domain){
+  btn.classList.toggle('active');
+  if(selectedDomains.includes(domain)) selectedDomains = selectedDomains.filter(d => d !== domain);
+  else selectedDomains.push(domain);
+}
+
+let cachedExperts = [];
+let cachedDomains = [];
+
+async function loadDomains(){
+  try {
+    const r = await fetch(`${API}/api/experts/domains`);
+    const d = await r.json();
+    cachedDomains = d.approved || [];
+    renderDomainChips();
+    renderDomainButtons();
+  } catch(e) {
+    console.log('[experts] domains API not ready, using defaults');
+  }
+}
+
+function renderDomainChips(){
+  // Re-render top filter chips from backend
+  const filtersContainer = document.querySelector('.filters');
+  if(!filtersContainer || cachedDomains.length === 0) return;
+  const existing = filtersContainer.querySelectorAll('.chip');
+  existing.forEach((c, i) => { if(i > 0) c.remove(); }); // keep first "הכל"
+  cachedDomains.forEach(d => {
+    const btn = document.createElement('button');
+    btn.className = 'chip';
+    btn.dataset.domain = d.slug;
+    btn.textContent = `${d.emoji || ''} ${d.name_he || d.slug}`.trim();
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filters .chip').forEach(x => x.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = d.slug;
+      renderExperts();
+    });
+    filtersContainer.appendChild(btn);
+  });
+}
+
+function renderDomainButtons(){
+  // In register form — show all domains dynamically
+  const regContainer = document.getElementById('reg-domains');
+  if(!regContainer || cachedDomains.length === 0) return;
+  regContainer.innerHTML = cachedDomains.map(d => `
+    <button type="button" class="chip" onclick="toggleDomain(this,'${d.slug}')">${d.emoji || ''} ${d.name_he || d.slug}</button>
+  `).join('') + `
+    <button type="button" class="chip" style="border-color:var(--green);color:var(--green)" onclick="proposeDomain()">+ הצע תחום חדש</button>
+  `;
+}
+
+async function proposeDomain(){
+  const name = prompt('שם התחום בעברית:');
+  if(!name) return;
+  const emoji = prompt('אימוג\'י (אחד):') || '🎯';
+  const slug = name.toLowerCase().replace(/[^\w]/g, '_').slice(0,20);
+  try {
+    const r = await fetch(`${API}/api/experts/domains/propose`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        action: 'add', slug, name_he: name, name_en: name, emoji,
+        category: 'other', proposer_user_id: 0
+      })
+    });
+    const d = await r.json();
+    if(d.ok){
+      showToast(`✅ התחום הוצע! דרוש 10 הצבעות בעד לאישור`);
+    } else {
+      alert(d.detail || 'נכשל');
+    }
+  } catch(e) {
+    alert('❌ ' + e.message);
+  }
+}
+
+async function loadExperts(){
+  try {
+    const r = await fetch(`${API}/api/experts/list?limit=50`);
+    const d = await r.json();
+    cachedExperts = d.experts || [];
+  } catch(e) {
+    cachedExperts = [];
+  }
+  renderExperts();
+}
+
+function renderExperts(){
+  const grid = document.getElementById('experts-grid');
+  let list = cachedExperts.slice();
+  if(activeFilter !== 'all') list = list.filter(e => e.domains?.includes(activeFilter));
+  if(searchQ) list = list.filter(e =>
+    e.display_name?.toLowerCase().includes(searchQ) ||
+    e.bio?.toLowerCase().includes(searchQ) ||
+    (e.domains || []).some(d => d.toLowerCase().includes(searchQ))
+  );
+
+  if(list.length === 0){
+    grid.innerHTML = `
+      <div class="empty-state">
+        <div class="ico"><i class="fas fa-graduation-cap"></i></div>
+        <h3>עוד אין מומחים בקטגוריה זו</h3>
+        <p>היה הראשון להירשם!</p>
+        <a href="#" class="cta" onclick="openRegister();return false">הצטרף כמומחה ←</a>
+      </div>
+    `;
+    return;
+  }
+
+  grid.innerHTML = list.map(e => {
+    const initials = (e.display_name || '?').slice(0, 1);
+    const stars = '⭐'.repeat(Math.round(e.avg_rating || 0)) || '—';
+    return `
+      <div class="expert-card ${e.featured ? 'featured' : ''}">
+        ${e.featured ? '<span class="featured-badge">מומלץ</span>' : ''}
+        <div class="expert-head">
+          <div class="expert-avatar">${initials}</div>
+          <div class="expert-info">
+            <h3>${e.display_name} ${e.verified ? '<span class="verified-badge"><i class="fas fa-check"></i></span>' : ''}</h3>
+            <div class="handle">${e.tg_username ? '@' + e.tg_username : ''}</div>
+          </div>
+        </div>
+        <div class="expert-bio">${e.bio || 'מומחה בקהילה'}</div>
+        <div class="expert-domains">
+          ${(e.domains || []).map(d => `<span class="domain-tag">${d}</span>`).join('')}
+        </div>
+        <div class="expert-stats">
+          <span>דירוג: <b>${stars}</b></span>
+          <span>ייעוצים: <b>${e.consultations_count || 0}</b></span>
+        </div>
+        <div class="expert-actions" style="grid-template-columns:1fr 1fr 1fr">
+          <button class="consult-btn" onclick="openConsult(${e.id}, '${e.display_name.replace(/'/g, '')}')">
+            <i class="fas fa-comments"></i> ייעוץ
+          </button>
+          <button class="review-btn" onclick="quickReview(${e.id})">
+            <i class="fas fa-star"></i> דרג
+          </button>
+          <button onclick="viewReviews(${e.id}, '${e.display_name.replace(/'/g, '')}')" style="background:var(--bg);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:10px;cursor:pointer;font-size:12px;font-weight:700;font-family:inherit">
+            <i class="fas fa-eye"></i> ביקורות
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openRegister(){ document.getElementById('register-modal').classList.add('open'); }
+function closeRegister(){ document.getElementById('register-modal').classList.remove('open'); }
+function openConsult(id, name){
+  currentExpertId = id;
+  document.getElementById('consult-expert-name').textContent = name;
+  document.getElementById('consult-modal').classList.add('open');
+}
+function closeConsult(){ document.getElementById('consult-modal').classList.remove('open'); }
+
+async function submitRegister(){
+  const body = {
+    display_name: document.getElementById('reg-name').value.trim(),
+    tg_username: document.getElementById('reg-tg').value.trim().replace('@',''),
+    phone: document.getElementById('reg-phone').value.trim(),
+    email: document.getElementById('reg-email').value.trim(),
+    bio: document.getElementById('reg-bio').value.trim(),
+    domains: selectedDomains,
+    languages: ['he'],
+    // Proof-of-expertise
+    linkedin_url: document.getElementById('reg-linkedin')?.value.trim() || null,
+    website_url: document.getElementById('reg-website')?.value.trim() || null,
+    youtube_url: document.getElementById('reg-youtube')?.value.trim() || null,
+    credentials: document.getElementById('reg-credentials')?.value.trim() || null,
+    years_experience: parseInt(document.getElementById('reg-years')?.value, 10) || null
+  };
+  // Attach user_id if logged in
+  try {
+    const u = JSON.parse(localStorage.getItem('slh_user') || '{}');
+    if (u.id) body.user_id = u.id;
+  } catch(e) {}
+  if(!body.display_name){ alert('נא הזן שם'); return; }
+  if(body.domains.length === 0){ alert('נא בחר לפחות תחום אחד'); return; }
+  try {
+    const r = await fetch(`${API}/api/experts/register`, {
+      method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)
+    });
+    const d = await r.json();
+    closeRegister();
+    showToast('✅ נרשמת בהצלחה — נאמת ונפרסם תוך 48 שעות');
+  } catch(e) {
+    alert('❌ ' + e.message);
+  }
+}
+
+async function submitConsult(){
+  const body = {
+    expert_id: currentExpertId,
+    requester_name: document.getElementById('consult-name').value.trim(),
+    requester_phone: document.getElementById('consult-phone').value.trim(),
+    topic: document.getElementById('consult-topic').value.trim(),
+    preferred_language: document.getElementById('consult-lang').value
+  };
+  if(!body.requester_name || !body.topic){ alert('שם ונושא חובה'); return; }
+  try {
+    const r = await fetch(`${API}/api/experts/consult`, {
+      method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)
+    });
+    const d = await r.json();
+    closeConsult();
+    showToast('✅ הבקשה נשלחה — המומחה ייצור קשר תוך 48 שעות');
+  } catch(e) {
+    alert('❌ ' + e.message);
+  }
+}
+
+async function viewReviews(expertId, name){
+  try {
+    const r = await fetch(`${API}/api/experts/${expertId}/reviews`);
+    const d = await r.json();
+    const reviews = d.reviews || [];
+    let html = `
+      <div style="background:rgba(5,8,16,.85);position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px)" onclick="if(event.target===this)this.remove()">
+        <div style="background:var(--bg2);border:1px solid var(--gold);border-radius:20px;padding:28px;max-width:580px;width:100%;max-height:85vh;overflow-y:auto">
+          <h2 style="color:var(--gold);margin:0 0 6px">⭐ ביקורות על ${name}</h2>
+          <div style="font-size:13px;color:var(--text2);margin-bottom:18px">
+            ${d.reviews_count} ביקורות · דירוג ממוצע: <b style="color:var(--gold)">${d.avg_rating.toFixed(1)}/5</b> ·
+            5⭐: ${d.five_stars} · 1⭐: ${d.one_stars}
+          </div>
+    `;
+    if (reviews.length === 0) {
+      html += '<div style="text-align:center;padding:30px;color:var(--text2)">אין עדיין ביקורות. היה הראשון!</div>';
+    } else {
+      reviews.forEach(rev => {
+        const stars = '⭐'.repeat(rev.rating);
+        html += `
+          <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+              <div style="font-weight:800;color:var(--text)">${rev.reviewer_name || 'אנונימי'}</div>
+              <div style="font-size:13px">${stars}</div>
+            </div>
+            ${rev.comment ? `<div style="font-size:13px;color:var(--text2);line-height:1.7">${rev.comment}</div>` : '<div style="font-size:12px;color:var(--text3);font-style:italic">ללא תגובה</div>'}
+            <div style="font-size:10px;color:var(--text3);margin-top:6px">${new Date(rev.created_at).toLocaleString('he-IL')}</div>
+          </div>
+        `;
+      });
+    }
+    html += `
+          <button onclick="this.closest('[onclick]').remove()" style="margin-top:14px;width:100%;padding:12px;background:var(--gold);color:#000;border:none;border-radius:10px;font-weight:900;cursor:pointer;font-family:inherit">סגור</button>
+        </div>
+      </div>
+    `;
+    const div = document.createElement('div');
+    div.innerHTML = html;
+    document.body.appendChild(div.firstElementChild);
+  } catch(e) {
+    alert('שגיאה בטעינת ביקורות: ' + e.message);
+  }
+}
+
+async function quickReview(expertId){
+  const rating = prompt('דרג את המומחה (1-5):');
+  if(!rating) return;
+  const r = parseInt(rating);
+  if(isNaN(r) || r < 1 || r > 5){ alert('דירוג חייב להיות 1-5'); return; }
+  const comment = prompt('תגובה (אופציונלי):') || '';
+  try {
+    await fetch(`${API}/api/experts/review`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ expert_id: expertId, rating: r, comment })
+    });
+    showToast('✅ הדירוג נשלח');
+    loadExperts();
+  } catch(e) { alert('❌ ' + e.message); }
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2500);
+}
+
+loadDomains();
+loadExperts();
+
+/* Show rewards info banner on page load */
+(() => {
+  const rewardsInfo = document.createElement('div');
+  rewardsInfo.style.cssText = 'max-width:1200px;margin:20px auto;padding:0 20px';
+  rewardsInfo.innerHTML = `
+    <div style="background:linear-gradient(135deg,rgba(255,215,0,.08),rgba(0,232,135,.04));border:1px solid var(--gold);border-radius:16px;padding:18px;text-align:center">
+      <div style="font-size:11px;color:var(--gold);font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">💰 מנגנון תגמולים</div>
+      <div style="font-size:14px;color:var(--text);margin-bottom:10px">מומחים מקבלים ZVK על כל פעולה קהילתית</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;font-size:12px">
+        <span style="padding:4px 10px;background:var(--bg2);border-radius:8px">הצטרפות: <b style="color:var(--gold)">100 ZVK</b></span>
+        <span style="padding:4px 10px;background:var(--bg2);border-radius:8px">אימות: <b style="color:var(--gold)">500 ZVK</b></span>
+        <span style="padding:4px 10px;background:var(--bg2);border-radius:8px">ייעוץ ראשון: <b style="color:var(--gold)">+150 ZVK</b></span>
+        <span style="padding:4px 10px;background:var(--bg2);border-radius:8px">כל ייעוץ: <b style="color:var(--gold)">200 ZVK</b></span>
+        <span style="padding:4px 10px;background:var(--bg2);border-radius:8px">5 כוכבים: <b style="color:var(--gold)">25 ZVK</b></span>
+        <span style="padding:4px 10px;background:var(--bg2);border-radius:8px">הצבעה: <b style="color:var(--gold)">5 ZVK</b></span>
+      </div>
+    </div>
+  `;
+  const filtersEl = document.querySelector('.filters');
+  if(filtersEl && filtersEl.parentNode) filtersEl.parentNode.insertBefore(rewardsInfo, filtersEl.nextSibling);
+})();
+</script>
+
+</body>
+</html>

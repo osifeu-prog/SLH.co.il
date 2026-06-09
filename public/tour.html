@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH · סיור אישי · המערכת שמלמדת אותך לאהוב אותה</title>
+<meta name="description" content="סיור מודרך ב-SLH Spark. 8 תחנות קצרות שילמדו אותך איך להשתמש בכל המערכת. בלי בלבול, רק אהבה.">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Rubik',system-ui,sans-serif;background:#05080f;color:#f5f5f8;line-height:1.7;min-height:100vh;padding-bottom:60px}
+a{color:#00ff41;text-decoration:none}
+body::before{content:'';position:fixed;inset:0;background:
+  radial-gradient(1200px 600px at 20% -5%, rgba(0,255,65,.06), transparent 60%),
+  radial-gradient(900px 500px at 90% 30%, rgba(236,72,153,.05), transparent 60%),
+  radial-gradient(700px 400px at 50% 100%, rgba(0,229,255,.04), transparent 60%);
+  pointer-events:none;z-index:0}
+
+/* BETA banner + bug FAB */
+.slh-beta-banner{position:sticky;top:0;z-index:9998;background:linear-gradient(90deg,#ff9900,#ffd700,#00ff41);color:#000;font-weight:700;font-size:12px;padding:6px 14px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.slh-beta-banner a{color:#000;text-decoration:underline;font-weight:800}
+.slh-bug-fab{position:fixed;bottom:20px;left:20px;z-index:9999;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#ff4444,#ff9900);display:grid;place-items:center;font-size:24px;text-decoration:none;box-shadow:0 4px 20px rgba(255,68,68,.4)}
+
+.wrap{position:relative;z-index:1;max-width:800px;margin:0 auto;padding:24px 18px}
+
+/* Hero */
+.hero{text-align:center;padding:30px 0 40px}
+.hero .heart{display:inline-block;font-size:70px;animation:beat 1.4s ease-in-out infinite}
+@keyframes beat{0%,100%{transform:scale(1)}20%{transform:scale(1.15)}40%{transform:scale(1)}}
+.hero h1{font-size:36px;font-weight:900;background:linear-gradient(135deg,#00ff41,#00e5ff,#a855f7,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:12px 0 8px;line-height:1.2}
+.hero .sub{color:#9ba0b5;font-size:16px;max-width:600px;margin:0 auto;line-height:1.7}
+.hero .pitch{background:rgba(236,72,153,.04);border:1px solid rgba(236,72,153,.2);border-radius:14px;padding:16px 22px;margin:20px auto 0;max-width:560px;font-size:14px;color:#f5f5f8;line-height:1.8}
+.hero .pitch b{color:#ec4899}
+
+/* Progress */
+.progress-bar{background:rgba(255,255,255,.08);height:6px;border-radius:3px;margin:30px 0 16px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#00ff41,#00e5ff,#a855f7,#ec4899);border-radius:3px;transition:width .6s;width:12%}
+.progress-text{text-align:center;font-size:12px;color:#9ba0b5;margin-bottom:20px;font-family:monospace}
+
+/* Station */
+.station{background:linear-gradient(180deg,#0c1018,#141924);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:26px;margin-bottom:18px;position:relative;transition:.3s}
+.station:hover{border-color:rgba(0,255,65,.2)}
+.station.done{border-color:rgba(0,255,65,.3);opacity:.75}
+.station.done .badge{background:linear-gradient(135deg,#00ff41,#00c832)}
+
+.station-head{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.badge{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#00e5ff,#a855f7);display:grid;place-items:center;color:#000;font-size:20px;font-weight:900;flex-shrink:0;box-shadow:0 4px 15px rgba(0,229,255,.2)}
+.station-title{flex:1}
+.station-title h2{font-size:22px;font-weight:800;color:#f5f5f8;margin-bottom:3px}
+.station-title .meta{font-size:12px;color:#9ba0b5}
+
+.step-what{background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.2);border-radius:10px;padding:14px 16px;margin-bottom:12px;font-size:14px;color:#f5f5f8;line-height:1.8}
+.step-what b{color:#00e5ff}
+
+.step-expect{background:rgba(0,255,65,.04);border:1px solid rgba(0,255,65,.2);border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:13px;color:#f5f5f8}
+.step-expect b{color:#00ff41}
+
+.cta-btn{display:block;width:100%;padding:16px;background:linear-gradient(135deg,#00ff41,#00c832);color:#000;border:none;border-radius:12px;font-size:16px;font-weight:900;cursor:pointer;text-align:center;text-decoration:none;margin-top:10px;font-family:inherit;transition:.2s;box-shadow:0 4px 20px rgba(0,255,65,.2)}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 6px 30px rgba(0,255,65,.35)}
+.cta-btn.alt{background:rgba(255,255,255,.06);color:#f5f5f8;border:1px solid rgba(255,255,255,.1);box-shadow:none}
+.cta-btn.alt:hover{background:rgba(255,255,255,.1)}
+.cta-btn.rose{background:linear-gradient(135deg,#ec4899,#a855f7);color:#fff}
+.cta-btn.gold{background:linear-gradient(135deg,#ffd700,#ff9900);color:#000}
+
+.done-btn{background:rgba(0,255,65,.08);color:#00ff41;border:1px solid rgba(0,255,65,.25);padding:10px 16px;border-radius:10px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;margin-top:8px;width:100%}
+.done-btn:hover{background:rgba(0,255,65,.18)}
+
+.tip{background:rgba(255,215,0,.04);border:1px solid rgba(255,215,0,.2);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:12px;color:#ffd700;line-height:1.7}
+
+.final-card{background:linear-gradient(135deg,rgba(236,72,153,.08),rgba(168,85,247,.08),rgba(0,255,65,.05));border:2px solid rgba(236,72,153,.3);border-radius:20px;padding:30px;text-align:center;margin-top:20px;display:none}
+.final-card.show{display:block;animation:fadeIn .6s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.final-card h2{font-size:28px;margin-bottom:10px;background:linear-gradient(135deg,#ec4899,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+.footer-nav{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:20px}
+.footer-nav a{padding:14px;background:#141924;border:1px solid rgba(255,255,255,.08);border-radius:10px;text-align:center;font-size:13px;font-weight:700;color:#f5f5f8}
+.footer-nav a:hover{border-color:#00ff41;color:#00ff41}
+
+.foot{text-align:center;color:#5a6078;font-size:11px;margin-top:30px;padding:20px;border-top:1px solid rgba(255,255,255,.06);font-family:monospace}
+</style>
+<meta name="slh-version" content="v1.0-flip">
+<script defer src="/js/slh-flip.js?v=20260417"></script>
+</head>
+<body>
+
+<div class="slh-beta-banner">
+  <span>🚧 <b>BETA</b></span>
+  <a href="/bug-report.html">🐛 דווח באג</a>
+</div>
+<a href="/bug-report.html" class="slh-bug-fab">🐛</a>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="heart">💚</div>
+    <h1>ברוך הבא ל‑SLH</h1>
+    <p class="sub">המערכת שמלמדת אותך איך להשתמש בה · בלי בלבול · בלי פחד</p>
+    <div class="pitch">
+      🌟 <b>8 תחנות קצרות</b> שייקחו אותך מ‑0 להכרות מלאה עם המערכת.<br>
+      כל תחנה · 30 שניות עד 3 דקות · ואתה מקבל <b>AIC ו‑ZVK</b> על הדרך.
+    </div>
+  </header>
+
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-text" id="progressText">תחנה 1 מתוך 8 · 12%</div>
+
+  <!-- 1: Telegram ID -->
+  <div class="station" id="s1">
+    <div class="station-head">
+      <div class="badge">1</div>
+      <div class="station-title">
+        <h2>🆔 קבל את ה‑Telegram ID שלך</h2>
+        <div class="meta">30 שניות · חובה לכל השאר</div>
+      </div>
+    </div>
+    <div class="step-what">
+      <b>מה לעשות:</b> פתח את הקישור → בטלגרם יפתח `@userinfobot` → לחץ <code>Start</code>.
+    </div>
+    <div class="step-expect">
+      <b>מה תראה:</b> הבוט ישיב לך הודעה עם מספר · לדוגמה <code>Id: 123456789</code>.<br>
+      <b>שמור את המספר הזה</b> — זו הזהות שלך במערכת SLH (במקום סיסמה).
+    </div>
+    <a href="https://t.me/userinfobot" target="_blank" class="cta-btn">
+      <i class="fa-brands fa-telegram"></i> פתח @userinfobot
+    </a>
+    <button class="done-btn" onclick="done(1)">✓ סיימתי · יש לי את המספר</button>
+    <div class="tip">💡 אם אין לך Telegram עדיין — [הורד חינם](https://telegram.org/dl) · 2 דקות התקנה.</div>
+  </div>
+
+  <!-- 2: Dashboard -->
+  <div class="station" id="s2">
+    <div class="station-head">
+      <div class="badge">2</div>
+      <div class="station-title">
+        <h2>🎛 הכנס לדשבורד האישי שלך</h2>
+        <div class="meta">1 דקה · רואים מה יש לך במערכת</div>
+      </div>
+    </div>
+    <div class="step-what">
+      <b>מה לעשות:</b> פתח את הדשבורד → לחץ "Login with Telegram" → הזן את ה‑ID שקיבלת בתחנה 1.
+    </div>
+    <div class="step-expect">
+      <b>מה תראה:</b> יתרת SLH/ZVK/AIC שלך (0 בהתחלה · זה בסדר), פעילות אחרונה, וכפתורי פעולה.<br>
+      <b>בלי סיסמה</b> · בלי אימייל · רק Telegram ID.
+    </div>
+    <a href="/dashboard.html" target="_blank" class="cta-btn">🎛 פתח דשבורד</a>
+    <button class="done-btn" onclick="done(2)">✓ ראיתי את הדשבורד</button>
+  </div>
+
+  <!-- 3: Community feed -->
+  <div class="station" id="s3">
+    <div class="station-head">
+      <div class="badge">3</div>
+      <div class="station-title">
+        <h2>💬 פרסם פוסט ראשון בקהילה</h2>
+        <div class="meta">2 דקות · קבל AIC על engagement</div>
+      </div>
+    </div>
+    <div class="step-what">
+      <b>מה לעשות:</b> פתח את הפיד → כתוב משהו פשוט · "שלום! הצטרפתי כרגע" → לחץ <b>פרסום</b>.<br>
+      אחר כך: שחק עם <b>6 ה‑emoji</b> של תגובה (👍❤️😂😮😢😡) על פוסטים אחרים.
+    </div>
+    <div class="step-expect">
+      <b>מה תראה:</b> הפוסט שלך מופיע · אחרים יכולים להגיב · מקבל AIC על כל פעילות.<br>
+      אם משתמש אחר online — תראה <b style="color:#00ff41">נקודה ירוקה</b> ליד השם שלו.
+    </div>
+    <a href="/community.html" target="_blank" class="cta-btn">💬 פתח פיד קהילה</a>
+    <button class="done-btn" onclick="done(3)">✓ פרסמתי פוסט</button>
+  </div>
+
+  <!-- 4: Sudoku -->
+  <div class="station" id="s4">
+    <div class="station-head">
+      <div class="badge">4</div>
+      <div class="station-title">
+        <h2>🧩 פתור סודוקו · צבור AIC ראשון</h2>
+        <div class="meta">5 דקות · עד 5 AIC + 12 REP</div>
+      </div>
+    </div>
+    <div class="step-what">
+      <b>מה לעשות:</b> פתח את הסודוקו → בחר רמה <b>קל</b> → פתור (רמזים 1 AIC כל אחד) → לחץ "🏆 הגש".
+    </div>
+    <div class="step-expect">
+      <b>מה תקבל:</b><br>
+      • פתרון <b>מתחת 5 דקות</b> → 1.5 AIC + 2 REP<br>
+      • פתרון <b>מעל 5 דקות</b> → 1.0 AIC + 2 REP<br>
+      • פתרון של <b>פאזל יומי</b> (הראשון ביום) → <b>+3 AIC בונוס</b><br>
+      🎉 Confetti + הודעה עם הסכום בדיוק
+    </div>
+    <a href="/sudoku.html" target="_blank" class="cta-btn rose">🧩 פתח סודוקו</a>
+    <button class="done-btn" onclick="done(4)">✓ פתרתי את הראשון</button>
+  </div>
+
+  <!-- 5: Learning path -->
+  <div class="station" id="s5">
+    <div class="station-head">
+      <div class="badge">5</div>
+      <div class="station-title">
+        <h2>📚 הצטרף למסלול 21 יום</h2>
+        <div class="meta">2 דקות להירשם · ~10 דק' ליום</div>
+      </div>
+    </div>
+    <div class="step-what">
+      <b>מה לעשות:</b> פתח Learning Path → לחץ "התחל משימה היום" (קריאת פוסט · 5 דק').<br>
+      חזור כל יום · בנה streak · תגמולים גדלים.
+    </div>
+    <div class="step-expect">
+      <b>מה תקבל:</b><br>
+      • יום 1 → 5 ZVK · יום 3 → 20 ZVK · יום 7 → 50 ZVK · יום 21 → <b>250 ZVK</b><br>
+      📊 Progress bar + ימים נעולים/פתוחים בצורה ויזואלית
+    </div>
+    <a href="/learning-path.html" target="_blank" class="cta-btn">📚 פתח מסלול למידה</a>
+    <button class="done-btn" onclick="done(5)">✓ התחלתי יום 1</button>
+  </div>
+
+  <!-- 6: Experts -->
+  <div class="station" id="s6">
+    <div class="station-head">
+      <div class="badge">6</div>
+      <div class="station-title">
+        <h2>🎓 הכר את רשת המומחים</h2>
+        <div class="meta">3 דקות · תוכל להציע עצמך אם אתה מומחה</div>
+      </div>
+    </div>
+    <div class="step-what">
+      <b>מה לעשות:</b> פתח את עמוד המומחים → גלול ותראה תחומים: יוגה, נוירולוגיה, מוזיקה, קריפטו, הלכה...<br>
+      <b>אם אתה מומחה:</b> לחץ "הצטרף כמומחה" → הוסף LinkedIn/אתר/YouTube → קבל 100 ZVK + חשיפה בגלריה.
+    </div>
+    <div class="step-expect">
+      <b>מה מיוחד:</b> כל המומחים אצלנו <b>מאומתים ידנית</b> על ידי אדמין. לא "אני אומר שאני מומחה" · הוכחות אמיתיות.<br>
+      הגמול על הרשמה · 100 ZVK · הגמול על אימות · עוד 100 ZVK + תג ירוק.
+    </div>
+    <a href="/experts.html" target="_blank" class="cta-btn">🎓 פתח רשת מומחים</a>
+    <button class="done-btn" onclick="done(6)">✓ בחנתי את הרשת</button>
+  </div>
+
+  <!-- 7: Settings -->
+  <div class="station" id="s7">
+    <div class="station-head">
+      <div class="badge">7</div>
+      <div class="station-title">
+        <h2>🎨 התאם את החוויה שלך</h2>
+        <div class="meta">1 דקה · העיצוב שלך · נשמר אוטומטית</div>
+      </div>
+    </div>
+    <div class="step-what">
+      <b>מה לעשות:</b> פתח הגדרות → בחר ערכת נושא שמתאימה לך (Dark/Light/Zen/Sunset/Ocean) · בחר שפה · הפעל/בטל widgets.
+    </div>
+    <div class="step-expect">
+      <b>מה תקבל:</b><br>
+      🌑 <b>Dark</b> — ברירת מחדל (עיניים)<br>
+      ☀️ <b>Light</b> — יום נקי<br>
+      🧘 <b>Zen</b> — ירוק-אפור רגוע<br>
+      🌅 <b>Sunset</b> — חום-כתום חמים<br>
+      🌊 <b>Ocean</b> — כחול עמוק רוחני<br>
+      ההגדרות <b>נשמרות בין כל הדפים</b> אוטומטית.
+    </div>
+    <a href="/settings.html" target="_blank" class="cta-btn alt">⚙️ פתח הגדרות</a>
+    <button class="done-btn" onclick="done(7)">✓ בחרתי theme שאני אוהב</button>
+  </div>
+
+  <!-- 8: Pay (optional) -->
+  <div class="station" id="s8">
+    <div class="station-head">
+      <div class="badge">8</div>
+      <div class="station-title">
+        <h2>💳 תשלום ראשון · מינימלי (אופציונלי)</h2>
+        <div class="meta">3 דקות · ₪1 או 0.01 TON · לבדיקה בלבד</div>
+      </div>
+    </div>
+    <div class="step-what">
+      <b>מה לעשות:</b> פתח דף תשלום → בחר <b>"🧪 בדיקת Flow (מינימום)"</b> → בחר TON → סרוק QR עם Tonkeeper → שלח 0.01 TON → הדבק TX hash → אמת.
+    </div>
+    <div class="step-expect">
+      <b>מה יקרה:</b> תוך 30 שניות · המערכת מאמתת את ה‑TX בבלוקצ'יין, מנפיקה קבלה דיגיטלית (<code>SLH-20260417-000001</code>), ומפעילה Premium שלך.<br>
+      זו <b>הוכחה שהמערכת עובדת</b>. אין לחץ לקנות עכשיו · יש לחץ <b>להבין איך</b>.
+    </div>
+    <a href="/pay.html" target="_blank" class="cta-btn gold">💳 פתח תשלום בדיקה</a>
+    <button class="done-btn" onclick="done(8)">✓ אימתתי תשלום (או דלגתי)</button>
+    <div class="tip">💡 <b>שבת:</b> צביקה שומר שבת. תשלומי קריפטו אפשריים בכל זמן (on-chain). תשלומי בנק רק בימי חול.</div>
+  </div>
+
+  <!-- Final -->
+  <div class="final-card" id="finalCard">
+    <div style="font-size:60px;margin-bottom:14px">🎉</div>
+    <h2>סיימת את הסיור!</h2>
+    <p style="color:#f5f5f8;font-size:15px;max-width:500px;margin:0 auto 16px;line-height:1.8">
+      עכשיו אתה יודע <b>איך המערכת עובדת</b>. לא עוד "מה זה?" · רק <b>"איזה עוד דברים אני יכול לעשות?"</b>
+    </p>
+    <p style="color:#9ba0b5;font-size:13px;margin-bottom:18px">
+      הצבא הקטן שלנו של סוכני אהבה גדל איתך. כל חבר שתצרף → 10 ZVK בונוס לך.
+    </p>
+    <div class="footer-nav">
+      <a href="/invite.html">🎁 הזמן חברים</a>
+      <a href="/dating.html">💘 Dating (18+)</a>
+      <a href="/community.html">💬 קהילה</a>
+      <a href="/mission-control.html">🎛 Mission Control</a>
+    </div>
+  </div>
+
+  <div class="foot">
+    SLH Spark · סיור v1 · אם משהו לא עבד → <a href="/bug-report.html" style="color:#ff9900">🐛 דווח</a><br>
+    נשמור אותך בעיקר · לא נשלח לך שום דבר בלי שתבקש.
+  </div>
+
+</div>
+
+<script>
+const DONE_KEY = 'slh_tour_completed';
+let completed = new Set();
+try {
+  const saved = JSON.parse(localStorage.getItem(DONE_KEY) || '[]');
+  saved.forEach(n => completed.add(n));
+} catch(e) {}
+
+function updateProgress() {
+  const pct = Math.round((completed.size / 8) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = `תחנה ${Math.min(completed.size+1, 8)} מתוך 8 · ${pct}%`;
+  if (completed.size === 8) {
+    document.getElementById('finalCard').classList.add('show');
+    setTimeout(() => document.getElementById('finalCard').scrollIntoView({behavior:'smooth'}), 300);
+  }
+}
+
+function done(n) {
+  completed.add(n);
+  document.getElementById('s'+n).classList.add('done');
+  localStorage.setItem(DONE_KEY, JSON.stringify([...completed]));
+  updateProgress();
+  // scroll to next
+  const next = document.getElementById('s' + (n+1));
+  if (next) setTimeout(() => next.scrollIntoView({behavior:'smooth', block:'start'}), 500);
+}
+
+// restore state
+completed.forEach(n => {
+  const el = document.getElementById('s'+n);
+  if (el) el.classList.add('done');
+});
+updateProgress();
+</script>
+
+</body>
+</html>

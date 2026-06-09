@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ZVK — מוניטין במקום לייקים · SLH Spark</title>
+<meta name="description" content="ZVK הוא הטוקן החברתי של SLH — מוניטין הנמדד בתרומות ולא בלייקים. איך הוא שונה מ-Karma ב-Reddit, ואיך להרוויח אותו.">
+<meta name="keywords" content="ZVK, מוניטין, reputation, קהילה, SLH, Karma">
+<link rel="canonical" href="https://slh-nft.com/blog/zvk-reputation-explained.html">
+<link rel="alternate" type="application/rss+xml" href="/api/community/rss" />
+<link rel="stylesheet" href="/css/slh-design-system.css">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta property="og:title" content="ZVK — מוניטין במקום לייקים" />
+<meta property="og:description" content="איך SLH בונה reputation אמיתית בלי אלגוריתמי פופולריות." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://slh-nft.com/blog/zvk-reputation-explained.html" />
+<meta property="og:image" content="https://slh-nft.com/assets/og/blog.png" />
+<style>
+.blog-post{max-width:760px;margin:0 auto;padding:var(--space-8) var(--space-4);line-height:var(--line-height-relaxed)}
+.blog-post h1{font-size:var(--font-size-3xl);background:linear-gradient(90deg,var(--color-brand-primary),var(--color-brand-secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:var(--space-4)}
+.blog-post h2{font-size:var(--font-size-xl);color:var(--color-brand-primary);margin-top:var(--space-8);margin-bottom:var(--space-3)}
+.blog-post p{margin-bottom:var(--space-4)}
+.blog-post ul{padding-inline-start:var(--space-6);margin-bottom:var(--space-4)}
+.blog-post hr{border:none;border-top:1px solid var(--color-border-subtle);margin:var(--space-8) 0}
+.blog-post a{color:var(--color-brand-secondary);text-decoration:none}
+.blog-post a:hover{text-decoration:underline}
+.abstract{background:rgba(0,229,255,.05);border-inline-start:4px solid var(--color-brand-secondary);padding:var(--space-4);border-radius:var(--radius-md);direction:ltr;text-align:left;margin-top:var(--space-8)}
+table{width:100%;border-collapse:collapse;margin:var(--space-4) 0;font-size:var(--font-size-sm)}
+th,td{padding:var(--space-3);border-bottom:1px solid var(--color-border-subtle);text-align:start}
+th{background:var(--color-bg-surface);color:var(--color-brand-primary)}
+</style>
+</head>
+<body>
+<article class="blog-post">
+<h1>ZVK — מוניטין במקום לייקים</h1>
+
+<p>ב-Facebook 100 לייקים = פופולרי. ב-Reddit 1000 Karma = מוותיק. אצלנו 500 ZVK = <strong>מישהו שתרם משהו לקהילה, לא רק הצביע</strong>.</p>
+
+<hr/>
+
+<h2>למה בכלל עוד token של reputation?</h2>
+
+<p>כי המודלים הקיימים שבורים:</p>
+
+<ul>
+<li><strong>Karma</strong> ב-Reddit — נובע רק מהצבעות. אתה יכול להיות פופולרי בלי לעזור לאף אחד</li>
+<li><strong>Stars</strong> ב-GitHub — טוב לפרויקטים, לא לאנשים</li>
+<li><strong>Followers</strong> בכל מקום — רק מדד של אלגוריתם, לא של ערך</li>
+</ul>
+
+<p>ZVK (מה-מילה ״זיכוי״) הוא נסיון לבנות reputation שמודד <strong>תרומה אמיתית</strong>.</p>
+
+<h2>איך צוברים ZVK?</h2>
+
+<table>
+<thead><tr><th>פעולה</th><th>ZVK</th></tr></thead>
+<tbody>
+<tr><td>תגובה איכותית בקהילה (נעזרת על ידי ≥3)</td><td>+5</td></tr>
+<tr><td>פוסט מקורי (תומכים ≥10)</td><td>+20</td></tr>
+<tr><td>מדריך / Blog post</td><td>+50</td></tr>
+<tr><td>תרגום דף לעברית / ערבית</td><td>+30</td></tr>
+<tr><td>Bug report מאומת</td><td>+10</td></tr>
+<tr><td>תיקון קוד (PR ב-GitHub)</td><td>+75</td></tr>
+<tr><td>אישור של <a href="/experts.html">מומחה</a> עליך</td><td>+100</td></tr>
+</tbody>
+</table>
+
+<h2>מה ZVK <em>לא</em> נותן?</h2>
+
+<ul>
+<li>לא "לייק" על פוסט</li>
+<li>לא "הצטרפתי לקבוצה" (בונוס צמצום)</li>
+<li>לא שיתוף</li>
+<li>לא זמן באתר</li>
+</ul>
+
+<p>אלו מדדים שאפשר לנפח בקלות. אנחנו רוצים מוניטין שקשה לזייף.</p>
+
+<h2>Tiers — דרגות</h2>
+
+<ul>
+<li><strong>0-100</strong> — Newcomer</li>
+<li><strong>100-500</strong> — Active Member</li>
+<li><strong>500-2000</strong> — Contributor</li>
+<li><strong>2000-5000</strong> — Guardian</li>
+<li><strong>5000+</strong> — Sage</li>
+</ul>
+
+<p>כל דרגה פותחת הטבות: גישה לקבוצות פרימיום, הנחות על עמלות, משקל גבוה יותר בהצבעות, יכולת לאשר מומחים חדשים.</p>
+
+<h2>המרה ל-SLH</h2>
+
+<p>אפשר להמיר ZVK ל-SLH בשיעור דינמי. השיעור <strong>מוגבל מראש</strong> כדי שלא ייווצר inflation — לא ניתן להמיר יותר מ-100 ZVK ל-1 SLH ביום אחד.</p>
+
+<p>הכלל הפנימי: <strong>ZVK הוא הסוכר היומי, SLH הוא החיסכון לטווח ארוך.</strong></p>
+
+<h2>מה קורה אם רימית?</h2>
+
+<p>ה-Guardian system (חלק מה-<a href="/blog/verified-experts-not-influencers.html">Verification Engine</a>) מזהה התנהגות חשודה ומסמן ZUZ (Mark of Cain). מעל 100 ZUZ → חסימה אוטומטית.</p>
+
+<p>דוגמאות התנהגות שמקבלת ZUZ:</p>
+
+<ul>
+<li>multiple accounts מאותו IP</li>
+<li>פוסטים כפולים</li>
+<li>ניסיון להצביע לעצמך</li>
+<li>תרגום מזויף (העתקה)</li>
+</ul>
+
+<hr/>
+
+<h2>הצעד הבא</h2>
+
+<ol>
+<li>בדוק את יתרת ה-ZVK שלך ב-<a href="/profile.html">profile</a></li>
+<li>היכנס ל-<a href="/community.html">community</a> ותראה מי המובילים השבוע</li>
+<li>תתחיל לתרום: מדריך קצר, תרגום, או Bug report</li>
+<li>כשאתה ב-500 ZVK — אתה כבר Contributor ואפשר לתגמל אותך מהארגון</li>
+</ol>
+
+<div class="abstract">
+<h3>English Abstract</h3>
+<p>ZVK is SLH's reputation token — a measure of actual contribution rather than likes or followers. Earning ZVK requires real work: quality comments (+5), original posts (+20), guides (+50), translations (+30), bug reports (+10), code PRs (+75), or expert endorsement (+100). Passive actions (joining groups, sharing posts, time spent) earn nothing. Five tiers unlock progressive privileges: Newcomer, Active Member, Contributor, Guardian, Sage. Conversion to SLH is rate-limited (max 100 ZVK → 1 SLH/day) to prevent inflation. Guardian system detects gaming attempts and issues ZUZ (Mark of Cain); 100 ZUZ = auto-ban.</p>
+</div>
+
+<p style="margin-top:var(--space-8);color:var(--color-text-muted);font-size:var(--font-size-sm)">
+📅 17 אפריל 2026 · ⏱ 5 דק׳ קריאה · 🏷 <a href="/blog/">כל הפוסטים</a>
+</p>
+</article>
+</body>
+</html>

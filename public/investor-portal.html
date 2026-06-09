@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" data-theme="neural">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SLH Investor Portal — שקיפות מלאה</title>
+  <meta name="description" content="פורטל אישי לכל משקיע SLH — נתוני השקעה, תשלומים, ושקיפות מלאה.">
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/shared.css?v=20260427c">
+  <link rel="stylesheet" href="css/slh-neural.css?v=20260427c">
+
+  <style>
+    body { font-family: 'Heebo', system-ui, sans-serif; color: var(--text); background: var(--bg); margin: 0; }
+    .ip-shell { max-width: 980px; margin: 0 auto; padding: 32px 24px; }
+    .ip-hero { text-align: center; margin-bottom: 36px; }
+    .ip-hero h1 { font-size: clamp(1.8rem, 4vw, 2.4rem); font-weight: 800; margin: 12px 0; }
+    .ip-hero p { color: var(--text2); max-width: 600px; margin: 0 auto; line-height: 1.6; }
+
+    .login-box {
+      max-width: 440px; margin: 60px auto;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px;
+      text-align: center;
+    }
+    .login-box input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border2); background: var(--bg); color: var(--text); font-family: inherit; margin: 12px 0; box-sizing: border-box; }
+    .login-box button { width: 100%; padding: 12px; }
+
+    .summary-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-bottom: 28px; }
+    .stat-tile {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 20px; text-align: center;
+    }
+    .stat-tile .label { font-size: .8rem; color: var(--text3); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
+    .stat-tile .value { font-size: 2rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .stat-tile .value.gradient { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .stat-tile .value.green { color: var(--green); }
+    .stat-tile .value.gold { color: var(--gold); }
+
+    .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px; margin-bottom: 24px; }
+    .panel h2 { margin: 0 0 16px; display: flex; align-items: center; gap: 10px; }
+    .panel h2 i { color: var(--accent); }
+
+    table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+    th { text-align: start; padding: 12px; border-bottom: 1px solid var(--border2); color: var(--text3); font-weight: 600; font-size: .8rem; text-transform: uppercase; }
+    td { padding: 12px; border-bottom: 1px solid var(--border); }
+
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: .8rem; font-weight: 600; }
+    .badge.paid { background: rgba(74,222,128,.15); color: var(--green); }
+    .badge.pending { background: rgba(255,154,60,.15); color: var(--orange); }
+    .badge.tier { background: rgba(94,214,255,.15); color: var(--accent); }
+
+    .trust-section {
+      background: linear-gradient(135deg, rgba(74,222,128,.08), rgba(94,214,255,.08));
+      border: 1px solid rgba(74,222,128,.3);
+      border-radius: 14px; padding: 22px; margin-bottom: 24px;
+    }
+    .trust-section h3 { margin: 0 0 12px; color: var(--green); }
+    .trust-section ul { margin: 0; padding-inline-start: 20px; color: var(--text2); }
+    .trust-section li { margin: 6px 0; }
+  </style>
+</head>
+<body>
+  <div class="neural-bg" aria-hidden="true"></div>
+
+  <div class="ip-shell">
+
+    <div class="ip-hero">
+      <span class="neural-eyebrow">Investor Portal</span>
+      <h1>השקיפות שלך · בזמן אמת</h1>
+      <p>כל שקל שהשקעת. כל שקל שהוחזר. כל פעולה שמתבצעת עם הכסף שלך — שקופה, מתועדת, ומחושבת לפי הנוסחה: <code style="color:var(--accent);">Net Profit × Your Share</code>.</p>
+    </div>
+
+    <!-- Login (when no telegram_id) -->
+    <div id="loginBox" class="login-box">
+      <i class="fas fa-user-shield" style="font-size:2rem;color:var(--accent);margin-bottom:14px;"></i>
+      <h2 style="margin:0 0 16px;">התחבר לפורטל</h2>
+      <p style="color:var(--text2);font-size:.9rem;">הזן את ה-Telegram ID שלך (זה שרשום במערכת SLH)</p>
+      <input id="telegramIdInput" type="number" placeholder="Telegram ID (לדוגמה: 224223270)">
+      <button class="neural-btn neural-btn-primary" onclick="loadPortal()">
+        <i class="fas fa-sign-in-alt"></i> כניסה
+      </button>
+      <p style="margin:18px 0 0;font-size:.8rem;color:var(--text3);">לא רשום? פנה ל-<a href="https://t.me/osifeu_prog" style="color:var(--accent);">@osifeu_prog</a></p>
+    </div>
+
+    <!-- Portal content (hidden until logged in) -->
+    <div id="portalContent" style="display:none;">
+
+      <!-- Investor profile -->
+      <div class="panel">
+        <h2><i class="fas fa-user-circle"></i> <span id="investorName">—</span></h2>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;color:var(--text2);font-size:.92rem;">
+          <span>שכבה: <span class="badge tier" id="investorTier">—</span></span>
+          <span>KYC: <span id="investorKyc">—</span></span>
+          <span>חבר מאז: <span id="investorSince">—</span></span>
+        </div>
+      </div>
+
+      <!-- Summary KPIs -->
+      <div class="summary-grid">
+        <div class="stat-tile">
+          <div class="label">סך הכל הושקע</div>
+          <div class="value" id="kpi-invested">—</div>
+        </div>
+        <div class="stat-tile">
+          <div class="label">סך הכל הוחזר</div>
+          <div class="value green" id="kpi-paid">—</div>
+        </div>
+        <div class="stat-tile">
+          <div class="label">ממתין לתשלום</div>
+          <div class="value gold" id="kpi-pending">—</div>
+        </div>
+        <div class="stat-tile">
+          <div class="label">ROI עד היום</div>
+          <div class="value gradient" id="kpi-roi">—</div>
+        </div>
+      </div>
+
+      <!-- Trust statement -->
+      <div class="trust-section">
+        <h3><i class="fas fa-shield-check"></i> ההתחייבות שלנו לשקיפות</h3>
+        <ul>
+          <li>תשלומים מחושבים <b>אך ורק מ-Net Profit</b> (Revenues − Expenses)</li>
+          <li>אם אין רווח בתקופה — אין תשלום בתקופה. בלי "להחביא".</li>
+          <li>כל פעולה במערכת מתועדת ב-audit log עם זמן ומבצע</li>
+          <li>אנחנו לא משלמים לאף משקיע ממה שמשקיע אחר השקיע</li>
+          <li>הדוחות הציבוריים זמינים ב-<a href="investor-engine.html" style="color:var(--accent);">דף השקיפות</a> (לאדמין/בעלים)</li>
+        </ul>
+      </div>
+
+      <!-- Recent payouts -->
+      <div class="panel">
+        <h2><i class="fas fa-history"></i> תשלומים אחרונים</h2>
+        <div id="payoutsArea">טוען…</div>
+      </div>
+
+      <!-- How it works -->
+      <div class="panel">
+        <h2><i class="fas fa-lightbulb"></i> איך מחושב התשלום שלך?</h2>
+        <div style="font-family:var(--font-mono);background:var(--bg);padding:16px;border-radius:8px;font-size:.88rem;color:var(--text2);overflow-x:auto;">
+          <div style="color:var(--green);">// כל חודש (או רבעון):</div>
+          net_profit = total_revenue - total_expenses
+          <br><br>
+          <span style="color:var(--text3);">if</span> net_profit &lt;= 0:
+          <br>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--orange);">// אין תשלום החודש. הסבר בדוח.</span>
+          <br>
+          <span style="color:var(--text3);">else</span>:
+          <br>&nbsp;&nbsp;&nbsp;&nbsp;distributable = net_profit × distribution_pct
+          <br>&nbsp;&nbsp;&nbsp;&nbsp;your_share = your_capital / total_capital
+          <br>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--accent);">your_payout = distributable × your_share</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = localStorage.getItem('slh_api_base') || 'https://slhcoil-production.up.railway.app';
+    function ils(n) { return '₪' + Number(n || 0).toLocaleString('he-IL', {maximumFractionDigits: 2}); }
+
+    async function loadPortal() {
+      const id = document.getElementById('telegramIdInput').value;
+      if (!id) return alert('הזן Telegram ID');
+      try {
+        const r = await fetch(`${API_BASE}/api/investor/me/summary?telegram_id=${id}`);
+        if (!r.ok) {
+          const e = await r.json().catch(() => ({}));
+          alert(e.detail || 'לא נמצא משקיע. ודא שאתה רשום במערכת.');
+          return;
+        }
+        const d = await r.json();
+        // Save id for next time
+        localStorage.setItem('slh_investor_telegram_id', id);
+        renderPortal(d);
+      } catch (e) {
+        alert('שגיאת רשת: ' + e.message);
+      }
+    }
+
+    function renderPortal(d) {
+      document.getElementById('loginBox').style.display = 'none';
+      document.getElementById('portalContent').style.display = 'block';
+
+      // Profile
+      document.getElementById('investorName').textContent = d.investor.name;
+      document.getElementById('investorTier').textContent = d.investor.tier;
+      document.getElementById('investorKyc').innerHTML = d.investor.kyc_verified
+        ? '<span class="badge paid">verified</span>' : '<span class="badge pending">pending</span>';
+      document.getElementById('investorSince').textContent = d.investor.member_since
+        ? new Date(d.investor.member_since).toLocaleDateString('he-IL') : '—';
+
+      // KPIs
+      document.getElementById('kpi-invested').textContent = ils(d.summary.total_invested_ils);
+      document.getElementById('kpi-paid').textContent = ils(d.summary.total_paid_out_ils);
+      document.getElementById('kpi-pending').textContent = ils(d.summary.pending_payout_ils);
+      document.getElementById('kpi-roi').textContent = d.summary.roi_pct_to_date.toFixed(2) + '%';
+
+      // Payouts
+      const area = document.getElementById('payoutsArea');
+      if (!d.recent_payouts || d.recent_payouts.length === 0) {
+        area.innerHTML = '<p style="color:var(--text3);text-align:center;padding:20px;">טרם בוצעו תשלומים. תשלומים מתבצעים על בסיס Net Profit חודשי/רבעוני.</p>';
+      } else {
+        area.innerHTML = '<table><thead><tr><th>תקופה</th><th>סכום</th><th>סטטוס</th><th>שולם בפועל</th></tr></thead><tbody>' +
+          d.recent_payouts.map(p => `<tr>
+            <td><code>${p.period_ym}</code></td>
+            <td><b>${ils(p.amount_ils)}</b></td>
+            <td>${p.status === 'paid' ? '<span class="badge paid">שולם</span>' : '<span class="badge pending">ממתין</span>'}</td>
+            <td>${p.paid_at ? new Date(p.paid_at).toLocaleDateString('he-IL') : '—'}</td>
+          </tr>`).join('') + '</tbody></table>';
+      }
+    }
+
+    // Auto-load if we have a saved ID
+    const savedId = localStorage.getItem('slh_investor_telegram_id');
+    if (savedId) {
+      document.getElementById('telegramIdInput').value = savedId;
+      loadPortal();
+    }
+  </script>
+</body>
+</html>

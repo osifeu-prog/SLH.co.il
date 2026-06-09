@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta name="robots" content="noindex,nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IDO Mission Control · SLH Spark</title>
+<meta name="description" content="Internal IDO progress tracking. Marshall Islands DAO LLC + PinkSale.">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{--bg:#050810;--bg2:#0d1220;--bg3:#151a2e;--gold:#ffd700;--green:#00e887;--red:#ff4444;--orange:#ff9800;--yellow:#ffc107;--purple:#a855f7;--cyan:#06b6d4;--text:#f5f5f8;--text2:#9ba0b5;--text3:#5a6078;--border:rgba(168,85,247,.25)}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Rubik',sans-serif;margin:0;min-height:100vh;line-height:1.5}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(circle at 15% 25%,rgba(168,85,247,.04),transparent 50%),radial-gradient(circle at 85% 75%,rgba(6,182,212,.04),transparent 50%)}
+
+.wrap{max-width:1280px;margin:0 auto;padding:30px 20px}
+.header{margin-bottom:24px;padding:20px;background:var(--bg2);border:1px solid var(--border);border-radius:14px}
+.header h1{margin:0 0 6px;font-size:26px;color:var(--text)}
+.header h1 .badge{display:inline-block;padding:3px 10px;background:rgba(255,215,0,.15);color:var(--gold);border-radius:8px;font-size:11px;font-weight:800;letter-spacing:1px;vertical-align:middle;margin-right:8px}
+.header h1 .badge.live{background:rgba(0,232,135,.15);color:var(--green)}
+.header p{margin:0;font-size:13px;color:var(--text2)}
+
+.gate{display:none;padding:24px;background:var(--bg2);border:1px solid var(--border);border-radius:14px;margin-bottom:16px}
+.gate.show{display:block}
+.gate input{width:100%;padding:12px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;font-family:'JetBrains Mono',monospace;margin-bottom:10px}
+.gate button{padding:10px 18px;background:linear-gradient(135deg,var(--purple),var(--cyan));color:#fff;border:none;border-radius:8px;font-weight:800;cursor:pointer}
+.gate-msg{font-size:12px;color:var(--text2);margin-top:8px}
+
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:18px}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px}
+.stat-card .lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:6px}
+.stat-card .val{font-size:24px;font-weight:900;color:var(--text);font-family:'JetBrains Mono',monospace}
+.stat-card .val.green{color:var(--green)}.stat-card .val.gold{color:var(--gold)}.stat-card .val.orange{color:var(--orange)}.stat-card .val.red{color:var(--red)}
+.stat-card .sub{font-size:11px;color:var(--text2);margin-top:4px}
+
+.section{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px}
+.section h2{margin:0 0 14px;font-size:16px;color:var(--text);display:flex;justify-content:space-between;align-items:center}
+.section h2 .meta{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;font-weight:500}
+
+.progress{height:18px;background:var(--bg3);border-radius:9px;overflow:hidden;position:relative;margin-bottom:8px;border:1px solid var(--border)}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--purple),var(--cyan));border-radius:9px;transition:width .4s ease;position:relative}
+.progress-marker{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--gold);box-shadow:0 0 6px var(--gold)}
+.progress-marker::after{content:attr(data-label);position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:9px;color:var(--gold);font-weight:700;white-space:nowrap}
+
+.pre-launch-notice{background:linear-gradient(135deg,rgba(255,152,0,.12),rgba(255,215,0,.08));border:1px solid rgba(255,152,0,.4);border-radius:12px;padding:16px 20px;margin-bottom:20px;font-size:13px;color:var(--text)}
+.pre-launch-notice strong{color:var(--orange)}
+.pre-launch-notice ul{margin:8px 0 0;padding-inline-start:20px;color:var(--text2)}
+.pre-launch-notice li{margin-bottom:4px}
+
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:start;padding:9px 10px;background:var(--bg3);color:var(--text2);font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border)}
+td{padding:9px 10px;border-bottom:1px solid rgba(168,85,247,.1);color:var(--text)}
+td.num{font-family:'JetBrains Mono',monospace;text-align:end}
+.chip{display:inline-block;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700}
+.chip-green{background:rgba(0,232,135,.15);color:var(--green)}
+.chip-orange{background:rgba(255,152,0,.15);color:var(--orange)}
+.chip-red{background:rgba(255,68,68,.15);color:var(--red)}
+.chip-gray{background:rgba(155,160,181,.12);color:var(--text2)}
+
+.checklist{list-style:none;padding:0;margin:0}
+.checklist li{padding:10px 12px;border-bottom:1px solid rgba(168,85,247,.1);display:flex;align-items:center;gap:10px}
+.checklist li:last-child{border-bottom:none}
+.checklist .ico{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
+.checklist .ico.done{background:rgba(0,232,135,.18);color:var(--green)}
+.checklist .ico.pending{background:rgba(255,152,0,.18);color:var(--orange)}
+.checklist .ico.blocked{background:rgba(255,68,68,.18);color:var(--red)}
+.checklist .txt{flex:1;font-size:13px;color:var(--text)}
+.checklist .meta{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace}
+
+a{color:var(--cyan);text-decoration:none}
+a:hover{text-decoration:underline}
+
+@media (max-width:640px){.summary-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <h1><span class="badge">PRE-LAUNCH</span>IDO Mission Control</h1>
+    <p>מסלול גיוס מאושר 27.4 · Marshall Islands DAO LLC + PinkSale IDO · Target ₪500K</p>
+  </div>
+
+  <div id="gate" class="gate">
+    <p style="margin:0 0 12px;font-size:14px">🔒 דרושה סיסמת אדמין</p>
+    <input id="pw" type="password" placeholder="Admin password" autocomplete="off">
+    <button onclick="unlock()">פתח</button>
+    <div class="gate-msg" id="gateMsg"></div>
+  </div>
+
+  <div id="content" style="display:none">
+    <div class="pre-launch-notice">
+      <strong>⏳ Pre-Launch · IDO contributions לא נפתחו עדיין.</strong>
+      ה-API חי (<code>/api/ido/*</code> 9 endpoints), DB schema נוצר, milestones pre-seeded.
+      הדשבורד מציג "0 BNB raised" כי אין עדיין תרומות — זה ה-truth, לא mock.
+      <ul>
+        <li>✅ FastAPI deployed, /api/ido/* live</li>
+        <li>✅ DB schema created (6 tables + 2 views)</li>
+        <li>✅ 8 milestones pre-seeded with target dates</li>
+        <li>⏳ MIDAO LLC application (~7-10 ימים, מחכה לחתימה שלך)</li>
+        <li>⏳ SolidProof audit ($2,500, מחכה לאישור)</li>
+        <li>⏳ Genesis Wallet → PinkSale 56.25M SLH transfer (Day 8 בלוח)</li>
+      </ul>
+    </div>
+
+    <div class="summary-grid">
+      <div class="stat-card">
+        <div class="lbl">Soft Cap</div>
+        <div class="val gold">20 BNB</div>
+        <div class="sub">~₪50,000</div>
+      </div>
+      <div class="stat-card">
+        <div class="lbl">Hard Cap</div>
+        <div class="val green">150 BNB</div>
+        <div class="sub">~₪370,000 · stretch ₪500K @ 215 BNB</div>
+      </div>
+      <div class="stat-card">
+        <div class="lbl">Token Price</div>
+        <div class="val">0.000004 BNB</div>
+        <div class="sub">~₪0.05 / SLH</div>
+      </div>
+      <div class="stat-card">
+        <div class="lbl">LP Lock</div>
+        <div class="val">365 ימים</div>
+        <div class="sub">PinkLock · ~60% מהגיוס</div>
+      </div>
+      <div class="stat-card">
+        <div class="lbl">Vesting</div>
+        <div class="val">20% / 4חוד'</div>
+        <div class="sub">20% TGE + 20%/חודש × 4</div>
+      </div>
+      <div class="stat-card">
+        <div class="lbl">Min/Max Buy</div>
+        <div class="val">0.05 / 5 BNB</div>
+        <div class="sub">משתמש בודד</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>📊 התקדמות (placeholder — חי כש-/api/ido יעלה)<span class="meta" id="progressMeta">לא חי</span></h2>
+      <div style="margin-bottom:18px">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-bottom:4px">
+          <span>0 BNB</span><span>20 BNB · soft</span><span>150 BNB · hard</span><span>215 BNB · stretch</span>
+        </div>
+        <div class="progress">
+          <div class="progress-bar" id="progressBar" style="width:0%"></div>
+          <div class="progress-marker" style="left:9.3%" data-label="Soft"></div>
+          <div class="progress-marker" style="left:69.7%" data-label="Hard"></div>
+        </div>
+        <div style="margin-top:8px;font-size:13px;color:var(--text2)">
+          <span id="raisedDisplay">0 BNB raised · 0 משתתפים · 0 ימים פעילים</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>✅ Pre-Launch Checklist <span class="meta" id="checklistProgress">— / 12</span></h2>
+      <ul class="checklist" id="checklist">
+        <li><span class="ico done">✓</span><span class="txt">FastAPI deployed ל-Railway</span><span class="meta">slh-api v1.1.0 live</span></li>
+        <li><span class="ico done">✓</span><span class="txt">DB schema: 6 IDO tables + 2 views</span><span class="meta">init_ido_tables idempotent</span></li>
+        <li><span class="ico done">✓</span><span class="txt">9 IDO endpoints wired</span><span class="meta">/api/ido/* live</span></li>
+        <li><span class="ico done">✓</span><span class="txt">Public site updated (index + control)</span><span class="meta">slh-nft.com synced</span></li>
+        <li><span class="ico done">✓</span><span class="txt">11 spec docs + financial model</span><span class="meta">ops/IDO_LAUNCH_2026-04-27/</span></li>
+        <li><span class="ico pending">○</span><span class="txt">Marshall Islands DAO LLC application</span><span class="meta">~7-10 ימים</span></li>
+        <li><span class="ico pending">○</span><span class="txt">6 שאלות לעו"ד נשלחו ונענו</span><span class="meta">ops/COMPANY_FORMATION_REALITY*</span></li>
+        <li><span class="ico pending">○</span><span class="txt">Gnosis Safe 2-of-3 multisig setup</span><span class="meta">Osif + Tzvika + recovery key</span></li>
+        <li><span class="ico pending">○</span><span class="txt">Smart contract audit (SolidProof $2,500)</span><span class="meta">~5-7 ימים</span></li>
+        <li><span class="ico pending">○</span><span class="txt">Guardian integration: Sybil + OFAC + Chainabuse</span><span class="meta">לכל ארנק נכנס</span></li>
+        <li><span class="ico pending">○</span><span class="txt">PinkSale launchpad config + LP lock setup</span><span class="meta">אחרי audit</span></li>
+        <li><span class="ico pending">○</span><span class="txt">@SLH_Claude_bot real-time alerts wiring</span><span class="meta">7 templates ready</span></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>📡 Milestones <span class="meta" id="milestonesMeta">—</span></h2>
+      <ul class="checklist" id="milestonesList">
+        <li><span class="ico pending">○</span><span class="txt">טוען...</span><span class="meta">/api/ido/milestones</span></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>💸 Live Transactions <span class="meta" id="txMeta">—</span></h2>
+      <table>
+        <thead><tr><th>זמן</th><th>ארנק</th><th class="num">BNB</th><th>Status</th></tr></thead>
+        <tbody id="txBody">
+          <tr><td colspan="4" style="text-align:center;color:var(--text3);padding:20px">— אין תרומות עדיין · הדשבורד יציג כאן כל transaction חי —</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>🚨 Active Alerts <span class="meta" id="alertsMeta">—</span></h2>
+      <ul class="checklist" id="alertsList">
+        <li><span class="ico done">✓</span><span class="txt">אין alerts פעילים</span><span class="meta">המערכת חמושה ומאוזנת</span></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>💰 Use of Funds (Scenario D · ₪500K)</h2>
+      <table>
+        <thead><tr><th>תחום</th><th>%</th><th class="num">₪</th><th>הערה</th></tr></thead>
+        <tbody>
+          <tr><td>Liquidity Pool (locked 365d)</td><td>60%</td><td class="num">300,000</td><td>נכס לא הוצאה</td></tr>
+          <tr><td>Smart contract audit</td><td>3%</td><td class="num">15,000</td><td>CertiK / SolidProof</td></tr>
+          <tr><td>Marshall Islands LLC</td><td>1%</td><td class="num">5,500</td><td>$1,500 setup + $1,000/yr</td></tr>
+          <tr><td>Legal counsel</td><td>4%</td><td class="num">20,000</td><td>חבר-עו"ד + רטיינר</td></tr>
+          <tr><td>שכר solo founder (12mo)</td><td>18%</td><td class="num">90,000</td><td>₪7,500/חודש</td></tr>
+          <tr><td>Part-time hire (6mo)</td><td>6%</td><td class="num">30,000</td><td>backend / sec engineer</td></tr>
+          <tr><td>Infrastructure (12mo)</td><td>4%</td><td class="num">20,000</td><td>Railway + RPC + monitoring</td></tr>
+          <tr><td>Marketing organic (6mo)</td><td>3%</td><td class="num">15,000</td><td>בלי paid ads</td></tr>
+          <tr><td>Reserve buffer</td><td>1%</td><td class="num">5,000</td><td>חודש float</td></tr>
+          <tr style="font-weight:800;background:var(--bg3)"><td>סה״כ</td><td>100%</td><td class="num">500,000</td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>🚦 3 תרחישים</h2>
+      <table>
+        <thead><tr><th>תרחיש</th><th class="num">BNB</th><th class="num">₪</th><th class="num">Net Treasury</th><th class="num">Runway</th><th>סטטוס</th></tr></thead>
+        <tbody>
+          <tr><td>A · Soft only</td><td class="num">20</td><td class="num">46,400</td><td class="num">~18,500</td><td class="num">1-2 חוד'</td><td><span class="chip chip-red">refund</span></td></tr>
+          <tr><td>B · Mid (75 BNB)</td><td class="num">75</td><td class="num">174,000</td><td class="num">~65,000</td><td class="num">4-6 חוד'</td><td><span class="chip chip-orange">tight</span></td></tr>
+          <tr><td>C · Hard cap</td><td class="num">150</td><td class="num">348,000</td><td class="num">~127,500</td><td class="num">10-14 חוד'</td><td><span class="chip chip-green">below target</span></td></tr>
+          <tr style="font-weight:800;background:var(--bg3)"><td>D · Stretch (215 BNB)</td><td class="num">215</td><td class="num">498,000</td><td class="num">~185,000</td><td class="num">14-18 חוד'</td><td><span class="chip chip-green">SAFETY HIT</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section" style="font-size:12px;color:var(--text3);text-align:center">
+      <p style="margin:0">📂 מסמך מקור: <a href="javascript:void(0)" onclick="alert('ops/IDO_FINANCIAL_MODEL_2026-04-27.md')">IDO_FINANCIAL_MODEL_2026-04-27.md</a> · 📂 תוכנית: <a href="javascript:void(0)" onclick="alert('ops/project_ido_marshall_plan.md')">project_ido_marshall_plan</a></p>
+      <p style="margin:6px 0 0">🔒 INTERNAL ONLY · לא לפרסום</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = 'https://slh-api-production.up.railway.app';
+
+// Validates against /api/ido/dashboard-summary — only accepts keys that ADMIN_API_KEYS allows.
+async function validateAdminKey(key){
+  try {
+    const r = await fetch(API + '/api/ido/dashboard-summary', {headers: {'X-Admin-Key': key}});
+    return r.status === 200;
+  } catch(e){ return false; }
+}
+
+async function checkAuth(){
+  const pw = localStorage.getItem('slh_admin_password');
+  if(!pw || pw.length < 6){
+    document.getElementById('gate').classList.add('show');
+    return;
+  }
+  // Verify against API — if rotated, gate stays up with clear message
+  const valid = await validateAdminKey(pw);
+  if(valid){
+    document.getElementById('content').style.display = 'block';
+    document.getElementById('gate').classList.remove('show');
+    refreshAll();
+  } else {
+    document.getElementById('gate').classList.add('show');
+    document.getElementById('gateMsg').textContent =
+      'הסיסמה השמורה אינה תקפה ב-Railway ADMIN_API_KEYS. הזן מפתח תקף.';
+  }
+}
+async function unlock(){
+  const pw = document.getElementById('pw').value.trim();
+  if(pw.length < 6){
+    document.getElementById('gateMsg').textContent = 'סיסמה חייבת להיות 6 תווים לפחות';
+    return;
+  }
+  document.getElementById('gateMsg').textContent = 'מאמת מול ה-API...';
+  const valid = await validateAdminKey(pw);
+  if(valid){
+    localStorage.setItem('slh_admin_password', pw);
+    checkAuth();
+  } else {
+    document.getElementById('gateMsg').textContent =
+      '❌ מפתח לא תקף. בדוק ב-Railway Variables → ADMIN_API_KEYS';
+  }
+}
+const adminKey = () => localStorage.getItem('slh_admin_password') || '';
+const adminHeaders = () => ({'X-Admin-Key': adminKey()});
+
+async function loadIdoStatus(){
+  // Public endpoint — no auth needed
+  try {
+    const r = await fetch(API + '/api/ido/status');
+    if(!r.ok) throw new Error('status ' + r.status);
+    const d = await r.json();
+    const raised = parseFloat(d.total_raised_bnb || 0);
+    const pct = Math.min(100, (raised / 215) * 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('raisedDisplay').textContent =
+      `${raised.toFixed(2)} BNB raised · ${d.unique_participants || 0} משתתפים · ${d.confirmed_tx_count || 0} confirmed TXs`;
+    document.getElementById('progressMeta').textContent =
+      'live · ' + new Date().toLocaleTimeString('he-IL');
+  } catch(e){
+    document.getElementById('progressMeta').textContent = '/api/ido/status: ' + e.message;
+    document.getElementById('raisedDisplay').textContent = 'API offline או redeploy בתהליך';
+  }
+}
+
+async function loadMilestones(){
+  try {
+    const r = await fetch(API + '/api/ido/milestones');
+    if(!r.ok) throw new Error('status ' + r.status);
+    const d = await r.json();
+    const ms = d.milestones || [];
+    const list = document.getElementById('milestonesList');
+    if(ms.length === 0){
+      list.innerHTML = '<li><span class="ico pending">○</span><span class="txt">אין milestones</span><span class="meta">—</span></li>';
+      return;
+    }
+    list.innerHTML = ms.map(m => {
+      const reached = m.reached_at;
+      const target = (m.details && m.details.target_date) ? m.details.target_date : '—';
+      const ico = reached ? 'done' : 'pending';
+      const sym = reached ? '✓' : '○';
+      const meta = reached ? new Date(reached).toLocaleDateString('he-IL') : 'target: ' + target;
+      const labelMap = {
+        llc_certified: 'Marshall Islands LLC certified',
+        audit_passed: 'Smart contract audit passed',
+        ido_started: 'IDO started',
+        soft_cap_reached: 'Soft cap reached (20 BNB)',
+        hard_cap_reached: 'Hard cap reached (150 BNB)',
+        ido_ended: 'IDO ended',
+        lp_locked: 'LP locked at PinkLock',
+        first_vesting_release: 'First vesting release (TGE 20%)',
+      };
+      const label = labelMap[m.milestone_type] || m.milestone_type;
+      return `<li><span class="ico ${ico}">${sym}</span><span class="txt">${label}</span><span class="meta">${meta}</span></li>`;
+    }).join('');
+    document.getElementById('milestonesMeta').textContent = ms.filter(m => m.reached_at).length + '/' + ms.length + ' reached';
+  } catch(e){
+    document.getElementById('milestonesMeta').textContent = 'error: ' + e.message;
+  }
+}
+
+async function loadTransactions(){
+  try {
+    const r = await fetch(API + '/api/ido/transactions?limit=10', {headers: adminHeaders()});
+    if(r.status === 403){
+      document.getElementById('txMeta').textContent = '🔒 admin key invalid';
+      return;
+    }
+    if(!r.ok) throw new Error('status ' + r.status);
+    const d = await r.json();
+    const txs = d.transactions || [];
+    const tbody = document.getElementById('txBody');
+    if(txs.length === 0){
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text3);padding:20px">— אין תרומות עדיין · ' + (d.total || 0) + ' total —</td></tr>';
+    } else {
+      tbody.innerHTML = txs.map(t => {
+        const time = t.created_at ? new Date(t.created_at).toLocaleTimeString('he-IL') : '—';
+        const chipClass = t.status === 'confirmed' ? 'chip-green' : t.status === 'pending' ? 'chip-orange' : 'chip-gray';
+        return `<tr>
+          <td>${time}</td>
+          <td><code style="font-size:11px">${t.wallet_short || '—'}</code></td>
+          <td class="num">${parseFloat(t.amount_bnb || 0).toFixed(3)}</td>
+          <td><span class="chip ${chipClass}">${t.status}</span></td>
+        </tr>`;
+      }).join('');
+    }
+    document.getElementById('txMeta').textContent = (d.total || 0) + ' total · refresh ' + new Date().toLocaleTimeString('he-IL');
+  } catch(e){
+    document.getElementById('txMeta').textContent = 'error: ' + e.message;
+  }
+}
+
+async function loadAlerts(){
+  try {
+    const r = await fetch(API + '/api/ido/alerts?actioned=false&limit=20', {headers: adminHeaders()});
+    if(r.status === 403){
+      document.getElementById('alertsMeta').textContent = '🔒 admin key invalid';
+      return;
+    }
+    if(!r.ok) throw new Error('status ' + r.status);
+    const d = await r.json();
+    const alerts = d.alerts || [];
+    const list = document.getElementById('alertsList');
+    if(alerts.length === 0){
+      list.innerHTML = '<li><span class="ico done">✓</span><span class="txt">אין alerts פעילים</span><span class="meta">המערכת חמושה ומאוזנת</span></li>';
+    } else {
+      list.innerHTML = alerts.map(a => {
+        const ico = a.severity === 'critical' || a.severity === 'high' ? 'blocked' : 'pending';
+        const sym = a.severity === 'critical' ? '!' : '⚠';
+        return `<li><span class="ico ${ico}">${sym}</span><span class="txt">[${a.severity}] ${a.description || a.alert_type}</span><span class="meta">${a.wallet_short || ''}</span></li>`;
+      }).join('');
+    }
+    document.getElementById('alertsMeta').textContent = alerts.length + ' active';
+  } catch(e){
+    document.getElementById('alertsMeta').textContent = 'error: ' + e.message;
+  }
+}
+
+function refreshAll(){
+  loadIdoStatus();
+  loadMilestones();
+  loadTransactions();
+  loadAlerts();
+}
+
+checkAuth();
+setInterval(refreshAll, 30000);  // refresh every 30s
+</script>
+</body>
+</html>

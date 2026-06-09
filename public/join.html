@@ -1,0 +1,254 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>הצטרף כמפתח ל-SLH — נבנה ביחד</title>
+<meta name="description" content="SLH Spark פותח את הקוד לכולם. הצטרף כמפתח, משפר פיצ׳ר שאהבת, מקבל ZVK תמורת תרומה.">
+<meta property="og:title" content="קוד פתוח. כלכלה קהילתית. תרומה=ZVK">
+<meta property="og:description" content="כל אחד יכול לשפר את SLH — בוטים, אתר, ESP32, ארנק, חנויות.">
+<meta property="og:image" content="https://slh-nft.com/assets/og-join.jpg">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{--bg:#050810;--bg2:#0d1220;--gold:#ffd700;--green:#00e887;--red:#ff4444;--cyan:#00e5ff;--text:#f5f5f8;--text2:#9ba0b5;--border:rgba(255,255,255,.08)}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Rubik',sans-serif;margin:0;min-height:100vh;line-height:1.6}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(circle at 50% 0,rgba(0,229,255,.08),transparent 60%),radial-gradient(circle at 80% 80%,rgba(255,215,0,.05),transparent 50%)}
+.container{max-width:960px;margin:0 auto;padding:40px 24px}
+.hero{text-align:center;padding:40px 0 24px}
+.badge{display:inline-block;background:rgba(0,232,135,.1);border:1px solid var(--green);color:var(--green);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;letter-spacing:2px;margin-bottom:16px}
+h1{font-size:clamp(32px,5vw,48px);font-weight:900;margin:0 0 16px;background:linear-gradient(135deg,var(--cyan),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.2}
+.sub{font-size:18px;color:var(--text2);max-width:640px;margin:0 auto 24px}
+.cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:24px 0}
+.btn{padding:14px 28px;border-radius:12px;font-size:15px;font-weight:800;text-decoration:none;display:inline-flex;align-items:center;gap:8px;border:none;cursor:pointer;font-family:inherit}
+.btn-primary{background:linear-gradient(135deg,var(--cyan),var(--gold));color:#000}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,229,255,.3)}
+.btn-secondary{background:var(--bg2);border:1px solid var(--border);color:var(--text)}
+.btn-secondary:hover{border-color:var(--gold)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin:40px 0}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:24px}
+.card h3{margin:0 0 10px;font-size:18px;color:var(--gold)}
+.card p{margin:0;color:var(--text2);font-size:14px}
+.card .icon{font-size:32px;margin-bottom:12px}
+.section-title{font-size:28px;font-weight:900;margin:48px 0 16px;text-align:center}
+.steps{counter-reset:step;max-width:720px;margin:0 auto}
+.step{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;margin:10px 0;position:relative;padding-right:70px}
+.step::before{counter-increment:step;content:counter(step);position:absolute;right:20px;top:20px;width:32px;height:32px;background:var(--gold);color:#000;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900}
+.step h4{margin:0 0 6px;font-size:16px;color:var(--gold)}
+.step p{margin:0;color:var(--text2);font-size:14px}
+.step code{background:var(--bg);padding:2px 8px;border-radius:6px;font-size:12px;color:var(--cyan);direction:ltr;display:inline-block}
+.reward{background:linear-gradient(135deg,rgba(0,232,135,.08),rgba(255,215,0,.04));border:1px solid var(--green);border-radius:16px;padding:28px;margin:32px 0;text-align:center}
+.reward h3{margin:0 0 12px;color:var(--green);font-size:22px}
+.reward-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:16px}
+.reward-item{background:var(--bg);padding:14px;border-radius:10px}
+.reward-amount{font-size:22px;font-weight:900;color:var(--gold)}
+.reward-label{font-size:12px;color:var(--text2);margin-top:4px}
+ul.clean{list-style:none;padding:0;margin:12px 0}
+ul.clean li{padding:6px 0;color:var(--text2);font-size:14px}
+ul.clean li::before{content:'✓ ';color:var(--green);font-weight:900}
+.foot{text-align:center;color:var(--text2);font-size:12px;margin-top:40px;padding-top:24px;border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+
+<div id="topnav-root"></div>
+
+<div class="container">
+
+  <div class="hero">
+    <div class="badge">🟢 OPEN SOURCE · ISRAELI · REWARDING</div>
+    <h1>רוצה לבנות איתנו?<br>קוד = ZVK = כסף אמיתי</h1>
+    <p class="sub">SLH Spark הוא אקוסיסטם קריפטו ישראלי עם 25 בוטים, 5 טוקנים ו-45 עמודי ווב — והכל פתוח. אם אתה מפתח, עיצובאי, QA, או סתם אוהב לשבור מערכות — יש פה משהו בשבילך.</p>
+    <div class="cta-row">
+      <a href="https://github.com/osifeu-prog/slh-api" class="btn btn-primary" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i> GitHub Repo
+      </a>
+      <a href="https://t.me/SLH_AIR_bot?start=contribute" class="btn btn-secondary" target="_blank" rel="noopener">
+        <i class="fab fa-telegram"></i> הצטרף לטלגרם
+      </a>
+      <a href="#flow" class="btn btn-secondary">
+        <i class="fas fa-rocket"></i> מתחיל עכשיו
+      </a>
+    </div>
+
+    <!-- Telegram Login Widget -->
+    <div id="tg-login-box" style="margin-top:28px;padding:18px;background:rgba(54,174,248,.06);border:1px solid rgba(54,174,248,.25);border-radius:14px;max-width:520px;margin-left:auto;margin-right:auto">
+      <div style="font-weight:800;font-size:14px;margin-bottom:8px;color:#36aef8"><i class="fab fa-telegram"></i> התחברות מהירה עם טלגרם</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:12px">לחץ על הכפתור הרשמי של טלגרם למטה. אנחנו מקבלים רק את ה-ID, שם משתמש ותמונה. <b>לא סיסמה ולא מספר טלפון.</b></div>
+      <div id="tg-login-widget" style="display:flex;justify-content:center;min-height:44px"></div>
+      <noscript><div style="color:#ff9999;font-size:12px">דרוש JavaScript. אפשרות חלופית: <a href="https://t.me/SLH_AIR_bot?start=join" style="color:#36aef8">/start בבוט</a></div></noscript>
+      <div style="font-size:11px;color:var(--muted);margin-top:10px;text-align:center">
+        חלופה: פקודת <a href="https://t.me/SLH_AIR_bot?start=join" style="color:#36aef8" target="_blank" rel="noopener"><code>/start</code> בבוט</a>
+      </div>
+    </div>
+    <script async src="https://telegram.org/js/telegram-widget.js?22"
+            data-telegram-login="SLH_AIR_bot"
+            data-size="large"
+            data-radius="10"
+            data-onauth="onTelegramAuth(user)"
+            data-request-access="write"></script>
+    <script>
+      function onTelegramAuth(user) {
+        if (!user || !user.id) { alert('לא התקבלו נתונים מטלגרם'); return; }
+        // Persist locally immediately so UX doesn't depend on API
+        try {
+          localStorage.setItem('slh_user', JSON.stringify({
+            id: user.id,
+            username: user.username || '',
+            first_name: user.first_name || '',
+            photo_url: user.photo_url || '',
+          }));
+        } catch (e) {}
+        // Verify/register with backend (HMAC check lives in /api/auth/telegram)
+        fetch('https://slh-api-production.up.railway.app/api/auth/telegram', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(user),
+        }).then(r => r.json()).then(d => {
+          if (d && d.token) try { localStorage.setItem('slh_jwt', d.token); } catch (e) {}
+          window.location.href = '/dashboard.html';
+        }).catch(() => {
+          // Even if API fails, user is logged-in locally; go to dashboard
+          window.location.href = '/dashboard.html';
+        });
+      }
+      // Move the widget into our styled container once it injects itself
+      (function moveWidget(){
+        const tries = [50, 200, 500, 1200, 2500];
+        tries.forEach(ms => setTimeout(() => {
+          const iframe = document.querySelector('iframe[src*="oauth.telegram.org"]');
+          const dest = document.getElementById('tg-login-widget');
+          if (iframe && dest && !dest.contains(iframe)) dest.appendChild(iframe);
+        }, ms));
+      })();
+    </script>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="icon">🤖</div>
+      <h3>בוטי טלגרם</h3>
+      <p>Python + aiogram 3.x · Docker · 25 בוטים לבחור מהם. תקן באג, הוסף פיצ׳ר, או בנה בוט חדש.</p>
+    </div>
+    <div class="card">
+      <div class="icon">🌐</div>
+      <h3>ווב + UI</h3>
+      <p>HTML/JS/CSS vanilla (אין פרוימוורק). i18n ב-4 שפות, theme system, 45 עמודים.</p>
+    </div>
+    <div class="card">
+      <div class="icon">⚡</div>
+      <h3>API + DB</h3>
+      <p>FastAPI · PostgreSQL 15 · Redis 7. 117 endpoints, חלק פתוחים לקהל וחלק אדמין.</p>
+    </div>
+    <div class="card">
+      <div class="icon">📡</div>
+      <h3>ESP32 / IoT</h3>
+      <p>PlatformIO + Arduino. חבר חומרה (חיישנים, ארנקים, שלטים) לרשת SLH.</p>
+    </div>
+    <div class="card">
+      <div class="icon">🔒</div>
+      <h3>Smart Contracts</h3>
+      <p>SLH על BSC (BEP-20). PancakeSwap V2 pool. תרצה לעזור עם DeFi? בוא.</p>
+    </div>
+    <div class="card">
+      <div class="icon">🧪</div>
+      <h3>QA / תיעוד</h3>
+      <p>לא כל תרומה חייבת להיות קוד. באג ריפורט טוב = 50 ZVK. תרגום עמוד = 200 ZVK.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title" id="flow">איך מתחילים? 4 שלבים</h2>
+  <div class="steps">
+    <div class="step">
+      <h4>רישום מהיר</h4>
+      <p>שלח לבוט <code>@SLH_AIR_bot</code> פקודת <code>/start</code>. תקבל מזהה משתמש, קישור לדאשבורד האישי, ו-1000 ZVK על הרשמה.</p>
+    </div>
+    <div class="step">
+      <h4>Fork את ה-repo</h4>
+      <p>לך ל-<code>github.com/osifeu-prog/slh-api</code> → Fork. Clone ללוקאל. קרא את <code>ops/AGENT_CONTEXT.md</code> להבין את המבנה.</p>
+    </div>
+    <div class="step">
+      <h4>בחר משימה</h4>
+      <p>פתח <code>ops/TASK_BOARD.md</code> או תסתכל ב-GitHub Issues. יש משימות מסומנות <code>[good-first]</code>, <code>[frontend]</code>, <code>[bot]</code>, <code>[api]</code>.</p>
+    </div>
+    <div class="step">
+      <h4>Pull Request → ZVK</h4>
+      <p>פותח PR, מתייג <code>@osifeu-prog</code>, מקבל code review. מוגל = נכנס ל-master, מקבל ZVK + קרדיט ב-bio שלך.</p>
+    </div>
+  </div>
+
+  <div class="reward">
+    <h3>💰 תגמולים (ZVK = ~₪4.4 לכל יחידה)</h3>
+    <p style="color:var(--text2);font-size:14px;margin:0">ZVK זה טוקן פנימי. אפשר להמיר ל-SLH (טוקן חיצוני) או לעמלות על עסקאות קהילה.</p>
+    <div class="reward-grid">
+      <div class="reward-item">
+        <div class="reward-amount">1,000</div>
+        <div class="reward-label">הרשמה ראשונה</div>
+      </div>
+      <div class="reward-item">
+        <div class="reward-amount">500</div>
+        <div class="reward-label">PR מוגל</div>
+      </div>
+      <div class="reward-item">
+        <div class="reward-amount">200</div>
+        <div class="reward-label">תרגום עמוד</div>
+      </div>
+      <div class="reward-item">
+        <div class="reward-amount">50</div>
+        <div class="reward-label">באג ריפורט איכותי</div>
+      </div>
+      <div class="reward-item">
+        <div class="reward-amount">5,000</div>
+        <div class="reward-label">פיצ׳ר גדול</div>
+      </div>
+      <div class="reward-item">
+        <div class="reward-amount">🏆</div>
+        <div class="reward-label">Genesis NFT לתורמי ליבה</div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title">מה יש לך מה-יום הראשון</h2>
+  <ul class="clean" style="max-width:640px;margin:0 auto">
+    <li>גישה מלאה לקוד (Apache 2.0)</li>
+    <li>דאשבורד אישי בכתובת <code>/dashboard.html?uid=YOUR_ID</code></li>
+    <li>1000 ZVK התחלתי (שווה ~₪4,400)</li>
+    <li>עמלה של 20% על כל משתמש שהפנית</li>
+    <li>שיתוף רווחים ל-staking pool ב-SLH</li>
+    <li>חברות בקהילת ה-Telegram (25 בוטים + ערוצים)</li>
+    <li>קרדיט ב-<code>ops/CONTRIBUTORS.md</code> ועל העמוד הציבורי</li>
+  </ul>
+
+  <h2 class="section-title">רוצה רק לקרוא? גם זה מעולה</h2>
+  <p style="text-align:center;color:var(--text2);max-width:640px;margin:0 auto 24px">
+    אל תרגיש חייב. חקור את הקוד. קרא את <code>ops/ARCHITECTURE.md</code>. נסה את הבוטים. שלח פידבק ב-<a href="/bug-report.html" style="color:var(--cyan)">bug-report</a>.
+  </p>
+
+  <div class="cta-row" style="margin-top:40px">
+    <a href="https://github.com/osifeu-prog/slh-api" class="btn btn-primary" target="_blank" rel="noopener">
+      <i class="fab fa-github"></i> התחל ב-GitHub
+    </a>
+    <a href="/live.html" class="btn btn-secondary">
+      <i class="fas fa-chart-bar"></i> ראה את המערכת החיה
+    </a>
+  </div>
+
+  <div class="foot">
+    <p>SLH Spark · Built in Israel 🇮🇱 · Open Source Apache 2.0 · Powered by SPARK IND</p>
+    <p style="margin-top:8px">
+      <a href="/about.html" style="color:var(--text2);margin:0 8px">אודות</a>·
+      <a href="/roadmap.html" style="color:var(--text2);margin:0 8px">מפת דרכים</a>·
+      <a href="/bug-report.html" style="color:var(--text2);margin:0 8px">דיווח באג</a>·
+      <a href="mailto:osif.erez.ungar@gmail.com" style="color:var(--text2);margin:0 8px">אימייל</a>
+    </p>
+  </div>
+
+</div>
+
+<script src="/js/shared.js?v=20260426e"></script>
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js"></script>
+</body>
+</html>

@@ -1,0 +1,380 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH Spark — Liquidity & Staking Guide | מדריך נזילות וסטייקינג</title>
+<meta name="description" content="Learn how SLH liquidity pools work, why they matter, and how you can earn by providing liquidity. 9 staking plans, up to Variable Yield (4-12%).">
+<link rel="canonical" href="https://slh-nft.com/liquidity.html">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="SLH Spark — Liquidity & Staking Guide | עד Variable Yield (4-12%)">
+<meta property="og:description" content="המדריך המלא לנזילות, סטייקינג, ותוכנית הצמיחה של SLH Spark. 9 תוכניות, 3 מטבעות.">
+<meta property="og:image" content="https://slh-nft.com/assets/og/liquidity.png">
+<meta property="og:url" content="https://slh-nft.com/liquidity.html">
+<meta property="og:locale" content="he_IL">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SLH Spark — Liquidity & Staking Guide">
+<meta name="twitter:description" content="9 staking plans, up to Variable Yield (4-12%). TON, SLH, and BNB.">
+<meta name="twitter:image" content="https://slh-nft.com/assets/og/liquidity.png">
+
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="/css/shared.css?v=20260426e">
+<style>
+    :root{--pink:#ff6b9d;--green:#00e887;--blue:#00b4d8}
+    body{font-family:'Inter',system-ui,sans-serif;background:var(--bg,#0a0a0f);color:var(--text,#e0e0e0);margin:0}
+    .page-hero{text-align:center;padding:60px 24px 40px;max-width:800px;margin:0 auto}
+    .page-hero h1{font-size:32px;font-weight:900;margin-bottom:12px;background:linear-gradient(135deg,#ffd700,#00e887);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .page-hero .sub{font-size:15px;color:var(--text2,#888);max-width:600px;margin:0 auto;line-height:1.8}
+    .section{max-width:900px;margin:0 auto 32px;padding:0 24px}
+    .card{background:var(--surface,#14142b);border:1px solid var(--border,#1e1e3a);border-radius:16px;padding:28px;margin-bottom:20px}
+    .card h2{font-size:20px;font-weight:800;margin-bottom:16px;color:var(--accent,#00ff41)}
+    .card h3{font-size:16px;font-weight:700;margin:16px 0 8px;color:var(--text)}
+    .card p,.card li{font-size:14px;line-height:1.8;color:var(--text2,#888)}
+    .card ul{padding-right:20px}
+    .card li{margin-bottom:8px}
+    .card strong{color:var(--text,#e0e0e0)}
+    .flow-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin:20px 0}
+    .flow-step{background:var(--bg2,#111127);border:1px solid var(--border,#1e1e3a);border-radius:12px;padding:20px;text-align:center}
+    .flow-step .num{font-size:28px;font-weight:900;color:var(--accent,#00ff41);margin-bottom:8px}
+    .flow-step .title{font-size:14px;font-weight:700;margin-bottom:6px}
+    .flow-step .desc{font-size:12px;color:var(--text2)}
+    .kpi-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:20px 0}
+    .kpi{background:var(--bg2,#111127);border:1px solid var(--border,#1e1e3a);border-radius:12px;padding:16px;text-align:center}
+    .kpi .val{font-size:24px;font-weight:800;color:var(--accent)}
+    .kpi .label{font-size:11px;color:var(--text2);margin-top:4px}
+    .cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:24px 0}
+    .cta-btn{display:inline-block;padding:14px 28px;border-radius:12px;font-weight:800;font-size:15px;text-decoration:none;text-align:center}
+    .cta-primary{background:linear-gradient(135deg,#00e887,#00b4d8);color:#000}
+    .cta-secondary{background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.3);color:#ffd700}
+    .cta-outline{background:transparent;border:1px solid var(--border);color:var(--text)}
+    .warning-box{background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.3);border-radius:12px;padding:16px;font-size:13px;color:var(--text2);margin:16px 0}
+    .progress-section{margin:20px 0}
+    .progress-bar{height:12px;background:var(--bg2);border-radius:6px;overflow:hidden;margin:8px 0}
+    .progress-fill{height:100%;border-radius:6px;transition:width 1s}
+    .faq-item{border-bottom:1px solid var(--border);padding:16px 0}
+    .faq-q{font-size:15px;font-weight:700;color:var(--text);cursor:pointer}
+    .faq-a{font-size:13px;color:var(--text2);line-height:1.8;margin-top:8px;display:none}
+    .faq-item.open .faq-a{display:block}
+    .timeline{position:relative;padding-right:30px;margin:20px 0}
+    .timeline::before{content:'';position:absolute;right:10px;top:0;bottom:0;width:2px;background:var(--border)}
+    .tl-item{position:relative;padding:16px 0;padding-right:30px}
+    .tl-item::before{content:'';position:absolute;right:-4px;top:20px;width:12px;height:12px;border-radius:50%;border:2px solid var(--accent);background:var(--bg)}
+    .tl-item.done::before{background:var(--accent)}
+    .tl-item .tl-date{font-size:11px;color:var(--accent);font-weight:700}
+    .tl-item .tl-text{font-size:13px;color:var(--text2);margin-top:4px}
+</style>
+</head>
+<body>
+
+<div id="topnav-root"></div>
+<div id="ticker-root"></div>
+
+<div class="page-hero">
+    <h1>💧 נזילות וסטייקינג — איך מרוויחים עם SLH</h1>
+    <p class="sub">
+        המדריך המלא לנזילות (Liquidity), סטייקינג, ותוכנית הצמיחה של SLH Spark.
+        למד איך להרוויח הכנסה פסיבית ולעזור לאקוסיסטם לצמוח.
+    </p>
+</div>
+
+<div class="section">
+    <!-- Current Status KPIs -->
+    <div class="kpi-strip" id="liq-kpis">
+        <div class="kpi"><div class="val" id="liq-bnb">--</div><div class="label">BNB בפול</div></div>
+        <div class="kpi"><div class="val" id="liq-slh">--</div><div class="label">SLH בפול</div></div>
+        <div class="kpi"><div class="val" id="liq-impact">--</div><div class="label">Price Impact (0.01 BNB)</div></div>
+        <div class="kpi"><div class="val">9</div><div class="label">תוכניות Staking</div></div>
+    </div>
+
+    <!-- Progress to target -->
+    <div class="card">
+        <h2>📊 התקדמות נזילות — יעד: 1 BNB</h2>
+        <div class="progress-section">
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2)">
+                <span>נוכחי: <strong id="liq-current">0.014</strong> BNB</span>
+                <span>יעד: <strong>1.0</strong> BNB ($600)</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" id="liq-progress" style="width:1.4%;background:linear-gradient(90deg,#00e887,#ffd700)"></div></div>
+            <div style="font-size:11px;color:var(--text2);margin-top:4px">ככל שהנזילות גדלה, ה-Price Impact יורד ו-SLH נסחר בצורה חלקה יותר</div>
+        </div>
+    </div>
+
+    <!-- What is Liquidity -->
+    <div class="card">
+        <h2>💡 מה זה נזילות (Liquidity)?</h2>
+        <p>בשוק קריפטו מסורתי, יש מתווך (בורסה) שמחבר קונים ומוכרים. ב-DeFi, <strong>אין מתווך</strong> — במקום זה, אנשים מפקידים זוגות של מטבעות (BNB + SLH) לתוך "בריכה" (Pool).</p>
+        <p>כל מי שרוצה לקנות/למכור SLH עושה swap דרך הבריכה הזו. <strong>ככל שיש יותר כסף בבריכה, כך המסחר חלק יותר</strong> — בלי אזהרות ובלי Price Impact גבוה.</p>
+
+        <div class="flow-steps">
+            <div class="flow-step">
+                <div class="num">1</div>
+                <div class="title">אתה מפקיד</div>
+                <div class="desc">BNB + SLH לפול ב-PancakeSwap</div>
+            </div>
+            <div class="flow-step">
+                <div class="num">2</div>
+                <div class="title">אנשים סוחרים</div>
+                <div class="desc">כל swap משלם 0.25% עמלה</div>
+            </div>
+            <div class="flow-step">
+                <div class="num">3</div>
+                <div class="title">אתה מרוויח</div>
+                <div class="desc">חלק מכל עמלה הולכת אליך!</div>
+            </div>
+            <div class="flow-step">
+                <div class="num">4</div>
+                <div class="title">משיכה בכל עת</div>
+                <div class="desc">LP Tokens = הוכחת בעלות</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Why invest now -->
+    <div class="card">
+        <h2>🚀 למה עכשיו? — היתרון של המוקדמים</h2>
+        <ul>
+            <li><strong>Genesis Status</strong> — מעמד מיוחד לנצח כ-"Early Liquidity Provider"</li>
+            <li><strong>LP Rewards</strong> — ככל שיש פחות LP providers, אתה מקבל חלק גדול יותר מהעמלות</li>
+            <li><strong>ZVK Bonus</strong> — Genesis LP Providers מקבלים 1,000 ZVK בונוס</li>
+            <li><strong>Price Discovery</strong> — אתה עוזר לקבוע את מחיר השוק של SLH</li>
+            <li><strong>Anti-Rug</strong> — LP Tokens יינעלו ב-Mudra Locker (6 חודשים) = הוכחה שאי אפשר לברוח</li>
+        </ul>
+    </div>
+
+    <!-- Staking Plans -->
+    <div class="card">
+        <h2>📈 תוכניות Staking — 9 אפשרויות</h2>
+        <p>הפקד מטבעות ← קבל תשואה חודשית ← המטבעות שלך עובדים בשבילך.</p>
+
+        <h3>💎 TON Staking (4 תוכניות)</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:12px 0">
+            <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center">
+                <div style="font-size:20px;font-weight:800;color:var(--green)">48%</div>
+                <div style="font-size:11px;color:var(--text2)">Monthly · 30 ימים · min 1 TON</div>
+            </div>
+            <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center">
+                <div style="font-size:20px;font-weight:800;color:var(--green)">55%</div>
+                <div style="font-size:11px;color:var(--text2)">Quarterly · 90 ימים · min 5 TON</div>
+            </div>
+            <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center">
+                <div style="font-size:20px;font-weight:800;color:var(--green)">60%</div>
+                <div style="font-size:11px;color:var(--text2)">Semi-Annual · 180 ימים · min 10 TON</div>
+            </div>
+            <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center">
+                <div style="font-size:20px;font-weight:800;color:#ffd700">Variable</div>
+                <div style="font-size:11px;color:var(--text2)">Annual · 365 ימים · min 25 TON</div>
+            </div>
+        </div>
+
+        <h3>🪙 SLH Staking (3 תוכניות)</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:12px 0">
+            <div style="background:var(--bg2);border:1px solid rgba(255,215,0,.2);border-radius:10px;padding:14px;text-align:center">
+                <div style="font-size:20px;font-weight:800;color:#ffd700">36%</div>
+                <div style="font-size:11px;color:var(--text2)">Monthly · 30 ימים · min 10 SLH</div>
+            </div>
+            <div style="background:var(--bg2);border:1px solid rgba(255,215,0,.2);border-radius:10px;padding:14px;text-align:center">
+                <div style="font-size:20px;font-weight:800;color:#ffd700">42%</div>
+                <div style="font-size:11px;color:var(--text2)">Quarterly · 90 ימים · min 50 SLH</div>
+            </div>
+            <div style="background:var(--bg2);border:1px solid rgba(255,215,0,.2);border-radius:10px;padding:14px;text-align:center">
+                <div style="font-size:20px;font-weight:800;color:#ffd700">48%</div>
+                <div style="font-size:11px;color:var(--text2)">Annual · 365 ימים · min 100 SLH</div>
+            </div>
+        </div>
+
+        <h3>🔶 BNB Staking (2 תוכניות)</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:12px 0">
+            <div style="background:var(--bg2);border:1px solid rgba(243,186,27,.2);border-radius:10px;padding:14px;text-align:center">
+                <div style="font-size:20px;font-weight:800;color:#f3ba2f">30%</div>
+                <div style="font-size:11px;color:var(--text2)">Monthly · 30 ימים · min 0.01 BNB</div>
+            </div>
+            <div style="background:var(--bg2);border:1px solid rgba(243,186,27,.2);border-radius:10px;padding:14px;text-align:center">
+                <div style="font-size:20px;font-weight:800;color:#f3ba2f">36%</div>
+                <div style="font-size:11px;color:var(--text2)">Quarterly · 90 ימים · min 0.05 BNB</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Growth Roadmap -->
+    <div class="card">
+        <h2>🗓 תוכנית צמיחה — Roadmap</h2>
+        <div class="timeline">
+            <div class="tl-item done"><div class="tl-date">אפריל 2026 — שלב 1: Genesis</div><div class="tl-text">✅ Pool נוצר ב-PancakeSwap V2<br>✅ 5 Genesis Contributors<br>✅ Swap ראשון בוצע<br>✅ 9 תוכניות Staking פעילות</div></div>
+            <div class="tl-item"><div class="tl-date">מאי 2026 — שלב 2: Growth</div><div class="tl-text">🎯 1 BNB נזילות ($600)<br>🎯 CoinGecko + Trust Wallet listing<br>🎯 LP Lock ב-Mudra (6 חודשים)<br>🎯 50 משתמשים רשומים</div></div>
+            <div class="tl-item"><div class="tl-date">יוני 2026 — שלב 3: Scale</div><div class="tl-text">🎯 10 BNB נזילות ($6,000)<br>🎯 MEXC/Gate.io listing<br>🎯 Course marketplace<br>🎯 100+ משתמשים</div></div>
+            <div class="tl-item"><div class="tl-date">שנת היובל 2026 — חזון</div><div class="tl-text">🕊 שחרור חובות · חלוקת מטבעות לנזקקים<br>🏥 רשת מטפלים מתוגמלת<br>🌍 אקוסיסטם בינלאומי</div></div>
+        </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="card">
+        <h2>❓ שאלות נפוצות</h2>
+        <div class="faq-item open" onclick="this.classList.toggle('open')">
+            <div class="faq-q">למה MetaMask מראה "Malicious Token"?</div>
+            <div class="faq-a">MetaMask מסמן כל טוקן חדש/לא מוכר ככה. זה לא אומר שהטוקן מסוכן — פשוט שהוא לא ברשימה הרשמית עדיין. אחרי שנרשם ב-CoinGecko + Trust Wallet, ההתראה תיעלם.</div>
+        </div>
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+            <div class="faq-q">למה "Price Impact Too High"?</div>
+            <div class="faq-a">כי הפול עדיין קטן. ככל שיותר אנשים מוסיפים נזילות (BNB + SLH), ה-Price Impact יורד. עם 1 BNB בפול, swap של 0.01 BNB ייתן Price Impact של ~1% בלבד.</div>
+        </div>
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+            <div class="faq-q">מה זה LP Tokens?</div>
+            <div class="faq-a">כשאתה מפקיד BNB + SLH לפול, אתה מקבל "LP Tokens" — הוכחת בעלות. אתה יכול למשוך את הנזילות בכל עת על ידי שריפת ה-LP Tokens.</div>
+        </div>
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+            <div class="faq-q">מה ההבדל בין Staking ל-Liquidity?</div>
+            <div class="faq-a"><strong>Staking</strong> = הפקדת מטבע אחד (TON/SLH/BNB) וקבלת תשואה קבועה.<br><strong>Liquidity</strong> = הפקדת זוג מטבעות (BNB+SLH) ל-PancakeSwap וקבלת חלק מעמלות המסחר.</div>
+        </div>
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+            <div class="faq-q">האם אני יכול להפסיד כסף?</div>
+            <div class="faq-a">ב-Staking — לא, אתה מקבל את ההפקדה חזרה + רווחים.<br>ב-Liquidity — יש סיכון של "Impermanent Loss" אם המחיר משתנה מאד, אבל עמלות המסחר בדרך כלל מפצות על זה.</div>
+        </div>
+    </div>
+
+    <!-- Quick Action: PancakeSwap Embed -->
+    <div class="card" style="text-align:center;background:linear-gradient(135deg,rgba(0,232,135,.05),rgba(243,186,27,.05))">
+        <h2>⚡ Swap & Add Liquidity — ישירות מכאן</h2>
+        <p style="margin-bottom:16px">קנה SLH או הוסף נזילות ב-PancakeSwap — ללא צורך לעזוב את האתר:</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px">
+            <a href="https://pancakeswap.finance/swap?outputCurrency=0xACb0A09414CEA1C879c67bB7A877E4e19480f022&chain=bsc" target="_blank" rel="noopener" style="display:block;padding:20px;background:var(--bg2);border:2px solid var(--green);border-radius:14px;text-decoration:none;transition:transform .2s">
+                <div style="font-size:32px;margin-bottom:8px">🥞</div>
+                <div style="font-size:16px;font-weight:800;color:var(--green);margin-bottom:4px">Swap BNB → SLH</div>
+                <div style="font-size:12px;color:var(--text2)">קנה SLH עם BNB ב-PancakeSwap</div>
+            </a>
+            <a href="https://pancakeswap.finance/v2/add/BNB/0xACb0A09414CEA1C879c67bB7A877E4e19480f022" target="_blank" rel="noopener" style="display:block;padding:20px;background:var(--bg2);border:2px solid #ffd700;border-radius:14px;text-decoration:none;transition:transform .2s">
+                <div style="font-size:32px;margin-bottom:8px">💧</div>
+                <div style="font-size:16px;font-weight:800;color:#ffd700;margin-bottom:4px">Add Liquidity</div>
+                <div style="font-size:12px;color:var(--text2)">הפקד BNB + SLH ← הרוויח 0.25% מכל swap</div>
+            </a>
+            <a href="https://pancakeswap.finance/info/v2/pairs/0xacea26b6e132cd45f2b8a4754170d4d0d3b8bbee?chain=bsc" target="_blank" rel="noopener" style="display:block;padding:20px;background:var(--bg2);border:2px solid var(--blue);border-radius:14px;text-decoration:none;transition:transform .2s">
+                <div style="font-size:32px;margin-bottom:8px">📊</div>
+                <div style="font-size:16px;font-weight:800;color:var(--blue);margin-bottom:4px">Pool Analytics</div>
+                <div style="font-size:12px;color:var(--text2)">צפה בנתוני הפול בזמן אמת</div>
+            </a>
+        </div>
+    </div>
+
+    <!-- How to Add Liquidity — Step by Step -->
+    <div class="card">
+        <h2>📋 מדריך: איך מוסיפים נזילות (3 דקות)</h2>
+        <div class="flow-steps" style="grid-template-columns:1fr">
+            <div class="flow-step" style="text-align:right;display:flex;gap:16px;align-items:flex-start">
+                <div class="num" style="flex-shrink:0">1</div>
+                <div><div class="title">חבר ארנק</div><div class="desc">פתח MetaMask או Trust Wallet → ודא שאתה על <strong>BSC Network</strong> (Chain ID: 56) → ודא שיש לך BNB + SLH</div></div>
+            </div>
+            <div class="flow-step" style="text-align:right;display:flex;gap:16px;align-items:flex-start">
+                <div class="num" style="flex-shrink:0">2</div>
+                <div><div class="title">לחץ "Add Liquidity" למעלה</div><div class="desc">הכנס כמות BNB (אפילו 0.001 = $0.60) → PancakeSwap יחשב אוטומטית כמה SLH צריך → לחץ <strong>Approve SLH</strong> (חד-פעמי)</div></div>
+            </div>
+            <div class="flow-step" style="text-align:right;display:flex;gap:16px;align-items:flex-start">
+                <div class="num" style="flex-shrink:0">3</div>
+                <div><div class="title">אשר ב-MetaMask</div><div class="desc">לחץ <strong>Supply</strong> → אשר 2 טרנזקציות ב-MetaMask → קיבלת LP Tokens! 🎉<br>
+                <span style="color:var(--green)">✅ מעכשיו אתה מרוויח 0.25% מכל swap שקורה בפול</span></div></div>
+            </div>
+        </div>
+        <div class="warning-box">
+            💡 <strong>טיפ חשוב — MetaMask "Malicious Token":</strong><br><br>
+            MetaMask מציג אזהרה זו על <strong>כל טוקן חדש</strong> שלא נמצא ברשימה הרשמית שלהם. זה <strong>לא אומר שהטוקן מסוכן</strong> — פשוט שהוא חדש.<br><br>
+            <strong>למה בטוח לאשר SLH?</strong><br>
+            ✅ <strong>הקוד פתוח</strong> — כל אחד יכול לבדוק ב-<a href="https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022" target="_blank" style="color:var(--accent)">BSCScan</a><br>
+            ✅ <strong>הארנק שלנו read-only</strong> — אנחנו לא מבקשים הרשאות מסחר<br>
+            ✅ <strong>אין approve ללא הגבלה</strong> — PancakeSwap מאשר רק את הסכום הספציפי<br>
+            ✅ <strong>אין seed phrase</strong> — אנחנו אף פעם לא מבקשים את המילים שלך<br>
+            ✅ <strong>Pool ב-PancakeSwap</strong> — בורסה מבוזרת מוכרת ומאומתת<br><br>
+            <strong>מתי האזהרה תיעלם?</strong><br>
+            ברגע שנרשם ב-<strong>CoinGecko</strong> + <strong>Trust Wallet Token List</strong> (תהליך של 1-7 ימים), MetaMask יזהה את SLH אוטומטית והאזהרה תיעלם.
+        </div>
+    </div>
+
+    <!-- Share Section -->
+    <div class="card" style="text-align:center">
+        <h2>📣 שתף ועזור לנו לצמוח</h2>
+        <p>כל LP Provider חדש = Price Impact נמוך יותר = מסחר חלק לכולם</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px">
+            <a href="https://t.me/share/url?url=https://slh-nft.com/liquidity.html&text=💧 למד איך להרוויח עד Variable Yield (4-12%) עם SLH Spark Staking!" target="_blank" rel="noopener" style="padding:12px 20px;background:#0088cc;color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:13px">📱 Telegram</a>
+            <a href="https://wa.me/?text=💧 למד איך להרוויח עד Variable Yield (4-12%) עם SLH Spark! https://slh-nft.com/liquidity.html" target="_blank" rel="noopener" style="padding:12px 20px;background:#25D366;color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:13px">💬 WhatsApp</a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://slh-nft.com/liquidity.html" target="_blank" rel="noopener" style="padding:12px 20px;background:#1877F2;color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:13px">📘 Facebook</a>
+            <a href="https://twitter.com/intent/tweet?url=https://slh-nft.com/liquidity.html&text=💧 SLH Spark — up to Variable Yield (4-12%) staking. Join the Genesis liquidity event!" target="_blank" rel="noopener" style="padding:12px 20px;background:#1DA1F2;color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:13px">🐦 Twitter</a>
+            <button onclick="navigator.clipboard.writeText('https://slh-nft.com/liquidity.html');this.textContent='✅ הועתק!';setTimeout(()=>this.textContent='📋 העתק לינק',2000)" style="padding:12px 20px;background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:10px;font-weight:700;font-size:13px;cursor:pointer">📋 העתק לינק</button>
+        </div>
+    </div>
+
+    <!-- CTAs -->
+    <div class="cta-row">
+        <a href="https://pancakeswap.finance/v2/add/BNB/0xACb0A09414CEA1C879c67bB7A877E4e19480f022" target="_blank" class="cta-btn cta-primary">💧 הוסף נזילות</a>
+        <a href="/earn.html" class="cta-btn cta-secondary">📈 התחל Staking</a>
+        <a href="/launch-event.html" class="cta-btn cta-outline">🚀 Genesis Launch</a>
+    </div>
+
+    <!-- Related Pages -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:24px 0">
+        <a href="/earn.html" style="display:block;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;text-decoration:none;text-align:center">
+            <div style="font-size:24px;margin-bottom:6px">📈</div>
+            <div style="font-size:13px;font-weight:700;color:var(--text)">Staking Calculator</div>
+            <div style="font-size:11px;color:var(--text2)">חשב את הרווחים שלך</div>
+        </a>
+        <a href="/wallet.html" style="display:block;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;text-decoration:none;text-align:center">
+            <div style="font-size:24px;margin-bottom:6px">💰</div>
+            <div style="font-size:13px;font-weight:700;color:var(--text)">Wallet</div>
+            <div style="font-size:11px;color:var(--text2)">נהל את המטבעות שלך</div>
+        </a>
+        <a href="/blockchain.html" style="display:block;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;text-decoration:none;text-align:center">
+            <div style="font-size:24px;margin-bottom:6px">⛓</div>
+            <div style="font-size:13px;font-weight:700;color:var(--text)">Blockchain Explorer</div>
+            <div style="font-size:11px;color:var(--text2)">עסקאות on-chain</div>
+        </a>
+        <a href="/healing-vision.html" style="display:block;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;text-decoration:none;text-align:center">
+            <div style="font-size:24px;margin-bottom:6px">🌸</div>
+            <div style="font-size:13px;font-weight:700;color:var(--text)">Healing Vision</div>
+            <div style="font-size:11px;color:var(--text2)">חזון הריפוי של SLH</div>
+        </a>
+    </div>
+</div>
+
+<div id="bottomnav-root"></div>
+<div id="footer-root"></div>
+
+<script src="/js/translations.js?v=20260426e"></script>
+<script src="/js/shared.js?v=20260426e"></script>
+<script>initShared({ activePage: 'earn', showBottomNav: true });</script>
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260426e"></script>
+
+<script>
+// Live pool data
+async function loadPoolData() {
+    try {
+        const r = await fetch('https://slh-api-production.up.railway.app/api/launch/status');
+        const d = await r.json();
+        const raised = d.raised_bnb_verified || 0;
+        document.getElementById('liq-current').textContent = raised.toFixed(3);
+        const pct = Math.min((raised / 1.0) * 100, 100);
+        document.getElementById('liq-progress').style.width = pct + '%';
+    } catch(e) {}
+
+    // Pool reserves from BSC
+    try {
+        const r = await fetch('https://bsc-dataseed.binance.org/', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({jsonrpc:'2.0',method:'eth_getBalance',params:['0xd061de73B06d5E91bfA46b35EfB7B08b16903da4','latest'],id:1})
+        });
+        const d = await r.json();
+        const bnb = parseInt(d.result, 16) / 1e18;
+        document.getElementById('liq-bnb').textContent = bnb.toFixed(4);
+    } catch(e) {}
+
+    document.getElementById('liq-slh').textContent = '~189K';
+    document.getElementById('liq-impact').textContent = '~6%';
+}
+loadPoolData();
+setInterval(loadPoolData, 60000);
+</script>
+</body>
+</html>

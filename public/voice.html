@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH Voice — מרכזייה חכמה (Phase 2 Vision)</title>
+<meta name="description" content="SLH Voice — מרכזיה וירטואלית מבוססת AI עם תשלום בשקלים וב-SLH. בשלב תכנון, Phase 2 של roadmap.">
+<meta name="keywords" content="SLH Voice, IVR, מרכזיה חכמה, AI, ימות המשיח, פרסומפון">
+<link rel="canonical" href="https://slh-nft.com/voice.html">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="SLH Voice — Smart IVR + AI (Phase 2)">
+<meta property="og:description" content="מרכזיה חכמה לעסקים עם AI intent recognition, תשלום ב-ILS/SLH, self-service. Phase 2 vision.">
+<meta property="og:image" content="https://slh-nft.com/assets/og/network.png">
+<meta property="og:url" content="https://slh-nft.com/voice.html">
+<meta property="og:locale" content="he_IL">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SLH Voice — Smart IVR + AI (Phase 2)">
+<meta name="twitter:description" content="Modern IVR with AI + crypto-native billing. Phase 2 vision.">
+<meta name="twitter:image" content="https://slh-nft.com/assets/og/network.png">
+
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/shared.css?v=20260421a">
+
+<style>
+  :root {
+    --bg: #0a0f1c;
+    --bg2: #0f1624;
+    --bg3: #162338;
+    --accent: #00b4d8;
+    --accent2: #5ba3ff;
+    --gold: #ffd700;
+    --green: #00e887;
+    --orange: #ff9800;
+    --text: #e8f4ff;
+    --text2: #9cb8d6;
+    --text3: #6c7d94;
+    --border: rgba(0, 180, 216, 0.28);
+  }
+  body {
+    background: radial-gradient(circle at 20% 10%, rgba(0, 180, 216, 0.08), transparent 60%),
+                radial-gradient(circle at 80% 80%, rgba(91, 163, 255, 0.06), transparent 60%),
+                var(--bg);
+    color: var(--text);
+    font-family: 'Assistant', system-ui, sans-serif;
+    line-height: 1.7;
+  }
+  .phase-banner {
+    max-width: 1100px;
+    margin: 80px auto 0;
+    padding: 14px 20px;
+    background: linear-gradient(135deg, rgba(255,152,0,.10), rgba(255,215,0,.05));
+    border: 1px solid rgba(255,152,0,.35);
+    border-radius: 14px;
+    font-size: 14px;
+    text-align: center;
+    color: var(--orange);
+    font-weight: 700;
+  }
+  .phase-banner strong { color: var(--gold); }
+  .hero {
+    max-width: 1100px;
+    margin: 24px auto 36px;
+    padding: 30px 20px;
+    text-align: center;
+  }
+  .hero .badge {
+    display: inline-block;
+    padding: 6px 16px;
+    background: rgba(0, 180, 216, 0.14);
+    color: var(--accent);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 18px;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: clamp(34px, 5.5vw, 54px);
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 14px;
+    line-height: 1.2;
+  }
+  .hero .tagline {
+    font-size: 18px;
+    color: var(--text);
+    max-width: 720px;
+    margin: 0 auto 8px;
+  }
+  .hero .sub {
+    font-size: 14px;
+    color: var(--text3);
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .section {
+    max-width: 1100px;
+    margin: 0 auto 48px;
+    padding: 0 20px;
+  }
+  .section h2 {
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 800;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  .section h2 .gradient {
+    background: linear-gradient(135deg, var(--accent), var(--green));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Problem table */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .compare-table th, .compare-table td {
+    padding: 14px 16px;
+    text-align: right;
+    border-bottom: 1px solid rgba(255,255,255,.05);
+    font-size: 14px;
+  }
+  .compare-table th {
+    background: var(--bg3);
+    color: var(--accent);
+    font-weight: 800;
+    font-size: 13px;
+  }
+  .compare-table td.ok { color: var(--green); font-weight: 700; }
+  .compare-table td.no { color: #ff6b6b; font-weight: 700; }
+  .compare-table tr:last-child td { border-bottom: none; }
+
+  /* Value cards */
+  .values {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+  }
+  .value-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 18px;
+    text-align: center;
+    transition: transform .25s, border-color .25s;
+  }
+  .value-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+  }
+  .value-card .ic { font-size: 36px; margin-bottom: 10px; color: var(--accent); }
+  .value-card .ttl { font-size: 15px; font-weight: 800; margin-bottom: 6px; color: var(--accent2); }
+  .value-card .dsc { font-size: 13px; color: var(--text2); }
+
+  /* Pricing preview (future) */
+  .pricing {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  .tier {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 18px;
+    text-align: center;
+    position: relative;
+  }
+  .tier.pro { border-color: var(--gold); background: linear-gradient(180deg, rgba(255,215,0,.06), transparent); }
+  .tier .name { font-size: 13px; color: var(--text3); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; }
+  .tier .price { font-size: 32px; font-weight: 900; color: var(--text); margin-bottom: 4px; }
+  .tier .price small { font-size: 13px; color: var(--text2); font-weight: 500; }
+  .tier .feat { font-size: 12px; color: var(--text2); margin-top: 12px; line-height: 1.9; text-align: right; padding-inline-start: 12px; }
+  .tier .feat li { list-style: none; padding-right: 18px; position: relative; }
+  .tier .feat li::before { content: "✓"; color: var(--green); position: absolute; right: 0; font-weight: 900; }
+  .tier .tag {
+    position: absolute; top: -10px; inset-inline-end: 14px;
+    background: var(--gold); color: #000;
+    padding: 3px 10px; border-radius: 8px; font-size: 11px; font-weight: 900;
+  }
+
+  /* Form */
+  .lead-card {
+    background: var(--bg2);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    padding: 32px 24px;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+  .lead-card h3 { font-size: 20px; color: var(--accent); margin-bottom: 14px; }
+  .lead-card label { display: block; font-size: 13px; color: var(--text2); margin-top: 12px; margin-bottom: 4px; font-weight: 700; }
+  .lead-card input, .lead-card select, .lead-card textarea {
+    width: 100%;
+    background: var(--bg3);
+    color: var(--text);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-family: inherit;
+    font-size: 14px;
+  }
+  .lead-card input:focus, .lead-card select:focus, .lead-card textarea:focus {
+    outline: none; border-color: var(--accent);
+  }
+  .lead-card textarea { min-height: 80px; resize: vertical; }
+  .lead-card .btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 13px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    margin-top: 18px;
+    font-family: inherit;
+  }
+  .lead-card .btn:hover { filter: brightness(1.1); }
+  .lead-card .result { margin-top: 14px; padding: 10px 14px; border-radius: 10px; font-size: 14px; display: none; }
+  .lead-card .result.ok { display: block; background: rgba(0,232,135,.10); color: var(--green); border: 1px solid rgba(0,232,135,.3); }
+  .lead-card .result.err { display: block; background: rgba(255,107,107,.10); color: #ff6b6b; border: 1px solid rgba(255,107,107,.3); }
+
+  .disclaimer {
+    max-width: 900px;
+    margin: 40px auto 24px;
+    padding: 20px 22px;
+    background: rgba(255,152,0,.06);
+    border: 1px solid rgba(255,152,0,.25);
+    border-radius: 12px;
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.8;
+  }
+  .disclaimer strong { color: var(--orange); }
+</style>
+</head>
+<body>
+
+<div id="topnav-root"></div>
+<div id="ticker-root"></div>
+
+<div class="phase-banner">
+  🚧 <strong>SLH Voice</strong> · שלב תכנון — Phase 2 ב-Roadmap · השירות טרם זמין מסחרית ·
+  <a href="/roadmap.html" style="color:var(--accent);text-decoration:underline">פרטי roadmap</a>
+</div>
+
+<section class="hero">
+  <span class="badge">📞 Voice + AI + Crypto</span>
+  <h1>SLH Voice — מרכזייה חכמה מהדור הבא</h1>
+  <p class="tagline">
+    מרכזייה וירטואלית לעסקים ועמותות עם AI Intent Recognition, תמיכה ב-5 שפות,
+    תשלום בשקלים וב-SLH, וממשק ניהול self-service.
+  </p>
+  <p class="sub">
+    פרויקט תכנון — חלק מ-Roadmap Phase 3/4. טרם זמין כשירות מסחרי.
+    פרטים מלאים ב-<a href="/roadmap.html" style="color:var(--accent)">roadmap.html</a>.
+  </p>
+</section>
+
+<section class="section">
+  <h2>מה אנחנו בונים · <span class="gradient">Vision</span></h2>
+  <div class="values">
+    <div class="value-card">
+      <div class="ic"><i class="fas fa-brain"></i></div>
+      <div class="ttl">AI Intent Recognition</div>
+      <div class="dsc">זיהוי כוונה בזמן המתנה (Groq → Gemini → Together → OpenAI fallback)</div>
+    </div>
+    <div class="value-card">
+      <div class="ic"><i class="fas fa-globe"></i></div>
+      <div class="ttl">5 שפות ניטיבי</div>
+      <div class="dsc">עברית · ערבית · אנגלית · רוסית · צרפתית — בלי תרגום מכונה</div>
+    </div>
+    <div class="value-card">
+      <div class="ic"><i class="fas fa-chart-line"></i></div>
+      <div class="ttl">Analytics בזמן אמת</div>
+      <div class="dsc">CDR, abandonment, duration, heat-map — דשבורד חי</div>
+    </div>
+    <div class="value-card">
+      <div class="ic"><i class="fas fa-coins"></i></div>
+      <div class="ttl">תשלום Hybrid</div>
+      <div class="dsc">חשבונית ב-ILS + bonus ZVK · pay-per-minute גמיש</div>
+    </div>
+    <div class="value-card">
+      <div class="ic"><i class="fab fa-whatsapp"></i></div>
+      <div class="ttl">WhatsApp Summary</div>
+      <div class="dsc">תמליל + קישור לפרטים אחרי שיחה</div>
+    </div>
+    <div class="value-card">
+      <div class="ic"><i class="fas fa-cubes"></i></div>
+      <div class="ttl">No-Code Builder</div>
+      <div class="dsc">בנה IVR flow בדראג-דרופ · ללא מפתח</div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2>השוואת חזון · <span class="gradient">SLH Voice</span> מול שוק קיים</h2>
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th>יכולת</th>
+        <th>שוק קיים (למשל ימות המשיח)</th>
+        <th>SLH Voice (תכנון)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>מרכזייה וירטואלית בסיסית</td>
+        <td class="ok">✅ יש</td>
+        <td class="ok">✅ מתוכנן</td>
+      </tr>
+      <tr>
+        <td>רישיון משרד התקשורת</td>
+        <td class="ok">✅ יש מקומי</td>
+        <td class="no">⚠️ שימוש בספק עם רישיון (Twilio/Plivo)</td>
+      </tr>
+      <tr>
+        <td>AI Intent Recognition</td>
+        <td class="no">❌ אין</td>
+        <td class="ok">✅ מתוכנן (multi-provider)</td>
+      </tr>
+      <tr>
+        <td>אנליטיקות בזמן אמת</td>
+        <td class="no">⚠️ בסיסי</td>
+        <td class="ok">✅ dashboard חי</td>
+      </tr>
+      <tr>
+        <td>API ציבורי</td>
+        <td class="no">❌ אין</td>
+        <td class="ok">✅ REST + webhooks</td>
+      </tr>
+      <tr>
+        <td>Self-Service UI</td>
+        <td class="no">❌ מוגבל</td>
+        <td class="ok">✅ no-code builder</td>
+      </tr>
+      <tr>
+        <td>Multi-language ניטיבי</td>
+        <td class="no">⚠️ עברית בעיקר</td>
+        <td class="ok">✅ 5 שפות</td>
+      </tr>
+      <tr>
+        <td>תשלום בקריפטו + ZVK rewards</td>
+        <td class="no">❌ אין</td>
+        <td class="ok">✅ ייחודי ל-SLH</td>
+      </tr>
+      <tr>
+        <td>השגחה רבנית (שוק חרדי)</td>
+        <td class="ok">✅ מוכר 20 שנה</td>
+        <td class="no">❌ לא בשלב הראשון</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section">
+  <h2>תמחור חזוי · <span class="gradient">Pricing</span></h2>
+  <div class="pricing">
+    <div class="tier">
+      <div class="name">Free</div>
+      <div class="price">₪0<small>/חודש</small></div>
+      <ul class="feat">
+        <li>100 דקות/חודש</li>
+        <li>מספר 072 משותף</li>
+        <li>IVR בסיסי</li>
+        <li>Analytics מוגבל</li>
+      </ul>
+    </div>
+    <div class="tier pro">
+      <div class="tag">POPULAR</div>
+      <div class="name">Pro</div>
+      <div class="price">₪99<small>/חודש</small></div>
+      <ul class="feat">
+        <li>500 דקות כלולות</li>
+        <li>₪0.05/דקה מעבר</li>
+        <li>מספר ייעודי 072/03</li>
+        <li>AI intent + WhatsApp</li>
+        <li>10% cashback ZVK</li>
+      </ul>
+    </div>
+    <div class="tier">
+      <div class="name">Business</div>
+      <div class="price">₪499<small>/חודש</small></div>
+      <ul class="feat">
+        <li>3,000 דקות כלולות</li>
+        <li>3 מספרים</li>
+        <li>No-code builder מלא</li>
+        <li>API + webhooks</li>
+        <li>תמיכה 24/7</li>
+      </ul>
+    </div>
+    <div class="tier">
+      <div class="name">Enterprise</div>
+      <div class="price">Custom</div>
+      <ul class="feat">
+        <li>דקות unlimited</li>
+        <li>מספרים לבחירה</li>
+        <li>SLA 99.95%</li>
+        <li>Dedicated manager</li>
+        <li>On-prem אופציה</li>
+      </ul>
+    </div>
+  </div>
+  <p style="text-align:center;color:var(--text3);font-size:12px;margin-top:14px">
+    המחירים הם תחזית בלבד לפאזה 3. לא הצעה מחייבת, לא להזמנה.
+  </p>
+</section>
+
+<section class="section">
+  <h2>הצטרפו לרשימת ההמתנה · <span class="gradient">Beta Waitlist</span></h2>
+  <div class="lead-card">
+    <h3><i class="fas fa-bell"></i> אשמח לדעת כשהשירות זמין</h3>
+    <p style="color:var(--text2);font-size:13px">
+      מעוניינים בעדכונים על SLH Voice? השאירו פרטים — נעדכן אתכם כשמתקדמים ל-Phase 2/3.
+      ללא התחייבות, ללא חיוב.
+    </p>
+
+    <label>שם מלא / שם עסק *</label>
+    <input id="voice-name" type="text" placeholder="דוגמה: עמותת XYZ / יוסי כהן">
+
+    <label>אימייל *</label>
+    <input id="voice-email" type="email" placeholder="you@example.com">
+
+    <label>טלפון (אופציונלי)</label>
+    <input id="voice-phone" type="tel" placeholder="050-1234567">
+
+    <label>סוג עסק / שימוש</label>
+    <select id="voice-type">
+      <option value="smb">עסק קטן / בינוני</option>
+      <option value="ngo">עמותה</option>
+      <option value="edu">חינוך / בית ספר / ישיבה</option>
+      <option value="municipality">עירייה / ציבורי</option>
+      <option value="ecommerce">אקומרס</option>
+      <option value="agency">סוכנות / משרד</option>
+      <option value="other">אחר</option>
+    </select>
+
+    <label>איזה יכולות הכי מעניינות אותך?</label>
+    <textarea id="voice-needs" placeholder="לדוגמה: IVR רב-לשוני, analytics, AI בהמתנה, הקלטות..."></textarea>
+
+    <button class="btn" onclick="submitVoiceLead()">
+      <i class="fas fa-paper-plane"></i> שלח — הצטרף לרשימת המתנה
+    </button>
+    <div class="result" id="voice-result"></div>
+  </div>
+</section>
+
+<div class="disclaimer">
+  <strong>⚠️ גילוי נאות:</strong> SLH Voice הוא <strong>פרויקט בשלב תכנון</strong>, חלק מ-Phase 3
+  ב-Roadmap של SLH. השירות <strong>אינו זמין מסחרית</strong> בעת פרסום דף זה. אין התחייבות למועד השקה.
+  המחירים, היכולות והתאריכים הם תחזית עבודה בלבד. רישום לרשימת ההמתנה אינו מקים חיוב או זכות.
+  המסמך התחרותי המלא (vs. ימות המשיח) זמין פנימית:
+  <code>ops/VOICE_STACK_COMPETITIVE_20260424.md</code>.
+</div>
+
+<div id="bottomnav-root"></div>
+<div id="footer-root"></div>
+
+<script src="/js/translations.js?v=20260421a"></script>
+<script src="/js/shared.js?v=20260424a"></script>
+<script>
+initShared({ activePage: 'voice', showBottomNav: true, showTicker: true });
+
+async function submitVoiceLead() {
+  const name = document.getElementById('voice-name').value.trim();
+  const email = document.getElementById('voice-email').value.trim();
+  const phone = document.getElementById('voice-phone').value.trim();
+  const btype = document.getElementById('voice-type').value;
+  const needs = document.getElementById('voice-needs').value.trim();
+  const result = document.getElementById('voice-result');
+
+  if (!name || !email) {
+    result.className = 'result err';
+    result.textContent = 'שם ואימייל חובה';
+    return;
+  }
+
+  const lead = {
+    product: 'SLH Voice',
+    name, email, phone, business_type: btype, needs,
+    submitted_at: new Date().toISOString()
+  };
+
+  try {
+    const existing = JSON.parse(localStorage.getItem('slh_voice_leads') || '[]');
+    existing.push(lead);
+    localStorage.setItem('slh_voice_leads', JSON.stringify(existing));
+
+    await fetch('https://slh-api-production.up.railway.app/api/community/posts', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        username: 'VoiceLead:' + name,
+        text: `📞 SLH Voice Waitlist: ${name} | ${btype} | ${email}${phone ? ' | ' + phone : ''}${needs ? ' | needs: ' + needs : ''}`,
+        category: 'general',
+        telegram_id: null
+      })
+    });
+
+    result.className = 'result ok';
+    result.innerHTML = '✅ נרשמת לרשימת ההמתנה. נעדכן אותך כשיש התקדמות משמעותית.';
+
+    document.getElementById('voice-name').value = '';
+    document.getElementById('voice-email').value = '';
+    document.getElementById('voice-phone').value = '';
+    document.getElementById('voice-needs').value = '';
+  } catch(e) {
+    result.className = 'result err';
+    result.textContent = '❌ שגיאה: ' + e.message;
+  }
+}
+</script>
+
+<button id="theme-fab" onclick="document.getElementById('theme-panel').classList.toggle('open')" title="Theme">🎨</button>
+<div id="theme-panel">
+  <div style="font-size:11px;color:var(--text2,#8a8aa0);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">ערכת צבעים</div>
+  <button onclick="document.documentElement.removeAttribute('data-theme');localStorage.setItem('slh_page_theme','default');document.getElementById('theme-panel').classList.remove('open')">🟢 Default</button>
+  <button onclick="document.documentElement.setAttribute('data-theme','dark');localStorage.setItem('slh_page_theme','dark');document.getElementById('theme-panel').classList.remove('open')">🌙 Dark</button>
+  <button onclick="document.documentElement.setAttribute('data-theme','light');localStorage.setItem('slh_page_theme','light');document.getElementById('theme-panel').classList.remove('open')">☀️ Light</button>
+  <button onclick="document.documentElement.setAttribute('data-theme','crypto');localStorage.setItem('slh_page_theme','crypto');document.getElementById('theme-panel').classList.remove('open')">₿ Crypto</button>
+  <button onclick="document.documentElement.setAttribute('data-theme','ocean');localStorage.setItem('slh_page_theme','ocean');document.getElementById('theme-panel').classList.remove('open')">🌊 Ocean</button>
+  <button onclick="document.documentElement.setAttribute('data-theme','sunset');localStorage.setItem('slh_page_theme','sunset');document.getElementById('theme-panel').classList.remove('open')">🌅 Sunset</button>
+</div>
+<script>
+(function(){var t=localStorage.getItem('slh_page_theme');if(t&&t!=='default')document.documentElement.setAttribute('data-theme',t);document.addEventListener('click',function(e){var p=document.getElementById('theme-panel'),f=document.getElementById('theme-fab');if(p&&f&&!p.contains(e.target)&&!f.contains(e.target))p.classList.remove('open');});})();
+</script>
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260421a"></script>
+</body>
+</html>

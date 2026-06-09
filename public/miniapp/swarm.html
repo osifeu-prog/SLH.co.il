@@ -1,0 +1,193 @@
+﻿<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>SLH Swarm — רשת המכשירים שלי</title>
+<link rel="stylesheet" href="miniapp.css" />
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
+  .stat-tile { background: var(--tg-card); border-radius: 10px; padding: 12px; text-align: center; }
+  .stat-tile .n { font-size: 24px; font-weight: 700; color: var(--tg-fg); }
+  .stat-tile .l { font-size: 11px; color: var(--tg-hint); margin-top: 2px; }
+  .stat-tile.online .n { color: var(--slh-success); }
+  .stat-tile.pending .n { color: var(--slh-warn); }
+  .device-row { display: flex; align-items: center; gap: 12px; padding: 14px; background: var(--tg-card); border-radius: 10px; margin-bottom: 8px; }
+  .device-row .dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; background: var(--tg-hint); }
+  .device-row .dot.online { background: var(--slh-success); box-shadow: 0 0 8px var(--slh-success); animation: pulse 2s infinite; }
+  .device-row .dot.offline { background: var(--tg-destructive); }
+  .device-row .info { flex: 1; min-width: 0; }
+  .device-row .id { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--tg-fg); overflow: hidden; text-overflow: ellipsis; }
+  .device-row .meta { font-size: 11px; color: var(--tg-hint); margin-top: 2px; }
+  .device-row .battery { font-size: 12px; font-weight: 600; min-width: 40px; text-align: left; }
+  .device-row .battery.low { color: var(--tg-destructive); }
+  .device-row .battery.ok { color: var(--slh-success); }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--tg-hint); }
+  .empty-state h3 { color: var(--tg-fg); margin-bottom: 8px; font-size: 18px; }
+  .empty-state code { background: var(--tg-card); padding: 2px 8px; border-radius: 4px; font-size: 12px; color: var(--tg-accent); display: inline-block; margin-top: 8px; word-break: break-all; }
+  .cmd-form { display: flex; gap: 8px; margin-top: 8px; }
+  .cmd-form input { flex: 1; background: var(--tg-bg); color: var(--tg-fg); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px 12px; font-family: inherit; font-size: 13px; }
+  .cmd-form button { background: var(--tg-button); color: var(--tg-button-text); border: none; border-radius: 8px; padding: 10px 16px; font-weight: 600; cursor: pointer; font-family: inherit; font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <h1>🐝 רשת SLH Swarm</h1>
+    <div class="user" id="user-greeting">—</div>
+  </header>
+
+  <nav class="nav">
+    <a href="dashboard.html">סקירה</a>
+    <a href="wallet.html">ארנק</a>
+    <a href="device.html">מכשיר</a>
+    <a href="swarm.html" class="active">Swarm</a>
+  </nav>
+
+  <section class="card">
+    <h2>סטטוס רשת</h2>
+    <div class="stats-row" id="stats">
+      <div class="stat-tile"><div class="n">—</div><div class="l">סה"כ</div></div>
+      <div class="stat-tile online"><div class="n">—</div><div class="l">online</div></div>
+      <div class="stat-tile"><div class="n">—</div><div class="l">events 24h</div></div>
+      <div class="stat-tile pending"><div class="n">—</div><div class="l">commands</div></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>המכשירים שלי</h2>
+    <div id="devices"><div class="placeholder">טוען...</div></div>
+  </section>
+
+  <section class="card" id="cmd-section" style="display:none">
+    <h2>שלח פקודה לכל הרשת</h2>
+    <div class="cmd-form">
+      <input type="text" id="cmd-input" placeholder='לדוגמה: ping / show "מזל טוב!" / refresh' />
+      <button id="cmd-send">שלח</button>
+    </div>
+    <div class="result-line" id="cmd-result" style="font-size:12px;color:var(--tg-hint);margin-top:8px"></div>
+  </section>
+
+  <section class="card">
+    <h2>איך זה עובד</h2>
+    <div style="font-size:13px;color:var(--tg-hint);line-height:1.6">
+      <strong style="color:var(--tg-fg)">ESP-NOW mesh</strong> — המכשירים מדברים ביניהם ברדיו 2.4GHz בלי ראוטר, עד 250m line-of-sight.<br>
+      <strong style="color:var(--tg-fg)">Phone Relay</strong> — אם מישהו בקרבת מקום מחזיק את האפליקציה פתוחה, הטלפון משמש relay לאינטרנט.<br>
+      <strong style="color:var(--tg-fg)">Self-healing</strong> — אם צומת נופל, השאר מסתדרים אוטומטית.<br>
+      <strong style="color:var(--tg-fg)">Off-grid ready</strong> — Phase 3 יוסיף LoRa לטווח 10km בלי שום תשתית.
+    </div>
+  </section>
+</div>
+
+<script src="miniapp.js"></script>
+<script>
+(async function () {
+  const slh = window.SLH_init({ title: "SLH Swarm" });
+  const statsEl = document.getElementById('stats');
+  const devicesEl = document.getElementById('devices');
+  const cmdSection = document.getElementById('cmd-section');
+  const cmdInput = document.getElementById('cmd-input');
+  const cmdBtn = document.getElementById('cmd-send');
+  const cmdResult = document.getElementById('cmd-result');
+
+  function timeAgo(iso) {
+    if (!iso) return '—';
+    const sec = Math.round((Date.now() - new Date(iso).getTime()) / 1000);
+    if (sec < 60) return 'לפני ' + sec + ' שנ׳';
+    if (sec < 3600) return 'לפני ' + Math.floor(sec / 60) + ' דק׳';
+    if (sec < 86400) return 'לפני ' + Math.floor(sec / 3600) + ' ש׳';
+    return 'לפני ' + Math.floor(sec / 86400) + ' ימים';
+  }
+
+  function renderStats(s) {
+    statsEl.innerHTML = `
+      <div class="stat-tile"><div class="n">${s.total_devices}</div><div class="l">סה"כ</div></div>
+      <div class="stat-tile online"><div class="n">${s.online}</div><div class="l">online</div></div>
+      <div class="stat-tile"><div class="n">${s.events_24h}</div><div class="l">events 24h</div></div>
+      <div class="stat-tile pending"><div class="n">${s.pending_commands}</div><div class="l">commands</div></div>
+    `;
+  }
+
+  function renderDevices(list) {
+    if (!list || list.length === 0) {
+      devicesEl.innerHTML = `
+        <div class="empty-state">
+          <h3>אין עדיין מכשירים ברשת</h3>
+          <div>אחרי שתבעיר את ה-firmware עם תמיכת ESP-NOW, המכשיר יבצע <code>POST /api/swarm/devices/register</code> אוטומטית בעלייה ראשונה.</div>
+        </div>`;
+      cmdSection.style.display = 'none';
+      return;
+    }
+    devicesEl.innerHTML = list.map(d => {
+      const online = d.online;
+      const battery = d.last_battery_pct;
+      const batClass = battery == null ? '' : (battery < 20 ? 'low' : 'ok');
+      return `
+        <div class="device-row">
+          <div class="dot ${online ? 'online' : 'offline'}"></div>
+          <div class="info">
+            <div class="id">${d.device_id}</div>
+            <div class="meta">${d.device_type || '—'} · ${timeAgo(d.last_heartbeat)} · RSSI ${d.last_rssi != null ? d.last_rssi + ' dBm' : '—'}</div>
+          </div>
+          <div class="battery ${batClass}">${battery != null ? battery + '%' : '—'}</div>
+        </div>
+      `;
+    }).join('');
+    cmdSection.style.display = 'block';
+  }
+
+  async function refresh() {
+    try {
+      const [stats, devices] = await Promise.all([
+        slh.api('/api/swarm/stats'),
+        slh.api('/api/swarm/devices?limit=20'),
+      ]);
+      renderStats(stats);
+      renderDevices(devices.devices || []);
+    } catch (e) {
+      slh.renderErr(devicesEl, e);
+    }
+  }
+
+  cmdBtn.addEventListener('click', async () => {
+    const cmd = (cmdInput.value || '').trim();
+    if (!cmd) return;
+    cmdResult.textContent = 'שולח...';
+    try {
+      // For each device, queue the same command
+      const devices = await slh.api('/api/swarm/devices?limit=20');
+      const list = (devices.devices || []).filter(d => d.online);
+      if (list.length === 0) {
+        cmdResult.textContent = 'אין מכשירים online כרגע — הפקודה לא נשלחה.';
+        return;
+      }
+      // Naive command parser: "show <text>" / "ping" / "refresh"
+      let cmdType = 'ping';
+      let payload = {};
+      if (cmd.startsWith('show ')) { cmdType = 'show_message'; payload = { text: cmd.slice(5) }; }
+      else if (cmd === 'refresh') { cmdType = 'refresh_balances'; }
+      else if (cmd === 'ping') { cmdType = 'ping'; }
+      else { cmdType = 'show_message'; payload = { text: cmd }; }
+
+      const results = await Promise.allSettled(list.map(d =>
+        slh.api('/api/swarm/commands/queue', {
+          method: 'POST',
+          body: { target_device: d.device_id, command_type: cmdType, payload, ttl_seconds: 300 },
+        })
+      ));
+      const ok = results.filter(r => r.status === 'fulfilled').length;
+      cmdResult.textContent = `נשלח ל-${ok}/${list.length} מכשירים. הפקודה תועבר בpolling הבא (15 שנ׳).`;
+      cmdInput.value = '';
+    } catch (e) {
+      cmdResult.textContent = 'שגיאה: ' + e.message;
+    }
+  });
+
+  refresh();
+  setInterval(refresh, 15000);  // 15s — same as ESP heartbeat cadence
+})();
+</script>
+</body>
+</html>

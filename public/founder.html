@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="he" dir="rtl" data-theme="neural">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SLH · Founder Control</title>
+<link rel="icon" href="/assets/logo/favicon.svg">
+<link rel="stylesheet" href="/css/shared.css">
+<link rel="stylesheet" href="/css/slh-neural.css">
+<style>
+  :root { color-scheme: dark; }
+  body { margin: 0; font-family: 'Heebo', 'Inter', system-ui, sans-serif; background: var(--bg, #03060f); color: var(--text, #e7f1ff); min-height: 100vh; }
+  .neural-bg { position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(94,214,255,.12), transparent 60%),
+      radial-gradient(ellipse 60% 50% at 80% 90%, rgba(177,139,255,.10), transparent 60%),
+      #03060f; }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 24px 20px 80px; }
+  header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+  h1 { margin: 0; font-size: 26px; letter-spacing: -.5px; }
+  h1 .accent { background: linear-gradient(90deg, #5ed6ff, #b18bff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .meta { font-size: 12px; color: #9bb3d4; }
+  .meta .live { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #4ade80; margin-inline-end: 6px; box-shadow: 0 0 12px #4ade80; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+  section { background: rgba(15,24,56,.65); border: 1px solid rgba(94,214,255,.18); border-radius: 14px; padding: 18px 20px; margin-bottom: 18px; backdrop-filter: blur(8px); }
+  section h2 { margin: 0 0 14px; font-size: 17px; color: #5ed6ff; font-weight: 600; }
+  .grid { display: grid; gap: 12px; }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 720px) { .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 480px) { .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; } }
+  .tile { background: rgba(22,35,80,.5); border: 1px solid rgba(94,214,255,.12); border-radius: 10px; padding: 14px; transition: transform .2s, border-color .2s; }
+  .tile:hover { border-color: rgba(94,214,255,.4); transform: translateY(-2px); }
+  .tile-label { font-size: 11px; color: #9bb3d4; text-transform: uppercase; letter-spacing: 1px; }
+  .tile-value { font-size: 22px; font-weight: 700; margin-top: 6px; }
+  .tile-sub { font-size: 11px; color: #5a7090; margin-top: 4px; }
+  .ok { color: #4ade80; }
+  .warn { color: #ff9a3c; }
+  .bad { color: #ff5e87; }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-inline-end: 6px; vertical-align: middle; }
+  .dot.ok { background: #4ade80; box-shadow: 0 0 10px #4ade80; }
+  .dot.warn { background: #ff9a3c; box-shadow: 0 0 10px #ff9a3c; }
+  .dot.bad { background: #ff5e87; box-shadow: 0 0 10px #ff5e87; }
+  .dot.idle { background: #5a7090; }
+
+  .action-card { background: rgba(22,35,80,.5); border: 1px solid rgba(94,214,255,.12); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .action-card .num { font-size: 12px; color: #b18bff; font-weight: 700; letter-spacing: 1px; }
+  .action-card .title { font-size: 15px; font-weight: 600; }
+  .action-card .desc { font-size: 12px; color: #9bb3d4; line-height: 1.5; }
+  .action-card .cta { font-size: 12px; color: #5ed6ff; text-decoration: none; margin-top: 4px; }
+  .action-card .cta:hover { text-decoration: underline; }
+
+  .countdown { display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap; }
+  .countdown .num { font-size: 48px; font-weight: 800; background: linear-gradient(180deg, #ffd166, #ff9a3c); -webkit-background-clip: text; background-clip: text; color: transparent; line-height: 1; }
+  .countdown .label { font-size: 13px; color: #9bb3d4; }
+
+  .links { display: flex; flex-wrap: wrap; gap: 8px; }
+  .links a { background: rgba(22,35,80,.6); border: 1px solid rgba(94,214,255,.18); color: #e7f1ff; padding: 8px 14px; border-radius: 8px; text-decoration: none; font-size: 13px; transition: all .15s; }
+  .links a:hover { border-color: #5ed6ff; background: rgba(94,214,255,.1); transform: translateY(-1px); }
+
+  .key-prompt { background: rgba(255,154,60,.08); border: 1px solid rgba(255,154,60,.3); border-radius: 8px; padding: 12px; margin-bottom: 18px; font-size: 13px; }
+  .key-prompt input { background: rgba(0,0,0,.3); border: 1px solid rgba(94,214,255,.2); color: #e7f1ff; padding: 6px 10px; border-radius: 6px; font-family: monospace; width: 320px; max-width: 100%; }
+  .key-prompt button { background: #5ed6ff; color: #03060f; border: 0; padding: 6px 14px; border-radius: 6px; font-weight: 600; cursor: pointer; margin-inline-start: 8px; }
+  .key-prompt button:hover { background: #b18bff; }
+
+  .small-list { font-size: 12px; color: #9bb3d4; line-height: 1.7; }
+  .small-list code { background: rgba(0,0,0,.3); padding: 2px 6px; border-radius: 4px; font-size: 11px; color: #5ed6ff; }
+  footer { text-align: center; font-size: 11px; color: #5a7090; margin-top: 30px; }
+</style>
+</head>
+<body>
+<div class="neural-bg"></div>
+<div class="wrap">
+
+<header>
+  <div>
+    <h1>מרכז שליטה <span class="accent">· Founder</span></h1>
+    <div class="meta"><span class="live"></span>עדכון אחרון: <span id="updated-at">—</span></div>
+  </div>
+  <div class="meta" id="user-meta">Osif · 224223270</div>
+</header>
+
+<div id="key-prompt" class="key-prompt" style="display:none">
+  <strong>נדרש מפתח אדמין</strong> לעמוד הזה.
+  <input type="password" id="admin-key-input" placeholder="X-Admin-Key">
+  <button onclick="saveKey()">שמור</button>
+  <div class="small-list" style="margin-top:6px">המפתח נשמר ב-<code>localStorage.slh_admin_key</code> — לא נשלח לאף מקום חוץ מ-API שלך.</div>
+</div>
+
+<!-- 0. COMMAND BRAIN — Decision Strip (top priority) -->
+<section id="brain-strip" class="brain-strip" data-state="idle">
+  <div class="brain-head">
+    <div class="brain-state">
+      <span class="brain-dot"></span>
+      <span id="brain-state-label">מאתחל…</span>
+    </div>
+    <div class="brain-score">
+      <div class="brain-score-num" id="brain-score">—</div>
+      <div class="brain-score-lbl">Health<br>0–100</div>
+    </div>
+  </div>
+  <div class="brain-summary" id="brain-summary">המוח טוען נתונים מ-/api/brain/state…</div>
+  <div class="brain-action" id="brain-action" style="display:none">
+    <div class="brain-action-label">פעולה הבאה (Next Best Action):</div>
+    <div class="brain-action-content">
+      <div id="brain-action-title">—</div>
+      <div class="brain-action-meta" id="brain-action-meta">—</div>
+      <a id="brain-action-cta" href="#" target="_blank" style="display:none">בצע →</a>
+    </div>
+  </div>
+  <details class="brain-details">
+    <summary>פירוט מלא · <span id="brain-issues-count">0</span> issues · <span id="brain-actions-count">0</span> actions · age <span id="brain-age">—</span>ms</summary>
+    <pre id="brain-raw" style="font-size:10px;color:#5a7090;margin-top:8px;max-height:300px;overflow:auto"></pre>
+  </details>
+</section>
+
+<style>
+.brain-strip {
+  background: linear-gradient(135deg, rgba(15,24,56,.85), rgba(22,35,80,.65));
+  border: 1px solid rgba(94,214,255,.3);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin-bottom: 18px;
+  backdrop-filter: blur(8px);
+  position: relative;
+}
+.brain-strip[data-state="HEALTHY"]  { border-color: rgba(74,222,128,.45); box-shadow: 0 0 32px rgba(74,222,128,.12); }
+.brain-strip[data-state="DEGRADED"] { border-color: rgba(255,154,60,.5);  box-shadow: 0 0 32px rgba(255,154,60,.15); }
+.brain-strip[data-state="CRITICAL"] { border-color: rgba(255,94,135,.6);  box-shadow: 0 0 36px rgba(255,94,135,.2); animation: brainPulse 2s infinite; }
+@keyframes brainPulse { 0%,100%{box-shadow:0 0 36px rgba(255,94,135,.2)} 50%{box-shadow:0 0 60px rgba(255,94,135,.45)} }
+.brain-head { display:flex; justify-content:space-between; align-items:center; gap:18px; margin-bottom:12px; }
+.brain-state { display:flex; align-items:center; gap:10px; font-size:18px; font-weight:700; }
+.brain-dot { display:inline-block; width:14px; height:14px; border-radius:50%; background:#5a7090; }
+.brain-strip[data-state="HEALTHY"]  .brain-dot { background:#4ade80; box-shadow: 0 0 14px #4ade80; }
+.brain-strip[data-state="DEGRADED"] .brain-dot { background:#ff9a3c; box-shadow: 0 0 14px #ff9a3c; }
+.brain-strip[data-state="CRITICAL"] .brain-dot { background:#ff5e87; box-shadow: 0 0 14px #ff5e87; animation:pulse 1.4s infinite; }
+.brain-score { display:flex; align-items:center; gap:8px; }
+.brain-score-num { font-size:34px; font-weight:800; line-height:1;
+  background: linear-gradient(180deg, #5ed6ff, #b18bff);
+  -webkit-background-clip: text; background-clip: text; color: transparent; }
+.brain-score-lbl { font-size:10px; color:#9bb3d4; line-height:1.2; }
+.brain-summary { font-size:14px; color:#e7f1ff; line-height:1.5; margin-bottom:12px; padding:10px 14px;
+  background: rgba(0,0,0,.25); border-radius: 8px; border-inline-start: 3px solid rgba(94,214,255,.5); }
+.brain-strip[data-state="HEALTHY"]  .brain-summary { border-inline-start-color: #4ade80; }
+.brain-strip[data-state="DEGRADED"] .brain-summary { border-inline-start-color: #ff9a3c; }
+.brain-strip[data-state="CRITICAL"] .brain-summary { border-inline-start-color: #ff5e87; }
+.brain-action { background: rgba(94,214,255,.06); border:1px solid rgba(94,214,255,.2); border-radius:8px; padding:12px 14px; margin-bottom:8px; }
+.brain-action-label { font-size:11px; color:#5ed6ff; text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; }
+.brain-action-content { display:flex; flex-direction:column; gap:6px; }
+#brain-action-title { font-size:14px; font-weight:600; color:#e7f1ff; }
+.brain-action-meta { font-size:11px; color:#9bb3d4; }
+#brain-action-cta { color:#5ed6ff; font-size:12px; text-decoration:none; }
+#brain-action-cta:hover { text-decoration: underline; }
+.brain-details { margin-top:8px; }
+.brain-details summary { font-size:11px; color:#9bb3d4; cursor:pointer; }
+.brain-details summary:hover { color:#5ed6ff; }
+</style>
+
+<!-- 1. SYSTEM HEALTH -->
+<section>
+  <h2>בריאות מערכת · Live</h2>
+  <div class="grid grid-4">
+    <div class="tile" id="t-api">
+      <div class="tile-label">API</div>
+      <div class="tile-value"><span class="dot idle"></span><span class="status">בודק…</span></div>
+      <div class="tile-sub">slh-api-production.up.railway.app</div>
+    </div>
+    <div class="tile" id="t-db">
+      <div class="tile-label">Postgres</div>
+      <div class="tile-value"><span class="dot idle"></span><span class="status">—</span></div>
+      <div class="tile-sub">דרך /api/health</div>
+    </div>
+    <div class="tile" id="t-esp">
+      <div class="tile-label">ESP32 (שלך)</div>
+      <div class="tile-value"><span class="dot idle"></span><span class="status">—</span></div>
+      <div class="tile-sub" id="esp-sub">esp32-14335C6C32C0</div>
+    </div>
+    <div class="tile" id="t-site">
+      <div class="tile-label">Website</div>
+      <div class="tile-value"><span class="dot idle"></span><span class="status">—</span></div>
+      <div class="tile-sub">slh-nft.com</div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. IDO STATE -->
+<section>
+  <h2>גיוס · IDO <span id="ido-phase-badge" style="font-size:11px;padding:3px 8px;border-radius:6px;background:rgba(255,154,60,.15);color:#ff9a3c;letter-spacing:1px">PRE-LAUNCH</span></h2>
+  <div class="grid grid-4">
+    <div class="tile">
+      <div class="tile-label">ימים ל-Launch</div>
+      <div class="tile-value" id="ido-days">—</div>
+      <div class="tile-sub">יעד 11.5.26</div>
+    </div>
+    <div class="tile">
+      <div class="tile-label">Raised</div>
+      <div class="tile-value"><span id="ido-raised">0</span> BNB</div>
+      <div class="tile-sub" id="ido-raised-pct">0% של soft cap</div>
+    </div>
+    <div class="tile">
+      <div class="tile-label">Participants</div>
+      <div class="tile-value" id="ido-participants">0</div>
+      <div class="tile-sub" id="ido-tx-count">0 transactions</div>
+    </div>
+    <div class="tile">
+      <div class="tile-label">Caps</div>
+      <div class="tile-value">20–150 BNB</div>
+      <div class="tile-sub">~₪50K → ₪370K · PinkSale</div>
+    </div>
+  </div>
+  <div style="margin-top:14px" class="links">
+    <a href="/admin/ido-mission-control.html">★ IDO Mission Control</a>
+    <a href="/ido.html">Public IDO Page</a>
+    <a href="https://bscscan.com/address/0x9DD8aF7Ac0f601CD473422311b2942DAE9D0BD09" target="_blank">Treasury BscScan</a>
+  </div>
+</section>
+
+<!-- 3. TODAY'S ACTIONS -->
+<section>
+  <h2>3 פעולות להיום</h2>
+  <div class="grid grid-3">
+    <div class="action-card">
+      <span class="num">01</span>
+      <div class="title">פתח Marshall Islands LLC</div>
+      <div class="desc">MIDAO 2022 Act · ~$1,500 setup · 7-10 days. קריטי — חוסם הכול.</div>
+      <a class="cta" href="https://midao.org" target="_blank">midao.org →</a>
+    </div>
+    <div class="action-card">
+      <span class="num">02</span>
+      <div class="title">הקם Gnosis Safe 2-of-3</div>
+      <div class="desc">multisig: Osif + Tzvika + recovery hardware. הכרחי ל-treasury.</div>
+      <a class="cta" href="https://app.safe.global" target="_blank">app.safe.global →</a>
+    </div>
+    <div class="action-card">
+      <span class="num">03</span>
+      <div class="title">בחר audit firm</div>
+      <div class="desc">CertiK Lite ($3-5K) או SolidProof. 5-7 days. נדרש לפני PinkSale.</div>
+      <a class="cta" href="/admin/ido-mission-control.html" target="_blank">IDO Dashboard →</a>
+    </div>
+  </div>
+</section>
+
+<!-- 4. NAVIGATION -->
+<section>
+  <h2>ניווט מהיר</h2>
+  <div class="links">
+    <a href="/admin/ido-mission-control.html">★ IDO Mission Control</a>
+    <a href="/admin.html">Admin Panel</a>
+    <a href="/admin/mission-control.html">Mission Control</a>
+    <a href="/control-center.html">Control Center</a>
+    <a href="/ops-dashboard.html">Ops Dashboard</a>
+    <a href="/admin/reality.html">Reality Check</a>
+    <a href="/blockchain.html">Blockchain (SLH on BSC)</a>
+    <a href="/network.html">Neural Map</a>
+    <a href="/investors.html">Investors One-Pager</a>
+    <a href="/pitch.html">Pitch Deck</a>
+  </div>
+</section>
+
+<!-- 4.5. BRAIN HISTORY — last 24h trend -->
+<section>
+  <h2>היסטוריית החלטות · Brain Memory</h2>
+  <div class="grid grid-4" id="brain-stats">
+    <div class="tile"><div class="tile-label">Samples (24h)</div><div class="tile-value" id="bs-samples">—</div></div>
+    <div class="tile"><div class="tile-label">Avg score</div><div class="tile-value" id="bs-avg">—</div></div>
+    <div class="tile"><div class="tile-label">Healthy</div><div class="tile-value" id="bs-healthy">—</div></div>
+    <div class="tile"><div class="tile-label">Score range</div><div class="tile-value" id="bs-range">—</div></div>
+  </div>
+  <div id="brain-timeline" style="margin-top:14px; display:flex; gap:2px; height:36px; align-items:flex-end; background:rgba(0,0,0,.3); border-radius:6px; padding:4px"></div>
+  <div class="small-list" style="margin-top:8px">חבילות החלטה אחרונות. כל בלוק = snapshot. גובה = score, צבע = state.</div>
+</section>
+
+<!-- 5. TREASURY -->
+<section>
+  <h2>Treasury · SLH Safe (BSC)</h2>
+  <div class="grid grid-2">
+    <div class="tile">
+      <div class="tile-label">Gnosis Safe</div>
+      <div class="tile-value" style="font-family:monospace;font-size:13px">0x9DD8…BD09</div>
+      <div class="tile-sub">Threshold 1/1 · יש לשדרג ל-2/3 לפני IDO</div>
+      <div style="margin-top:10px" class="links">
+        <a href="https://app.safe.global/home?safe=bnb:0x9DD8aF7Ac0f601CD473422311b2942DAE9D0BD09" target="_blank">Safe App</a>
+        <a href="https://bscscan.com/address/0x9DD8aF7Ac0f601CD473422311b2942DAE9D0BD09" target="_blank">BscScan</a>
+      </div>
+    </div>
+    <div class="tile">
+      <div class="tile-label">Activation Steps</div>
+      <div class="small-list" style="margin-top:6px">
+        <div>① Send 0.01-0.05 BNB to Safe (gas)</div>
+        <div>② First tx → auto-activates account</div>
+        <div>③ Add Tzvika as 2nd signer (later)</div>
+        <div>④ Connect to PinkSale (IDO config)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. SYSTEM SUMMARY -->
+<section>
+  <h2>מצב מפורט</h2>
+  <div class="small-list" id="detail">
+    <div>API health: <span id="d-api">—</span></div>
+    <div>API version: <span id="d-ver">—</span></div>
+    <div>ESP last_seen: <span id="d-esp-seen">—</span></div>
+    <div>ESP heartbeats (24h): <span id="d-esp-hb">—</span></div>
+    <div>Devices total: <span id="d-dev-total">—</span></div>
+    <div>Site map: <a href="/sitemap.xml">sitemap.xml</a> · <a href="/project-map.html">project-map.html</a></div>
+    <div>Source of truth: <code>ops/STATUS.md</code></div>
+  </div>
+</section>
+
+<footer>
+  SLH Spark · Founder Control · auto-refresh 30s · <a href="#" onclick="forceRefresh();return false" style="color:#5ed6ff">refresh now</a>
+</footer>
+
+</div>
+
+<script>
+const API = 'https://slh-api-production.up.railway.app';
+const ESP_DEVICE_ID = 'esp32-14335C6C32C0';
+const CUTOFF = new Date('2026-05-11T12:00:00');  // IDO launch target (14 days from approval 27.4)
+let adminKey = localStorage.getItem('slh_admin_key') || '';
+
+function saveKey() {
+  const v = document.getElementById('admin-key-input').value.trim();
+  if (v) {
+    localStorage.setItem('slh_admin_key', v);
+    adminKey = v;
+    document.getElementById('key-prompt').style.display = 'none';
+    refresh();
+  }
+}
+
+function setTile(id, status, value, sub) {
+  const tile = document.getElementById(id);
+  if (!tile) return;
+  const dot = tile.querySelector('.dot');
+  const st = tile.querySelector('.status');
+  dot.className = 'dot ' + status;
+  st.textContent = value;
+  if (sub) {
+    const subEl = tile.querySelector('.tile-sub');
+    if (subEl) subEl.textContent = sub;
+  }
+}
+
+function fmtAgo(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  const sec = Math.floor((Date.now() - d.getTime()) / 1000);
+  if (sec < 60) return sec + 's ago';
+  if (sec < 3600) return Math.floor(sec/60) + 'm ago';
+  if (sec < 86400) return Math.floor(sec/3600) + 'h ago';
+  return Math.floor(sec/86400) + 'd ago';
+}
+
+async function refreshBrain() {
+  const strip = document.getElementById('brain-strip');
+  try {
+    const r = await fetch(API + '/api/brain/state', { cache: 'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const b = await r.json();
+
+    // State + score
+    strip.dataset.state = b.system_state;
+    document.getElementById('brain-state-label').textContent =
+      b.system_state === 'HEALTHY' ? 'תקין · HEALTHY'
+      : b.system_state === 'DEGRADED' ? 'מתפקד עם בעיות · DEGRADED'
+      : b.system_state === 'CRITICAL' ? 'קריטי · CRITICAL'
+      : b.system_state;
+    document.getElementById('brain-score').textContent = b.health_score;
+    document.getElementById('brain-summary').textContent = b.summary;
+
+    // Next Best Action
+    const actions = b.recommended_actions || [];
+    const issues = b.critical_issues || [];
+    document.getElementById('brain-issues-count').textContent = issues.length;
+    document.getElementById('brain-actions-count').textContent = actions.length;
+    document.getElementById('brain-age').textContent = b.age_ms;
+    document.getElementById('brain-raw').textContent = JSON.stringify(b, null, 2);
+
+    const actDiv = document.getElementById('brain-action');
+    if (actions.length > 0) {
+      const a = actions[0];
+      actDiv.style.display = 'block';
+      document.getElementById('brain-action-title').textContent = a.label;
+      document.getElementById('brain-action-meta').textContent =
+        `Impact: ${a.impact} · Confidence: ${Math.round(a.confidence*100)}%`;
+      const cta = document.getElementById('brain-action-cta');
+      if (a.execution && a.execution.type === 'link' && a.execution.instruction) {
+        cta.href = a.execution.instruction;
+        cta.style.display = 'inline-block';
+        cta.textContent = 'בצע →';
+      } else if (a.execution && a.execution.instruction) {
+        cta.href = '#';
+        cta.style.display = 'inline-block';
+        cta.textContent = a.execution.instruction;
+        cta.onclick = (e) => { e.preventDefault(); alert(a.execution.instruction); };
+      } else {
+        cta.style.display = 'none';
+      }
+    } else {
+      actDiv.style.display = 'none';
+    }
+  } catch (e) {
+    strip.dataset.state = 'CRITICAL';
+    document.getElementById('brain-state-label').textContent = 'Brain לא זמין';
+    document.getElementById('brain-summary').textContent = 'אין תגובה מ-/api/brain/state · ' + e.message;
+    document.getElementById('brain-score').textContent = '?';
+  }
+}
+
+async function refreshBrainHistory() {
+  try {
+    const r = await fetch(API + '/api/brain/history?hours=24', { cache: 'no-store' });
+    if (!r.ok) return;
+    const j = await r.json();
+    const stats = j.stats || {};
+    const snaps = j.snapshots || [];
+
+    document.getElementById('bs-samples').textContent = stats.samples || 0;
+    document.getElementById('bs-avg').textContent = stats.avg_score != null ? stats.avg_score : '—';
+    document.getElementById('bs-healthy').textContent = stats.healthy_pct != null ? (stats.healthy_pct + '%') : '—';
+    document.getElementById('bs-range').textContent = (stats.min_score != null && stats.max_score != null) ? (stats.min_score + '–' + stats.max_score) : '—';
+
+    const tl = document.getElementById('brain-timeline');
+    tl.innerHTML = '';
+    // Show oldest → newest, max 100 bars
+    const display = snaps.slice(0, 100).reverse();
+    display.forEach(s => {
+      const bar = document.createElement('div');
+      const h = Math.max(4, Math.round(s.health_score * 0.32)); // 100 → 32px max
+      bar.style.flex = '1';
+      bar.style.minWidth = '3px';
+      bar.style.height = h + 'px';
+      bar.style.borderRadius = '2px';
+      bar.style.background = s.system_state === 'HEALTHY' ? '#4ade80'
+                          : s.system_state === 'DEGRADED' ? '#ff9a3c'
+                          : '#ff5e87';
+      bar.title = `${s.snapshot_at} · ${s.system_state} · ${s.health_score}/100\n${s.summary || ''}`;
+      tl.appendChild(bar);
+    });
+  } catch (e) {
+    // silent — history is non-critical
+  }
+}
+
+async function refreshIDO() {
+  try {
+    const r = await fetch(API + '/api/ido/stats', { cache: 'no-store' });
+    if (!r.ok) return;
+    const j = await r.json();
+    document.getElementById('ido-days').textContent = j.days_to_launch != null ? j.days_to_launch : '—';
+    document.getElementById('ido-raised').textContent = (j.raised_bnb || 0).toFixed(2);
+    document.getElementById('ido-raised-pct').textContent = `${(j.soft_pct || 0).toFixed(1)}% של soft cap`;
+    document.getElementById('ido-participants').textContent = j.participants || 0;
+    document.getElementById('ido-tx-count').textContent = `${j.confirmed_tx || 0} transactions`;
+    const phase = (j.phase || 'pre-launch').toUpperCase();
+    const badge = document.getElementById('ido-phase-badge');
+    badge.textContent = phase;
+    if (phase === 'LIVE') {
+      badge.style.background = 'rgba(74,222,128,.15)';
+      badge.style.color = '#4ade80';
+    }
+  } catch (e) {
+    // silent
+  }
+}
+
+async function refresh() {
+  document.getElementById('updated-at').textContent = new Date().toLocaleTimeString('he-IL');
+
+  // Brain — runs first; everything else is redundant detail
+  refreshBrain();
+  refreshBrainHistory();
+  refreshIDO();
+
+  // 1. API health
+  try {
+    const r = await fetch(API + '/api/health');
+    const j = await r.json();
+    setTile('t-api', j.status === 'ok' ? 'ok' : 'warn', j.status === 'ok' ? 'Healthy' : j.status);
+    setTile('t-db', j.db === 'connected' ? 'ok' : 'bad', j.db);
+    document.getElementById('d-api').textContent = j.status;
+    document.getElementById('d-ver').textContent = j.version || '—';
+  } catch (e) {
+    setTile('t-api', 'bad', 'Unreachable');
+    setTile('t-db', 'bad', 'Unknown');
+  }
+
+  // 2. Website
+  try {
+    const r = await fetch('/index.html', { method: 'HEAD' });
+    setTile('t-site', r.ok ? 'ok' : 'warn', r.ok ? 'Live' : 'HTTP ' + r.status);
+  } catch (e) {
+    setTile('t-site', 'bad', 'Offline');
+  }
+
+  // 3. ESP + admin-only data
+  if (!adminKey) {
+    document.getElementById('key-prompt').style.display = 'block';
+    setTile('t-esp', 'idle', 'מפתח אדמין נדרש');
+    return;
+  }
+
+  try {
+    const r = await fetch(API + '/api/admin/devices/list', { headers: { 'X-Admin-Key': adminKey } });
+    if (r.status === 403) {
+      document.getElementById('key-prompt').style.display = 'block';
+      setTile('t-esp', 'bad', '403 Forbidden');
+      return;
+    }
+    const j = await r.json();
+    const devices = j.devices || [];
+    document.getElementById('d-dev-total').textContent = devices.length;
+    const me = devices.find(d => d.device_id === ESP_DEVICE_ID);
+    if (me) {
+      const seen = me.last_seen;
+      const ago = fmtAgo(seen);
+      const sec = seen ? Math.floor((Date.now() - new Date(seen).getTime())/1000) : Infinity;
+      const status = sec < 90 ? 'ok' : (sec < 300 ? 'warn' : 'bad');
+      const txt = sec < 90 ? 'Live · ' + ago : (sec < 300 ? 'Stale · ' + ago : 'Offline · ' + ago);
+      setTile('t-esp', status, txt, me.device_id + ' · ' + (me.last_ip || 'no-ip'));
+      document.getElementById('d-esp-seen').textContent = seen + ' (' + ago + ')';
+    } else {
+      setTile('t-esp', 'warn', 'לא נמצא ב-DB');
+    }
+  } catch (e) {
+    setTile('t-esp', 'bad', 'Error: ' + e.message);
+  }
+}
+
+function forceRefresh() { refresh(); }
+
+if (!adminKey) document.getElementById('key-prompt').style.display = 'block';
+refresh();
+setInterval(refresh, 30000);
+</script>
+</body>
+</html>

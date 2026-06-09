@@ -1,0 +1,457 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌅 Morning Handoff — Session 6 Report</title>
+<meta name="description" content="Full handoff report for work done overnight April 11-12, 2026">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/shared.css?v=20260426e">
+
+<style>
+    :root {
+        --bg: #0a0e1a;
+        --bg2: #111628;
+        --bg3: #1a2038;
+        --accent: #00e887;
+        --accent2: #00b4d8;
+        --gold: #ffd700;
+        --sunrise: #ff9500;
+        --purple: #a855f7;
+        --text: #e8e8f0;
+        --text2: #8a8aa0;
+        --border: rgba(255, 149, 0, 0.3);
+    }
+    body {
+        background:
+            radial-gradient(ellipse at top, rgba(255, 149, 0, 0.12), transparent 60%),
+            radial-gradient(circle at 50% 100%, rgba(0, 232, 135, 0.08), transparent 60%),
+            var(--bg);
+        color: var(--text);
+        font-family: 'Inter', system-ui, sans-serif;
+        line-height: 1.6;
+        min-height: 100vh;
+    }
+
+    .hero {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 80px 24px 40px;
+        text-align: center;
+    }
+    .sunrise {
+        font-size: 80px;
+        margin-bottom: 16px;
+        display: block;
+    }
+    .hero h1 {
+        font-size: clamp(32px, 5vw, 56px);
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--sunrise), var(--gold), var(--accent));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-bottom: 8px;
+    }
+    .greeting {
+        font-size: 22px;
+        color: var(--text);
+        font-weight: 600;
+    }
+    .date {
+        font-size: 13px;
+        color: var(--text2);
+        font-family: monospace;
+        margin-top: 8px;
+    }
+
+    .section {
+        max-width: 1200px;
+        margin: 0 auto 40px;
+        padding: 0 24px;
+    }
+    .section h2 {
+        font-size: 28px;
+        font-weight: 800;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .section h2 .num {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background: var(--sunrise);
+        color: #000;
+        border-radius: 50%;
+        font-size: 20px;
+        font-weight: 900;
+    }
+
+    .card {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-left: 4px solid var(--sunrise);
+        border-radius: 14px;
+        padding: 24px;
+        margin-bottom: 16px;
+    }
+    .card h3 {
+        font-size: 18px;
+        color: var(--sunrise);
+        margin-bottom: 8px;
+    }
+    .card p {
+        color: var(--text2);
+        font-size: 14px;
+        line-height: 1.8;
+    }
+    .card .links {
+        margin-top: 12px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    .card .links a {
+        padding: 8px 14px;
+        background: rgba(255, 149, 0, 0.1);
+        border: 1px solid var(--sunrise);
+        color: var(--sunrise);
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 700;
+    }
+    .card .links a:hover {
+        background: var(--sunrise);
+        color: #000;
+    }
+
+    .big-action {
+        background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 149, 0, 0.1));
+        border: 2px solid var(--gold);
+        border-radius: 20px;
+        padding: 32px;
+        text-align: center;
+        margin-bottom: 32px;
+    }
+    .big-action .label {
+        font-size: 11px;
+        color: var(--gold);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-weight: 800;
+    }
+    .big-action h2 {
+        font-size: 28px;
+        color: var(--text);
+        margin: 8px 0 12px;
+    }
+    .big-action p {
+        color: var(--text2);
+        margin-bottom: 16px;
+    }
+    .big-action a.primary {
+        display: inline-block;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, var(--gold), var(--sunrise));
+        color: #000;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 800;
+        font-size: 15px;
+    }
+
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 32px;
+    }
+    .stat {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 18px;
+        text-align: center;
+    }
+    .stat .v { font-size: 32px; font-weight: 900; color: var(--sunrise); }
+    .stat .l { font-size: 11px; color: var(--text2); text-transform: uppercase; margin-top: 4px; }
+
+    ul.checklist {
+        list-style: none;
+        padding: 0;
+    }
+    ul.checklist li {
+        padding: 10px 0 10px 32px;
+        position: relative;
+        font-size: 14px;
+        border-bottom: 1px solid var(--border);
+        color: var(--text2);
+    }
+    ul.checklist li::before {
+        content: '✓';
+        position: absolute;
+        right: 0;
+        color: var(--accent);
+        font-weight: 800;
+        font-size: 18px;
+    }
+    ul.checklist li strong { color: var(--text); }
+
+    code {
+        background: var(--bg3);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 12px;
+        color: var(--accent);
+    }
+
+    /* Theme Switcher */
+    #theme-fab{position:fixed;bottom:94px;left:24px;z-index:9997;background:var(--accent,#00e887);color:#000;width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;font-size:20px;box-shadow:0 4px 16px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center}
+    #theme-panel{position:fixed;bottom:150px;left:24px;z-index:9998;background:var(--bg,#0a0a0a);border:1px solid rgba(255,255,255,.15);padding:16px;border-radius:12px;display:none;flex-direction:column;gap:6px;max-width:220px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+    #theme-panel.open{display:flex}
+    #theme-panel button{background:var(--bg,#0a0a0a);border:1px solid rgba(255,255,255,.1);color:#e8e8f0;padding:10px 14px;cursor:pointer;font-size:12px;text-align:right;font-family:inherit;border-radius:6px;transition:all .2s}
+    #theme-panel button:hover{background:var(--accent,#00e887);color:#000}
+    [data-theme="dark"]{--bg:#0b0e16;--bg2:#111628;--accent:#00b4d8;--text:#e8e8f0;--text2:#8a8aa0;--border:rgba(0,180,216,.2)}
+    [data-theme="light"]{--bg:#f8f9fb;--bg2:#fff;--accent:#0066cc;--text:#1a1a1a;--text2:#555;--border:rgba(0,102,204,.2)}
+    [data-theme="crypto"]{--bg:#0d1117;--bg2:#161b22;--accent:#f7931a;--text:#e8e8f0;--text2:#8a8aa0;--border:rgba(247,147,26,.2)}
+    [data-theme="ocean"]{--bg:#001e3c;--bg2:#002c55;--accent:#00d9ff;--text:#b8e6ff;--text2:#6bb6cc;--border:rgba(0,217,255,.2)}
+    [data-theme="sunset"]{--bg:#1a0a14;--bg2:#251018;--accent:#ff6b6b;--text:#ffe5d9;--text2:#c9a88a;--border:rgba(255,107,107,.2)}
+</style>
+</head>
+<body>
+
+<div id="topnav-root"></div>
+
+<section class="hero">
+    <span class="sunrise">🌅</span>
+    <h1>בוקר טוב, אוסיף</h1>
+    <div class="greeting">המערכת עבדה כל הלילה בזמן שישנת</div>
+    <div class="date">Session 6 — Overnight Autonomous Mode</div>
+</section>
+
+<!-- 🎉 CELEBRATION: 100% REACHED -->
+<section class="section">
+    <div class="big-action" style="border-color:var(--accent);background:linear-gradient(135deg,rgba(0,232,135,0.15),rgba(255,215,0,0.08),rgba(255,107,157,0.06))">
+        <div class="label" style="color:var(--accent)">🎉 GENESIS LAUNCH SUCCESS</div>
+        <h2 style="background:linear-gradient(135deg,var(--accent),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent">100% Target Reached!</h2>
+        <p>
+            <strong>3 Co-Founders</strong> תרמו יחד <strong>0.05+ BNB</strong> (~$42) ל-Genesis Launch:<br>
+            <strong style="color:var(--gold)">#1 Tzvika</strong> — 0.02 BNB ✓ Verified (on-chain: 0x3a96f6cd...)<br>
+            <strong style="color:var(--gold)">#2 צביקה</strong> — 0.02 BNB ⏳ Pending<br>
+            <strong style="color:var(--gold)">#3 Eli</strong> — 0.03 BNB ✓ Auto-verified by me (on-chain match)
+        </p>
+        <p style="font-size:15px;color:var(--accent);font-weight:700">אתה יכול ליצור את ה-PancakeSwap pool בבוקר.</p>
+        <a href="/launch-event.html" class="primary" style="background:linear-gradient(135deg,var(--accent),var(--gold));color:#000">🎉 ראה את לוח התורמים →</a>
+    </div>
+</section>
+
+<!-- New pages built -->
+<section class="section">
+    <div class="big-action" style="border-color:#ff6b9d">
+        <div class="label" style="color:#ff6b9d">🌸 NEW VISION PAGES</div>
+        <h2>חזון הריפוי של SLH — הוחזר למרכז</h2>
+        <p>
+            הלילה בניתי שני עמודים חדשים שמחזירים את החזון המקורי של SLH מ-2023
+            (מטבע עבור מטפלים + סיוע לנזקקים — מהודעות ה-WhatsApp שלך):
+        </p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:12px">
+            <a href="/healing-vision.html" class="primary" style="background:#ff6b9d;color:#000">🌸 Healing Vision</a>
+            <a href="/for-therapists.html" class="primary" style="background:transparent;border:2px solid #ff6b9d;color:#ff6b9d">🩺 רשם מטפלים</a>
+        </div>
+        <p style="font-size:13px;color:var(--text2);margin-top:14px">
+            שלח את הקישור השני לזוהר — היא יכולה לארגן את צוות המטפלים דרכו.
+        </p>
+    </div>
+</section>
+
+<!-- TL;DR of the night -->
+<section class="section">
+    <h2><span class="num">1</span> TL;DR של הלילה</h2>
+    <div class="stats">
+        <div class="stat"><div class="v">4</div><div class="l">עמודים חדשים</div></div>
+        <div class="stat"><div class="v">3</div><div class="l">Cron Jobs פעילים</div></div>
+        <div class="stat"><div class="v">2</div><div class="l">Background Agents</div></div>
+        <div class="stat"><div class="v">~45KB</div><div class="l">תיעוד חדש</div></div>
+    </div>
+</section>
+
+<!-- What was built -->
+<section class="section">
+    <h2><span class="num">2</span> מה נבנה הלילה</h2>
+
+    <div class="card">
+        <h3>🌙 /overnight-report.html</h3>
+        <p>עמוד בוקר אוטומטי שמציג את כל מה שקרה הלילה — Launch status, health checks, audit chain, alerts. מתרענן כל 2 דקות.</p>
+        <div class="links">
+            <a href="/overnight-report.html">פתח Overnight Report →</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>📚 /ecosystem-guide.html</h3>
+        <p>מדריך מקיף ומאוחד לכל האקוסיסטם: 12 סקציות, 27KB, מחליף את המדריכים המפוזרים. כולל ארכיטקטורה, 20+ עמודים, 60+ endpoints, 25 בוטים, tokenomics, institutional, env vars, troubleshooting, ו-מילון מונחים.</p>
+        <div class="links">
+            <a href="/ecosystem-guide.html">פתח Ecosystem Guide →</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>👑 /partner-dashboard.html</h3>
+        <p>דשבורד מעקב לשותפים של Genesis Launch. שותף מחפש לפי שם/handle ורואה את הסטטוס שלו, הדירוג, ה-rewards, וה-leaderboard של כל התורמים.</p>
+        <div class="links">
+            <a href="/partner-dashboard.html">פתח Partner Dashboard →</a>
+            <a href="/partner-dashboard.html?name=Tzvika">Tzvika's view →</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>📣 /broadcast-composer.html</h3>
+        <p>עמוד למנהלים לשליחת הודעות ברודקאסט לכל המשתמשים דרך @SLH_AIR_bot. כולל 4 templates מוכנים (ה-Genesis Launch template כבר כתוב עם כל הלינקים), live preview, dry-run mode, ו-history viewer.</p>
+        <div class="links">
+            <a href="/broadcast-composer.html">פתח Broadcast Composer →</a>
+        </div>
+    </div>
+</section>
+
+<!-- Cron Jobs -->
+<section class="section">
+    <h2><span class="num">3</span> Cron Jobs Active</h2>
+    <div class="card">
+        <h3>⏰ Health Monitor</h3>
+        <p>רץ כל שעה (בדקה 7). בודק <code>/api/health</code> ו-<code>/api/audit/verify-chain</code>. אם משהו נופל, לוג נכתב ל-<code>ops/overnight-health-log.md</code>.</p>
+    </div>
+    <div class="card">
+        <h3>🚀 Launch Watcher</h3>
+        <p>רץ 3 פעמים בשעה (בדקה 13, 33, 53). בודק <code>/api/launch/status</code> לזהות אם תורם שלח BNB. לוג ל-<code>ops/launch-watcher.md</code>.</p>
+    </div>
+    <div class="card">
+        <h3>🌅 Morning Report Generator</h3>
+        <p>רץ כל יום ב-06:47. מכנס את לוגי הלילה, fetches API data, ומעדכן את <code>/overnight-report.html</code>. Commit + push אוטומטי.</p>
+    </div>
+    <div class="card" style="border-left-color: var(--gold)">
+        <h3>⚠️ מגבלה חשובה</h3>
+        <p>
+            ה-Crons רצים <strong>רק כשסשן Claude פתוח ובמצב idle</strong>. אם סגרת את הטרמינל,
+            הם לא רצים. הם מאומתים לסשן הזה. כדי שעבודה תהיה אמיתית 24/7 נצטרך לשים משהו
+            ב-Railway/GitHub Actions.
+        </p>
+    </div>
+</section>
+
+<!-- Agent Reports — COMPLETED -->
+<section class="section">
+    <h2><span class="num">4</span> Background Agents — Both Completed ✅</h2>
+
+    <div class="card" style="border-left-color: var(--accent)">
+        <h3>🛡️ Security Audit — 3 CRITICAL + 5 HIGH Found</h3>
+        <p>
+            סקירה של 4600+ שורות ב-main.py. מצא <strong>3 CRITICAL, 5 HIGH, 6 MEDIUM, 4 LOW</strong>.
+            תיקנתי 5/6 אמיתיים (C-1, C-3, H-1, H-2, H-3). אחד (C-2) false positive.
+            הדוח המלא:
+        </p>
+        <ul style="padding-right:20px;font-size:13px;color:var(--text2)">
+            <li><strong>C-1 FIXED:</strong> Marketplace f-string SQL injection → parameterized CASE</li>
+            <li><strong>C-3 FIXED:</strong> Startup warnings for default credentials on boot</li>
+            <li><strong>H-1/H-2 FIXED:</strong> /api/admin/* now require X-Admin-Key header</li>
+            <li><strong>H-3 FIXED:</strong> CORS allow_headers whitelist (no wildcard)</li>
+            <li><strong>Commits:</strong> efe99a7 (api) + 48e1915 (admin.html) + e9025ad (broadcast)</li>
+        </ul>
+        <div class="links">
+            <a href="#" onclick="alert('Read: D:\\\\SLH_ECOSYSTEM\\\\ops\\\\SECURITY_AUDIT_20260412.md'); return false;">📄 SECURITY_AUDIT_20260412.md</a>
+        </div>
+    </div>
+
+    <div class="card" style="border-left-color: var(--gold)">
+        <h3>🔍 Drive Scan — Found SLH_PROJECT_V2 as separate live service!</h3>
+        <p>
+            סרקתי 30+ תיקיות D:\SLH*. הממצא הכי חשוב:
+            <strong style="color:var(--gold)">SLH_PROJECT_V2 הוא לא backup —</strong>
+            הוא שירות חי ונפרד ב-Railway (github.com/osifeu-prog/SLH_PROJECT_V2.git).
+            היעד שלו: 100K+ משתמשים של "SLH Academia". יש לוודא שאין חפיפה או קונפליקטים
+            עם SLH_ECOSYSTEM (זה גרם לבעיית NFTY token earlier).
+        </p>
+        <ul style="padding-right:20px;font-size:13px;color:var(--text2)">
+            <li><strong>Active main:</strong> D:\SLH_ECOSYSTEM (source of truth) ✓</li>
+            <li><strong>Separate Railway service:</strong> SLH_PROJECT_V2 (SLH Academia) ⚠️</li>
+            <li><strong>Worth integrating:</strong> D:\SLH (React Native wallet WIP)</li>
+            <li><strong>Can delete:</strong> SLH_AGENT_MERCHANT, SLH_AGENT_SALES (duplicates)</li>
+            <li><strong>Empty:</strong> SLHSITE, SLH_BNB, SLH_BOTS, SLH_CONTROL, SLH_APP, SLHWallet</li>
+            <li><strong>Old backups:</strong> 9 ZIP files, 8 of them &gt;30 days old → cold storage</li>
+        </ul>
+        <div class="links">
+            <a href="#" onclick="alert('Read: D:\\\\SLH_ECOSYSTEM\\\\ops\\\\DRIVE_SCAN_REPORT_20260412.md'); return false;">📄 DRIVE_SCAN_REPORT_20260412.md</a>
+        </div>
+    </div>
+</section>
+
+<!-- What YOU should do -->
+<section class="section">
+    <h2><span class="num">5</span> מה עליך לעשות בבוקר</h2>
+    <ul class="checklist">
+        <li><strong>פתח Overnight Report</strong> — ראה אם יש alerts אדומים</li>
+        <li><strong>בדוק Launch Status</strong> — האם צביקה שלח BNB?</li>
+        <li><strong>קרא Drive Scan</strong> (אם מוכן) — אולי יש פיצ'רים חבויים לשחזור</li>
+        <li><strong>קרא Security Audit</strong> (אם מוכן) — תקן קריטיים לפני כסף אמיתי</li>
+        <li><strong>שלח לצביקה</strong> — אם הוא עדיין לא שילם, פתח Broadcast Composer → Genesis Launch template</li>
+        <li><strong>Review Ecosystem Guide</strong> — הוא חדש, ודא שהכל נכון</li>
+        <li><strong>בדוק Launch Event page</strong> — עבוד על ההופעה של התורמים הראשונים</li>
+        <li><strong>Railway env vars</strong> — אם רוצה לשלוח broadcasts, הוסף <code>SLH_AIR_TOKEN</code> ו-<code>ADMIN_BROADCAST_KEY</code></li>
+    </ul>
+</section>
+
+<!-- Commits -->
+<section class="section">
+    <h2><span class="num">6</span> Commits של הלילה</h2>
+    <div class="card">
+        <h3>📝 Git Log</h3>
+        <ul class="checklist">
+            <li><strong>Session 6 commits</strong> (website):</li>
+            <li>• <code>4471677</code> — overnight + ecosystem-guide + partner-dashboard</li>
+            <li>• <code>b72bd20</code> — broadcast-composer</li>
+            <li>• (more to come with agent reports + morning handoff page)</li>
+        </ul>
+    </div>
+</section>
+
+<!-- Final -->
+<section class="section">
+    <div class="big-action" style="border-color: var(--accent)">
+        <div class="label" style="color: var(--accent)">READY FOR YOU</div>
+        <h2>הכל מוכן. פתח את ה-Overnight Report →</h2>
+        <p>ושם תתחיל את הבוקר שלך 🌅</p>
+        <a href="/overnight-report.html" class="primary" style="background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #000;">🌙 פתח →</a>
+    </div>
+</section>
+
+<div id="bottomnav-root"></div>
+<div id="footer-root"></div>
+
+<script src="/js/translations.js?v=20260426e"></script>
+<script src="/js/shared.js?v=20260426e"></script>
+<script>initShared({ activePage: 'morning', showBottomNav: true });</script>
+<button id="theme-fab" onclick="document.getElementById('theme-panel').classList.toggle('open')" title="Theme">🎨</button>
+<div id="theme-panel">
+    <div style="font-size:11px;color:var(--text2,#8a8aa0);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">ערכת צבעים</div>
+    <button onclick="document.documentElement.removeAttribute('data-theme');localStorage.setItem('slh_page_theme','default');document.getElementById('theme-panel').classList.remove('open')">🟢 Default</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','dark');localStorage.setItem('slh_page_theme','dark');document.getElementById('theme-panel').classList.remove('open')">🌙 Dark</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','light');localStorage.setItem('slh_page_theme','light');document.getElementById('theme-panel').classList.remove('open')">☀️ Light</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','crypto');localStorage.setItem('slh_page_theme','crypto');document.getElementById('theme-panel').classList.remove('open')">₿ Crypto</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','ocean');localStorage.setItem('slh_page_theme','ocean');document.getElementById('theme-panel').classList.remove('open')">🌊 Ocean</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','sunset');localStorage.setItem('slh_page_theme','sunset');document.getElementById('theme-panel').classList.remove('open')">🌅 Sunset</button>
+</div>
+<script>
+(function(){var t=localStorage.getItem('slh_page_theme');if(t&&t!=='default')document.documentElement.setAttribute('data-theme',t);document.addEventListener('click',function(e){var p=document.getElementById('theme-panel'),f=document.getElementById('theme-fab');if(p&&f&&!p.contains(e.target)&&!f.contains(e.target))p.classList.remove('open');});})();
+</script>
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260426e"></script>
+</body>
+</html>

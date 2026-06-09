@@ -1,0 +1,515 @@
+﻿<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>הבית שלי — SLH Spark</title>
+<meta name="description" content="המרכז האישי של אוסיף — מה עובד, מה חוסם, מה הלאה. עמוד אחד לכל הפרויקט." />
+<link rel="canonical" href="https://slh-nft.com/my.html" />
+<link rel="icon" type="image/png" href="/favicon-32.png" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0a0a0a; --bg2: #111; --bg3: #1a1a1a;
+    --accent: #00ff41; --accent2: #39ff14; --accent-dim: rgba(0,255,65,.1);
+    --cyan: #00e5ff; --gold: #ffd700; --red: #ff0055; --amber: #ffa500;
+    --text: #e0e0e0; --text2: #888; --text-bright: #fff;
+    --border: rgba(255,255,255,.08);
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter','Segoe UI','Arial Hebrew',sans-serif;
+    background: var(--bg); color: var(--text); min-height: 100vh;
+    line-height: 1.5;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent2); }
+  .container { max-width: 1400px; margin: 0 auto; padding: 24px 16px; }
+
+  /* HERO */
+  .hero { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; flex-wrap: wrap; margin-bottom: 32px; }
+  .hero-left h1 { font-size: 32px; color: var(--text-bright); margin-bottom: 4px; }
+  .hero-left .sub { color: var(--text2); font-size: 14px; }
+  .hero-right { text-align: left; font-family: 'Space Mono', 'Courier New', monospace; font-size: 13px; color: var(--text2); }
+  .hero-right .date { font-size: 18px; color: var(--text-bright); font-weight: 600; }
+  .hero-right .time { font-size: 24px; color: var(--accent); font-weight: 700; }
+
+  /* SECTION HEADING */
+  h2 { font-size: 20px; color: var(--text-bright); margin: 32px 0 16px; display: flex; align-items: center; gap: 10px; }
+  h2 .emoji { font-size: 22px; }
+  h2 .count { background: var(--bg2); color: var(--text2); font-size: 13px; padding: 2px 10px; border-radius: 10px; margin-right: auto; }
+
+  /* CARDS */
+  .cards { display: grid; gap: 12px; }
+  .cards.c3 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .cards.c4 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+  .card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; transition: border-color .2s; }
+  .card:hover { border-color: var(--accent-dim); }
+  .card .label { color: var(--text2); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .card .value { font-size: 24px; font-weight: 700; color: var(--text-bright); }
+  .card .value.small { font-size: 16px; }
+  .card .sub { color: var(--text2); font-size: 12px; margin-top: 4px; }
+
+  .status-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-left: 6px; vertical-align: middle; background: var(--text2); }
+  .status-dot.ok { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+  .status-dot.warn { background: var(--amber); }
+  .status-dot.err { background: var(--red); }
+
+  /* BLOCKER LIST */
+  .blocker { background: var(--bg2); border: 1px solid var(--border); border-right: 3px solid var(--amber); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px; display: flex; gap: 14px; align-items: flex-start; }
+  .blocker.done { border-right-color: var(--accent); opacity: 0.55; }
+  .blocker.done .b-num { background: var(--accent); color: var(--bg); }
+  .blocker .b-num { background: var(--amber); color: var(--bg); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: 14px; }
+  .blocker .b-body { flex: 1; }
+  .blocker .b-title { color: var(--text-bright); font-weight: 600; margin-bottom: 4px; }
+  .blocker .b-action { color: var(--text2); font-size: 13px; }
+  .blocker .b-action code { background: var(--bg3); padding: 1px 6px; border-radius: 3px; color: var(--cyan); font-size: 12px; font-family: 'Space Mono', monospace; }
+  .blocker .b-meta { margin-top: 6px; font-size: 11px; color: var(--text2); }
+  .blocker .b-link { color: var(--accent); font-size: 13px; display: inline-block; margin-top: 4px; }
+
+  /* PAGE LINKS */
+  .pages-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; }
+  .page-link { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; color: var(--text); text-decoration: none; transition: .15s; font-size: 14px; }
+  .page-link:hover { background: var(--bg3); border-color: var(--accent-dim); color: var(--text-bright); }
+  .page-link .emoji { font-size: 18px; }
+  .page-link .arrow { margin-right: auto; color: var(--text2); font-size: 11px; }
+  .pages-cluster { margin-bottom: 20px; }
+  .pages-cluster h3 { color: var(--text2); font-size: 13px; font-weight: 600; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* EVENT FEED */
+  .event { padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13px; display: flex; gap: 12px; align-items: baseline; }
+  .event:last-child { border-bottom: none; }
+  .event .etype { color: var(--accent); font-family: 'Space Mono', monospace; font-size: 12px; min-width: 140px; flex-shrink: 0; }
+  .event .etime { color: var(--text2); font-size: 11px; }
+  .event .edesc { color: var(--text); flex: 1; }
+
+  /* UTILITY */
+  .empty { color: var(--text2); font-style: italic; padding: 20px; text-align: center; background: var(--bg2); border-radius: var(--radius); }
+  .loading { color: var(--text2); font-size: 13px; }
+  .refresh-btn { background: var(--bg2); border: 1px solid var(--border); color: var(--text2); padding: 6px 14px; border-radius: 8px; font-size: 12px; cursor: pointer; font-family: inherit; }
+  .refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .pill { display: inline-block; background: var(--bg3); color: var(--text2); font-size: 11px; padding: 2px 8px; border-radius: 10px; margin-right: 6px; }
+  .pill.live { background: var(--accent-dim); color: var(--accent); }
+  footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); color: var(--text2); font-size: 12px; text-align: center; }
+  footer .last-update { font-family: 'Space Mono', monospace; }
+  .err-banner { background: rgba(255,0,85,.08); border: 1px solid var(--red); color: var(--red); padding: 10px 14px; border-radius: var(--radius); font-size: 13px; margin-bottom: 16px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-left">
+    <h1>שלום אוסיף 👋</h1>
+    <div class="sub">הבית האישי שלך — כל מה שקורה בפרויקט במקום אחד</div>
+  </div>
+  <div class="hero-right">
+    <div class="date" id="hdate">—</div>
+    <div class="time" id="htime">--:--</div>
+    <div id="hdow">—</div>
+  </div>
+</header>
+
+<!-- LIVE STATUS -->
+<section>
+  <div class="toolbar">
+    <h2><span class="emoji">💓</span> עכשיו <span class="pill live">live</span></h2>
+    <button class="refresh-btn" id="refresh-btn">↻ רענן</button>
+  </div>
+  <div class="cards c4" id="live-cards">
+    <div class="card"><div class="label">API</div><div class="value small loading">טוען…</div></div>
+    <div class="card"><div class="label">DB</div><div class="value small loading">טוען…</div></div>
+    <div class="card"><div class="label">Gateway</div><div class="value small loading">טוען…</div></div>
+    <div class="card"><div class="label">המכשיר שלך</div><div class="value small loading">טוען…</div></div>
+  </div>
+</section>
+
+<!-- SECRETS STATUS STRIP (sanitized public summary, no admin key required) -->
+<section>
+  <h2><span class="emoji">🔐</span> מצב הסודות
+    <a href="/admin/security-hub.html" style="font-size:13px;font-weight:400">Security Hub ←</a>
+  </h2>
+  <div class="cards c4" id="secrets-cards">
+    <div class="card"><div class="label">מוגדרים</div><div class="value small loading">טוען…</div></div>
+    <div class="card"><div class="label">חסרים / ברירת מחדל</div><div class="value small loading">טוען…</div></div>
+    <div class="card"><div class="label">לסיבוב</div><div class="value small loading">טוען…</div></div>
+    <div class="card"><div class="label">התראות 24ש</div><div class="value small loading">טוען…</div></div>
+  </div>
+</section>
+
+<!-- YOUR QUEUE (BLOCKERS) -->
+<section>
+  <h2><span class="emoji">🎯</span> התור שלך <span class="count" id="my-queue-count">—</span></h2>
+  <div id="my-queue">
+    <div class="loading">טוען…</div>
+  </div>
+</section>
+
+<!-- REAL NUMBERS -->
+<section>
+  <h2><span class="emoji">📊</span> המספרים</h2>
+  <div class="cards c4" id="stats-cards">
+    <div class="card"><div class="label">מכשירים רשומים</div><div class="value loading">—</div></div>
+    <div class="card"><div class="label">פריטים במרקטפלייס</div><div class="value loading">—</div></div>
+    <div class="card"><div class="label">קורסים</div><div class="value loading">—</div></div>
+    <div class="card"><div class="label">events השבוע</div><div class="value loading">—</div></div>
+  </div>
+</section>
+
+<!-- SWARM -->
+<section>
+  <h2><span class="emoji">🐝</span> רשת Swarm <a href="/miniapp/swarm.html" style="font-size:13px;font-weight:400">פתח Mini App ←</a></h2>
+  <div class="cards c4" id="swarm-cards">
+    <div class="card"><div class="label">סה״כ במזרך</div><div class="value loading">—</div></div>
+    <div class="card"><div class="label">online (2 דק׳)</div><div class="value loading">—</div></div>
+    <div class="card"><div class="label">events 24h</div><div class="value loading">—</div></div>
+    <div class="card"><div class="label">commands ממתינות</div><div class="value loading">—</div></div>
+  </div>
+</section>
+
+<!-- RECENT EVENTS -->
+<section>
+  <h2><span class="emoji">📡</span> פעילות אחרונה</h2>
+  <div id="events-list">
+    <div class="loading">טוען…</div>
+  </div>
+</section>
+
+<!-- ALL PAGES NAVIGATION -->
+<section>
+  <h2><span class="emoji">🧭</span> כל העמודים והפאנלים</h2>
+
+  <div class="pages-cluster">
+    <h3>מרכזי שליטה (יש 3 — כולם פעילים)</h3>
+    <div class="pages-grid">
+      <a class="page-link" href="/admin/control-center.html"><span class="emoji">🎛️</span> Control Center (multi-monitor)<span class="arrow">→</span></a>
+      <a class="page-link" href="/command-center.html"><span class="emoji">📡</span> Command Center (24 tiles)<span class="arrow">→</span></a>
+      <a class="page-link" href="/admin/mission-control.html"><span class="emoji">🎯</span> Mission Control (משימות)<span class="arrow">→</span></a>
+      <a class="page-link" href="/admin/tokens.html"><span class="emoji">🔑</span> Bot Tokens Catalog<span class="arrow">→</span></a>
+      <a class="page-link" href="/admin/rotate-token.html"><span class="emoji">🔄</span> סובב טוקן (in-browser)<span class="arrow">→</span></a>
+      <a class="page-link" href="/admin/secrets-vault.html"><span class="emoji">🔐</span> Secrets Vault (כל הסודות)<span class="arrow">→</span></a>
+      <a class="page-link" href="/admin/reality.html"><span class="emoji">🌡️</span> Reality Dashboard<span class="arrow">→</span></a>
+      <a class="page-link" href="/admin.html"><span class="emoji">⚙️</span> Admin Panel (legacy)<span class="arrow">→</span></a>
+    </div>
+  </div>
+
+  <div class="pages-cluster">
+    <h3>Mini Apps (Telegram — נפתחים מהבוט)</h3>
+    <div class="pages-grid">
+      <a class="page-link" href="/miniapp/dashboard.html"><span class="emoji">📱</span> דשבורד אישי<span class="arrow">→</span></a>
+      <a class="page-link" href="/miniapp/wallet.html"><span class="emoji">💼</span> ארנק<span class="arrow">→</span></a>
+      <a class="page-link" href="/miniapp/expenses.html"><span class="emoji">💰</span> מעקב הוצאות (חדש)<span class="arrow">→</span></a>
+      <a class="page-link" href="/miniapp/device.html"><span class="emoji">📟</span> שליטה ב-ESP<span class="arrow">→</span></a>
+      <a class="page-link" href="/miniapp/swarm.html"><span class="emoji">🐝</span> רשת Swarm (4 מכשירים)<span class="arrow">→</span></a>
+    </div>
+  </div>
+
+  <div class="pages-cluster">
+    <h3>מוצר + קהילה</h3>
+    <div class="pages-grid">
+      <a class="page-link" href="/marketplace.html"><span class="emoji">🛒</span> מרקטפלייס<span class="arrow">→</span></a>
+      <a class="page-link" href="/academia.html"><span class="emoji">🎓</span> אקדמיה<span class="arrow">→</span></a>
+      <a class="page-link" href="/dashboard.html"><span class="emoji">📊</span> דשבורד ציבורי<span class="arrow">→</span></a>
+      <a class="page-link" href="/community.html"><span class="emoji">💬</span> קהילה<span class="arrow">→</span></a>
+      <a class="page-link" href="/swarm.html"><span class="emoji">🐝</span> Swarm Vision<span class="arrow">→</span></a>
+      <a class="page-link" href="/voice.html"><span class="emoji">🎙️</span> Voice Vision<span class="arrow">→</span></a>
+    </div>
+  </div>
+
+  <div class="pages-cluster">
+    <h3>נתונים + ניתוח</h3>
+    <div class="pages-grid">
+      <a class="page-link" href="/blockchain.html"><span class="emoji">⛓️</span> בלוקצ'יין (BSC)<span class="arrow">→</span></a>
+      <a class="page-link" href="/network.html"><span class="emoji">🕸️</span> Neural Network<span class="arrow">→</span></a>
+      <a class="page-link" href="/performance.html"><span class="emoji">📈</span> Performance Lab<span class="arrow">→</span></a>
+      <a class="page-link" href="/status.html"><span class="emoji">🔬</span> System Status<span class="arrow">→</span></a>
+      <a class="page-link" href="/chain-status.html"><span class="emoji">🔗</span> Chain Events<span class="arrow">→</span></a>
+      <a class="page-link" href="/ops-viewer.html"><span class="emoji">📄</span> Ops Docs Viewer<span class="arrow">→</span></a>
+    </div>
+  </div>
+
+  <div class="pages-cluster">
+    <h3>המכשיר (ESP32)</h3>
+    <div class="pages-grid">
+      <a class="page-link" href="/device-pair.html"><span class="emoji">📟</span> צימוד מכשיר<span class="arrow">→</span></a>
+      <a class="page-link" href="/kosher-wallet.html"><span class="emoji">🔒</span> Kosher Wallet<span class="arrow">→</span></a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  עודכן אחרון: <span class="last-update" id="last-update">—</span> · מתעדכן אוטומטית כל 60 שניות
+  <br>
+  <a href="/ops-viewer.html?doc=ops/SYSTEM_ALIGNMENT_20260424.md">מסמך יישור הסוכנים</a>
+  ·
+  <a href="/ops-viewer.html?doc=ops/KNOWN_ISSUES.md">Known Issues</a>
+  ·
+  <a href="/ops-viewer.html?doc=ops/OPS_RUNBOOK.md">Runbook</a>
+</footer>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+  const API = 'https://slh-api-production.up.railway.app';
+  const DEVICE_ID = 'esp32-14335C6C32C0';  // Osif's current ESP
+  const ADMIN_KEY_GUESS = null;  // set via URL ?k=... or localStorage
+
+  const DOW_HE = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+  const MONTH_HE = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+
+  // ───── CLOCK ─────
+  function updateClock() {
+    const now = new Date();
+    document.getElementById('hdate').textContent =
+      now.getDate() + ' ' + MONTH_HE[now.getMonth()] + ' ' + now.getFullYear();
+    document.getElementById('htime').textContent =
+      String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+    document.getElementById('hdow').textContent = 'יום ' + DOW_HE[now.getDay()];
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+
+  // ───── HELPERS ─────
+  function card(label, value, sub, status) {
+    const dot = status ? `<span class="status-dot ${status}"></span>` : '';
+    return `<div class="card"><div class="label">${label}</div><div class="value small">${value}${dot}</div>${sub ? `<div class="sub">${sub}</div>` : ''}</div>`;
+  }
+  async function fetchJson(path) {
+    const r = await fetch(API + path, { cache: 'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  }
+  function timeAgo(isoStr) {
+    if (!isoStr) return '—';
+    const t = new Date(isoStr).getTime();
+    const sec = Math.round((Date.now() - t) / 1000);
+    if (sec < 60) return 'לפני ' + sec + ' שנ׳';
+    if (sec < 3600) return 'לפני ' + Math.floor(sec / 60) + ' דק׳';
+    if (sec < 86400) return 'לפני ' + Math.floor(sec / 3600) + ' ש׳';
+    return 'לפני ' + Math.floor(sec / 86400) + ' ימים';
+  }
+
+  // ───── LIVE STATUS ─────
+  async function loadLive() {
+    const box = document.getElementById('live-cards');
+    box.innerHTML = ''
+      + card('API', 'בודק…', 'slh-api-production.up.railway.app', '')
+      + card('DB', 'בודק…', 'Postgres', '')
+      + card('Gateway', 'בודק…', 'Mini App HMAC', '')
+      + card('המכשיר שלך', 'בודק…', DEVICE_ID.slice(-10), '');
+
+    // API health
+    const [health, miniapp, claim] = await Promise.all([
+      fetchJson('/api/health').catch(e => ({ error: e.message })),
+      fetchJson('/api/miniapp/health').catch(e => ({ error: e.message })),
+      fetchJson('/api/device/claim/' + encodeURIComponent(DEVICE_ID)).catch(e => ({ error: e.message })),
+    ]);
+
+    const apiOk = health.status === 'ok';
+    const dbConn = health.db === 'connected';
+    const gwOk = miniapp.gateway_loaded === true;
+    const paired = claim.paired === true;
+
+    box.innerHTML = ''
+      + card('API',     apiOk ? 'חי' : 'כבוי', health.version ? 'v' + health.version : (health.error || ''), apiOk ? 'ok' : 'err')
+      + card('DB',      dbConn ? 'מחובר' : 'לא מחובר', 'Postgres 15', dbConn ? 'ok' : 'err')
+      + card('Gateway', gwOk ? 'טעון' : 'לא טעון', miniapp.primary_bot_token_set ? 'bot_token מוגדר' : 'חסר TELEGRAM_BOT_TOKEN', gwOk ? (miniapp.primary_bot_token_set ? 'ok' : 'warn') : 'err')
+      + card('המכשיר שלך', paired ? 'מצומד ✓' : 'מחכה לצימוד', DEVICE_ID.slice(-10), paired ? 'ok' : 'warn');
+  }
+
+  // ───── BLOCKERS (YOUR QUEUE) ─────
+  async function loadQueue() {
+    const el = document.getElementById('my-queue');
+    const countEl = document.getElementById('my-queue-count');
+
+    // Gather live signals
+    const miniapp = await fetchJson('/api/miniapp/health').catch(() => ({}));
+    const claim = await fetchJson('/api/device/claim/' + encodeURIComponent(DEVICE_ID)).catch(() => ({}));
+
+    // Probe SMS provider via a safe dry-run register call
+    let smsProvider = 'unknown';
+    try {
+      const r = await fetch(API + '/api/device/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: '972500000000', device_id: 'probe-my-html', device_type: 'esp32' })
+      });
+      const j = await r.json();
+      smsProvider = j.sms_provider || 'unknown';
+    } catch (e) {}
+
+    const blockers = [
+      {
+        done: claim.paired === true,
+        title: 'פייר המכשיר הפיזי',
+        action: `פתח את דף הצימוד, הזן טלפון, קבל קוד, אמת. ~30 שניות.`,
+        link: { href: '/device-pair.html?mac=14335C6C32C0', text: 'פתח דף צימוד ←' },
+        meta: `MAC: 14:33:5C:6C:32:C0 · Status: ${claim.paired ? 'paired' : 'polling'}`
+      },
+      {
+        done: miniapp.primary_bot_token_set === true,
+        title: 'הגדר TELEGRAM_BOT_TOKEN ב-Railway',
+        action: `Railway dashboard → project SLH → service של API → Variables → הוסף TELEGRAM_BOT_TOKEN עם הטוקן של @WEWORK_teamviwer_bot (או הבוט שיפתח Mini App)`,
+        link: { href: 'https://railway.app/', text: 'Railway dashboard ↗' },
+        meta: 'בלעדיו /api/miniapp/me יחזיר 500 לכל בקשה של Mini App'
+      },
+      {
+        done: !!smsProvider && smsProvider !== 'disabled' && smsProvider !== 'stub' && smsProvider !== 'none' && smsProvider !== 'unknown',
+        title: 'הגדר SMS_PROVIDER ב-Railway',
+        action: `הירשם ב-inforu.co.il, קבל USERNAME + API_TOKEN, ואז ב-Railway Variables: SMS_PROVIDER=inforu, INFORU_USERNAME=..., INFORU_API_TOKEN=..., INFORU_SENDER=SLH`,
+        link: { href: 'https://inforu.co.il/', text: 'Inforu (ספק SMS ישראלי) ↗' },
+        meta: `סטטוס נוכחי: ${smsProvider}`
+      },
+      {
+        done: false,  // cannot verify BotFather state from here
+        title: 'הגדר Mini App URL ב-BotFather',
+        action: `Telegram → @BotFather → /mybots → בחר @WEWORK_teamviwer_bot → Bot Settings → Menu Button → Edit menu button URL → הדבק: https://slh-nft.com/miniapp/dashboard.html`,
+        link: { href: 'https://t.me/BotFather', text: 'BotFather ↗' },
+        meta: 'בלעדיו משתמשים לא יכולים לפתוח את ה-Mini App מהבוט'
+      },
+    ];
+
+    const open = blockers.filter(b => !b.done).length;
+    const done = blockers.length - open;
+    countEl.textContent = open === 0
+      ? (done + '/' + blockers.length + ' — כולם סגורים 🎉')
+      : (open + ' פתוחים · ' + done + ' סגורים');
+
+    el.innerHTML = blockers.map((b, i) => `
+      <div class="blocker${b.done ? ' done' : ''}">
+        <div class="b-num">${b.done ? '✓' : (i+1)}</div>
+        <div class="b-body">
+          <div class="b-title">${b.title}</div>
+          <div class="b-action">${b.action}</div>
+          ${b.link ? `<a class="b-link" href="${b.link.href}" target="_blank" rel="noopener">${b.link.text}</a>` : ''}
+          <div class="b-meta">${b.meta || ''}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // ───── SWARM ─────
+  async function loadSwarm() {
+    const box = document.getElementById('swarm-cards');
+    try {
+      const s = await fetchJson('/api/swarm/stats');
+      box.innerHTML = ''
+        + card('סה״כ במזרך', s.total_devices, 'devices registered')
+        + card('online (2 דק׳)', s.online, s.online > 0 ? 'mesh active' : 'no heartbeats yet', s.online > 0 ? 'ok' : 'warn')
+        + card('events 24h', s.events_24h, 'mesh activity')
+        + card('commands ממתינות', s.pending_commands, 'queued for delivery');
+    } catch (e) {
+      box.innerHTML = card('סה״כ', '—', 'API error: ' + e.message)
+        + card('online', '—', '')
+        + card('events 24h', '—', '')
+        + card('commands', '—', '');
+    }
+  }
+
+  // ───── STATS ─────
+  async function loadStats() {
+    const box = document.getElementById('stats-cards');
+    const [marketplace, courses, events] = await Promise.all([
+      fetchJson('/api/marketplace/items?limit=100').catch(() => ({ items: [] })),
+      fetchJson('/api/academia/courses').catch(() => ({ courses: [] })),
+      fetchJson('/api/events/public?limit=100').catch(() => ({ events: [] })),
+    ]);
+
+    const mkItems = (marketplace.items || []).filter(i => i.status === 'approved').length;
+    const courseCount = (courses.courses || courses || []).length;
+    const evts = (events.events || []).length;
+
+    // Device count (admin — might 403 without key)
+    let devCount = '—';
+    try {
+      const d = await fetchJson('/api/admin/devices/list');
+      devCount = (d.devices || []).length;
+    } catch (_) { /* expected 403 without admin key */ }
+
+    box.innerHTML = ''
+      + card('מכשירים רשומים', devCount, 'admin endpoint')
+      + card('פריטים במרקטפלייס', mkItems, 'approved')
+      + card('קורסים', courseCount, 'academia')
+      + card('events השבוע', evts, 'event_log');
+  }
+
+  // ───── SECRETS STATUS (sanitized public beacon) ─────
+  async function loadSecrets() {
+    const box = document.getElementById('secrets-cards');
+    try {
+      const s = await fetchJson('/api/public/security/summary');
+      if (s.unavailable) {
+        box.innerHTML = ''
+          + card('מוגדרים', '—', 'vault not initialized', '')
+          + card('חסרים / ברירת מחדל', '—', '', '')
+          + card('לסיבוב', '—', '', '')
+          + card('התראות 24ש', '—', '', '');
+        return;
+      }
+      const okStatus = s.ok ? 'ok' : (s.any_broken ? 'err' : 'warn');
+      const brokenStatus = s.missing_or_default > 0 ? 'err' : 'ok';
+      const overdueStatus = s.overdue > 0 ? 'warn' : 'ok';
+      const alertsStatus = s.alerts_24h > 0 ? 'warn' : 'ok';
+      box.innerHTML = ''
+        + card('מוגדרים', s.configured + '/' + s.total, s.last_sweep_at ? 'sweep ' + timeAgo(s.last_sweep_at) : 'sweep מחכה', okStatus)
+        + card('חסרים / ברירת מחדל', s.missing_or_default, s.missing_or_default === 0 ? '✓ הכל בסדר' : 'דורש פעולה', brokenStatus)
+        + card('לסיבוב', s.overdue, s.overdue === 0 ? '✓ הכל מעודכן' : 'cadence overdue', overdueStatus)
+        + card('התראות 24ש', s.alerts_24h, s.alerts_24h === 0 ? '✓ שקט' : 'בדוק Vault', alertsStatus);
+    } catch (e) {
+      box.innerHTML = ''
+        + card('מוגדרים', '—', 'API: ' + e.message, 'err')
+        + card('חסרים / ברירת מחדל', '—', '', '')
+        + card('לסיבוב', '—', '', '')
+        + card('התראות 24ש', '—', '', '');
+    }
+  }
+
+  // ───── EVENTS ─────
+  async function loadEvents() {
+    const el = document.getElementById('events-list');
+    try {
+      const d = await fetchJson('/api/events/public?limit=12');
+      const evts = d.events || [];
+      if (evts.length === 0) {
+        el.innerHTML = '<div class="empty">אין events עדיין. תצומד מכשיר / תבצע רכישה / תשלח broadcast כדי לראות כאן פעילות.</div>';
+        return;
+      }
+      el.innerHTML = evts.map(e => {
+        const payload = (e.payload && typeof e.payload === 'object') ? e.payload : {};
+        const desc = Object.entries(payload)
+          .slice(0, 3)
+          .map(([k, v]) => `<span style="color:var(--text2)">${k}:</span> ${String(v).slice(0, 40)}`)
+          .join(' · ');
+        return `<div class="event">
+          <span class="etype">${e.type || e.event_type}</span>
+          <span class="edesc">${desc}</span>
+          <span class="etime">${timeAgo(e.created_at)}</span>
+        </div>`;
+      }).join('');
+    } catch (err) {
+      el.innerHTML = `<div class="err-banner">שגיאה בטעינת events: ${err.message}</div>`;
+    }
+  }
+
+  // ───── REFRESH CYCLE ─────
+  async function refreshAll() {
+    try {
+      await Promise.all([ loadLive(), loadSecrets(), loadQueue(), loadStats(), loadSwarm(), loadEvents() ]);
+    } catch (e) {
+      console.error('refreshAll error:', e);
+    }
+    document.getElementById('last-update').textContent = new Date().toLocaleTimeString('he-IL');
+  }
+
+  document.getElementById('refresh-btn').addEventListener('click', refreshAll);
+  refreshAll();
+  setInterval(refreshAll, 60 * 1000);  // every 60s
+})();
+</script>
+</body>
+</html>

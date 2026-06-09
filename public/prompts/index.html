@@ -1,0 +1,136 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH · Agent Prompts · Public Index</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+body{background:#05080f;color:#e0e0f0;font-family:Inter,system-ui,sans-serif;margin:0;padding:24px;line-height:1.6}
+.wrap{max-width:880px;margin:0 auto}
+h1{font-size:28px;background:linear-gradient(90deg,#00ff41,#00e5ff,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.sub{color:#8a8ab0;font-size:14px;margin-bottom:24px}
+.card{background:#0c1018;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:18px;margin-bottom:12px}
+.card h2{font-size:16px;margin-bottom:6px;color:#fff}
+.card .desc{font-size:13px;color:#9ba0b5;margin-bottom:12px}
+.card .links{display:flex;gap:8px;flex-wrap:wrap}
+.card a{padding:8px 14px;background:rgba(0,255,65,.08);color:#00ff41;border:1px solid rgba(0,255,65,.3);border-radius:8px;text-decoration:none;font-size:12px;font-family:'Space Mono',monospace}
+.card a:hover{background:rgba(0,255,65,.18)}
+.card a.raw{background:rgba(0,229,255,.08);color:#00e5ff;border-color:rgba(0,229,255,.3)}
+.card .tag{display:inline-block;padding:2px 8px;background:rgba(255,215,0,.1);color:#ffd700;border-radius:4px;font-size:10px;font-weight:700;margin-right:6px;font-family:'Space Mono',monospace}
+.copy-hint{background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.2);border-radius:10px;padding:14px;margin-bottom:20px;font-size:13px;color:#9ba0b5;line-height:1.8}
+.copy-hint code{background:rgba(0,0,0,.3);padding:2px 6px;border-radius:4px;color:#00ff41;font-family:'Space Mono',monospace;font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>🤖 SLH · Agent Prompts</h1>
+  <p class="sub">פרומפטים ציבוריים לסוכני AI. העתק את הקישור Raw ושלח לסוכן.</p>
+
+  <div class="copy-hint">
+    <b>איך להשתמש:</b> לכל פרומפט יש לינק <code>Raw</code> — לחץ ימני → Copy Link → שלח לסוכן.<br>
+    או תגיד לסוכן: "פתח את הקישור, הדבק את התוכן כ‑system prompt שלך".
+  </div>
+
+  <div class="card">
+    <h2><span class="tag">#1</span>Master Executor (כל-מערכת)</h2>
+    <div class="desc">339 שורות · identity, tech stack, integrations, authorization, 5 tracks, worked example. לכל AI executor agent.</div>
+    <div class="links">
+      <a href="MASTER_EXECUTOR_AGENT_PROMPT.md">📄 MD</a>
+      <a class="raw" href="https://slh-nft.com/prompts/MASTER_EXECUTOR_AGENT_PROMPT.md">🔗 Raw (shareable)</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="tag">#2</span>Ledger + Guardian + ESP</h2>
+    <div class="desc">280 שורות · לסוכן על מחשב שני עם Docker. 3 subsystems · tasks per-bot · Twilio · Redis.</div>
+    <div class="links">
+      <a href="LEDGER_GUARDIAN_ESP_AGENT_PROMPT.md">📄 MD</a>
+      <a class="raw" href="https://slh-nft.com/prompts/LEDGER_GUARDIAN_ESP_AGENT_PROMPT.md">🔗 Raw</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="tag">#3</span>ESP QuickStart (PowerShell)</h2>
+    <div class="desc">הפקודות המדויקות: git clone, docker compose, venv, uvicorn. 3 משימות מוכנות עם קוד.</div>
+    <div class="links">
+      <a href="ESP_QUICKSTART.md">📄 MD</a>
+      <a class="raw" href="https://slh-nft.com/prompts/ESP_QUICKSTART.md">🔗 Raw</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="tag">#4</span>System Scan (Auditor · read-only)</h2>
+    <div class="desc">סורק 178 endpoints + 70 pages + 6 tokens · Output format מובנה · time-boxed 2h.</div>
+    <div class="links">
+      <a href="SYSTEM_SCAN_AGENT_PROMPT.md">📄 MD</a>
+      <a class="raw" href="https://slh-nft.com/prompts/SYSTEM_SCAN_AGENT_PROMPT.md">🔗 Raw</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="tag">#5</span>Sudoku Task (5h engagement feature)</h2>
+    <div class="desc">Frontend + Backend + DB · AIC/REP rewards · leaderboard · anti-cheat.</div>
+    <div class="links">
+      <a href="TASK_SUDOKU_AGENT.md">📄 MD</a>
+      <a class="raw" href="https://slh-nft.com/prompts/TASK_SUDOKU_AGENT.md">🔗 Raw</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="tag">#6</span>ESP32 Firmware Agent · hardware wallet</h2>
+    <div class="desc">Arduino/PlatformIO · WiFi + OLED + HTTPS · 4 tasks (bootstrap, register, balance, signing).</div>
+    <div class="links">
+      <a href="ESP_FIRMWARE_AGENT_PROMPT.md">📄 MD</a>
+      <a class="raw" href="https://slh-nft.com/prompts/ESP_FIRMWARE_AGENT_PROMPT.md">🔗 Raw</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="tag">#7</span>UI/UX Designer Agent · visual system</h2>
+    <div class="desc">Design system · unified nav · typography · responsive audit · a11y · no React/Vue.</div>
+    <div class="links">
+      <a href="UI_UX_AGENT_PROMPT.md">📄 MD</a>
+      <a class="raw" href="https://slh-nft.com/prompts/UI_UX_AGENT_PROMPT.md">🔗 Raw</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="tag">#8</span>Content Writer Agent · blog + social</h2>
+    <div class="desc">5 long-form blog posts · 30 social posts · AI system prompts · email templates.</div>
+    <div class="links">
+      <a href="CONTENT_WRITER_AGENT_PROMPT.md">📄 MD</a>
+      <a class="raw" href="https://slh-nft.com/prompts/CONTENT_WRITER_AGENT_PROMPT.md">🔗 Raw</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="tag">#9</span>Social Automation Agent · n8n + OAuth</h2>
+    <div class="desc">Self-hosted n8n · RSS → Telegram/Twitter/LinkedIn/FB · rate limiting · analytics dashboard.</div>
+    <div class="links">
+      <a href="SOCIAL_AUTOMATION_AGENT_PROMPT.md">📄 MD</a>
+      <a class="raw" href="https://slh-nft.com/prompts/SOCIAL_AUTOMATION_AGENT_PROMPT.md">🔗 Raw</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="tag">📋</span>All Agent Prompts (אינדקס)</h2>
+    <div class="desc">Decision tree · איזה פרומפט לאיזה סוכן · הודעה מוכנה להעתקה.</div>
+    <div class="links">
+      <a href="ALL_AGENT_PROMPTS.md">📄 MD</a>
+      <a class="raw" href="https://slh-nft.com/prompts/ALL_AGENT_PROMPTS.md">🔗 Raw</a>
+    </div>
+  </div>
+
+  <div style="margin-top:30px;padding-top:20px;border-top:1px solid rgba(255,255,255,.08);text-align:center;font-size:12px;color:#5a6078">
+    <a href="/mission-control.html" style="color:#8a8ab0;margin:0 8px">Mission Control</a> ·
+    <a href="/agent-brief.html" style="color:#8a8ab0;margin:0 8px">Agent Brief</a> ·
+    <a href="/admin-tokens.html" style="color:#8a8ab0;margin:0 8px">Admin Tokens</a>
+  </div>
+
+</div>
+</body>
+</html>

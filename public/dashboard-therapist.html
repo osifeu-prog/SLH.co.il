@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH Spark · לוח הבקרה של המטפל</title>
+<meta name="description" content="לוח בקרה למטפלים מאושרים ב-SLH Spark — פרופיל, זמינות, ארנק, חיבור לטלגרם.">
+<meta name="robots" content="noindex,nofollow">
+
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css?v=20260427a">
+
+<style>
+  :root {
+    --bg: #0a1018;
+    --bg2: #0f1a26;
+    --accent: #00e887;
+    --pink: #ff6b9d;
+    --gold: #ffd700;
+    --text: #e8f4ff;
+    --text2: #9cb8d6;
+    --border: rgba(255, 107, 157, 0.3);
+  }
+  body {
+    background: radial-gradient(circle at 30% 10%, rgba(255,107,157,.08), transparent 60%), var(--bg);
+    color: var(--text); font-family: 'Assistant', system-ui, sans-serif; line-height: 1.7;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 40px 24px 60px; }
+  h1 { font-size: clamp(26px, 4vw, 36px); font-weight: 900;
+       background: linear-gradient(135deg, var(--pink), var(--accent));
+       -webkit-background-clip: text; background-clip: text; color: transparent;
+       margin-bottom: 8px; }
+  .sub { font-size: 14px; color: var(--text2); margin-bottom: 24px; }
+
+  .gate { padding: 60px 30px; text-align: center; background: var(--bg2);
+          border: 1px dashed var(--border); border-radius: 14px; }
+  .gate .ic { font-size: 64px; margin-bottom: 16px; }
+  .gate h2 { color: var(--pink); font-size: 22px; margin: 0 0 10px; }
+  .gate p { color: var(--text2); max-width: 500px; margin: 0 auto 16px; }
+  .gate a, .gate button { display: inline-block; padding: 12px 22px;
+    background: linear-gradient(135deg, var(--pink), var(--accent));
+    color: #000; border-radius: 10px; font-weight: 800; text-decoration: none;
+    border: none; cursor: pointer; font-family: inherit; font-size: 14px;
+    margin: 4px; }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px; }
+  @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+
+  .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px;
+          padding: 22px; }
+  .card h3 { color: var(--pink); font-size: 16px; margin: 0 0 12px;
+             text-transform: uppercase; letter-spacing: 1px; }
+  .card.full { grid-column: 1 / -1; }
+
+  label { display: block; font-size: 12px; color: var(--text2); margin: 10px 0 4px;
+          text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+  input, select, textarea { width: 100%; padding: 10px 12px; background: var(--bg);
+    border: 1px solid var(--border); border-radius: 8px; color: var(--text);
+    font-family: inherit; font-size: 14px; box-sizing: border-box; }
+  textarea { min-height: 80px; resize: vertical; }
+
+  .btn { padding: 11px 18px; border: none; border-radius: 10px; cursor: pointer;
+         font-weight: 700; font-family: inherit; font-size: 13px;
+         background: linear-gradient(135deg, var(--pink), var(--accent)); color: #000; }
+  .btn-secondary { background: rgba(255,255,255,.05); color: var(--text);
+                   border: 1px solid var(--border); }
+
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 10px;
+           font-size: 11px; font-weight: 700; text-transform: uppercase;
+           letter-spacing: .5px; vertical-align: middle; margin-right: 8px; }
+  .badge.approved { background: rgba(0,232,135,.1); color: var(--accent); border: 1px solid var(--accent); }
+  .badge.pending  { background: rgba(255,215,0,.1); color: var(--gold); border: 1px solid var(--gold); }
+
+  .meta { font-size: 12px; color: var(--text2); display: flex; flex-wrap: wrap; gap: 14px; margin-top: 8px; }
+  .meta b { color: var(--accent); }
+
+  .avail-row { display: grid; grid-template-columns: 80px 1fr 1fr 30px; gap: 8px;
+               align-items: center; margin-top: 6px; font-size: 13px; }
+  .avail-row.header { font-size: 11px; color: var(--text2); text-transform: uppercase;
+                      letter-spacing: 1px; margin-bottom: 4px; }
+  .avail-row input[type=time] { padding: 6px 8px; }
+  .day-name { font-weight: 700; }
+  .day-toggle { width: 20px; height: 20px; }
+
+  .wallet-pill { background: rgba(0,232,135,.08); border: 1px solid var(--accent);
+                 border-radius: 10px; padding: 10px 14px; font-family: monospace;
+                 font-size: 12px; color: var(--accent); margin-top: 8px;
+                 word-break: break-all; }
+  .wallet-pill.empty { background: rgba(150,150,150,.08); border-color: rgba(150,150,150,.3); color: var(--text2); }
+
+  .tg-link { background: rgba(0,180,216,.08); border: 1px solid #00b4d8;
+             border-radius: 10px; padding: 12px 14px; margin-top: 8px;
+             font-size: 13px; color: var(--text); display: flex; flex-direction: column; gap: 6px; }
+  .tg-link a { color: #00b4d8; font-weight: 700; word-break: break-all; }
+  .tg-link.connected { background: rgba(0,232,135,.08); border-color: var(--accent); }
+  .tg-link.connected .status { color: var(--accent); font-weight: 700; }
+
+  .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+           background: var(--bg2); border: 1px solid var(--accent); color: var(--text);
+           padding: 14px 22px; border-radius: 12px; font-size: 14px; z-index: 9999;
+           opacity: 0; transition: opacity .3s; pointer-events: none; }
+  .toast.show { opacity: 1; }
+  .toast.err { border-color: #ef4444; color: #ef4444; }
+
+  .placeholder { padding: 30px; text-align: center; color: var(--text2);
+                 background: rgba(255,255,255,.02); border-radius: 10px;
+                 font-size: 13px; border: 1px dashed var(--border); }
+</style>
+</head>
+<body>
+
+<div id="topnav-root"></div>
+
+<div class="wrap">
+  <h1>🩺 לוח הבקרה של המטפל</h1>
+  <div class="sub" id="sub-line">טוען…</div>
+
+  <!-- Gating screens -->
+  <div id="gate-noauth" class="gate" style="display:none">
+    <div class="ic">🔐</div>
+    <h2>נדרשת התחברות</h2>
+    <p>כדי לגשת ללוח הבקרה של המטפל, יש להתחבר תחילה ולוודא שהאפליקציה אושרה ע"י צוות SLH Spark.</p>
+    <a href="/dashboard.html">היכנס ללוח הבקרה הראשי</a>
+  </div>
+
+  <div id="gate-pending" class="gate" style="display:none">
+    <div class="ic">⏳</div>
+    <h2>הבקשה שלך בבדיקה</h2>
+    <p>צוות SLH Spark עובר על הבקשות תוך 48 שעות. ברגע שהאפליקציה תאושר — לוח הבקרה כאן יהיה זמין במלואו.</p>
+    <p style="font-size:13px">אם אתה חושב שהיה אישור — נסה <button class="btn btn-secondary" onclick="reload()">לרענן</button></p>
+  </div>
+
+  <div id="dash" style="display:none">
+
+    <!-- Profile + status -->
+    <div class="card full">
+      <h3>פרופיל</h3>
+      <div>
+        <span id="status-badge" class="badge approved">approved</span>
+        <strong id="profile-name" style="font-size:18px;"></strong>
+      </div>
+      <div class="meta" id="profile-meta"></div>
+
+      <label>ביוגרפיה (יוצג בספרייה הציבורית)</label>
+      <textarea id="bio" placeholder="ספר על הגישה שלך, ניסיון, שפה וכו'..."></textarea>
+
+      <div class="grid" style="margin-top:14px; grid-template-columns:1fr 1fr;">
+        <div>
+          <label>תעריף לשעה (ZVK)</label>
+          <input id="rate_zvk" type="number" min="0" max="1000" step="0.5" placeholder="50">
+        </div>
+        <div>
+          <label>זמינות שעות / שבוע</label>
+          <select id="hours_per_week">
+            <option value="1-3">1-3 שעות</option>
+            <option value="4-8">4-8 שעות</option>
+            <option value="9-15">9-15 שעות</option>
+            <option value="16-30">16-30 שעות</option>
+            <option value="30+">30+ שעות</option>
+          </select>
+        </div>
+      </div>
+
+      <label>תחומי התמחות</label>
+      <textarea id="specialties" placeholder="חרדה, דיכאון, טראומה, יחסים..."></textarea>
+
+      <button class="btn" style="margin-top:14px;" onclick="saveProfile()">💾 שמור פרופיל</button>
+    </div>
+
+    <div class="grid">
+      <!-- Availability -->
+      <div class="card">
+        <h3>📅 לוח זמינות שבועי</h3>
+        <div class="avail-row header">
+          <span>יום</span><span>מ</span><span>עד</span><span>פעיל</span>
+        </div>
+        <div id="availability-rows"></div>
+        <button class="btn" style="margin-top:14px;" onclick="saveAvailability()">💾 שמור זמינות</button>
+      </div>
+
+      <!-- Wallet -->
+      <div class="card">
+        <h3>💰 ארנק BSC לתשלומים</h3>
+        <div id="wallet-display" class="wallet-pill empty">לא מחובר ארנק עדיין</div>
+        <p style="font-size:12px; color:var(--text2); margin-top:10px;">
+          חבר ארנק MetaMask / Trust Wallet בלוח הבקרה הראשי כדי לקבל תשלומי SLH ישירות.
+        </p>
+        <a href="/wallet.html" class="btn btn-secondary" style="text-decoration:none; display:inline-block; margin-top:8px;">פתח ארנק</a>
+      </div>
+    </div>
+
+    <!-- Telegram connect -->
+    <div class="card full">
+      <h3>📱 חיבור לטלגרם (התראות וניהול)</h3>
+      <div id="tg-display"></div>
+    </div>
+
+    <!-- Bookings placeholder -->
+    <div class="card full">
+      <h3>📋 תיאומי פגישה</h3>
+      <div class="placeholder">
+        מערכת תיאומים תופיע כאן ב-Phase 5+. בינתיים — אישור פגישה דרך הטלגרם או הדאשבורד הראשי.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+<div id="bottomnav-root"></div>
+<div id="footer-root"></div>
+
+<script src="/js/translations.js?v=20260427a"></script>
+<script src="/js/shared.js?v=20260427a"></script>
+<script>
+initShared({ activePage: 'therapist-dashboard', showBottomNav: true });
+
+const API = 'https://slh-api-production.up.railway.app';
+const DAYS = [
+  {key:'sun', label:'ראשון'},
+  {key:'mon', label:'שני'},
+  {key:'tue', label:'שלישי'},
+  {key:'wed', label:'רביעי'},
+  {key:'thu', label:'חמישי'},
+  {key:'fri', label:'שישי'},
+  {key:'sat', label:'שבת'}
+];
+
+let me = null;          // therapist row
+let userId = null;      // resolved user_id
+let availability = {};  // {sun:[{from,to}], ...}
+
+function showToast(msg, isErr) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show' + (isErr ? ' err' : '');
+  setTimeout(() => { el.classList.remove('show'); }, 3000);
+}
+
+function reload() { location.reload(); }
+
+// Resolve user_id: ?uid=, then localStorage.slh_user, then redirect to login
+function resolveUserId() {
+  const urlUid = new URLSearchParams(location.search).get('uid');
+  if (urlUid && /^\d+$/.test(urlUid)) return parseInt(urlUid, 10);
+  try {
+    const u = JSON.parse(localStorage.getItem('slh_user') || '{}');
+    if (u.id) return u.id;
+  } catch (_) {}
+  return null;
+}
+
+function authHeaders() {
+  const jwt = localStorage.getItem('slh_jwt');
+  return jwt ? { Authorization: 'Bearer ' + jwt } : {};
+}
+
+function meUrl(suffix) {
+  // Prefer JWT bearer when available; ?uid= fallback works regardless
+  return `${API}/api/therapists${suffix || '/me'}?uid=${userId}`;
+}
+
+async function loadMe() {
+  userId = resolveUserId();
+  if (!userId) {
+    document.getElementById('sub-line').textContent = '';
+    document.getElementById('gate-noauth').style.display = 'block';
+    return;
+  }
+
+  try {
+    const resp = await fetch(meUrl(), { headers: authHeaders() });
+    if (resp.status === 404) {
+      document.getElementById('sub-line').textContent = '';
+      document.getElementById('gate-pending').style.display = 'block';
+      return;
+    }
+    if (resp.status === 401) {
+      document.getElementById('sub-line').textContent = '';
+      document.getElementById('gate-noauth').style.display = 'block';
+      return;
+    }
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    me = await resp.json();
+  } catch (e) {
+    document.getElementById('sub-line').textContent = '⚠️ שגיאה בטעינת פרופיל: ' + e.message;
+    return;
+  }
+
+  // Populate
+  document.getElementById('sub-line').textContent =
+    `מטפל מאושר · #${me.id} · נרשם ${new Date(me.created_at).toLocaleDateString('he-IL')}`;
+  document.getElementById('profile-name').textContent = me.name;
+  document.getElementById('profile-meta').innerHTML = `
+    <span><b>${me.profession}</b></span>
+    ${me.experience_yrs ? `<span><b>${me.experience_yrs}</b> שנות ניסיון</span>` : ''}
+    ${me.email ? `<span>✉ ${me.email}</span>` : ''}
+    ${me.phone ? `<span>☎ ${me.phone}</span>` : ''}
+  `;
+  document.getElementById('bio').value = me.bio || '';
+  document.getElementById('rate_zvk').value = me.rate_zvk || 0;
+  document.getElementById('hours_per_week').value = me.hours_per_week || '1-3';
+  document.getElementById('specialties').value = me.specialties || '';
+
+  document.getElementById('dash').style.display = 'block';
+
+  await loadAvailability();
+  renderWallet();
+  renderTelegram();
+}
+
+async function loadAvailability() {
+  try {
+    const resp = await fetch(`${API}/api/therapists/availability?uid=${userId}`, { headers: authHeaders() });
+    if (resp.ok) {
+      const data = await resp.json();
+      availability = data.availability || {};
+    }
+  } catch (e) { console.warn('availability load failed', e); }
+  renderAvailability();
+}
+
+function renderAvailability() {
+  const container = document.getElementById('availability-rows');
+  container.innerHTML = DAYS.map(d => {
+    const slot = (availability[d.key] && availability[d.key][0]) || {};
+    const enabled = !!(availability[d.key] && availability[d.key].length);
+    return `
+      <div class="avail-row">
+        <span class="day-name">${d.label}</span>
+        <input type="time" id="from-${d.key}" value="${slot.from || '09:00'}" ${!enabled ? 'disabled' : ''}>
+        <input type="time" id="to-${d.key}" value="${slot.to || '17:00'}" ${!enabled ? 'disabled' : ''}>
+        <input type="checkbox" class="day-toggle" id="en-${d.key}" ${enabled ? 'checked' : ''}
+               onchange="toggleDay('${d.key}', this.checked)">
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleDay(day, on) {
+  document.getElementById('from-' + day).disabled = !on;
+  document.getElementById('to-' + day).disabled = !on;
+}
+
+function renderWallet() {
+  const el = document.getElementById('wallet-display');
+  let bsc = '';
+  try {
+    const u = JSON.parse(localStorage.getItem('slh_user') || '{}');
+    bsc = (u.wallets && u.wallets.bsc) || '';
+  } catch (_) {}
+  if (bsc) {
+    el.className = 'wallet-pill';
+    el.textContent = bsc;
+  } else {
+    el.className = 'wallet-pill empty';
+    el.textContent = 'לא מחובר ארנק עדיין';
+  }
+}
+
+function renderTelegram() {
+  const el = document.getElementById('tg-display');
+  if (me.telegram_id) {
+    el.className = 'tg-link connected';
+    el.innerHTML = `
+      <span class="status">✓ מחובר לטלגרם (ID: ${me.telegram_id})</span>
+      <span style="font-size:12px; color:var(--text2);">תוכל לקבל התראות על פגישות חדשות, אישורים ותשלומים ישירות לטלגרם.</span>
+    `;
+  } else {
+    const link = `https://t.me/SLH_AIR_bot?start=therapist_${me.id}`;
+    el.className = 'tg-link';
+    el.innerHTML = `
+      <span>חיבור הטלגרם שלך לחשבון המטפל מאפשר לך לקבל התראות על פגישות חדשות, ולנהל לוח זמנים מהמכשיר הנייד.</span>
+      <span>📲 <a href="${link}" target="_blank" rel="noopener">${link}</a></span>
+      <span style="font-size:11px; color:var(--text2);">לחץ על הקישור או סרוק קוד QR (יתווסף בעדכון הבא) כדי לחבר.</span>
+    `;
+  }
+}
+
+async function saveProfile() {
+  const body = {
+    bio: document.getElementById('bio').value.trim(),
+    rate_zvk: parseFloat(document.getElementById('rate_zvk').value) || 0,
+    hours_per_week: document.getElementById('hours_per_week').value,
+    specialties: document.getElementById('specialties').value.trim()
+  };
+  try {
+    const resp = await fetch(meUrl(), {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      body: JSON.stringify(body)
+    });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    showToast('✅ פרופיל נשמר');
+  } catch (e) { showToast('❌ שגיאה: ' + e.message, true); }
+}
+
+async function saveAvailability() {
+  const next = {};
+  for (const d of DAYS) {
+    const enabled = document.getElementById('en-' + d.key).checked;
+    if (enabled) {
+      next[d.key] = [{
+        from: document.getElementById('from-' + d.key).value,
+        to:   document.getElementById('to-' + d.key).value
+      }];
+    }
+  }
+  try {
+    const resp = await fetch(`${API}/api/therapists/availability?uid=${userId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      body: JSON.stringify({ availability: next })
+    });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    availability = next;
+    showToast('✅ זמינות נשמרה');
+  } catch (e) { showToast('❌ שגיאה: ' + e.message, true); }
+}
+
+loadMe();
+</script>
+
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260427a"></script>
+</body>
+</html>

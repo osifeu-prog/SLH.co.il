@@ -1,0 +1,270 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>💰 Leads — SLH Spark</title>
+<link rel="stylesheet" href="/css/shared.css?v=20260426e">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root {
+  --bg:#0a0e12; --bg2:#131821; --text:#e6edf3; --text2:#7d8590; --text3:#565c66;
+  --border:#22272e; --gold:#d4af37; --green:#3fb950; --red:#f85149;
+  --cyan:#58a6ff; --yellow:#f0b429; --purple:#a371f7;
+}
+* { box-sizing:border-box }
+body { font-family:'Heebo','Rubik',system-ui,sans-serif; margin:0; background:var(--bg); color:var(--text); direction:rtl; }
+header { padding:18px 22px; background:linear-gradient(135deg,var(--bg2),var(--bg)); border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
+header h1 { margin:0; font-size:22px; font-weight:900; }
+header .sub { font-size:12px; color:var(--text2); }
+.pill { display:inline-block; padding:4px 10px; border-radius:999px; font-size:11px; font-weight:800; }
+.pill.live { background:var(--green); color:#000; }
+.pill.off { background:var(--red); color:#fff; }
+.container { max-width:1200px; margin:0 auto; padding:22px; }
+.login-box { background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:20px; max-width:440px; margin:40px auto; text-align:center; }
+.login-box input { width:100%; padding:12px 14px; background:var(--bg); border:1px solid var(--border); color:var(--text); border-radius:10px; font-family:inherit; margin:8px 0; font-size:14px; direction:ltr; }
+.login-box button { width:100%; padding:12px; background:linear-gradient(135deg,var(--gold),var(--green)); color:#000; border:none; border-radius:10px; font-weight:900; cursor:pointer; font-family:inherit; }
+.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; margin-bottom:22px; }
+.stat { background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:14px; }
+.stat .label { font-size:12px; color:var(--text2); margin-bottom:6px; }
+.stat .value { font-size:26px; font-weight:900; color:var(--gold); }
+.stat .hint { font-size:11px; color:var(--text3); margin-top:4px; }
+.filters { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px; align-items:center; }
+.filters select, .filters input { padding:8px 12px; background:var(--bg2); border:1px solid var(--border); color:var(--text); border-radius:8px; font-family:inherit; font-size:13px; }
+table { width:100%; border-collapse:collapse; background:var(--bg2); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+th, td { padding:11px 12px; text-align:start; font-size:13px; border-bottom:1px solid var(--border); vertical-align:top; }
+th { background:rgba(255,215,0,.06); color:var(--gold); font-weight:800; font-size:11px; text-transform:uppercase; letter-spacing:.5px; }
+tr:hover td { background:rgba(255,255,255,.02); }
+.status-badge { display:inline-block; padding:3px 9px; border-radius:999px; font-size:11px; font-weight:800; }
+.status-pending { background:rgba(240,180,41,.15); color:var(--yellow); }
+.status-contacted { background:rgba(88,166,255,.15); color:var(--cyan); }
+.status-closed { background:rgba(63,185,80,.15); color:var(--green); }
+.status-lost { background:rgba(248,81,73,.15); color:var(--red); }
+.btn { padding:6px 12px; border-radius:8px; font-family:inherit; font-size:11px; cursor:pointer; border:1px solid var(--border); background:var(--bg); color:var(--text); font-weight:700; margin:2px; }
+.btn:hover { background:var(--bg2); }
+.btn-contacted { border-color:var(--cyan); color:var(--cyan); }
+.btn-closed { border-color:var(--green); color:var(--green); }
+.btn-lost { border-color:var(--red); color:var(--red); }
+.tel-link { color:var(--cyan); text-decoration:none; font-weight:700; }
+.note-box { background:var(--bg); border:1px dashed var(--border); border-radius:8px; padding:6px 10px; font-size:11px; color:var(--text2); max-width:240px; white-space:pre-wrap; word-break:break-word; }
+#toast { position:fixed; bottom:20px; right:50%; transform:translateX(50%); background:var(--green); color:#000; padding:12px 20px; border-radius:10px; font-weight:800; opacity:0; transition:opacity .3s; z-index:1000; }
+#toast.show { opacity:1; }
+.muted { color:var(--text3); }
+footer { text-align:center; padding:22px; color:var(--text3); font-size:12px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>💰 Leads Dashboard</h1>
+    <div class="sub">ניהול 100% של נרשמי קמפיינים · סטטוס + הערות + קישורים ישירים</div>
+  </div>
+  <div>
+    <span class="pill live" id="conn-pill">🟢 מחובר</span>
+    <button class="btn" onclick="logout()">🚪 יציאה</button>
+  </div>
+</header>
+
+<div id="login-screen" class="login-box" style="display:none">
+  <h2 style="margin:0 0 12px">🔐 Admin Login</h2>
+  <p class="sub" style="margin-bottom:16px">נדרש X-Admin-Key</p>
+  <input type="password" id="admin-key-input" placeholder="slh2026admin / other" autocomplete="off">
+  <button onclick="login()">כניסה</button>
+  <p style="font-size:11px; color:var(--text3); margin-top:12px">המפתח נשמר ב-localStorage · לא יוצא מהדפדפן</p>
+</div>
+
+<div id="main-screen" class="container" style="display:none">
+
+  <div class="stats" id="stats-grid">
+    <div class="stat"><div class="label">סה״כ Leads</div><div class="value" id="stat-total">—</div></div>
+    <div class="stat"><div class="label">ממתינים</div><div class="value" id="stat-pending" style="color:var(--yellow)">—</div><div class="hint">עוד לא יצרת קשר</div></div>
+    <div class="stat"><div class="label">בטיפול</div><div class="value" id="stat-contacted" style="color:var(--cyan)">—</div><div class="hint">יצרת קשר, ממתין תגובה</div></div>
+    <div class="stat"><div class="label">נסגרו 🎉</div><div class="value" id="stat-closed" style="color:var(--green)">—</div><div class="hint">שילם / הצטרף</div></div>
+    <div class="stat"><div class="label">נאבדו</div><div class="value" id="stat-lost" style="color:var(--red)">—</div><div class="hint">לא מעוניין</div></div>
+    <div class="stat"><div class="label">סה״כ הכנסה</div><div class="value" id="stat-revenue">—</div><div class="hint">ILS (amount_paid)</div></div>
+  </div>
+
+  <div class="filters">
+    <select id="f-campaign" onchange="loadLeads()"><option value="">כל הקמפיינים</option></select>
+    <select id="f-status" onchange="loadLeads()">
+      <option value="">כל הסטטוסים</option>
+      <option value="pending">ממתינים</option>
+      <option value="contacted">בטיפול</option>
+      <option value="closed">נסגרו</option>
+      <option value="lost">נאבדו</option>
+    </select>
+    <button class="btn" onclick="loadAll()">🔄 רענן</button>
+    <span class="muted" id="count-info" style="margin-inline-start:auto; font-size:12px;"></span>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>שם</th>
+        <th>טלפון</th>
+        <th>קמפיין</th>
+        <th>נתיב</th>
+        <th>סטטוס</th>
+        <th>שולם</th>
+        <th>תאריך</th>
+        <th>קוד שותף</th>
+        <th>הערות</th>
+        <th>פעולות</th>
+      </tr>
+    </thead>
+    <tbody id="leads-tbody">
+      <tr><td colspan="11" style="text-align:center; padding:40px; color:var(--text3)">טוען…</td></tr>
+    </tbody>
+  </table>
+
+</div>
+
+<div id="toast"></div>
+<footer>SLH Spark · Leads Dashboard · admin-gated · ניהול ישיר</footer>
+
+<script>
+const API_BASE = 'https://slh-api-production.up.railway.app';
+const LS_KEY = 'slh_admin_password';
+
+function getAdminKey(){ return localStorage.getItem(LS_KEY) || ''; }
+function setAdminKey(k){ localStorage.setItem(LS_KEY, k); }
+function clearAdminKey(){ localStorage.removeItem(LS_KEY); }
+
+function showToast(msg, ok=true){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = ok ? 'var(--green)' : 'var(--red)';
+  t.style.color = ok ? '#000' : '#fff';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3500);
+}
+
+async function api(path, opts={}){
+  const headers = { 'Content-Type':'application/json', 'X-Admin-Key': getAdminKey(), ...(opts.headers||{}) };
+  const res = await fetch(API_BASE + path, {...opts, headers});
+  if (res.status === 401) { showToast('מפתח admin שגוי', false); showLogin(); throw new Error('401'); }
+  if (!res.ok) { const t = await res.text(); throw new Error(`${res.status}: ${t.substring(0,100)}`); }
+  return res.json();
+}
+
+function showLogin(){
+  document.getElementById('login-screen').style.display = 'block';
+  document.getElementById('main-screen').style.display = 'none';
+}
+function showMain(){
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('main-screen').style.display = 'block';
+}
+
+async function login(){
+  const v = document.getElementById('admin-key-input').value.trim();
+  if (!v) return;
+  setAdminKey(v);
+  try { await api('/api/admin/campaign/stats'); showMain(); loadAll(); }
+  catch(e) { /* already shown */ }
+}
+
+function logout(){ clearAdminKey(); showLogin(); }
+
+async function loadStats(){
+  try {
+    const d = await api('/api/admin/campaign/stats');
+    document.getElementById('stat-total').textContent = d.total ?? '—';
+    let pending=0, contacted=0, closed=0, lost=0, revenue=0;
+    (d.by_campaign||[]).forEach(c => { pending+=+c.pending||0; contacted+=+c.contacted||0; closed+=+c.closed||0; lost+=+c.lost||0; revenue+=+c.total_paid||0; });
+    document.getElementById('stat-pending').textContent = pending;
+    document.getElementById('stat-contacted').textContent = contacted;
+    document.getElementById('stat-closed').textContent = closed;
+    document.getElementById('stat-lost').textContent = lost;
+    document.getElementById('stat-revenue').textContent = '₪' + revenue.toLocaleString('he-IL');
+
+    const sel = document.getElementById('f-campaign');
+    const current = sel.value;
+    sel.innerHTML = '<option value="">כל הקמפיינים</option>';
+    (d.by_campaign||[]).forEach(c => {
+      const o = document.createElement('option');
+      o.value = c.campaign_id;
+      o.textContent = `${c.campaign_id} (${c.n})`;
+      sel.appendChild(o);
+    });
+    sel.value = current;
+  } catch(e) { console.error(e); }
+}
+
+async function loadLeads(){
+  const cid = document.getElementById('f-campaign').value;
+  const st = document.getElementById('f-status').value;
+  const qs = new URLSearchParams();
+  if (cid) qs.set('campaign_id', cid);
+  if (st) qs.set('status', st);
+  qs.set('limit', '200');
+  try {
+    const d = await api('/api/admin/campaign/list?' + qs);
+    renderLeads(d.leads || []);
+    document.getElementById('count-info').textContent = `מציג ${d.leads.length} מתוך ${d.total}`;
+  } catch(e) { console.error(e); }
+}
+
+function renderLeads(leads){
+  const tbody = document.getElementById('leads-tbody');
+  if (!leads.length) { tbody.innerHTML = '<tr><td colspan="11" style="text-align:center; padding:40px; color:var(--text3)">אין leads בסינון הזה</td></tr>'; return; }
+  tbody.innerHTML = leads.map(L => {
+    const dt = new Date(L.created_at).toLocaleString('he-IL', { dateStyle:'short', timeStyle:'short' });
+    const phoneLink = L.phone ? `<a href="tel:${L.phone}" class="tel-link">${L.phone}</a>` : '—';
+    const waLink = L.phone ? ` <a href="https://wa.me/${L.phone.replace(/[^0-9]/g,'')}" target="_blank" class="tel-link" style="font-size:11px">WA</a>` : '';
+    const statusCls = 'status-' + (L.status||'pending');
+    const statusLabel = {pending:'ממתין', contacted:'בטיפול', closed:'נסגר', lost:'נאבד'}[L.status] || L.status;
+    return `<tr>
+      <td>${L.id}</td>
+      <td><b>${L.full_name||'—'}</b>${L.tg_username?`<br><span class="muted">@${L.tg_username}</span>`:''}</td>
+      <td>${phoneLink}${waLink}</td>
+      <td><code style="font-size:11px">${L.campaign_id}</code></td>
+      <td>${L.path_type}</td>
+      <td><span class="status-badge ${statusCls}">${statusLabel}</span></td>
+      <td>${L.amount_paid>0 ? '₪'+(+L.amount_paid).toLocaleString('he-IL') : '—'}</td>
+      <td style="font-size:11px">${dt}</td>
+      <td><code style="font-size:10px">${L.affiliate_code||'—'}</code></td>
+      <td>${L.notes ? `<div class="note-box">${L.notes.replace(/</g,'&lt;')}</div>` : '<span class="muted">—</span>'}</td>
+      <td>
+        <button class="btn btn-contacted" onclick="setStatus(${L.id}, 'contacted')">✅ בטיפול</button>
+        <button class="btn btn-closed" onclick="closeLead(${L.id})">🎉 נסגר</button>
+        <button class="btn btn-lost" onclick="setStatus(${L.id}, 'lost')">❌ נאבד</button>
+        <button class="btn" onclick="addNote(${L.id})">📝 הערה</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function setStatus(id, status){
+  try { await api('/api/admin/campaign/status', { method:'POST', body: JSON.stringify({lead_id:id, status}) });
+    showToast('סטטוס עודכן'); loadAll();
+  } catch(e) { showToast('שגיאה: '+e.message, false); }
+}
+
+async function closeLead(id){
+  const amt = prompt('סכום תשלום שהתקבל (ILS):', '0');
+  if (amt === null) return;
+  try { await api('/api/admin/campaign/status', { method:'POST', body: JSON.stringify({lead_id:id, status:'closed', amount_paid: parseFloat(amt)||0}) });
+    showToast('🎉 נסגר!'); loadAll();
+  } catch(e) { showToast('שגיאה: '+e.message, false); }
+}
+
+async function addNote(id){
+  const note = prompt('הערה:');
+  if (!note) return;
+  try { await api('/api/admin/campaign/note', { method:'POST', body: JSON.stringify({lead_id:id, note}) });
+    showToast('הערה נוספה'); loadAll();
+  } catch(e) { showToast('שגיאה: '+e.message, false); }
+}
+
+async function loadAll(){ await Promise.all([loadStats(), loadLeads()]); }
+
+if (getAdminKey()) { showMain(); loadAll(); } else { showLogin(); }
+setInterval(()=>{ if(getAdminKey() && document.getElementById('main-screen').style.display!=='none') loadAll(); }, 30000);
+</script>
+
+</body>
+</html>

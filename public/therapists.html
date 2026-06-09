@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH Spark — רשת המטפלים</title>
+<meta name="description" content="ספריית המטפלים של SLH Spark — חפש מטפל לפי התמחות, שעות זמינות ותעריף ZVK.">
+<link rel="canonical" href="https://slh-nft.com/therapists.html">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="SLH Spark — רשת המטפלים">
+<meta property="og:description" content="ספריית המטפלים — חפש מטפל לפי התמחות ושעות זמינות.">
+<meta property="og:image" content="https://slh-nft.com/assets/og/healing.png">
+<meta property="og:url" content="https://slh-nft.com/therapists.html">
+<meta property="og:locale" content="he_IL">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SLH Spark — רשת המטפלים">
+<meta name="twitter:image" content="https://slh-nft.com/assets/og/healing.png">
+
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css?v=20260427a">
+
+<style>
+  :root {
+    --bg: #0a1018;
+    --bg2: #0f1a26;
+    --bg3: #162438;
+    --accent: #00e887;
+    --pink: #ff6b9d;
+    --gold: #ffd700;
+    --text: #e8f4ff;
+    --text2: #9cb8d6;
+    --border: rgba(255, 107, 157, 0.3);
+  }
+  body {
+    background: radial-gradient(circle at 30% 10%, rgba(255, 107, 157, 0.08), transparent 60%), var(--bg);
+    color: var(--text);
+    font-family: 'Assistant', system-ui, sans-serif;
+    line-height: 1.7;
+  }
+
+  .hero { max-width: 900px; margin: 0 auto; padding: 60px 24px 24px; text-align: center; }
+  .icon { font-size: 56px; margin-bottom: 12px; }
+  h1 {
+    font-size: clamp(28px, 4.5vw, 42px); font-weight: 900;
+    background: linear-gradient(135deg, var(--pink), var(--accent));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    margin-bottom: 10px;
+  }
+  .tagline { font-size: 16px; color: var(--text2); max-width: 600px; margin: 0 auto; }
+
+  .toolbar {
+    max-width: 900px; margin: 0 auto 16px; padding: 0 24px;
+    display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px;
+  }
+  .toolbar input, .toolbar select {
+    padding: 10px 12px; background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text); font-size: 14px; font-family: inherit;
+  }
+  .toolbar a.cta {
+    padding: 10px 16px; background: linear-gradient(135deg, var(--pink), var(--accent));
+    color: #000; border-radius: 8px; font-weight: 700; text-decoration: none;
+    display: flex; align-items: center; white-space: nowrap;
+  }
+  @media (max-width: 700px) { .toolbar { grid-template-columns: 1fr; } }
+
+  .section { max-width: 1100px; margin: 0 auto 32px; padding: 0 24px; }
+
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .card {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 14px;
+    padding: 20px; display: flex; flex-direction: column; gap: 8px;
+    transition: transform .2s, border-color .2s;
+  }
+  .card:hover { transform: translateY(-2px); border-color: var(--accent); }
+  .card .name { font-size: 18px; font-weight: 800; color: var(--text); }
+  .card .profession { font-size: 13px; color: var(--pink); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .card .meta { font-size: 12px; color: var(--text2); display: flex; flex-wrap: wrap; gap: 12px; }
+  .card .meta b { color: var(--accent); }
+  .card .bio { font-size: 13px; color: var(--text2); line-height: 1.6; min-height: 40px; }
+  .card .specialties { font-size: 12px; color: var(--text2); border-top: 1px dashed var(--border); padding-top: 8px; margin-top: 4px; }
+  .card .rate { font-size: 13px; color: var(--gold); font-weight: 700; }
+
+  .empty {
+    text-align: center; padding: 60px 24px; color: var(--text2);
+    background: var(--bg2); border: 1px dashed var(--border); border-radius: 14px;
+  }
+  .empty .ic { font-size: 56px; margin-bottom: 16px; }
+  .loading { text-align: center; padding: 40px; color: var(--text2); }
+  .err { background: rgba(239,68,68,.1); border: 1px solid #ef4444; color: #ef4444;
+         padding: 14px; border-radius: 10px; text-align: center; }
+
+  .pager {
+    display: flex; justify-content: center; gap: 12px; margin-top: 24px;
+    font-size: 13px; color: var(--text2);
+  }
+  .pager button {
+    padding: 8px 14px; background: var(--bg2); color: var(--text);
+    border: 1px solid var(--border); border-radius: 8px; cursor: pointer;
+  }
+  .pager button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* Theme switcher (matches for-therapists.html pattern) */
+  #theme-fab{position:fixed;bottom:94px;left:24px;z-index:9997;background:var(--accent);color:#000;width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;font-size:20px;box-shadow:0 4px 16px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center}
+  #theme-panel{position:fixed;bottom:150px;left:24px;z-index:9998;background:var(--bg);border:1px solid rgba(255,255,255,.15);padding:16px;border-radius:12px;display:none;flex-direction:column;gap:6px;max-width:220px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+  #theme-panel.open{display:flex}
+  #theme-panel button{background:var(--bg);border:1px solid rgba(255,255,255,.1);color:#e8e8f0;padding:10px 14px;cursor:pointer;font-size:12px;text-align:right;font-family:inherit;border-radius:6px;transition:all .2s}
+  #theme-panel button:hover{background:var(--accent);color:#000}
+  [data-theme="dark"]{--bg:#0b0e16;--bg2:#111628;--accent:#00b4d8;--text:#e8e8f0;--text2:#8a8aa0;--border:rgba(0,180,216,.2)}
+  [data-theme="light"]{--bg:#f8f9fb;--bg2:#fff;--accent:#0066cc;--text:#1a1a1a;--text2:#555;--border:rgba(0,102,204,.2)}
+  [data-theme="crypto"]{--bg:#0d1117;--bg2:#161b22;--accent:#f7931a;--text:#e8e8f0;--text2:#8a8aa0;--border:rgba(247,147,26,.2)}
+  [data-theme="ocean"]{--bg:#001e3c;--bg2:#002c55;--accent:#00d9ff;--text:#b8e6ff;--text2:#6bb6cc;--border:rgba(0,217,255,.2)}
+  [data-theme="sunset"]{--bg:#1a0a14;--bg2:#251018;--accent:#ff6b6b;--text:#ffe5d9;--text2:#c9a88a;--border:rgba(255,107,107,.2)}
+</style>
+</head>
+<body>
+
+<div id="topnav-root"></div>
+
+<section class="hero">
+  <div class="icon">🩺</div>
+  <h1 data-i18n="therapists_dir_title">רשת המטפלים</h1>
+  <p class="tagline" data-i18n="therapists_dir_tagline">
+    מטפלים מאושרים בקהילת SLH Spark. חיפוש לפי התמחות, מקצוע ושעות זמינות.
+  </p>
+</section>
+
+<div class="toolbar">
+  <input id="searchInput" type="text" data-i18n="therapists_dir_search_ph" placeholder="חיפוש לפי שם או תחום התמחות...">
+  <select id="professionFilter">
+    <option value="" data-i18n="therapists_dir_all_professions">כל המקצועות</option>
+    <option value="פסיכולוג" data-i18n="therapists_prof_psychologist">פסיכולוג/ית</option>
+    <option value="CBT" data-i18n="therapists_prof_cbt">מטפל/ת CBT</option>
+    <option value="פסיכיאטר" data-i18n="therapists_prof_psychiatrist">פסיכיאטר/ית</option>
+    <option value="פיזיו" data-i18n="therapists_prof_physio">פיזיותרפיסט/ית</option>
+    <option value="NLP" data-i18n="therapists_prof_nlp">מטפל/ת NLP</option>
+    <option value="הומאופתיה" data-i18n="therapists_prof_homeopathy">הומאופתיה</option>
+    <option value="דיקור" data-i18n="therapists_prof_acupuncture">דיקור סיני</option>
+    <option value="משלימה" data-i18n="therapists_prof_complementary">רפואה משלימה</option>
+    <option value="אמנות" data-i18n="therapists_prof_art">מטפל/ת באמנות</option>
+    <option value="סוציאלי" data-i18n="therapists_prof_social">עובד/ת סוציאלי/ת</option>
+    <option value="זוגי" data-i18n="therapists_prof_couples_family">מטפל/ת זוגי/ת ומשפחתי/ת</option>
+  </select>
+  <a href="/for-therapists.html" class="cta" data-i18n="therapists_dir_cta_join">+ הצטרף כמטפל</a>
+</div>
+
+<section class="section">
+  <div id="results" class="loading" data-i18n="therapists_dir_loading">טוען מטפלים...</div>
+  <div id="pager" class="pager" style="display:none">
+    <button id="prev" data-i18n="therapists_dir_prev">‹ הקודם</button>
+    <span id="pageInfo">—</span>
+    <button id="next" data-i18n="therapists_dir_next">הבא ›</button>
+  </div>
+</section>
+
+<div id="bottomnav-root"></div>
+<div id="footer-root"></div>
+
+<script src="/js/translations.js?v=20260427a"></script>
+<script src="/js/shared.js?v=20260427a"></script>
+<script>
+initShared({ activePage: 'therapists', showBottomNav: true });
+
+const SLH_API = 'https://slh-api-production.up.railway.app';
+const PAGE_SIZE = 12;
+let currentOffset = 0;
+let totalCount = 0;
+
+const tr = (k, fallback) => (typeof t === 'function') ? t(k, fallback) : fallback;
+
+function escHtml(s) {
+  if (s == null) return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function renderCard(th) {
+  const profession = escHtml(th.profession);
+  const name = escHtml(th.name);
+  const exp = th.experience_yrs || 0;
+  const hours = escHtml(th.hours_per_week || '');
+  const rate = th.rate_zvk || 0;
+  const bio = escHtml(th.bio) || tr('therapists_dir_no_bio', 'מטפל בקהילת SLH Spark.');
+  const specs = escHtml(th.specialties) || '';
+
+  const expLabel = tr('therapists_dir_exp_yrs', 'שנות ניסיון');
+  const hrsLabel = tr('therapists_dir_hours_label', 'זמינות');
+  const rateLabel = tr('therapists_dir_rate_label', 'תעריף');
+  const specsLabel = tr('therapists_dir_specs_label', 'התמחויות');
+
+  return `
+    <div class="card">
+      <div class="name">${name}</div>
+      <div class="profession">${profession}</div>
+      <div class="meta">
+        ${exp ? `<span><b>${exp}</b> ${expLabel}</span>` : ''}
+        ${hours ? `<span>${hrsLabel}: <b>${hours}</b></span>` : ''}
+      </div>
+      <div class="bio">${bio}</div>
+      ${specs ? `<div class="specialties"><b>${specsLabel}:</b> ${specs}</div>` : ''}
+      ${rate > 0 ? `<div class="rate">${rateLabel}: ${rate} ZVK / שעה</div>` : ''}
+    </div>
+  `;
+}
+
+async function loadTherapists() {
+  const search = document.getElementById('searchInput').value.trim();
+  const profession = document.getElementById('professionFilter').value;
+  const params = new URLSearchParams({ limit: PAGE_SIZE, offset: currentOffset });
+  if (search) params.set('search', search);
+  if (profession) params.set('profession', profession);
+
+  const container = document.getElementById('results');
+  container.className = 'loading';
+  container.textContent = tr('therapists_dir_loading', 'טוען מטפלים...');
+
+  try {
+    const resp = await fetch(`${SLH_API}/api/therapists/public?${params}`);
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+    totalCount = data.total || 0;
+
+    if (!data.therapists || data.therapists.length === 0) {
+      container.className = 'empty';
+      container.innerHTML = `
+        <div class="ic">🌱</div>
+        <div>${tr('therapists_dir_empty_title', 'אין מטפלים שתואמים את הסינון')}</div>
+        <div style="margin-top:10px;font-size:13px">
+          ${tr('therapists_dir_empty_sub', 'נסה לאפס את החיפוש או')}
+          <a href="/for-therapists.html" style="color:var(--accent)">${tr('therapists_dir_empty_cta', 'הצטרף ראשון לרשת')}</a>
+        </div>`;
+      document.getElementById('pager').style.display = 'none';
+      return;
+    }
+
+    container.className = 'grid';
+    container.innerHTML = data.therapists.map(renderCard).join('');
+
+    // Pager
+    const pager = document.getElementById('pager');
+    const pageInfo = document.getElementById('pageInfo');
+    const prev = document.getElementById('prev');
+    const next = document.getElementById('next');
+    if (totalCount > PAGE_SIZE) {
+      pager.style.display = 'flex';
+      const showing = Math.min(currentOffset + PAGE_SIZE, totalCount);
+      pageInfo.textContent = `${currentOffset + 1}–${showing} / ${totalCount}`;
+      prev.disabled = currentOffset === 0;
+      next.disabled = currentOffset + PAGE_SIZE >= totalCount;
+    } else {
+      pager.style.display = 'none';
+    }
+  } catch (e) {
+    container.className = 'err';
+    container.textContent = tr('therapists_dir_err_load', 'שגיאה בטעינה') + ': ' + e.message;
+  }
+}
+
+let searchTimer = null;
+document.getElementById('searchInput').addEventListener('input', () => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => { currentOffset = 0; loadTherapists(); }, 300);
+});
+document.getElementById('professionFilter').addEventListener('change', () => {
+  currentOffset = 0; loadTherapists();
+});
+document.getElementById('prev').addEventListener('click', () => {
+  if (currentOffset > 0) { currentOffset = Math.max(0, currentOffset - PAGE_SIZE); loadTherapists(); }
+});
+document.getElementById('next').addEventListener('click', () => {
+  if (currentOffset + PAGE_SIZE < totalCount) { currentOffset += PAGE_SIZE; loadTherapists(); }
+});
+
+loadTherapists();
+</script>
+
+<button id="theme-fab" onclick="document.getElementById('theme-panel').classList.toggle('open')" title="Theme">🎨</button>
+<div id="theme-panel">
+  <div style="font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">ערכת צבעים</div>
+  <button onclick="document.documentElement.removeAttribute('data-theme');localStorage.setItem('slh_page_theme','default');document.getElementById('theme-panel').classList.remove('open')">🟢 Default</button>
+  <button onclick="document.documentElement.setAttribute('data-theme','dark');localStorage.setItem('slh_page_theme','dark');document.getElementById('theme-panel').classList.remove('open')">🌙 Dark</button>
+  <button onclick="document.documentElement.setAttribute('data-theme','light');localStorage.setItem('slh_page_theme','light');document.getElementById('theme-panel').classList.remove('open')">☀️ Light</button>
+  <button onclick="document.documentElement.setAttribute('data-theme','crypto');localStorage.setItem('slh_page_theme','crypto');document.getElementById('theme-panel').classList.remove('open')">₿ Crypto</button>
+  <button onclick="document.documentElement.setAttribute('data-theme','ocean');localStorage.setItem('slh_page_theme','ocean');document.getElementById('theme-panel').classList.remove('open')">🌊 Ocean</button>
+  <button onclick="document.documentElement.setAttribute('data-theme','sunset');localStorage.setItem('slh_page_theme','sunset');document.getElementById('theme-panel').classList.remove('open')">🌅 Sunset</button>
+</div>
+<script>
+(function(){var t=localStorage.getItem('slh_page_theme');if(t&&t!=='default')document.documentElement.setAttribute('data-theme',t);document.addEventListener('click',function(e){var p=document.getElementById('theme-panel'),f=document.getElementById('theme-fab');if(p&&f&&!p.contains(e.target)&&!f.contains(e.target))p.classList.remove('open');});})();
+</script>
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260427a"></script>
+</body>
+</html>

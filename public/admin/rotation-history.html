@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rotation History | SLH Admin</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="/favicon-32.png">
+  <style>
+    :root{
+      --bg:#0a0a0a;--bg2:#111;--bg3:#1a1a1a;
+      --accent:#00ff41;--cyan:#00e5ff;--gold:#ffd700;--red:#ff0055;--purple:#a855f7;
+      --text:#e8e8f0;--text2:#8a8aa0;--text-bright:#fff;
+      --border:rgba(0,255,65,.15);
+      --font:'Inter',system-ui,sans-serif;--radius:6px;
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;font-size:13px}
+    a{color:var(--accent);text-decoration:none}
+    button{cursor:pointer;font-family:inherit;font-size:12px;border:none}
+
+    .topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 24px;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+    .brand{font-weight:700;color:var(--accent);font-size:16px}
+    .brand span{background:var(--red);color:#fff;padding:2px 8px;font-size:10px;border-radius:3px;margin-right:8px}
+    .tb-right{display:flex;gap:10px;font-size:12px}
+    .tb-right a{padding:6px 12px;border:1px solid var(--border);color:var(--text2);border-radius:var(--radius)}
+    .tb-right a:hover{color:var(--accent);border-color:var(--accent)}
+    .tb-right a.active{color:var(--cyan);border-color:var(--cyan)}
+
+    main{max-width:1400px;margin:0 auto;padding:20px}
+    h1{color:var(--text-bright);margin-bottom:6px;font-size:20px}
+    .sub{color:var(--text2);font-size:12px;margin-bottom:18px;line-height:1.7}
+
+    .filters{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+    .filters label{color:var(--text2);font-size:11px;text-transform:uppercase;letter-spacing:0.5px}
+    .filters select,.filters input{background:var(--bg2);color:var(--text);border:1px solid var(--border);padding:7px 10px;border-radius:var(--radius);font-family:inherit;font-size:12px;min-width:180px}
+    .filters button{padding:8px 14px;background:var(--bg2);color:var(--text);border:1px solid var(--border);border-radius:var(--radius)}
+    .filters button:hover{border-color:var(--accent);color:var(--accent)}
+    .filters .spacer{flex:1}
+
+    table{width:100%;border-collapse:collapse;background:var(--bg2);border-radius:var(--radius);overflow:hidden}
+    th{text-align:right;padding:12px 14px;background:var(--bg3);color:var(--text2);font-size:10px;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border);white-space:nowrap}
+    td{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;vertical-align:top}
+    tr:hover td{background:rgba(0,255,65,.02)}
+    code{background:var(--bg3);padding:2px 6px;border-radius:3px;color:var(--cyan);font-size:11px;font-family:'Space Mono',monospace}
+
+    .action-badge{display:inline-block;padding:2px 8px;font-size:10px;font-weight:700;border-radius:3px;font-family:'Space Mono',monospace}
+    .action-initiated{background:rgba(138,138,160,.15);color:var(--text2)}
+    .action-pushed{background:rgba(0,255,65,.15);color:var(--accent)}
+    .action-failed{background:rgba(255,0,85,.18);color:var(--red);border:1px solid var(--red)}
+    .action-healthcheck_failed{background:rgba(255,0,85,.25);color:#fff;border:1px solid var(--red);font-weight:bold}
+    .action-rolled_back{background:rgba(255,215,0,.18);color:var(--gold)}
+    .action-setmycommands_synced{background:rgba(168,85,247,.15);color:var(--purple)}
+
+    .meta-cell{max-width:380px;font-size:11px;line-height:1.6;color:var(--text2);font-family:'Space Mono',monospace;word-break:break-word}
+    .meta-cell b{color:var(--cyan)}
+    .hash{font-family:'Space Mono',monospace;font-size:10px;color:var(--text2)}
+
+    #toast{position:fixed;bottom:20px;right:20px;background:var(--bg3);color:var(--text-bright);padding:12px 20px;border-radius:var(--radius);border:1px solid var(--accent);z-index:200;display:none}
+    .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:18px}
+    .stat{background:var(--bg3);padding:12px;border-radius:var(--radius);text-align:center}
+    .stat .n{font-size:22px;font-weight:700;color:var(--text-bright);font-family:'Space Mono',monospace}
+    .stat.ok .n{color:var(--accent)}
+    .stat.fail .n{color:var(--red)}
+    .stat.warn .n{color:var(--gold)}
+    .stat .l{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+    .empty{padding:40px;text-align:center;color:var(--text2);font-size:13px}
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><span>ADMIN</span>📜 Rotation History</div>
+  <div class="tb-right">
+    <a href="/admin/tokens.html">🔑 Tokens</a>
+    <a href="/admin/rotate-token.html">🔄 Rotate</a>
+    <a href="/admin/rotation-history.html" class="active">📜 History</a>
+    <a href="/admin/control-center.html">🎛 Control</a>
+    <a href="https://railway.com/project/slh-api" target="_blank" style="color:var(--cyan)">🚂 Railway ↗</a>
+  </div>
+</div>
+
+<main>
+  <h1>📜 היסטוריית סיבובי טוקנים</h1>
+  <div class="sub">
+    audit-log של כל הפעולות מסוג <code>secret.rotate.*</code>. הטוקנים <b>לא נשמרים</b> — רק 4 הספרות האחרונות, telegram_bot_id, וה-tier.
+    כל שורה מקושרת ב-hash chain (<code>entry_hash</code>) — שינוי בעבר ניתן לזיהוי.
+  </div>
+
+  <div class="stats">
+    <div class="stat ok"><div class="n" id="s-pushed">--</div><div class="l">✅ הצלחות</div></div>
+    <div class="stat fail"><div class="n" id="s-failed">--</div><div class="l">❌ כשלים</div></div>
+    <div class="stat warn"><div class="n" id="s-hc-failed">--</div><div class="l">🚨 Healthcheck נכשל</div></div>
+    <div class="stat"><div class="n" id="s-total">--</div><div class="l">סה"כ</div></div>
+  </div>
+
+  <div class="filters">
+    <label>Env Var:</label>
+    <input type="text" id="f-env" placeholder="כולם" />
+    <label>Action:</label>
+    <select id="f-action">
+      <option value="">כולם</option>
+      <option value="secret.rotate.initiated">initiated</option>
+      <option value="secret.rotate.pushed">pushed (success)</option>
+      <option value="secret.rotate.failed">failed</option>
+      <option value="secret.rotate.healthcheck_failed">healthcheck_failed</option>
+      <option value="secret.rotate.setmycommands_synced">setmycommands_synced</option>
+    </select>
+    <label>Limit:</label>
+    <select id="f-limit">
+      <option>50</option>
+      <option>100</option>
+      <option>200</option>
+      <option>500</option>
+    </select>
+    <button onclick="load()">↻ רענן</button>
+    <div class="spacer"></div>
+    <button onclick="exportCSV()">📥 CSV</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>זמן</th>
+        <th>Action</th>
+        <th>Env Var</th>
+        <th>Resource</th>
+        <th>Actor</th>
+        <th>Metadata</th>
+        <th>Hash</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</main>
+
+<div id="toast"></div>
+
+<script>
+const API = 'https://slh-api-production.up.railway.app';
+let EVENTS = [];
+
+function adminKey() {
+  let k = sessionStorage.getItem('slh_admin_key') || localStorage.getItem('slh_admin_password') || '';
+  if (!k) {
+    k = prompt('הזן מפתח אדמין (X-Admin-Key)') || '';
+    if (k) sessionStorage.setItem('slh_admin_key', k);
+  }
+  return k;
+}
+
+function escapeHtml(s) {
+  return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',3500)}
+
+function actionShort(a) {
+  return a.replace('secret.rotate.', '');
+}
+
+function actionClass(a) {
+  return 'action-' + actionShort(a).replace(/[.-]/g, '_');
+}
+
+function fmtTime(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  return d.toLocaleString('he-IL', { hour12: false });
+}
+
+function fmtMeta(ev) {
+  const parts = [];
+  const before = ev.before_state || {};
+  const after = ev.after_state || {};
+  const meta = ev.metadata || {};
+  if (after.last4) parts.push(`<b>last4:</b> …${escapeHtml(after.last4)}`);
+  if (after.tg_bot_id) parts.push(`<b>tg_id:</b> ${escapeHtml(after.tg_bot_id)}`);
+  if (after.deploy_id) parts.push(`<b>deploy:</b> ${escapeHtml(String(after.deploy_id).slice(0,12))}`);
+  if (meta.tier) parts.push(`<b>tier:</b> ${escapeHtml(meta.tier)}`);
+  if (meta.handle) parts.push(`<b>handle:</b> ${escapeHtml(meta.handle)}`);
+  if (meta.swap) parts.push(`<b>swap:</b> ✓`);
+  if (meta.phase) parts.push(`<b>phase:</b> ${escapeHtml(meta.phase)}`);
+  if (meta.error) parts.push(`<b>error:</b> ${escapeHtml(String(meta.error).slice(0,100))}`);
+  if (meta.command_count != null) parts.push(`<b>cmds:</b> ${meta.command_count}`);
+  if (before.last_rotated_at) parts.push(`<b>prev:</b> ${escapeHtml(String(before.last_rotated_at).slice(0,10))}`);
+  return parts.join('<br>') || '—';
+}
+
+async function load() {
+  const k = adminKey();
+  if (!k) return;
+  const env = document.getElementById('f-env').value.trim();
+  const action = document.getElementById('f-action').value;
+  const limit = document.getElementById('f-limit').value;
+  const url = new URL(API + '/api/admin/rotation-history');
+  if (env) url.searchParams.set('env_var', env);
+  if (action) url.searchParams.set('action', action);
+  url.searchParams.set('limit', limit);
+  try {
+    const r = await fetch(url, { headers: { 'X-Admin-Key': k } });
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.detail || ('HTTP ' + r.status));
+    EVENTS = j.events || [];
+    render();
+  } catch (e) {
+    toast('שגיאה: ' + e.message);
+    document.getElementById('tbody').innerHTML = `<tr><td colspan="7" class="empty">${escapeHtml(e.message)}</td></tr>`;
+  }
+}
+
+function render() {
+  const stats = { pushed: 0, failed: 0, hcFailed: 0, total: EVENTS.length };
+  const rows = EVENTS.map(ev => {
+    if (ev.action === 'secret.rotate.pushed') stats.pushed++;
+    if (ev.action === 'secret.rotate.failed') stats.failed++;
+    if (ev.action === 'secret.rotate.healthcheck_failed') stats.hcFailed++;
+    const short = actionShort(ev.action);
+    const klass = actionClass(ev.action);
+    const hash = (ev.entry_hash || '').slice(0, 8);
+    return `<tr>
+      <td>${escapeHtml(fmtTime(ev.created_at))}</td>
+      <td><span class="action-badge ${klass}">${escapeHtml(short)}</span></td>
+      <td><code>${escapeHtml(ev.resource_id || '—')}</code></td>
+      <td>${escapeHtml(ev.resource_type || '—')}</td>
+      <td>${escapeHtml(ev.actor_user_id || ev.actor_type || '—')}</td>
+      <td class="meta-cell">${fmtMeta(ev)}</td>
+      <td class="hash" title="${escapeHtml(ev.entry_hash || '')}">${escapeHtml(hash)}</td>
+    </tr>`;
+  });
+  document.getElementById('tbody').innerHTML = rows.join('') ||
+    `<tr><td colspan="7" class="empty">אין אירועים שתואמים לפילטר</td></tr>`;
+  document.getElementById('s-pushed').textContent = stats.pushed;
+  document.getElementById('s-failed').textContent = stats.failed;
+  document.getElementById('s-hc-failed').textContent = stats.hcFailed;
+  document.getElementById('s-total').textContent = stats.total;
+}
+
+function exportCSV() {
+  const lines = ['created_at,action,resource_id,resource_type,actor,handle,tier,last4,deploy_id'];
+  EVENTS.forEach(ev => {
+    const a = ev.after_state || {};
+    const m = ev.metadata || {};
+    const row = [
+      ev.created_at || '',
+      ev.action || '',
+      ev.resource_id || '',
+      ev.resource_type || '',
+      ev.actor_user_id || ev.actor_type || '',
+      m.handle || '',
+      m.tier || '',
+      a.last4 || '',
+      a.deploy_id || '',
+    ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(',');
+    lines.push(row);
+  });
+  const blob = new Blob([lines.join('\n')], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'slh_rotation_history_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('CSV הורד');
+}
+
+document.getElementById('f-env').addEventListener('input', () => clearTimeout(window._t) || (window._t = setTimeout(load, 400)));
+document.getElementById('f-action').addEventListener('change', load);
+document.getElementById('f-limit').addEventListener('change', load);
+
+load();
+</script>
+
+</body>
+</html>

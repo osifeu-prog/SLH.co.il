@@ -1,0 +1,559 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH Spark Ecosystem Guide — Complete Reference</title>
+<meta name="description" content="Complete SLH Spark ecosystem guide: all pages, API endpoints, bots, and workflows in one reference.">
+<link rel="canonical" href="https://slh-nft.com/ecosystem-guide.html">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="SLH Spark Ecosystem Guide — Complete Reference">
+<meta property="og:description" content="All pages, endpoints, bots, and workflows in one guide">
+<meta property="og:image" content="https://slh-nft.com/assets/og/guides.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://slh-nft.com/ecosystem-guide.html">
+<meta property="og:locale" content="he_IL">
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SLH Spark Ecosystem Guide — Complete Reference">
+<meta name="twitter:description" content="All pages, endpoints, bots, and workflows in one guide">
+<meta name="twitter:image" content="https://slh-nft.com/assets/og/guides.png">
+
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css?v=20260426e">
+
+<style>
+    :root {
+        --bg: #0a0e1a;
+        --bg2: #111628;
+        --bg3: #1a2038;
+        --accent: #00e887;
+        --accent2: #00b4d8;
+        --gold: #ffd700;
+        --purple: #a855f7;
+        --text: #e8e8f0;
+        --text2: #8a8aa0;
+        --text3: #555a70;
+        --border: rgba(0, 232, 135, 0.2);
+        --mono: 'Space Mono', monospace;
+    }
+    body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'Inter', system-ui, sans-serif;
+        line-height: 1.7;
+    }
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 24px;
+        display: grid;
+        grid-template-columns: 240px 1fr;
+        gap: 40px;
+    }
+    @media (max-width: 900px) {
+        .container { grid-template-columns: 1fr; }
+        .toc { position: static !important; }
+    }
+
+    .toc {
+        position: sticky;
+        top: 20px;
+        height: fit-content;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px;
+    }
+    .toc h3 {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--accent);
+        margin-bottom: 12px;
+    }
+    .toc a {
+        display: block;
+        color: var(--text2);
+        text-decoration: none;
+        padding: 6px 0;
+        font-size: 13px;
+        transition: all 0.15s;
+    }
+    .toc a:hover { color: var(--accent); padding-right: 6px; }
+
+    .hero {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 40px 0 20px;
+    }
+    .hero h1 {
+        font-size: clamp(36px, 5vw, 56px);
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--accent), var(--accent2), var(--purple));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-bottom: 12px;
+    }
+    .hero p { color: var(--text2); max-width: 600px; margin: 0 auto; }
+
+    .content h2 {
+        font-size: 28px;
+        font-weight: 900;
+        color: var(--accent);
+        margin: 40px 0 16px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--border);
+    }
+    .content h3 {
+        font-size: 20px;
+        color: var(--accent2);
+        margin: 24px 0 12px;
+    }
+    .content p { margin-bottom: 12px; color: var(--text); }
+    .content ul { padding-right: 20px; margin-bottom: 16px; }
+    .content li { margin-bottom: 6px; color: var(--text2); }
+    .content li strong { color: var(--text); }
+
+    code {
+        background: var(--bg3);
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-family: var(--mono);
+        font-size: 13px;
+        color: var(--accent);
+    }
+    pre {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 16px 20px;
+        overflow-x: auto;
+        font-family: var(--mono);
+        font-size: 12px;
+        line-height: 1.6;
+        margin: 16px 0;
+        direction: ltr;
+        text-align: left;
+    }
+    pre code { background: transparent; padding: 0; color: var(--text2); }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 16px 0;
+        font-size: 13px;
+    }
+    table th {
+        background: var(--bg3);
+        padding: 10px 14px;
+        text-align: right;
+        color: var(--accent);
+        font-weight: 700;
+        border-bottom: 2px solid var(--border);
+    }
+    table td {
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--border);
+        color: var(--text2);
+    }
+    table tr:hover td { background: var(--bg2); }
+
+    .card {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--accent);
+        border-radius: 10px;
+        padding: 16px 20px;
+        margin: 16px 0;
+    }
+    .card.warn { border-left-color: var(--gold); }
+    .card.critical { border-left-color: #ef4444; }
+
+    .badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 700;
+        margin-right: 6px;
+    }
+    .badge-get { background: rgba(0, 180, 216, 0.2); color: var(--accent2); }
+    .badge-post { background: rgba(0, 232, 135, 0.2); color: var(--accent); }
+    .badge-del { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+    .badge-live { background: rgba(0, 232, 135, 0.2); color: var(--accent); }
+    .badge-wip { background: rgba(255, 215, 0, 0.2); color: var(--gold); }
+
+    a.internal { color: var(--accent2); text-decoration: underline; }
+
+    /* Theme Switcher */
+    #theme-fab{position:fixed;bottom:94px;left:24px;z-index:9997;background:var(--accent,#00e887);color:#000;width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;font-size:20px;box-shadow:0 4px 16px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center}
+    #theme-panel{position:fixed;bottom:150px;left:24px;z-index:9998;background:var(--bg,#0a0a0a);border:1px solid rgba(255,255,255,.15);padding:16px;border-radius:12px;display:none;flex-direction:column;gap:6px;max-width:220px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+    #theme-panel.open{display:flex}
+    #theme-panel button{background:var(--bg,#0a0a0a);border:1px solid rgba(255,255,255,.1);color:#e8e8f0;padding:10px 14px;cursor:pointer;font-size:12px;text-align:right;font-family:inherit;border-radius:6px;transition:all .2s}
+    #theme-panel button:hover{background:var(--accent,#00e887);color:#000}
+    [data-theme="dark"]{--bg:#0b0e16;--bg2:#111628;--accent:#00b4d8;--text:#e8e8f0;--text2:#8a8aa0;--border:rgba(0,180,216,.2)}
+    [data-theme="light"]{--bg:#f8f9fb;--bg2:#fff;--accent:#0066cc;--text:#1a1a1a;--text2:#555;--border:rgba(0,102,204,.2)}
+    [data-theme="crypto"]{--bg:#0d1117;--bg2:#161b22;--accent:#f7931a;--text:#e8e8f0;--text2:#8a8aa0;--border:rgba(247,147,26,.2)}
+    [data-theme="ocean"]{--bg:#001e3c;--bg2:#002c55;--accent:#00d9ff;--text:#b8e6ff;--text2:#6bb6cc;--border:rgba(0,217,255,.2)}
+    [data-theme="sunset"]{--bg:#1a0a14;--bg2:#251018;--accent:#ff6b6b;--text:#ffe5d9;--text2:#c9a88a;--border:rgba(255,107,107,.2)}
+</style>
+</head>
+<body>
+
+<div id="topnav-root"></div>
+
+<div class="container">
+    <div class="hero">
+        <h1>SLH Ecosystem Guide</h1>
+        <p>המדריך המאוחד והמקיף לכל חלקי המערכת — עמודים, endpoints, בוטים, זרימות עבודה, והאופרציות</p>
+    </div>
+
+    <!-- TOC -->
+    <aside class="toc">
+        <h3>תוכן עניינים</h3>
+        <a href="#overview">סקירה כללית</a>
+        <a href="#architecture">ארכיטקטורה</a>
+        <a href="#pages">עמודי האתר</a>
+        <a href="#api">API Endpoints</a>
+        <a href="#bots">בוטים</a>
+        <a href="#tokenomics">Tokenomics</a>
+        <a href="#institutional">Institutional</a>
+        <a href="#launch">Genesis Launch</a>
+        <a href="#flows">זרימות עבודה</a>
+        <a href="#env">Environment Vars</a>
+        <a href="#troubleshoot">Troubleshooting</a>
+        <a href="#glossary">מילון מונחים</a>
+    </aside>
+
+    <!-- Main content -->
+    <main class="content">
+        <section id="overview">
+            <h2>סקירה כללית</h2>
+            <p>
+                SLH Spark הוא <strong>אקוסיסטם דיגיטלי ישראלי</strong> המבוסס על 25+ בוטי טלגרם,
+                FastAPI backend על Railway, PostgreSQL + Redis, GitHub Pages frontend ב-slh-nft.com,
+                וטוקן SLH על BSC (BEP-20).
+            </p>
+            <p>המערכת מוכנה לרמה מוסדית: audit log עם hash chain בלתי-שביר, CEX integrations (Bybit+Binance), AES-GCM encryption, ו-proof of reserves תשתיתי.</p>
+
+            <div class="card">
+                <strong>🎯 יעד תפעולי:</strong> יצירת Revenue Streams אמיתיים מרובים (Academia, Marketplace, SaaS, CEX momentum trading) שיזינו את Revenue Share Pool של Dynamic Yield. לא הבטחה ליעד תשואה למשתמשים — חלוקה פרופורציונלית להכנסות אמיתיות. <a href="/academy/course-1-dynamic-yield.html">ללמוד את המודל</a>.
+            </div>
+        </section>
+
+        <section id="architecture">
+            <h2>ארכיטקטורה</h2>
+            <h3>שכבות המערכת</h3>
+            <table>
+                <thead>
+                    <tr><th>שכבה</th><th>טכנולוגיה</th><th>Location</th><th>Purpose</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Frontend</td><td>Static HTML+JS</td><td>GitHub Pages (slh-nft.com)</td><td>Public website + dashboards</td></tr>
+                    <tr><td>API</td><td>FastAPI (Python)</td><td>Railway (slh-api-production)</td><td>60+ endpoints</td></tr>
+                    <tr><td>Database</td><td>PostgreSQL 15</td><td>Railway</td><td>Users, transactions, audit</td></tr>
+                    <tr><td>Cache</td><td>Redis</td><td>Railway</td><td>Rate limits, session</td></tr>
+                    <tr><td>Bots</td><td>aiogram 3.x</td><td>Docker Compose (D:\SLH_ECOSYSTEM)</td><td>25 Telegram bots</td></tr>
+                    <tr><td>On-Chain</td><td>BSC + TON</td><td>External</td><td>SLH token + wallets</td></tr>
+                    <tr><td>CEX</td><td>Bybit V5 + Binance V3</td><td>External</td><td>READ-ONLY portfolio</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="pages">
+            <h2>עמודי האתר (20+ pages)</h2>
+            <h3>Public</h3>
+            <table>
+                <thead><tr><th>URL</th><th>Purpose</th><th>OG Image</th></tr></thead>
+                <tbody>
+                    <tr><td><code><a class="internal" href="/index.html">/</a></code></td><td>Landing page + Genesis Launch banner</td><td>index.png</td></tr>
+                    <tr><td><code><a class="internal" href="/trade.html">/trade.html</a></code></td><td>Live prices + swap</td><td>trade.png</td></tr>
+                    <tr><td><code><a class="internal" href="/earn.html">/earn.html</a></code></td><td>Staking Variable Yield (4-12%)</td><td>earn.png</td></tr>
+                    <tr><td><code><a class="internal" href="/wallet.html">/wallet.html</a></code></td><td>TON+BSC wallet + QR + CEX portfolio</td><td>wallet.png</td></tr>
+                    <tr><td><code><a class="internal" href="/bots.html">/bots.html</a></code></td><td>25 bot ecosystem</td><td>bots.png</td></tr>
+                    <tr><td><code><a class="internal" href="/network.html">/network.html</a></code></td><td>Neural network visualization + BSC holders</td><td>network.png</td></tr>
+                    <tr><td><code><a class="internal" href="/blockchain.html">/blockchain.html</a></code></td><td>On-chain BSC+TON data</td><td>blockchain.png</td></tr>
+                    <tr><td><code><a class="internal" href="/community.html">/community.html</a></code></td><td>Posts + link upload</td><td>community.png</td></tr>
+                    <tr><td><code><a class="internal" href="/roadmap.html">/roadmap.html</a></code></td><td>Milestones timeline</td><td>roadmap.png</td></tr>
+                    <tr><td><code><a class="internal" href="/daily-blog.html">/daily-blog.html</a></code></td><td>Changelog</td><td>daily-blog.png</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Launch & DEX</h3>
+            <table>
+                <thead><tr><th>URL</th><th>Purpose</th></tr></thead>
+                <tbody>
+                    <tr><td><code><a class="internal" href="/launch-event.html">/launch-event.html</a></code></td><td>Genesis Launch public page with live tracker</td></tr>
+                    <tr><td><code><a class="internal" href="/partner-launch-invite.html?partner=NAME">/partner-launch-invite.html</a></code></td><td>Personalized partner invitation</td></tr>
+                    <tr><td><code><a class="internal" href="/dex-launch.html">/dex-launch.html</a></code></td><td>DEX calculator with 5 scenarios</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Admin & Internal</h3>
+            <table>
+                <thead><tr><th>URL</th><th>Purpose</th></tr></thead>
+                <tbody>
+                    <tr><td><code><a class="internal" href="/admin.html">/admin.html</a></code></td><td>Institutional admin panel (requires admin password)</td></tr>
+                    <tr><td><code><a class="internal" href="/system-health.html">/system-health.html</a></code></td><td>30+ live health checks</td></tr>
+                    <tr><td><code><a class="internal" href="/dashboard.html">/dashboard.html</a></code></td><td>User dashboard (requires login)</td></tr>
+                    <tr><td><code><a class="internal" href="/ops-report-20260411.html">/ops-report-20260411.html</a></code></td><td>Detailed execution report</td></tr>
+                    <tr><td><code><a class="internal" href="/overnight-report.html">/overnight-report.html</a></code></td><td>Morning briefing</td></tr>
+                    <tr><td><code><a class="internal" href="/ecosystem-guide.html">/ecosystem-guide.html</a></code></td><td>This guide 📚</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="api">
+            <h2>API Endpoints (60+ total)</h2>
+            <p>Base URL: <code>https://slh-api-production.up.railway.app</code></p>
+
+            <h3>🩺 Health & Stats</h3>
+            <ul>
+                <li><span class="badge badge-get">GET</span> <code>/api/health</code> — basic health check</li>
+                <li><span class="badge badge-get">GET</span> <code>/api/stats</code> — public stats (users, staked, deposits)</li>
+                <li><span class="badge badge-get">GET</span> <code>/api/admin/dashboard</code> — aggregated admin stats</li>
+                <li><span class="badge badge-get">GET</span> <code>/api/admin/activity?limit=15</code> — recent activity feed</li>
+            </ul>
+
+            <h3>🔐 Auth & Users</h3>
+            <ul>
+                <li><span class="badge badge-post">POST</span> <code>/api/auth/telegram</code> — Telegram Login Widget auth</li>
+                <li><span class="badge badge-post">POST</span> <code>/api/user/ensure</code> — idempotent user creation (manual login)</li>
+                <li><span class="badge badge-post">POST</span> <code>/api/auth/bot-sync</code> — bot syncs user to DB (with secret)</li>
+                <li><span class="badge badge-get">GET</span> <code>/api/user/{telegram_id}</code> — user profile + balances</li>
+                <li><span class="badge badge-get">GET</span> <code>/api/user/full/{telegram_id}</code> — everything in one call</li>
+            </ul>
+
+            <h3>🏛 Institutional (Audit + CEX)</h3>
+            <ul>
+                <li><span class="badge badge-get">GET</span> <code>/api/audit/verify-chain</code> — SHA-256 hash chain integrity</li>
+                <li><span class="badge badge-get">GET</span> <code>/api/audit/recent?limit=100&action_filter=...&user_id=...</code></li>
+                <li><span class="badge badge-post">POST</span> <code>/api/cex/add-key</code> — link CEX API key (encrypted AES-GCM)</li>
+                <li><span class="badge badge-get">GET</span> <code>/api/cex/keys/{user_id}</code> — list user's CEX keys</li>
+                <li><span class="badge badge-post">POST</span> <code>/api/cex/sync/{key_id}</code> — fetch balances from exchange</li>
+                <li><span class="badge badge-get">GET</span> <code>/api/cex/portfolio/{user_id}</code> — consolidated portfolio</li>
+                <li><span class="badge badge-del">DEL</span> <code>/api/cex/keys/{key_id}?user_id=...</code></li>
+            </ul>
+
+            <h3>💎 Tokenomics</h3>
+            <ul>
+                <li><span class="badge badge-get">GET</span> <code>/api/tokenomics/stats</code> — supply, burned, staked, reserves</li>
+                <li><span class="badge badge-post">POST</span> <code>/api/tokenomics/internal-transfer</code> — FREE MNH/ZVK/SLH</li>
+                <li><span class="badge badge-post">POST</span> <code>/api/tokenomics/burn</code> — record burn (admin)</li>
+                <li><span class="badge badge-post">POST</span> <code>/api/tokenomics/reserves/add</code> — add backing reserves</li>
+            </ul>
+
+            <h3>📊 Strategy Engine</h3>
+            <ul>
+                <li><span class="badge badge-get">GET</span> <code>/api/strategy/list</code> — 3 backtested strategies</li>
+                <li><span class="badge badge-get">GET</span> <code>/api/strategy/{id}</code> — strategy details</li>
+                <li><span class="badge badge-get">GET</span> <code>/api/strategy/backtest/{id}?months=12</code> — simulated returns</li>
+            </ul>
+
+            <h3>🚀 Genesis Launch</h3>
+            <ul>
+                <li><span class="badge badge-post">POST</span> <code>/api/launch/contribute</code> — record contribution</li>
+                <li><span class="badge badge-post">POST</span> <code>/api/launch/verify/{id}?admin_key=...</code> — verify + issue rewards</li>
+                <li><span class="badge badge-get">GET</span> <code>/api/launch/status</code> — live progress + contributors</li>
+            </ul>
+
+            <h3>📣 Broadcast & Shares</h3>
+            <ul>
+                <li><span class="badge badge-post">POST</span> <code>/api/broadcast/send</code> — send Telegram DM to all users</li>
+                <li><span class="badge badge-get">GET</span> <code>/api/broadcast/history</code> — recent broadcasts</li>
+                <li><span class="badge badge-post">POST</span> <code>/api/shares/track</code> — log share event</li>
+                <li><span class="badge badge-get">GET</span> <code>/api/shares/stats?days=30</code> — share analytics</li>
+            </ul>
+
+            <h3>🎨 OG Images</h3>
+            <ul>
+                <li><span class="badge badge-get">GET</span> <code>/api/og/{slug}.png</code> — dynamic 1200×630 PNG for social shares</li>
+                <li>Slugs: index, network, dashboard, wallet, bots, trade, earn, community, blockchain, roadmap, admin, launch-event, dex-launch, daily-blog, guides, referral</li>
+            </ul>
+
+            <h3>🌐 Network & Blockchain</h3>
+            <ul>
+                <li><span class="badge badge-get">GET</span> <code>/api/network/slh-holders?limit=100</code> — BSC holders (BitQuery/Etherscan)</li>
+                <li><span class="badge badge-get">GET</span> <code>/api/external-wallets/{user_id}</code></li>
+                <li><span class="badge badge-post">POST</span> <code>/api/external-wallets/add</code></li>
+            </ul>
+
+            <h3>🎁 Genesis 49 + Cashback</h3>
+            <ul>
+                <li><span class="badge badge-get">GET</span> <code>/api/beta/status</code> — coupon remaining</li>
+                <li><span class="badge badge-get">GET</span> <code>/api/cashback/{user_id}</code> — tier status</li>
+                <li><span class="badge badge-post">POST</span> <code>/api/cashback/process/{user_id}</code></li>
+            </ul>
+        </section>
+
+        <section id="bots">
+            <h2>בוטים (25 total)</h2>
+            <h3>Financial</h3>
+            <ul>
+                <li><span class="badge badge-live">LIVE</span> <code>@SLH_AIR_bot</code> — Main investment hub (staking, portfolio, 10-gen referrals)</li>
+                <li><span class="badge badge-live">LIVE</span> <code>@SLH_Wallet_bot</code> — Multi-currency wallet</li>
+                <li><span class="badge badge-live">LIVE</span> <code>@TON_MNH_bot</code> — ILS-pegged stablecoin</li>
+                <li><span class="badge badge-live">LIVE</span> <code>@SLH_Ledger_bot</code> — Transaction ledger</li>
+            </ul>
+            <h3>Community & Education</h3>
+            <ul>
+                <li><span class="badge badge-live">LIVE</span> <code>@NFTY_madness_bot</code> — Tamagotchi virtual pet</li>
+                <li><span class="badge badge-wip">BETA</span> <code>@SLH_Academia_bot</code> — Educational platform</li>
+                <li><span class="badge badge-wip">BETA</span> <code>@SLH_community_bot</code> — Community hub</li>
+            </ul>
+            <p>See full list at <a class="internal" href="/bots.html">/bots.html</a></p>
+        </section>
+
+        <section id="tokenomics">
+            <h2>Multi-Token Economy</h2>
+            <table>
+                <thead><tr><th>Token</th><th>Role</th><th>Value</th><th>Supply</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>SLH</strong></td><td>Premium + Governance + Staking</td><td>₪444 internal, $0.61 DEX (planned)</td><td>111,186,328 (fixed)</td></tr>
+                    <tr><td><strong>MNH</strong></td><td>ILS-pegged stablecoin (free internal transfers)</td><td>1 ₪</td><td>Mint-on-demand</td></tr>
+                    <tr><td><strong>ZVK</strong></td><td>Activity rewards (games, referrals, cashback)</td><td>~₪4.4</td><td>100M+</td></tr>
+                    <tr><td><strong>ZUZ</strong></td><td>Anti-fraud "Mark of Cain" — negative rep for scammers (Guardian)</td><td>N/A</td><td>Assigned per report</td></tr>
+                </tbody>
+            </table>
+            <h3>Value Mechanisms</h3>
+            <ul>
+                <li><strong>Buyback-and-burn</strong>: 50% of platform revenue → buy SLH → burn (deflationary)</li>
+                <li><strong>Staking lock-up</strong>: Users lock SLH for yield (supply shock)</li>
+                <li><strong>Utility demand</strong>: VIP features require SLH holdings</li>
+                <li><strong>Backing reserves</strong>: SLH backed by $X USDT in company wallet</li>
+                <li><strong>Liquidity mining</strong>: LP providers earn ZVK rewards</li>
+                <li><strong>Anti-fraud (ZUZ)</strong>: Guardian bot assigns ZUZ to scammers — 100 ZUZ = auto-ban across all groups, cross-group intelligence</li>
+            </ul>
+        </section>
+
+        <section id="institutional">
+            <h2>Institutional Grade</h2>
+            <h3>Compliance Controls</h3>
+            <table>
+                <thead><tr><th>Control</th><th>Status</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td>AUDIT_HASH_CHAIN</td><td><span class="badge badge-live">LIVE</span></td><td>SHA-256 immutable chain, verify via /api/audit/verify-chain</td></tr>
+                    <tr><td>CEX_READ_ONLY</td><td><span class="badge badge-live">LIVE</span></td><td>Bybit V5 + Binance V3, HMAC-signed, no trade/withdraw</td></tr>
+                    <tr><td>KEY_ENCRYPTION</td><td><span class="badge badge-live">AES-GCM v2</span></td><td>cryptography lib, 256-bit key from ENCRYPTION_KEY env</td></tr>
+                    <tr><td>KYC_SUMSUB</td><td><span class="badge badge-wip">Scaffold</span></td><td>Endpoints ready, awaits API token</td></tr>
+                    <tr><td>CUSTODY_FIREBLOCKS</td><td><span class="badge badge-wip">Scaffold</span></td><td>Ready for contract + API key</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="launch">
+            <h2>Genesis Launch Workflow</h2>
+            <ol>
+                <li><strong>Partner is invited</strong> via <code>/partner-launch-invite.html?partner=NAME</code></li>
+                <li><strong>Partner sends BNB</strong> to company wallet: <code>0xd061de73B06d5E91bfA46b35EfB7B08b16903da4</code></li>
+                <li><strong>Partner reports TX</strong> via the form on <code>/launch-event.html</code></li>
+                <li><strong>Admin verifies</strong>: <code>POST /api/launch/verify/{id}?admin_key=...</code></li>
+                <li><strong>Pool created</strong> on PancakeSwap using collected BNB + treasury SLH</li>
+                <li><strong>LP locked</strong> in Mudra Locker for 6 months</li>
+                <li><strong>Contributor receives</strong>: Genesis NFT + 500 ZVK + co-founder credit in audit log</li>
+            </ol>
+        </section>
+
+        <section id="flows">
+            <h2>Key User Flows</h2>
+            <h3>New User Onboarding</h3>
+            <pre><code>1. User visits slh-nft.com
+2. Clicks "Try Dashboard"
+3. Dashboard: login via Telegram Widget OR manual ID entry
+4. Manual ID → POST /api/user/ensure (creates in web_users)
+5. If not registered → Registration panel (22.221 ILS or GENESIS49 coupon)
+6. Registered → Full dashboard access</code></pre>
+
+            <h3>CEX Portfolio Connection</h3>
+            <pre><code>1. /wallet.html → "תיק CEX מלא"
+2. Click "🔑 חבר API Key חדש"
+3. Follow 11-step tutorial for Bybit (Read-Only!)
+4. POST /api/cex/add-key with encrypted secrets
+5. Auto-sync: POST /api/cex/sync/{key_id}
+6. View: GET /api/cex/portfolio/{user_id}</code></pre>
+        </section>
+
+        <section id="env">
+            <h2>Environment Variables (Railway)</h2>
+            <table>
+                <thead><tr><th>Variable</th><th>Required</th><th>Purpose</th></tr></thead>
+                <tbody>
+                    <tr><td><code>DATABASE_URL</code></td><td>✓</td><td>PostgreSQL connection</td></tr>
+                    <tr><td><code>REDIS_URL</code></td><td>✓</td><td>Redis connection</td></tr>
+                    <tr><td><code>ENCRYPTION_KEY</code></td><td>✓</td><td>Source for AES-GCM key (SHA-256 derived)</td></tr>
+                    <tr><td><code>JWT_SECRET</code></td><td>✓</td><td>JWT signing</td></tr>
+                    <tr><td><code>BOT_SYNC_SECRET</code></td><td>✓</td><td>Shared secret for bot→API sync</td></tr>
+                    <tr><td><code>ADMIN_BROADCAST_KEY</code></td><td>✓</td><td>Admin key for broadcasts + verifications</td></tr>
+                    <tr><td><code>SLH_AIR_TOKEN</code></td><td>for broadcasts</td><td>@SLH_AIR_bot token</td></tr>
+                    <tr><td><code>BITQUERY_API_KEY</code></td><td>optional</td><td>BSC holders data</td></tr>
+                    <tr><td><code>CORS_ORIGINS</code></td><td>✓</td><td>slh-nft.com, localhost:*</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="troubleshoot">
+            <h2>Troubleshooting</h2>
+            <div class="card">
+                <strong>Admin shows "API offline" but endpoints work</strong><br>
+                → Hard reload (Ctrl+Shift+R). Check console for TDZ errors in admin.html.
+            </div>
+            <div class="card">
+                <strong>User can't log in with Telegram ID</strong><br>
+                → Check <code>/api/user/ensure</code> is live. Users shouldn't disappear anymore (fixed in commit 99b00c0).
+            </div>
+            <div class="card warn">
+                <strong>BSC holders endpoint returns "API key not configured"</strong><br>
+                → Set <code>BITQUERY_API_KEY</code> in Railway env (free tier at bitquery.io, 10k/month).
+            </div>
+            <div class="card">
+                <strong>Broadcasts fail: "BROADCAST_BOT_TOKEN not configured"</strong><br>
+                → Set <code>SLH_AIR_TOKEN</code> in Railway env (token from @SLH_AIR_bot).
+            </div>
+        </section>
+
+        <section id="glossary">
+            <h2>מילון מונחים</h2>
+            <ul>
+                <li><strong>Genesis 49</strong> — 49 המשתמשים הראשונים שקיבלו NFT + 10 ZVK חינם דרך קוד GENESIS49</li>
+                <li><strong>AMM</strong> — Automated Market Maker. PancakeSwap משתמש ב-x*y=k constant product.</li>
+                <li><strong>Slippage</strong> — הפרש בין המחיר הצפוי למחיר הביצוע בעסקה ב-DEX, גדל ככל שה-pool רדוד.</li>
+                <li><strong>LP</strong> — Liquidity Provider. מי שמפקיד את שני הטוקנים ב-pool ומקבל LP tokens בתמורה.</li>
+                <li><strong>Rug pull</strong> — כשיוצר ה-pool מושך את כל הנזילות ובורח. ה-Mudra Lock מונע את זה.</li>
+                <li><strong>TDZ</strong> — Temporal Dead Zone. באג JS שקרה ב-admin.html (תוקן).</li>
+                <li><strong>Hash chain</strong> — שרשרת SHA-256 בה כל רשומה מכילה hash של הקודמת, ובכך יוצרת יומן בלתי-שביר.</li>
+                <li><strong>KYC</strong> — Know Your Customer, תהליך אימות זהות של משתמשים.</li>
+                <li><strong>MPC</strong> — Multi-Party Computation. טכנולוגיית custody מתקדמת (Gnosis Safe, Fireblocks, Zengo).</li>
+            </ul>
+        </section>
+    </main>
+</div>
+
+<div id="bottomnav-root"></div>
+<div id="footer-root"></div>
+
+<script src="/js/translations.js?v=20260426e"></script>
+<script src="/js/shared.js?v=20260426e"></script>
+<script>initShared({ activePage: 'guides', showBottomNav: true });</script>
+<button id="theme-fab" onclick="document.getElementById('theme-panel').classList.toggle('open')" title="Theme">🎨</button>
+<div id="theme-panel">
+    <div style="font-size:11px;color:var(--text2,#8a8aa0);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">ערכת צבעים</div>
+    <button onclick="document.documentElement.removeAttribute('data-theme');localStorage.setItem('slh_page_theme','default');document.getElementById('theme-panel').classList.remove('open')">🟢 Default</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','dark');localStorage.setItem('slh_page_theme','dark');document.getElementById('theme-panel').classList.remove('open')">🌙 Dark</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','light');localStorage.setItem('slh_page_theme','light');document.getElementById('theme-panel').classList.remove('open')">☀️ Light</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','crypto');localStorage.setItem('slh_page_theme','crypto');document.getElementById('theme-panel').classList.remove('open')">₿ Crypto</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','ocean');localStorage.setItem('slh_page_theme','ocean');document.getElementById('theme-panel').classList.remove('open')">🌊 Ocean</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','sunset');localStorage.setItem('slh_page_theme','sunset');document.getElementById('theme-panel').classList.remove('open')">🌅 Sunset</button>
+</div>
+<script>
+(function(){var t=localStorage.getItem('slh_page_theme');if(t&&t!=='default')document.documentElement.setAttribute('data-theme',t);document.addEventListener('click',function(e){var p=document.getElementById('theme-panel'),f=document.getElementById('theme-fab');if(p&&f&&!p.contains(e.target)&&!f.contains(e.target))p.classList.remove('open');});})();
+</script>
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260426e"></script>
+</body>
+</html>

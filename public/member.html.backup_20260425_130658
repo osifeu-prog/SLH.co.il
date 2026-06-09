@@ -1,0 +1,1022 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLH Spark Member Card</title>
+    <meta name="description" content="SLH Spark Digital Identity Card - View member profile, tier, REP score and more.">
+    <link rel="canonical" href="https://slh-nft.com/member.html">
+    <!-- Open Graph (static fallback — updated dynamically via JS) -->
+    <meta property="og:type" content="profile">
+    <meta property="og:url" id="og-url" content="https://slh-nft.com/member.html">
+    <meta property="og:title" id="og-title" content="SLH Spark Member Card">
+    <meta property="og:description" id="og-desc" content="View this member's SLH Spark digital identity card">
+    <meta property="og:image" id="og-image" content="https://slh-nft.com/assets/og/default.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="he_IL">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" id="tw-title" content="SLH Spark Member Card">
+    <meta name="twitter:description" id="tw-desc" content="View this member's SLH Spark digital identity card">
+    <meta name="twitter:image" id="tw-image" content="https://slh-nft.com/assets/og/default.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <meta name="theme-color" content="#050510">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/shared.css?v=20260421a">
+    <style>
+        /* ── Page Layout ── */
+        .member-page {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: calc(var(--topnav-h) + 32px) 20px 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+
+        /* ── Loading State ── */
+        .loading-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 80px 20px;
+        }
+        .loading-spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-text {
+            color: var(--text3);
+            font-size: 14px;
+        }
+
+        /* ── Error State ── */
+        .error-state {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        .error-icon {
+            font-size: 64px;
+            opacity: .3;
+        }
+        .error-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .error-subtitle {
+            color: var(--text3);
+            font-size: 14px;
+            max-width: 360px;
+            line-height: 1.6;
+        }
+        .error-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 32px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent), #8b5cf6);
+            color: #fff;
+            font-weight: 700;
+            font-size: 15px;
+            text-decoration: none;
+            transition: all var(--transition);
+            border: none;
+            cursor: pointer;
+        }
+        .error-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(108,92,231,.4);
+        }
+
+        /* ── Card Container (3D perspective) ── */
+        .card-scene {
+            perspective: 1200px;
+            width: 400px;
+            max-width: 90vw;
+        }
+        .card-flip {
+            animation: cardEntrance 1.2s cubic-bezier(.23,1,.32,1) forwards;
+            transform-style: preserve-3d;
+            opacity: 0;
+        }
+        @keyframes cardEntrance {
+            0%   { transform: rotateY(180deg) scale(.8); opacity: 0; }
+            40%  { opacity: 1; }
+            100% { transform: rotateY(0deg) scale(1); opacity: 1; }
+        }
+
+        /* ── The Visual Member Card ── */
+        .member-card {
+            width: 400px;
+            max-width: 90vw;
+            aspect-ratio: 3 / 4;
+            border-radius: 20px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            backface-visibility: hidden;
+        }
+
+        /* Tier gradients */
+        .member-card.tier-basic {
+            background: linear-gradient(160deg, #0a3d0a 0%, #064d06 20%, #0a5c0a 40%, #083d08 60%, #0a4a0a 80%, #063006 100%);
+        }
+        .member-card.tier-active {
+            background: linear-gradient(160deg, #0a1a3d 0%, #0d2a5c 20%, #0a2050 40%, #0d1a40 60%, #102860 80%, #0a1a3d 100%);
+        }
+        .member-card.tier-senior {
+            background: linear-gradient(160deg, #1a0a3d 0%, #2a0d5c 20%, #200a50 40%, #1a0d40 60%, #281060 80%, #1a0a3d 100%);
+        }
+        .member-card.tier-elder {
+            background: linear-gradient(160deg, #3d2a0a 0%, #5c3d0d 20%, #4a300a 40%, #40280d 60%, #604010 80%, #3d2a0a 100%);
+        }
+
+        /* Holographic shimmer overlay */
+        .member-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                105deg,
+                transparent 30%,
+                rgba(255,255,255,0.06) 45%,
+                rgba(255,255,255,0.12) 50%,
+                rgba(255,255,255,0.06) 55%,
+                transparent 70%
+            );
+            animation: shimmer 4s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 2;
+        }
+        @keyframes shimmer {
+            0%, 100% { transform: translateX(-100%); }
+            50%      { transform: translateX(100%); }
+        }
+
+        /* Microprint pattern overlay */
+        .member-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            opacity: .04;
+            background-image:
+                repeating-linear-gradient(0deg, transparent, transparent 4px, rgba(255,255,255,.5) 4px, rgba(255,255,255,.5) 5px),
+                repeating-linear-gradient(90deg, transparent, transparent 4px, rgba(255,255,255,.5) 4px, rgba(255,255,255,.5) 5px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Card inner elements */
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: relative;
+            z-index: 3;
+            margin-bottom: 12px;
+        }
+        .card-brand {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 18px;
+            font-weight: 800;
+            color: rgba(255,255,255,.95);
+            letter-spacing: 2px;
+            text-shadow: 0 2px 8px rgba(0,0,0,.3);
+        }
+        .card-brand-sub {
+            font-size: 9px;
+            font-weight: 500;
+            color: rgba(255,255,255,.4);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+        .card-chip {
+            width: 44px;
+            height: 34px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, #d4af37 0%, #f5e6a3 30%, #d4af37 60%, #b8960c 100%);
+            box-shadow: inset 0 1px 2px rgba(255,255,255,.3), 0 2px 6px rgba(0,0,0,.3);
+            position: relative;
+            overflow: hidden;
+        }
+        .card-chip::before {
+            content: '';
+            position: absolute;
+            inset: 4px;
+            border: 1px solid rgba(180,140,20,.6);
+            border-radius: 3px;
+        }
+        .card-chip::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 4px;
+            bottom: 4px;
+            width: 1px;
+            background: rgba(180,140,20,.5);
+        }
+
+        .card-nft-number {
+            font-family: 'Space Mono', monospace;
+            font-size: 32px;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 2px 12px rgba(0,0,0,.4);
+            position: relative;
+            z-index: 3;
+            margin: 16px 0 8px;
+            letter-spacing: 2px;
+        }
+
+        .card-member-name {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: rgba(255,255,255,.95);
+            position: relative;
+            z-index: 3;
+            margin-bottom: 2px;
+        }
+        .card-username {
+            font-family: 'Space Mono', monospace;
+            font-size: 13px;
+            color: rgba(255,255,255,.5);
+            position: relative;
+            z-index: 3;
+            margin-bottom: 16px;
+        }
+
+        .card-tier-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #fff;
+            position: relative;
+            z-index: 3;
+            margin-bottom: 12px;
+            width: fit-content;
+        }
+        .tier-basic .card-tier-badge   { background: rgba(0,206,201,.25); border: 1px solid rgba(0,206,201,.4); }
+        .tier-active .card-tier-badge  { background: rgba(0,180,216,.25); border: 1px solid rgba(0,180,216,.4); }
+        .tier-senior .card-tier-badge  { background: rgba(162,155,254,.25); border: 1px solid rgba(162,155,254,.4); }
+        .tier-elder .card-tier-badge   { background: rgba(255,211,42,.25); border: 1px solid rgba(255,211,42,.4); }
+
+        .card-genesis {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, rgba(255,211,42,.2), rgba(255,165,2,.2));
+            border: 1px solid rgba(255,211,42,.3);
+            font-size: 10px;
+            font-weight: 700;
+            color: #ffd32a;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            position: relative;
+            z-index: 3;
+            margin-bottom: 12px;
+            width: fit-content;
+        }
+
+        .card-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            position: relative;
+            z-index: 3;
+            margin-top: auto;
+        }
+        .card-info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .card-info-label {
+            font-size: 9px;
+            font-weight: 600;
+            color: rgba(255,255,255,.35);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+        .card-info-value {
+            font-family: 'Space Mono', monospace;
+            font-size: 14px;
+            font-weight: 700;
+            color: rgba(255,255,255,.9);
+        }
+
+        .card-qr {
+            position: absolute;
+            bottom: 28px;
+            left: 28px;
+            width: 64px;
+            height: 64px;
+            border-radius: 8px;
+            background: #fff;
+            padding: 4px;
+            z-index: 3;
+        }
+        .card-qr canvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 4px;
+        }
+
+        .card-footer-line {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            z-index: 3;
+        }
+        .tier-basic .card-footer-line   { background: linear-gradient(90deg, #00cec9, #2ecc71); }
+        .tier-active .card-footer-line  { background: linear-gradient(90deg, #00b4d8, #6c5ce7); }
+        .tier-senior .card-footer-line  { background: linear-gradient(90deg, #6c5ce7, #a29bfe); }
+        .tier-elder .card-footer-line   { background: linear-gradient(90deg, #ffd32a, #ffa502); }
+
+        /* ── Stats Grid ── */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            width: 100%;
+            max-width: 500px;
+        }
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px 12px;
+            text-align: center;
+            transition: all var(--transition);
+        }
+        .stat-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        .stat-icon {
+            font-size: 20px;
+            margin-bottom: 8px;
+            opacity: .6;
+        }
+        .stat-value {
+            font-family: 'Space Mono', monospace;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+        .stat-label {
+            font-size: 11px;
+            color: var(--text3);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ── Share Section ── */
+        .share-section {
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        .share-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 16px;
+        }
+        .share-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .share-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all var(--transition);
+            color: #fff;
+            text-decoration: none;
+        }
+        .share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(0,0,0,.3);
+        }
+        .share-btn.btn-telegram  { background: #0088cc; }
+        .share-btn.btn-twitter   { background: #1da1f2; }
+        .share-btn.btn-whatsapp  { background: #25d366; }
+        .share-btn.btn-copy      { background: var(--surface2); border: 1px solid var(--border); }
+        .share-btn.btn-copy.copied { background: var(--green); border-color: var(--green); }
+
+        /* ── ASCII Art Section ── */
+        .ascii-section {
+            width: 100%;
+            max-width: 500px;
+        }
+        .ascii-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text2);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .ascii-toggle:hover {
+            border-color: var(--accent);
+            color: var(--text);
+        }
+        .ascii-toggle i.chevron {
+            transition: transform .3s;
+        }
+        .ascii-toggle.open i.chevron {
+            transform: rotate(180deg);
+        }
+        .ascii-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height .4s cubic-bezier(.4,0,.2,1);
+        }
+        .ascii-body.open {
+            max-height: 600px;
+        }
+        .ascii-content {
+            margin-top: 12px;
+            position: relative;
+        }
+        .ascii-pre {
+            background: #0a0a0a;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            line-height: 1.4;
+            color: var(--green);
+            overflow-x: auto;
+            white-space: pre;
+            direction: ltr;
+            text-align: left;
+        }
+        .ascii-copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: rgba(108,92,231,.3);
+            border: 1px solid rgba(108,92,231,.4);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .ascii-copy-btn:hover {
+            background: var(--accent);
+        }
+
+        /* ── Gallery Link ── */
+        .gallery-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text3);
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all var(--transition);
+            padding: 12px 24px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+        .gallery-link:hover {
+            color: var(--accent2);
+            border-color: var(--accent);
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 520px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .card-nft-number {
+                font-size: 26px;
+            }
+            .card-member-name {
+                font-size: 17px;
+            }
+            .card-info-value {
+                font-size: 12px;
+            }
+            .share-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .share-btn {
+                justify-content: center;
+            }
+        }
+
+        /* Theme Switcher */
+        #theme-fab{position:fixed;bottom:94px;left:24px;z-index:9997;background:var(--accent,#00e887);color:#000;width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;font-size:20px;box-shadow:0 4px 16px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center}
+        #theme-panel{position:fixed;bottom:150px;left:24px;z-index:9998;background:var(--bg,#0a0a0a);border:1px solid rgba(255,255,255,.15);padding:16px;border-radius:12px;display:none;flex-direction:column;gap:6px;max-width:220px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+        #theme-panel.open{display:flex}
+        #theme-panel button{background:var(--bg,#0a0a0a);border:1px solid rgba(255,255,255,.1);color:#e8e8f0;padding:10px 14px;cursor:pointer;font-size:12px;text-align:right;font-family:inherit;border-radius:6px;transition:all .2s}
+        #theme-panel button:hover{background:var(--accent,#00e887);color:#000}
+        [data-theme="dark"]{--bg:#0b0e16;--bg2:#111628;--accent:#00b4d8;--text:#e8e8f0;--text2:#8a8aa0;--border:rgba(0,180,216,.2)}
+        [data-theme="light"]{--bg:#f8f9fb;--bg2:#fff;--accent:#0066cc;--text:#1a1a1a;--text2:#555;--border:rgba(0,102,204,.2)}
+        [data-theme="crypto"]{--bg:#0d1117;--bg2:#161b22;--accent:#f7931a;--text:#e8e8f0;--text2:#8a8aa0;--border:rgba(247,147,26,.2)}
+        [data-theme="ocean"]{--bg:#001e3c;--bg2:#002c55;--accent:#00d9ff;--text:#b8e6ff;--text2:#6bb6cc;--border:rgba(0,217,255,.2)}
+        [data-theme="sunset"]{--bg:#1a0a14;--bg2:#251018;--accent:#ff6b6b;--text:#ffe5d9;--text2:#c9a88a;--border:rgba(255,107,107,.2)}
+    </style>
+</head>
+<body>
+<div id="topnav-root"></div>
+<div id="ticker-root"></div>
+
+<div class="member-page" id="member-page">
+
+    <!-- Loading State -->
+    <div class="loading-state" id="loading-state">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading member card...</div>
+    </div>
+
+    <!-- Error State (hidden by default) -->
+    <div class="error-state" id="error-state">
+        <div class="error-icon">
+            <i class="fas fa-id-card-clip"></i>
+        </div>
+        <div class="error-title">Member Not Found</div>
+        <div class="error-subtitle">
+            This member ID does not exist in the SLH Spark ecosystem. Want to join and get your own digital identity card?
+        </div>
+        <a href="https://t.me/SLH_AIR_bot?start=register" class="error-cta">
+            <i class="fab fa-telegram-plane"></i>
+            Register on Telegram
+        </a>
+    </div>
+
+    <!-- Main Content (hidden until loaded) -->
+    <div id="member-content" style="display:none; width:100%; flex-direction:column; align-items:center; gap:40px;">
+
+        <!-- Card Scene (3D flip) -->
+        <div class="card-scene">
+            <div class="card-flip" id="card-flip">
+                <div class="member-card" id="member-card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-brand">SLH SPARK</div>
+                            <div class="card-brand-sub">Digital Identity</div>
+                        </div>
+                        <div class="card-chip"></div>
+                    </div>
+
+                    <div class="card-nft-number" id="card-nft">SLH-0000</div>
+                    <div class="card-member-name" id="card-name">---</div>
+                    <div class="card-username" id="card-username">@---</div>
+
+                    <div class="card-tier-badge" id="card-tier">
+                        <span id="card-tier-emoji"></span>
+                        <span id="card-tier-text">---</span>
+                    </div>
+
+                    <div class="card-genesis" id="card-genesis" style="display:none;">
+                        <i class="fas fa-star"></i> GENESIS CONTRIBUTOR
+                    </div>
+
+                    <div class="card-info-grid">
+                        <div class="card-info-item">
+                            <span class="card-info-label">REP Score</span>
+                            <span class="card-info-value" id="card-rep">0</span>
+                        </div>
+                        <div class="card-info-item">
+                            <span class="card-info-label">Joined</span>
+                            <span class="card-info-value" id="card-joined">---</span>
+                        </div>
+                        <div class="card-info-item">
+                            <span class="card-info-label">SLH Balance</span>
+                            <span class="card-info-value" id="card-slh">0</span>
+                        </div>
+                        <div class="card-info-item">
+                            <span class="card-info-label">ZVK Balance</span>
+                            <span class="card-info-value" id="card-zvk">0</span>
+                        </div>
+                    </div>
+
+                    <div class="card-qr" id="card-qr-container">
+                        <canvas id="card-qr-canvas" width="56" height="56"></canvas>
+                    </div>
+
+                    <div class="card-footer-line"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid" id="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                <div class="stat-value" id="stat-rep">0</div>
+                <div class="stat-label">REP Score</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-shield-halved"></i></div>
+                <div class="stat-value" id="stat-tier">---</div>
+                <div class="stat-label">Tier</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-user-plus"></i></div>
+                <div class="stat-value" id="stat-referrals">0</div>
+                <div class="stat-label">Referrals</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+                <div class="stat-value" id="stat-since">---</div>
+                <div class="stat-label">Member Since</div>
+            </div>
+        </div>
+
+        <!-- Share Section -->
+        <div class="share-section">
+            <div class="share-title"><i class="fas fa-share-nodes"></i> Share your member card</div>
+            <div class="share-buttons">
+                <button class="share-btn btn-telegram" onclick="shareTelegram()">
+                    <i class="fab fa-telegram-plane"></i> Telegram
+                </button>
+                <button class="share-btn btn-twitter" onclick="shareTwitter()">
+                    <i class="fab fa-x-twitter"></i> Twitter
+                </button>
+                <button class="share-btn btn-whatsapp" onclick="shareWhatsApp()">
+                    <i class="fab fa-whatsapp"></i> WhatsApp
+                </button>
+                <button class="share-btn btn-copy" id="copy-btn" onclick="copyShareLink()">
+                    <i class="fas fa-link"></i> <span id="copy-label">Copy Link</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ASCII Art (collapsible) -->
+        <div class="ascii-section" id="ascii-section" style="display:none;">
+            <button class="ascii-toggle" id="ascii-toggle" onclick="toggleAscii()">
+                <i class="fas fa-terminal"></i>
+                ASCII Member Card
+                <i class="fas fa-chevron-down chevron"></i>
+            </button>
+            <div class="ascii-body" id="ascii-body">
+                <div class="ascii-content">
+                    <button class="ascii-copy-btn" onclick="copyAscii()">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                    <pre class="ascii-pre" id="ascii-pre"></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gallery Link -->
+        <a href="/gallery.html" class="gallery-link">
+            <i class="fas fa-users-viewfinder"></i>
+            See all members
+            <i class="fas fa-arrow-left"></i>
+        </a>
+    </div>
+</div>
+
+<div id="bottomnav-root"></div>
+<div id="footer-root"></div>
+
+<script src="/js/translations.js?v=20260421a"></script>
+<script src="/js/shared.js?v=20260424a"></script>
+<script>
+    initShared({ activePage: 'member', showBottomNav: true });
+</script>
+
+<script>
+/* ===== Member Card Page Logic ===== */
+
+const MEMBER_API = (typeof API_BASE !== 'undefined' ? API_BASE : 'https://slh-api-production.up.railway.app');
+
+const TIER_CONFIG = {
+    basic:  { emoji: '\u{1F331}', label: 'Basic',  color: '#00cec9' },
+    active: { emoji: '\u{1F680}', label: 'Active', color: '#00b4d8' },
+    senior: { emoji: '\u{1F48E}', label: 'Senior', color: '#a29bfe' },
+    elder:  { emoji: '\u{1F451}', label: 'Elder',  color: '#ffd32a' }
+};
+
+let memberData = null;
+let memberId = null;
+
+function getMemberId() {
+    return new URLSearchParams(window.location.search).get('id');
+}
+
+function getShareUrl() {
+    return 'https://slh-nft.com/member.html?id=' + (memberId || '');
+}
+
+/* ── QR Code (simple visual pattern) ── */
+function drawMiniQR(canvas, data) {
+    const ctx = canvas.getContext('2d');
+    const size = canvas.width;
+    const modules = 21;
+    const cellSize = size / modules;
+
+    let bits = [];
+    for (let i = 0; i < data.length; i++) {
+        let code = data.charCodeAt(i);
+        for (let b = 7; b >= 0; b--) bits.push((code >> b) & 1);
+    }
+    while (bits.length < modules * modules) bits.push(bits.length % 3 === 0 ? 1 : 0);
+
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, size, size);
+
+    function drawFinder(fx, fy) {
+        ctx.fillStyle = '#000';
+        ctx.fillRect(fx, fy, cellSize * 7, cellSize * 7);
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(fx + cellSize, fy + cellSize, cellSize * 5, cellSize * 5);
+        ctx.fillStyle = '#000';
+        ctx.fillRect(fx + cellSize * 2, fy + cellSize * 2, cellSize * 3, cellSize * 3);
+    }
+    drawFinder(0, 0);
+    drawFinder(cellSize * (modules - 7), 0);
+    drawFinder(0, cellSize * (modules - 7));
+
+    ctx.fillStyle = '#000';
+    for (let row = 0; row < modules; row++) {
+        for (let col = 0; col < modules; col++) {
+            if ((row < 8 && col < 8) || (row < 8 && col >= modules - 8) || (row >= modules - 8 && col < 8)) continue;
+            let idx = row * modules + col;
+            if (bits[idx % bits.length]) {
+                ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+            }
+        }
+    }
+}
+
+/* ── Populate Card ── */
+function renderCard(data) {
+    const tierKey = (data.tier || 'basic').toLowerCase();
+    const tierCfg = TIER_CONFIG[tierKey] || TIER_CONFIG.basic;
+
+    // Card tier class
+    const card = document.getElementById('member-card');
+    card.className = 'member-card tier-' + tierKey;
+
+    // NFT number
+    document.getElementById('card-nft').textContent = data.nft_number || data.nftNumber || 'SLH-XXXX';
+
+    // Name + username
+    document.getElementById('card-name').textContent = data.name || data.first_name || 'SLH Member';
+    document.getElementById('card-username').textContent = data.username ? '@' + data.username : '';
+
+    // Tier badge
+    document.getElementById('card-tier-emoji').textContent = tierCfg.emoji;
+    document.getElementById('card-tier-text').textContent = tierCfg.label;
+
+    // Genesis badge
+    if (data.genesis || data.is_genesis) {
+        document.getElementById('card-genesis').style.display = 'inline-flex';
+    }
+
+    // REP
+    const repVal = data.rep_score || data.rep || 0;
+    document.getElementById('card-rep').textContent = Number(repVal).toLocaleString();
+
+    // Join date
+    const joinRaw = data.joined || data.join_date || data.created_at || '';
+    const joinDisplay = joinRaw ? formatDate(joinRaw) : '---';
+    document.getElementById('card-joined').textContent = joinDisplay;
+
+    // Balances
+    document.getElementById('card-slh').textContent = formatBalance(data.slh_balance || data.slh || 0);
+    document.getElementById('card-zvk').textContent = formatBalance(data.zvk_balance || data.zvk || 0);
+
+    // QR Code
+    drawMiniQR(document.getElementById('card-qr-canvas'), getShareUrl());
+
+    // Stats grid
+    document.getElementById('stat-rep').textContent = Number(repVal).toLocaleString();
+    document.getElementById('stat-tier').textContent = tierCfg.label;
+    document.getElementById('stat-referrals').textContent = Number(data.referrals || data.referral_count || 0).toLocaleString();
+    document.getElementById('stat-since').textContent = joinDisplay;
+
+    // ASCII art
+    if (data.ascii_card || data.ascii) {
+        document.getElementById('ascii-section').style.display = 'block';
+        document.getElementById('ascii-pre').textContent = data.ascii_card || data.ascii;
+    }
+
+    // Update OG meta tags dynamically
+    updateOGTags(data);
+}
+
+function formatDate(raw) {
+    try {
+        const d = new Date(raw);
+        if (isNaN(d.getTime())) return raw;
+        return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    } catch { return raw; }
+}
+
+function formatBalance(val) {
+    const num = parseFloat(val) || 0;
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+    if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+    return num.toLocaleString(undefined, { maximumFractionDigits: 2 });
+}
+
+function updateOGTags(data) {
+    const name = data.name || data.first_name || 'SLH Member';
+    const nft = data.nft_number || data.nftNumber || '';
+    const tierKey = (data.tier || 'basic').toLowerCase();
+    const tierCfg = TIER_CONFIG[tierKey] || TIER_CONFIG.basic;
+
+    const title = tierCfg.emoji + ' ' + name + ' | ' + nft + ' — SLH Spark Member';
+    const desc = tierCfg.label + ' tier member with ' + (data.rep_score || data.rep || 0) + ' REP score';
+    const url = getShareUrl();
+    const img = MEMBER_API + '/api/member-card/image/' + memberId;
+
+    // OG tags
+    const setMeta = (id, content) => { const el = document.getElementById(id); if (el) el.content = content; };
+    setMeta('og-url', url);
+    setMeta('og-title', title);
+    setMeta('og-desc', desc);
+    setMeta('og-image', img);
+    setMeta('tw-title', title);
+    setMeta('tw-desc', desc);
+    setMeta('tw-image', img);
+
+    // Page title
+    document.title = name + ' — SLH Spark Member Card';
+}
+
+/* ── Share Functions ── */
+function shareTelegram() {
+    const url = getShareUrl();
+    const name = memberData ? (memberData.name || memberData.first_name || 'SLH Member') : 'SLH Member';
+    const text = name + ' — SLH Spark Member Card';
+    window.open('https://t.me/share/url?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(text), '_blank');
+}
+
+function shareTwitter() {
+    const url = getShareUrl();
+    const name = memberData ? (memberData.name || memberData.first_name || 'SLH Member') : 'SLH Member';
+    const text = name + ' — SLH Spark Member Card #SLH #Crypto #Web3';
+    window.open('https://twitter.com/intent/tweet?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(text), '_blank');
+}
+
+function shareWhatsApp() {
+    const url = getShareUrl();
+    const name = memberData ? (memberData.name || memberData.first_name || 'SLH Member') : 'SLH Member';
+    const msg = name + ' — SLH Spark Member Card\n' + url;
+    window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+}
+
+function copyShareLink() {
+    const url = getShareUrl();
+    navigator.clipboard.writeText(url).then(() => {
+        const btn = document.getElementById('copy-btn');
+        const label = document.getElementById('copy-label');
+        btn.classList.add('copied');
+        label.textContent = 'Copied!';
+        setTimeout(() => {
+            btn.classList.remove('copied');
+            label.textContent = 'Copy Link';
+        }, 2000);
+    });
+}
+
+/* ── ASCII Toggle ── */
+function toggleAscii() {
+    const toggle = document.getElementById('ascii-toggle');
+    const body = document.getElementById('ascii-body');
+    toggle.classList.toggle('open');
+    body.classList.toggle('open');
+}
+
+function copyAscii() {
+    const text = document.getElementById('ascii-pre').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+        const btn = document.querySelector('.ascii-copy-btn');
+        const original = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+        setTimeout(() => { btn.innerHTML = original; }, 2000);
+    });
+}
+
+/* ── Fetch & Init ── */
+async function loadMemberCard() {
+    memberId = getMemberId();
+
+    if (!memberId) {
+        showError();
+        return;
+    }
+
+    try {
+        const res = await fetch(MEMBER_API + '/api/member-card/' + encodeURIComponent(memberId));
+
+        if (!res.ok) {
+            showError();
+            return;
+        }
+
+        const data = await res.json();
+
+        if (!data || data.error) {
+            showError();
+            return;
+        }
+
+        // API returns {ok: true, card: {...}} — extract the card object
+        const cardData = data.card || data;
+        memberData = cardData;
+
+        // Hide loading, show content
+        document.getElementById('loading-state').style.display = 'none';
+        const content = document.getElementById('member-content');
+        content.style.display = 'flex';
+
+        renderCard(cardData);
+
+    } catch (err) {
+        console.error('[MemberCard] Fetch error:', err);
+        showError();
+    }
+}
+
+function showError() {
+    document.getElementById('loading-state').style.display = 'none';
+    document.getElementById('error-state').style.display = 'flex';
+}
+
+// Init on DOM ready
+document.addEventListener('DOMContentLoaded', loadMemberCard);
+</script>
+
+<script src="/js/analytics.js"></script>
+<button id="theme-fab" onclick="document.getElementById('theme-panel').classList.toggle('open')" title="Theme">🎨</button>
+<div id="theme-panel">
+    <div style="font-size:11px;color:var(--text2,#8a8aa0);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">ערכת צבעים</div>
+    <button onclick="document.documentElement.removeAttribute('data-theme');localStorage.setItem('slh_page_theme','default');document.getElementById('theme-panel').classList.remove('open')">🟢 Default</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','dark');localStorage.setItem('slh_page_theme','dark');document.getElementById('theme-panel').classList.remove('open')">🌙 Dark</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','light');localStorage.setItem('slh_page_theme','light');document.getElementById('theme-panel').classList.remove('open')">☀️ Light</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','crypto');localStorage.setItem('slh_page_theme','crypto');document.getElementById('theme-panel').classList.remove('open')">₿ Crypto</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','ocean');localStorage.setItem('slh_page_theme','ocean');document.getElementById('theme-panel').classList.remove('open')">🌊 Ocean</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','sunset');localStorage.setItem('slh_page_theme','sunset');document.getElementById('theme-panel').classList.remove('open')">🌅 Sunset</button>
+</div>
+<script>
+(function(){var t=localStorage.getItem('slh_page_theme');if(t&&t!=='default')document.documentElement.setAttribute('data-theme',t);document.addEventListener('click',function(e){var p=document.getElementById('theme-panel'),f=document.getElementById('theme-fab');if(p&&f&&!p.contains(e.target)&&!f.contains(e.target))p.classList.remove('open');});})();
+</script>
+<script src="/js/ai-assistant.js?v=20260413"></script>
+</body>
+</html>

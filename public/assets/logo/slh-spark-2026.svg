@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SLH Spark — 2026 Logo
+  Designed for: investors.html, landing-v2.html, favicon, OG images
+  Concept: hexagonal "neural node" with stylized S + 5 token-orbit dots
+  Works at: 24px (favicon) to 800px (hero), light & dark backgrounds
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="SLH Spark logo">
+  <defs>
+    <!-- Gold-cyan gradient matches --accent / --accent2 in slh-neural.css -->
+    <linearGradient id="slhGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"  stop-color="#FFD166"/>
+      <stop offset="50%" stop-color="#FFB347"/>
+      <stop offset="100%" stop-color="#22D3EE"/>
+    </linearGradient>
+    <radialGradient id="slhGlow" cx="50%" cy="50%" r="55%">
+      <stop offset="0%"  stop-color="#FFD166" stop-opacity=".35"/>
+      <stop offset="60%" stop-color="#FFD166" stop-opacity=".08"/>
+      <stop offset="100%" stop-color="#FFD166" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="slhSoft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="1.2"/>
+    </filter>
+  </defs>
+
+  <!-- Soft outer glow -->
+  <circle cx="100" cy="100" r="92" fill="url(#slhGlow)"/>
+
+  <!-- Hexagonal node frame (the "neural node" container) -->
+  <polygon points="100,18 168,55 168,145 100,182 32,145 32,55"
+           fill="none" stroke="url(#slhGrad)" stroke-width="3" stroke-linejoin="round"
+           opacity=".95"/>
+  <polygon points="100,28 158,60 158,140 100,172 42,140 42,60"
+           fill="rgba(3,6,15,.55)" stroke="rgba(255,209,102,.18)" stroke-width="1"/>
+
+  <!-- 5 token-orbit dots (representing 5-token economy: SLH, MNH, ZVK, REP, ZUZ) -->
+  <g fill="url(#slhGrad)" opacity=".85">
+    <circle cx="100" cy="20"  r="4.5"/>
+    <circle cx="170" cy="58"  r="4.5"/>
+    <circle cx="170" cy="142" r="4.5"/>
+    <circle cx="100" cy="180" r="4.5"/>
+    <circle cx="30"  cy="142" r="4.5"/>
+    <circle cx="30"  cy="58"  r="4.5"/>
+  </g>
+
+  <!-- Connecting synapse lines from S to corners (subtle, animated-feeling) -->
+  <g stroke="url(#slhGrad)" stroke-width="1" opacity=".35" fill="none">
+    <line x1="100" y1="100" x2="100" y2="20"/>
+    <line x1="100" y1="100" x2="170" y2="58"/>
+    <line x1="100" y1="100" x2="170" y2="142"/>
+    <line x1="100" y1="100" x2="100" y2="180"/>
+    <line x1="100" y1="100" x2="30"  y2="142"/>
+    <line x1="100" y1="100" x2="30"  y2="58"/>
+  </g>
+
+  <!-- Stylized "S" letterform — the focal point -->
+  <!-- Two overlapping arcs creating a flowing S -->
+  <g filter="url(#slhSoft)">
+    <path d="M 130 65 Q 130 50, 110 50 L 90 50 Q 70 50, 70 70 Q 70 90, 90 95 L 110 100 Q 130 105, 130 125 Q 130 145, 110 145 L 90 145 Q 70 145, 70 130"
+          fill="none" stroke="url(#slhGrad)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Spark accent — small star at top-right of S, references "Spark" in name -->
+  <g transform="translate(140, 50)" fill="#FFD166">
+    <path d="M 0 -8 L 2 -2 L 8 0 L 2 2 L 0 8 L -2 2 L -8 0 L -2 -2 Z"/>
+  </g>
+
+  <!-- Center pulse dot (live indicator concept) -->
+  <circle cx="100" cy="100" r="3" fill="#22D3EE" opacity=".9"/>
+</svg>

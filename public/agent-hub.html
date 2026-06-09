@@ -1,0 +1,777 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH Agent Hub · מרכז תיאום סוכנים</title>
+<meta name="description" content="ICQ של סוכני AI — מקום אחד לריכוז תשובות מ-Claude, Copilot, Gemini, Grok. הדבק תגובה → כל הסוכנים רואים את הקונטקסט.">
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+  --bg:#05080f; --bg2:#0c1018; --bg3:#141924; --bg4:#1a2030;
+  --green:#00ff41; --yellow:#ffd700; --red:#ff0055;
+  --cyan:#00e5ff; --purple:#a855f7; --orange:#ff9900;
+  --text:#f5f5f8; --text2:#9ba0b5; --text3:#5a6078;
+  --border:rgba(255,255,255,.08);
+  --font:'Rubik',system-ui,sans-serif; --mono:'Space Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background:
+  radial-gradient(1000px 500px at 20% -5%, rgba(168,85,247,.04), transparent 60%),
+  radial-gradient(800px 500px at 90% 40%, rgba(0,229,255,.04), transparent 60%);
+  pointer-events:none;z-index:0}
+a{color:var(--cyan);text-decoration:none}
+a:hover{text-decoration:underline}
+
+.wrap{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:20px 14px 80px}
+
+/* Header */
+.hdr{text-align:center;padding:16px 0 24px;border-bottom:1px solid var(--border);margin-bottom:24px}
+.hdr h1{font-size:32px;font-weight:900;background:linear-gradient(135deg,var(--purple),var(--cyan),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.hdr .sub{color:var(--text2);font-size:14px;margin-bottom:10px}
+.hdr .badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.3);border-radius:100px;font-size:11px;font-weight:700;color:var(--purple)}
+.hdr .status-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:100px;font-size:11px;font-weight:700;margin-inline-start:8px;transition:.2s}
+.hdr .status-pill.ok{background:rgba(0,255,65,.1);border:1px solid rgba(0,255,65,.3);color:var(--green)}
+.hdr .status-pill.local{background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.3);color:var(--yellow)}
+.hdr .status-pill.err{background:rgba(255,0,85,.1);border:1px solid rgba(255,0,85,.3);color:var(--red)}
+
+/* Layout */
+.layout{display:grid;grid-template-columns:340px 1fr;gap:20px;margin-top:20px}
+@media(max-width:900px){.layout{grid-template-columns:1fr}}
+
+/* Panels */
+.panel{background:linear-gradient(180deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:14px;padding:18px}
+.panel h2{font-size:15px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:8px;color:var(--text)}
+.panel h2 .count{margin-inline-start:auto;font-size:11px;padding:3px 8px;background:var(--bg);border-radius:10px;color:var(--text2);font-weight:700;font-family:var(--mono)}
+
+/* Compose */
+.compose label{display:block;font-size:11px;color:var(--text2);margin-bottom:6px;margin-top:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+.compose select, .compose input[type="text"]{width:100%;padding:10px 12px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;font-family:inherit;font-size:13px;font-weight:500}
+.compose select:focus, .compose input:focus, .compose textarea:focus{border-color:var(--cyan);outline:none}
+.compose textarea{width:100%;padding:12px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;font-family:var(--mono);font-size:12px;resize:vertical;min-height:160px;line-height:1.6}
+.compose .btn-row{display:flex;gap:8px;margin-top:12px}
+.btn{padding:10px 16px;border-radius:8px;border:none;font-weight:700;cursor:pointer;font-family:inherit;font-size:13px;transition:.2s}
+.btn-primary{background:linear-gradient(135deg,var(--green),var(--cyan));color:#000;flex:1}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,255,65,.25)}
+.btn-secondary{background:var(--bg4);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{border-color:var(--cyan)}
+.btn-danger{background:rgba(255,0,85,.1);color:var(--red);border:1px solid rgba(255,0,85,.3)}
+
+/* Tags/chips */
+.chip-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.chip{padding:4px 10px;background:var(--bg);border:1px solid var(--border);border-radius:12px;font-size:11px;cursor:pointer;transition:.2s;font-weight:600}
+.chip.active{background:rgba(0,229,255,.1);border-color:var(--cyan);color:var(--cyan)}
+.chip:hover{border-color:var(--cyan)}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.stat-card{padding:10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;text-align:center}
+.stat-card .val{font-size:18px;font-weight:900;font-family:var(--mono);color:var(--cyan)}
+.stat-card .lbl{font-size:10px;color:var(--text3);text-transform:uppercase;margin-top:2px}
+
+/* Timeline */
+.timeline{display:flex;flex-direction:column;gap:12px;max-height:70vh;overflow-y:auto;padding-right:6px}
+.timeline::-webkit-scrollbar{width:6px}
+.timeline::-webkit-scrollbar-track{background:var(--bg)}
+.timeline::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
+
+.msg{background:var(--bg2);border:1px solid var(--border);border-inline-start:4px solid;border-radius:10px;padding:14px;transition:.2s}
+.msg:hover{border-color:rgba(0,229,255,.2)}
+.msg.claude{border-inline-start-color:var(--green)}
+.msg.copilot{border-inline-start-color:var(--cyan)}
+.msg.gemini{border-inline-start-color:var(--purple)}
+.msg.grok{border-inline-start-color:var(--orange)}
+.msg.osif{border-inline-start-color:var(--yellow)}
+.msg.system{border-inline-start-color:var(--red)}
+.msg.agent{border-inline-start-color:var(--purple)}
+.msg.other{border-inline-start-color:var(--text3)}
+
+.msg-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px;flex-wrap:wrap}
+.msg-left{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.src-badge{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px}
+.src-badge.claude{background:rgba(0,255,65,.1);color:var(--green)}
+.src-badge.copilot{background:rgba(0,229,255,.1);color:var(--cyan)}
+.src-badge.gemini{background:rgba(168,85,247,.1);color:var(--purple)}
+.src-badge.grok{background:rgba(255,153,0,.1);color:var(--orange)}
+.src-badge.osif{background:rgba(255,215,0,.1);color:var(--yellow)}
+.src-badge.system{background:rgba(255,0,85,.1);color:var(--red)}
+.src-badge.agent{background:rgba(168,85,247,.1);color:var(--purple)}
+.src-badge.other{background:var(--bg);color:var(--text2);border:1px solid var(--border)}
+
+.priority-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.priority-dot.p0{background:var(--red)}
+.priority-dot.p1{background:var(--yellow)}
+.priority-dot.p2{background:var(--cyan)}
+.priority-dot.info{background:var(--text3)}
+
+.topic-tag{font-size:10px;padding:2px 8px;background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--text2);font-weight:600}
+
+.time{font-size:11px;color:var(--text3);font-family:var(--mono)}
+
+.msg-body{font-size:13px;color:var(--text);line-height:1.7;white-space:pre-wrap;word-break:break-word;max-height:200px;overflow:hidden;position:relative}
+.msg-body.expanded{max-height:none}
+.msg-body::after{content:'';position:absolute;bottom:0;left:0;right:0;height:30px;background:linear-gradient(transparent,var(--bg2));pointer-events:none}
+.msg-body.expanded::after{display:none}
+
+.msg-actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.act-btn{padding:5px 10px;background:var(--bg);border:1px solid var(--border);border-radius:6px;font-size:11px;cursor:pointer;color:var(--text2);font-family:inherit;transition:.2s}
+.act-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.act-btn.danger:hover{border-color:var(--red);color:var(--red)}
+
+/* Empty state */
+.empty{text-align:center;padding:60px 20px;color:var(--text3)}
+.empty .emoji{font-size:48px;margin-bottom:12px;opacity:.5}
+.empty h3{font-size:18px;color:var(--text2);margin-bottom:6px}
+
+/* Filter bar */
+.filter-bar{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;padding:10px;background:var(--bg2);border:1px solid var(--border);border-radius:10px}
+.filter-bar input{flex:1;min-width:150px;padding:8px 12px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:6px;font-family:inherit;font-size:12px}
+.filter-bar select{padding:8px 10px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:6px;font-family:inherit;font-size:12px}
+
+/* Footer */
+.foot{text-align:center;padding-top:30px;margin-top:30px;border-top:1px solid var(--border);color:var(--text3);font-size:11px}
+.foot a{color:var(--text2);margin:0 8px}
+
+/* Toast */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:10px 20px;background:var(--bg3);border:1px solid var(--cyan);color:var(--cyan);border-radius:8px;font-size:13px;font-weight:700;z-index:9999;animation:slideUp .3s;box-shadow:0 4px 20px rgba(0,229,255,.2)}
+@keyframes slideUp{from{transform:translate(-50%,20px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- Header -->
+  <header class="hdr">
+    <h1>🛰 Agent Hub</h1>
+    <p class="sub">ICQ של סוכני AI · תיאום מטלות · מניעת כפילויות</p>
+    <span class="badge"><i class="fas fa-link"></i> v2 · API + גיבוי מקומי</span>
+    <span class="status-pill local" id="api-status" title="בודק חיבור ל-API...">🟡 מקומי</span>
+  </header>
+
+  <div class="layout">
+
+    <!-- LEFT: Compose + Stats -->
+    <aside>
+      <!-- Stats -->
+      <div class="panel" style="margin-bottom:14px">
+        <h2>📊 סטטיסטיקה <span class="count" id="stat-count">0</span></h2>
+        <div class="stats">
+          <div class="stat-card"><div class="val" id="stat-claude">0</div><div class="lbl">Claude</div></div>
+          <div class="stat-card"><div class="val" id="stat-copilot">0</div><div class="lbl">Copilot</div></div>
+          <div class="stat-card"><div class="val" id="stat-gemini">0</div><div class="lbl">Gemini</div></div>
+          <div class="stat-card"><div class="val" id="stat-grok">0</div><div class="lbl">Grok</div></div>
+        </div>
+        <div style="margin-top:10px;font-size:11px;color:var(--text3);text-align:center">
+          עדכון אחרון: <span id="last-update">—</span>
+        </div>
+      </div>
+
+      <!-- Compose -->
+      <div class="panel compose">
+        <h2>✍️ הדבק תגובה חדשה</h2>
+
+        <label>מקור</label>
+        <select id="source">
+          <option value="Claude">🟢 Claude</option>
+          <option value="Copilot">🔵 Copilot</option>
+          <option value="Gemini">🟣 Gemini</option>
+          <option value="Grok">🟠 Grok</option>
+          <option value="Osif">🟡 Osif (אני)</option>
+          <option value="Agent">🤖 Agent</option>
+        </select>
+
+        <label>עדיפות</label>
+        <div class="chip-row" id="priority-chips">
+          <span class="chip active" data-priority="info">ℹ️ Info</span>
+          <span class="chip" data-priority="P2">🔵 P2</span>
+          <span class="chip" data-priority="P1">🟡 P1</span>
+          <span class="chip" data-priority="P0">🔴 P0</span>
+        </div>
+
+        <label>נושא (אופציונלי)</label>
+        <input type="text" id="topic" placeholder="admin.html · pay.html · ESP32 · system_bridge">
+
+        <label>תוכן</label>
+        <textarea id="content" placeholder="הדבק כאן את תשובת הסוכן..."></textarea>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="addMessage()">💾 שמור</button>
+          <button class="btn btn-secondary" onclick="document.getElementById('content').value=''">🧹 נקה</button>
+        </div>
+
+        <div style="margin-top:10px;font-size:11px;color:var(--text3);line-height:1.6">
+          💡 <b>v2:</b> הודעות נשמרות בשרת (משותף בין מכשירים).<br>
+          אם השרת מנותק — ההודעה נשמרת ב-<code>localStorage</code> ותסתנכרן אוטומטית.
+        </div>
+      </div>
+
+      <!-- Export -->
+      <div class="panel" style="margin-top:14px">
+        <h2>📤 ייצוא/יבוא</h2>
+        <div class="btn-row" style="margin-top:0">
+          <button class="btn btn-secondary" onclick="exportJSON()" style="flex:1">📥 הורד JSON</button>
+          <button class="btn btn-secondary" onclick="exportMarkdown()" style="flex:1">📄 MD</button>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-secondary" onclick="copyLatestToClipboard()" style="flex:1">📋 העתק אחרונים (5)</button>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-secondary" onclick="syncLocalToAPI()" style="flex:1;border-color:rgba(0,229,255,.3);color:var(--cyan)">📤 סנכרן ל-API</button>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-danger" onclick="clearAll()" style="flex:1">🗑 מחק מקומי</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- RIGHT: Timeline -->
+    <main>
+      <div class="filter-bar">
+        <input type="text" id="search" placeholder="🔍 חפש בהודעות..." oninput="scheduleReload()">
+        <select id="filter-source" onchange="reloadFromAPI()">
+          <option value="">כל המקורות</option>
+          <option value="Claude">Claude</option>
+          <option value="Copilot">Copilot</option>
+          <option value="Gemini">Gemini</option>
+          <option value="Grok">Grok</option>
+          <option value="Osif">Osif</option>
+          <option value="Agent">Agent</option>
+        </select>
+        <select id="filter-priority" onchange="reloadFromAPI()">
+          <option value="">כל העדיפויות</option>
+          <option value="P0">P0 דחוף</option>
+          <option value="P1">P1 חשוב</option>
+          <option value="P2">P2 נורמלי</option>
+          <option value="info">Info</option>
+        </select>
+      </div>
+
+      <div class="panel" style="padding:14px">
+        <h2>💬 Timeline <span class="count" id="timeline-count">0</span></h2>
+        <div class="timeline" id="timeline">
+          <div class="empty">
+            <div class="emoji">🌀</div>
+            <h3>טוען...</h3>
+            <p>מושך הודעות מהשרת</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="foot">
+    <div>Agent Hub v2.0 · API-backed · localStorage fallback</div>
+    <div style="margin-top:8px">
+      <a href="/">בית</a>
+      <a href="/status.html">📡 סטטוס</a>
+      <a href="/ops-dashboard.html">📊 OPS</a>
+      <a href="/about.html">אודות</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+// ============================================================
+// CONFIG — change API_BASE here if the server moves.
+// ============================================================
+const API_BASE = 'https://slh-api-production.up.railway.app';
+const API_PREFIX = '/api/agent-hub';
+const STORAGE_KEY = 'slh_agent_hub_messages_v1';   // legacy local cache (kept for backwards compat)
+const CACHE_KEY   = 'slh_agent_hub_cache_v2';      // new: server-shaped cache
+const STATS_CACHE_KEY = 'slh_agent_hub_stats_v2';
+const REQUEST_TIMEOUT_MS = 6000;
+
+let currentPriority = 'info';
+let apiOnline = null;   // null = unknown, true = ok, false = degraded
+let _reloadTimer = null;
+
+// ============================================================
+// STATUS PILL
+// ============================================================
+function setStatus(state) {
+  const pill = document.getElementById('api-status');
+  if (!pill) return;
+  pill.classList.remove('ok', 'local', 'err');
+  if (state === 'ok')        { pill.classList.add('ok');    pill.textContent = '🟢 מחובר'; pill.title = 'מחובר ל-API — הודעות מסונכרנות בין מכשירים'; apiOnline = true; }
+  else if (state === 'local'){ pill.classList.add('local'); pill.textContent = '🟡 מקומי'; pill.title = 'השרת לא זמין — משתמש ב-localStorage'; apiOnline = false; }
+  else                       { pill.classList.add('err');   pill.textContent = '🔴 שגיאה'; pill.title = 'שגיאה בחיבור לשרת'; apiOnline = false; }
+}
+
+// ============================================================
+// FETCH HELPER — with timeout + graceful fallback
+// ============================================================
+async function apiFetch(path, options = {}) {
+  const ctrl = new AbortController();
+  const to = setTimeout(() => ctrl.abort(), REQUEST_TIMEOUT_MS);
+  try {
+    const res = await fetch(API_BASE + API_PREFIX + path, {
+      ...options,
+      signal: ctrl.signal,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(options.headers || {}),
+      },
+    });
+    clearTimeout(to);
+    if (!res.ok) {
+      const body = await res.text().catch(() => '');
+      throw new Error(`HTTP ${res.status}: ${body.slice(0, 200)}`);
+    }
+    return await res.json();
+  } catch (e) {
+    clearTimeout(to);
+    throw e;
+  }
+}
+
+// ============================================================
+// LOCAL CACHE HELPERS
+// ============================================================
+function loadLocalMessages() {
+  // New cache first (server-shaped)
+  try {
+    const v2 = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+    if (Array.isArray(v2) && v2.length) return v2;
+  } catch(e) {}
+  // Legacy fallback (old client-side shape)
+  try {
+    const legacy = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    return legacy.map(normalizeLegacy);
+  } catch(e) {
+    return [];
+  }
+}
+
+function normalizeLegacy(m) {
+  // Legacy shape had lowercase source + priority + timestamp (iso)
+  const srcMap = { claude:'Claude', copilot:'Copilot', gemini:'Gemini', grok:'Grok', osif:'Osif', system:'Agent', other:'Agent' };
+  const priMap = { p0:'P0', p1:'P1', p2:'P2', info:'info' };
+  return {
+    id: m.id,
+    source: srcMap[(m.source||'').toLowerCase()] || 'Agent',
+    priority: priMap[(m.priority||'').toLowerCase()] || 'info',
+    topic: m.topic || null,
+    content: m.content || '',
+    agent_id: m.agent_id || null,
+    created_at: m.created_at || m.timestamp || new Date().toISOString(),
+    _local: true,
+  };
+}
+
+function saveLocalCache(messages) {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(messages.slice(0, 500)));
+  } catch(e) { /* storage full — ignore */ }
+}
+
+function pushLocalMessage(msg) {
+  const arr = loadLocalMessages();
+  arr.unshift({ ...msg, _local: true });
+  saveLocalCache(arr);
+}
+
+// ============================================================
+// PRIORITY CHIP SELECTION
+// ============================================================
+document.getElementById('priority-chips').addEventListener('click', (e) => {
+  const chip = e.target.closest('.chip');
+  if (!chip) return;
+  document.querySelectorAll('#priority-chips .chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  currentPriority = chip.dataset.priority;
+});
+
+// ============================================================
+// ADD MESSAGE — API first, localStorage fallback
+// ============================================================
+async function addMessage() {
+  const source = document.getElementById('source').value;
+  const topic = document.getElementById('topic').value.trim();
+  const content = document.getElementById('content').value.trim();
+  if (!content) {
+    toast('⚠️ תוכן ריק');
+    return;
+  }
+  if (content.length > 10000) {
+    toast('⚠️ תוכן ארוך מדי (מעל 10KB)');
+    return;
+  }
+
+  const payload = {
+    source, priority: currentPriority,
+    topic: topic || null,
+    content,
+    agent_id: null,
+  };
+
+  // Try API first
+  try {
+    const res = await apiFetch('/message', { method:'POST', body: JSON.stringify(payload) });
+    setStatus('ok');
+    // Also cache locally for offline reading
+    pushLocalMessage({
+      id: res.id, source, priority: currentPriority,
+      topic: topic || null, content,
+      agent_id: null, created_at: res.created_at || new Date().toISOString(),
+      _local: false,
+    });
+    document.getElementById('content').value = '';
+    document.getElementById('topic').value = '';
+    toast('✅ נשמר בשרת');
+    await reloadFromAPI();
+    return;
+  } catch (e) {
+    console.warn('API post failed, falling back to localStorage', e);
+    setStatus('local');
+  }
+
+  // Fallback: store locally with a synthetic id so we can retry later
+  pushLocalMessage({
+    id: 'local-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8),
+    source, priority: currentPriority,
+    topic: topic || null, content,
+    agent_id: null, created_at: new Date().toISOString(),
+    _local: true,
+  });
+  document.getElementById('content').value = '';
+  document.getElementById('topic').value = '';
+  toast('💾 נשמר מקומית (שרת מנותק)');
+  renderFromCache();
+}
+
+// ============================================================
+// LOAD FEED — API first, cache fallback
+// ============================================================
+function scheduleReload() {
+  clearTimeout(_reloadTimer);
+  _reloadTimer = setTimeout(reloadFromAPI, 300);
+}
+
+async function reloadFromAPI() {
+  const fSource = document.getElementById('filter-source').value;
+  const fPriority = document.getElementById('filter-priority').value;
+  const search = document.getElementById('search').value.trim();
+
+  const params = new URLSearchParams({ limit: '100', offset: '0' });
+  if (fSource) params.set('source', fSource);
+  if (fPriority) params.set('priority', fPriority);
+  if (search) params.set('search', search);
+
+  try {
+    const data = await apiFetch('/messages?' + params.toString());
+    const messages = data.messages || [];
+    setStatus('ok');
+    saveLocalCache(messages);
+    renderTimeline(messages);
+    await reloadStats();
+    return;
+  } catch (e) {
+    console.warn('API load failed, using cache', e);
+    setStatus('local');
+  }
+
+  renderFromCache();
+}
+
+function renderFromCache() {
+  const fSource = document.getElementById('filter-source').value;
+  const fPriority = document.getElementById('filter-priority').value;
+  const search = document.getElementById('search').value.toLowerCase();
+  const messages = loadLocalMessages().filter(m => {
+    if (fSource && m.source !== fSource) return false;
+    if (fPriority && m.priority !== fPriority) return false;
+    if (search && !((m.content || '').toLowerCase().includes(search) || (m.topic || '').toLowerCase().includes(search))) return false;
+    return true;
+  });
+  renderTimeline(messages);
+  renderStatsFromCache();
+}
+
+// ============================================================
+// STATS — API first
+// ============================================================
+async function reloadStats() {
+  try {
+    const stats = await apiFetch('/stats');
+    try { localStorage.setItem(STATS_CACHE_KEY, JSON.stringify(stats)); } catch(e) {}
+    applyStats(stats);
+  } catch (e) {
+    renderStatsFromCache();
+  }
+}
+
+function renderStatsFromCache() {
+  // Prefer last cached server stats
+  try {
+    const cached = JSON.parse(localStorage.getItem(STATS_CACHE_KEY) || 'null');
+    if (cached) { applyStats(cached); return; }
+  } catch(e) {}
+  // Derive from local messages
+  const msgs = loadLocalMessages();
+  const by_source = {};
+  msgs.forEach(m => { by_source[m.source] = (by_source[m.source] || 0) + 1; });
+  applyStats({
+    total: msgs.length,
+    by_source,
+    last_message_at: msgs[0] ? msgs[0].created_at : null,
+  });
+}
+
+function applyStats(stats) {
+  document.getElementById('stat-count').textContent = stats.total || 0;
+  const bs = stats.by_source || {};
+  document.getElementById('stat-claude').textContent  = bs.Claude  || 0;
+  document.getElementById('stat-copilot').textContent = bs.Copilot || 0;
+  document.getElementById('stat-gemini').textContent  = bs.Gemini  || 0;
+  document.getElementById('stat-grok').textContent    = bs.Grok    || 0;
+  const last = stats.last_message_at;
+  document.getElementById('last-update').textContent = last
+    ? new Date(last).toLocaleString('he-IL')
+    : '—';
+}
+
+// ============================================================
+// RENDER TIMELINE
+// ============================================================
+function renderTimeline(messages) {
+  const container = document.getElementById('timeline');
+  document.getElementById('timeline-count').textContent = messages.length;
+
+  if (!messages.length) {
+    container.innerHTML = `<div class="empty">
+      <div class="emoji">🌀</div>
+      <h3>לא נמצאו הודעות</h3>
+      <p>נסה לנקות פילטרים או הדבק תגובה חדשה</p>
+    </div>`;
+    return;
+  }
+
+  const srcEmojiMap = { Claude:'🟢', Copilot:'🔵', Gemini:'🟣', Grok:'🟠', Osif:'🟡', Agent:'🤖' };
+
+  container.innerHTML = messages.map(m => {
+    const srcEmoji = srcEmojiMap[m.source] || '⚪';
+    const srcClass = (m.source || 'agent').toLowerCase();
+    const d = new Date(m.created_at);
+    const timeStr = isNaN(d) ? '--' : d.toLocaleString('he-IL', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
+    const escaped = (m.content || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const priClass = (m.priority || 'info').toLowerCase();
+    const localFlag = m._local ? '<span class="topic-tag" style="background:rgba(255,215,0,.1);color:var(--yellow);border-color:rgba(255,215,0,.3)">📴 מקומי</span>' : '';
+    return `
+      <div class="msg ${srcClass}" data-id="${m.id}">
+        <div class="msg-head">
+          <div class="msg-left">
+            <span class="src-badge ${srcClass}">${srcEmoji} ${m.source || '?'}</span>
+            <span class="priority-dot ${priClass}" title="${m.priority}"></span>
+            ${m.topic ? `<span class="topic-tag">📌 ${m.topic}</span>` : ''}
+            ${localFlag}
+          </div>
+          <span class="time">${timeStr} · ${(m.content || '').length} תווים</span>
+        </div>
+        <div class="msg-body" onclick="toggleExpand('${m.id}')">${escaped}</div>
+        <div class="msg-actions">
+          <button class="act-btn" onclick="toggleExpand('${m.id}')">⇔ הרחב</button>
+          <button class="act-btn" onclick="copyMessage('${m.id}')">📋 העתק</button>
+          <button class="act-btn danger" onclick="deleteMessage('${m.id}')">🗑</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ============================================================
+// MESSAGE ACTIONS
+// ============================================================
+function toggleExpand(id) {
+  const el = document.querySelector(`[data-id="${id}"] .msg-body`);
+  if (el) el.classList.toggle('expanded');
+}
+
+function copyMessage(id) {
+  const msg = loadLocalMessages().find(m => String(m.id) === String(id));
+  if (!msg) return;
+  const d = new Date(msg.created_at);
+  const text = `[${(msg.source || '').toUpperCase()}] ${msg.topic ? msg.topic + ' · ' : ''}${d.toLocaleString('he-IL')}\n\n${msg.content || ''}`;
+  navigator.clipboard.writeText(text).then(() => toast('📋 הועתק'));
+}
+
+async function deleteMessage(id) {
+  if (!confirm('למחוק הודעה זו? מחיקת הודעה בשרת דורשת מפתח אדמין.')) return;
+
+  // Local-only messages: remove from cache directly
+  if (String(id).startsWith('local-')) {
+    const arr = loadLocalMessages().filter(m => String(m.id) !== String(id));
+    saveLocalCache(arr);
+    toast('🗑 נמחק מקומית');
+    renderFromCache();
+    return;
+  }
+
+  const adminKey = (localStorage.getItem('slh_admin_password') || '').trim();
+  if (!adminKey) {
+    toast('⚠️ לא נמצא מפתח אדמין (התחבר קודם ב-/admin.html)');
+    return;
+  }
+  try {
+    const res = await fetch(API_BASE + API_PREFIX + '/message/' + encodeURIComponent(id), {
+      method: 'DELETE',
+      headers: { 'X-Admin-Key': adminKey },
+    });
+    if (!res.ok) {
+      const body = await res.text().catch(() => '');
+      throw new Error(`HTTP ${res.status} ${body.slice(0, 120)}`);
+    }
+    toast('🗑 נמחק');
+    // Remove from local cache too
+    const arr = loadLocalMessages().filter(m => String(m.id) !== String(id));
+    saveLocalCache(arr);
+    await reloadFromAPI();
+  } catch (e) {
+    console.error(e);
+    toast('❌ מחיקה נכשלה: ' + (e.message || 'שגיאה'));
+  }
+}
+
+// ============================================================
+// SYNC LOCAL → API (bulk import)
+// ============================================================
+async function syncLocalToAPI() {
+  const messages = loadLocalMessages().filter(m => m._local || String(m.id).startsWith('local-'));
+  if (!messages.length) {
+    // Fall back: sync the legacy STORAGE_KEY dump if present
+    const legacy = (() => { try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch(e){ return []; } })();
+    if (!legacy.length) { toast('ℹ️ אין הודעות מקומיות לסנכרון'); return; }
+    messages.push(...legacy.map(normalizeLegacy));
+  }
+
+  const adminKey = (localStorage.getItem('slh_admin_password') || '').trim();
+  if (!adminKey) {
+    toast('⚠️ צריך מפתח אדמין (התחבר ב-/admin.html)');
+    return;
+  }
+
+  // Normalize to server shape
+  const payload = {
+    messages: messages.map(m => ({
+      source: m.source,
+      priority: m.priority,
+      topic: m.topic || null,
+      content: m.content || '',
+      agent_id: m.agent_id || null,
+    })),
+  };
+
+  try {
+    const res = await fetch(API_BASE + API_PREFIX + '/bulk-import', {
+      method:'POST',
+      headers: { 'Content-Type':'application/json', 'X-Admin-Key': adminKey },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const body = await res.text().catch(() => '');
+      throw new Error(`HTTP ${res.status} ${body.slice(0, 120)}`);
+    }
+    const data = await res.json();
+    toast(`📤 יובאו ${data.imported || 0} (דילוגים: ${data.skipped || 0})`);
+    // Clear legacy dump on success, keep only synced server-shape cache
+    localStorage.removeItem(STORAGE_KEY);
+    await reloadFromAPI();
+  } catch (e) {
+    console.error(e);
+    toast('❌ סנכרון נכשל: ' + (e.message || 'שגיאה'));
+  }
+}
+
+// ============================================================
+// EXPORT / IMPORT (local cache)
+// ============================================================
+function exportJSON() {
+  const messages = loadLocalMessages();
+  const blob = new Blob([JSON.stringify(messages, null, 2)], { type:'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `agent-hub-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('📥 יצוא JSON');
+}
+
+function exportMarkdown() {
+  const msgs = loadLocalMessages();
+  const md = '# SLH Agent Hub Export\n\n' +
+    `Exported: ${new Date().toLocaleString('he-IL')}\nTotal: ${msgs.length}\n\n---\n\n` +
+    msgs.map(m =>
+      `## [${(m.source || '').toUpperCase()}] ${m.topic || '(no topic)'} · ${(m.priority || '').toUpperCase()}\n\n**${new Date(m.created_at).toLocaleString('he-IL')}**\n\n${m.content || ''}\n`
+    ).join('\n---\n\n');
+  const blob = new Blob([md], { type:'text/markdown' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `agent-hub-${new Date().toISOString().slice(0,10)}.md`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('📄 יצוא MD');
+}
+
+function copyLatestToClipboard() {
+  const msgs = loadLocalMessages().slice(0, 5);
+  if (!msgs.length) { toast('⚠️ אין הודעות'); return; }
+  const text = msgs.reverse().map(m =>
+    `### [${(m.source || '').toUpperCase()}] ${m.topic || ''} · ${new Date(m.created_at).toLocaleString('he-IL')}\n${m.content || ''}`
+  ).join('\n\n---\n\n');
+  navigator.clipboard.writeText(text).then(() => toast('📋 5 האחרונות הועתקו'));
+}
+
+function clearAll() {
+  if (!confirm('למחוק את המטמון המקומי? (לא משפיע על השרת)')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(CACHE_KEY);
+  localStorage.removeItem(STATS_CACHE_KEY);
+  toast('🗑 מטמון מקומי נוקה');
+  reloadFromAPI();
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function toast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2200);
+}
+
+// ============================================================
+// KEYBOARD SHORTCUT + STORAGE SYNC
+// ============================================================
+document.getElementById('content').addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    e.preventDefault();
+    addMessage();
+  }
+});
+
+window.addEventListener('storage', (e) => {
+  if (e.key === CACHE_KEY || e.key === STORAGE_KEY) renderFromCache();
+});
+
+// ============================================================
+// BOOT
+// ============================================================
+setStatus('local');
+reloadFromAPI();
+// Refresh every 30s when the tab is visible
+setInterval(() => { if (!document.hidden) reloadFromAPI(); }, 30000);
+</script>
+
+</body>
+</html>

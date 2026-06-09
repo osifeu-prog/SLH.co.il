@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" data-theme="neural">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mission Control · SLH Spark — מפת הניהול האישית של אוסיף</title>
+  <meta name="description" content="Personal management map — every system, every status, every action in one DNA-shaped view.">
+  <meta name="robots" content="noindex,nofollow">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <link rel="stylesheet" href="css/shared.css?v=20260427b">
+  <link rel="stylesheet" href="css/slh-neural.css?v=20260427b">
+
+  <style>
+    body {
+      font-family: 'Heebo', system-ui, sans-serif;
+      color: var(--text); background: var(--bg);
+      margin: 0; min-height: 100vh; overflow-x: hidden;
+    }
+
+    /* ── Top bar — minimal, sticky, RTL ── */
+    .control-topbar {
+      position: sticky; top: 0; z-index: 50;
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      background: rgba(3, 6, 15, 0.7);
+      border-bottom: 1px solid var(--border);
+    }
+    .control-topbar-inner {
+      max-width: 1400px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 28px; gap: 20px;
+    }
+    .control-brand {
+      display: flex; align-items: center; gap: 12px;
+      font-weight: 800; font-size: 1.05rem; color: var(--text);
+    }
+    .control-brand .brand-logo {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      color: var(--bg); font-weight: 900; font-size: .9rem;
+      box-shadow: 0 0 20px rgba(255, 209, 102, .3);
+    }
+    .control-meta {
+      display: flex; gap: 18px; align-items: center;
+      font-size: .85rem; color: var(--text2);
+    }
+    .control-meta .meta-pill {
+      padding: 6px 12px; border-radius: 999px;
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .control-meta .meta-pill.live { color: var(--accent); border-color: var(--accent); }
+    .control-meta .meta-pill .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent); box-shadow: 0 0 8px var(--accent);
+      animation: livePulse 2s ease-in-out infinite;
+    }
+    @keyframes livePulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .4; }
+    }
+
+    /* ── DNA divider band ── */
+    .dna-band {
+      max-width: 1400px; margin: 0 auto;
+      padding: 30px 28px 20px;
+    }
+    .dna-band svg { width: 100%; height: 50px; }
+
+    /* ── Hero strip ── */
+    .control-hero {
+      max-width: 1400px; margin: 0 auto;
+      padding: 8px 28px 24px; display: grid;
+      grid-template-columns: 1fr auto; gap: 24px; align-items: end;
+    }
+    .control-hero h1 {
+      margin: 0; font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 800;
+      background: linear-gradient(135deg, var(--text), var(--accent));
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .control-hero .subtitle {
+      color: var(--text2); margin: 6px 0 0; font-size: 1rem; line-height: 1.55;
+    }
+    .control-hero .ido-progress {
+      min-width: 280px; padding: 16px 20px;
+      background: rgba(255, 209, 102, .06);
+      border: 1px solid rgba(255, 209, 102, .25);
+      border-radius: 14px;
+    }
+    .control-hero .ido-progress .label {
+      font-size: .75rem; text-transform: uppercase; letter-spacing: .12em;
+      color: var(--accent); font-weight: 700;
+    }
+    .control-hero .ido-progress .number {
+      margin: 4px 0 6px; font-family: 'JetBrains Mono', monospace;
+      font-size: 1.4rem; font-weight: 700; color: var(--text);
+    }
+    .control-hero .ido-progress .bar {
+      height: 6px; border-radius: 3px; overflow: hidden;
+      background: rgba(255, 255, 255, .06);
+    }
+    .control-hero .ido-progress .bar-fill {
+      height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2));
+      width: 0%; transition: width 1s ease-out;
+      box-shadow: 0 0 10px var(--accent);
+    }
+    .control-hero .ido-progress .meta {
+      margin-top: 8px; font-size: .82rem; color: var(--text3);
+      display: flex; justify-content: space-between;
+    }
+    @media (max-width: 720px) {
+      .control-hero { grid-template-columns: 1fr; }
+      .control-hero .ido-progress { width: 100%; }
+    }
+
+    /* ── Category bar (sticky filter) ── */
+    .category-bar {
+      position: sticky; top: 64px; z-index: 40;
+      background: rgba(3, 6, 15, 0.75);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 28px; margin-bottom: 8px;
+    }
+    .category-bar-inner {
+      max-width: 1400px; margin: 0 auto;
+      display: flex; gap: 8px; flex-wrap: wrap;
+    }
+    .category-chip {
+      padding: 8px 14px; border-radius: 999px;
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid var(--border); color: var(--text2);
+      cursor: pointer; transition: all .2s;
+      font-size: .88rem; user-select: none;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .category-chip:hover {
+      background: rgba(255, 209, 102, .1); color: var(--accent);
+      border-color: rgba(255, 209, 102, .35);
+    }
+    .category-chip.active {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: var(--bg); border-color: transparent; font-weight: 600;
+    }
+
+    /* ── Card grid ── */
+    .control-grid-wrap {
+      max-width: 1400px; margin: 0 auto;
+      padding: 8px 28px 80px;
+    }
+    .control-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 18px;
+    }
+    .control-tile {
+      background: rgba(255, 255, 255, .025);
+      border: 1px solid var(--border); border-radius: 14px;
+      padding: 20px; cursor: pointer;
+      transition: all .25s ease;
+      display: flex; flex-direction: column; gap: 10px;
+      text-decoration: none; color: var(--text);
+      position: relative; overflow: hidden;
+    }
+    .control-tile::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transform: scaleX(0); transform-origin: right;
+      transition: transform .3s ease;
+    }
+    .control-tile:hover {
+      transform: translateY(-4px); border-color: rgba(255, 209, 102, .3);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, .3), 0 0 0 1px rgba(255, 209, 102, .1);
+    }
+    .control-tile:hover::before { transform: scaleX(1); transform-origin: left; }
+
+    .tile-row1 {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .tile-icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      background: rgba(255, 209, 102, .08);
+      border: 1px solid rgba(255, 209, 102, .2);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--accent); font-size: 1.1rem; flex-shrink: 0;
+    }
+    .tile-title {
+      font-weight: 700; font-size: 1.02rem; line-height: 1.25;
+    }
+    .tile-status {
+      margin-inline-start: auto; font-size: .68rem;
+      padding: 3px 8px; border-radius: 999px;
+      text-transform: uppercase; letter-spacing: .1em; font-weight: 700;
+      flex-shrink: 0;
+    }
+    .tile-status.live  { background: rgba(80, 200, 120, .15); color: #50c878; border: 1px solid rgba(80, 200, 120, .35); }
+    .tile-status.api   { background: rgba(80, 150, 220, .15); color: #5096dc; border: 1px solid rgba(80, 150, 220, .35); }
+    .tile-status.spec  { background: rgba(180, 130, 240, .15); color: #b482f0; border: 1px solid rgba(180, 130, 240, .35); }
+    .tile-status.legacy { background: rgba(160, 160, 160, .12); color: var(--text3); border: 1px solid var(--border); }
+    .tile-status.soon  { background: rgba(255, 180, 80, .15); color: #ffb450; border: 1px solid rgba(255, 180, 80, .35); }
+    .tile-status.ext   { background: rgba(120, 120, 120, .15); color: var(--text2); border: 1px solid var(--border); }
+
+    .tile-desc {
+      font-size: .88rem; color: var(--text2); line-height: 1.55;
+      margin: 0;
+    }
+    .tile-tags {
+      display: flex; gap: 6px; flex-wrap: wrap;
+      margin-top: auto; padding-top: 4px;
+    }
+    .tile-tag {
+      font-family: 'JetBrains Mono', monospace; font-size: .68rem;
+      padding: 2px 7px; border-radius: 4px;
+      background: rgba(255, 255, 255, .04); color: var(--text3);
+      border: 1px solid var(--border);
+    }
+
+    /* ── Category section header ── */
+    .category-group {
+      margin-top: 28px;
+    }
+    .category-group:first-of-type { margin-top: 8px; }
+    .category-group-header {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 14px; padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .category-group-header .icon {
+      font-size: 1.3rem; color: var(--accent);
+    }
+    .category-group-header .title {
+      font-size: 1.15rem; font-weight: 700; letter-spacing: -.01em;
+    }
+    .category-group-header .count {
+      margin-inline-start: auto; font-size: .8rem; color: var(--text3);
+      padding: 2px 8px; border-radius: 999px;
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid var(--border);
+    }
+
+    /* ── Auth gate ── */
+    .auth-gate {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(3, 6, 15, .96);
+      display: flex; align-items: center; justify-content: center;
+      backdrop-filter: blur(8px);
+    }
+    .auth-card {
+      max-width: 360px; padding: 32px;
+      background: rgba(255, 255, 255, .02);
+      border: 1px solid var(--border); border-radius: 14px;
+      text-align: center;
+    }
+    .auth-card h2 {
+      margin: 0 0 8px; font-size: 1.3rem;
+      background: linear-gradient(135deg, var(--text), var(--accent));
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .auth-card p { color: var(--text2); font-size: .9rem; margin: 0 0 18px; }
+    .auth-card input {
+      width: 100%; padding: 12px 14px; border-radius: 10px;
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid var(--border); color: var(--text);
+      font-family: inherit; font-size: 1rem; box-sizing: border-box;
+    }
+    .auth-card input:focus { outline: 2px solid var(--accent); }
+    .auth-card button {
+      width: 100%; margin-top: 10px; padding: 12px;
+      border-radius: 10px; border: none; cursor: pointer;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: var(--bg); font-weight: 700; font-family: inherit; font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Auth gate (localStorage password pattern, same as other admin pages) -->
+  <div id="authGate" class="auth-gate" style="display: none;">
+    <div class="auth-card">
+      <h2>Mission Control</h2>
+      <p>הזן את סיסמת ה-admin להמשך</p>
+      <input type="password" id="authInput" placeholder="•••••••••" autocomplete="off">
+      <button onclick="checkAuth()">פתח</button>
+    </div>
+  </div>
+
+  <!-- Ambient neural background (animated synapses) -->
+  <div class="neural-bg" aria-hidden="true"></div>
+
+  <!-- Top bar -->
+  <header class="control-topbar">
+    <div class="control-topbar-inner">
+      <div class="control-brand">
+        <span class="brand-logo">SLH</span>
+        <span>Mission Control</span>
+      </div>
+      <div class="control-meta">
+        <span class="meta-pill live"><span class="dot"></span> <span id="systemStatus">Loading…</span></span>
+        <span class="meta-pill" id="apiVersion">API —</span>
+        <span class="meta-pill" id="currentTime">—</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- DNA divider -->
+  <div class="dna-band" aria-hidden="true">
+    <svg viewBox="0 0 1400 50" preserveAspectRatio="none">
+      <path class="dna-strand" d="M0,25 Q117,5 234,25 T468,25 T702,25 T936,25 T1170,25 T1400,25"/>
+      <path class="dna-strand dna-strand-2" d="M0,25 Q117,45 234,25 T468,25 T702,25 T936,25 T1170,25 T1400,25"/>
+      <line class="dna-rung" x1="117"  y1="13" x2="117"  y2="37"/>
+      <line class="dna-rung" x1="351"  y1="13" x2="351"  y2="37"/>
+      <line class="dna-rung" x1="585"  y1="13" x2="585"  y2="37"/>
+      <line class="dna-rung" x1="819"  y1="13" x2="819"  y2="37"/>
+      <line class="dna-rung" x1="1053" y1="13" x2="1053" y2="37"/>
+      <line class="dna-rung" x1="1287" y1="13" x2="1287" y2="37"/>
+    </svg>
+  </div>
+
+  <!-- Hero strip -->
+  <div class="control-hero">
+    <div>
+      <h1>שלום אוסיף — הכל מסונכרן.</h1>
+      <p class="subtitle">המפה האישית שלך לכל המערכת. בחר מסלול, או חפש לפי קטגוריה.</p>
+    </div>
+    <div class="ido-progress">
+      <div class="label"><i class="fas fa-rocket"></i> IDO progress</div>
+      <div class="number" id="idoNumber">— / 20 BNB</div>
+      <div class="bar"><div class="bar-fill" id="idoBar"></div></div>
+      <div class="meta">
+        <span id="idoPct">Pre-launch</span>
+        <span id="idoEnd">Launch ~14d</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Category filter chips (sticky) -->
+  <div class="category-bar">
+    <div class="category-bar-inner">
+      <button class="category-chip active" data-filter="all">
+        <i class="fas fa-th"></i> הכל
+      </button>
+      <button class="category-chip" data-filter="ido">
+        <i class="fas fa-rocket"></i> IDO
+      </button>
+      <button class="category-chip" data-filter="capital">
+        <i class="fas fa-coins"></i> כסף וטריזרי
+      </button>
+      <button class="category-chip" data-filter="bots">
+        <i class="fas fa-robot"></i> בוטים
+      </button>
+      <button class="category-chip" data-filter="public">
+        <i class="fas fa-globe"></i> אתר ציבורי
+      </button>
+      <button class="category-chip" data-filter="community">
+        <i class="fas fa-users"></i> קהילה
+      </button>
+      <button class="category-chip" data-filter="admin">
+        <i class="fas fa-user-shield"></i> אדמין
+      </button>
+      <button class="category-chip" data-filter="data">
+        <i class="fas fa-chart-line"></i> דאטה
+      </button>
+      <button class="category-chip" data-filter="security">
+        <i class="fas fa-shield-halved"></i> אבטחה
+      </button>
+      <button class="category-chip" data-filter="docs">
+        <i class="fas fa-book"></i> מסמכים
+      </button>
+      <button class="category-chip" data-filter="external">
+        <i class="fas fa-up-right-from-square"></i> חיצוני
+      </button>
+    </div>
+  </div>
+
+  <!-- Card grid -->
+  <main class="control-grid-wrap">
+    <div id="categoryGroups"></div>
+  </main>
+
+  <script>
+    // ═══════════════════ TILES DATA ═══════════════════
+    // Each tile: category, icon, title, desc, status (live/api/spec/legacy/soon/ext), href, tags
+    const TILES = [
+      // ─── IDO ───
+      { cat: 'ido', icon: 'fa-rocket', title: 'IDO Mission Control', desc: 'דשבורד צפייה חיה — כל תרומה, כל alert, כל milestone', status: 'spec', href: '/admin/ido-mission-control.html', tags: ['admin', 'phase-2'] },
+      { cat: 'ido', icon: 'fa-chart-line', title: 'IDO Public Page', desc: 'דף הנחיתה הציבורי ל-IDO. spec מוכן, build queued ל-Day 8', status: 'soon', href: '/ido.html', tags: ['public', 'spec-locked'] },
+      { cat: 'ido', icon: 'fa-file-contract', title: 'IDO Master Plan', desc: 'תוכנית 14-21 ימים מ-MIDAO LLC ועד IDO live', status: 'spec', href: '/ops/IDO_LAUNCH_2026-04-27/00_MASTER_PLAN.md', tags: ['plan', '11-files'] },
+      { cat: 'ido', icon: 'fa-money-bill-trend-up', title: 'IDO Financial Model', desc: '4 תרחישים, use of funds, runway 12-18 חודשים', status: 'spec', href: '/ops/IDO_FINANCIAL_MODEL_2026-04-27.md', tags: ['model'] },
+
+      // ─── CAPITAL & TREASURY ───
+      { cat: 'capital', icon: 'fa-wallet', title: 'Wallet', desc: 'ארנק מאוחד — SLH, MNH, ZVK, REP, BSC + TON', status: 'live', href: '/wallet.html', tags: ['user'] },
+      { cat: 'capital', icon: 'fa-vault', title: 'Gnosis Safe Setup', desc: 'מולטיסיג 2/3 לטריזרי ה-DAO. step-by-step מוכן', status: 'spec', href: '/ops/IDO_LAUNCH_2026-04-27/02_GNOSIS_SAFE_SETUP.md', tags: ['multisig'] },
+      { cat: 'capital', icon: 'fa-piggy-bank', title: 'Earn / Staking', desc: 'תוכניות תשואה — Variable Yield 4-12%, 4 תוכניות', status: 'live', href: '/earn.html', tags: ['public'] },
+      { cat: 'capital', icon: 'fa-receipt', title: 'Payment Status', desc: 'סטטוס תשלומים, deposits, refunds — endpoint /api/payment/status', status: 'api', href: '/admin/control-center.html', tags: ['api'] },
+
+      // ─── BOTS ───
+      { cat: 'bots', icon: 'fa-robot', title: 'Bot Tokens', desc: '25 בוטים, rotation tracker, BotFather links, status detection', status: 'live', href: '/admin/tokens.html', tags: ['admin'] },
+      { cat: 'bots', icon: 'fa-comment-dots', title: 'Broadcast Composer', desc: 'שלח DM לכולם / Genesis 49 / IDs ספציפיים', status: 'live', href: '/broadcast-composer.html', tags: ['admin'] },
+      { cat: 'bots', icon: 'fa-headset', title: '@SLH_Claude_bot', desc: 'בוט הביצוע. /ido /price /devices /task — מ-@SLH_Claude_bot', status: 'live', href: 'https://t.me/SLH_Claude_bot', tags: ['telegram'] },
+      { cat: 'bots', icon: 'fa-microphone-lines', title: '@SLH_AIR_bot', desc: 'הבוט הראשי לחווית משתמש — onboarding + air-drop', status: 'live', href: 'https://t.me/SLH_AIR_bot', tags: ['telegram'] },
+
+      // ─── PUBLIC SITE ───
+      { cat: 'public', icon: 'fa-house', title: 'Home (index)', desc: 'דף הבית הציבורי — מסונכרן ל-Neural theme', status: 'live', href: '/', tags: ['public'] },
+      { cat: 'public', icon: 'fa-stars', title: 'Landing v2 (Investors)', desc: 'דף נחיתה למשקיעים עם DNA + Neural design', status: 'live', href: '/landing-v2.html', tags: ['public', 'design-system'] },
+      { cat: 'public', icon: 'fa-graduation-cap', title: 'Academia', desc: 'קורסים, VIP, Dynamic Yield Course #1', status: 'live', href: '/learning-path.html', tags: ['public'] },
+      { cat: 'public', icon: 'fa-newspaper', title: 'Blog', desc: 'מאמרים יומיים — Legacy Code, AI+CBT, Neural', status: 'live', href: '/blog/', tags: ['public'] },
+
+      // ─── COMMUNITY ───
+      { cat: 'community', icon: 'fa-users', title: 'Community Feed', desc: 'פוסטים חיים, פעילות משתמשים, מטריקות אמת', status: 'live', href: '/community.html', tags: ['public'] },
+      { cat: 'community', icon: 'fa-handshake-angle', title: 'Ambassador CRM', desc: 'CRM של אליעזר — pipeline + ESP pre-sales + CSV export', status: 'api', href: '/admin/control-center.html', tags: ['admin'] },
+      { cat: 'community', icon: 'fa-trophy', title: 'Experts Directory', desc: 'קטלוג מומחים — קטגוריות, בחירה, פידבק', status: 'live', href: '/experts.html', tags: ['public'] },
+      { cat: 'community', icon: 'fa-gift', title: 'Referrals', desc: 'מערכת הפניות + 2 רמות + ZVK rewards', status: 'live', href: '/invite.html', tags: ['public'] },
+
+      // ─── ADMIN ───
+      { cat: 'admin', icon: 'fa-user-shield', title: 'Admin Home', desc: 'הפאנל הראשי — 19 sub-pages (legacy v1)', status: 'legacy', href: '/admin.html', tags: ['admin'] },
+      { cat: 'admin', icon: 'fa-bullseye', title: 'Mission Control', desc: 'כרטיסיות tasks (35 פריטים), team view, event log', status: 'live', href: '/admin/mission-control.html', tags: ['admin'] },
+      { cat: 'admin', icon: 'fa-magnifying-glass-chart', title: 'Reality Dashboard', desc: 'אמת קרקעית — משתמשים רשומים, deposits, founders', status: 'live', href: '/admin/reality.html', tags: ['admin'] },
+      { cat: 'admin', icon: 'fa-tower-broadcast', title: 'Ops Dashboard', desc: 'ניטור מערכת — latency, bot health, deploy status', status: 'live', href: '/ops-dashboard.html', tags: ['admin'] },
+
+      // ─── DATA & INSIGHTS ───
+      { cat: 'data', icon: 'fa-brain', title: 'Neural Network Map', desc: '61 nodes, 161 edges — Users/Bots/Tokens/Voice/Swarm', status: 'live', href: '/network.html', tags: ['viz'] },
+      { cat: 'data', icon: 'fa-sitemap', title: 'Project Map', desc: '52 דפים — מפת אתר מלאה עם status indicators', status: 'live', href: '/project-map.html', tags: ['viz'] },
+      { cat: 'data', icon: 'fa-link', title: 'Chain Status', desc: 'event feed + on-chain activity + audit trail', status: 'live', href: '/chain-status.html', tags: ['blockchain'] },
+      { cat: 'data', icon: 'fa-flask', title: 'Research Lab', desc: 'מטריקות ביצועים, /api/performance/digest', status: 'api', href: '/performance.html', tags: ['admin'] },
+
+      // ─── SECURITY ───
+      { cat: 'security', icon: 'fa-shield-virus', title: 'Guardian Diag', desc: 'מערכת ה-Guardian — anti-fraud, ZUZ marking, banhammer', status: 'live', href: '/guardian-diag.html', tags: ['admin'] },
+      { cat: 'security', icon: 'fa-key', title: 'Secrets Vault', desc: 'inventory של 12+ credentials, rotation tracking', status: 'api', href: '/admin/secrets-vault.html', tags: ['admin'] },
+      { cat: 'security', icon: 'fa-rotate', title: 'Token Rotation', desc: 'in-browser rotation, מאומת דרך Telegram', status: 'live', href: '/admin/rotate-token.html', tags: ['admin'] },
+
+      // ─── DOCS ───
+      { cat: 'docs', icon: 'fa-book-open', title: 'Whitepaper', desc: 'תיאוריית המערכת — 5 tokens, Dynamic Yield, Guardian', status: 'live', href: '/whitepaper.html', tags: ['public'] },
+      { cat: 'docs', icon: 'fa-route', title: 'Roadmap', desc: '39 פריטים, Phase 1-4, Voice + Swarm tracks', status: 'live', href: '/roadmap.html', tags: ['public'] },
+      { cat: 'docs', icon: 'fa-folder-tree', title: 'Session Handoffs', desc: 'תיעוד סשנים — ops/SESSION_HANDOFF_*.md', status: 'spec', href: '/ops/', tags: ['internal'] },
+
+      // ─── EXTERNAL ───
+      { cat: 'external', icon: 'fa-train-subway', title: 'Railway Dashboard', desc: 'deployments, logs, env vars, Redeploy', status: 'ext', href: 'https://railway.app/', tags: ['external'] },
+      { cat: 'external', icon: 'fa-code-branch', title: 'GitHub slh-api', desc: 'commits, PRs, issues, Actions', status: 'ext', href: 'https://github.com/osifeu-prog/slh-api', tags: ['external'] },
+      { cat: 'external', icon: 'fa-pancakes', title: 'PancakeSwap Pool', desc: 'DEX trading, liquidity, price, swap', status: 'ext', href: 'https://pancakeswap.finance/info/v2/pair/0xacea26b6e132cd45f2b8a4754170d4d0d3b8bbee', tags: ['external'] },
+      { cat: 'external', icon: 'fa-magnifying-glass', title: 'BscScan SLH', desc: 'on-chain — holders, transactions, contract details', status: 'ext', href: 'https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022', tags: ['external'] },
+    ];
+
+    const CAT_META = {
+      ido:        { icon: 'fa-rocket',          label: 'IDO War Room' },
+      capital:    { icon: 'fa-coins',           label: 'Capital & Treasury' },
+      bots:       { icon: 'fa-robot',           label: 'Bots' },
+      public:     { icon: 'fa-globe',           label: 'Public Site' },
+      community:  { icon: 'fa-users',           label: 'Community' },
+      admin:      { icon: 'fa-user-shield',     label: 'Admin' },
+      data:       { icon: 'fa-chart-line',      label: 'Data & Insights' },
+      security:   { icon: 'fa-shield-halved',   label: 'Security' },
+      docs:       { icon: 'fa-book',            label: 'Documentation' },
+      external:   { icon: 'fa-up-right-from-square', label: 'External Tools' },
+    };
+
+    // ═══════════════════ RENDER ═══════════════════
+    function renderTiles(filter = 'all') {
+      const groups = document.getElementById('categoryGroups');
+      groups.innerHTML = '';
+
+      const cats = Object.keys(CAT_META);
+      cats.forEach(cat => {
+        const items = TILES.filter(t =>
+          (filter === 'all' || filter === cat) && t.cat === cat
+        );
+        if (items.length === 0) return;
+
+        const group = document.createElement('section');
+        group.className = 'category-group';
+        group.innerHTML = `
+          <div class="category-group-header">
+            <i class="fas ${CAT_META[cat].icon} icon"></i>
+            <span class="title">${CAT_META[cat].label}</span>
+            <span class="count">${items.length}</span>
+          </div>
+          <div class="control-grid">
+            ${items.map(t => tileHTML(t)).join('')}
+          </div>
+        `;
+        groups.appendChild(group);
+      });
+    }
+
+    function tileHTML(t) {
+      const isExternal = t.href.startsWith('http');
+      const targetAttr = isExternal ? 'target="_blank" rel="noopener noreferrer"' : '';
+      return `
+        <a href="${t.href}" ${targetAttr} class="control-tile" data-cat="${t.cat}">
+          <div class="tile-row1">
+            <div class="tile-icon"><i class="fas ${t.icon}"></i></div>
+            <div class="tile-title">${t.title}</div>
+            <span class="tile-status ${t.status}">${t.status}</span>
+          </div>
+          <p class="tile-desc">${t.desc}</p>
+          <div class="tile-tags">
+            ${t.tags.map(tag => `<span class="tile-tag">#${tag}</span>`).join('')}
+          </div>
+        </a>
+      `;
+    }
+
+    // Filter chips
+    document.querySelectorAll('.category-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        renderTiles(chip.dataset.filter);
+      });
+    });
+
+    // ═══════════════════ AUTH GATE ═══════════════════
+    function checkAuth() {
+      const inp = document.getElementById('authInput');
+      const stored = localStorage.getItem('slh_admin_password');
+      const v = inp ? inp.value : stored;
+      if (v && v.length >= 6) {
+        localStorage.setItem('slh_admin_password', v);
+        document.getElementById('authGate').style.display = 'none';
+        return true;
+      }
+      return false;
+    }
+    (function initAuth() {
+      const stored = localStorage.getItem('slh_admin_password');
+      if (!stored || stored.length < 6) {
+        document.getElementById('authGate').style.display = 'flex';
+        document.getElementById('authInput').focus();
+        document.getElementById('authInput').addEventListener('keydown', e => {
+          if (e.key === 'Enter') checkAuth();
+        });
+      }
+    })();
+
+    // ═══════════════════ LIVE DATA ═══════════════════
+    const API = 'https://slh-api-production.up.railway.app';
+
+    function updateClock() {
+      const d = new Date();
+      const hh = String(d.getHours()).padStart(2, '0');
+      const mm = String(d.getMinutes()).padStart(2, '0');
+      document.getElementById('currentTime').textContent = `${hh}:${mm}`;
+    }
+    setInterval(updateClock, 30000);
+    updateClock();
+
+    async function refreshHealth() {
+      try {
+        const r = await fetch(API + '/api/health', { mode: 'cors' });
+        const d = await r.json();
+        if (d && (d.ok || d.status === 'ok')) {
+          document.getElementById('systemStatus').textContent = 'SYSTEM ONLINE';
+          if (d.version) {
+            document.getElementById('apiVersion').textContent = `API v${d.version}`;
+          }
+        }
+      } catch (e) {
+        document.getElementById('systemStatus').textContent = 'API offline';
+      }
+    }
+    refreshHealth();
+
+    async function refreshIDO() {
+      try {
+        const r = await fetch(API + '/api/ido/status', { mode: 'cors' });
+        if (!r.ok) throw new Error('not 200');
+        const d = await r.json();
+        const total = parseFloat(d.total_raised_bnb || 0);
+        const soft = parseFloat(d.soft_cap_bnb || 20);
+        const pct = Math.min(100, (total / soft) * 100);
+        document.getElementById('idoNumber').textContent = `${total.toFixed(2)} / ${soft} BNB`;
+        document.getElementById('idoBar').style.width = pct + '%';
+        document.getElementById('idoPct').textContent =
+          d.soft_cap_met ? '✓ Soft cap met' : `${pct.toFixed(1)}% of soft`;
+        if (d.milestones && d.milestones.ido_ended && d.milestones.ido_ended.target) {
+          document.getElementById('idoEnd').textContent =
+            'Ends ' + (d.milestones.ido_ended.target.target_date || '~Day 30');
+        }
+      } catch (e) {
+        // IDO endpoint not deployed yet — fallback to spec values
+        document.getElementById('idoNumber').textContent = 'Pre-launch · 0 / 20 BNB';
+        document.getElementById('idoPct').textContent = 'Endpoint deploys with FastAPI';
+        document.getElementById('idoEnd').textContent = '~14 days to launch';
+      }
+    }
+    refreshIDO();
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', e => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      const map = { '1': 'all', '2': 'ido', '3': 'capital', '4': 'bots', '5': 'public', '6': 'community', '7': 'admin', '8': 'data', '9': 'security' };
+      if (map[e.key]) {
+        const chip = document.querySelector(`.category-chip[data-filter="${map[e.key]}"]`);
+        if (chip) chip.click();
+      }
+    });
+
+    // Initial render
+    renderTiles('all');
+  </script>
+</body>
+</html>

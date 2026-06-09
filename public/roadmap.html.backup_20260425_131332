@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SLH Spark Roadmap — Development Milestones</title>
+  <meta name="description" content="SLH Ecosystem Roadmap - Our vision, milestones, and development plan for the future of crypto investment.">
+  <meta name="keywords" content="SLH, roadmap, development, milestones, crypto, blockchain, future plans">
+  <meta name="author" content="SPARK IND">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://slh-nft.com/roadmap.html">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="SLH Ecosystem">
+  <meta property="og:title" content="SLH Roadmap - From Foundation to Global Ecosystem">
+  <meta property="og:description" content="Completed milestones and upcoming phases">
+  <meta property="og:image" content="https://slh-nft.com/assets/og/roadmap.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url" content="https://slh-nft.com/roadmap.html">
+  <meta property="og:locale" content="he_IL">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SLH Roadmap - From Foundation to Global Ecosystem">
+  <meta name="twitter:description" content="Completed milestones and upcoming phases">
+  <meta name="twitter:image" content="https://slh-nft.com/assets/og/roadmap.png">
+
+  <!-- hreflang -->
+  <link rel="alternate" hreflang="he" href="https://slh-nft.com/roadmap.html">
+  <link rel="alternate" hreflang="en" href="https://slh-nft.com/roadmap.html?lang=en">
+  <link rel="alternate" hreflang="ru" href="https://slh-nft.com/roadmap.html?lang=ru">
+  <link rel="alternate" hreflang="ar" href="https://slh-nft.com/roadmap.html?lang=ar">
+  <link rel="alternate" hreflang="fr" href="https://slh-nft.com/roadmap.html?lang=fr">
+  <link rel="alternate" hreflang="x-default" href="https://slh-nft.com/roadmap.html">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Shared CSS -->
+  <link rel="stylesheet" href="css/shared.css?v=20260421a">
+
+  <style>
+    /* ===== Roadmap Page Styles ===== */
+
+    .roadmap-hero {
+      text-align: center;
+      padding: 80px 20px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    .roadmap-hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(ellipse at 50% 0%, var(--accent)22 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .roadmap-hero h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--text));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .roadmap-hero p {
+      font-size: 1.15rem;
+      color: var(--muted);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Progress bar */
+    .roadmap-progress {
+      max-width: 700px;
+      margin: 30px auto 10px;
+      padding: 0 20px;
+    }
+    .roadmap-progress-bar {
+      height: 8px;
+      background: var(--card-bg);
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .roadmap-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), #a855f7);
+      border-radius: 4px;
+      transition: width 1.5s ease;
+    }
+    .roadmap-progress-label {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    /* Stats row */
+    .roadmap-stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      padding: 30px 20px;
+      flex-wrap: wrap;
+    }
+    .roadmap-stat {
+      text-align: center;
+    }
+    .roadmap-stat .num {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+    .roadmap-stat .label {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* Filter tabs */
+    .roadmap-filters {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      padding: 10px 20px 30px;
+      flex-wrap: wrap;
+    }
+    .roadmap-filter-btn {
+      padding: 8px 20px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+    }
+    .roadmap-filter-btn:hover, .roadmap-filter-btn.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    /* Timeline */
+    .timeline {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 20px 60px;
+      position: relative;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: linear-gradient(to bottom, var(--accent), var(--border), transparent);
+    }
+    [dir="rtl"] .timeline::before { right: 50%; transform: translateX(50%); }
+    [dir="ltr"] .timeline::before { left: 50%; transform: translateX(-50%); }
+
+    .timeline-phase {
+      margin-bottom: 60px;
+    }
+    .timeline-phase-title {
+      text-align: center;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 30px;
+      position: relative;
+    }
+    .timeline-phase-title span {
+      background: var(--bg);
+      padding: 0 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .timeline-item {
+      position: relative;
+      width: 45%;
+      padding: 0 0 20px;
+    }
+    .timeline-item:nth-child(odd) { margin-inline-start: 55%; }
+    .timeline-item:nth-child(even) { margin-inline-end: 55%; text-align: end; }
+
+    .timeline-dot {
+      position: absolute;
+      top: 8px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 3px solid var(--bg);
+      z-index: 2;
+      box-shadow: 0 0 12px var(--accent)66;
+    }
+    .timeline-item:nth-child(odd) .timeline-dot {
+      inset-inline-start: -8%;
+      transform: translateX(-50%);
+    }
+    .timeline-item:nth-child(even) .timeline-dot {
+      inset-inline-end: -8%;
+      transform: translateX(50%);
+    }
+
+    .timeline-dot.completed { background: #22c55e; box-shadow: 0 0 12px #22c55e66; }
+    .timeline-dot.in-progress { background: #f59e0b; box-shadow: 0 0 12px #f59e0b66; animation: pulse-dot 2s infinite; }
+    .timeline-dot.upcoming { background: var(--muted); box-shadow: none; }
+
+    @keyframes pulse-dot {
+      0%, 100% { box-shadow: 0 0 12px #f59e0b66; }
+      50% { box-shadow: 0 0 24px #f59e0baa; }
+    }
+
+    .timeline-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .timeline-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    }
+    .timeline-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    .timeline-card p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+    .timeline-card .tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .timeline-item:nth-child(even) .tags { justify-content: flex-end; }
+
+    .tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 10px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .tag-done { background: #22c55e22; color: #22c55e; }
+    .tag-wip { background: #f59e0b22; color: #f59e0b; }
+    .tag-soon { background: #3b82f622; color: #3b82f6; }
+    .tag-future { background: #a855f722; color: #a855f7; }
+    .tag-cat { background: var(--accent)18; color: var(--accent); }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .timeline::before {
+        right: unset !important; left: 20px !important; transform: none !important;
+      }
+      .timeline-item,
+      .timeline-item:nth-child(odd),
+      .timeline-item:nth-child(even) {
+        width: calc(100% - 50px);
+        margin-inline-start: 50px !important;
+        margin-inline-end: 0 !important;
+        text-align: start !important;
+      }
+      .timeline-item:nth-child(odd) .timeline-dot,
+      .timeline-item:nth-child(even) .timeline-dot {
+        inset-inline-start: -42px;
+        inset-inline-end: unset;
+        transform: none;
+      }
+      .timeline-item:nth-child(even) .tags { justify-content: flex-start; }
+      .roadmap-hero h1 { font-size: 2rem; }
+      .roadmap-stats { gap: 20px; }
+    }
+
+    /* Vision section */
+    .vision-section {
+      max-width: 900px;
+      margin: 0 auto 60px;
+      padding: 0 20px;
+    }
+    .vision-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    .vision-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      transition: transform 0.3s;
+    }
+    .vision-card:hover { transform: translateY(-4px); }
+    .vision-card .icon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, var(--accent), #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .vision-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+    .vision-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.5; }
+
+    /* CTA */
+    .roadmap-cta {
+      text-align: center;
+      padding: 60px 20px;
+      background: linear-gradient(180deg, transparent, var(--accent)08);
+    }
+    .roadmap-cta h2 { font-size: 1.8rem; font-weight: 800; margin-bottom: 12px; }
+    .roadmap-cta p { color: var(--muted); margin-bottom: 24px; max-width: 500px; margin-inline: auto; }
+    .cta-buttons { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+    .cta-buttons a {
+      padding: 12px 30px;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+    .btn-primary-cta { background: var(--accent); color: #fff; }
+    .btn-primary-cta:hover { filter: brightness(1.15); transform: translateY(-2px); }
+    .btn-secondary-cta { border: 1px solid var(--border); color: var(--text); background: var(--card-bg); }
+    .btn-secondary-cta:hover { border-color: var(--accent); color: var(--accent); }
+  </style>
+</head>
+<body>
+
+  <div id="topnav-root"></div>
+  <div id="ticker-root"></div>
+
+  <div id="app">
+
+    <!-- Hero -->
+    <section class="roadmap-hero">
+      <h1 data-i18n="roadmap_title">מפת הדרכים של SLH</h1>
+      <p data-i18n="roadmap_subtitle">מהחזון הראשוני ועד לאקוסיסטם עולמי — כל השלבים שלנו</p>
+
+      <div class="roadmap-progress">
+        <div class="roadmap-progress-bar">
+          <div class="roadmap-progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+        <div class="roadmap-progress-label">
+          <span data-i18n="roadmap_progress">התקדמות כוללת</span>
+          <span id="progressPct">0%</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="roadmap-stats">
+      <div class="roadmap-stat">
+        <div class="num" id="statCompleted">0</div>
+        <div class="label" data-i18n="roadmap_completed">הושלמו</div>
+      </div>
+      <div class="roadmap-stat">
+        <div class="num" id="statInProgress">0</div>
+        <div class="label" data-i18n="roadmap_in_progress">בביצוע</div>
+      </div>
+      <div class="roadmap-stat">
+        <div class="num" id="statUpcoming">0</div>
+        <div class="label" data-i18n="roadmap_upcoming">בקרוב</div>
+      </div>
+      <div class="roadmap-stat">
+        <div class="num" id="statTotal">0</div>
+        <div class="label" data-i18n="roadmap_total">סה"כ אבני דרך</div>
+      </div>
+    </section>
+
+    <!-- Filters -->
+    <section class="roadmap-filters">
+      <button class="roadmap-filter-btn active" data-filter="all" data-i18n="roadmap_filter_all">הכל</button>
+      <button class="roadmap-filter-btn" data-filter="completed" data-i18n="roadmap_filter_done">הושלמו</button>
+      <button class="roadmap-filter-btn" data-filter="in-progress" data-i18n="roadmap_filter_wip">בביצוע</button>
+      <button class="roadmap-filter-btn" data-filter="upcoming" data-i18n="roadmap_filter_soon">בקרוב</button>
+      <button class="roadmap-filter-btn" data-filter="future" data-i18n="roadmap_filter_future">עתיד</button>
+    </section>
+
+    <!-- Timeline -->
+    <div class="timeline" id="timeline"></div>
+
+    <!-- Vision -->
+    <!-- KOSHER WALLET MILESTONE -->
+    <section class="vision-section" style="margin-bottom:40px">
+      <a href="/kosher-wallet.html" style="display:block;background:linear-gradient(135deg,rgba(212,175,55,.10),rgba(91,163,255,.06));border:2px solid #d4af37;border-radius:24px;padding:32px;text-decoration:none;color:inherit;transition:all .25s">
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:20px;justify-content:space-between">
+          <div style="flex:1;min-width:280px">
+            <div style="font-size:11px;color:#d4af37;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">📅 17 בדצמבר 2026 · אבן דרך מרכזית</div>
+            <h3 style="font-size:24px;font-weight:900;margin:0 0 8px;background:linear-gradient(135deg,#d4af37,#ffd700);-webkit-background-clip:text;background-clip:text;color:transparent">🕊️ השקת הארנק הכשר — ESP32</h3>
+            <p style="font-size:15px;color:var(--text2,#888);margin:0 0 12px;line-height:1.7">
+              המכשיר הקריפטוגרפי הראשון בעולם לציבור החרדי — ניהול קריפטו מטלפון כשר ב-SMS, ללא חשיפה לאינטרנט.
+              חלק מחזון "שנת היובל" של פתיחת השוק הפיננסי החדש לכלל הציבור היהודי.
+            </p>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--text3,#666)">
+              <span style="padding:4px 10px;background:rgba(212,175,55,.1);border-radius:8px;color:#d4af37">📟 ESP32</span>
+              <span style="padding:4px 10px;background:rgba(91,163,255,.1);border-radius:8px;color:#5ba3ff">📲 SMS</span>
+              <span style="padding:4px 10px;background:rgba(0,232,135,.1);border-radius:8px;color:#00e887">💰 Variable Yield (4-12%)</span>
+              <span style="padding:4px 10px;background:rgba(255,215,0,.1);border-radius:8px;color:#ffd700">🕊️ כשר</span>
+            </div>
+          </div>
+          <div style="text-align:center;padding:20px;background:rgba(0,0,0,.3);border-radius:18px;min-width:160px">
+            <div style="font-size:42px;font-weight:900;background:linear-gradient(135deg,#d4af37,#ffd700);-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1">₪888</div>
+            <div style="font-size:11px;color:var(--text2,#888);margin-top:6px">מכירה מוקדמת · 100 ראשונים</div>
+            <div style="margin-top:12px;padding:8px 16px;background:#d4af37;color:#000;border-radius:10px;font-weight:800;font-size:13px">הצטרף לרשימת המתנה ←</div>
+          </div>
+        </div>
+      </a>
+    </section>
+
+    <section class="vision-section">
+      <h2 style="text-align:center;font-size:1.8rem;font-weight:800;margin-bottom:30px" data-i18n="roadmap_vision_title">החזון שלנו</h2>
+      <div class="vision-grid">
+        <div class="vision-card">
+          <div class="icon"><i class="fas fa-globe"></i></div>
+          <h3 data-i18n="roadmap_v1_title">אקוסיסטם עולמי</h3>
+          <p data-i18n="roadmap_v1_desc">הפיכת SLH לפלטפורמת השקעות קריפטו מובילה עם משתמשים מ-50+ מדינות</p>
+        </div>
+        <div class="vision-card">
+          <div class="icon"><i class="fas fa-robot"></i></div>
+          <h3 data-i18n="roadmap_v2_title">AI-Powered</h3>
+          <p data-i18n="roadmap_v2_desc">בינה מלאכותית שמנהלת תיקי השקעות, מנתחת שווקים ומייעצת בזמן אמת</p>
+        </div>
+        <div class="vision-card">
+          <div class="icon"><i class="fas fa-university"></i></div>
+          <h3 data-i18n="roadmap_v3_title">בנק דיגיטלי</h3>
+          <p data-i18n="roadmap_v3_desc">שירותים בנקאיים מלאים: הלוואות, חיסכון, כרטיסי חיוב ותשלומים</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="roadmap-cta">
+      <h2 data-i18n="roadmap_cta_title">הצטרפו למסע</h2>
+      <p data-i18n="roadmap_cta_desc">היו חלק מהעתיד של ההשקעות הדיגיטליות. הצטרפו לאקוסיסטם SLH עוד היום.</p>
+      <div class="cta-buttons">
+        <a href="/earn.html" class="btn-primary-cta" data-i18n="roadmap_cta_start">התחילו להרוויח</a>
+        <a href="/community.html" class="btn-secondary-cta" data-i18n="roadmap_cta_community">הצטרפו לקהילה</a>
+      </div>
+    </section>
+
+    <div id="footer"></div>
+  </div>
+
+  <script src="js/shared.js?v=20260414"></script>
+  <script src="js/translations.js?v=20260414"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/ai-assistant.js?v=20260414"></script>
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    initShared({ activePage: 'roadmap', showTicker: true });
+
+    /* ===== ROADMAP DATA ===== */
+    const PHASES = [
+      {
+        title: { he: 'שלב 1 — בנייה (Q3-Q4 2025)', en: 'Phase 1 — Foundation (Q3-Q4 2025)', ru: 'Фаза 1 — Основа (Q3-Q4 2025)', ar: 'المرحلة 1 — الأساس (Q3-Q4 2025)', fr: 'Phase 1 — Fondation (Q3-Q4 2025)' },
+        items: [
+          { status: 'completed', cat: 'infra',
+            title: { he: 'השקת אתר SLH-NFT.com', en: 'Launch slh-nft.com Website', ru: 'Запуск сайта slh-nft.com', ar: 'إطلاق موقع slh-nft.com', fr: 'Lancement du site slh-nft.com' },
+            desc: { he: 'אתר רספונסיבי ב-5 שפות עם 7 ערכות עיצוב', en: 'Responsive website in 5 languages with 7 themes', ru: 'Адаптивный сайт на 5 языках с 7 темами', ar: 'موقع متجاوب بـ5 لغات و7 سمات', fr: 'Site responsive en 5 langues avec 7 thèmes' }
+          },
+          { status: 'completed', cat: 'token',
+            title: { he: 'הנפקת SLH Token ב-BSC', en: 'SLH Token Launch on BSC', ru: 'Запуск SLH Token на BSC', ar: 'إطلاق رمز SLH على BSC', fr: 'Lancement du jeton SLH sur BSC' },
+            desc: { he: 'חוזה חכם, 111M supply, 15 decimals, 176 holders', en: 'Smart contract, 111M supply, 15 decimals, 176 holders', ru: 'Смарт-контракт, 111M supply, 176 холдеров', ar: 'عقد ذكي، 111 مليون، 176 حامل', fr: 'Contrat intelligent, 111M supply, 176 détenteurs' }
+          },
+          { status: 'completed', cat: 'bots',
+            title: { he: 'פיתוח 7 בוטים בטלגרם', en: 'Develop 7 Telegram Bots', ru: 'Разработка 7 Telegram-ботов', ar: 'تطوير 7 بوتات تيليجرام', fr: 'Développement de 7 bots Telegram' },
+            desc: { he: 'Guardian, ExpertNet, BotShop, Factory, SLH_Spark, NFTY Madness, Ambassador', en: 'Guardian, ExpertNet, BotShop, Factory, SLH_Spark, NFTY Madness, Ambassador', ru: 'Guardian, ExpertNet, BotShop, Factory, SLH_Spark, NFTY Madness, Ambassador', ar: 'Guardian, ExpertNet, BotShop, Factory, SLH_Spark, NFTY Madness, Ambassador', fr: 'Guardian, ExpertNet, BotShop, Factory, SLH_Spark, NFTY Madness, Ambassador' }
+          },
+          { status: 'completed', cat: 'infra',
+            title: { he: 'תשתית Docker + PostgreSQL', en: 'Docker + PostgreSQL Infrastructure', ru: 'Инфраструктура Docker + PostgreSQL', ar: 'بنية Docker + PostgreSQL', fr: 'Infrastructure Docker + PostgreSQL' },
+            desc: { he: '5 בסיסי נתונים, 22+ טבלאות, Railway API', en: '5 databases, 22+ tables, Railway API', ru: '5 баз данных, 22+ таблиц, Railway API', ar: '5 قواعد بيانات، 22+ جدول', fr: '5 bases de données, 22+ tables, Railway API' }
+          },
+          { status: 'completed', cat: 'finance',
+            title: { he: 'מערכת סטייקינג', en: 'Staking System', ru: 'Система стейкинга', ar: 'نظام الستيكينج', fr: 'Système de staking' },
+            desc: { he: '4 Tiers של lock (30/60/90/180 ימים) + Revenue Share Pool (Dynamic Yield, לא מובטח)', en: '4 lock tiers (30/60/90/180 days) + Revenue Share Pool — Dynamic Yield, not guaranteed', ru: '4 уровня блокировки + Revenue Share Pool (динамический доход)', ar: '4 مستويات قفل + Revenue Share Pool (عائد ديناميكي، غير مضمون)', fr: '4 niveaux de lock + Revenue Share Pool (rendement dynamique, non garanti)' }
+          }
+        ]
+      },
+      {
+        title: { he: 'שלב 2 — צמיחה (Q1-Q2 2026)', en: 'Phase 2 — Growth (Q1-Q2 2026)', ru: 'Фаза 2 — Рост (Q1-Q2 2026)', ar: 'المرحلة 2 — النمو (Q1-Q2 2026)', fr: 'Phase 2 — Croissance (Q1-Q2 2026)' },
+        items: [
+          { status: 'completed', cat: 'social',
+            title: { he: 'מערכת קהילה + הפניות', en: 'Community + Referral System', ru: 'Система сообщества + рефералов', ar: 'نظام المجتمع + الإحالات', fr: 'Système communauté + parrainage' },
+            desc: { he: 'פוסטים, לייקים, תגובות, 5 רמות הפניה עם בונוסים', en: 'Posts, likes, comments, 5-level referral with bonuses', ru: 'Посты, лайки, комментарии, 5 уровней рефералов', ar: 'منشورات، إعجابات، تعليقات، 5 مستويات إحالة', fr: 'Posts, likes, commentaires, 5 niveaux de parrainage' }
+          },
+          { status: 'completed', cat: 'finance',
+            title: { he: 'ארנק דיגיטלי BSC + TON', en: 'Digital Wallet BSC + TON', ru: 'Цифровой кошелёк BSC + TON', ar: 'محفظة رقمية BSC + TON', fr: 'Portefeuille numérique BSC + TON' },
+            desc: { he: 'שליחה, קבלה, הפקדה, היסטוריית עסקאות', en: 'Send, receive, deposit, transaction history', ru: 'Отправка, получение, депозит, история транзакций', ar: 'إرسال، استقبال، إيداع، سجل المعاملات', fr: 'Envoyer, recevoir, déposer, historique des transactions' }
+          },
+          { status: 'completed', cat: 'ai',
+            title: { he: 'עוזר AI רב-ספק', en: 'Multi-Provider AI Assistant', ru: 'Мульти-провайдер AI ассистент', ar: 'مساعد ذكاء اصطناعي متعدد', fr: 'Assistant IA multi-fournisseur' },
+            desc: { he: 'Groq, Gemini, Together.ai + OpenAI עם fallback אוטומטי', en: 'Groq, Gemini, Together.ai + OpenAI with automatic fallback', ru: 'Groq, Gemini, Together.ai + OpenAI с автоматическим fallback', ar: 'Groq, Gemini, Together.ai + OpenAI مع تبديل تلقائي', fr: 'Groq, Gemini, Together.ai + OpenAI avec fallback automatique' }
+          },
+          { status: 'completed', cat: 'token',
+            title: { he: 'MNH — מטבע יציב צמוד לשקל', en: 'MNH — ILS-Pegged Stablecoin', ru: 'MNH — стейблкоин привязанный к шекелю', ar: 'MNH — عملة مستقرة مرتبطة بالشيكل', fr: 'MNH — Stablecoin indexé au shekel' },
+            desc: { he: 'חיסכון, P2P, סטייקינג, הפקדות בשקלים', en: 'Savings, P2P, staking, ILS deposits', ru: 'Сбережения, P2P, стейкинг, депозиты в шекелях', ar: 'ادخار، P2P، ستيكينج، إيداعات بالشيكل', fr: 'Épargne, P2P, staking, dépôts en shekels' }
+          },
+          { status: 'completed', cat: 'token',
+            title: { he: 'ZUZ — מערכת אנטי-הונאה (אות קין)', en: 'ZUZ — Anti-Fraud System (Mark of Cain)', ru: 'ZUZ — Антифрод система (Метка Каина)', ar: 'ZUZ — نظام مكافحة الاحتيال (علامة قابيل)', fr: 'ZUZ — Système anti-fraude (Marque de Caïn)' },
+            desc: { he: 'סימון שלילי לסקאמרים, 100 ZUZ = חסימה אוטומטית, מודיעין חוצה-קבוצות via Guardian bot', en: 'Negative reputation marker for scammers, 100 ZUZ = auto-ban, cross-group intelligence via Guardian bot', ru: 'Негативная репутационная метка, 100 ZUZ = автобан, кроссгрупповой контроль через Guardian', ar: 'علامة سمعة سلبية للمحتالين، 100 ZUZ = حظر تلقائي، استخبارات عبر المجموعات', fr: 'Marqueur de réputation négatif, 100 ZUZ = ban auto, intelligence inter-groupes via Guardian' }
+          },
+          { status: 'completed', cat: 'infra',
+            title: { he: 'מפת רשת נוירונים', en: 'Neural Network Map', ru: 'Карта нейронной сети', ar: 'خريطة الشبكة العصبية', fr: 'Carte du réseau neuronal' },
+            desc: { he: 'ויזואליזציה אינטראקטיבית של משתמשים, קבוצות, נושאים ובוטים', en: 'Interactive visualization of users, groups, topics and bots', ru: 'Интерактивная визуализация пользователей, групп, тем и ботов', ar: 'تصور تفاعلي للمستخدمين والمجموعות والموضوعات', fr: 'Visualisation interactive des utilisateurs, groupes, sujets et bots' }
+          },
+          { status: 'completed', cat: 'infra',
+            title: { he: 'יומן ביקורת בלתי-שביר (SHA-256 Hash Chain)', en: 'Immutable Audit Log (SHA-256 Hash Chain)', ru: 'Неизменяемый журнал аудита (SHA-256)', ar: 'سجل تدقيق غير قابل للتغيير (SHA-256)', fr: 'Journal d\'audit immuable (SHA-256)' },
+            desc: { he: 'regulator-ready — endpoint /api/audit/verify-chain, כל פעולה חתומה ב-hash chain, append-only', en: 'Regulator-ready — /api/audit/verify-chain, every action hash-chained, append-only', ru: 'Готов для регулятора — каждое действие в hash-цепочке', ar: 'جاهز للمنظم — كل إجراء مسجل في سلسلة hash', fr: 'Prêt pour le régulateur — chaque action dans une chaîne de hash' }
+          },
+          { status: 'completed', cat: 'finance',
+            title: { he: 'אינטגרציית CEX (Bybit + Binance)', en: 'CEX Integration (Bybit + Binance)', ru: 'Интеграция CEX (Bybit + Binance)', ar: 'تكامل CEX (Bybit + Binance)', fr: 'Intégration CEX (Bybit + Binance)' },
+            desc: { he: 'READ-ONLY API Keys מוצפנים, HMAC-SHA256, sync + portfolio consolidation', en: 'READ-ONLY encrypted API keys, HMAC-SHA256 signing, portfolio consolidation', ru: 'READ-ONLY шифрованные API ключи, HMAC-SHA256', ar: 'مفاتيح API مشفرة للقراءة فقط', fr: 'Clés API chiffrées READ-ONLY, HMAC-SHA256' }
+          },
+          { status: 'completed', cat: 'infra',
+            title: { he: 'Genesis 49 + Cashback Tiers', en: 'Genesis 49 + Cashback Tiers', ru: 'Genesis 49 + Кешбэк уровни', ar: 'Genesis 49 + مستويات الكاش باك', fr: 'Genesis 49 + Niveaux de cashback' },
+            desc: { he: '49 קופונים ראשונים עם NFT + 10 ZVK, מדרגות 1/5/10/25/50/100 distributions', en: 'First 49 coupons w/ NFT + 10 ZVK, tiers 1/5/10/25/50/100 distributions', ru: 'Первые 49 купонов с NFT + 10 ZVK', ar: 'أول 49 قسيمة مع NFT + 10 ZVK', fr: '49 premiers coupons avec NFT + 10 ZVK' }
+          },
+          { status: 'in-progress', cat: 'infra',
+            title: { he: 'פאנל ניהולי מוסדי', en: 'Institutional Admin Panel', ru: 'Институциональная админ-панель', ar: 'لوحة إدارية مؤسسية', fr: 'Panneau d\'administration institutionnel' },
+            desc: { he: '/admin.html → Institutional: Audit, CEX, Portfolio, Compliance', en: '/admin.html → Institutional: Audit, CEX, Portfolio, Compliance', ru: '/admin.html → Институциональная секция', ar: '/admin.html → قسم مؤسسي', fr: '/admin.html → Section institutionnelle' }
+          },
+          { status: 'in-progress', cat: 'finance',
+            title: { he: 'Strategy Engine — מנוע אסטרטגיות מסחר', en: 'Strategy Engine — Algorithmic Trading Module', ru: 'Движок стратегий — алгоритмическая торговля', ar: 'محرك الاستراتيجيات — التداول الخوارزمي', fr: 'Moteur de stratégies — Trading algorithmique' },
+            desc: { he: 'מנוע אסטרטגיות מסחר + backtesting. תוצאות כ-Revenue Source ל-Dynamic Yield Pool. לא הבטחה ליעד תשואה למשתמשים.', en: 'Trading strategy engine + backtesting. Results feed Revenue Share Pool. Not a yield promise to users.', ru: 'Движок стратегий с бэктестингом. Доходы — источник для Revenue Share Pool.', ar: 'محرك استراتيجيات + اختبار. النتائج تغذي Revenue Share Pool.', fr: 'Moteur de trading + backtest. Les résultats alimentent le Revenue Share Pool.' }
+          },
+          { status: 'in-progress', cat: 'infra',
+            title: { he: 'Sumsub KYC + Fireblocks Custody', en: 'Sumsub KYC + Fireblocks Custody', ru: 'Sumsub KYC + Fireblocks', ar: 'Sumsub KYC + Fireblocks', fr: 'Sumsub KYC + Fireblocks Custody' },
+            desc: { he: 'Scaffolding מוכן, מחכה ל-credentials ומיזוג ל-production', en: 'Scaffolding ready, awaiting credentials for production', ru: 'Каркас готов, ожидает credentials', ar: 'الهيكل جاهز، ينتظر بيانات الاعتماד', fr: 'Structure prête, attend les credentials' }
+          },
+          { status: 'completed', cat: 'token',
+            title: { he: '🚀 Genesis Launch — SLH חי ב-PancakeSwap!', en: '🚀 Genesis Launch — SLH LIVE on PancakeSwap!', ru: '🚀 Genesis Launch — SLH на PancakeSwap!', ar: '🚀 Genesis Launch — SLH على PancakeSwap!', fr: '🚀 Genesis Launch — SLH sur PancakeSwap!' },
+            desc: { he: 'Pool SLH/BNB חי ב-PancakeSwap V2 מ-12/04/2026. Pair: 0xacea26b6...bbeE. Block 92071485. מחיר: $0.596/SLH.', en: 'SLH/BNB pool live on PancakeSwap V2 since 2026-04-12. Pair: 0xacea26b6...bbeE. Block 92071485. Price: $0.596/SLH.', ru: 'Pool SLH/BNB на PancakeSwap V2 с 12.04.2026. Блок 92071485.', ar: 'Pool SLH/BNB على PancakeSwap V2 منذ 12/04/2026.', fr: 'Pool SLH/BNB sur PancakeSwap V2 depuis 12/04/2026.' }
+          }
+        ]
+      },
+      {
+        title: { he: 'שלב 3 — התרחבות (Q3-Q4 2026)', en: 'Phase 3 — Expansion (Q3-Q4 2026)', ru: 'Фаза 3 — Расширение (Q3-Q4 2026)', ar: 'المرحلة 3 — التوسع (Q3-Q4 2026)', fr: 'Phase 3 — Expansion (Q3-Q4 2026)' },
+        items: [
+          { status: 'upcoming', cat: 'finance',
+            title: { he: 'LP Lock + הגדלת Liquidity', en: 'LP Lock + Liquidity Growth', ru: 'Блокировка LP + Рост ликвидности', ar: 'قفل LP + نمو السيولة', fr: 'Verrouillage LP + Croissance de liquidité' },
+            desc: { he: 'נעילת LP tokens ב-Mudra ל-6 חודשים (anti-rug) + הוספת 1-5 BNB liquidity נוספת ל-pool', en: 'Lock LP tokens in Mudra for 6 months (anti-rug) + add 1-5 BNB more liquidity', ru: 'Блокировка LP в Mudra на 6 месяцев + доп. ликвидность', ar: 'قفل LP في Mudra لـ6 أشهر + سيولة إضافية', fr: 'Verrouillage LP dans Mudra 6 mois + liquidité supplémentaire' }
+          },
+          { status: 'upcoming', cat: 'finance',
+            title: { he: 'P2P Marketplace — מסחר חי', en: 'P2P Marketplace — Live Trading', ru: 'P2P Marketplace — Торговля', ar: 'سوق P2P — تداول مباشر', fr: 'Marketplace P2P — Trading en direct' },
+            desc: { he: 'Order book פעיל: רשום SLH/ZVK/MNH למכירה, קנה ישירות ממשתמשים, ללא עמלות על MNH', en: 'Active order book: list SLH/ZVK/MNH for sale, buy directly from users, free MNH transfers', ru: 'Активная книга ордеров: продажа/покупка напрямую', ar: 'دفتر أوامر نشط: بيع/شراء مباشر بدون عمولات', fr: 'Carnet d\'ordres actif: vente/achat direct sans frais' }
+          },
+          { status: 'upcoming', cat: 'finance',
+            title: { he: 'GemPad Presale — סיבוב 2', en: 'GemPad Presale — Round 2', ru: 'GemPad Presale — Раунд 2', ar: 'GemPad Presale — الجولة 2', fr: 'GemPad Presale — Tour 2' },
+            desc: { he: 'גיוס 1-5 BNB מהקהילה דרך GemPad. LP נעול אוטומטית. Genesis 49 = Whitelist.', en: 'Raise 1-5 BNB from community via GemPad. Auto LP lock. Genesis 49 = Whitelist.', ru: 'Сбор 1-5 BNB через GemPad. Авто-блокировка LP.', ar: 'جمع 1-5 BNB من المجتمع عبر GemPad', fr: 'Collecte 1-5 BNB via GemPad. Verrouillage LP auto.' }
+          },
+          { status: 'upcoming', cat: 'infra',
+            title: { he: 'Webhook Migration — מעבר מ-Polling', en: 'Webhook Migration — From Polling', ru: 'Миграция на Webhooks', ar: 'الانتقال إلى Webhooks', fr: 'Migration vers Webhooks' },
+            desc: { he: 'כל 25 בוטים עוברים מ-polling ל-webhooks ב-Railway. חיסכון 80% בעלויות.', en: 'All 25 bots migrate from polling to webhooks on Railway. 80% cost reduction.', ru: 'Все 25 ботов переходят на webhooks. Экономия 80%.', ar: 'جميع البوتات تنتقل إلى webhooks. توفير 80%', fr: 'Tous les bots passent aux webhooks. 80% de réduction.' }
+          },
+          { status: 'upcoming', cat: 'finance',
+            title: { he: 'Strategy Engine — ביצוע חי', en: 'Strategy Engine — Live Execution', ru: 'Движок стратегий — Живое исполнение', ar: 'محرك الاستراتيجيات — تنفيذ مباشر', fr: 'Moteur de stratégies — Exécution live' },
+            desc: { he: '3 אסטרטגיות (Grid 25%, DCA 42%, Momentum 78%) מחוברות ל-CEX. יעד: 65%+ שנתי.', en: '3 strategies (Grid 25%, DCA 42%, Momentum 78%) connected to CEX. Target: 65%+ annually.', ru: '3 стратегии подключены к CEX. Цель: 65%+ годовых.', ar: '3 استراتيجيات متصلة بالبورصات. هدف: 65%+', fr: '3 stratégies connectées aux CEX. Cible: 65%+ annuel.' }
+          },
+          { status: 'upcoming', cat: 'infra',
+            title: { he: 'Multi-Exchange Listing', en: 'Multi-Exchange Listing', ru: 'Листинг на биржах', ar: 'إدراج في بورصات متعددة', fr: 'Listing multi-exchanges' },
+            desc: { he: 'SLH על MEXC, Gate.io, Bitrue — נגישות עולמית + נפח מסחר משמעותי', en: 'SLH on MEXC, Gate.io, Bitrue — global access + significant trading volume', ru: 'SLH на MEXC, Gate.io, Bitrue — глобальный доступ', ar: 'SLH على MEXC, Gate.io, Bitrue — وصول عالمي', fr: 'SLH sur MEXC, Gate.io, Bitrue — accès mondial' }
+          },
+          { status: 'upcoming', cat: 'social',
+            title: { he: 'אפליקציית מובייל (React Native)', en: 'Mobile App (React Native)', ru: 'Мобильное приложение', ar: 'تطبيق جوال', fr: 'Application mobile' },
+            desc: { he: 'ארנק + דשבורד + Member Card + P2P — הכל בנייד. מבוסס D:\\SLH (WIP).', en: 'Wallet + dashboard + Member Card + P2P — all on mobile. Based on D:\\SLH (WIP).', ru: 'Кошелёк + дашборд + карточка — всё в мобильном', ar: 'محفظة + لوحة + بطاقة عضوية — كل شيء على الجوال', fr: 'Portefeuille + tableau de bord + carte membre — tout sur mobile' }
+          },
+          { status: 'upcoming', cat: 'bots',
+            title: { he: '20+ בוטים חדשים', en: '20+ New Bots', ru: '20+ новых ботов', ar: '20+ بوت جديد', fr: '20+ nouveaux bots' },
+            desc: { he: 'בוטים מתמחים: מסחר, אנליטיקס, תשלומים, משחקים, חינוך', en: 'Specialized bots: trading, analytics, payments, games, education', ru: 'Специализированные боты: трейдинг, аналитика, платежи, игры', ar: 'بوتات متخصصة: تداول، تحليلات، مدفوعات، ألعاب', fr: 'Bots spécialisés : trading, analytics, paiements, jeux, éducation' }
+          },
+          { status: 'upcoming', cat: 'social',
+            title: { he: 'מודל שגרירים SaaS', en: 'Ambassador SaaS Model', ru: 'Модель амбассадоров SaaS', ar: 'نموذج سفراء SaaS', fr: 'Modèle SaaS Ambassadeur' },
+            desc: { he: 'בוט לכל שגריר, חזון חינוכי, מערכת משפחות', en: 'Bot per ambassador, educational vision, family system', ru: 'Бот для каждого амбассадора, образовательная модель', ar: 'بوت لكل سفير، رؤية تعليمية، نظام عائلات', fr: 'Bot par ambassadeur, vision éducative, système familial' }
+          },
+          { status: 'upcoming', cat: 'token',
+            title: { he: '19 טוקנים באקוסיסטם', en: '19 Ecosystem Tokens', ru: '19 токенов в экосистеме', ar: '19 رمز في النظام', fr: '19 jetons dans l\'écosystème' },
+            desc: { he: 'כל בוט = מערכת כלכלית עצמאית עם טוקן ייחודי', en: 'Each bot = independent economy with unique token', ru: 'Каждый бот = независимая экономика с уникальным токеном', ar: 'كل بوت = اقتصاد مستقل برمز فريد', fr: 'Chaque bot = économie indépendante avec jeton unique' }
+          },
+          { status: 'upcoming', cat: 'finance',
+            title: { he: 'קבוצות פרימיום בתשלום', en: 'Premium Paid Groups', ru: 'Премиум группы', ar: 'مجموعات مميزة مدفوعة', fr: 'Groupes premium payants' },
+            desc: { he: 'VIP flow, אישורים, תשלום בטוקנים, פאנלים לאדמין', en: 'VIP flow, approvals, token payments, admin panels', ru: 'VIP поток, одобрения, оплата токенами, панели администратора', ar: 'تدفق VIP، موافقات، دفع بالرموز، لوحات إدارية', fr: 'Flux VIP, approbations, paiements en jetons, panneaux admin' }
+          },
+          { status: 'upcoming', cat: 'infra',
+            title: { he: 'PWA + התראות בזמן אמת', en: 'PWA + Real-Time Notifications', ru: 'PWA + уведомления в реальном времени', ar: 'PWA + إشعارات فورية', fr: 'PWA + Notifications en temps réel' },
+            desc: { he: 'אפליקציה מותקנת, service worker, push notifications', en: 'Installable app, service worker, push notifications', ru: 'Устанавливаемое приложение, service worker, push-уведомления', ar: 'تطبيق قابل للتثبيت، إشعارات push', fr: 'App installable, service worker, notifications push' }
+          },
+          { status: 'upcoming', cat: 'voice',
+            title: { he: 'SLH Voice — POC מרכזייה חכמה', en: 'SLH Voice — Smart IVR POC', ru: 'SLH Voice — POC умной IVR', ar: 'SLH Voice — نموذج IVR ذكي', fr: 'SLH Voice — POC IVR intelligent' },
+            desc: { he: 'POC מרכזייה עם AI intent recognition, חיבור ל-Twilio/Plivo, דקות ראשונות. ראה ops/VOICE_STACK_COMPETITIVE_20260424.md', en: 'IVR POC with AI intent recognition, Twilio/Plivo backend, first minutes. See ops/VOICE_STACK_COMPETITIVE_20260424.md', ru: 'POC IVR с AI-распознаванием намерений на Twilio/Plivo', ar: 'نموذج IVR مع التعرف على النوايا بالذكاء الاصطناعي', fr: 'POC IVR avec reconnaissance d\'intention IA' }
+          },
+          { status: 'upcoming', cat: 'swarm',
+            title: { he: 'SLH Swarm — POC ESP32 mesh', en: 'SLH Swarm — ESP32 Mesh POC', ru: 'SLH Swarm — POC сеть ESP32', ar: 'SLH Swarm — نموذج شبكة ESP32', fr: 'SLH Swarm — POC maillage ESP32' },
+            desc: { he: '3 יחידות ESP32 + טלפון relay + Anchor endpoint. Blueprint: ops/SWARM_V1_BLUEPRINT_20260424.md', en: '3 ESP32 units + phone relay + Anchor endpoint. Blueprint: ops/SWARM_V1_BLUEPRINT_20260424.md', ru: '3 модуля ESP32 + телефон-ретранслятор + Anchor endpoint', ar: '3 وحدات ESP32 + هاتف relay + Anchor endpoint', fr: '3 unités ESP32 + téléphone relais + endpoint Anchor' }
+          }
+        ]
+      },
+      {
+        title: { he: 'שלב 4 — חזון (2027+)', en: 'Phase 4 — Vision (2027+)', ru: 'Фаза 4 — Видение (2027+)', ar: 'المرحلة 4 — الرؤية (2027+)', fr: 'Phase 4 — Vision (2027+)' },
+        items: [
+          { status: 'future', cat: 'finance',
+            title: { he: 'שירותי בנקאות דיגיטלית', en: 'Digital Banking Services', ru: 'Цифровые банковские услуги', ar: 'خدمات مصرفية رقمية', fr: 'Services bancaires numériques' },
+            desc: { he: 'הלוואות, חיסכון, כרטיסי חיוב, תשלומים מיידיים', en: 'Loans, savings, debit cards, instant payments', ru: 'Кредиты, сбережения, дебетовые карты, мгновенные платежи', ar: 'قروض، ادخار، بطاقات خصم، مدفوعات فورية', fr: 'Prêts, épargne, cartes de débit, paiements instantanés' }
+          },
+          { status: 'future', cat: 'ai',
+            title: { he: 'AI Portfolio Manager', en: 'AI Portfolio Manager', ru: 'AI менеджер портфеля', ar: 'مدير محفظة ذكي', fr: 'Gestionnaire de portefeuille IA' },
+            desc: { he: 'ניהול תיקים אוטומטי, ניתוח שוק, המלצות מותאמות אישית', en: 'Automated portfolio management, market analysis, personalized recommendations', ru: 'Автоматическое управление портфелем, анализ рынка, персональные рекомендации', ar: 'إدارة محافظ تلقائية، تحليل سوق، توصيات مخصصة', fr: 'Gestion automatisée de portefeuille, analyse de marché, recommandations personnalisées' }
+          },
+          { status: 'future', cat: 'social',
+            title: { he: 'רשת חברתית Web3', en: 'Web3 Social Network', ru: 'Социальная сеть Web3', ar: 'شبكة اجتماعية Web3', fr: 'Réseau social Web3' },
+            desc: { he: 'פרופילים מבוזרים, NFT avatars, DAO governance', en: 'Decentralized profiles, NFT avatars, DAO governance', ru: 'Децентрализованные профили, NFT аватары, DAO управление', ar: 'ملفات لامركزية، NFT أفاتار، حوكمة DAO', fr: 'Profils décentralisés, avatars NFT, gouvernance DAO' }
+          },
+          { status: 'future', cat: 'infra',
+            title: { he: 'Multi-Chain + DEX', en: 'Multi-Chain + DEX', ru: 'Мультичейн + DEX', ar: 'متعدد السلاسل + DEX', fr: 'Multi-Chain + DEX' },
+            desc: { he: 'תמיכה ב-Ethereum, Solana, TON — בורסה מבוזרת משלנו', en: 'Support for Ethereum, Solana, TON — our own DEX', ru: 'Поддержка Ethereum, Solana, TON — собственная DEX', ar: 'دعم Ethereum, Solana, TON — بورصة لامركزية خاصة', fr: 'Support Ethereum, Solana, TON — notre propre DEX' }
+          },
+          { status: 'future', cat: 'voice',
+            title: { he: 'SLH Voice — Launch מסחרי', en: 'SLH Voice — Commercial Launch', ru: 'SLH Voice — коммерческий запуск', ar: 'SLH Voice — الإطلاق التجاري', fr: 'SLH Voice — Lancement commercial' },
+            desc: { he: 'B2B SaaS מלא: Free/Pro/Business/Enterprise, no-code IVR builder, 5 שפות ניטיביות, תשלום hybrid ILS+SLH', en: 'Full B2B SaaS: Free/Pro/Business/Enterprise tiers, no-code IVR builder, 5 native languages, hybrid ILS+SLH billing', ru: 'Полный B2B SaaS с no-code builder и 5 языками', ar: 'SaaS كامل مع منشئ IVR بدون كود و5 لغات', fr: 'SaaS B2B complet avec builder no-code et 5 langues' }
+          },
+          { status: 'future', cat: 'swarm',
+            title: { he: 'SLH Swarm — DePIN Economy', en: 'SLH Swarm — DePIN Economy', ru: 'SLH Swarm — экономика DePIN', ar: 'SLH Swarm — اقتصاد DePIN', fr: 'SLH Swarm — Économie DePIN' },
+            desc: { he: 'רשת ESP32 מבוזרת עם Proof-of-Location, ZVK rewards על heartbeat, multi-hop בקהילות ללא WiFi, marketplace scanning', en: 'Decentralized ESP32 network with Proof-of-Location, ZVK rewards per heartbeat, multi-hop mesh in offline communities', ru: 'Распределённая сеть ESP32 с Proof-of-Location и наградами ZVK', ar: 'شبكة ESP32 لامركزية مع Proof-of-Location ومكافآت ZVK', fr: 'Réseau ESP32 décentralisé avec Proof-of-Location et récompenses ZVK' }
+          },
+          { status: 'future', cat: 'swarm',
+            title: { he: 'Kosher Wallet — ייצור המוני', en: 'Kosher Wallet — Mass Production', ru: 'Kosher Wallet — массовое производство', ar: 'Kosher Wallet — إنتاج شامل', fr: 'Kosher Wallet — Production de masse' },
+            desc: { he: 'PCB ייעודי + secure element ATECC608A, enclosure, 100 יחידות ראשונות ב-₪888. אבן דרך 17.12.2026', en: 'Dedicated PCB + ATECC608A secure element, enclosure, first 100 units at ₪888. Milestone Dec 17, 2026', ru: 'Специальная плата + защитный элемент, первые 100 штук', ar: 'لوحة مخصصة + عنصر آمن، أول 100 وحدة', fr: 'PCB dédié + élément sécurisé, 100 premières unités' }
+          }
+        ]
+      }
+    ];
+
+    const lang = typeof getLang === 'function' ? getLang() : 'he';
+    const t = (obj) => obj[lang] || obj.en || obj.he;
+
+    const STATUS_TAG = {
+      'completed': { cls: 'tag-done', he: 'הושלם', en: 'Done', ru: 'Готово', ar: 'مكتمل', fr: 'Terminé' },
+      'in-progress': { cls: 'tag-wip', he: 'בביצוע', en: 'In Progress', ru: 'В процессе', ar: 'قيد التنفيذ', fr: 'En cours' },
+      'upcoming': { cls: 'tag-soon', he: 'בקרוב', en: 'Soon', ru: 'Скоро', ar: 'قريباً', fr: 'Bientôt' },
+      'future': { cls: 'tag-future', he: 'עתיד', en: 'Future', ru: 'Будущее', ar: 'المستقبل', fr: 'Futur' }
+    };
+    const CAT_LABELS = {
+      infra: { he: 'תשתית', en: 'Infra', ru: 'Инфра', ar: 'بنية', fr: 'Infra' },
+      token: { he: 'טוקן', en: 'Token', ru: 'Токен', ar: 'رمز', fr: 'Jeton' },
+      bots: { he: 'בוטים', en: 'Bots', ru: 'Боты', ar: 'بوتات', fr: 'Bots' },
+      finance: { he: 'פיננסים', en: 'Finance', ru: 'Финансы', ar: 'مالية', fr: 'Finance' },
+      social: { he: 'קהילה', en: 'Social', ru: 'Соцсети', ar: 'اجتماعي', fr: 'Social' },
+      ai: { he: 'AI', en: 'AI', ru: 'AI', ar: 'AI', fr: 'IA' },
+      voice: { he: '📞 Voice', en: '📞 Voice', ru: '📞 Voice', ar: '📞 Voice', fr: '📞 Voice' },
+      swarm: { he: '🛰️ Swarm', en: '🛰️ Swarm', ru: '🛰️ Swarm', ar: '🛰️ Swarm', fr: '🛰️ Swarm' }
+    };
+
+    // Count stats
+    let completed = 0, inProgress = 0, upcoming = 0, total = 0;
+    PHASES.forEach(p => p.items.forEach(i => {
+      total++;
+      if (i.status === 'completed') completed++;
+      else if (i.status === 'in-progress') inProgress++;
+      else upcoming++;
+    }));
+
+    document.getElementById('statCompleted').textContent = completed;
+    document.getElementById('statInProgress').textContent = inProgress;
+    document.getElementById('statUpcoming').textContent = upcoming + (total - completed - inProgress - upcoming);
+    document.getElementById('statTotal').textContent = total;
+
+    const pct = Math.round((completed / total) * 100);
+    document.getElementById('progressPct').textContent = pct + '%';
+    setTimeout(() => {
+      document.getElementById('progressFill').style.width = pct + '%';
+    }, 300);
+
+    // Render timeline
+    function renderTimeline(filter) {
+      const container = document.getElementById('timeline');
+      container.innerHTML = '';
+
+      PHASES.forEach(phase => {
+        const filtered = filter === 'all' ? phase.items : phase.items.filter(i => i.status === filter);
+        if (filtered.length === 0) return;
+
+        const phaseDiv = document.createElement('div');
+        phaseDiv.className = 'timeline-phase';
+        phaseDiv.innerHTML = `<div class="timeline-phase-title"><span>${t(phase.title)}</span></div>`;
+
+        filtered.forEach((item, idx) => {
+          const stag = STATUS_TAG[item.status];
+          const ctag = CAT_LABELS[item.cat] || { he: item.cat, en: item.cat };
+          const el = document.createElement('div');
+          el.className = 'timeline-item';
+          el.innerHTML = `
+            <div class="timeline-dot ${item.status}"></div>
+            <div class="timeline-card">
+              <h3>${t(item.title)}</h3>
+              <p>${t(item.desc)}</p>
+              <div class="tags">
+                <span class="tag ${stag.cls}">${stag[lang] || stag.en}</span>
+                <span class="tag tag-cat">${t(ctag)}</span>
+              </div>
+            </div>
+          `;
+          phaseDiv.appendChild(el);
+        });
+
+        container.appendChild(phaseDiv);
+      });
+    }
+
+    renderTimeline('all');
+
+    // Filter buttons
+    document.querySelectorAll('.roadmap-filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.roadmap-filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderTimeline(btn.dataset.filter);
+      });
+    });
+  });
+  </script>
+
+  <div id="footer-root"></div>
+  <div id="bottomnav-root"></div>
+</body>
+</html>

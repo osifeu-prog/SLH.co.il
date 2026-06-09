@@ -1,0 +1,715 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLH Spark — Control Center</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/png" href="/favicon-32.png">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/shared.css?v=20260425d">
+    <style>
+        :root{--bg:#05080f;--bg2:#0c1018;--bg3:#141924;--accent:#00ff41;--accent2:#39ff14;--cyan:#00e5ff;--gold:#ffd700;--red:#ff0055;--purple:#a855f7;--blue:#3b82f6;--orange:#f97316;--text:#e0e0f0;--text2:#6a6a90;--text3:#444466;--border:rgba(0,255,65,.1);--glow:0 0 20px rgba(0,255,65,.15);--font:'Inter',system-ui,sans-serif;--mono:'Space Mono',monospace;--radius:10px}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+        a{color:var(--accent);text-decoration:none}
+
+        /* Animated BG Grid */
+        body::before{content:'';position:fixed;inset:0;background:linear-gradient(rgba(0,255,65,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,65,.02) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;animation:gridShift 20s linear infinite}
+        @keyframes gridShift{to{background-position:40px 40px}}
+
+        .cc-wrapper{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:16px}
+
+        /* Header */
+        .cc-header{text-align:center;padding:24px 0 16px;position:relative}
+        .cc-header h1{font-size:32px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-0.5px}
+        .cc-header .sub{color:var(--text2);font-size:13px;margin-top:4px}
+        .cc-live{display:inline-flex;align-items:center;gap:8px;margin-top:12px;padding:6px 16px;background:rgba(0,255,65,.06);border:1px solid rgba(0,255,65,.2);border-radius:20px;font-size:11px;color:var(--accent);font-weight:600}
+        .cc-live .pulse{width:8px;height:8px;background:var(--accent);border-radius:50%;animation:pulse 2s infinite}
+        @keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,255,65,.5)}50%{opacity:.4;box-shadow:0 0 0 8px transparent}}
+
+        /* Tabs */
+        .cc-tabs{display:flex;gap:4px;padding:8px 0 16px;overflow-x:auto;scrollbar-width:none}
+        .cc-tabs::-webkit-scrollbar{display:none}
+        .cc-tab{padding:8px 18px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--text2);cursor:pointer;white-space:nowrap;transition:.2s;font-family:var(--font);font-weight:500}
+        .cc-tab:hover{color:var(--text);border-color:rgba(0,255,65,.3)}
+        .cc-tab.active{background:rgba(0,255,65,.08);color:var(--accent);border-color:rgba(0,255,65,.4);box-shadow:var(--glow)}
+        .cc-tab i{margin-left:6px}
+
+        /* Panels */
+        .cc-panel{display:none}
+        .cc-panel.active{display:block;animation:fadeIn .3s}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+        /* Cards */
+        .cc-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px}
+        .cc-card h2{font-size:15px;color:var(--accent);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+        .cc-card h2 .badge{font-size:10px;padding:3px 10px;border-radius:4px;font-weight:600}
+        .badge-ok{background:rgba(0,255,65,.1);color:var(--accent)}
+        .badge-warn{background:rgba(255,215,0,.1);color:var(--gold)}
+        .badge-err{background:rgba(255,0,85,.1);color:var(--red)}
+        .badge-info{background:rgba(0,229,255,.1);color:var(--cyan)}
+
+        /* KPI Grid */
+        .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px}
+        .kpi{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:16px;position:relative;overflow:hidden;transition:.2s}
+        .kpi:hover{border-color:rgba(0,255,65,.3);box-shadow:var(--glow)}
+        .kpi::after{content:'';position:absolute;top:0;right:0;width:3px;height:100%;border-radius:0 8px 8px 0}
+        .kpi.g::after{background:var(--accent)}.kpi.c::after{background:var(--cyan)}.kpi.y::after{background:var(--gold)}.kpi.r::after{background:var(--red)}.kpi.p::after{background:var(--purple)}.kpi.b::after{background:var(--blue)}.kpi.o::after{background:var(--orange)}
+        .kpi-label{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+        .kpi-val{font-size:28px;font-weight:700;color:#fff}
+        .kpi-sub{font-size:10px;color:var(--text2);margin-top:4px}
+        .kpi-icon{position:absolute;top:14px;left:14px;font-size:24px;opacity:.08}
+
+        /* Tables */
+        .cc-table{width:100%;border-collapse:collapse;font-size:12px}
+        .cc-table th{text-align:right;padding:8px 12px;background:var(--bg3);color:var(--text2);font-size:10px;text-transform:uppercase;letter-spacing:1px;position:sticky;top:0}
+        .cc-table td{padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.04)}
+        .cc-table tr:hover td{background:rgba(0,255,65,.02)}
+        .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-left:6px}
+        .dot.ok{background:var(--accent)}.dot.warn{background:var(--gold)}.dot.err{background:var(--red)}.dot.off{background:var(--text3)}
+
+        /* Progress bars */
+        .prog-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+        .prog-label{width:160px;color:var(--text2);font-size:12px;flex-shrink:0}
+        .prog-bar{flex:1;height:8px;background:var(--bg3);border-radius:4px;overflow:hidden}
+        .prog-fill{height:100%;border-radius:4px;transition:width .6s ease}
+        .prog-pct{width:45px;text-align:left;color:var(--text2);font-size:11px;font-weight:600}
+
+        /* Timeline */
+        .timeline{position:relative;padding-right:30px}
+        .timeline::before{content:'';position:absolute;top:0;right:14px;width:2px;height:100%;background:var(--border)}
+        .tl-item{position:relative;margin-bottom:20px;padding-right:30px}
+        .tl-item::before{content:'';position:absolute;right:-3px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--accent);border:2px solid var(--bg2);z-index:1}
+        .tl-date{font-size:11px;color:var(--accent);font-weight:600;font-family:var(--mono)}
+        .tl-title{font-size:14px;font-weight:600;color:#fff;margin:4px 0}
+        .tl-body{font-size:12px;color:var(--text2);line-height:1.6}
+        .tl-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+        .tl-tag{font-size:9px;padding:2px 8px;border-radius:3px;background:rgba(0,255,65,.08);color:var(--accent);border:1px solid rgba(0,255,65,.15)}
+
+        /* Activity Feed */
+        .feed-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.03);font-size:12px;align-items:flex-start}
+        .feed-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+        .feed-icon.api{background:rgba(0,255,65,.1);color:var(--accent)}
+        .feed-icon.git{background:rgba(168,85,247,.1);color:var(--purple)}
+        .feed-icon.bot{background:rgba(0,229,255,.1);color:var(--cyan)}
+        .feed-icon.sec{background:rgba(255,0,85,.1);color:var(--red)}
+        .feed-icon.user{background:rgba(255,215,0,.1);color:var(--gold)}
+        .feed-time{color:var(--text3);font-size:10px;font-family:var(--mono);min-width:50px;text-align:left}
+
+        /* Btn */
+        .cc-btn{background:var(--accent);color:#000;border:none;padding:7px 16px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font);transition:.2s}
+        .cc-btn:hover{background:var(--accent2);box-shadow:0 0 12px rgba(0,255,65,.3)}
+        .cc-btn.outline{background:transparent;color:var(--accent);border:1px solid rgba(0,255,65,.3)}
+        .cc-btn.outline:hover{background:rgba(0,255,65,.06)}
+
+        /* Grid layouts */
+        .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+        .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+        @media(max-width:1024px){.three-col{grid-template-columns:1fr 1fr}}
+        @media(max-width:768px){.two-col,.three-col{grid-template-columns:1fr}.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+
+        /* Scrollable */
+        .scroll-box{max-height:400px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--accent) var(--bg3)}
+        .scroll-box::-webkit-scrollbar{width:4px}
+        .scroll-box::-webkit-scrollbar-track{background:var(--bg3)}
+        .scroll-box::-webkit-scrollbar-thumb{background:var(--accent);border-radius:2px}
+
+        /* Version diff */
+        .diff-add{color:var(--accent);background:rgba(0,255,65,.06);padding:1px 4px;border-radius:2px;font-family:var(--mono);font-size:11px}
+        .diff-del{color:var(--red);background:rgba(255,0,85,.06);padding:1px 4px;border-radius:2px;font-family:var(--mono);font-size:11px;text-decoration:line-through}
+
+        /* Loading spinner */
+        .spinner{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;display:inline-block}
+        @keyframes spin{to{transform:rotate(360deg)}}
+
+        /* Security panel */
+        .sec-item{display:flex;gap:12px;padding:12px;background:var(--bg3);border-radius:8px;margin-bottom:8px;align-items:flex-start}
+        .sec-severity{font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;min-width:50px;text-align:center}
+        .sec-severity.critical{background:rgba(255,0,85,.15);color:var(--red)}
+        .sec-severity.high{background:rgba(249,115,22,.15);color:var(--orange)}
+        .sec-severity.medium{background:rgba(255,215,0,.15);color:var(--gold)}
+        .sec-title{font-weight:600;font-size:13px;color:#fff}
+        .sec-desc{font-size:11px;color:var(--text2);margin-top:2px}
+
+        /* Architecture */
+        .arch-node{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;font-size:11px;margin:4px}
+        .arch-arrow{color:var(--accent);font-size:16px;margin:0 4px}
+    </style>
+</head>
+<body>
+
+<div id="topnav-root"></div>
+<div id="ticker-root"></div>
+
+<div class="cc-wrapper">
+    <div class="cc-header">
+        <h1><i class="fas fa-satellite-dish"></i> SLH Control Center</h1>
+        <p class="sub">Real-time ecosystem monitoring · Session history · Version control · Security audit</p>
+        <div class="cc-live"><span class="pulse"></span> LIVE · Auto-refresh 30s · <span id="cc-time"></span></div>
+    </div>
+
+    <!-- TABS -->
+    <div class="cc-tabs">
+        <div class="cc-tab active" data-tab="overview"><i class="fas fa-th-large"></i> Overview</div>
+        <div class="cc-tab" data-tab="sessions"><i class="fas fa-history"></i> Session History</div>
+        <div class="cc-tab" data-tab="versions"><i class="fas fa-code-branch"></i> Versions</div>
+        <div class="cc-tab" data-tab="bots"><i class="fas fa-robot"></i> Bots (25)</div>
+        <div class="cc-tab" data-tab="pages"><i class="fas fa-globe"></i> Pages (49)</div>
+        <div class="cc-tab" data-tab="api"><i class="fas fa-server"></i> API</div>
+        <div class="cc-tab" data-tab="security"><i class="fas fa-shield-alt"></i> Security</div>
+        <div class="cc-tab" data-tab="tasks"><i class="fas fa-tasks"></i> Tasks</div>
+    </div>
+
+    <!-- ============ OVERVIEW ============ -->
+    <div class="cc-panel active" id="panel-overview">
+        <div class="kpi-grid" id="kpi-grid">
+            <div class="kpi g"><i class="fas fa-heartbeat kpi-icon"></i><div class="kpi-label">API Status</div><div class="kpi-val" id="k-api">...</div><div class="kpi-sub" id="k-api-sub"></div></div>
+            <div class="kpi c"><i class="fas fa-users kpi-icon"></i><div class="kpi-label">Total Users</div><div class="kpi-val" id="k-users">...</div><div class="kpi-sub" id="k-users-sub"></div></div>
+            <div class="kpi y"><i class="fas fa-plug kpi-icon"></i><div class="kpi-label">API Endpoints</div><div class="kpi-val" id="k-endpoints">...</div><div class="kpi-sub">production</div></div>
+            <div class="kpi p"><i class="fas fa-globe kpi-icon"></i><div class="kpi-label">HTML Pages</div><div class="kpi-val" id="k-pages">49</div><div class="kpi-sub">GitHub Pages</div></div>
+            <div class="kpi b"><i class="fas fa-robot kpi-icon"></i><div class="kpi-label">Bots Running</div><div class="kpi-val" id="k-bots">25</div><div class="kpi-sub">Docker Compose</div></div>
+            <div class="kpi o"><i class="fas fa-coins kpi-icon"></i><div class="kpi-label">Genesis Raised</div><div class="kpi-val" id="k-raised">...</div><div class="kpi-sub" id="k-raised-sub"></div></div>
+            <div class="kpi g"><i class="fas fa-link kpi-icon"></i><div class="kpi-label">Audit Chain</div><div class="kpi-val" id="k-audit">...</div><div class="kpi-sub" id="k-audit-sub"></div></div>
+            <div class="kpi r"><i class="fas fa-shield-alt kpi-icon"></i><div class="kpi-label">Security Issues</div><div class="kpi-val" id="k-sec">3</div><div class="kpi-sub">P0: 1 fixed, 2 remaining</div></div>
+        </div>
+
+        <div class="two-col">
+            <div class="cc-card">
+                <h2>Live Activity Feed <span class="badge badge-ok">Real-time</span></h2>
+                <div class="scroll-box" id="activity-feed" style="max-height:320px">
+                    <div style="text-align:center;padding:20px;color:var(--text2)"><div class="spinner"></div> Loading...</div>
+                </div>
+            </div>
+            <div class="cc-card">
+                <h2>System Coverage <button class="cc-btn outline" onclick="refreshCoverage()">Refresh</button></h2>
+                <div id="coverage-bars">
+                    <div class="prog-row"><div class="prog-label">shared.js loaded</div><div class="prog-bar"><div class="prog-fill" style="width:91%;background:var(--accent)"></div></div><div class="prog-pct">91%</div></div>
+                    <div class="prog-row"><div class="prog-label">Theme switcher</div><div class="prog-bar"><div class="prog-fill" style="width:42%;background:var(--gold)"></div></div><div class="prog-pct">42%</div></div>
+                    <div class="prog-row"><div class="prog-label">i18n translations</div><div class="prog-bar"><div class="prog-fill" style="width:37%;background:var(--cyan)"></div></div><div class="prog-pct">37%</div></div>
+                    <div class="prog-row"><div class="prog-label">Analytics tracking</div><div class="prog-bar"><div class="prog-fill" style="width:100%;background:var(--accent)"></div></div><div class="prog-pct">100%</div></div>
+                    <div class="prog-row"><div class="prog-label">AI Assistant</div><div class="prog-bar"><div class="prog-fill" style="width:42%;background:var(--purple)"></div></div><div class="prog-pct">42%</div></div>
+                    <div class="prog-row"><div class="prog-label">OG Meta tags</div><div class="prog-bar"><div class="prog-fill" style="width:65%;background:var(--blue)"></div></div><div class="prog-pct">65%</div></div>
+                    <div class="prog-row"><div class="prog-label">Security audit</div><div class="prog-bar"><div class="prog-fill" style="width:30%;background:var(--red)"></div></div><div class="prog-pct">30%</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Architecture -->
+        <div class="cc-card">
+            <h2>System Architecture</h2>
+            <div style="text-align:center;padding:20px;direction:ltr">
+                <div style="margin-bottom:12px">
+                    <span class="arch-node"><i class="fas fa-user"></i> Users (16)</span>
+                    <span class="arch-arrow"><i class="fas fa-arrow-left"></i></span>
+                    <span class="arch-node" style="border-color:var(--cyan)"><i class="fas fa-globe"></i> slh-nft.com (49 pages)</span>
+                    <span class="arch-arrow"><i class="fas fa-arrow-left"></i></span>
+                    <span class="arch-node" style="border-color:var(--gold)"><i class="fas fa-server"></i> Railway API</span>
+                </div>
+                <div style="margin-bottom:12px">
+                    <span class="arch-node"><i class="fab fa-telegram"></i> Telegram Users</span>
+                    <span class="arch-arrow"><i class="fas fa-arrow-left"></i></span>
+                    <span class="arch-node" style="border-color:var(--purple)"><i class="fas fa-robot"></i> 25 Bots (Docker)</span>
+                    <span class="arch-arrow"><i class="fas fa-arrow-left"></i></span>
+                    <span class="arch-node" style="border-color:var(--gold)"><i class="fas fa-server"></i> Railway API</span>
+                </div>
+                <div>
+                    <span class="arch-node" style="border-color:var(--gold)"><i class="fas fa-server"></i> Railway API</span>
+                    <span class="arch-arrow"><i class="fas fa-arrow-left"></i></span>
+                    <span class="arch-node" style="border-color:var(--accent)"><i class="fas fa-database"></i> PostgreSQL</span>
+                    <span class="arch-arrow">+</span>
+                    <span class="arch-node" style="border-color:var(--red)"><i class="fas fa-bolt"></i> Redis</span>
+                    <span class="arch-arrow">+</span>
+                    <span class="arch-node" style="border-color:var(--orange)"><i class="fab fa-ethereum"></i> BSC Chain</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ SESSION HISTORY ============ -->
+    <div class="cc-panel" id="panel-sessions">
+        <div class="cc-card">
+            <h2>Session Timeline <span class="badge badge-info" id="session-count">8 Sessions</span></h2>
+            <div class="timeline" id="session-timeline">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ VERSIONS ============ -->
+    <div class="cc-panel" id="panel-versions">
+        <div class="two-col">
+            <div class="cc-card">
+                <h2>API Repository (slh-api) <button class="cc-btn outline" onclick="loadGitHistory('api')">Refresh</button></h2>
+                <div class="scroll-box" id="git-api" style="max-height:500px">
+                    <div style="text-align:center;padding:20px;color:var(--text2)"><div class="spinner"></div></div>
+                </div>
+            </div>
+            <div class="cc-card">
+                <h2>Website Repository <button class="cc-btn outline" onclick="loadGitHistory('website')">Refresh</button></h2>
+                <div class="scroll-box" id="git-website" style="max-height:500px">
+                    <div style="text-align:center;padding:20px;color:var(--text2)"><div class="spinner"></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ BOTS ============ -->
+    <div class="cc-panel" id="panel-bots">
+        <div class="cc-card">
+            <h2>Telegram Bots — 25 Services <span class="badge badge-ok" id="bots-badge">Loading...</span></h2>
+            <div class="scroll-box" style="max-height:600px">
+                <table class="cc-table" id="bots-table">
+                    <thead><tr><th>Bot</th><th>Container</th><th>Status</th><th>Category</th><th>Notes</th></tr></thead>
+                    <tbody id="bots-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ PAGES ============ -->
+    <div class="cc-panel" id="panel-pages">
+        <div class="cc-card">
+            <h2>Website Pages — 49 HTML <button class="cc-btn" onclick="checkAllPages()">Check All Live</button></h2>
+            <div class="scroll-box" style="max-height:600px">
+                <table class="cc-table" id="pages-table">
+                    <thead><tr><th>Page</th><th>Status</th><th>Nav</th><th>Theme</th><th>i18n</th><th>Analytics</th><th>AI</th></tr></thead>
+                    <tbody id="pages-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ API ============ -->
+    <div class="cc-panel" id="panel-api">
+        <div class="cc-card">
+            <h2>API Endpoints <button class="cc-btn" onclick="testAllEndpoints()">Test All</button></h2>
+            <div class="scroll-box" id="api-results" style="max-height:600px">
+                <div style="text-align:center;padding:20px;color:var(--text2)">Click "Test All" to check all endpoints</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ SECURITY ============ -->
+    <div class="cc-panel" id="panel-security">
+        <div class="cc-card">
+            <h2>Security Audit <span class="badge badge-err" id="sec-badge">5 Issues</span></h2>
+            <div id="security-list">
+                <div class="sec-item"><div class="sec-severity critical" style="background:rgba(0,255,65,.15);color:var(--accent)">FIXED</div><div><div class="sec-title" style="text-decoration:line-through">Admin passwords in public HTML</div><div class="sec-desc">Session 12: Removed ADMIN_PASSWORDS array, deleted admin-test.html bypass, multi-admin system with hashed passwords deployed</div></div></div>
+                <div class="sec-item"><div class="sec-severity critical">P0</div><div><div class="sec-title">Railway env vars missing</div><div class="sec-desc">JWT_SECRET is empty, ADMIN_API_KEYS using defaults — auth is broken</div></div></div>
+                <div class="sec-item"><div class="sec-severity high">P1</div><div><div class="sec-title">31 bot tokens exposed</div><div class="sec-desc">All bot tokens were pasted in chat history. Need rotation via @BotFather</div></div></div>
+                <div class="sec-item"><div class="sec-severity high">P1</div><div><div class="sec-title">Unprotected API endpoints</div><div class="sec-desc">/api/tokenomics/burn, /api/tokenomics/reserves/add — no auth required for destructive operations</div></div></div>
+                <div class="sec-item"><div class="sec-severity medium">P2</div><div><div class="sec-title">Wallet address mismatch</div><div class="sec-desc">Two different addresses in code: 0xd061... (genesis) vs 0xD061... (MetaMask). Need confirmation which is correct</div></div></div>
+                <div class="sec-item"><div class="sec-severity high">P1</div><div><div class="sec-title">User data exposed without auth</div><div class="sec-desc">GET /api/user/{telegram_id} returns full profile + balances with NO authentication. Anyone with a Telegram ID can see balances.</div></div></div>
+                <div class="sec-item"><div class="sec-severity medium">P2</div><div><div class="sec-title">Swagger /docs publicly accessible</div><div class="sec-desc">Full OpenAPI spec with all 137 routes is browsable by anyone. Consider restricting in production.</div></div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ TASKS ============ -->
+    <div class="cc-panel" id="panel-tasks">
+        <div class="three-col">
+            <div class="cc-card">
+                <h2 style="color:var(--red)">P0 — Critical</h2>
+                <div id="tasks-p0"></div>
+            </div>
+            <div class="cc-card">
+                <h2 style="color:var(--gold)">P1 — High Impact</h2>
+                <div id="tasks-p1"></div>
+            </div>
+            <div class="cc-card">
+                <h2 style="color:var(--cyan)">P2 — Improvements</h2>
+                <div id="tasks-p2"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="bottomnav-root"></div>
+<div id="footer-root"></div>
+
+<script src="/js/translations.js?v=20260425d"></script>
+<script src="/js/shared.js?v=20260425d"></script>
+<script>initShared({ activePage: 'tools' });</script>
+<script src="/js/analytics.js"></script>
+
+<script>
+const API = 'https://slh-api-production.up.railway.app';
+const GH_API = 'https://api.github.com/repos/osifeu-prog';
+
+/* ===== TABS ===== */
+document.querySelectorAll('.cc-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.cc-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.cc-panel').forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+    });
+});
+
+/* ===== CLOCK ===== */
+function updateClock() {
+    document.getElementById('cc-time').textContent = new Date().toLocaleString('he-IL');
+}
+updateClock(); setInterval(updateClock, 1000);
+
+/* ===== KPIs ===== */
+async function loadKPIs() {
+    // API Health
+    try {
+        const t0 = Date.now();
+        const r = await fetch(API + '/api/health');
+        const ms = Date.now() - t0;
+        const d = await r.json();
+        document.getElementById('k-api').textContent = d.status === 'ok' ? 'OK' : 'DOWN';
+        document.getElementById('k-api-sub').textContent = ms + 'ms · v' + d.version + ' · DB: ' + d.db;
+    } catch(e) {
+        document.getElementById('k-api').textContent = 'DOWN';
+        document.getElementById('k-api-sub').textContent = e.message;
+    }
+
+    // Endpoints
+    try {
+        const r = await fetch(API + '/openapi.json');
+        const d = await r.json();
+        document.getElementById('k-endpoints').textContent = Object.keys(d.paths).length;
+    } catch(e) {}
+
+    // Users
+    try {
+        const key = localStorage.getItem('slh_admin_password') || '';
+        const r = await fetch(API + '/api/admin/dashboard', { headers: { 'X-Admin-Key': key } });
+        const d = await r.json();
+        document.getElementById('k-users').textContent = d.total_users || '--';
+        document.getElementById('k-users-sub').textContent = (d.premium_users||0) + ' premium';
+    } catch(e) {}
+
+    // Genesis
+    try {
+        const r = await fetch(API + '/api/launch/status');
+        const d = await r.json();
+        document.getElementById('k-raised').textContent = (d.raised_bnb_verified || 0).toFixed(4) + ' BNB';
+        document.getElementById('k-raised-sub').textContent = (d.contributors||[]).length + ' contributors';
+    } catch(e) {}
+
+    // Audit
+    try {
+        const r = await fetch(API + '/api/audit/verify-chain?limit=1000');
+        const d = await r.json();
+        document.getElementById('k-audit').textContent = d.ok ? 'INTACT' : 'BROKEN';
+        document.getElementById('k-audit-sub').textContent = (d.total||0) + ' entries';
+    } catch(e) {}
+}
+
+/* ===== ACTIVITY FEED ===== */
+async function loadActivityFeed() {
+    const feed = document.getElementById('activity-feed');
+    const items = [];
+
+    // Get recent audit entries
+    try {
+        const key = localStorage.getItem('slh_admin_password') || '';
+        const r = await fetch(API + '/api/audit/recent?limit=20', { headers: { 'X-Admin-Key': key } });
+        const d = await r.json();
+        if (Array.isArray(d)) {
+            d.forEach(e => {
+                items.push({
+                    icon: 'api', fa: 'fa-bolt',
+                    text: e.action + (e.details ? ' — ' + JSON.stringify(e.details).substring(0,60) : ''),
+                    time: new Date(e.timestamp).toLocaleTimeString('he-IL', {hour:'2-digit',minute:'2-digit'})
+                });
+            });
+        }
+    } catch(e) {}
+
+    // Add static recent events
+    items.push(
+        { icon: 'git', fa: 'fa-code-branch', text: 'Session 11: 25+ tasks completed, 16 users', time: '14/04' },
+        { icon: 'bot', fa: 'fa-robot', text: '25/25 Docker containers running', time: '14/04' },
+        { icon: 'user', fa: 'fa-user-plus', text: 'David (dj_deep_style) joined + 10 ZVK', time: '14/04' },
+        { icon: 'sec', fa: 'fa-shield-alt', text: 'Guardian: 2 spam reports, 20 ZUZ distributed', time: '14/04' },
+        { icon: 'api', fa: 'fa-broadcast-tower', text: '17 broadcasts sent (100% delivery)', time: '14/04' }
+    );
+
+    feed.innerHTML = items.map(i => `
+        <div class="feed-item">
+            <div class="feed-icon ${i.icon}"><i class="fas ${i.fa}"></i></div>
+            <div style="flex:1">${i.text}</div>
+            <div class="feed-time">${i.time}</div>
+        </div>
+    `).join('');
+}
+
+/* ===== SESSION HISTORY ===== */
+const SESSIONS = [
+    { date: '2026-04-14', title: 'Session 11 — Mega Build Day', tasks: 25, tags: ['Buy Page','P2P Live','Admin CRM','OG Images','Challenge Day 3','17 Broadcasts'],
+      body: 'Buy SLH page (6 payment methods), P2P marketplace LIVE, admin CRM with search/filter/credit, Finance Dashboard, Trust Network, 22 premium OG images, MetaMask explanation, community photos, Jubilee page in nav' },
+    { date: '2026-04-13', title: 'Session 10 — Guardian & Risk Engine', tasks: 19, tags: ['Guardian ZUZ','Multi-Staking','OG Images','Risk Engine','Liquidity'],
+      body: 'Guardian ZUZ system, multi-staking plans, 14 OG image configs, risk engine endpoints, admin delete post, overnight/launch logs' },
+    { date: '2026-04-12', title: 'Session 9 — Security & Upgrade Plan', tasks: 12, tags: ['Security Audit','Upgrade Plan','Drive Scan','Architecture'],
+      body: 'Full security audit (SEC-1 to SEC-5), 11-phase upgrade plan, drive scan report, architecture docs, 42 pages inventoried' },
+    { date: '2026-04-11', title: 'Session 8 — Parallel Agent Workplan', tasks: 8, tags: ['Agent Framework','Task Board','Ops Report'],
+      body: 'Parallel agent workplan, ops report page, system health page, morning checklist, overnight report' },
+    { date: '2026-04-10', title: 'Session 7 — Cleanup & Stabilization', tasks: 10, tags: ['Cleanup','Stabilization','Token Rotation'],
+      body: 'Major cleanup, system scan report, token rotation plan, cleanup report, stabilized all services' },
+    { date: '2026-04-09', title: 'Session 6 — Website V3 & Docker 22', tasks: 30, tags: ['Website V3','Docker 22','ExpertNet','NFTY Fix','Referral','Staking'],
+      body: 'Brought all 22 containers online, ExpertNet persistence fix, NFTY ctx injection fix, website V3 with 4 languages, dashboard, whitepaper, guides, 4 staking plans, 10-gen referral system' },
+    { date: '2026-04-06', title: 'Session 5 — OsifShop & ExpertNet Upgrade', tasks: 15, tags: ['OsifShop','ExpertNet','Barcode','12 Coins','Banking'],
+      body: 'OsifShop built from scratch (barcode scanner, inventory, Mini App), ExpertNet: 12 coins, /swap, /limit, /alert, /portfolio, banking module' },
+    { date: '2026-04-05', title: 'Session 4 — slh-nft.com Launch', tasks: 8, tags: ['Website Launch','GitHub Pages','CNAME','DNS'],
+      body: 'Created slh-nft.com on GitHub Pages, 3 website versions, CNAME + DNS setup on NameCheap, live price ticker' }
+];
+
+function renderSessions() {
+    const tl = document.getElementById('session-timeline');
+    tl.innerHTML = SESSIONS.map(s => `
+        <div class="tl-item">
+            <div class="tl-date">${s.date}</div>
+            <div class="tl-title">${s.title} <span style="color:var(--text2);font-size:11px">(${s.tasks} tasks)</span></div>
+            <div class="tl-body">${s.body}</div>
+            <div class="tl-tags">${s.tags.map(t => `<span class="tl-tag">${t}</span>`).join('')}</div>
+        </div>
+    `).join('');
+    document.getElementById('session-count').textContent = SESSIONS.length + ' Sessions';
+}
+
+/* ===== GIT HISTORY ===== */
+async function loadGitHistory(repo) {
+    const el = document.getElementById('git-' + (repo === 'api' ? 'api' : 'website'));
+    el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)"><div class="spinner"></div> Fetching from GitHub...</div>';
+
+    const repoName = repo === 'api' ? 'slh-api' : 'osifeu-prog.github.io';
+    try {
+        const r = await fetch(GH_API + '/' + repoName + '/commits?per_page=30');
+        const commits = await r.json();
+        if (!Array.isArray(commits)) { el.innerHTML = '<div style="color:var(--red);padding:10px">Auth required or repo not found</div>'; return; }
+
+        el.innerHTML = commits.map(c => {
+            const date = new Date(c.commit.author.date).toLocaleDateString('he-IL');
+            const msg = c.commit.message.split('\n')[0];
+            const sha = c.sha.substring(0, 7);
+            const type = msg.startsWith('feat') ? 'accent' : msg.startsWith('fix') ? 'gold' : msg.startsWith('docs') ? 'cyan' : 'text2';
+            return `<div class="feed-item">
+                <code style="color:var(--${type});font-size:11px;min-width:60px">${sha}</code>
+                <div style="flex:1;font-size:11px">${msg.substring(0,80)}</div>
+                <div class="feed-time">${date}</div>
+            </div>`;
+        }).join('');
+    } catch(e) {
+        el.innerHTML = '<div style="color:var(--red);padding:10px">' + e.message + '</div>';
+    }
+}
+
+/* ===== BOTS TABLE ===== */
+const BOTS = [
+    { name: '@SLH_AIR_bot', container: 'slh-expertnet', cat: 'Investment', status: 'live', notes: '12 coins, banking, staking' },
+    { name: '@OsifShop_bot', container: 'slh-osif-shop', cat: 'E-Commerce', status: 'live', notes: 'Barcode scanner, inventory' },
+    { name: '@NFTY_madness_bot', container: 'slh-nfty', cat: 'Marketplace', status: 'warn', notes: 'Hebrew encoding broken (braille)' },
+    { name: '@NIFTI_Publisher_Bot', container: 'slh-nifti', cat: 'Wellness', status: 'live', notes: 'Tamagotchi / wellness' },
+    { name: '@SLH_Guardian_bot', container: 'slh-guardian-bot', cat: 'Security', status: 'live', notes: 'ZUZ anti-fraud, spam reports' },
+    { name: '@SLH_Core_bot', container: 'slh-core-bot', cat: 'Core', status: 'live', notes: 'Main ecosystem bot' },
+    { name: '@SLH_Wallet_bot', container: 'slh-wallet', cat: 'Wallet', status: 'warn', notes: 'Shows localhost URLs' },
+    { name: '@Osifs_Factory_bot', container: 'slh-factory', cat: 'Factory', status: 'warn', notes: 'Redis error on /start' },
+    { name: '@SLH_Fun_bot', container: 'slh-fun', cat: 'Entertainment', status: 'warn', notes: '/start asks for payment' },
+    { name: '@SLH_Admin_bot', container: 'slh-admin', cat: 'Admin', status: 'live', notes: 'MY_SUPER_ADMIN' },
+    { name: '@SLH_Campaign_bot', container: 'slh-campaign', cat: 'CRM', status: 'live', notes: 'Broadcast, surveys' },
+    { name: '@SLH_Game_bot', container: 'slh-game', cat: 'Gaming', status: 'live', notes: 'Gamification' },
+    { name: '@TON_MNH_bot', container: 'slh-ton-mnh', cat: 'TON', status: 'warn', notes: '/ps uses Windows tasklist' },
+    { name: '@SLH_TON_bot', container: 'slh-ton', cat: 'TON', status: 'live', notes: 'TON integration' },
+    { name: '@SLH_Ledger_bot', container: 'slh-ledger', cat: 'IoT', status: 'warn', notes: 'ESP32 disconnected' },
+    { name: '@Chance_Pais_bot', container: 'slh-chance', cat: 'Recovery', status: 'warn', notes: 'Pivoting to gambling recovery' },
+    { name: '@SLH_BotShop_bot', container: 'slh-botshop', cat: 'Shop', status: 'warn', notes: 'Lost NFT features' },
+    { name: '@Slh_selha_bot', container: 'slh-selha', cat: 'TBD', status: 'warn', notes: 'Placeholder, needs purpose' },
+    { name: '@ts_set_bot', container: 'slh-ts-set', cat: 'Trading', status: 'live', notes: 'Trading set' },
+    { name: '@crazy_panel_bot', container: 'slh-crazy-panel', cat: 'Admin', status: 'live', notes: 'Control panel' },
+    { name: '@Buy_My_Shop_bot', container: 'slh-nft-shop', cat: 'NFT', status: 'warn', notes: 'Template only' },
+    { name: '@beynonibank_bot', container: 'slh-beynonibank', cat: 'Banking', status: 'live', notes: 'Bynoni Bank' },
+    { name: '@SLH_test_bot', container: 'slh-test-bot', cat: 'Testing', status: 'live', notes: 'Test environment' },
+    { name: '@SLH_Airdrop_bot', container: 'slh-airdrop', cat: 'Airdrop', status: 'live', notes: 'Token distribution' },
+    { name: '@SLH_Academia_bot', container: '--', cat: 'Education', status: 'warn', notes: 'Not in Docker, legacy' }
+];
+
+function renderBots() {
+    const tbody = document.getElementById('bots-body');
+    let ok = 0, warn = 0;
+    tbody.innerHTML = BOTS.map(b => {
+        if (b.status === 'live') ok++; else warn++;
+        const dot = b.status === 'live' ? 'ok' : b.status === 'warn' ? 'warn' : 'err';
+        return `<tr>
+            <td><strong>${b.name}</strong></td>
+            <td style="font-family:var(--mono);font-size:10px">${b.container}</td>
+            <td><span class="dot ${dot}"></span> ${b.status === 'live' ? 'Running' : 'Issues'}</td>
+            <td><span class="tl-tag">${b.cat}</span></td>
+            <td style="color:${b.status==='warn'?'var(--gold)':'var(--text2)'};font-size:11px">${b.notes}</td>
+        </tr>`;
+    }).join('');
+    document.getElementById('bots-badge').textContent = ok + ' OK / ' + warn + ' Issues';
+    document.getElementById('bots-badge').className = 'badge ' + (warn > 5 ? 'badge-warn' : 'badge-ok');
+}
+
+/* ===== PAGES TABLE ===== */
+const PAGES = [
+    {name:'index.html',nav:1,theme:0,i18n:1,analytics:1,ai:1},
+    {name:'dashboard.html',nav:1,theme:0,i18n:1,analytics:1,ai:1},
+    {name:'trade.html',nav:1,theme:0,i18n:1,analytics:1,ai:1},
+    {name:'earn.html',nav:1,theme:0,i18n:1,analytics:1,ai:1},
+    {name:'wallet.html',nav:1,theme:0,i18n:1,analytics:1,ai:1},
+    {name:'bots.html',nav:1,theme:0,i18n:1,analytics:1,ai:1},
+    {name:'referral.html',nav:1,theme:0,i18n:1,analytics:1,ai:1},
+    {name:'community.html',nav:1,theme:0,i18n:1,analytics:1,ai:1},
+    {name:'daily-blog.html',nav:1,theme:0,i18n:1,analytics:0,ai:0},
+    {name:'guides.html',nav:1,theme:1,i18n:1,analytics:1,ai:1},
+    {name:'wallet-guide.html',nav:1,theme:0,i18n:0,analytics:1,ai:1},
+    {name:'blockchain.html',nav:1,theme:0,i18n:1,analytics:1,ai:1},
+    {name:'network.html',nav:1,theme:0,i18n:1,analytics:1,ai:1},
+    {name:'roadmap.html',nav:1,theme:0,i18n:1,analytics:0,ai:1},
+    {name:'staking.html',nav:1,theme:0,i18n:1,analytics:1,ai:1},
+    {name:'p2p.html',nav:1,theme:1,i18n:0,analytics:1,ai:1},
+    {name:'ecosystem-guide.html',nav:1,theme:1,i18n:0,analytics:0,ai:0},
+    {name:'whitepaper.html',nav:1,theme:0,i18n:1,analytics:1,ai:1},
+    {name:'healing-vision.html',nav:1,theme:1,i18n:0,analytics:0,ai:0},
+    {name:'challenge.html',nav:1,theme:1,i18n:0,analytics:1,ai:1},
+    {name:'for-therapists.html',nav:1,theme:1,i18n:0,analytics:0,ai:0},
+    {name:'invite.html',nav:1,theme:0,i18n:0,analytics:0,ai:0},
+    {name:'member.html',nav:1,theme:1,i18n:0,analytics:1,ai:0},
+    {name:'partner-dashboard.html',nav:1,theme:1,i18n:0,analytics:0,ai:0},
+    {name:'launch-event.html',nav:1,theme:1,i18n:0,analytics:0,ai:0},
+    {name:'dex-launch.html',nav:1,theme:1,i18n:0,analytics:0,ai:0},
+    {name:'partner-launch-invite.html',nav:0,theme:1,i18n:0,analytics:0,ai:0},
+    {name:'jubilee.html',nav:1,theme:1,i18n:0,analytics:1,ai:1},
+    {name:'admin.html',nav:1,theme:1,i18n:0,analytics:1,ai:1},
+    {name:'analytics.html',nav:1,theme:0,i18n:0,analytics:1,ai:1},
+    {name:'broadcast-composer.html',nav:0,theme:1,i18n:0,analytics:0,ai:0},
+    {name:'system-health.html',nav:1,theme:1,i18n:0,analytics:0,ai:0},
+    {name:'morning-checklist.html',nav:1,theme:1,i18n:0,analytics:0,ai:0},
+    {name:'morning-handoff.html',nav:1,theme:1,i18n:0,analytics:0,ai:0},
+    {name:'overnight-report.html',nav:1,theme:1,i18n:0,analytics:0,ai:0},
+    {name:'ops-report-20260411.html',nav:1,theme:1,i18n:0,analytics:0,ai:1},
+    {name:'onboarding.html',nav:0,theme:0,i18n:0,analytics:0,ai:0},
+    {name:'getting-started.html',nav:0,theme:0,i18n:0,analytics:0,ai:0},
+    {name:'referral-card.html',nav:1,theme:0,i18n:1,analytics:1,ai:0},
+    {name:'rotate.html',nav:0,theme:0,i18n:0,analytics:0,ai:0},
+    {name:'test-bots.html',nav:0,theme:0,i18n:0,analytics:0,ai:0},
+    {name:'privacy.html',nav:1,theme:0,i18n:0,analytics:1,ai:0},
+    {name:'terms.html',nav:1,theme:0,i18n:0,analytics:1,ai:0},
+    {name:'buy.html',nav:1,theme:1,i18n:0,analytics:1,ai:1},
+    {name:'about.html',nav:1,theme:1,i18n:0,analytics:1,ai:1},
+    {name:'control-center.html',nav:1,theme:1,i18n:0,analytics:1,ai:0},
+    {name:'ops-dashboard.html',nav:1,theme:1,i18n:0,analytics:1,ai:1},
+    {name:'sitemap.html',nav:1,theme:1,i18n:0,analytics:0,ai:0},
+    {name:'404.html',nav:0,theme:0,i18n:0,analytics:0,ai:0}
+];
+
+function dot(v) { return `<span class="dot ${v?'ok':'off'}"></span>`; }
+
+function renderPages() {
+    const tbody = document.getElementById('pages-body');
+    tbody.innerHTML = PAGES.map(p => `
+        <tr>
+            <td><a href="/${p.name}" target="_blank" style="font-size:11px">${p.name}</a></td>
+            <td class="page-status" data-url="/${p.name}"><span class="dot warn"></span></td>
+            <td>${dot(p.nav)}</td><td>${dot(p.theme)}</td><td>${dot(p.i18n)}</td>
+            <td>${dot(p.analytics)}</td><td>${dot(p.ai)}</td>
+        </tr>`).join('');
+}
+
+async function checkAllPages() {
+    const cells = document.querySelectorAll('.page-status');
+    for (const c of cells) {
+        try {
+            const r = await fetch(c.dataset.url, { method: 'HEAD', cache: 'no-store' });
+            c.innerHTML = r.ok ? '<span class="dot ok"></span> 200' : '<span class="dot err"></span> ' + r.status;
+        } catch(e) {
+            c.innerHTML = '<span class="dot err"></span>';
+        }
+    }
+}
+
+/* ===== API ENDPOINTS ===== */
+async function testAllEndpoints() {
+    const el = document.getElementById('api-results');
+    el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--gold)"><div class="spinner"></div> Testing all endpoints...</div>';
+    try {
+        const r = await fetch(API + '/openapi.json');
+        const d = await r.json();
+        const paths = Object.keys(d.paths).sort();
+        let html = '<table class="cc-table"><thead><tr><th>Endpoint</th><th>Methods</th><th>Status</th></tr></thead><tbody>';
+        let ok=0, fail=0, skip=0;
+        for (const p of paths) {
+            const methods = Object.keys(d.paths[p]).filter(m=>['get','post','delete','put','patch'].includes(m)).join(', ').toUpperCase();
+            const hasGet = d.paths[p].get;
+            let status;
+            if (hasGet && !p.includes('{') && !p.includes('verify')) {
+                try {
+                    const key = localStorage.getItem('slh_admin_password') || '';
+                    const tr = await fetch(API + p, { method: 'GET', headers: { 'X-Admin-Key': key } });
+                    if (tr.ok) { status = `<span class="dot ok"></span> ${tr.status}`; ok++; }
+                    else { status = `<span class="dot err"></span> ${tr.status}`; fail++; }
+                } catch(e) { status = '<span class="dot err"></span> ERR'; fail++; }
+            } else { status = '<span class="dot warn"></span> N/A'; skip++; }
+            html += `<tr><td style="font-family:var(--mono);font-size:11px;direction:ltr;text-align:left">${p}</td><td style="font-size:10px">${methods}</td><td>${status}</td></tr>`;
+        }
+        html += '</tbody></table>';
+        html = `<div style="margin-bottom:12px;font-size:12px"><span style="color:var(--accent)">${ok} OK</span> · <span style="color:var(--red)">${fail} Failed</span> · <span style="color:var(--gold)">${skip} Skipped</span> · <strong>${paths.length} Total</strong></div>` + html;
+        el.innerHTML = html;
+    } catch(e) {
+        el.innerHTML = '<div style="color:var(--red);padding:10px">Error: ' + e.message + '</div>';
+    }
+}
+
+/* ===== TASKS ===== */
+const TASKS = {
+    p0: [
+        { text: 'Railway env vars (JWT_SECRET, ADMIN_API_KEYS)', done: false },
+        { text: '.env token rotation (31 exposed)', done: false },
+        { text: 'Remove hardcoded passwords from HTML', done: false }
+    ],
+    p1: [
+        { text: 'Guardian bot ZUZ API connection', done: false },
+        { text: 'NFTY + Airdrop Hebrew encoding fix', done: false },
+        { text: 'Auto-sync BSC deposits to DB', done: false },
+        { text: 'Broker role for Elazar', done: false },
+        { text: 'Course upload for Yaara', done: false },
+        { text: 'Trust Level gamification', done: false },
+        { text: 'Dashboard #undefined fix', done: false },
+        { text: 'Fix @osifeu links everywhere', done: false }
+    ],
+    p2: [
+        { text: 'Theme switcher on 26 pages', done: false },
+        { text: 'i18n on 28 pages', done: false },
+        { text: 'Bot /commands for 12 bots', done: false },
+        { text: 'LP Lock on Mudra', done: false },
+        { text: 'SLH OS desktop concept', done: false },
+        { text: 'Matrix/bubbles visual effects', done: false },
+        { text: 'Webhook migration', done: false },
+        { text: 'Split main.py (7475 lines)', done: false }
+    ]
+};
+
+function renderTasks() {
+    ['p0','p1','p2'].forEach(level => {
+        const el = document.getElementById('tasks-' + level);
+        el.innerHTML = TASKS[level].map(t => `
+            <div class="feed-item">
+                <div style="font-size:14px">${t.done?'&#9745;':'&#9744;'}</div>
+                <div style="flex:1;${t.done?'text-decoration:line-through;opacity:.5':''}">${t.text}</div>
+            </div>
+        `).join('');
+    });
+}
+
+/* ===== INIT ===== */
+loadKPIs();
+loadActivityFeed();
+renderSessions();
+renderBots();
+renderPages();
+renderTasks();
+loadGitHistory('api');
+loadGitHistory('website');
+setInterval(loadKPIs, 30000);
+</script>
+<script src="/js/ai-assistant.js"></script>
+</body>
+</html>

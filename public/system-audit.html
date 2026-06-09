@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ביקורת מערכת — SLH Spark</title>
+<meta name="description" content="ביקורת חיה של מערכת SLH Spark — API, DB, בוטים, טוקנים, Git, שגיאות. עדכון כל 30 שניות.">
+<meta name="robots" content="noindex,nofollow">
+<meta property="og:title" content="ביקורת מערכת — SLH Spark">
+<meta property="og:description" content="מוניטור חי לכל רכיבי ה-ecosystem.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://slh-nft.com/system-audit.html">
+<link rel="canonical" href="https://slh-nft.com/system-audit.html">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+  --bg:#05080f; --bg2:#0c1018; --bg3:#141924; --bg4:#1a2030;
+  --green:#00ff41; --yellow:#ffd700; --red:#ff0055;
+  --cyan:#00e5ff; --purple:#a855f7; --text:#f5f5f8;
+  --text2:#9ba0b5; --text3:#5a6078; --border:rgba(255,255,255,.08);
+  --font:'Rubik',system-ui,sans-serif; --mono:'Space Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;padding-bottom:60px}
+body::before{content:'';position:fixed;inset:0;background:
+  radial-gradient(1000px 500px at 20% -5%, rgba(0,255,65,.05), transparent 60%),
+  radial-gradient(800px 500px at 90% 40%, rgba(0,229,255,.04), transparent 60%);
+  pointer-events:none;z-index:0}
+a{color:var(--cyan);text-decoration:none}
+a:hover{text-decoration:underline}
+
+.wrap{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:24px 16px}
+
+/* Header */
+.hdr{text-align:center;padding:20px 0 32px;border-bottom:1px solid var(--border);margin-bottom:32px}
+.hdr h1{font-size:36px;font-weight:900;background:linear-gradient(135deg,var(--green),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.hdr .sub{color:var(--text2);font-size:15px;margin-bottom:14px}
+.live-pill{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;background:rgba(0,255,65,.08);border:1px solid rgba(0,255,65,.3);border-radius:100px;font-size:12px;font-weight:700;color:var(--green);margin-top:8px}
+.live-pill .dot{width:8px;height:8px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* Auto-refresh bar */
+.refresh{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;margin-bottom:24px;font-size:12px;color:var(--text2);font-family:var(--mono);gap:10px;flex-wrap:wrap}
+.refresh .manual{background:transparent;border:1px solid var(--border);color:var(--cyan);padding:4px 10px;border-radius:6px;cursor:pointer;font-family:inherit;font-size:11px}
+.refresh .manual:hover{background:rgba(0,229,255,.08)}
+
+/* Section */
+.section{margin-bottom:36px}
+.section h2{font-size:20px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.section h2 .tag{font-size:11px;padding:3px 8px;border-radius:12px;font-weight:700}
+.tag-live{background:rgba(0,255,65,.1);color:var(--green);border:1px solid rgba(0,255,65,.3)}
+.tag-partial{background:rgba(255,215,0,.1);color:var(--yellow);border:1px solid rgba(255,215,0,.3)}
+.tag-info{background:rgba(0,229,255,.1);color:var(--cyan);border:1px solid rgba(0,229,255,.3)}
+
+/* Card grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.card{background:linear-gradient(180deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:14px;padding:18px;transition:.2s}
+.card:hover{border-color:rgba(0,229,255,.2);transform:translateY(-1px)}
+.card .label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;font-weight:700}
+.card .value{font-size:28px;font-weight:900;font-family:var(--mono);margin-bottom:4px;word-break:break-word}
+.card .hint{font-size:12px;color:var(--text2)}
+.value.ok{color:var(--green)}
+.value.warn{color:var(--yellow)}
+.value.err{color:var(--red)}
+.value.muted{color:var(--text3)}
+.value.small{font-size:16px;font-weight:700}
+
+/* Token row */
+.tokens{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.token{padding:14px;background:var(--bg2);border:1px solid var(--border);border-radius:10px}
+.token .sym{font-weight:900;font-size:16px;color:var(--cyan);margin-bottom:6px;letter-spacing:1px}
+.token .row{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);font-family:var(--mono);margin-top:4px}
+.token .row b{color:var(--text);font-weight:700}
+
+/* Git block */
+.git{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;font-family:var(--mono);font-size:13px;color:var(--text2);overflow-x:auto;white-space:pre-wrap;word-break:break-all}
+.git .sha{color:var(--green);font-weight:700}
+
+/* Footer */
+.foot{text-align:center;padding-top:30px;border-top:1px solid var(--border);margin-top:40px;color:var(--text3);font-size:12px}
+.foot a{color:var(--text2);margin:0 10px}
+
+/* Responsive */
+@media(max-width:600px){
+  .hdr h1{font-size:26px}
+  .card .value{font-size:22px}
+  .card .value.small{font-size:14px}
+  .section h2{font-size:17px}
+}
+
+/* Loading skeleton */
+.skel{background:linear-gradient(90deg,var(--bg3) 0%,var(--bg4) 50%,var(--bg3) 100%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:4px;color:transparent}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+</style>
+</head>
+<body>
+
+<div id="topnav-root" data-page="system-audit"></div>
+
+<div class="wrap">
+
+  <!-- Header -->
+  <header class="hdr">
+    <h1><i class="fas fa-shield-halved"></i> ביקורת מערכת</h1>
+    <p class="sub">מוניטור חי של כל רכיבי ה-ecosystem · SLH Spark</p>
+    <span class="live-pill"><span class="dot"></span> LIVE · רענון אוטומטי כל 30 שניות</span>
+  </header>
+
+  <!-- Refresh bar -->
+  <div class="refresh">
+    <span>רענון אחרון: <span id="last-refresh">בודק...</span></span>
+    <button class="manual" onclick="loadAudit()"><i class="fas fa-sync-alt"></i> רענן עכשיו</button>
+  </div>
+
+  <!-- API -->
+  <section class="section">
+    <h2><i class="fas fa-server" style="color:var(--cyan)"></i> שרת API <span class="tag tag-live">LIVE</span></h2>
+    <div class="grid">
+      <div class="card">
+        <div class="label">גרסה</div>
+        <div class="value ok" id="api-version"><span class="skel">_____</span></div>
+        <div class="hint">Semantic version</div>
+      </div>
+      <div class="card">
+        <div class="label">זמן פעילות</div>
+        <div class="value" id="api-uptime"><span class="skel">_____</span></div>
+        <div class="hint">מאז העלאה אחרונה</div>
+      </div>
+      <div class="card">
+        <div class="label">Endpoints רשומים</div>
+        <div class="value" id="api-endpoints"><span class="skel">___</span></div>
+        <div class="hint">REST routes טעונים</div>
+      </div>
+      <div class="card">
+        <div class="label">סטטוס חיבור</div>
+        <div class="value ok" id="api-link"><span class="skel">___</span></div>
+        <div class="hint">slh-api-production.up.railway.app</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DATABASE -->
+  <section class="section">
+    <h2><i class="fas fa-database" style="color:var(--purple)"></i> בסיס נתונים <span class="tag tag-live">LIVE</span></h2>
+    <div class="grid">
+      <div class="card">
+        <div class="label">חיבור</div>
+        <div class="value" id="db-connected"><span class="skel">___</span></div>
+        <div class="hint">PostgreSQL 15 · Railway</div>
+      </div>
+      <div class="card">
+        <div class="label">טבלאות</div>
+        <div class="value" id="db-tables"><span class="skel">___</span></div>
+        <div class="hint">Schema public</div>
+      </div>
+      <div class="card">
+        <div class="label">סה"כ שורות</div>
+        <div class="value" id="db-rows"><span class="skel">___</span></div>
+        <div class="hint">הערכה סטטיסטית</div>
+      </div>
+      <div class="card">
+        <div class="label">גיבוי אחרון</div>
+        <div class="value small" id="db-backup"><span class="skel">___</span></div>
+        <div class="hint">latest_backup</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOTS -->
+  <section class="section">
+    <h2><i class="fab fa-telegram" style="color:var(--cyan)"></i> בוטים <span class="tag tag-info">Docker Compose</span></h2>
+    <div class="grid">
+      <div class="card">
+        <div class="label">סה"כ בוטים</div>
+        <div class="value ok" id="bots-total">--</div>
+        <div class="hint">25 בוטי טלגרם ברישום</div>
+      </div>
+      <div class="card">
+        <div class="label">פעילים</div>
+        <div class="value" id="bots-active"><span class="skel">___</span></div>
+        <div class="hint">מתוך טבלת bots ב-DB</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOKENS -->
+  <section class="section">
+    <h2><i class="fas fa-coins" style="color:var(--yellow)"></i> טוקנים <span class="tag tag-partial">6 tokens</span></h2>
+    <div class="tokens" id="tokens-wrap">
+      <div class="token"><span class="skel">טוען...</span></div>
+    </div>
+  </section>
+
+  <!-- GIT -->
+  <section class="section">
+    <h2><i class="fab fa-git-alt" style="color:var(--green)"></i> Git · Repository</h2>
+    <div class="git" id="git-block"><span class="skel">טוען נתוני commit...</span></div>
+  </section>
+
+  <!-- ERRORS -->
+  <section class="section">
+    <h2><i class="fas fa-triangle-exclamation" style="color:var(--red)"></i> שגיאות <span class="tag tag-info">60 דקות אחרונות</span></h2>
+    <div class="grid">
+      <div class="card">
+        <div class="label">שגיאות מזוהות</div>
+        <div class="value" id="errors-last-hour"><span class="skel">___</span></div>
+        <div class="hint">errors_log · שעה אחרונה</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ESP32 -->
+  <section class="section">
+    <h2><i class="fas fa-microchip" style="color:var(--yellow)"></i> ESP32 · בקרה מקומית <span class="tag tag-partial" id="esp32-tag">לא מוגדר</span></h2>
+    <div class="grid">
+      <div class="card">
+        <div class="label">סטטוס</div>
+        <div class="value" id="esp32-configured"><span class="skel">___</span></div>
+        <div class="hint">ESP32_BRIDGE_URL</div>
+      </div>
+      <div class="card">
+        <div class="label">נראה לאחרונה</div>
+        <div class="value small" id="esp32-last-seen"><span class="skel">___</span></div>
+        <div class="hint">devices.last_seen · esp32</div>
+      </div>
+      <div class="card">
+        <div class="label">כתובת IP</div>
+        <div class="value small" id="esp32-ip"><span class="skel">___</span></div>
+        <div class="hint">מ-bridge או מה-devices</div>
+      </div>
+      <div class="card">
+        <div class="label">סיבה / הערה</div>
+        <div class="value small muted" id="esp32-reason"><span class="skel">___</span></div>
+        <div class="hint">מצב חיבור לסטאק המקומי</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="foot">
+    <div>ביקורת חיה · נתונים ישירות מ-<code style="color:var(--cyan)">/api/system/audit</code></div>
+    <div style="margin-top:10px">
+      <a href="/">בית</a>
+      <a href="/status.html">סטטוס</a>
+      <a href="/system-health.html">System Health</a>
+      <a href="/about.html">אודות</a>
+      <a href="https://slh-api-production.up.railway.app/docs" target="_blank">API Docs <i class="fas fa-up-right-from-square" style="font-size:10px"></i></a>
+    </div>
+    <div style="margin-top:14px;font-family:var(--mono);font-size:10px;opacity:.6">
+      SLH Spark · שקיפות = אמון · Osif Kaufman Ungar · 2026
+    </div>
+  </footer>
+
+</div>
+
+<script src="js/translations.js"></script>
+<script src="js/shared.js"></script>
+
+<script>
+const API = 'https://slh-api-production.up.railway.app';
+
+function fmtNum(n){
+  if (n === null || n === undefined) return '—';
+  if (typeof n !== 'number') return String(n);
+  return n.toLocaleString('he-IL');
+}
+
+function fmtUptime(seconds){
+  if (seconds === null || seconds === undefined) return '—';
+  const s = Math.max(0, Math.floor(seconds));
+  const d = Math.floor(s / 86400);
+  const h = Math.floor((s % 86400) / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = s % 60;
+  if (d > 0) return `${d}ד ${h}ש ${m}ד׳`;
+  if (h > 0) return `${h}ש ${m}ד׳ ${sec}ש׳`;
+  if (m > 0) return `${m}ד׳ ${sec}ש׳`;
+  return `${sec}ש׳`;
+}
+
+function setText(id, val, cls){
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = (val === null || val === undefined || val === '') ? '—' : val;
+  if (cls) el.className = 'value ' + cls;
+}
+
+async function fetchJSON(path, timeout = 8000){
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), timeout);
+  try {
+    const r = await fetch(API + path, { signal: ctrl.signal, cache: 'no-store' });
+    clearTimeout(t);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return await r.json();
+  } catch (e) {
+    clearTimeout(t);
+    return null;
+  }
+}
+
+function updateLastRefresh(){
+  const now = new Date();
+  const hh = String(now.getHours()).padStart(2,'0');
+  const mm = String(now.getMinutes()).padStart(2,'0');
+  const ss = String(now.getSeconds()).padStart(2,'0');
+  const el = document.getElementById('last-refresh');
+  if (el) el.textContent = `${hh}:${mm}:${ss}`;
+}
+
+function renderTokens(tokens){
+  const wrap = document.getElementById('tokens-wrap');
+  if (!wrap) return;
+  if (!tokens || typeof tokens !== 'object'){
+    wrap.innerHTML = '<div class="token"><span class="sym">—</span><div class="row">אין נתונים</div></div>';
+    return;
+  }
+  const order = ['SLH','ZVK','MNH','REP','ZUZ','AIC'];
+  wrap.innerHTML = order.map(sym => {
+    const t = tokens[sym] || { holders: null, supply: null };
+    const holders = (t.holders === null || t.holders === undefined) ? '—' : fmtNum(t.holders);
+    let supply = '—';
+    if (t.supply !== null && t.supply !== undefined){
+      const n = Number(t.supply);
+      supply = isFinite(n) ? fmtNum(Math.round(n)) : '—';
+    }
+    return `<div class="token">
+      <div class="sym">${sym}</div>
+      <div class="row"><span>מחזיקים</span><b>${holders}</b></div>
+      <div class="row"><span>היצע</span><b>${supply}</b></div>
+    </div>`;
+  }).join('');
+}
+
+function renderGit(git){
+  const el = document.getElementById('git-block');
+  if (!el) return;
+  if (!git || (!git.last_commit_sha && !git.last_commit_message)){
+    el.textContent = '— אין נתוני Git זמינים (ייתכן שה-Railway לא כולל .git) —';
+    return;
+  }
+  const sha = git.last_commit_sha ? git.last_commit_sha.slice(0,10) : '—';
+  const msg = git.last_commit_message || '—';
+  el.innerHTML = `<span class="sha">commit ${sha}</span>\n${msg.replace(/</g,'&lt;')}`;
+}
+
+async function loadAudit(){
+  updateLastRefresh();
+  const d = await fetchJSON('/api/system/audit');
+  if (!d){
+    // graceful degradation
+    setText('api-version','—','err');
+    setText('api-uptime','—','err');
+    setText('api-endpoints','—','err');
+    setText('api-link','לא זמין','err');
+    setText('db-connected','—','err');
+    setText('db-tables','—');
+    setText('db-rows','—');
+    setText('db-backup','—');
+    setText('bots-active','—');
+    renderTokens(null);
+    renderGit(null);
+    setText('errors-last-hour','—');
+    return;
+  }
+
+  // API
+  const api = d.api || {};
+  setText('api-version', api.version ? 'v' + api.version : '—', 'ok');
+  setText('api-uptime', fmtUptime(api.uptime_seconds), 'ok');
+  setText('api-endpoints', fmtNum(api.endpoint_count), api.endpoint_count ? 'ok' : 'muted');
+  setText('api-link', 'מחובר', 'ok');
+
+  // DB
+  const db = d.database || {};
+  setText('db-connected', db.connected ? 'מחובר' : 'מנותק', db.connected ? 'ok' : 'err');
+  setText('db-tables', fmtNum(db.tables), db.tables ? 'ok' : 'muted');
+  setText('db-rows', fmtNum(db.total_rows), db.total_rows ? 'ok' : 'muted');
+  setText('db-backup', db.latest_backup ? new Date(db.latest_backup).toLocaleString('he-IL') : '—', db.latest_backup ? 'ok' : 'muted');
+
+  // Bots
+  const bots = d.bots || {};
+  setText('bots-total', fmtNum(bots.total ?? 25), 'ok');
+  setText('bots-active', fmtNum(bots.active), bots.active ? 'ok' : 'muted');
+
+  // Tokens
+  renderTokens(d.tokens);
+
+  // Git
+  renderGit(d.git);
+
+  // Errors
+  const err = d.errors_last_hour;
+  let errCls = 'muted';
+  if (typeof err === 'number'){
+    errCls = err === 0 ? 'ok' : (err < 10 ? 'warn' : 'err');
+  }
+  setText('errors-last-hour', fmtNum(err), errCls);
+
+  // ESP32
+  const esp = d.esp32 || {};
+  setText('esp32-configured', esp.configured ? 'מחובר' : 'לא מוגדר', esp.configured ? 'ok' : 'muted');
+  setText('esp32-last-seen', esp.last_seen ? new Date(esp.last_seen).toLocaleString('he-IL') : '—', esp.last_seen ? 'ok' : 'muted');
+  setText('esp32-ip', esp.ip || '—', esp.ip ? 'ok' : 'muted');
+  setText('esp32-reason', esp.reason || 'OK', esp.reason ? 'muted' : 'ok');
+  const tag = document.getElementById('esp32-tag');
+  if (tag) { tag.textContent = esp.configured ? 'מחובר' : 'לא מוגדר'; tag.className = 'tag ' + (esp.configured ? 'tag-live' : 'tag-partial'); }
+}
+
+// Initial load + auto-refresh
+loadAudit();
+setInterval(loadAudit, 30000);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,390 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>הזמנה אישית — Genesis Launch | SLH Spark</title>
+<meta name="description" content="הזמנה אישית להשתתפות היסטורית ב-Genesis Launch של SLH Spark">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css?v=20260426e">
+<style>
+    :root {
+        --bg: #0a0e1a;
+        --bg2: #111628;
+        --bg3: #1a2038;
+        --accent: #f3ba2f;
+        --gold: #ffd700;
+        --accent2: #00e887;
+        --purple: #a855f7;
+        --text: #e8e8f0;
+        --text2: #8a8aa0;
+        --border: rgba(243, 186, 47, 0.3);
+    }
+    body {
+        background:
+            radial-gradient(circle at 30% 20%, rgba(255, 215, 0, 0.12), transparent 50%),
+            radial-gradient(circle at 70% 80%, rgba(0, 232, 135, 0.08), transparent 50%),
+            var(--bg);
+        color: var(--text);
+        font-family: 'Inter', system-ui, sans-serif;
+        line-height: 1.7;
+        min-height: 100vh;
+    }
+    .envelope {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 0 24px;
+    }
+    .seal {
+        text-align: center;
+        margin-bottom: 32px;
+    }
+    .seal .logo {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, var(--gold), var(--accent));
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        box-shadow: 0 10px 40px rgba(243, 186, 47, 0.4);
+        margin-bottom: 16px;
+    }
+    .seal .subtitle {
+        font-size: 11px;
+        color: var(--text2);
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        font-weight: 700;
+    }
+    .letter {
+        background: linear-gradient(135deg, var(--bg2), var(--bg3));
+        border: 2px solid var(--border);
+        border-radius: 20px;
+        padding: 48px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        position: relative;
+    }
+    .letter::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: linear-gradient(135deg, var(--gold), var(--accent), var(--accent2));
+        border-radius: 20px;
+        z-index: -1;
+        opacity: 0.5;
+    }
+    .letter h1 {
+        font-size: 36px;
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--gold), var(--accent));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-bottom: 4px;
+    }
+    .letter .greeting {
+        font-size: 18px;
+        color: var(--text2);
+        margin-bottom: 24px;
+        font-weight: 600;
+    }
+    .letter p {
+        font-size: 15px;
+        color: var(--text);
+        margin-bottom: 16px;
+    }
+    .letter .highlight {
+        background: rgba(243, 186, 47, 0.08);
+        border-right: 3px solid var(--accent);
+        padding: 16px 20px;
+        margin: 20px 0;
+        border-radius: 8px;
+        font-size: 14px;
+    }
+    .letter .signature {
+        margin-top: 32px;
+        padding-top: 24px;
+        border-top: 1px solid var(--border);
+        font-style: italic;
+        color: var(--text2);
+    }
+
+    /* Rewards */
+    .rewards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin: 24px 0;
+    }
+    .reward-item {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+    }
+    .reward-item .icon {
+        font-size: 32px;
+        margin-bottom: 8px;
+    }
+    .reward-item .value {
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--accent);
+    }
+    .reward-item .label {
+        font-size: 11px;
+        color: var(--text2);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 4px;
+    }
+
+    /* Action */
+    .cta-group {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 32px;
+    }
+    .cta {
+        padding: 16px 28px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 800;
+        font-size: 15px;
+        transition: all 0.2s;
+    }
+    .cta-primary {
+        background: linear-gradient(135deg, var(--gold), var(--accent));
+        color: #000;
+    }
+    .cta-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3); }
+    .cta-outline {
+        background: transparent;
+        border: 2px solid var(--accent2);
+        color: var(--accent2);
+    }
+
+    /* Steps */
+    .steps {
+        margin: 24px 0;
+    }
+    .steps ol {
+        padding: 0;
+        list-style: none;
+        counter-reset: step;
+    }
+    .steps li {
+        counter-increment: step;
+        position: relative;
+        padding: 14px 60px 14px 20px;
+        background: rgba(0, 0, 0, 0.25);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        margin-bottom: 10px;
+        font-size: 14px;
+    }
+    .steps li::before {
+        content: counter(step);
+        position: absolute;
+        top: 50%;
+        right: 16px;
+        transform: translateY(-50%);
+        width: 32px;
+        height: 32px;
+        background: var(--accent);
+        color: #000;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+    }
+
+    .info-box {
+        background: rgba(0, 180, 216, 0.08);
+        border: 1px solid rgba(0, 180, 216, 0.3);
+        padding: 16px;
+        border-radius: 10px;
+        font-size: 13px;
+        color: #b0d4ff;
+        margin: 16px 0;
+    }
+    code {
+        background: rgba(243, 186, 47, 0.1);
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-family: monospace;
+        color: var(--accent);
+        font-size: 13px;
+    }
+
+    .confidential {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 11px;
+        color: var(--text2);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    /* Theme Switcher */
+    #theme-fab{position:fixed;bottom:94px;left:24px;z-index:9997;background:var(--accent,#00e887);color:#000;width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;font-size:20px;box-shadow:0 4px 16px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center}
+    #theme-panel{position:fixed;bottom:150px;left:24px;z-index:9998;background:var(--bg,#0a0a0a);border:1px solid rgba(255,255,255,.15);padding:16px;border-radius:12px;display:none;flex-direction:column;gap:6px;max-width:220px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+    #theme-panel.open{display:flex}
+    #theme-panel button{background:var(--bg,#0a0a0a);border:1px solid rgba(255,255,255,.1);color:#e8e8f0;padding:10px 14px;cursor:pointer;font-size:12px;text-align:right;font-family:inherit;border-radius:6px;transition:all .2s}
+    #theme-panel button:hover{background:var(--accent,#00e887);color:#000}
+    [data-theme="dark"]{--bg:#0b0e16;--bg2:#111628;--accent:#00b4d8;--text:#e8e8f0;--text2:#8a8aa0;--border:rgba(0,180,216,.2)}
+    [data-theme="light"]{--bg:#f8f9fb;--bg2:#fff;--accent:#0066cc;--text:#1a1a1a;--text2:#555;--border:rgba(0,102,204,.2)}
+    [data-theme="crypto"]{--bg:#0d1117;--bg2:#161b22;--accent:#f7931a;--text:#e8e8f0;--text2:#8a8aa0;--border:rgba(247,147,26,.2)}
+    [data-theme="ocean"]{--bg:#001e3c;--bg2:#002c55;--accent:#00d9ff;--text:#b8e6ff;--text2:#6bb6cc;--border:rgba(0,217,255,.2)}
+    [data-theme="sunset"]{--bg:#1a0a14;--bg2:#251018;--accent:#ff6b6b;--text:#ffe5d9;--text2:#c9a88a;--border:rgba(255,107,107,.2)}
+</style>
+</head>
+<body>
+<div id="topnav-root"></div>
+<div id="ticker-root"></div>
+
+<div class="envelope">
+    <div class="seal">
+        <div class="logo">👑</div>
+        <div style="font-size: 22px; font-weight: 900; color: var(--gold); margin-bottom: 4px;">SLH Spark</div>
+        <div class="subtitle">Exclusive Co-Founder Invitation</div>
+    </div>
+
+    <div class="letter">
+        <h1 id="partner-title">הזמנה אישית</h1>
+        <div class="greeting">שלום <span id="partner-name">שותף יקר</span>,</div>
+
+        <p>
+            אני שמח להזמין אותך להצטרף לרגע היסטורי — <strong style="color: var(--accent);">Genesis Launch</strong>
+            הראשונה של SLH Spark ב-PancakeSwap.
+        </p>
+
+        <p>
+            אחרי חודשים של בנייה, אנחנו עומדים להשיק את טוקן SLH ציבורית ב-BSC. זה המוטב המייסדים של
+            האקוסיסטם שלנו — כל משתמש שהצטרף עד עכשיו, כל בוט שנבנה, כל שורת קוד שכתבנו — הכל מתאחד
+            לרגע הזה. ואתה יכול להיות חלק ממנו.
+        </p>
+
+        <div class="highlight">
+            <strong>למה דווקא אתה?</strong><br>
+            כי אתה היית שם מההתחלה. כי בלי שותפים אמיתיים, אין אקוסיסטם. כי אני רוצה שאנשים שעובדים
+            איתי יהיו <em>בעלים</em> של ההצלחה, לא רק עדים לה.
+        </div>
+
+        <h2 style="font-size: 22px; color: var(--accent); margin: 32px 0 16px;">🎁 מה אתה מקבל?</h2>
+
+        <div class="rewards">
+            <div class="reward-item">
+                <div class="icon">💎</div>
+                <div class="value">500 ZVK</div>
+                <div class="label">מתנה ישירה</div>
+            </div>
+            <div class="reward-item">
+                <div class="icon">🖼️</div>
+                <div class="value">Genesis NFT</div>
+                <div class="label">ייחודי וחד-פעמי</div>
+            </div>
+            <div class="reward-item">
+                <div class="icon">🏛️</div>
+                <div class="value">Co-Founder</div>
+                <div class="label">קרדיט היסטורי קבוע</div>
+            </div>
+            <div class="reward-item">
+                <div class="icon">📜</div>
+                <div class="value">Audit Log</div>
+                <div class="label">רישום SHA-256</div>
+            </div>
+        </div>
+
+        <h2 style="font-size: 22px; color: var(--accent); margin: 32px 0 16px;">⚡ מה השקעת?</h2>
+
+        <div style="background: rgba(0, 232, 135, 0.06); border: 1px solid var(--accent2); border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+            <div style="font-size: 14px; color: var(--text2); margin-bottom: 4px;">השקעה מוצעת:</div>
+            <div style="font-size: 32px; font-weight: 900; color: var(--accent2);">0.05 BNB <span style="font-size: 18px; color: var(--text2);">(~$30)</span></div>
+            <div style="font-size: 12px; color: var(--text3); margin-top: 4px;">זה הכל. המינימום האבסולוטי להוכחת המנגנון.</div>
+        </div>
+
+        <h2 style="font-size: 22px; color: var(--accent); margin: 32px 0 16px;">📋 איך מבצעים?</h2>
+
+        <div class="steps">
+            <ol>
+                <li>פתח את MetaMask או Trust Wallet שלך → וודא שאתה על רשת <strong>BSC (BEP-20)</strong></li>
+                <li>שלח <strong>0.05 BNB</strong> לכתובת החברה: <code id="wallet-addr">0xd061de73B06d5E91bfA46b35EfB7B08b16903da4</code></li>
+                <li>העתק את ה-<strong>TX hash</strong> (כתובת העסקה) מ-MetaMask / BSCScan</li>
+                <li>לחץ על "רשום אותי" למטה, מלא את השם והדבק את ה-TX hash</li>
+                <li>תוך 24 שעות: המערכת תאמת אוטומטית + תשלח לך NFT + 500 ZVK</li>
+            </ol>
+        </div>
+
+        <div class="info-box">
+            💡 <strong>מה קורה אחרי שאתה תורם?</strong><br>
+            ברגע שהיעד של 0.05 BNB מושג (אולי אתה לבד, אולי עם תורמים נוספים), אני יוצר את ה-Pool
+            ב-PancakeSwap עם ה-BNB שלך + 50 SLH לנזילות. ה-LP tokens ננעלים ב-Mudra ל-6 חודשים
+            (anti-rug proof). מרגע זה — SLH נסחר ציבורית בשוק.
+        </div>
+
+        <h2 style="font-size: 22px; color: var(--accent); margin: 32px 0 16px;">🛡 למה זה בטוח?</h2>
+        <ul style="padding-right: 20px; color: var(--text2); font-size: 14px; line-height: 2;">
+            <li>הכסף נכנס לארנק החברה שמתועד באתר (<code>0xd061...3da4</code>) — אפשר לראות ב-BSCScan בזמן אמת</li>
+            <li>כל העסקה נכתבת ב-<strong>institutional_audit</strong> hash chain — בלתי-שביר</li>
+            <li>ה-LP ננעל ב-Mudra — לא יכול לעשות rug pull</li>
+            <li>המחיר ההתחלתי נקבע על ידי ההפקדה שלך — אתה לא משלם mkt premium</li>
+            <li>במקרה של כשל, אתה מקבל את ה-BNB בחזרה (מובטח בחוזה מול שלי)</li>
+        </ul>
+
+        <div class="cta-group">
+            <a href="/launch-event.html#report" class="cta cta-primary">📝 רשום אותי עכשיו</a>
+            <a href="/launch-event.html" class="cta cta-outline">🔍 ראה את הסטטוס החי</a>
+        </div>
+
+        <div class="signature">
+            <p style="margin-bottom: 4px;">בברכה,</p>
+            <p style="margin: 0; font-size: 16px; font-weight: 700; color: var(--text);">Osif Erez</p>
+            <p style="margin: 0; font-size: 13px; color: var(--text2);">Founder, SLH Spark</p>
+            <p style="margin-top: 8px; font-size: 11px; color: var(--text3);">11 אפריל 2026 · 24 ניסן 5786</p>
+        </div>
+    </div>
+
+    <div class="confidential">🔒 Confidential — Partner Only</div>
+</div>
+
+<div id="bottomnav-root"></div>
+<div id="footer-root"></div>
+<script src="/js/translations.js?v=20260413"></script>
+<script>
+    // Personalize from URL param: ?partner=Tzvika
+    const params = new URLSearchParams(window.location.search);
+    const partner = params.get('partner') || 'שותף יקר';
+    document.getElementById('partner-name').textContent = decodeURIComponent(partner);
+    document.title = `הזמנה ל-${partner} — SLH Spark Genesis Launch`;
+</script>
+<button id="theme-fab" onclick="document.getElementById('theme-panel').classList.toggle('open')" title="Theme">🎨</button>
+<div id="theme-panel">
+    <div style="font-size:11px;color:var(--text2,#8a8aa0);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">ערכת צבעים</div>
+    <button onclick="document.documentElement.removeAttribute('data-theme');localStorage.setItem('slh_page_theme','default');document.getElementById('theme-panel').classList.remove('open')">🟢 Default</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','dark');localStorage.setItem('slh_page_theme','dark');document.getElementById('theme-panel').classList.remove('open')">🌙 Dark</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','light');localStorage.setItem('slh_page_theme','light');document.getElementById('theme-panel').classList.remove('open')">☀️ Light</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','crypto');localStorage.setItem('slh_page_theme','crypto');document.getElementById('theme-panel').classList.remove('open')">₿ Crypto</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','ocean');localStorage.setItem('slh_page_theme','ocean');document.getElementById('theme-panel').classList.remove('open')">🌊 Ocean</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','sunset');localStorage.setItem('slh_page_theme','sunset');document.getElementById('theme-panel').classList.remove('open')">🌅 Sunset</button>
+</div>
+<script>
+(function(){var t=localStorage.getItem('slh_page_theme');if(t&&t!=='default')document.documentElement.setAttribute('data-theme',t);document.addEventListener('click',function(e){var p=document.getElementById('theme-panel'),f=document.getElementById('theme-fab');if(p&&f&&!p.contains(e.target)&&!f.contains(e.target))p.classList.remove('open');});})();
+</script>
+<script src="/js/shared.js?v=20260413"></script>
+<script>initShared({ activePage: 'tools' });</script>
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260413"></script>
+</body>
+</html>

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH · הגדרות אישיות</title>
+<meta name="description" content="הגדרות כלליות של חוויית השימוש ב-SLH: ערכת נושא, שפה, התראות, פרטיות.">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+  --font:'Rubik',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg,#05080f);color:var(--text,#f5f5f8);line-height:1.6;min-height:100vh;padding-bottom:40px;transition:background .3s,color .3s}
+
+/* Theme variables */
+body[data-theme="dark"]{--bg:#05080f;--bg2:#0c1018;--bg3:#141924;--bg4:#1a2030;--text:#f5f5f8;--text2:#9ba0b5;--text3:#5a6078;--accent:#00ff41;--border:rgba(255,255,255,.08)}
+body[data-theme="light"]{--bg:#ffffff;--bg2:#f5f5f7;--bg3:#e9eaec;--bg4:#ddd;--text:#111;--text2:#666;--text3:#999;--accent:#00a63e;--border:rgba(0,0,0,.1)}
+body[data-theme="zen"]{--bg:#1a1f2e;--bg2:#222735;--bg3:#2a2f3e;--bg4:#333845;--text:#e8e6e3;--text2:#a6a29c;--text3:#6b6862;--accent:#8fbc8f;--border:rgba(143,188,143,.15)}
+body[data-theme="sunset"]{--bg:#1a0f1d;--bg2:#251527;--bg3:#32192f;--bg4:#3d1e36;--text:#fce7c7;--text2:#d4b38a;--text3:#a08660;--accent:#ff8c42;--border:rgba(255,140,66,.2)}
+body[data-theme="ocean"]{--bg:#0a1828;--bg2:#0f2238;--bg3:#162b46;--bg4:#1c3654;--text:#e0ecf7;--text2:#9db5ce;--text3:#6786a4;--accent:#4fc3f7;--border:rgba(79,195,247,.15)}
+
+body::before{content:'';position:fixed;inset:0;background:
+  radial-gradient(900px 500px at 20% -5%, rgba(79,195,247,.04), transparent 60%),
+  radial-gradient(700px 400px at 90% 50%, rgba(0,255,65,.03), transparent 60%);
+  pointer-events:none;z-index:0}
+
+.wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:16px}
+
+.hdr{text-align:center;padding:16px 0 22px}
+.hdr h1{font-size:28px;font-weight:900;color:var(--text);margin-bottom:4px}
+.hdr .sub{color:var(--text2);font-size:13px}
+
+.section{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px}
+.section h2{font-size:16px;font-weight:800;margin-bottom:14px;color:var(--text);display:flex;align-items:center;gap:8px}
+.section h2 i{color:var(--accent)}
+
+.theme-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.theme-card{padding:14px;border:2px solid var(--border);border-radius:12px;cursor:pointer;transition:.15s;text-align:center}
+.theme-card:hover{transform:translateY(-2px)}
+.theme-card.active{border-color:var(--accent)}
+.theme-preview{height:60px;border-radius:8px;margin-bottom:8px;border:1px solid var(--border);position:relative;overflow:hidden}
+.theme-preview::before{content:'';position:absolute;inset:0;background-size:15% 15%;background-image:linear-gradient(to right,rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.04) 1px,transparent 1px)}
+.theme-preview .dot{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:20px;height:20px;border-radius:50%}
+.theme-name{font-size:13px;font-weight:700;color:var(--text)}
+.theme-desc{font-size:10px;color:var(--text2);margin-top:2px}
+
+.lang-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+.lang-btn{padding:12px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:8px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;transition:.15s}
+.lang-btn:hover{transform:translateY(-1px)}
+.lang-btn.active{background:var(--accent);color:#000;border-color:var(--accent)}
+
+.toggle-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}
+.toggle-row:last-child{border-bottom:none}
+.toggle-row .lbl{font-weight:600;color:var(--text)}
+.toggle-row .dsc{font-size:12px;color:var(--text2);margin-top:3px}
+.toggle{position:relative;width:46px;height:26px;background:var(--bg3);border-radius:14px;cursor:pointer;flex-shrink:0;transition:.2s}
+.toggle::after{content:'';position:absolute;top:3px;right:3px;width:20px;height:20px;background:var(--text2);border-radius:50%;transition:.2s}
+.toggle.on{background:var(--accent)}
+.toggle.on::after{right:23px;background:#000}
+
+.profile-info{display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg3);border-radius:10px;margin-bottom:12px}
+.profile-avatar{width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#00e5ff);display:grid;place-items:center;color:#000;font-size:20px;font-weight:900;flex-shrink:0}
+.profile-name{font-weight:700;color:var(--text)}
+.profile-id{font-size:11px;color:var(--text2);font-family:'Space Mono',monospace}
+
+.btn{padding:12px;background:var(--accent);color:#000;border:none;border-radius:10px;font-weight:800;cursor:pointer;font-family:inherit;font-size:14px;width:100%;margin-top:10px}
+.btn.sec{background:var(--bg3);color:var(--text);border:1px solid var(--border)}
+.btn.danger{background:rgba(255,0,85,.1);color:#ff0055;border:1px solid rgba(255,0,85,.3)}
+.btn:hover{opacity:.9}
+
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);padding:14px 22px;background:var(--accent);color:#000;border-radius:10px;font-weight:700;z-index:9999;display:none;box-shadow:0 6px 30px rgba(0,255,65,.3)}
+.toast.show{display:block;animation:slideUp .3s}
+@keyframes slideUp{from{transform:translate(-50%,20px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+
+.back{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:var(--bg3);border:1px solid var(--border);color:var(--text);text-decoration:none;border-radius:8px;font-size:13px;margin-bottom:14px}
+
+.nav-links{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:8px}
+.nav-links a{padding:10px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;text-decoration:none;color:var(--text);font-size:12px;text-align:center;transition:.15s}
+.nav-links a:hover{border-color:var(--accent);color:var(--accent)}
+
+.version-info{text-align:center;color:var(--text3);font-size:11px;font-family:'Space Mono',monospace;padding:20px 0}
+</style>
+<meta name="slh-version" content="v1.0-flip">
+<script defer src="/js/slh-flip.js?v=20260417"></script>
+</head>
+<body data-theme="dark">
+
+<div class="wrap">
+
+  <a href="/" class="back"><i class="fas fa-arrow-right"></i> חזרה לראשי</a>
+
+  <header class="hdr">
+    <h1>⚙️ הגדרות אישיות</h1>
+    <p class="sub">חוויה נקייה · מתואמת · נשמרת אוטומטית בכל הדפים</p>
+  </header>
+
+  <!-- Profile summary -->
+  <div class="section">
+    <h2><i class="fas fa-user-circle"></i> הפרופיל שלי</h2>
+    <div id="profileSummary">
+      <div class="profile-info">
+        <div class="profile-avatar" id="avatarInitial">?</div>
+        <div style="flex:1">
+          <div class="profile-name" id="profileName">אורח · לא מחובר</div>
+          <div class="profile-id" id="profileId">Login via Telegram to sync settings</div>
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="/dashboard.html">🎛 דשבורד</a>
+        <a href="/wallet.html">💰 ארנק</a>
+        <a href="/invite.html">🎁 הזמן חברים</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Theme -->
+  <div class="section">
+    <h2><i class="fas fa-palette"></i> ערכת נושא · Theme</h2>
+    <div class="theme-grid">
+      <div class="theme-card" data-theme="dark">
+        <div class="theme-preview" style="background:#05080f"><div class="dot" style="background:#00ff41"></div></div>
+        <div class="theme-name">🌑 Dark</div>
+        <div class="theme-desc">ברירת מחדל · nighttime</div>
+      </div>
+      <div class="theme-card" data-theme="light">
+        <div class="theme-preview" style="background:#ffffff"><div class="dot" style="background:#00a63e"></div></div>
+        <div class="theme-name">☀️ Light</div>
+        <div class="theme-desc">לבן נקי · daytime</div>
+      </div>
+      <div class="theme-card" data-theme="zen">
+        <div class="theme-preview" style="background:#1a1f2e"><div class="dot" style="background:#8fbc8f"></div></div>
+        <div class="theme-name">🧘 Zen</div>
+        <div class="theme-desc">ירוק-אפור · רגוע</div>
+      </div>
+      <div class="theme-card" data-theme="sunset">
+        <div class="theme-preview" style="background:#1a0f1d"><div class="dot" style="background:#ff8c42"></div></div>
+        <div class="theme-name">🌅 Sunset</div>
+        <div class="theme-desc">חום-כתום · חמים</div>
+      </div>
+      <div class="theme-card" data-theme="ocean">
+        <div class="theme-preview" style="background:#0a1828"><div class="dot" style="background:#4fc3f7"></div></div>
+        <div class="theme-name">🌊 Ocean</div>
+        <div class="theme-desc">כחול עמוק · רוחני</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Language -->
+  <div class="section">
+    <h2><i class="fas fa-language"></i> שפה · Language</h2>
+    <div class="lang-grid">
+      <button class="lang-btn" data-lang="he">🇮🇱 עברית</button>
+      <button class="lang-btn" data-lang="en">🇺🇸 English</button>
+      <button class="lang-btn" data-lang="ru">🇷🇺 Русский</button>
+      <button class="lang-btn" data-lang="ar">🇸🇦 العربية</button>
+      <button class="lang-btn" data-lang="fr">🇫🇷 Français</button>
+    </div>
+  </div>
+
+  <!-- Notifications & Privacy -->
+  <div class="section">
+    <h2><i class="fas fa-bell"></i> התראות · פרטיות</h2>
+
+    <div class="toggle-row">
+      <div>
+        <div class="lbl">🚧 באנר BETA למעלה</div>
+        <div class="dsc">הסתר אם אתה משתמש ותיק</div>
+      </div>
+      <div class="toggle" id="tg-beta" data-key="slh_beta_dismissed"></div>
+    </div>
+
+    <div class="toggle-row">
+      <div>
+        <div class="lbl">🐛 כפתור "דווח באג" צף</div>
+        <div class="dsc">כדור אדום למטה-שמאל</div>
+      </div>
+      <div class="toggle" id="tg-fab" data-key="slh_fab_hidden" data-invert="1"></div>
+    </div>
+
+    <div class="toggle-row">
+      <div>
+        <div class="lbl">🤖 AI Assistant widget</div>
+        <div class="dsc">חלון הצ'אט למטה-ימין</div>
+      </div>
+      <div class="toggle" id="tg-ai" data-key="slh_ai_hidden" data-invert="1"></div>
+    </div>
+
+    <div class="toggle-row">
+      <div>
+        <div class="lbl">📊 ticker מחירים למעלה</div>
+        <div class="dsc">SLH, BTC, ETH, TON, BNB</div>
+      </div>
+      <div class="toggle" id="tg-ticker" data-key="slh_ticker_hidden" data-invert="1"></div>
+    </div>
+
+    <div class="toggle-row">
+      <div>
+        <div class="lbl">💘 Dating features</div>
+        <div class="dsc">הצג כרטיס הכרויות בדשבורד (18+)</div>
+      </div>
+      <div class="toggle" id="tg-dating" data-key="slh_dating_enabled"></div>
+    </div>
+
+    <div class="toggle-row">
+      <div>
+        <div class="lbl">🧩 Daily puzzle reminder</div>
+        <div class="dsc">תזכורת יומית לפתור סודוקו</div>
+      </div>
+      <div class="toggle" id="tg-sudoku" data-key="slh_sudoku_daily"></div>
+    </div>
+  </div>
+
+  <!-- Advanced -->
+  <div class="section">
+    <h2><i class="fas fa-cog"></i> מתקדם</h2>
+    <button class="btn sec" onclick="exportSettings()">📤 יצא הגדרות (JSON)</button>
+    <button class="btn sec" onclick="importSettings()">📥 ייבא הגדרות</button>
+    <button class="btn danger" onclick="resetAll()">🔄 איפוס מוחלט</button>
+  </div>
+
+  <div class="version-info">
+    SLH Spark · Settings v1 · 2026-04-17
+  </div>
+
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const THEME_KEY = 'slh_theme';
+const LANG_KEY = 'slh_lang';
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show';
+  setTimeout(() => t.className = 'toast', 2000);
+}
+
+// THEME
+function applyTheme(t) {
+  document.body.setAttribute('data-theme', t);
+  localStorage.setItem(THEME_KEY, t);
+  document.querySelectorAll('.theme-card').forEach(c => c.classList.toggle('active', c.dataset.theme === t));
+}
+
+document.querySelectorAll('.theme-card').forEach(c => {
+  c.addEventListener('click', () => {
+    applyTheme(c.dataset.theme);
+    toast('✅ ערכת נושא נשמרה');
+  });
+});
+
+const savedTheme = localStorage.getItem(THEME_KEY) || 'dark';
+applyTheme(savedTheme);
+
+// LANGUAGE
+function applyLang(l) {
+  localStorage.setItem(LANG_KEY, l);
+  document.documentElement.lang = l;
+  document.documentElement.dir = (l === 'he' || l === 'ar') ? 'rtl' : 'ltr';
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === l));
+}
+
+document.querySelectorAll('.lang-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    applyLang(b.dataset.lang);
+    toast('✅ שפה נשמרה · רענן דפים אחרים כדי לראות');
+  });
+});
+
+const savedLang = localStorage.getItem(LANG_KEY) || 'he';
+applyLang(savedLang);
+
+// TOGGLES
+document.querySelectorAll('.toggle').forEach(tg => {
+  const key = tg.dataset.key;
+  const invert = tg.dataset.invert === '1';
+  // invert means: on=1 in storage means HIDDEN, toggle should show as OFF
+  const isOn = invert
+    ? localStorage.getItem(key) !== '1'
+    : localStorage.getItem(key) === '1';
+  tg.classList.toggle('on', isOn);
+
+  tg.addEventListener('click', () => {
+    const newOn = !tg.classList.contains('on');
+    tg.classList.toggle('on', newOn);
+    const storageVal = invert ? (newOn ? '0' : '1') : (newOn ? '1' : '0');
+    if (storageVal === '0') localStorage.removeItem(key);
+    else localStorage.setItem(key, storageVal);
+    toast(newOn ? '✅ הופעל' : '⏸ בוטל');
+  });
+});
+
+// PROFILE
+try {
+  const u = JSON.parse(localStorage.getItem('slh_user') || '{}');
+  if (u.id) {
+    document.getElementById('profileName').textContent = u.display_name || u.first_name || u.username || 'משתמש מחובר';
+    document.getElementById('profileId').textContent = 'ID: ' + u.id;
+    const initial = (u.display_name || u.first_name || u.username || '?').charAt(0).toUpperCase();
+    document.getElementById('avatarInitial').textContent = initial;
+  }
+} catch(e) {}
+
+// ADVANCED
+function exportSettings() {
+  const data = {};
+  ['slh_theme','slh_lang','slh_user','slh_beta_dismissed','slh_fab_hidden','slh_ai_hidden','slh_ticker_hidden','slh_dating_enabled','slh_sudoku_daily','slh_admin_password'].forEach(k => {
+    const v = localStorage.getItem(k);
+    if (v) data[k] = v;
+  });
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'slh-settings-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('📤 הגדרות יוצאו');
+}
+
+function importSettings() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'application/json';
+  input.onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text);
+      Object.entries(data).forEach(([k,v]) => localStorage.setItem(k, v));
+      toast('✅ הגדרות יובאו · רענן את העמוד');
+      setTimeout(() => location.reload(), 1500);
+    } catch(err) { toast('❌ קובץ לא תקין'); }
+  };
+  input.click();
+}
+
+function resetAll() {
+  if (!confirm('איפוס יסיר את כל ההגדרות שלך (תימה, שפה, פרופיל, אדמין key). ממשיך?')) return;
+  const keys = ['slh_theme','slh_lang','slh_beta_dismissed','slh_fab_hidden','slh_ai_hidden','slh_ticker_hidden','slh_dating_enabled','slh_sudoku_daily'];
+  keys.forEach(k => localStorage.removeItem(k));
+  toast('🔄 אופס · רענן');
+  setTimeout(() => location.reload(), 1500);
+}
+</script>
+
+</body>
+</html>

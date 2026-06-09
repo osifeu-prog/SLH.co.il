@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" data-theme="neural">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neural Diagnostics · SLH Spark</title>
+  <meta name="description" content="לוח אבחון נוירולוגי חי ל-SLH Spark — health של API, מסד נתונים, בלוקצ'יין, בוטים, וכל איברי המערכת.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/shared.css?v=20260427a">
+  <link rel="stylesheet" href="/css/slh-neural.css?v=20260427b">
+
+  <style>
+    body{font-family:'Heebo',system-ui,sans-serif;color:var(--text);background:var(--bg);margin:0;min-height:100vh;overflow-x:hidden}
+    main{padding-top:calc(var(--topnav-h, 70px) + 30px);padding-bottom:80px}
+    .diag-wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+
+    .diag-header{
+      display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;
+      gap:18px;padding-bottom:24px;margin-bottom:32px;
+      border-bottom:1px solid var(--border);
+    }
+    .diag-header h1{
+      margin:0;font-size:clamp(1.8rem,3.6vw,2.6rem);font-weight:800;
+      background:linear-gradient(120deg,var(--accent),var(--accent2),var(--gold));
+      -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    }
+    .diag-header .meta{font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--text3)}
+    .diag-header .meta strong{color:var(--accent)}
+    .diag-controls{display:flex;gap:10px;flex-wrap:wrap}
+    .diag-controls button{
+      padding:9px 16px;border-radius:10px;border:1px solid var(--border2);
+      background:var(--surface);color:var(--text);font-family:inherit;
+      font-size:.85rem;cursor:pointer;display:inline-flex;align-items:center;gap:8px;
+      transition:all .2s ease;
+    }
+    .diag-controls button:hover{border-color:var(--accent);color:var(--accent);box-shadow:var(--glow-cyan)}
+    .diag-controls button.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--bg);border:0}
+
+    /* Vital signs row */
+    .vital-row{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-bottom:36px}
+    .vital{
+      background:var(--surface);backdrop-filter:blur(14px);
+      border:1px solid var(--border);border-radius:14px;padding:18px;
+      position:relative;overflow:hidden;transition:all .25s ease;
+    }
+    .vital:hover{border-color:var(--border2);transform:translateY(-2px)}
+    .vital .vital-label{
+      font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;
+      color:var(--text3);font-weight:700;margin-bottom:8px;display:flex;
+      align-items:center;gap:6px;
+    }
+    .vital .vital-value{
+      font-size:1.8rem;font-weight:800;font-variant-numeric:tabular-nums;
+      color:var(--text);font-family:'JetBrains Mono',monospace;
+    }
+    .vital .vital-sub{font-size:.78rem;color:var(--text2);margin-top:4px}
+    .vital.ok .vital-value{color:var(--green)}
+    .vital.warn .vital-value{color:var(--gold)}
+    .vital.err .vital-value{color:var(--red)}
+    .vital .vital-pulse{
+      position:absolute;top:14px;inset-inline-end:14px;
+      width:8px;height:8px;border-radius:50%;background:var(--text3);
+    }
+    .vital.ok .vital-pulse{background:var(--green);box-shadow:0 0 0 0 rgba(74,222,128,.6);animation:vitalPulse 1.6s ease-in-out infinite}
+    .vital.warn .vital-pulse{background:var(--gold);animation:vitalPulse 2s ease-in-out infinite}
+    .vital.err .vital-pulse{background:var(--red);animation:vitalPulse 1s ease-in-out infinite}
+    @keyframes vitalPulse{
+      0%{box-shadow:0 0 0 0 rgba(74,222,128,.5)}
+      70%{box-shadow:0 0 0 10px rgba(74,222,128,0)}
+      100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}
+    }
+
+    /* Section */
+    .diag-section{margin-bottom:40px}
+    .diag-section h2{
+      font-size:1.3rem;margin:0 0 18px;display:flex;align-items:center;gap:10px;
+      color:var(--text);font-weight:700;
+    }
+    .diag-section h2 .badge{
+      font-size:.7rem;padding:4px 10px;border-radius:999px;font-weight:700;
+      letter-spacing:.1em;text-transform:uppercase;
+      background:rgba(94,214,255,.1);color:var(--accent);border:1px solid var(--border);
+    }
+
+    /* Probe list — each system check */
+    .probe-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+    .probe{
+      background:var(--surface);backdrop-filter:blur(12px);
+      border:1px solid var(--border);border-radius:12px;padding:16px 18px;
+      display:flex;align-items:center;gap:14px;transition:all .25s ease;
+      position:relative;
+    }
+    .probe:hover{border-color:var(--border2)}
+    .probe .probe-icon{
+      width:42px;height:42px;border-radius:11px;display:grid;place-items:center;
+      font-size:1.1rem;color:#04060d;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));flex-shrink:0;
+    }
+    .probe .probe-body{flex:1;min-width:0}
+    .probe .probe-name{font-size:.95rem;font-weight:700;color:var(--text);margin:0 0 3px}
+    .probe .probe-detail{
+      font-size:.78rem;color:var(--text2);font-family:'JetBrains Mono',monospace;
+      overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+    }
+    .probe .probe-status{
+      font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+      padding:5px 10px;border-radius:8px;font-family:'JetBrains Mono',monospace;
+      flex-shrink:0;
+    }
+    .probe[data-status="ok"]    .probe-status{background:rgba(74,222,128,.12);color:var(--green);border:1px solid rgba(74,222,128,.25)}
+    .probe[data-status="warn"]  .probe-status{background:rgba(255,209,102,.12);color:var(--gold);border:1px solid rgba(255,209,102,.25)}
+    .probe[data-status="err"]   .probe-status{background:rgba(255,94,135,.12);color:var(--red);border:1px solid rgba(255,94,135,.25)}
+    .probe[data-status="check"] .probe-status{background:rgba(94,214,255,.12);color:var(--accent);border:1px solid var(--border2);animation:checkPulse 1.6s ease-in-out infinite}
+    @keyframes checkPulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+    /* Tokens panel */
+    .token-panel{
+      display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    }
+    .token-cell{
+      background:var(--surface);backdrop-filter:blur(14px);
+      border:1px solid var(--border);border-radius:14px;padding:20px;
+      position:relative;overflow:hidden;
+    }
+    .token-cell::before{
+      content:'';position:absolute;top:-30px;inset-inline-end:-30px;
+      width:120px;height:120px;border-radius:50%;
+      background:radial-gradient(circle,var(--token-color,var(--accent)) 0%,transparent 65%);
+      opacity:.18;
+    }
+    .token-cell h4{margin:0 0 10px;font-size:1.4rem;color:var(--token-color,var(--accent));font-weight:900}
+    .token-cell .token-role{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);font-weight:700;margin-bottom:14px}
+    .token-cell .token-stat{display:flex;justify-content:space-between;font-size:.85rem;padding:6px 0;border-bottom:1px dashed var(--border)}
+    .token-cell .token-stat:last-child{border-bottom:0}
+    .token-cell .token-stat span:first-child{color:var(--text2)}
+    .token-cell .token-stat span:last-child{color:var(--text);font-family:'JetBrains Mono',monospace;font-weight:600}
+
+    /* Coverage bars */
+    .coverage-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+    .cov{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;backdrop-filter:blur(12px)}
+    .cov-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    .cov-head .cov-label{font-size:.85rem;font-weight:700;color:var(--text)}
+    .cov-head .cov-pct{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.15rem;color:var(--accent)}
+    .cov-bar{height:10px;background:rgba(94,214,255,.08);border-radius:99px;overflow:hidden;position:relative}
+    .cov-fill{
+      height:100%;border-radius:99px;
+      background:linear-gradient(90deg,var(--accent),var(--accent2),var(--gold));
+      transition:width .8s cubic-bezier(.2,.8,.2,1);
+      box-shadow:0 0 12px var(--accent);
+    }
+    .cov-sub{font-size:.74rem;color:var(--text3);margin-top:8px;font-family:'JetBrains Mono',monospace}
+
+    /* Activity stream */
+    .stream{
+      background:var(--surface);border:1px solid var(--border);border-radius:14px;
+      padding:18px;backdrop-filter:blur(12px);max-height:340px;overflow-y:auto;
+      font-family:'JetBrains Mono',monospace;font-size:.82rem;
+    }
+    .stream-row{display:flex;gap:14px;padding:6px 0;border-bottom:1px dashed rgba(94,214,255,.06)}
+    .stream-row:last-child{border-bottom:0}
+    .stream-time{color:var(--text3);flex-shrink:0;width:64px}
+    .stream-tag{flex-shrink:0;padding:1px 8px;border-radius:6px;font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+    .stream-tag.api{background:rgba(94,214,255,.15);color:var(--accent)}
+    .stream-tag.bot{background:rgba(177,139,255,.15);color:var(--accent2)}
+    .stream-tag.chain{background:rgba(255,209,102,.15);color:var(--gold)}
+    .stream-tag.guard{background:rgba(255,94,135,.15);color:var(--red)}
+    .stream-tag.user{background:rgba(74,222,128,.15);color:var(--green)}
+    .stream-msg{color:var(--text2);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+    @media (max-width:720px){
+      .diag-header{flex-direction:column;align-items:flex-start}
+      .vital .vital-value{font-size:1.4rem}
+    }
+  </style>
+</head>
+<body>
+  <div id="topnav-root"></div>
+
+  <main>
+    <div class="diag-wrap">
+
+      <header class="diag-header">
+        <div>
+          <span class="neural-eyebrow">Neural Diagnostics</span>
+          <h1>אבחון רשת נוירולוגי</h1>
+          <div class="meta" style="margin-top:8px">
+            <span>last refresh: <strong id="last-refresh">--:--:--</strong></span>
+            &nbsp;·&nbsp;
+            <span>auto-refresh: <strong id="auto-refresh-state">ON</strong> (15s)</span>
+          </div>
+        </div>
+        <div class="diag-controls">
+          <button id="btn-refresh" class="primary" onclick="window.SLHDiag.refresh()">
+            <i class="fas fa-rotate"></i> Refresh
+          </button>
+          <button id="btn-toggle-auto" onclick="window.SLHDiag.toggleAuto()">
+            <i class="fas fa-circle-pause"></i> Pause auto
+          </button>
+          <a href="/genesis.html" class="neural-btn neural-btn-ghost" style="padding:9px 16px;font-size:.85rem">
+            <i class="fas fa-dna"></i> Genesis
+          </a>
+        </div>
+      </header>
+
+      <!-- ═══ Vital signs ═══ -->
+      <section class="diag-section">
+        <h2>🫀 Vital Signs <span class="badge">live</span></h2>
+        <div class="vital-row" id="vital-row">
+          <div class="vital ok" data-vital="api">
+            <div class="vital-pulse"></div>
+            <div class="vital-label"><i class="fas fa-server"></i> FastAPI</div>
+            <div class="vital-value" id="v-api">checking…</div>
+            <div class="vital-sub" id="v-api-sub">probing /api/health</div>
+          </div>
+          <div class="vital ok" data-vital="db">
+            <div class="vital-pulse"></div>
+            <div class="vital-label"><i class="fas fa-database"></i> Postgres</div>
+            <div class="vital-value" id="v-db">--</div>
+            <div class="vital-sub" id="v-db-sub">via /api/health</div>
+          </div>
+          <div class="vital ok" data-vital="redis">
+            <div class="vital-pulse"></div>
+            <div class="vital-label"><i class="fas fa-memory"></i> Redis</div>
+            <div class="vital-value" id="v-redis">--</div>
+            <div class="vital-sub" id="v-redis-sub">cache layer</div>
+          </div>
+          <div class="vital ok" data-vital="chain">
+            <div class="vital-pulse"></div>
+            <div class="vital-label"><i class="fas fa-cubes"></i> BSC</div>
+            <div class="vital-value" id="v-chain">--</div>
+            <div class="vital-sub" id="v-chain-sub">block height</div>
+          </div>
+          <div class="vital ok" data-vital="bots">
+            <div class="vital-pulse"></div>
+            <div class="vital-label"><i class="fas fa-robot"></i> Bots</div>
+            <div class="vital-value" id="v-bots">25</div>
+            <div class="vital-sub" id="v-bots-sub">on Telegram polling</div>
+          </div>
+          <div class="vital ok" data-vital="users">
+            <div class="vital-pulse"></div>
+            <div class="vital-label"><i class="fas fa-users"></i> Users</div>
+            <div class="vital-value" id="v-users">--</div>
+            <div class="vital-sub" id="v-users-sub">registered</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ Probes — health checks across the body ═══ -->
+      <section class="diag-section">
+        <h2>🧪 System Probes <span class="badge">checks every 15s</span></h2>
+        <div class="probe-grid" id="probe-grid">
+          <!-- populated by JS -->
+        </div>
+      </section>
+
+      <!-- ═══ Tokens panel ═══ -->
+      <section class="diag-section">
+        <h2>🧬 5-Token Vital Map <span class="badge">internal · on-chain</span></h2>
+        <div class="token-panel">
+
+          <div class="token-cell" style="--token-color:#ffd166">
+            <h4>SLH</h4>
+            <div class="token-role">Premium · Governance</div>
+            <div class="token-stat"><span>Status</span><span style="color:var(--green)">LIVE on BSC</span></div>
+            <div class="token-stat"><span>Target</span><span>444 ₪</span></div>
+            <div class="token-stat"><span>Decimals</span><span>15</span></div>
+            <div class="token-stat"><span>Pool</span><span>PancakeSwap V2</span></div>
+          </div>
+
+          <div class="token-cell" style="--token-color:#c0c5cf">
+            <h4>MNH</h4>
+            <div class="token-role">Stable · 1 ILS</div>
+            <div class="token-stat"><span>Type</span><span>Off-chain peg</span></div>
+            <div class="token-stat"><span>Volatility</span><span style="color:var(--green)">0%</span></div>
+            <div class="token-stat"><span>Use</span><span>Internal payments</span></div>
+          </div>
+
+          <div class="token-cell" style="--token-color:#4ade80">
+            <h4>ZVK</h4>
+            <div class="token-role">Activity Reward</div>
+            <div class="token-stat"><span>Base value</span><span>~4.4 ₪</span></div>
+            <div class="token-stat"><span>Earn via</span><span>Contributions</span></div>
+            <div class="token-stat"><span>Status</span><span style="color:var(--green)">Active</span></div>
+          </div>
+
+          <div class="token-cell" style="--token-color:#5ed6ff">
+            <h4>REP</h4>
+            <div class="token-role">Reputation Score</div>
+            <div class="token-stat"><span>Range</span><span>0 – 1000+</span></div>
+            <div class="token-stat"><span>Tier system</span><span style="color:var(--green)">Active</span></div>
+            <div class="token-stat"><span>Decay</span><span>None</span></div>
+          </div>
+
+          <div class="token-cell" style="--token-color:#ff5e87">
+            <h4>ZUZ</h4>
+            <div class="token-role">Anti-Fraud Mark</div>
+            <div class="token-stat"><span>Threshold</span><span>100 → BAN</span></div>
+            <div class="token-stat"><span>Engine</span><span>Guardian</span></div>
+            <div class="token-stat"><span>Status</span><span style="color:var(--green)">Watching</span></div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ═══ Coverage bars — design-system reach ═══ -->
+      <section class="diag-section">
+        <h2>📊 Site Coverage <span class="badge">design system rollout</span></h2>
+        <div class="coverage-grid" id="coverage-grid">
+          <div class="cov">
+            <div class="cov-head"><span class="cov-label">Pages with Neural theme</span><span class="cov-pct" id="cov-theme-pct">--%</span></div>
+            <div class="cov-bar"><div class="cov-fill" id="cov-theme-bar" style="width:0%"></div></div>
+            <div class="cov-sub" id="cov-theme-sub">data-theme="neural" applied</div>
+          </div>
+          <div class="cov">
+            <div class="cov-head"><span class="cov-label">i18n coverage</span><span class="cov-pct" id="cov-i18n-pct">--%</span></div>
+            <div class="cov-bar"><div class="cov-fill" id="cov-i18n-bar" style="width:0%"></div></div>
+            <div class="cov-sub" id="cov-i18n-sub">data-i18n attributes</div>
+          </div>
+          <div class="cov">
+            <div class="cov-head"><span class="cov-label">Shared shell adoption</span><span class="cov-pct" id="cov-shell-pct">--%</span></div>
+            <div class="cov-bar"><div class="cov-fill" id="cov-shell-bar" style="width:0%"></div></div>
+            <div class="cov-sub" id="cov-shell-sub">topnav-root + shared.js</div>
+          </div>
+          <div class="cov">
+            <div class="cov-head"><span class="cov-label">Living canvas reach</span><span class="cov-pct" id="cov-canvas-pct">--%</span></div>
+            <div class="cov-bar"><div class="cov-fill" id="cov-canvas-bar" style="width:0%"></div></div>
+            <div class="cov-sub" id="cov-canvas-sub">pages with auto-injected canvas</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ Live activity stream ═══ -->
+      <section class="diag-section">
+        <h2>📡 Synaptic Activity <span class="badge">live stream</span></h2>
+        <div class="stream" id="stream">
+          <div class="stream-row"><span class="stream-time">--:--:--</span><span class="stream-tag api">api</span><span class="stream-msg">awaiting first probe…</span></div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <div id="footer-root"></div>
+
+  <script src="/js/translations.js?v=20260427a"></script>
+  <script src="/js/shared.js?v=20260427b"></script>
+  <script>
+    (function () {
+      const API_PRIMARY  = 'https://slh-fastapi-production.up.railway.app';
+      const API_LEGACY   = 'https://slhcoil-production.up.railway.app';
+      const API_OPTIONS  = [API_PRIMARY, API_LEGACY];
+
+      const PROBES = [
+        { key: 'health',      name: 'API health',          path: '/api/health',           tier: 'api'   },
+        { key: 'public_stats',name: 'Public stats',        path: '/api/stats/public',     tier: 'api'   },
+        { key: 'creator_idx', name: 'SLH Creator Index',   path: '/api/creator/slh-index',tier: 'api'   },
+        { key: 'events',      name: 'Public events feed',  path: '/api/events/public',    tier: 'api'   },
+        { key: 'performance', name: 'Performance digest',  path: '/api/performance/digest',tier: 'api'  },
+        { key: 'broadcast',   name: 'Broadcast service',   path: '/api/broadcast/health', tier: 'bot'   },
+        { key: 'devices',     name: 'Device registry',     path: '/api/devices/health',   tier: 'bot'   },
+        { key: 'chain',       name: 'BSC chain probe',     path: '/api/chain/health',     tier: 'chain' }
+      ];
+
+      const STATE = { auto: true, autoTimer: null, baseUrl: null, stream: [] };
+
+      function $(id) { return document.getElementById(id); }
+      function nowHHMMSS() { return new Date().toLocaleTimeString('he-IL', { hour12: false }); }
+      function setText(id, v) { const el = $(id); if (el) el.textContent = v; }
+      function setVitalState(key, state) {
+        document.querySelectorAll('.vital[data-vital="' + key + '"]').forEach(function (el) {
+          el.classList.remove('ok', 'warn', 'err');
+          el.classList.add(state);
+        });
+      }
+      function pushStream(tag, msg) {
+        STATE.stream.unshift({ t: nowHHMMSS(), tag: tag, msg: msg });
+        STATE.stream = STATE.stream.slice(0, 60);
+        const html = STATE.stream.map(function (r) {
+          return '<div class="stream-row"><span class="stream-time">' + r.t +
+                 '</span><span class="stream-tag ' + r.tag + '">' + r.tag +
+                 '</span><span class="stream-msg">' + r.msg + '</span></div>';
+        }).join('');
+        $('stream').innerHTML = html || '<div class="stream-row"><span class="stream-msg">no events</span></div>';
+      }
+
+      async function tryFetch(path) {
+        for (const base of API_OPTIONS) {
+          try {
+            const ctrl = new AbortController();
+            const tm = setTimeout(function () { ctrl.abort(); }, 4500);
+            const res = await fetch(base + path, { mode: 'cors', signal: ctrl.signal });
+            clearTimeout(tm);
+            if (!res) continue;
+            const text = await res.text();
+            let json = null; try { json = JSON.parse(text); } catch (e) {}
+            return { ok: res.ok, status: res.status, base: base, body: json, raw: text };
+          } catch (e) { /* try next */ }
+        }
+        return { ok: false, status: 0, base: null, body: null, error: 'unreachable' };
+      }
+
+      async function probeOne(p) {
+        const node = document.querySelector('[data-probe="' + p.key + '"]');
+        if (node) node.setAttribute('data-status', 'check');
+        const r = await tryFetch(p.path);
+        const status = r.ok ? 'ok' : (r.status === 404 || r.status === 401 || r.status === 403 ? 'warn' : 'err');
+        if (node) {
+          node.setAttribute('data-status', status);
+          const detail = r.ok
+            ? (r.base.replace('https://', '') + '  ' + r.status + ' OK')
+            : (r.status ? (r.status + ' ' + (r.error || '')) : 'no route reachable');
+          node.querySelector('.probe-detail').textContent = detail;
+          node.querySelector('.probe-status').textContent = status === 'ok' ? 'PASS' : (status === 'warn' ? 'WARN' : 'FAIL');
+        }
+        pushStream(p.tier, p.name + ' → ' + (r.ok ? (r.status + ' OK · ' + (r.base || '').replace('https://','')) : (r.status || 'no route')));
+        if (window.NeuralCanvas) window.NeuralCanvas.pulse(r.ok ? 'digital' : 'token');
+        return { probe: p, result: r };
+      }
+
+      function renderProbeShells() {
+        const grid = $('probe-grid');
+        grid.innerHTML = PROBES.map(function (p) {
+          const icon = p.tier === 'chain' ? 'fa-cubes' : p.tier === 'bot' ? 'fa-robot' : 'fa-server';
+          return '<div class="probe" data-probe="' + p.key + '" data-status="check">' +
+            '<div class="probe-icon"><i class="fas ' + icon + '"></i></div>' +
+            '<div class="probe-body">' +
+              '<div class="probe-name">' + p.name + '</div>' +
+              '<div class="probe-detail">' + p.path + '</div>' +
+            '</div>' +
+            '<div class="probe-status">CHECK</div>' +
+          '</div>';
+        }).join('');
+      }
+
+      async function loadVitals() {
+        const r = await tryFetch('/api/health');
+        if (r.ok) {
+          STATE.baseUrl = r.base;
+          setText('v-api', 'OK ' + r.status);
+          setText('v-api-sub', r.base.replace('https://', ''));
+          setVitalState('api', 'ok');
+          const b = r.body || {};
+          // Try to read DB / Redis flags
+          const dbOk    = !!(b.db || b.database || b.postgres || (b.checks && (b.checks.db || b.checks.postgres)));
+          const redisOk = !!(b.redis || (b.checks && b.checks.redis));
+          setText('v-db',    dbOk    ? 'OK' : 'unknown');
+          setVitalState('db',    dbOk    ? 'ok' : 'warn');
+          setText('v-redis', redisOk ? 'OK' : 'unknown');
+          setVitalState('redis', redisOk ? 'ok' : 'warn');
+        } else {
+          setText('v-api', 'OFFLINE');
+          setText('v-api-sub', 'tried both Railway hosts');
+          setVitalState('api', 'err');
+          setVitalState('db', 'err');
+          setVitalState('redis', 'err');
+        }
+        // Public stats — users + bots
+        const s = await tryFetch('/api/stats/public');
+        if (s.ok && s.body) {
+          if (s.body.users)     setText('v-users', s.body.users);
+          if (s.body.bots)      setText('v-bots',  s.body.bots);
+        }
+        // Chain probe
+        const c = await tryFetch('/api/chain/health');
+        if (c.ok && c.body && (c.body.block || c.body.height)) {
+          setText('v-chain', '#' + (c.body.block || c.body.height));
+          setVitalState('chain', 'ok');
+        } else {
+          setText('v-chain', 'unknown');
+          setVitalState('chain', 'warn');
+        }
+      }
+
+      async function loadCoverage() {
+        // Static intent values seeded from CLAUDE.md (will be replaced by /api/site/coverage when endpoint lands)
+        const stats = { theme: 22, i18n: 40, shell: 65, canvas: 100 };
+        const labels = {
+          theme:  '31 / 140 pages',
+          i18n:   '57 / 140 pages',
+          shell:  'topnav-root + shared.js init',
+          canvas: 'auto-injected on every shell-bound page'
+        };
+        Object.keys(stats).forEach(function (k) {
+          setText('cov-' + k + '-pct', stats[k] + '%');
+          const bar = $('cov-' + k + '-bar');
+          if (bar) bar.style.width = stats[k] + '%';
+          setText('cov-' + k + '-sub', labels[k]);
+        });
+      }
+
+      async function refresh() {
+        setText('last-refresh', nowHHMMSS());
+        await loadVitals();
+        await loadCoverage();
+        for (const p of PROBES) { await probeOne(p); }
+      }
+
+      function toggleAuto() {
+        STATE.auto = !STATE.auto;
+        setText('auto-refresh-state', STATE.auto ? 'ON' : 'OFF');
+        $('btn-toggle-auto').innerHTML = STATE.auto
+          ? '<i class="fas fa-circle-pause"></i> Pause auto'
+          : '<i class="fas fa-circle-play"></i> Resume auto';
+        if (STATE.auto) startAuto(); else stopAuto();
+      }
+      function startAuto() {
+        stopAuto();
+        STATE.autoTimer = setInterval(refresh, 15000);
+      }
+      function stopAuto() {
+        if (STATE.autoTimer) clearInterval(STATE.autoTimer);
+        STATE.autoTimer = null;
+      }
+
+      window.SLHDiag = { refresh: refresh, toggleAuto: toggleAuto };
+
+      document.addEventListener('DOMContentLoaded', function () {
+        if (typeof initShared === 'function') {
+          initShared({ activePage: 'diagnostics', showTicker: false, showBottomNav: false });
+        }
+        renderProbeShells();
+        refresh();
+        startAuto();
+      });
+    })();
+  </script>
+</body>
+</html>

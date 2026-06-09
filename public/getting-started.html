@@ -1,0 +1,526 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLH Spark Getting Started — Full Setup Guide</title>
+    <meta name="description" content="Complete guide to starting with SLH Spark. Bots, website, wallets, staking, and how everything connects.">
+    <link rel="canonical" href="https://slh-nft.com/getting-started.html">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://slh-nft.com/getting-started.html">
+    <meta property="og:title" content="SLH Spark Getting Started — Full Setup Guide">
+    <meta property="og:description" content="End-to-end guide: Genesis 49, Telegram, Dashboard, Wallet, Staking">
+    <meta property="og:image" content="https://slh-nft.com/assets/og/default.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="he_IL">
+    <meta property="fb:app_id" content="966242223397117">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SLH Spark Getting Started — Full Setup Guide">
+    <meta name="twitter:description" content="End-to-end guide: Genesis 49, Telegram, Dashboard, Wallet, Staking">
+    <meta name="twitter:image" content="https://slh-nft.com/assets/og/default.png">
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/shared.css?v=20260426e">
+
+    <style>
+        :root {
+            --bg: #050510;
+            --bg2: #0a0a1a;
+            --text: #e8e8f0;
+            --text2: #9898b0;
+            --text3: #6a6a88;
+            --accent: #ff8c00;
+        }
+        html, body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+            line-height: 1.7;
+        }
+
+        .page-hero {
+            padding: 60px 20px 40px;
+            text-align: center;
+            background: radial-gradient(ellipse at top, rgba(255,140,0,0.12), transparent 70%);
+            border-bottom: 1px solid rgba(255,140,0,0.2);
+        }
+        .page-hero h1 {
+            font-size: 38px;
+            font-weight: 900;
+            margin: 0 0 14px;
+            background: linear-gradient(135deg, #ff8c00, #00bcd4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .page-hero .subtitle {
+            font-size: 17px;
+            color: var(--text2);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .section {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+        .section h2 {
+            font-size: 26px;
+            font-weight: 800;
+            margin: 0 0 20px;
+            border-right: 4px solid var(--accent);
+            padding-right: 16px;
+        }
+        .section p {
+            font-size: 15px;
+            color: var(--text);
+            margin: 0 0 14px;
+        }
+        .section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px;
+        }
+        .section li {
+            font-size: 14px;
+            color: var(--text2);
+            padding: 10px 14px 10px 0;
+            border-right: 2px solid rgba(255,140,0,0.2);
+            margin-bottom: 6px;
+            padding-right: 14px;
+        }
+
+        .flow-container {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .flow-step {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 22px;
+            display: flex;
+            gap: 18px;
+            align-items: flex-start;
+            transition: all 0.25s;
+        }
+        .flow-step:hover {
+            border-color: rgba(255,140,0,0.4);
+            transform: translateX(-4px);
+        }
+        .flow-number {
+            flex-shrink: 0;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff8c00, #00bcd4);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 900;
+            box-shadow: 0 4px 16px rgba(255,140,0,0.3);
+        }
+        .flow-body {
+            flex: 1;
+        }
+        .flow-body h3 {
+            margin: 0 0 10px;
+            font-size: 18px;
+            color: var(--text);
+        }
+        .flow-body p {
+            font-size: 14px;
+            color: var(--text2);
+            margin: 0 0 12px;
+            line-height: 1.7;
+        }
+        .flow-cta {
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #2AABEE, #229ED9);
+            color: #fff !important;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            margin-top: 6px;
+        }
+        .flow-cta:hover { transform: translateY(-2px); }
+        .flow-cta.orange {
+            background: linear-gradient(135deg, #ff8c00, #ff6b00);
+        }
+        .flow-note {
+            margin-top: 10px;
+            padding: 10px 14px;
+            background: rgba(251,191,36,0.08);
+            border-right: 3px solid rgba(251,191,36,0.4);
+            border-radius: 6px;
+            font-size: 12px;
+            color: #fbbf24;
+            padding-right: 14px;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+        .compare-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 14px;
+            padding: 20px;
+        }
+        .compare-card.left {
+            border-right: 4px solid #2AABEE;
+        }
+        .compare-card.right {
+            border-right: 4px solid #ff8c00;
+        }
+        .compare-card h4 {
+            margin: 0 0 12px;
+            font-size: 16px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .compare-card p {
+            font-size: 13px;
+            color: var(--text2);
+            margin: 6px 0;
+        }
+        .compare-card .when {
+            margin-top: 12px;
+            padding: 8px 12px;
+            background: rgba(34,197,94,0.08);
+            border-radius: 6px;
+            font-size: 12px;
+            color: #22c55e;
+        }
+
+        .faq-item {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 18px 22px;
+            margin-bottom: 12px;
+        }
+        .faq-item h4 {
+            margin: 0 0 10px;
+            color: var(--accent);
+            font-size: 15px;
+        }
+        .faq-item p {
+            margin: 0;
+            color: var(--text2);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .warning-box {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px 24px;
+            background: linear-gradient(135deg, rgba(251,191,36,0.1), rgba(239,68,68,0.05));
+            border: 2px solid rgba(251,191,36,0.3);
+            border-radius: 14px;
+        }
+        .warning-box h3 {
+            margin: 0 0 10px;
+            color: #fbbf24;
+            font-size: 16px;
+        }
+        .warning-box p {
+            font-size: 13px;
+            color: var(--text);
+            margin: 6px 0;
+            line-height: 1.7;
+        }
+
+        .big-cta {
+            text-align: center;
+            padding: 50px 20px;
+        }
+        .big-cta .btn {
+            display: inline-block;
+            padding: 18px 40px;
+            background: linear-gradient(135deg, #ff8c00, #00bcd4);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 17px;
+            box-shadow: 0 8px 24px rgba(255,140,0,0.3);
+            transition: transform 0.2s;
+        }
+        .big-cta .btn:hover { transform: translateY(-3px); }
+
+        @media (max-width: 640px) {
+            .page-hero h1 { font-size: 28px; }
+            .flow-step { flex-direction: column; }
+            .flow-number { margin: 0 auto; }
+        }
+    </style>
+</head>
+<body>
+    <div id="topnav-root"></div>
+
+    <!-- HERO -->
+    <section class="page-hero">
+        <h1>🚀 איך המערכת עובדת?</h1>
+        <p class="subtitle">
+            המערכת של SLH Spark בנויה מ-<strong>שלושה מרכיבים</strong> שפועלים יחד:
+            <br>הבוטים בטלגרם · האתר · הארנקים החיצוניים שלך
+            <br>כאן נסביר בדיוק איך הכל מתחבר, ואיך להתחיל.
+        </p>
+    </section>
+
+    <!-- WHY 3 COMPONENTS -->
+    <section class="section">
+        <h2>🏗 למה 3 מרכיבים?</h2>
+        <p>
+            כל מרכיב נועד למטרה שונה. יחד הם יוצרים מערכת מלאה לניהול הקריפטו שלך במקום אחד:
+        </p>
+
+        <div class="comparison-grid">
+            <div class="compare-card left">
+                <h4>🤖 בוטים בטלגרם</h4>
+                <p><strong>מה זה?</strong> 23 בוטי עזר מיוחדים בתוך Telegram.</p>
+                <p><strong>למה זה טוב?</strong> פעולות מהירות בלי לפתוח דפדפן — קל להשגה מהנייד.</p>
+                <p><strong>דוגמאות:</strong></p>
+                <ul style="margin:6px 0 0 0">
+                    <li>@SLH_AIR_bot — HUB מרכזי + staking</li>
+                    <li>@SLH_Academia_bot — לימוד + קורסים</li>
+                    <li>@MY_SUPER_ADMIN_bot — פאנל ניהול</li>
+                </ul>
+                <div class="when">✓ השתמש בבוטים לפעולות מהירות</div>
+            </div>
+
+            <div class="compare-card right">
+                <h4>🌐 האתר slh-nft.com</h4>
+                <p><strong>מה זה?</strong> ממשק ויזואלי מלא לניהול החשבון שלך.</p>
+                <p><strong>למה זה טוב?</strong> תצוגה רחבה של תיק השקעות, גרפים, סטטיסטיקה, ניהול עמוק.</p>
+                <p><strong>דוגמאות:</strong></p>
+                <ul style="margin:6px 0 0 0">
+                    <li>Dashboard — סקירה כללית</li>
+                    <li>Wallet — ניהול יתרות וארנקים חיצוניים</li>
+                    <li>Community — פורום, חנות, בלוג</li>
+                </ul>
+                <div class="when">✓ השתמש באתר לניתוח וניהול מעמיק</div>
+            </div>
+
+            <div class="compare-card left">
+                <h4>🏦 הארנקים החיצוניים שלך</h4>
+                <p><strong>מה זה?</strong> חשבונות הקריפטו שכבר יש לך — Bybit, Binance, MetaMask, TrustWallet, ארנק קר.</p>
+                <p><strong>למה זה טוב?</strong> תראה את כל הנכסים שלך במקום אחד, בלי לוותר על השליטה.</p>
+                <p><strong>אבטחה:</strong></p>
+                <ul style="margin:6px 0 0 0">
+                    <li>🔒 קריאה בלבד</li>
+                    <li>🔒 אנחנו לא מחזיקים מפתחות</li>
+                    <li>🔒 הכסף שלך נשאר אצלך</li>
+                </ul>
+                <div class="when">✓ חיבור לאחר הרשמה — בעמוד Wallet</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FLOW: 7 STEPS -->
+    <section class="section">
+        <h2>🎯 תהליך ההרשמה — 7 שלבים פשוטים</h2>
+        <p>בגלל שהזיהוי אצלנו הוא דרך חשבון ה-Telegram שלך, התהליך מתחיל בבוט ומסתיים באתר:</p>
+
+        <div class="flow-container">
+
+            <div class="flow-step">
+                <div class="flow-number">1</div>
+                <div class="flow-body">
+                    <h3>🎁 קרא את הצעת Genesis 49</h3>
+                    <p>
+                        49 המשתמשים הראשונים מקבלים חבילה מיוחדת: <strong>10 ZVK</strong> (~44 ₪) מיידית, ועוד <strong>100 ZVK</strong> (~444 ₪) אחרי ההפצה הראשונה, וגם NFT Genesis ייחודי.
+                    </p>
+                    <a href="/onboarding.html?promo=GENESIS49" class="flow-cta orange">
+                        📖 קרא על Genesis 49
+                    </a>
+                </div>
+            </div>
+
+            <div class="flow-step">
+                <div class="flow-number">2</div>
+                <div class="flow-body">
+                    <h3>🤖 פתח את הבוט הראשי בטלגרם</h3>
+                    <p>
+                        לחץ על הקישור למטה — הבוט @SLH_AIR_bot יפתח ישר בטלגרם שלך. שלח <code>/start</code> — הוא יפתח לך את התפריט הראשי.
+                    </p>
+                    <a href="https://t.me/SLH_AIR_bot?start=getting_started" target="_blank" class="flow-cta">
+                        <i class="fab fa-telegram"></i> פתח @SLH_AIR_bot
+                    </a>
+                </div>
+            </div>
+
+            <div class="flow-step">
+                <div class="flow-number">3</div>
+                <div class="flow-body">
+                    <h3>🆔 קבל את ה-Telegram ID שלך</h3>
+                    <p>
+                        ה-ID הזה הוא מזהה מספרי ייחודי שלך ב-Telegram (לדוגמה: <code>224223270</code>). הבוט ישלח לך אותו אוטומטית כשתלחץ <code>/start</code>, וזה מה שמקשר בין חשבון ה-Telegram שלך לאתר.
+                    </p>
+                    <div class="flow-note">
+                        💡 <strong>אם אתה לא בטוח מה ה-ID שלך:</strong> שלח <code>/myid</code> בבוט והוא יחזיר לך אותו מיד.
+                    </div>
+                </div>
+            </div>
+
+            <div class="flow-step">
+                <div class="flow-number">4</div>
+                <div class="flow-body">
+                    <h3>🌐 חזור לאתר ולחץ "התחבר"</h3>
+                    <p>
+                        חזור לכאן (<code>slh-nft.com</code>) ולחץ על <strong>Dashboard</strong>. הזן את ה-ID שקיבלת מהבוט (לדוגמה: <code>224223270</code>). <strong>חשוב:</strong> חייב להיות מספר, לא username.
+                    </p>
+                    <a href="/dashboard.html" class="flow-cta orange">
+                        🔗 פתח Dashboard
+                    </a>
+                    <div class="flow-note">
+                        ⚠️ אין אצלנו סיסמאות — הזיהוי הוא דרך ה-ID של Telegram בלבד. זה יותר בטוח.
+                    </div>
+                </div>
+            </div>
+
+            <div class="flow-step">
+                <div class="flow-number">5</div>
+                <div class="flow-body">
+                    <h3>🎟️ הזן את הקוד GENESIS49</h3>
+                    <p>
+                        אחרי ההתחברות, יוצג לך טופס Genesis 49. הקוד <strong>GENESIS49</strong> מולא אוטומטית — רק לחץ <strong>"אישור"</strong> וקיבלת:
+                    </p>
+                    <ul style="font-size:13px;color:var(--text2);margin:10px 0">
+                        <li>💎 10 ZVK (~44 ₪ שווי)</li>
+                        <li>🎨 NFT Genesis Member #N</li>
+                        <li>🔓 גישה מלאה לכל השירותים</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="flow-step">
+                <div class="flow-number">6</div>
+                <div class="flow-body">
+                    <h3>👤 בחר שם תצוגה</h3>
+                    <p>
+                        ב-Dashboard → Settings, בחר את השם שיוצג בלוח המובילים ובקהילה. תוכל גם לבחור שפה (עברית / אנגלית / רוסית / ערבית / צרפתית).
+                    </p>
+                </div>
+            </div>
+
+            <div class="flow-step">
+                <div class="flow-number">7</div>
+                <div class="flow-body">
+                    <h3>💰 חבר את הארנקים החיצוניים (אופציונלי)</h3>
+                    <p>
+                        בעמוד <strong>Wallet</strong>, יש סקציה ייעודית להוספת כתובות מ-Bybit, Binance, Bitget, OKX, או ארנק עצמי (MetaMask / TrustWallet / Cold Wallet). המערכת תציג את היתרות בזמן אמת.
+                    </p>
+                    <a href="/wallet.html" class="flow-cta">
+                        💼 פתח Wallet
+                    </a>
+                    <div class="flow-note">
+                        🔒 <strong>קריאה בלבד — 100% בטוח.</strong> אנחנו רק מציגים את היתרה שלך מהכתובת הציבורית. אף פעם לא מבקשים מפתחות פרטיים, seed phrase או סיסמאות.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- WARNING BOX: Honest limitations -->
+    <div class="warning-box">
+        <h3>⚠️ חשוב להבין — מה המערכת כן ולא יודעת לעשות כרגע</h3>
+        <p><strong>✅ מה שהמערכת כן עושה עכשיו:</strong></p>
+        <p>
+            • מציגה את היתרות האמיתיות שלך בכתובות הציבוריות (TON, BSC, ETH, BTC)<br>
+            • מנהלת ledger פנימי לטוקני SLH + ZVK (למתנות, משחקים, cashback)<br>
+            • מאפשרת Staking עם תכניות 48-Variable שנתי (דורש אישור אדמין לכל deposit)<br>
+            • מקשרת 23 בוטי טלגרם שעובדים יחד
+        </p>
+        <p><strong>🚧 מה שהמערכת עדיין לא עושה (בפיתוח):</strong></p>
+        <p>
+            • מסחר ישיר ב-Bybit/Binance דרך API (דורש רישיון מסחר)<br>
+            • החזקה נאמנית של כספי לקוחות בסכומים גדולים (דורש custody partner + רישוי רשות ניירות ערך)<br>
+            • הפקדה/משיכה ישירה של TON/USDT אמיתיים (דורש wallet service integration)
+        </p>
+        <p>
+            💡 <strong>למה זה חשוב שתדע?</strong> כדי להפקיד סכומים משמעותיים (מעל ₪100,000), המערכת תצטרך לעבור תהליך רישוי שלוקח 6-12 חודשים. בינתיים המערכת היא UI/UX מוכן-לעבוד שיתחבר לcustody אמיתי ביום שנעבור את התהליך.
+        </p>
+    </div>
+
+    <!-- FAQ -->
+    <section class="section">
+        <h2>❓ שאלות נפוצות</h2>
+
+        <div class="faq-item">
+            <h4>למה אני צריך Telegram ID ולא רק שם משתמש?</h4>
+            <p>ה-ID הוא מספר קבוע שלא משתנה. שם משתמש אפשר לשנות, לא לשים בכלל, או להשתלט עליו. ה-ID מבטיח שרק אתה יכול לגשת לחשבון שלך — גם אם מישהו ישנה את ה-username שלו.</p>
+        </div>
+
+        <div class="faq-item">
+            <h4>מה ההבדל בין SLH ל-ZVK?</h4>
+            <p><strong>SLH</strong> הוא הטוקן הפרימיום (מחיר קבוע: 444 ₪/יחידה) — נדיר, מיועד להשקעה רצינית. <strong>ZVK</strong> הוא טוקן ההפצה (~4.4 ₪/יחידה) — מיועד למשחקים, מתנות, cashback והתרגלות למערכת. חברי Genesis יוכלו לרכוש SLH ממאגר הצוות במחיר מבצע או להחליף ZVK ל-SLH ביחס מוגדר.</p>
+        </div>
+
+        <div class="faq-item">
+            <h4>האם הארנק שלי בסכנה אם אחבר אותו?</h4>
+            <p>לא. אנחנו מבקשים רק את הכתובת הציבורית (address) — לא את המפתח הפרטי, ולא את ה-seed phrase. זה בדיוק כמו להראות לבנק את מספר החשבון שלך כדי שהם יציגו לך את היתרה. הם לא יכולים לקחת כסף, רק לראות.</p>
+        </div>
+
+        <div class="faq-item">
+            <h4>מה זה Bot Dashboard ואיך הוא שונה מהאתר?</h4>
+            <p>ה-Bot Dashboard הוא ממשק זריז בתוך טלגרם — תפריט כפתורים שמאפשר פעולות מהירות (בדיקת יתרה, שליחה מהירה, staking). האתר נותן תצוגה רחבה יותר עם גרפים, היסטוריה, סטטיסטיקה, ניהול מעמיק של כל החשבון שלך. שניהם רואים את אותם הנתונים — הם פשוט דרכים שונות לגשת אליהם.</p>
+        </div>
+
+        <div class="faq-item">
+            <h4>אני סוחר קריפטו עם חשבונות גדולים — האם המערכת מתאימה לי?</h4>
+            <p>כרגע המערכת מתאימה <strong>לצפייה</strong> בנכסים שלך במקום אחד, ולבדיקת ERP של המערכת (ROI, אנליטיקה). לביצוע trades ו-withdrawals אמיתיים מבורסות, אנחנו עדיין בתהליך אישור רישוי. המערכת <strong>תומכת מעקב אחרי ארנקי Bybit/Binance ללא הגבלת סכום</strong> — אבל העברות אמיתיות יתאפשרו רק אחרי שנקבל רישיון נותן שירותי מטבע.</p>
+        </div>
+
+        <div class="faq-item">
+            <h4>איך מחליפים ערכת נושא?</h4>
+            <p>בכל דף, תראה כפתור 🎨 בפינה התחתונה שמאלה. לחץ עליו וייפתח תפריט עם 7 ערכות נושא לבחירה: Dark (ברירת מחדל), Terminal, Crypto, Cyberpunk, Ocean, Sunset, Light. הבחירה שלך תישמר גם אחרי שתצא ותחזור.</p>
+        </div>
+
+        <div class="faq-item">
+            <h4>איך משנים גודל גופן או מפעילים ניגודיות גבוהה?</h4>
+            <p>יש כפתור נגישות ♿ בפינה התחתונה ימנית. שם תוכל לשנות גודל גופן (A / A+ / A++), להפעיל ניגודיות גבוהה, להדגיש קישורים, או לבטל אנימציות. המערכת עומדת בתקן WCAG 2.1 AA.</p>
+        </div>
+    </section>
+
+    <!-- BIG CTA -->
+    <div class="big-cta">
+        <a href="/onboarding.html?promo=GENESIS49" class="btn">
+            🎁 התחל עכשיו — Genesis 49
+        </a>
+        <p style="margin-top:16px;color:var(--text3);font-size:12px">
+            חינם · 48 מקומות נותרו · 0 סיכון
+        </p>
+    </div>
+
+    <div id="footer-root"></div>
+    <div id="bottomnav-root"></div>
+
+    <script src="/js/translations.js?v=20260426e"></script>
+    <script src="/js/shared.js?v=20260426e"></script>
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260426e"></script>
+</body>
+</html>

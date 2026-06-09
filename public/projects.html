@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH Projects & Agents — Control Hub</title>
+<meta name="description" content="חיבור פרויקטים, ניהול סוכנים, ייצור פרומפטים ל-AI sessions, העלאה ישירה לבוט.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+  :root {
+    --bg: #fafafa;
+    --bg2: #ffffff;
+    --bg3: #f4f5f7;
+    --border: #e4e7ec;
+    --border2: #d0d5dd;
+    --text: #101828;
+    --text2: #475467;
+    --text3: #98a2b3;
+    --accent: #0066ff;
+    --accent-bg: #eff6ff;
+    --green: #16a34a;
+    --green-bg: #f0fdf4;
+    --orange: #ea580c;
+    --orange-bg: #fff7ed;
+    --red: #dc2626;
+    --red-bg: #fef2f2;
+    --purple: #9333ea;
+    --shadow: 0 1px 2px 0 rgba(16,24,40,.05);
+    --shadow-lg: 0 4px 12px -2px rgba(16,24,40,.08);
+    --radius: 10px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0a0e14;
+      --bg2: #131820;
+      --bg3: #1a212c;
+      --border: #2a3441;
+      --border2: #3a4554;
+      --text: #f3f4f6;
+      --text2: #9ca3af;
+      --text3: #6b7280;
+      --accent: #3b82f6;
+      --accent-bg: rgba(59,130,246,.10);
+      --green: #22c55e;
+      --green-bg: rgba(34,197,94,.10);
+      --orange: #f97316;
+      --orange-bg: rgba(249,115,22,.10);
+      --red: #ef4444;
+      --red-bg: rgba(239,68,68,.10);
+      --purple: #a855f7;
+      --shadow: 0 1px 2px 0 rgba(0,0,0,.4);
+      --shadow-lg: 0 4px 12px -2px rgba(0,0,0,.5);
+    }
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Heebo', 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 24px 20px 80px; }
+
+  /* Header */
+  .hdr {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+  .hdr-l { display: flex; align-items: center; gap: 14px; }
+  .logo {
+    width: 38px; height: 38px;
+    border-radius: 9px;
+    background: var(--accent);
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    font-size: 16px;
+  }
+  h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.4px; }
+  .sub {
+    font-size: 12px;
+    color: var(--text3);
+    font-family: 'JetBrains Mono', monospace;
+    margin-top: 2px;
+  }
+  .hdr-r { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    border: 1px solid;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .badge.green { color: var(--green); border-color: var(--green); background: var(--green-bg); }
+  .badge.warn { color: var(--orange); border-color: var(--orange); background: var(--orange-bg); }
+  .badge .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: pulse 2s infinite; }
+  @keyframes pulse { 50% { opacity: 0.4; } }
+
+  /* Toolbar */
+  .toolbar {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    border: 1px solid var(--border2);
+    background: var(--bg2);
+    color: var(--text);
+    font-family: inherit;
+    transition: 0.15s;
+  }
+  .btn:hover { background: var(--bg3); border-color: var(--text2); }
+  .btn.primary {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  .btn.primary:hover { filter: brightness(1.05); }
+  .btn.ghost { background: transparent; border-color: transparent; color: var(--text2); }
+  .btn.ghost:hover { background: var(--bg3); color: var(--text); }
+  .btn i { font-size: 12px; }
+
+  /* Section */
+  section { margin-bottom: 28px; }
+  .sec-hdr {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding: 0 2px;
+  }
+  .sec-hdr h2 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+  }
+  .sec-hdr .count {
+    font-size: 12px;
+    color: var(--text3);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .sec-hdr .actions { margin-inline-start: auto; display: flex; gap: 8px; }
+
+  /* Card */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    box-shadow: var(--shadow);
+  }
+
+  /* Quick Access Grid */
+  .quick-grid {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+  .quick-tile {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    transition: 0.15s;
+  }
+  .quick-tile:hover {
+    border-color: var(--accent);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-lg);
+  }
+  .quick-tile .ic {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--accent-bg);
+    color: var(--accent);
+    display: grid;
+    place-items: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+  .quick-tile .info { flex: 1; min-width: 0; }
+  .quick-tile h3 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+  .quick-tile p {
+    font-size: 12px;
+    color: var(--text2);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Form */
+  .form-grid {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: 1fr 1fr;
+  }
+  @media (max-width: 700px) { .form-grid { grid-template-columns: 1fr; } }
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field.full { grid-column: 1 / -1; }
+  label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text2);
+  }
+  input, select, textarea {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 9px 12px;
+    font-size: 13px;
+    color: var(--text);
+    font-family: inherit;
+    transition: 0.15s;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-bg);
+  }
+  textarea { resize: vertical; min-height: 70px; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+
+  /* Project list */
+  .project-list { display: flex; flex-direction: column; gap: 8px; }
+  .project-row {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: center;
+    transition: 0.15s;
+  }
+  .project-row:hover { border-color: var(--accent); }
+  .project-info h3 { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+  .project-info .meta {
+    font-size: 12px;
+    color: var(--text2);
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .project-info .meta span { display: inline-flex; align-items: center; gap: 4px; }
+  .project-info .meta i { font-size: 10px; }
+  .project-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  .icon-btn {
+    width: 32px; height: 32px;
+    border-radius: 6px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text2);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 12px;
+    transition: 0.15s;
+  }
+  .icon-btn:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-bg); }
+  .icon-btn.danger:hover { color: var(--red); border-color: var(--red); background: var(--red-bg); }
+
+  .empty {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--text3);
+    font-size: 13px;
+    background: var(--bg2);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+  }
+  .empty i { font-size: 24px; margin-bottom: 8px; opacity: 0.5; display: block; }
+
+  /* Upload area */
+  .drop {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    text-align: center;
+    background: var(--bg2);
+    transition: 0.15s;
+    cursor: pointer;
+  }
+  .drop:hover, .drop.dragover {
+    border-color: var(--accent);
+    background: var(--accent-bg);
+  }
+  .drop i { font-size: 28px; color: var(--accent); margin-bottom: 8px; display: block; }
+  .drop strong { font-size: 14px; }
+  .drop small { display: block; color: var(--text3); font-size: 12px; margin-top: 4px; }
+
+  /* Prompt preview */
+  .prompt-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--text2);
+    white-space: pre-wrap;
+    max-height: 300px;
+    overflow-y: auto;
+    direction: ltr;
+    text-align: left;
+  }
+
+  /* Toast */
+  #toast {
+    position: fixed;
+    bottom: 24px;
+    inset-inline-start: 50%;
+    transform: translateX(-50%);
+    background: var(--text);
+    color: var(--bg2);
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+    z-index: 99;
+  }
+  #toast.show { opacity: 1; }
+
+  /* Two-column layout */
+  .twocol {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 900px) { .twocol { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- Header -->
+  <header class="hdr">
+    <div class="hdr-l">
+      <div class="logo">⚡</div>
+      <div>
+        <h1>Projects & Agents</h1>
+        <div class="sub">Control Hub · <span id="ts">—</span></div>
+      </div>
+    </div>
+    <div class="hdr-r">
+      <span class="badge green" id="api-badge"><span class="dot"></span><span id="api-status">checking…</span></span>
+      <span class="badge green"><span class="dot"></span><span id="proj-count">0</span> projects</span>
+      <a class="btn ghost" href="/command-center.html"><i class="fas fa-th-large"></i> Command Center</a>
+    </div>
+  </header>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <button class="btn primary" onclick="document.getElementById('add-form').scrollIntoView({behavior:'smooth'});document.getElementById('proj-name').focus()">
+      <i class="fas fa-plus"></i> Add Project
+    </button>
+    <a class="btn" href="https://t.me/SLH_Claude_bot" target="_blank">
+      <i class="fab fa-telegram"></i> Open Bot
+    </a>
+    <button class="btn" onclick="exportProjects()">
+      <i class="fas fa-download"></i> Export JSON
+    </button>
+    <button class="btn" onclick="document.getElementById('imp-input').click()">
+      <i class="fas fa-upload"></i> Import JSON
+    </button>
+    <input type="file" id="imp-input" accept="application/json" style="display:none" onchange="importProjects(event)">
+    <a class="btn ghost" href="/ops-viewer.html?file=HANDOFF_PROMPT_FOR_NEW_SESSION.md" target="_blank">
+      <i class="fas fa-file-lines"></i> Master Prompt
+    </a>
+  </div>
+
+  <!-- Quick Access -->
+  <section>
+    <div class="sec-hdr">
+      <h2>גישה מהירה</h2>
+      <span class="count">5 כלים</span>
+    </div>
+    <div class="quick-grid">
+      <a class="quick-tile" href="/command-center.html">
+        <div class="ic"><i class="fas fa-th-large"></i></div>
+        <div class="info"><h3>Command Center</h3><p>24 tiles · 4 monitor presets</p></div>
+      </a>
+      <a class="quick-tile" href="/ops-viewer.html">
+        <div class="ic"><i class="fas fa-file-lines"></i></div>
+        <div class="info"><h3>Ops Docs Viewer</h3><p>14 markdown ops docs</p></div>
+      </a>
+      <a class="quick-tile" href="/network.html">
+        <div class="ic"><i class="fas fa-diagram-project"></i></div>
+        <div class="info"><h3>Network Map</h3><p>61 nodes · neural map</p></div>
+      </a>
+      <a class="quick-tile" href="/admin.html">
+        <div class="ic"><i class="fas fa-shield"></i></div>
+        <div class="info"><h3>Admin Panel</h3><p>19 sidebar sections</p></div>
+      </a>
+      <a class="quick-tile" href="https://t.me/SLH_Claude_bot" target="_blank">
+        <div class="ic"><i class="fab fa-telegram"></i></div>
+        <div class="info"><h3>@SLH_Claude_bot</h3><p>23 commands · free Groq AI</p></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Project list -->
+  <section>
+    <div class="sec-hdr">
+      <h2>הפרויקטים שלי</h2>
+      <span class="count" id="proj-count2">—</span>
+      <div class="actions">
+        <button class="btn ghost" onclick="renderProjects()"><i class="fas fa-rotate"></i></button>
+      </div>
+    </div>
+    <div id="project-list" class="project-list"></div>
+  </section>
+
+  <!-- Two columns: Add + Upload -->
+  <div class="twocol">
+
+    <!-- Add Project -->
+    <section id="add-form-section">
+      <div class="sec-hdr"><h2>חיבור פרויקט חדש</h2></div>
+      <div class="card">
+        <form id="add-form" onsubmit="addProject(event)">
+          <div class="form-grid">
+            <div class="field">
+              <label>שם פרויקט *</label>
+              <input id="proj-name" type="text" placeholder="לדוגמה: SLH Co.il" required>
+            </div>
+            <div class="field">
+              <label>סוג</label>
+              <select id="proj-type">
+                <option value="website">Website</option>
+                <option value="api">API / Backend</option>
+                <option value="bot">Telegram Bot</option>
+                <option value="hardware">Hardware / IoT</option>
+                <option value="mobile">Mobile App</option>
+                <option value="other">אחר</option>
+              </select>
+            </div>
+            <div class="field full">
+              <label>Repo URL / Path</label>
+              <input id="proj-repo" type="text" placeholder="github.com/... או D:\\path\\to\\project">
+            </div>
+            <div class="field">
+              <label>דומיין / Endpoint</label>
+              <input id="proj-domain" type="text" placeholder="https://example.com">
+            </div>
+            <div class="field">
+              <label>בוט מקושר</label>
+              <input id="proj-bot" type="text" placeholder="@bot_username">
+            </div>
+            <div class="field full">
+              <label>הערות / Scope</label>
+              <textarea id="proj-notes" placeholder="מה הפרויקט עושה, מה צריך לעשות עליו, blockers..."></textarea>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:14px;">
+            <button class="btn primary" type="submit"><i class="fas fa-plus"></i> הוסף פרויקט</button>
+            <button class="btn" type="reset">נקה</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Upload area -->
+    <section>
+      <div class="sec-hdr"><h2>העלאה ישירה לבוט</h2></div>
+      <div class="card">
+        <div class="drop" id="drop" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleDrop(event)">
+          <i class="fas fa-cloud-arrow-up"></i>
+          <strong>גרור קובץ או טקסט לכאן</strong>
+          <small>או לחץ למטה לפעולות מהירות</small>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+          <a class="btn primary" href="https://t.me/SLH_Claude_bot?start=upload" target="_blank">
+            <i class="fab fa-telegram"></i> שלח לבוט
+          </a>
+          <button class="btn" onclick="copyMasterPrompt()">
+            <i class="fas fa-clipboard"></i> Copy Master Prompt
+          </button>
+        </div>
+        <p style="font-size:12px;color:var(--text2);margin-top:10px;line-height:1.6">
+          <strong>איך זה עובד:</strong> כל קובץ/טקסט שתעלה כאן נשמר ב-localStorage תחת <code style="font-family:'JetBrains Mono',monospace;background:var(--bg);padding:2px 6px;border-radius:4px">slh_pending_uploads</code>.
+          הבוט יכול לקרוא אותם בפקודה <code style="font-family:'JetBrains Mono',monospace;background:var(--bg);padding:2px 6px;border-radius:4px">/uploads</code> (תוסיף בעתיד).
+        </p>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Generated handoff prompt -->
+  <section>
+    <div class="sec-hdr">
+      <h2>פרומפט מותאם אישית</h2>
+      <span class="count" id="prompt-len">0 chars</span>
+      <div class="actions">
+        <button class="btn ghost" onclick="copyPrompt()"><i class="fas fa-clipboard"></i> Copy</button>
+        <button class="btn ghost" onclick="generatePrompt()"><i class="fas fa-rotate"></i> Regenerate</button>
+      </div>
+    </div>
+    <div class="card">
+      <p style="font-size:13px;color:var(--text2);margin-bottom:10px">
+        מתעדכן אוטומטית לפי הפרויקטים שהוספת. תעתיק והדבק לסשן AI חדש.
+      </p>
+      <div class="prompt-box" id="prompt-out"></div>
+    </div>
+  </section>
+
+  <!-- Recommendations -->
+  <section>
+    <div class="sec-hdr"><h2>שלבים הבאים — להתחבר טוב יותר</h2></div>
+    <div class="card">
+      <ol style="padding-inline-start: 20px; line-height: 1.9; font-size: 13.5px;">
+        <li><strong>API endpoint לפרויקטים</strong> — להוסיף ל-<code>main.py</code>: <code>POST /api/projects/register</code> + <code>GET /api/projects</code>. הפרויקטים יישמרו ב-DB ולא רק ב-localStorage.</li>
+        <li><strong>בוט integration</strong> — להוסיף לבוט פקודות <code>/projects</code>, <code>/project add &lt;name&gt;</code>, <code>/scan &lt;name&gt;</code>. קוד מוכן ב-<a href="/ops-viewer.html?file=TELEGRAM_CONTROL_GUIDE.md" target="_blank">TELEGRAM_CONTROL_GUIDE</a>.</li>
+        <li><strong>GitHub Webhook</strong> — אוטומטית לרשום פרויקט חדש בכל <code>git push</code>. צריך endpoint שמקבל webhook secret.</li>
+        <li><strong>Drag-Drop → API</strong> — כרגע ה-uploads ב-localStorage. שדרוג: <code>POST /api/uploads</code> שמקבל blob, שומר ב-S3/Cloudflare R2, ושולח התראה לבוט.</li>
+        <li><strong>WebSocket live updates</strong> — כשסוכן מעדכן SYSTEM_ALIGNMENT, הדף הזה יראה זאת live ללא רענון.</li>
+        <li><strong>Per-project health checks</strong> — cron שמריץ curl לכל endpoint של כל פרויקט, מציג ירוק/אדום בדף.</li>
+        <li><strong>Agent claim board</strong> — חלק מהדף הזה: רשימת tasks פתוחים שסוכנים יכולים "לתבוע". מתנקה אוטומטית כשסוכן מסיים.</li>
+        <li><strong>Telegram Mini App</strong> — להגיע לדף הזה דרך Mini App מתוך @SLH_Claude_bot. Settings → Configure Mini App → URL: <code>https://slh-nft.com/projects.html</code></li>
+      </ol>
+    </div>
+  </section>
+
+</div>
+
+<div id="toast"></div>
+
+<script>
+const STORE_KEY = 'slh_projects_v1';
+const UPLOAD_KEY = 'slh_pending_uploads';
+const API_BASE = 'https://slh-api-production.up.railway.app';
+
+// ──────── State ────────
+function loadProjects() {
+  try { return JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); } catch { return []; }
+}
+function saveProjects(arr) {
+  localStorage.setItem(STORE_KEY, JSON.stringify(arr));
+}
+
+// ──────── Add ────────
+function addProject(ev) {
+  ev.preventDefault();
+  const proj = {
+    id: 'p_' + Date.now(),
+    name: document.getElementById('proj-name').value.trim(),
+    type: document.getElementById('proj-type').value,
+    repo: document.getElementById('proj-repo').value.trim(),
+    domain: document.getElementById('proj-domain').value.trim(),
+    bot: document.getElementById('proj-bot').value.trim(),
+    notes: document.getElementById('proj-notes').value.trim(),
+    created: new Date().toISOString(),
+    status: 'active'
+  };
+  if (!proj.name) { toast('שם חובה'); return; }
+  const arr = loadProjects();
+  arr.push(proj);
+  saveProjects(arr);
+  document.getElementById('add-form').reset();
+  renderProjects();
+  toast('✅ נוסף: ' + proj.name);
+}
+
+function deleteProject(id) {
+  if (!confirm('למחוק את הפרויקט?')) return;
+  saveProjects(loadProjects().filter(p => p.id !== id));
+  renderProjects();
+  toast('🗑 נמחק');
+}
+
+function exportProjects() {
+  const blob = new Blob([JSON.stringify(loadProjects(), null, 2)], {type: 'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `slh-projects-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  toast('📥 הורד');
+}
+
+function importProjects(ev) {
+  const f = ev.target.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (Array.isArray(data)) {
+        const existing = loadProjects();
+        const merged = existing.concat(data.filter(p => !existing.find(e => e.id === p.id)));
+        saveProjects(merged);
+        renderProjects();
+        toast(`✅ יובאו ${data.length} פרויקטים`);
+      } else {
+        toast('פורמט שגוי');
+      }
+    } catch { toast('JSON לא חוקי'); }
+  };
+  r.readAsText(f);
+}
+
+// ──────── Render ────────
+function renderProjects() {
+  const list = loadProjects();
+  document.getElementById('proj-count').textContent = list.length;
+  document.getElementById('proj-count2').textContent = `${list.length} רשומים`;
+  const root = document.getElementById('project-list');
+  if (list.length === 0) {
+    root.innerHTML = `
+      <div class="empty">
+        <i class="fas fa-folder-open"></i>
+        אין פרויקטים עדיין. השתמש בטופס למטה כדי להוסיף את הראשון.
+      </div>`;
+    document.getElementById('prompt-out').textContent = '— הוסף פרויקט כדי לייצר פרומפט —';
+    document.getElementById('prompt-len').textContent = '0 chars';
+    return;
+  }
+  root.innerHTML = list.map(p => {
+    const meta = [];
+    if (p.type) meta.push(`<span><i class="fas fa-tag"></i>${p.type}</span>`);
+    if (p.domain) meta.push(`<span><i class="fas fa-globe"></i>${escapeHtml(p.domain)}</span>`);
+    if (p.bot) meta.push(`<span><i class="fab fa-telegram"></i>${escapeHtml(p.bot)}</span>`);
+    if (p.repo) meta.push(`<span><i class="fab fa-github"></i>${escapeHtml(shortRepo(p.repo))}</span>`);
+    return `
+    <div class="project-row">
+      <div class="project-info">
+        <h3>${escapeHtml(p.name)}</h3>
+        <div class="meta">${meta.join('')}</div>
+        ${p.notes ? `<div style="font-size:12px;color:var(--text2);margin-top:6px">${escapeHtml(p.notes.slice(0,140))}${p.notes.length>140?'…':''}</div>` : ''}
+      </div>
+      <div class="project-actions">
+        ${p.domain ? `<a class="icon-btn" href="${escapeAttr(p.domain)}" target="_blank" title="פתח דומיין"><i class="fas fa-external-link-alt"></i></a>` : ''}
+        ${p.repo && p.repo.startsWith('http') ? `<a class="icon-btn" href="${escapeAttr(p.repo)}" target="_blank" title="פתח repo"><i class="fab fa-github"></i></a>` : ''}
+        ${p.bot ? `<a class="icon-btn" href="https://t.me/${escapeAttr(p.bot.replace('@',''))}" target="_blank" title="פתח בוט"><i class="fab fa-telegram"></i></a>` : ''}
+        <a class="icon-btn" href="https://t.me/SLH_Claude_bot?start=project_${p.id}" target="_blank" title="שלח לבוט"><i class="fas fa-paper-plane"></i></a>
+        <button class="icon-btn danger" onclick="deleteProject('${p.id}')" title="מחק"><i class="fas fa-trash"></i></button>
+      </div>
+    </div>`;
+  }).join('');
+  generatePrompt();
+}
+
+// ──────── Helpers ────────
+function escapeHtml(s) { return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function escapeAttr(s) { return escapeHtml(s); }
+function shortRepo(r) { return r.replace(/^https?:\/\/(www\.)?(github\.com\/)?/, '').slice(0, 30); }
+
+// ──────── Prompt generator ────────
+function generatePrompt() {
+  const list = loadProjects();
+  const projectsBlock = list.length === 0 ? '— אין פרויקטים רשומים —' :
+    list.map((p, i) => `【פרויקט ${i+1}】 ${p.name}\n  • סוג: ${p.type}${p.domain ? '\n  • דומיין: ' + p.domain : ''}${p.repo ? '\n  • repo: ' + p.repo : ''}${p.bot ? '\n  • בוט: ' + p.bot : ''}${p.notes ? '\n  • הערות: ' + p.notes : ''}`).join('\n\n');
+  const prompt = `שלום. אני אוסיף קאופמן אונגר (@osifeu_prog · Telegram 224223270),
+מפתח solo. ניהול פרויקטים מתבצע מ-https://slh-nft.com/projects.html
+
+═══════════════════════════════════════════════════════════
+🏗 הפרויקטים שלי (${list.length})
+═══════════════════════════════════════════════════════════
+
+${projectsBlock}
+
+═══════════════════════════════════════════════════════════
+🛠 תשתית עיקרית — slh-nft.com (D:\\SLH_ECOSYSTEM)
+═══════════════════════════════════════════════════════════
+
+  • Website: https://slh-nft.com (127 דפים, GitHub Pages)
+  • API: https://slh-api-production.up.railway.app (FastAPI v1.1.0, Railway)
+  • Telegram bot: @SLH_Claude_bot (23 פקודות, free Groq AI)
+  • Docker: 26 containers
+  • Token SLH על BSC + 5-token economy
+
+═══════════════════════════════════════════════════════════
+📁 קבצים קריטיים
+═══════════════════════════════════════════════════════════
+
+  D:\\SLH_ECOSYSTEM\\slh-claude-bot\\ — bot code
+  D:\\SLH_ECOSYSTEM\\website\\ — public site
+  D:\\SLH_ECOSYSTEM\\api\\main.py — FastAPI (~7000 lines)
+  D:\\SLH_ECOSYSTEM\\main.py — ROOT copy (Railway builds from here!)
+
+═══════════════════════════════════════════════════════════
+🔍 איך לאמת חיים
+═══════════════════════════════════════════════════════════
+
+  curl https://slh-api-production.up.railway.app/api/health
+  docker ps --filter "name=slh-claude-bot"
+
+  בטלגרם @SLH_Claude_bot:
+    /health  /ps  /control
+
+═══════════════════════════════════════════════════════════
+⛔ מה לא לעשות
+═══════════════════════════════════════════════════════════
+
+  • לא לפרסם "LIVE" שירותים שלא קיימים
+  • לא לקבל כסף לפני POC
+  • לא לדלוף secrets בצ'אט
+  • לא לערבב D:\\SLH_ECOSYSTEM (ראשי) עם D:\\SLH.co.il (נפרד)
+
+═══════════════════════════════════════════════════════════
+🎯 מה אני רוצה עכשיו
+═══════════════════════════════════════════════════════════
+
+[הוסף כאן בקשה ספציפית]
+
+═══════════════════════════════════════════════════════════
+
+Quick links:
+  • Projects Hub: https://slh-nft.com/projects.html
+  • Command Center: https://slh-nft.com/command-center.html
+  • Bot: https://t.me/SLH_Claude_bot
+  • Master Handoff: https://slh-nft.com/ops-viewer.html?file=HANDOFF_PROMPT_FOR_NEW_SESSION.md
+`;
+  document.getElementById('prompt-out').textContent = prompt;
+  document.getElementById('prompt-len').textContent = prompt.length + ' chars';
+}
+
+function copyPrompt() {
+  const text = document.getElementById('prompt-out').textContent;
+  navigator.clipboard.writeText(text).then(() => toast('📋 הועתק'));
+}
+
+function copyMasterPrompt() {
+  fetch('/ops/HANDOFF_PROMPT_FOR_NEW_SESSION.md')
+    .then(r => r.text())
+    .then(t => { navigator.clipboard.writeText(t); toast('📋 Master prompt הועתק'); })
+    .catch(() => toast('לא הצלחתי לטעון'));
+}
+
+// ──────── Drop zone ────────
+function handleDrop(ev) {
+  ev.preventDefault();
+  ev.target.classList.remove('dragover');
+  const items = ev.dataTransfer.items;
+  const uploads = JSON.parse(localStorage.getItem(UPLOAD_KEY) || '[]');
+  let added = 0;
+  for (const item of items) {
+    if (item.kind === 'file') {
+      const f = item.getAsFile();
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        uploads.push({
+          name: f.name,
+          size: f.size,
+          type: f.type,
+          content: typeof e.target.result === 'string' ? e.target.result.slice(0, 200000) : '[binary]',
+          uploaded: new Date().toISOString()
+        });
+        localStorage.setItem(UPLOAD_KEY, JSON.stringify(uploads));
+        added++;
+        toast(`📤 ${f.name}`);
+      };
+      reader.readAsText(f);
+    } else if (item.kind === 'string') {
+      item.getAsString(s => {
+        uploads.push({ name: 'text', content: s, uploaded: new Date().toISOString() });
+        localStorage.setItem(UPLOAD_KEY, JSON.stringify(uploads));
+        toast('📤 טקסט נשמר');
+      });
+    }
+  }
+}
+
+// ──────── Status ────────
+async function checkAPI() {
+  try {
+    const r = await fetch(API_BASE + '/api/health');
+    const d = await r.json();
+    document.getElementById('api-status').textContent = r.ok ? `API v${d.version || '?'}` : 'API down';
+  } catch { document.getElementById('api-status').textContent = 'API offline'; }
+}
+
+// ──────── Toast ────────
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+// ──────── Timestamp ────────
+function updateTs() {
+  document.getElementById('ts').textContent = new Date().toLocaleString('he-IL', {hour12: false});
+}
+setInterval(updateTs, 1000);
+updateTs();
+
+// ──────── Init ────────
+renderProjects();
+checkAPI();
+</script>
+
+</body>
+</html>

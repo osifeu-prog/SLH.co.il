@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="he" dir="rtl" data-theme="neural">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Bot Registry · SLH Spark Admin</title>
+<link rel="icon" href="/assets/logo/favicon.svg">
+<link rel="stylesheet" href="/css/shared.css">
+<link rel="stylesheet" href="/css/slh-neural.css">
+<style>
+  body { margin:0; font-family:'Heebo','Inter',system-ui,sans-serif; background:#03060f; color:#e7f1ff; min-height:100vh; }
+  .neural-bg { position:fixed; inset:0; z-index:-1; pointer-events:none;
+    background: radial-gradient(ellipse 80% 60% at 20% 10%, rgba(94,214,255,.12), transparent 60%),
+                radial-gradient(ellipse 60% 50% at 80% 90%, rgba(177,139,255,.10), transparent 60%), #03060f; }
+  .wrap { max-width:1100px; margin:0 auto; padding:24px 20px 80px; }
+  header { margin-bottom:24px; }
+  h1 { margin:0 0 6px; font-size:26px; }
+  h1 .accent { background: linear-gradient(90deg,#5ed6ff,#b18bff); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .meta { font-size:12px; color:#9bb3d4; }
+  .key-prompt { background:rgba(255,154,60,.08); border:1px solid rgba(255,154,60,.3); border-radius:8px; padding:12px; margin-bottom:18px; font-size:13px; }
+  .key-prompt input { background:rgba(0,0,0,.3); border:1px solid rgba(94,214,255,.2); color:#e7f1ff; padding:6px 10px; border-radius:6px; font-family:monospace; width:320px; max-width:100%; }
+  .key-prompt button { background:#5ed6ff; color:#03060f; border:0; padding:6px 14px; border-radius:6px; font-weight:600; cursor:pointer; margin-inline-start:8px; }
+
+  section { background: rgba(15,24,56,.65); border:1px solid rgba(94,214,255,.18); border-radius:14px; padding:18px 20px; margin-bottom:18px; backdrop-filter:blur(8px); }
+  section h2 { margin:0 0 14px; font-size:17px; color:#5ed6ff; font-weight:600; }
+  .grid { display:grid; gap:10px; }
+  .grid-stats { grid-template-columns: repeat(4, 1fr); }
+  @media (max-width:720px) { .grid-stats { grid-template-columns: 1fr 1fr; } }
+  .tile { background:rgba(22,35,80,.5); border:1px solid rgba(94,214,255,.12); border-radius:10px; padding:12px 14px; }
+  .tile-label { font-size:11px; color:#9bb3d4; text-transform:uppercase; letter-spacing:1px; }
+  .tile-value { font-size:22px; font-weight:700; margin-top:4px; }
+
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th { text-align:start; padding:10px 12px; color:#9bb3d4; font-weight:600; border-bottom:1px solid rgba(94,214,255,.15); font-size:11px; text-transform:uppercase; letter-spacing:1px; }
+  td { padding:11px 12px; border-bottom:1px solid rgba(94,214,255,.06); }
+  tr:hover td { background:rgba(94,214,255,.03); }
+  .dot { display:inline-block; width:9px; height:9px; border-radius:50%; margin-inline-end:6px; vertical-align:middle; }
+  .dot.ok { background:#4ade80; box-shadow:0 0 8px #4ade80; }
+  .dot.warn { background:#ff9a3c; box-shadow:0 0 8px #ff9a3c; }
+  .dot.bad { background:#ff5e87; box-shadow:0 0 8px #ff5e87; }
+  .dot.idle { background:#5a7090; }
+  .pill { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:600; }
+  .pill.live { background:rgba(74,222,128,.15); color:#4ade80; }
+  .pill.dead { background:rgba(255,94,135,.15); color:#ff5e87; }
+  .pill.unknown { background:rgba(90,112,144,.2); color:#9bb3d4; }
+  a { color:#5ed6ff; }
+  .nav { font-size:13px; margin-top:24px; }
+  .nav a { margin-inline-end:14px; }
+</style>
+</head>
+<body>
+<div class="neural-bg"></div>
+<div class="wrap">
+
+<header>
+  <h1>Bot Registry <span class="accent">· Admin</span></h1>
+  <div class="meta">25 בוטים | סטטוס חי דרך <code>/api/bots/list</code></div>
+</header>
+
+<div id="key-prompt" class="key-prompt" style="display:none">
+  <strong>נדרש מפתח אדמין</strong>
+  <input type="password" id="admin-key-input" placeholder="X-Admin-Key">
+  <button onclick="saveKey()">שמור</button>
+</div>
+
+<section>
+  <h2>סטטיסטיקה</h2>
+  <div class="grid grid-stats">
+    <div class="tile"><div class="tile-label">סה"כ</div><div class="tile-value" id="s-total">—</div></div>
+    <div class="tile"><div class="tile-label">חיים (HB &lt; 5min)</div><div class="tile-value" style="color:#4ade80" id="s-live">—</div></div>
+    <div class="tile"><div class="tile-label">שקטים (5-60min)</div><div class="tile-value" style="color:#ff9a3c" id="s-stale">—</div></div>
+    <div class="tile"><div class="tile-label">מתים (&gt; 1h)</div><div class="tile-value" style="color:#ff5e87" id="s-dead">—</div></div>
+  </div>
+</section>
+
+<section>
+  <h2>רשימת בוטים</h2>
+  <table id="bot-table">
+    <thead>
+      <tr>
+        <th>סטטוס</th>
+        <th>Handle</th>
+        <th>שם</th>
+        <th>HB אחרון</th>
+        <th>תיאור</th>
+      </tr>
+    </thead>
+    <tbody id="bot-tbody">
+      <tr><td colspan="5" style="text-align:center;color:#9bb3d4;padding:24px">טוען…</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>בוטים ידועים (סטטי)</h2>
+  <div class="meta" style="margin-bottom:12px">בוטים שאנחנו יודעים שקיימים, גם אם לא רשמו heartbeat ב-/api/bots/heartbeat</div>
+  <table>
+    <tbody>
+      <tr><td><span class="dot ok"></span><a href="https://t.me/SLH_AIR_bot" target="_blank">@SLH_AIR_bot</a></td><td>main user bot · welcome / dashboard / wallet / /bots / /swarm</td></tr>
+      <tr><td><span class="dot ok"></span><a href="https://t.me/SLH_Claude_bot" target="_blank">@SLH_Claude_bot</a></td><td>internal executor + AI Spark / health / control / git</td></tr>
+      <tr><td><span class="dot warn"></span><a href="https://t.me/SLH_macro_bot" target="_blank">@SLH_macro_bot</a></td><td>macro alerts · runs on Railway (diligent-radiance, NOT local docker)</td></tr>
+      <tr><td><span class="dot bad"></span><a href="https://t.me/WEWORK_teamviwer_bot" target="_blank">@WEWORK_teamviwer_bot</a></td><td>Academia / payments · <strong>token unauthorized — needs rotation in BotFather</strong></td></tr>
+      <tr><td><span class="dot warn"></span><a href="https://t.me/G4meb0t" target="_blank">@G4meb0t_bot</a></td><td>gaming + dating (Phase 2) · intermittent network issues in container</td></tr>
+      <tr><td><span class="dot idle"></span>+25 internal</td><td>Therapists, Guardian, Marketplace, Factory, Ledger, NFTy, etc</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>פעולות מנהל</h2>
+  <div class="meta" style="margin-bottom:12px">
+    <p style="margin:0 0 8px"><strong>הוסף בוט חדש לרישום:</strong> POST /api/bots/heartbeat (אחרי שהוא רוצה להירשם)</p>
+    <p style="margin:0 0 8px"><strong>סובב טוקן בוט:</strong> פתח BotFather → /mybots → בחר בוט → API Token → Revoke + עדכן ב-.env → restart container</p>
+    <p style="margin:0"><strong>בדוק קונטיינר:</strong> <code>docker ps</code> · <code>docker logs slh-&lt;name&gt; --tail 20</code></p>
+  </div>
+</section>
+
+<div class="nav">
+  <a href="/founder.html">← Founder Panel</a>
+  <a href="/admin/mission-control.html">Mission Control</a>
+  <a href="/admin/secrets-vault.html">Secrets Vault</a>
+  <a href="/admin/rotate-token.html">Rotate Token</a>
+</div>
+
+</div>
+
+<script>
+const API = 'https://slh-api-production.up.railway.app';
+let adminKey = localStorage.getItem('slh_admin_key') || '';
+
+function saveKey() {
+  const v = document.getElementById('admin-key-input').value.trim();
+  if (v) {
+    localStorage.setItem('slh_admin_key', v);
+    adminKey = v;
+    document.getElementById('key-prompt').style.display = 'none';
+    refresh();
+  }
+}
+
+function fmtAgo(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  const sec = Math.floor((Date.now() - d.getTime()) / 1000);
+  if (sec < 60) return sec + 's';
+  if (sec < 3600) return Math.floor(sec/60) + 'm';
+  if (sec < 86400) return Math.floor(sec/3600) + 'h';
+  return Math.floor(sec/86400) + 'd';
+}
+
+async function refresh() {
+  if (!adminKey) {
+    document.getElementById('key-prompt').style.display = 'block';
+    document.getElementById('bot-tbody').innerHTML =
+      '<tr><td colspan="5" style="text-align:center;color:#9bb3d4;padding:24px">נדרש admin key</td></tr>';
+    return;
+  }
+  try {
+    const r = await fetch(API + '/api/bots/list', { headers: { 'X-Admin-Key': adminKey } });
+    if (r.status === 403) {
+      document.getElementById('key-prompt').style.display = 'block';
+      return;
+    }
+    const j = await r.json();
+    const bots = j.bots || [];
+
+    let live = 0, stale = 0, dead = 0;
+    const tbody = document.getElementById('bot-tbody');
+    if (bots.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#9bb3d4;padding:24px">אין בוטים רשומים ב-/api/bots/heartbeat. ראה רשימה סטטית למטה.</td></tr>';
+    } else {
+      tbody.innerHTML = '';
+      bots.forEach(b => {
+        const ageMin = b.heartbeat_age_minutes != null ? b.heartbeat_age_minutes : null;
+        let dotCls = 'idle', pillCls = 'unknown', pillTxt = '—';
+        if (ageMin != null) {
+          if (ageMin < 5)        { dotCls='ok';   pillCls='live'; pillTxt='LIVE'; live++; }
+          else if (ageMin < 60)  { dotCls='warn'; pillCls='unknown'; pillTxt='STALE'; stale++; }
+          else                   { dotCls='bad';  pillCls='dead'; pillTxt='DEAD'; dead++; }
+        }
+        tbody.innerHTML += `
+          <tr>
+            <td><span class="dot ${dotCls}"></span><span class="pill ${pillCls}">${pillTxt}</span></td>
+            <td>${b.handle ? '@'+b.handle : '<i>no handle</i>'}</td>
+            <td>${b.name || '—'}</td>
+            <td>${ageMin != null ? ageMin + 'm ago' : '—'}</td>
+            <td>${b.description || '—'}</td>
+          </tr>`;
+      });
+    }
+    document.getElementById('s-total').textContent = bots.length;
+    document.getElementById('s-live').textContent = live;
+    document.getElementById('s-stale').textContent = stale;
+    document.getElementById('s-dead').textContent = dead;
+  } catch (e) {
+    document.getElementById('bot-tbody').innerHTML =
+      `<tr><td colspan="5" style="text-align:center;color:#ff5e87;padding:24px">שגיאה: ${e.message}</td></tr>`;
+  }
+}
+
+if (!adminKey) document.getElementById('key-prompt').style.display = 'block';
+refresh();
+setInterval(refresh, 60000);
+</script>
+</body>
+</html>

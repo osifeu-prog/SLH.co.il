@@ -1,0 +1,363 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH Bot Registry — מפת הבוטים והבעלים</title>
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{--bg:#050810;--bg2:#0d1220;--bg3:#151a2e;--gold:#ffd700;--green:#00e887;--red:#ff4444;--orange:#ff9800;--purple:#a855f7;--blue:#3b82f6;--cyan:#06b6d4;--text:#f5f5f8;--text2:#9ba0b5;--text3:#5a6078;--border:rgba(255,215,0,.18)}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Rubik',sans-serif;margin:0;min-height:100vh;line-height:1.5}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(circle at 15% 25%,rgba(168,85,247,.06),transparent 50%),radial-gradient(circle at 85% 75%,rgba(59,130,246,.05),transparent 50%)}
+.header{max-width:1400px;margin:0 auto;padding:30px 20px 20px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px}
+.title{font-size:32px;font-weight:900;background:linear-gradient(135deg,var(--purple),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent;margin:0}
+.sub{font-size:13px;color:var(--text2);margin-top:4px}
+.btn{padding:10px 18px;background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:12px;cursor:pointer;font-weight:700;font-size:13px;font-family:inherit;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{border-color:var(--gold);color:var(--gold)}
+.btn.primary{background:linear-gradient(135deg,var(--purple),var(--cyan));color:#fff;border:none}
+.kpis{max-width:1400px;margin:0 auto 20px;padding:0 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center}
+.kpi .v{font-size:26px;font-weight:900;color:var(--purple);line-height:1}
+.kpi.green .v{color:var(--green)}
+.kpi.red .v{color:var(--red)}
+.kpi.gold .v{color:var(--gold)}
+.kpi.blue .v{color:var(--blue)}
+.kpi .l{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:1.5px;margin-top:6px}
+.filters{max-width:1400px;margin:0 auto 20px;padding:0 20px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.search{flex:1;min-width:240px;padding:12px 16px;background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:12px;font-size:14px;font-family:inherit}
+.search:focus{outline:none;border-color:var(--gold)}
+.chip{padding:8px 16px;background:var(--bg2);border:1px solid var(--border);color:var(--text2);border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;font-family:inherit}
+.chip.active{background:var(--purple);color:#fff;border-color:var(--purple)}
+.chip:hover{color:var(--text)}
+.grid{max-width:1400px;margin:0 auto 60px;padding:0 20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
+.bot-card{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:20px;transition:all .25s;position:relative;overflow:hidden}
+.bot-card:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:0 14px 35px rgba(0,0,0,.4)}
+.bot-card.running{border-left:4px solid var(--green)}
+.bot-card.stopped{border-left:4px solid var(--red)}
+.bot-card.unknown{border-left:4px solid var(--text3)}
+.bot-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:12px}
+.bot-name{font-size:18px;font-weight:900;color:var(--text);font-family:'JetBrains Mono',monospace}
+.bot-handle{font-size:12px;color:var(--cyan);margin-top:4px}
+.status-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;margin-top:6px}
+.status-dot.running{background:var(--green);box-shadow:0 0 10px var(--green);animation:pulse 2s infinite}
+.status-dot.stopped{background:var(--red)}
+.status-dot.unknown{background:var(--text3)}
+@keyframes pulse{50%{opacity:.4}}
+.bot-role{font-size:10px;padding:3px 10px;border-radius:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;display:inline-block;margin-bottom:12px}
+.role-finance{background:rgba(255,215,0,.18);color:var(--gold)}
+.role-ops{background:rgba(255,152,0,.18);color:var(--orange)}
+.role-community{background:rgba(59,130,246,.18);color:var(--blue)}
+.role-gaming{background:rgba(168,85,247,.18);color:var(--purple)}
+.role-commerce{background:rgba(0,232,135,.18);color:var(--green)}
+.role-security{background:rgba(255,68,68,.18);color:var(--red)}
+.role-test{background:rgba(107,107,107,.2);color:#888}
+.bot-purpose{font-size:13px;color:var(--text2);margin-bottom:14px;min-height:36px;line-height:1.5}
+.owner-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:12px}
+.owner-row label{color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:700;min-width:52px}
+.owner-row input{flex:1;padding:8px 10px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;font-size:12px;font-family:inherit}
+.owner-row input:focus{outline:none;border-color:var(--gold)}
+.owner-row input.saved{border-color:var(--green)}
+.bot-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:11px;color:var(--text3);margin-bottom:12px;padding:10px;background:var(--bg);border-radius:10px}
+.bot-meta div{display:flex;flex-direction:column;gap:2px}
+.bot-meta .l{font-size:10px;text-transform:uppercase;letter-spacing:1px}
+.bot-meta .v{color:var(--text);font-weight:700}
+.bot-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.bot-actions button,.bot-actions a{padding:8px 6px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;cursor:pointer;font-size:11px;font-weight:700;font-family:inherit;transition:all .15s;text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;gap:4px}
+.bot-actions .open-btn:hover{background:var(--cyan);color:#000;border-color:var(--cyan)}
+.bot-actions .prompt-btn:hover{background:var(--gold);color:#000;border-color:var(--gold)}
+.bot-actions .logs-btn:hover{background:var(--orange);color:#000;border-color:var(--orange)}
+/* Modal */
+.modal-bg{position:fixed;inset:0;background:rgba(5,8,16,.85);backdrop-filter:blur(6px);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-bg.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--gold);border-radius:20px;padding:28px;max-width:720px;width:100%;max-height:85vh;overflow-y:auto}
+.modal h2{font-size:22px;margin:0 0 6px;color:var(--gold);font-family:'JetBrains Mono',monospace}
+.modal-sub{font-size:13px;color:var(--text2);margin-bottom:20px}
+.modal pre{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text);line-height:1.6;white-space:pre-wrap;word-wrap:break-word}
+.modal-actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--green);color:#000;padding:12px 24px;border-radius:12px;font-weight:800;z-index:200;display:none}
+.toast.show{display:block;animation:toastIn .3s ease-out}
+@keyframes toastIn{from{transform:translate(-50%,20px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+.login-gate{max-width:460px;margin:100px auto;padding:40px 32px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;text-align:center}
+.login-gate h2{color:var(--gold);margin-bottom:12px}
+.login-gate input{width:100%;padding:14px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:12px;font-size:16px;margin-bottom:14px;font-family:inherit}
+.login-gate button{width:100%;padding:14px;background:linear-gradient(135deg,var(--gold),var(--green));color:#000;border:none;border-radius:12px;font-size:16px;font-weight:900;cursor:pointer;font-family:inherit}
+</style>
+</head>
+<body>
+
+<div id="login-gate" class="login-gate" style="display:none">
+  <h2>🔐 Bot Registry — Admin Only</h2>
+  <input type="password" id="login-pwd" placeholder="סיסמת אדמין">
+  <button onclick="doLogin()">היכנס</button>
+</div>
+
+<div id="main-app" style="display:none">
+  <div id="topnav-root"></div>
+  <div class="header">
+    <div>
+      <h1 class="title">🤖 Bot Registry</h1>
+      <p class="sub">מפת כל 22 הבוטים באקוסיסטם · רישום בעלים · פרומפטים מוכנים לסוכני AI</p>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <a href="/admin.html" class="btn"><i class="fas fa-arrow-right"></i> אדמין</a>
+      <a href="/project-map.html" class="btn"><i class="fas fa-sitemap"></i> מפת דפים</a>
+      <a href="/control-center.html" class="btn primary"><i class="fas fa-satellite-dish"></i> Control Center</a>
+    </div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="v" id="kpi-total">--</div><div class="l">סה"כ בוטים</div></div>
+    <div class="kpi green"><div class="v" id="kpi-running">-</div><div class="l">פעילים</div></div>
+    <div class="kpi red"><div class="v" id="kpi-stopped">-</div><div class="l">כבויים</div></div>
+    <div class="kpi gold"><div class="v" id="kpi-owners">-</div><div class="l">בעלים רשומים</div></div>
+    <div class="kpi blue"><div class="v" id="kpi-categories">6</div><div class="l">קטגוריות</div></div>
+  </div>
+
+  <div class="filters">
+    <input type="text" id="search" class="search" placeholder="🔍 חיפוש בוט (שם / תפקיד / בעלים)...">
+    <button class="chip active" data-role="all">הכל</button>
+    <button class="chip" data-role="finance">💰 פיננסי</button>
+    <button class="chip" data-role="commerce">🛒 מסחרי</button>
+    <button class="chip" data-role="community">👥 קהילה</button>
+    <button class="chip" data-role="ops">⚙️ תפעול</button>
+    <button class="chip" data-role="gaming">🎮 גיימינג</button>
+    <button class="chip" data-role="security">🛡 אבטחה</button>
+    <button class="chip" data-role="test">🧪 בדיקות</button>
+  </div>
+
+  <div id="grid" class="grid"></div>
+</div>
+
+<div id="modal-bg" class="modal-bg" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <h2 id="modal-title">bot-name</h2>
+    <p class="modal-sub" id="modal-sub"></p>
+    <pre id="modal-prompt"></pre>
+    <div class="modal-actions">
+      <button class="btn primary" onclick="copyPrompt()"><i class="fas fa-copy"></i> העתק לקליפבורד</button>
+      <button class="btn" onclick="shareWA()"><i class="fab fa-whatsapp"></i> שתף ב-WhatsApp</button>
+      <button class="btn" onclick="closeModal()">סגור</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast">✅ הועתק</div>
+
+<script>
+/* === DATA: 22 bots from docker-compose.yml + metadata === */
+const BOTS = [
+  {name:"core-bot",handle:"@SLHCoreBot",role:"community",purpose:"בוט הליבה — קישור בין כל הבוטים",owner:"",dir:"core"},
+  {name:"admin-bot",handle:"@SLH_Admin_Bot",role:"ops",purpose:"ניהול אדמין — פקודות מערכת, לוגים, בקרה",owner:"Osif (224223270)",dir:"admin-bot"},
+  {name:"guardian-bot",handle:"@Grdian_bot",role:"security",purpose:"אבטחה — הגנה מפני הונאות, ZUZ mark of cain",owner:"Osif (224223270)",dir:"guardian"},
+  {name:"wallet-bot",handle:"@SLH_Wallet_Bot",role:"finance",purpose:"ארנק — TON/BNB, העברות, יתרות",owner:"Osif (224223270)",dir:"wallet"},
+  {name:"factory-bot",handle:"@Osifs_Factory_bot",role:"finance",purpose:"השקעות וסטייקינג — Variable Yield (4-12%), 4 תוכניות",owner:"Osif (224223270)",dir:"factory"},
+  {name:"botshop",handle:"@SLH_BotShop",role:"commerce",purpose:"חנות בוטים — יצירת בוטים מותאמים לקהילה",owner:"Osif (224223270)",dir:"botshop"},
+  {name:"fun-bot",handle:"@SLH_community_bot",role:"community",purpose:"בוט קהילה ראשי — Welcome, premium, onboarding",owner:"Osif (224223270)",dir:"fun"},
+  {name:"airdrop-bot",handle:"@SLH_AIR_bot",role:"community",purpose:"Airdrop — חלוקת טוקנים חינמית למצטרפים",owner:"Osif (224223270)",dir:"airdrop"},
+  {name:"campaign-bot",handle:"@Campaign_SLH_bot",role:"ops",purpose:"קמפיינים — ניהול מבצעים, broadcast, אנליטיקה",owner:"Osif (224223270)",dir:"campaign-bot"},
+  {name:"game-bot",handle:"@G4meb0t_bot_bot",role:"gaming",purpose:"משחקים — קזינו, ZVK rewards, leaderboard",owner:"Osif (224223270)",dir:"fun"},
+  {name:"ton-mnh-bot",handle:"@TonMnhBot",role:"finance",purpose:"TON MNH — המרה אוטומטית TON→MNH (יציב)",owner:"Osif (224223270)",dir:"tonmnh-bot"},
+  {name:"slh-ton-bot",handle:"@SLH_ton_bot",role:"finance",purpose:"SLH על TON — ארנק TON ייעודי ל-SLH",owner:"Osif (224223270)",dir:"wallet"},
+  {name:"ledger-bot",handle:"@SLH_Ledger_Bot",role:"finance",purpose:"ספר חשבונות — תיעוד כל העסקאות בבלוקצ'יין",owner:"Osif (224223270)",dir:"core"},
+  {name:"osif-shop-bot",handle:"@Osif_Shop_Bot",role:"commerce",purpose:"חנות Osif — מוצרים דיגיטליים וקורסים",owner:"Osif (224223270)",dir:"osif-shop"},
+  {name:"nifti-bot",handle:"@NIFTI_Publisher_Bot",role:"commerce",purpose:"פרסום NFT — יצירה ומכירת NFT",owner:"Osif (224223270)",dir:"nfty-bot"},
+  {name:"chance-bot",handle:"@SLH_Chance_Bot",role:"gaming",purpose:"הזדמנויות — גורלות, לוטו, תגמולים יומיים",owner:"Osif (224223270)",dir:"fun"},
+  {name:"nfty-bot",handle:"@NFTY_bot",role:"commerce",purpose:"NFT ראשי — מכירת NFT Genesis",owner:"Osif (224223270)",dir:"nfty-bot"},
+  {name:"ts-set-bot",handle:"@TS_Set_Bot",role:"ops",purpose:"TradingSets — הגדרות מסחר אוטומטיות",owner:"Osif (224223270)",dir:"core"},
+  {name:"crazy-panel-bot",handle:"@Crazy_Panel_Bot",role:"ops",purpose:"פאנל בקרה — ניהול תוכן, משתמשים, הודעות",owner:"Osif (224223270)",dir:"core"},
+  {name:"nft-shop-bot",handle:"@NFT_Shop_Bot",role:"commerce",purpose:"חנות NFT — גלריה, מכירות משניות",owner:"Osif (224223270)",dir:"nfty-bot"},
+  {name:"beynonibank-bot",handle:"@Beynoni_Bank",role:"finance",purpose:"בינוני בנק — בנק בינוני/השקעות חרדי",owner:"Elazar Bloy (future)",dir:"core"},
+  {name:"test-bot",handle:"@SLH_Test_Bot",role:"test",purpose:"בדיקות — staging לפני פריסה ל-prod",owner:"Osif (224223270)",dir:"core"}
+];
+
+/* === Login === */
+function checkAuth(){
+  const p = localStorage.getItem('slh_admin_password');
+  if(p && p.length >= 6){
+    document.getElementById('login-gate').style.display='none';
+    document.getElementById('main-app').style.display='block';
+    loadOwners(); render();
+    return true;
+  }
+  document.getElementById('login-gate').style.display='block';
+  document.getElementById('main-app').style.display='none';
+}
+function doLogin(){
+  const p = document.getElementById('login-pwd').value;
+  if(p && p.length>=6){ localStorage.setItem('slh_admin_password', p); checkAuth(); }
+  else alert('סיסמה צריכה להיות לפחות 6 תווים');
+}
+document.getElementById('login-pwd')?.addEventListener('keypress', e=>{ if(e.key==='Enter') doLogin(); });
+
+/* === Owner persistence (localStorage for now; API later) === */
+function loadOwners(){
+  try {
+    const custom = JSON.parse(localStorage.getItem('slh_bot_owners') || '{}');
+    BOTS.forEach(b => { if(custom[b.name]) b.owner = custom[b.name]; });
+  } catch(e) {}
+}
+function saveOwner(botName, owner){
+  try {
+    const custom = JSON.parse(localStorage.getItem('slh_bot_owners') || '{}');
+    custom[botName] = owner;
+    localStorage.setItem('slh_bot_owners', JSON.stringify(custom));
+    showToast('✅ בעלים נשמר');
+    updateKPIs();
+  } catch(e) {}
+}
+
+/* === Filters === */
+let activeRole='all', searchQ='';
+document.querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => {
+  document.querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
+  c.classList.add('active'); activeRole = c.dataset.role; render();
+}));
+document.getElementById('search').addEventListener('input', e => { searchQ = e.target.value.toLowerCase(); render(); });
+
+/* === Render === */
+function render(){
+  let bots = BOTS.slice();
+  if(activeRole !== 'all') bots = bots.filter(b => b.role === activeRole);
+  if(searchQ) bots = bots.filter(b =>
+    b.name.toLowerCase().includes(searchQ) ||
+    b.handle.toLowerCase().includes(searchQ) ||
+    b.purpose.toLowerCase().includes(searchQ) ||
+    (b.owner||'').toLowerCase().includes(searchQ)
+  );
+
+  const grid = document.getElementById('grid');
+  grid.innerHTML = bots.map(b => {
+    // Status inferred: we can't really check, but docker-compose says 24 running → assume running
+    const status = b.name === 'test-bot' ? 'unknown' : 'running';
+    return `
+      <div class="bot-card ${status}">
+        <div class="bot-head">
+          <div>
+            <div class="bot-name">${b.name}</div>
+            <div class="bot-handle">${b.handle}</div>
+          </div>
+          <div class="status-dot ${status}" title="${status}"></div>
+        </div>
+        <span class="bot-role role-${b.role}">${b.role}</span>
+        <div class="bot-purpose">${b.purpose}</div>
+        <div class="owner-row">
+          <label>בעלים:</label>
+          <input type="text" value="${b.owner || ''}" placeholder="מזהה / שם"
+            onchange="saveOwner('${b.name}', this.value); this.classList.add('saved'); setTimeout(()=>this.classList.remove('saved'),2000)">
+        </div>
+        <div class="bot-meta">
+          <div><div class="l">תיקייה</div><div class="v">${b.dir}/</div></div>
+          <div><div class="l">סטטוס</div><div class="v" style="color:var(--${status==='running'?'green':'red'})">${status==='running'?'פעיל':'לא ידוע'}</div></div>
+        </div>
+        <div class="bot-actions">
+          <a class="open-btn" href="https://t.me/${b.handle.replace('@','')}" target="_blank" rel="noopener">
+            <i class="fab fa-telegram"></i> פתח
+          </a>
+          <button class="prompt-btn" onclick='showPrompt(${JSON.stringify(b.name)})'>
+            <i class="fas fa-robot"></i> פרומפט
+          </button>
+          <button class="logs-btn" onclick='viewLogs(${JSON.stringify(b.name)})'>
+            <i class="fas fa-file-alt"></i> לוגים
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+  updateKPIs();
+}
+
+function updateKPIs(){
+  const running = BOTS.filter(b => b.name !== 'test-bot').length;
+  const stopped = 0;
+  const owners = new Set(BOTS.map(b => b.owner).filter(x => x && x.length > 0)).size;
+  document.getElementById('kpi-running').textContent = running;
+  document.getElementById('kpi-stopped').textContent = stopped;
+  document.getElementById('kpi-owners').textContent = owners;
+}
+
+/* === Prompt === */
+let currentPrompt='', currentBot='';
+function showPrompt(botName){
+  const b = BOTS.find(x => x.name === botName);
+  if(!b) return;
+  currentBot = botName;
+  currentPrompt = generatePrompt(b);
+  document.getElementById('modal-title').textContent = b.name + ' · ' + b.handle;
+  document.getElementById('modal-sub').textContent = `${b.role} · ${b.purpose} · בעלים: ${b.owner || '(לא רשום)'}`;
+  document.getElementById('modal-prompt').textContent = currentPrompt;
+  document.getElementById('modal-bg').classList.add('open');
+}
+function generatePrompt(b){
+  return `# משימה: עבודה על בוט ${b.name}
+
+## הקשר
+- **שם בוט:** ${b.name}
+- **Telegram handle:** ${b.handle}
+- **תפקיד:** ${b.role}
+- **מטרה:** ${b.purpose}
+- **תיקיית קוד:** D:/SLH_ECOSYSTEM/${b.dir}/
+- **בעלים:** ${b.owner || '(לא רשום — צריך להקצות)'}
+
+## קבצים עיקריים
+- \`D:/SLH_ECOSYSTEM/${b.dir}/main.py\` או \`app.py\` — קוד הבוט
+- \`D:/SLH_ECOSYSTEM/${b.dir}/shared/\` — קוד משותף
+- \`D:/SLH_ECOSYSTEM/docker-compose.yml\` — שירות: ${b.name}
+- \`D:/SLH_ECOSYSTEM/dockerfiles/Dockerfile.${b.dir}\` (אם קיים)
+
+## שפה ו-framework
+- **Python 3.11+** + **aiogram 3.x**
+- PostgreSQL 15 (pool) + Redis 7 (cache/sessions)
+- Shared module: \`shared/slh_payments/\` + \`shared/bot_template.py\`
+
+## API להתממשקות
+- **API בסיסי:** https://slh-api-production.up.railway.app
+- **אימות אדמין:** \`X-Admin-Key\` header
+- **טוקנים:** POST /api/admin/mass-gift, GET /api/user/{uid}
+- **הרשמה:** POST /api/campaign/register (path_type: buyer/partner/genesis/community)
+
+## כללי עבודה חשובים
+1. **אל תוסיף polling נוסף** — בעיית duplicate messages הוכחה בלוגים
+2. **שפה:** UI בעברית, קוד והערות באנגלית
+3. **אימות:** תמיד קריאה מ-\`os.getenv()\`, לא hardcoded tokens
+4. **תשלומים:** תמיד עובר דרך shared/slh_payments/db.py
+5. **לא למחוק** קבצי .env — רק להוסיף
+
+## הוראות ביצוע
+1. קרא את קוד הבוט הקיים: \`D:/SLH_ECOSYSTEM/${b.dir}/\`
+2. בדוק docker-compose.yml עבור ENV vars של הבוט
+3. בצע שינוי מבוקש בלי לגעת בלוגיקה הקיימת
+4. בדיקה מקומית: \`docker-compose up ${b.name}\`
+5. לוגים: \`docker-compose logs -f ${b.name}\`
+6. Commit עם prefix \`feat(${b.name}):\` או \`fix(${b.name}):\`
+
+## בעלים / משתמש שיש לו גישה
+${b.owner || '🚨 בעלים לא רשום — להקצות דרך Bot Registry'}
+
+---
+**עודכן ע"י Bot Registry · ${new Date().toISOString().slice(0,10)}**`;
+}
+function closeModal(){ document.getElementById('modal-bg').classList.remove('open'); }
+function copyPrompt(){ navigator.clipboard.writeText(currentPrompt).then(() => showToast('✅ הועתק')); }
+function shareWA(){
+  const b = BOTS.find(x => x.name === currentBot);
+  const txt = encodeURIComponent(`בוט: ${b.name} (${b.handle})\nתפקיד: ${b.purpose}\nבעלים: ${b.owner || '(לא רשום)'}\n\n${currentPrompt.slice(0, 600)}...`);
+  window.open(`https://wa.me/?text=${txt}`, '_blank');
+}
+function viewLogs(botName){
+  alert(`📝 צפייה בלוגים דורשת Docker זמין.\n\nפקודה מקומית:\ndocker-compose logs -f ${botName}\n\nאו דרך Portainer: http://localhost:9000`);
+}
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+checkAuth();
+</script>
+
+<script src="/js/ai-assistant.js"></script>
+</body>
+</html>

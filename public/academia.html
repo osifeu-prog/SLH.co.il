@@ -1,0 +1,360 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH Academia — קורסים | השתתף בעולם הקריפטו</title>
+<meta name="description" content="קורסי SLH Academia — קריפטו, בלוקצ'יין, טלגרם בוטים, אבטחה, AI. מחיר בש״ח או SLH. 70% מההכנסות חוזרות למרצה.">
+<meta name="keywords" content="SLH Academia, קורסים, קריפטו, בלוקצ'יין, מרצים, ישראל">
+<link rel="canonical" href="https://slh-nft.com/academia.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="SLH Academia — למד. לימד. הרוויח.">
+<meta property="og:description" content="פלטפורמת קורסים של הקהילה — 70/30 חלוקת הכנסות למרצים. מחיר בשקל או ב-SLH.">
+<meta property="og:image" content="https://slh-nft.com/assets/og/community.png">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/shared.css?v=20260426e">
+<style>
+:root{--bg:#050810;--bg2:#0d1220;--bg3:#151a2e;--gold:#ffd700;--green:#00e887;--red:#ff4444;--purple:#a855f7;--blue:#3b82f6;--cyan:#06b6d4;--text:#f5f5f8;--text2:#9ba0b5;--text3:#5a6078;--border:rgba(168,85,247,.25)}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Rubik',sans-serif;margin:0;min-height:100vh;line-height:1.5}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(circle at 15% 25%,rgba(168,85,247,.06),transparent 50%),radial-gradient(circle at 85% 75%,rgba(6,182,212,.05),transparent 50%)}
+.header{max-width:1200px;margin:0 auto;padding:50px 20px 24px;text-align:center}
+.title{font-size:clamp(32px,6vw,52px);font-weight:900;background:linear-gradient(135deg,var(--purple),var(--cyan),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent;margin:0 0 12px}
+.sub{font-size:16px;color:var(--text2);max-width:720px;margin:0 auto 24px;line-height:1.7}
+.sub strong{color:var(--gold)}
+.cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.cta{display:inline-flex;align-items:center;gap:8px;padding:14px 26px;color:#fff;text-decoration:none;border-radius:14px;font-weight:800;font-size:15px;transition:all .2s;border:none;cursor:pointer;font-family:inherit}
+.cta.primary{background:linear-gradient(135deg,var(--purple),var(--cyan))}
+.cta.secondary{background:var(--bg2);border:1px solid var(--border);color:var(--text)}
+.cta:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(168,85,247,.3)}
+
+.stats-bar{max-width:1200px;margin:0 auto 32px;padding:0 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+.stat{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:18px 14px;text-align:center}
+.stat-num{font-size:28px;font-weight:900;color:var(--gold);display:block}
+.stat-lbl{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-top:4px;font-weight:700}
+
+.filters{max-width:1200px;margin:0 auto 24px;padding:0 20px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.search{flex:1;min-width:240px;padding:12px 16px;background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:12px;font-size:14px;font-family:inherit}
+.search:focus{outline:none;border-color:var(--purple)}
+.chip{padding:8px 14px;background:var(--bg2);border:1px solid var(--border);color:var(--text2);border-radius:18px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+.chip.active{background:var(--purple);color:#fff;border-color:var(--purple)}
+
+.courses-grid{max-width:1200px;margin:0 auto 50px;padding:0 20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px}
+.course-card{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:24px;transition:all .25s;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.course-card:hover{transform:translateY(-4px);border-color:var(--purple);box-shadow:0 14px 35px rgba(168,85,247,.15)}
+.course-preview{height:140px;margin:-24px -24px 18px;background:linear-gradient(135deg,var(--purple),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:64px;color:rgba(255,255,255,.85)}
+.course-card h3{margin:0 0 6px;font-size:19px;font-weight:900;color:var(--text)}
+.course-instructor{font-size:12px;color:var(--cyan);margin-bottom:10px;display:flex;align-items:center;gap:4px}
+.course-desc{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:14px;min-height:60px}
+.course-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.meta-tag{font-size:11px;padding:3px 10px;background:rgba(6,182,212,.15);color:var(--cyan);border-radius:8px;font-weight:700}
+.course-rating{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--gold);margin-bottom:14px}
+.course-footer{display:flex;justify-content:space-between;align-items:center;padding-top:14px;border-top:1px solid var(--border);margin-top:auto}
+.course-price{display:flex;flex-direction:column}
+.price-ils{font-size:20px;font-weight:900;color:var(--gold)}
+.price-slh{font-size:11px;color:var(--text2)}
+.buy-btn{padding:10px 18px;background:linear-gradient(135deg,var(--purple),var(--cyan));color:#fff;border:none;border-radius:10px;font-weight:800;font-size:13px;cursor:pointer;text-decoration:none;font-family:inherit}
+.buy-btn:hover{transform:scale(1.05);box-shadow:0 6px 16px rgba(168,85,247,.4)}
+.empty-state{grid-column:1/-1;text-align:center;padding:80px 20px;color:var(--text2)}
+.empty-state .ico{font-size:72px;margin-bottom:16px;color:var(--purple);opacity:.5}
+.empty-state h2{color:var(--text);margin:0 0 12px}
+.empty-state p{max-width:500px;margin:0 auto 20px;line-height:1.7}
+
+/* Instructor CTA banner */
+.instructor-banner{max-width:1200px;margin:40px auto;padding:40px 28px;background:linear-gradient(135deg,rgba(255,215,0,.08),rgba(168,85,247,.08));border:1px solid rgba(255,215,0,.3);border-radius:20px;text-align:center}
+.instructor-banner h2{font-size:clamp(22px,3.5vw,32px);margin:0 0 12px;color:var(--gold)}
+.instructor-banner p{max-width:700px;margin:0 auto 18px;font-size:15px;color:var(--text2);line-height:1.8}
+.revenue-split{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;max-width:720px;margin:20px auto;padding:0}
+.split-box{background:var(--bg2);padding:18px;border-radius:12px;border:1px solid var(--border)}
+.split-box .pct{font-size:32px;font-weight:900;color:var(--green);display:block}
+.split-box .lbl{font-size:12px;color:var(--text2);font-weight:700}
+
+footer{max-width:1200px;margin:40px auto 20px;padding:20px;text-align:center;color:var(--text3);font-size:13px;border-top:1px solid var(--border)}
+footer a{color:var(--cyan);text-decoration:none;margin:0 10px}
+</style>
+</head>
+<body>
+
+<!-- Site nav (loaded by shared.js) -->
+<div id="topnav-root"></div>
+<div id="ticker-root"></div>
+
+<div class="header">
+  <h1 class="title">🎓 SLH Academia</h1>
+  <p class="sub">
+    קורסים של הקהילה, לקהילה. קריפטו, בלוקצ'יין, טלגרם בוטים, אבטחה, AI, יזמות.
+    <br><strong>70% חוזר למרצה</strong> · <strong>30% לפלטפורמה</strong> · תשלום בשקל או ב-SLH.
+  </p>
+  <div class="cta-row">
+    <a href="#courses" class="cta primary"><i class="fas fa-book"></i> עיין בקורסים</a>
+    <a href="#vip" class="cta secondary" style="border-color:var(--gold);color:var(--gold)"><i class="fas fa-crown"></i> מסלול VIP</a>
+    <a href="#teach" class="cta secondary"><i class="fas fa-chalkboard-teacher"></i> אני רוצה ללמד</a>
+  </div>
+</div>
+
+<!-- VIP tier -->
+<section id="vip" style="max-width:1100px;margin:0 auto 50px;padding:0 20px">
+  <div style="background:linear-gradient(135deg,rgba(255,215,0,.08),rgba(168,85,247,.08));border:1px solid rgba(255,215,0,.3);border-radius:20px;padding:36px 28px;display:grid;grid-template-columns:1.2fr 1fr;gap:28px;align-items:center">
+    <div>
+      <div style="display:inline-block;padding:4px 12px;background:rgba(255,215,0,.15);color:var(--gold);font-size:11px;font-weight:800;letter-spacing:1.3px;text-transform:uppercase;border-radius:14px;margin-bottom:14px">👑 Academia VIP</div>
+      <h2 style="font-size:28px;font-weight:900;margin:0 0 10px;color:var(--text)">גישה מלאה · 99 ₪ / חודש</h2>
+      <p style="color:var(--text2);font-size:15px;margin:0 0 20px;line-height:1.7">
+        מסלול מנוי חודשי לכל קורסי SLH Academia + קהילה פרטית + ZVK חודשי.
+        <strong style="color:var(--gold)">ביטול בכל עת</strong> · חשבוניות מסודרות ·
+        <a href="/treasury-health.html" style="color:var(--cyan);text-decoration:none">שקיפות פיננסית מלאה</a>.
+      </p>
+      <ul style="list-style:none;padding:0;margin:0 0 22px;display:grid;grid-template-columns:1fr 1fr;gap:10px 20px;font-size:14px">
+        <li style="display:flex;align-items:center;gap:8px"><i class="fas fa-check-circle" style="color:var(--green)"></i> כל הקורסים הקיימים</li>
+        <li style="display:flex;align-items:center;gap:8px"><i class="fas fa-check-circle" style="color:var(--green)"></i> קורסים חדשים ללא תוספת</li>
+        <li style="display:flex;align-items:center;gap:8px"><i class="fas fa-check-circle" style="color:var(--green)"></i> קבוצת Telegram VIP</li>
+        <li style="display:flex;align-items:center;gap:8px"><i class="fas fa-check-circle" style="color:var(--green)"></i> 25 ZVK חודשי (≈110 ₪)</li>
+        <li style="display:flex;align-items:center;gap:8px"><i class="fas fa-check-circle" style="color:var(--green)"></i> עדיפות בתמיכה</li>
+        <li style="display:flex;align-items:center;gap:8px"><i class="fas fa-check-circle" style="color:var(--green)"></i> הנחה ב-Marketplace</li>
+      </ul>
+      <a href="https://t.me/osifeu_prog?text=%D7%90%D7%A0%D7%99%20%D7%A8%D7%95%D7%A6%D7%94%20%D7%9C%D7%94%D7%A6%D7%98%D7%A8%D7%A3%20%D7%9C-Academia%20VIP" target="_blank" rel="noopener" class="cta primary" style="display:inline-flex;align-items:center;gap:8px">
+        <i class="fas fa-crown"></i> הצטרף ל-VIP עכשיו
+      </a>
+      <div style="margin-top:10px;color:var(--text3);font-size:12px">
+        רוצה יותר? <a href="/ambassador.html" style="color:var(--purple);text-decoration:none;font-weight:700">תוכנית Ambassador ב-199 ₪</a> נותנת גם בוט פרטי + עמלות.
+      </div>
+    </div>
+    <div style="text-align:center">
+      <div style="font-size:72px;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1">99 ₪</div>
+      <div style="color:var(--text2);font-size:15px;margin-top:-6px">לחודש</div>
+      <div style="color:var(--text3);font-size:12px;margin-top:14px">= 3.3 ₪ ליום · פחות מקפה</div>
+      <div style="margin-top:20px;padding:14px 16px;background:var(--bg3);border-radius:10px;font-size:12px;color:var(--text2);text-align:right;line-height:1.7">
+        <strong style="color:var(--gold);display:block;margin-bottom:6px">💡 למה VIP?</strong>
+        קורס בודד = 199 ₪. 2 קורסים בחודש = 398 ₪.<br>
+        VIP = 99 ₪ · גישה ללא הגבלה.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Live stats -->
+<div class="stats-bar">
+  <div class="stat">
+    <span class="stat-num" id="stat-courses">-</span>
+    <span class="stat-lbl">קורסים זמינים</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num" id="stat-instructors">-</span>
+    <span class="stat-lbl">מרצים פעילים</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num" id="stat-students">-</span>
+    <span class="stat-lbl">סטודנטים</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num" id="stat-reviews">-</span>
+    <span class="stat-lbl">ביקורות</span>
+  </div>
+</div>
+
+<!-- Filters -->
+<div class="filters">
+  <input type="text" class="search" id="search" placeholder="🔍 חפש קורס, מרצה, או נושא...">
+  <button class="chip active" data-lang="all">הכל</button>
+  <button class="chip" data-lang="he">עברית</button>
+  <button class="chip" data-lang="en">English</button>
+  <button class="chip" data-lang="ru">Русский</button>
+  <button class="chip" data-lang="ar">العربية</button>
+</div>
+
+<!-- Featured Course #1 -->
+<section style="max-width:1200px;margin:0 auto 40px;padding:0 20px">
+  <div style="background:linear-gradient(135deg,rgba(255,215,0,.08),rgba(168,85,247,.08));border:1px solid rgba(255,215,0,.35);border-radius:20px;padding:32px 28px;display:grid;grid-template-columns:1fr auto;gap:28px;align-items:center">
+    <div>
+      <div style="display:inline-block;padding:4px 12px;background:rgba(255,215,0,.15);color:var(--gold);border-radius:20px;font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px">⭐ Course #1 · Featured</div>
+      <h2 style="margin:0 0 8px;font-size:clamp(22px,3vw,30px);color:var(--text);font-weight:900">כלכלת תשואה דינמית — Dynamic Yield Economics</h2>
+      <p style="color:var(--text2);font-size:14px;line-height:1.7;margin:0 0 14px;max-width:700px">
+        הקורס הראשון של SLH Academia. 6 מודולים של נוסחאות אמיתיות, סימולטור Python, ומחשבון אינטראקטיבי —
+        ללמד אותך איך לבנות מערכת קריפטו שלא מתפרקת. <strong style="color:var(--gold)">מודולים 1-2 חינם לכולם.</strong>
+      </p>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--text3)">
+        <span>📚 6 מודולים · 8 שעות</span>
+        <span>🧮 מחשבון חי</span>
+        <span>🐍 סימולטור Python</span>
+        <span>🏅 Certificate NFT</span>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;min-width:180px">
+      <a href="/academy/course-1-dynamic-yield.html" style="display:block;padding:14px 20px;background:linear-gradient(135deg,var(--gold),#f59e0b);color:#000;font-weight:900;text-align:center;border-radius:12px;text-decoration:none">פרטים + רכישה</a>
+      <a href="/academy/course-1-dynamic-yield/module-1.html" style="display:block;padding:12px 20px;background:var(--bg3);border:1px solid var(--border);color:var(--text);text-align:center;border-radius:12px;font-weight:700;text-decoration:none;font-size:13px">התחל חינם</a>
+    </div>
+  </div>
+</section>
+
+<!-- Courses -->
+<div class="courses-grid" id="courses-grid">
+  <div class="empty-state">
+    <div class="ico"><i class="fas fa-spinner fa-spin"></i></div>
+    <h2>טוען קורסים נוספים...</h2>
+  </div>
+</div>
+
+<!-- Instructor CTA -->
+<div class="instructor-banner" id="teach">
+  <h2>💼 אתה מומחה? לימד, וקבל תשלום אמיתי</h2>
+  <p>
+    יש לך ידע שאנשים ישלמו עליו? SLH Academia היא הדרך הכי פשוטה להגיע לקהל הישראלי של הקריפטו.
+    העלה קורס, קבע מחיר בש"ח, וקבל <strong>70% אוטומטית</strong> על כל רישום.
+  </p>
+  <div class="revenue-split">
+    <div class="split-box">
+      <span class="pct">70%</span>
+      <span class="lbl">למרצה</span>
+    </div>
+    <div class="split-box">
+      <span class="pct">30%</span>
+      <span class="lbl">לפלטפורמה (burn + ops)</span>
+    </div>
+    <div class="split-box">
+      <span class="pct">100 ZVK</span>
+      <span class="lbl">בונוס הרשמה</span>
+    </div>
+  </div>
+  <div class="cta-row">
+    <a href="https://t.me/SLH_Academia_bot?start=instructor" target="_blank" class="cta primary">
+      <i class="fab fa-telegram"></i> הרשמה דרך הבוט
+    </a>
+    <button class="cta secondary" onclick="alert('מייד: שלח הודעה ל-@osifeu_prog בטלגרם עם הנושא והביו. נאשר תוך 24 שעות.')">
+      <i class="fas fa-info-circle"></i> איך זה עובד?
+    </button>
+  </div>
+</div>
+
+<footer>
+  <div>💡 <a href="/experts.html">מומחים לייעוץ</a> · <a href="/earn.html">חידת סודוקו</a> · <a href="/marketplace">שוק</a> · <a href="/dashboard.html">דשבורד</a></div>
+  <div style="margin-top:10px;font-size:11px">SLH Academia · חלק מה-SLH Spark Ecosystem · 70/30 split חוזה חכם</div>
+</footer>
+
+<!-- Shared JS -->
+<script src="/js/shared.js?v=20260426e" defer></script>
+
+<script>
+const API = 'https://slh-api-production.up.railway.app';
+let allCourses = [];
+let currentLang = 'all';
+
+// Fetch live courses
+async function loadCourses() {
+  const grid = document.getElementById('courses-grid');
+  try {
+    const res = await fetch(`${API}/api/academia/courses?limit=50`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    allCourses = data.courses || [];
+    document.getElementById('stat-courses').textContent = data.total || 0;
+    renderCourses(allCourses);
+  } catch (err) {
+    console.warn('Courses fetch failed:', err);
+    showEmpty('⚠️ לא הצלחנו לטעון קורסים. נסה שוב בעוד רגע.');
+  }
+}
+
+// Load misc stats
+async function loadStats() {
+  try {
+    // Instructors count — approximate via distinct instructor_ids in courses
+    const insSet = new Set(allCourses.map(c => c.instructor_id).filter(Boolean));
+    document.getElementById('stat-instructors').textContent = insSet.size || '0';
+    // Students + reviews — TBD (needs aggregate endpoint). Show placeholder.
+    document.getElementById('stat-students').textContent = '—';
+    document.getElementById('stat-reviews').textContent = '—';
+  } catch (e) { /* silent */ }
+}
+
+function renderCourses(courses) {
+  const grid = document.getElementById('courses-grid');
+  if (!courses.length) {
+    grid.innerHTML = `
+      <div class="empty-state">
+        <div class="ico"><i class="fas fa-graduation-cap"></i></div>
+        <h2>עוד אין קורסים — תהיה הראשון!</h2>
+        <p>
+          הקהילה של SLH Academia צעירה. המרצים הראשונים יקבלו קישור מודגש בדף הבית,
+          בונוס של 100 ZVK על ההרשמה, ו-70% מכל מכירה.
+        </p>
+        <a href="#teach" class="cta primary"><i class="fas fa-rocket"></i> הוסף את הקורס הראשון</a>
+      </div>
+    `;
+    return;
+  }
+  grid.innerHTML = courses.map(c => {
+    const icon = c.language === 'he' ? '🇮🇱' : c.language === 'en' ? '🇬🇧' : c.language === 'ru' ? '🇷🇺' : c.language === 'ar' ? '🇸🇦' : '📚';
+    const priceIls = c.price_ils > 0 ? `${c.price_ils.toLocaleString('he-IL')} ₪` : 'חינם';
+    const priceSlh = c.price_slh > 0 ? `או ${c.price_slh} SLH` : '';
+    const rating = c.avg_rating > 0 ? `⭐ ${c.avg_rating.toFixed(1)} (${c.reviews_count || 0})` : '🆕 חדש';
+    const instructor = c.instructor_name || c.instructor_username || 'מרצה SLH';
+    return `
+      <div class="course-card">
+        <div class="course-preview">${icon}</div>
+        <h3>${escapeHtml(c.title_he || c.title || 'קורס SLH')}</h3>
+        <div class="course-instructor"><i class="fas fa-user-circle"></i> ${escapeHtml(instructor)}</div>
+        <div class="course-desc">${escapeHtml(c.description_he || c.description || 'תיאור קורס יעודכן בקרוב').slice(0, 160)}</div>
+        <div class="course-meta">
+          <span class="meta-tag">${c.language || 'he'}</span>
+          ${c.duration_minutes ? `<span class="meta-tag">${c.duration_minutes} דק'</span>` : ''}
+          ${c.category ? `<span class="meta-tag">${escapeHtml(c.category)}</span>` : ''}
+        </div>
+        <div class="course-rating">${rating}</div>
+        <div class="course-footer">
+          <div class="course-price">
+            <span class="price-ils">${priceIls}</span>
+            ${priceSlh ? `<span class="price-slh">${priceSlh}</span>` : ''}
+          </div>
+          <a href="/pay.html?product_id=academia-${c.slug || c.id}&amount=${c.price_ils || 0}" class="buy-btn">
+            <i class="fas fa-shopping-cart"></i> רכוש
+          </a>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function showEmpty(msg) {
+  document.getElementById('courses-grid').innerHTML = `
+    <div class="empty-state">
+      <div class="ico"><i class="fas fa-exclamation-circle"></i></div>
+      <h2>${msg}</h2>
+    </div>
+  `;
+}
+
+function escapeHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+// Language filter
+document.querySelectorAll('.chip').forEach(chip => {
+  chip.onclick = () => {
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    currentLang = chip.dataset.lang;
+    const filtered = currentLang === 'all' ? allCourses : allCourses.filter(c => c.language === currentLang);
+    renderCourses(filtered);
+  };
+});
+
+// Search
+document.getElementById('search').oninput = (e) => {
+  const q = e.target.value.toLowerCase().trim();
+  if (!q) { renderCourses(currentLang === 'all' ? allCourses : allCourses.filter(c => c.language === currentLang)); return; }
+  const filtered = allCourses.filter(c =>
+    (c.title_he || c.title || '').toLowerCase().includes(q) ||
+    (c.description_he || c.description || '').toLowerCase().includes(q) ||
+    (c.instructor_name || '').toLowerCase().includes(q)
+  );
+  renderCourses(filtered);
+};
+
+// Init
+loadCourses().then(loadStats);
+</script>
+
+</body>
+</html>

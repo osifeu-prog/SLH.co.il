@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://slh-nft.com/sitemap.xml

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta name="robots" content="noindex,nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Therapists Admin · SLH Spark</title>
+  <link rel="icon" type="image/png" href="/favicon-32.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/shared.css?v=20260427a">
+  <style>
+    body { font-family:'Inter',system-ui,sans-serif; background:var(--bg,#0a0a0f); color:var(--text,#e0e0e0); margin:0; }
+    .wrap { max-width: 1400px; margin: 0 auto; padding: 24px 20px 60px; }
+    h1 { font-size: 26px; margin: 0 0 6px; background:linear-gradient(135deg,#ff6b9d,#00e887); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .sub { font-size: 13px; color: var(--text2,#9a9aa8); margin-bottom: 22px; }
+
+    .auth-notice { padding:14px; background:rgba(255,71,87,.08); border:1px solid rgba(255,71,87,.3); border-radius:10px; margin-bottom:18px; font-size:13px; display:none; }
+    .auth-notice.show { display:block; }
+    .auth-notice code { background:rgba(0,0,0,.3); padding:2px 6px; border-radius:4px; }
+
+    .toolbar { display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap; align-items:center; }
+    .toolbar input, .toolbar select { padding:9px 12px; background:rgba(0,0,0,.3); border:1px solid rgba(255,255,255,.1); border-radius:8px; color:var(--text); font-family:inherit; font-size:13px; }
+    .btn { padding:9px 16px; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px; }
+    .btn-primary { background:linear-gradient(135deg,#00e887,#00ff41); color:#000; }
+    .btn-secondary { background:rgba(255,255,255,.05); color:var(--text); border:1px solid rgba(255,255,255,.1); }
+    .btn-danger { background:rgba(255,71,87,.15); color:#ff6b81; border:1px solid rgba(255,71,87,.3); }
+
+    .stats { display:grid; grid-template-columns:repeat(auto-fit, minmax(140px,1fr)); gap:10px; margin-bottom:18px; }
+    .stat { padding:14px 16px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08); border-radius:10px; }
+    .stat .v { font-size:22px; font-weight:900; color:#00e887; font-family:monospace; }
+    .stat .l { font-size:11px; color:var(--text2,#9a9aa8); margin-top:3px; }
+
+    table { width:100%; border-collapse:collapse; font-size:12px; background:rgba(255,255,255,.02); border-radius:10px; overflow:hidden; }
+    th, td { text-align:right; padding:10px 12px; border-bottom:1px solid rgba(255,255,255,.05); vertical-align:top; }
+    th { font-weight:700; color:var(--text2,#9a9aa8); font-size:11px; text-transform:uppercase; letter-spacing:.5px; background:rgba(0,0,0,.3); }
+    tr:hover td { background:rgba(255,255,255,.02); }
+    td.actions { white-space:nowrap; }
+    .badge { display:inline-block; padding:2px 8px; border-radius:10px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; }
+    .badge.pending  { background:rgba(255,215,0,.1); color:#ffd700; border:1px solid rgba(255,215,0,.3); }
+    .badge.approved { background:rgba(0,232,135,.1); color:#00e887; border:1px solid rgba(0,232,135,.3); }
+    .badge.rejected { background:rgba(255,71,87,.1); color:#ff6b81; border:1px solid rgba(255,71,87,.3); }
+    .badge.suspended{ background:rgba(150,150,150,.1); color:#999;   border:1px solid rgba(150,150,150,.3); }
+
+    .empty { padding:30px; text-align:center; color:var(--text2,#9a9aa8); }
+    .err   { padding:14px; background:rgba(255,71,87,.1); border:1px solid #ef4444; border-radius:8px; color:#ff6b81; margin-bottom:14px; }
+
+    .modal { position:fixed; inset:0; background:rgba(0,0,0,.7); display:none; align-items:center; justify-content:center; padding:20px; z-index:100; }
+    .modal.show { display:flex; }
+    .modal-box { background:#0a0a0f; border:1px solid rgba(255,255,255,.15); border-radius:14px; padding:24px; max-width:520px; width:100%; max-height:90vh; overflow-y:auto; }
+    .modal-box h3 { margin:0 0 14px; font-size:18px; color:#ff6b9d; }
+    .modal-box label { display:block; font-size:12px; color:var(--text2); margin:10px 0 4px; text-transform:uppercase; letter-spacing:.5px; font-weight:700; }
+    .modal-box input, .modal-box textarea { width:100%; padding:9px 12px; background:rgba(0,0,0,.3); border:1px solid rgba(255,255,255,.1); border-radius:8px; color:var(--text); font-family:inherit; font-size:13px; box-sizing:border-box; }
+    .modal-box textarea { min-height:80px; resize:vertical; }
+    .modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:18px; }
+
+    .pager { display:flex; justify-content:center; gap:10px; margin-top:18px; align-items:center; font-size:12px; color:var(--text2); }
+    .pager button { padding:6px 12px; background:rgba(255,255,255,.05); color:var(--text); border:1px solid rgba(255,255,255,.1); border-radius:6px; cursor:pointer; font-size:12px; }
+    .pager button:disabled { opacity:.4; cursor:not-allowed; }
+
+    .detail-row { display:flex; gap:8px; flex-wrap:wrap; font-size:11px; color:var(--text2); margin-top:4px; }
+    .detail-row span { background:rgba(0,0,0,.2); padding:2px 7px; border-radius:6px; }
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <h1>🩺 Therapists Network — Admin</h1>
+  <div class="sub">ניהול בקשות הצטרפות מטפלים — אישור / דחייה / קישור למשתמש</div>
+
+  <div id="auth-notice" class="auth-notice">
+    ⚠️ אין מפתח אדמין מוגדר. הריצי בקונסול:<br>
+    <code>localStorage.setItem('slh_admin_password', '&lt;your admin key&gt;'); location.reload();</code>
+  </div>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="toolbar">
+    <select id="statusFilter">
+      <option value="pending">ממתינים לאישור</option>
+      <option value="approved">מאושרים</option>
+      <option value="rejected">נדחו</option>
+      <option value="suspended">מושעים</option>
+      <option value="">הכל</option>
+    </select>
+    <input id="searchInput" type="text" placeholder="חיפוש (שם / אימייל / מקצוע)" style="flex:1; min-width:200px">
+    <button class="btn btn-secondary" onclick="loadList()">🔄 רענן</button>
+  </div>
+
+  <div id="content">
+    <div class="empty">טוען...</div>
+  </div>
+
+  <div class="pager" id="pager" style="display:none">
+    <button id="prev">‹ הקודם</button>
+    <span id="pageInfo">—</span>
+    <button id="next">הבא ›</button>
+  </div>
+</div>
+
+<!-- Approve modal -->
+<div class="modal" id="modal-approve">
+  <div class="modal-box">
+    <h3>אישור מטפל</h3>
+    <div id="approve-summary" style="font-size:13px; color:var(--text2); margin-bottom:10px;"></div>
+    <label>קישור ל-user_id (אופציונלי — נדרש כדי להפעיל is_therapist בכרטיס החבר)</label>
+    <input id="approve-uid" type="number" placeholder="למשל 224223270">
+    <div style="font-size:11px; color:var(--text2); margin-top:6px;">
+      💡 אם תשאיר ריק — האפליקציה תאושר אבל המטפל לא יזוהה כ-is_therapist בכרטיס החבר
+      עד שיכניס למערכת ויקבל user_id.
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('modal-approve')">ביטול</button>
+      <button class="btn btn-primary" onclick="doApprove()">✓ אשר</button>
+    </div>
+  </div>
+</div>
+
+<!-- Reject modal -->
+<div class="modal" id="modal-reject">
+  <div class="modal-box">
+    <h3>דחיית מטפל</h3>
+    <div id="reject-summary" style="font-size:13px; color:var(--text2); margin-bottom:10px;"></div>
+    <label>סיבת הדחייה (תוצג למבקש בעתיד)</label>
+    <textarea id="reject-reason" placeholder="לדוגמה: אין רישיון בתוקף / פרטי קשר לא תקפים / כפילות..."></textarea>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('modal-reject')">ביטול</button>
+      <button class="btn btn-danger" onclick="doReject()">✕ דחה</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = 'https://slh-api-production.up.railway.app';
+const AUTH_KEY = 'slh_admin_password';
+const PAGE_SIZE = 20;
+let currentOffset = 0;
+let totalCount = 0;
+let activeApp = null;  // application currently being approved/rejected
+
+function getAdminKey() { return localStorage.getItem(AUTH_KEY) || ''; }
+
+async function apiCall(method, path, body) {
+  const key = getAdminKey();
+  if (!key) { document.getElementById('auth-notice').classList.add('show'); return null; }
+  const opts = { method, headers: { 'X-Admin-Key': key, 'Content-Type': 'application/json' } };
+  if (body) opts.body = JSON.stringify(body);
+  try {
+    const r = await fetch(API + path, opts);
+    if (r.status === 403) {
+      document.getElementById('auth-notice').classList.add('show');
+      return null;
+    }
+    if (!r.ok && r.status !== 404) {
+      throw new Error('HTTP ' + r.status);
+    }
+    return await r.json();
+  } catch (e) {
+    console.error(method, path, e);
+    return { _error: e.message };
+  }
+}
+
+function escHtml(s) {
+  if (s == null) return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function fmtDate(s) {
+  if (!s) return '—';
+  try { return new Date(s).toLocaleString('he-IL', { dateStyle:'short', timeStyle:'short' }); }
+  catch { return s; }
+}
+
+async function loadStats() {
+  // Fetch counts per status by querying each one (simple, no extra endpoint)
+  const statuses = ['pending', 'approved', 'rejected', 'suspended'];
+  const counts = {};
+  for (const s of statuses) {
+    const data = await apiCall('GET', `/api/therapists/applications?status=${s}&limit=1&offset=0`);
+    if (data && !data._error) counts[s] = data.total || 0;
+  }
+  const el = document.getElementById('stats');
+  el.innerHTML = `
+    <div class="stat"><div class="v">${counts.pending || 0}</div><div class="l">ממתינים</div></div>
+    <div class="stat"><div class="v">${counts.approved || 0}</div><div class="l">מאושרים</div></div>
+    <div class="stat"><div class="v">${counts.rejected || 0}</div><div class="l">נדחו</div></div>
+    <div class="stat"><div class="v">${counts.suspended || 0}</div><div class="l">מושעים</div></div>
+  `;
+}
+
+async function loadList() {
+  const status = document.getElementById('statusFilter').value;
+  const search = document.getElementById('searchInput').value.trim();
+  const params = new URLSearchParams({ limit: PAGE_SIZE, offset: currentOffset });
+  if (status) params.set('status', status);
+  if (search) params.set('search', search);
+
+  const content = document.getElementById('content');
+  content.innerHTML = '<div class="empty">טוען...</div>';
+
+  const data = await apiCall('GET', '/api/therapists/applications?' + params);
+  if (!data) return;
+  if (data._error) {
+    content.innerHTML = `<div class="err">שגיאה: ${escHtml(data._error)}</div>`;
+    return;
+  }
+  totalCount = data.total || 0;
+
+  if (!data.applications || data.applications.length === 0) {
+    content.innerHTML = '<div class="empty">אין בקשות שתואמות את הסינון</div>';
+    document.getElementById('pager').style.display = 'none';
+    return;
+  }
+
+  const rows = data.applications.map(a => {
+    const linked = a.user_id ? `🔗 user_id=${a.user_id}` : '—';
+    const tg = a.telegram_id ? `📱 ${a.telegram_id}` : '';
+    const phone = a.phone ? `☎ ${escHtml(a.phone)}` : '';
+    const handle = a.handle ? `@${escHtml(a.handle.replace(/^@/, ''))}` : '';
+    const exp = a.experience_yrs ? `${a.experience_yrs} שנים` : '';
+    const hours = a.hours_per_week ? `${escHtml(a.hours_per_week)}/שבוע` : '';
+
+    let actions = '';
+    if (a.status === 'pending') {
+      actions = `
+        <button class="btn btn-primary" onclick='openApprove(${JSON.stringify(a).replace(/'/g, "&#39;")})'>✓ אשר</button>
+        <button class="btn btn-danger" onclick='openReject(${JSON.stringify(a).replace(/'/g, "&#39;")})' style="margin-right:6px">✕ דחה</button>
+      `;
+    } else if (a.status === 'approved') {
+      actions = `<span style="font-size:11px;color:var(--text2)">${fmtDate(a.approved_at)}</span>`;
+    } else if (a.status === 'rejected' && a.rejected_reason) {
+      actions = `<span style="font-size:11px;color:var(--text2)" title="${escHtml(a.rejected_reason)}">${escHtml(a.rejected_reason).slice(0,40)}${a.rejected_reason.length>40?'…':''}</span>`;
+    }
+
+    return `
+      <tr>
+        <td>#${a.id}</td>
+        <td>
+          <strong>${escHtml(a.name)}</strong>
+          <div class="detail-row">
+            <span>${escHtml(a.profession)}</span>
+            ${exp ? `<span>${exp}</span>` : ''}
+            ${hours ? `<span>${hours}</span>` : ''}
+            ${handle ? `<span>${handle}</span>` : ''}
+          </div>
+        </td>
+        <td style="font-size:11px">
+          ${escHtml(a.email)}<br>
+          ${phone}
+        </td>
+        <td>${escHtml(a.specialties || '—').slice(0, 100)}${a.specialties && a.specialties.length > 100 ? '…' : ''}</td>
+        <td><span class="badge ${a.status}">${a.status}</span><div style="font-size:10px;color:var(--text2);margin-top:4px">${linked} ${tg}</div></td>
+        <td style="font-size:11px;color:var(--text2)">${fmtDate(a.created_at)}</td>
+        <td class="actions">${actions}</td>
+      </tr>
+    `;
+  }).join('');
+
+  content.innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th>שם / מקצוע</th><th>קשר</th><th>התמחויות</th>
+          <th>סטטוס</th><th>נרשם</th><th>פעולות</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+
+  // Pager
+  const pager = document.getElementById('pager');
+  if (totalCount > PAGE_SIZE) {
+    pager.style.display = 'flex';
+    const showing = Math.min(currentOffset + PAGE_SIZE, totalCount);
+    document.getElementById('pageInfo').textContent = `${currentOffset + 1}–${showing} / ${totalCount}`;
+    document.getElementById('prev').disabled = currentOffset === 0;
+    document.getElementById('next').disabled = currentOffset + PAGE_SIZE >= totalCount;
+  } else {
+    pager.style.display = 'none';
+  }
+}
+
+function openModal(id) { document.getElementById(id).classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+function openApprove(app) {
+  activeApp = app;
+  document.getElementById('approve-summary').innerHTML =
+    `<strong>#${app.id}</strong> · ${escHtml(app.name)} · ${escHtml(app.profession)} · ${escHtml(app.email)}`;
+  document.getElementById('approve-uid').value = '';
+  openModal('modal-approve');
+}
+
+function openReject(app) {
+  activeApp = app;
+  document.getElementById('reject-summary').innerHTML =
+    `<strong>#${app.id}</strong> · ${escHtml(app.name)} · ${escHtml(app.profession)} · ${escHtml(app.email)}`;
+  document.getElementById('reject-reason').value = '';
+  openModal('modal-reject');
+}
+
+async function doApprove() {
+  if (!activeApp) return;
+  const uidRaw = document.getElementById('approve-uid').value.trim();
+  const body = uidRaw ? { user_id: parseInt(uidRaw, 10) } : {};
+  const r = await apiCall('PATCH', `/api/therapists/applications/${activeApp.id}/approve`, body);
+  if (r && r.ok) {
+    closeModal('modal-approve');
+    activeApp = null;
+    await loadStats();
+    await loadList();
+  } else if (r && r._error) {
+    alert('שגיאה: ' + r._error);
+  }
+}
+
+async function doReject() {
+  if (!activeApp) return;
+  const reason = document.getElementById('reject-reason').value.trim();
+  if (!reason) { alert('יש להזין סיבת דחייה'); return; }
+  const r = await apiCall('PATCH', `/api/therapists/applications/${activeApp.id}/reject`, { reason });
+  if (r && r.ok) {
+    closeModal('modal-reject');
+    activeApp = null;
+    await loadStats();
+    await loadList();
+  } else if (r && r._error) {
+    alert('שגיאה: ' + r._error);
+  }
+}
+
+document.getElementById('statusFilter').addEventListener('change', () => { currentOffset = 0; loadList(); });
+let searchTimer;
+document.getElementById('searchInput').addEventListener('input', () => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => { currentOffset = 0; loadList(); }, 300);
+});
+document.getElementById('prev').addEventListener('click', () => {
+  if (currentOffset > 0) { currentOffset = Math.max(0, currentOffset - PAGE_SIZE); loadList(); }
+});
+document.getElementById('next').addEventListener('click', () => {
+  if (currentOffset + PAGE_SIZE < totalCount) { currentOffset += PAGE_SIZE; loadList(); }
+});
+
+(async () => {
+  if (!getAdminKey()) document.getElementById('auth-notice').classList.add('show');
+  await loadStats();
+  await loadList();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>🔐 SLH Token Rotation Tool</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#ff8c00">
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="stylesheet" href="/css/shared.css?v=20260414">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro", "Segoe UI", system-ui, sans-serif;
+            background: #0a0a0f;
+            color: #fff;
+            -webkit-font-smoothing: antialiased;
+            padding-bottom: 100px;
+        }
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: linear-gradient(180deg, rgba(10,10,15,0.98), rgba(10,10,15,0.85));
+            backdrop-filter: blur(12px);
+            padding: 16px 18px 12px;
+            border-bottom: 1px solid rgba(255,140,0,0.2);
+        }
+        .header h1 {
+            font-size: 20px;
+            font-weight: 900;
+            margin: 0 0 6px;
+            background: linear-gradient(135deg, #ff8c00, #00bcd4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .header .sub {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 10px;
+        }
+        .progress-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        .progress-bar .fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff8c00, #00bcd4);
+            width: 0%;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 8px rgba(255,140,0,0.5);
+        }
+        .progress-text {
+            font-size: 11px;
+            color: #aaa;
+            display: flex;
+            justify-content: space-between;
+        }
+        .toolbar {
+            padding: 10px 18px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            background: rgba(255,255,255,0.03);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .toolbar button {
+            flex: 1;
+            min-width: 100px;
+            padding: 10px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .toolbar button:active {
+            background: rgba(255,140,0,0.2);
+            transform: scale(0.97);
+        }
+        .toolbar button.primary {
+            background: linear-gradient(135deg, #ff8c00, #ff6b00);
+            border-color: transparent;
+        }
+        .list {
+            padding: 12px 14px;
+        }
+        .bot-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 12px;
+            transition: all 0.25s ease;
+        }
+        .bot-card.done {
+            background: rgba(34,197,94,0.08);
+            border-color: rgba(34,197,94,0.3);
+        }
+        .bot-card.open {
+            border-color: rgba(255,140,0,0.4);
+            background: rgba(255,140,0,0.06);
+        }
+        .bot-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .bot-num {
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255,140,0,0.15);
+            border: 1px solid rgba(255,140,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 13px;
+            color: #ff8c00;
+        }
+        .bot-card.done .bot-num {
+            background: rgba(34,197,94,0.2);
+            border-color: rgba(34,197,94,0.4);
+            color: #22c55e;
+        }
+        .bot-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .bot-username {
+            font-weight: 700;
+            font-size: 14px;
+            color: #fff;
+            direction: ltr;
+            text-align: right;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .bot-env {
+            font-size: 11px;
+            color: #888;
+            font-family: monospace;
+            direction: ltr;
+            text-align: right;
+            margin-top: 2px;
+        }
+        .bot-status {
+            flex-shrink: 0;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        .bot-card.done .bot-status {
+            background: rgba(34,197,94,0.2);
+            color: #22c55e;
+        }
+        .bot-card:not(.done) .bot-status {
+            background: rgba(255,255,255,0.05);
+            color: #555;
+        }
+        .bot-body {
+            display: none;
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        .bot-card.open .bot-body {
+            display: block;
+        }
+        .step-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .action-btn {
+            padding: 13px;
+            background: rgba(255,140,0,0.1);
+            border: 1px solid rgba(255,140,0,0.3);
+            color: #ff8c00;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            text-align: center;
+            -webkit-tap-highlight-color: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .action-btn:active {
+            transform: scale(0.97);
+            background: rgba(255,140,0,0.2);
+        }
+        .action-btn.telegram {
+            background: linear-gradient(135deg, #2AABEE, #229ED9);
+            border-color: transparent;
+            color: #fff;
+        }
+        .action-btn.copy {
+            background: rgba(0,188,212,0.1);
+            border-color: rgba(0,188,212,0.3);
+            color: #00bcd4;
+        }
+        .token-input-wrap {
+            position: relative;
+            margin-bottom: 10px;
+        }
+        .token-input {
+            width: 100%;
+            padding: 12px 40px 12px 14px;
+            background: #0a0a0f;
+            border: 1px solid rgba(255,140,0,0.3);
+            color: #fff;
+            border-radius: 10px;
+            font-family: "SF Mono", Menlo, monospace;
+            font-size: 13px;
+            direction: ltr;
+            text-align: left;
+        }
+        .token-input:focus {
+            outline: none;
+            border-color: #ff8c00;
+        }
+        .token-input-clear {
+            position: absolute;
+            right: auto;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+        .mark-done-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            border: none;
+            color: #fff;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .mark-done-btn:active { transform: scale(0.97); }
+        .mark-done-btn:disabled {
+            opacity: 0.4;
+            background: #444;
+            cursor: not-allowed;
+        }
+
+        .bot-card.done .mark-done-btn {
+            background: rgba(239,68,68,0.15);
+            color: #ef4444;
+            font-weight: 600;
+        }
+
+        .warning {
+            padding: 10px 12px;
+            background: rgba(251,191,36,0.1);
+            border: 1px solid rgba(251,191,36,0.3);
+            border-radius: 8px;
+            font-size: 12px;
+            color: #fbbf24;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .floating-summary {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 12px 18px 16px;
+            background: linear-gradient(0deg, rgba(10,10,15,0.98), rgba(10,10,15,0.85));
+            backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(255,140,0,0.2);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .floating-summary .count {
+            flex: 1;
+            font-size: 13px;
+            color: #aaa;
+        }
+        .floating-summary .count strong {
+            color: #ff8c00;
+            font-size: 16px;
+            font-weight: 900;
+        }
+        .export-btn {
+            padding: 12px 18px;
+            background: linear-gradient(135deg, #ff8c00, #00bcd4);
+            border: none;
+            color: #fff;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 13px;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .export-btn:active { transform: scale(0.97); }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 100;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .modal.show { display: flex; align-items: flex-start; }
+        .modal-content {
+            background: #0a0a0f;
+            border: 1px solid rgba(255,140,0,0.3);
+            border-radius: 14px;
+            padding: 20px;
+            width: 100%;
+            max-width: 500px;
+            margin: auto;
+        }
+        .modal h3 { margin-top: 0; color: #ff8c00; }
+        .modal textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 12px;
+            background: #000;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #0f0;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            direction: ltr;
+        }
+        .modal-actions { display: flex; gap: 8px; margin-top: 12px; }
+        .modal-actions button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            background: #22c55e;
+            color: #fff;
+            border-radius: 8px;
+            font-weight: 700;
+            z-index: 1000;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+            animation: slideDown 0.3s ease;
+        }
+        @keyframes slideDown {
+            from { transform: translate(-50%, -40px); opacity: 0; }
+            to { transform: translate(-50%, 0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+<div id="topnav-root"></div>
+<div id="ticker-root"></div>
+
+    <div class="header">
+        <h1>🔐 Token Rotation Tool</h1>
+        <div class="sub">SLH Spark · נייד · מותאם לטיול</div>
+        <div class="progress-bar"><div class="fill" id="progress-fill"></div></div>
+        <div class="progress-text">
+            <span id="progress-label">0 / 23 בוצעו</span>
+            <span id="progress-percent">0%</span>
+        </div>
+    </div>
+
+    <div class="toolbar">
+        <button onclick="expandAll()">פתח הכל</button>
+        <button onclick="collapseAll()">סגור הכל</button>
+        <button class="primary" onclick="exportProgress()">📤 ייצא</button>
+    </div>
+
+    <div class="warning" style="margin: 0 14px;">
+        <b>⚠️ שיטת עבודה:</b><br>
+        1. לחץ על בוט ברשימה כדי לפתוח<br>
+        2. לחץ "פתח ב-BotFather" — יפתח את טלגרם<br>
+        3. ב-BotFather: <code>/mybots</code> → בחר → API Token → Revoke<br>
+        4. העתק את הטוקן החדש וחזור לדף הזה<br>
+        5. הדבק בתיבה + סמן כ"בוצע"<br>
+        6. בסוף הרוטציה — לחץ <b>ייצא</b> לקבלת טקסט לעדכון <code>.env</code>
+    </div>
+
+    <div class="list" id="bot-list"></div>
+
+    <div class="floating-summary">
+        <div class="count"><strong id="floating-count">0</strong> / 23 נותר: <strong id="floating-remaining">23</strong></div>
+        <button class="export-btn" onclick="exportProgress()">📋 ייצא תוצאות</button>
+    </div>
+
+    <div class="modal" id="export-modal">
+        <div class="modal-content">
+            <h3>📋 ייצוא התקדמות</h3>
+            <p style="font-size:13px;color:#aaa">העתק ושלח לעצמך ב-Telegram Saved Messages. כשתגיע הביתה, הדבק ב-<code>.env</code>.</p>
+            <textarea id="export-text" readonly></textarea>
+            <div class="modal-actions">
+                <button onclick="copyExport()" style="background:#ff8c00;color:#fff">📋 העתק הכל</button>
+                <button onclick="sendToTelegram()" style="background:#2AABEE;color:#fff">📱 Telegram</button>
+                <button onclick="closeModal()" style="background:#444;color:#fff">סגור</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    const BOTS = [
+        { id: 1, env: 'CORE_BOT_TOKEN', username: '@SLH_Academia_bot', botId: '8351227223' },
+        { id: 2, env: 'GUARDIAN_BOT_TOKEN', username: '@Grdian_bot', botId: '8521882513' },
+        { id: 3, env: 'BOTSHOP_BOT_TOKEN', username: '@Buy_My_Shop_bot', botId: '8288632241' },
+        { id: 4, env: 'WALLET_BOT_TOKEN', username: '@SLH_Wallet_bot', botId: '8729004785' },
+        { id: 5, env: 'FACTORY_BOT_TOKEN', username: '@Osifs_Factory_bot', botId: '8216202784' },
+        { id: 6, env: 'FUN_BOT_TOKEN', username: '@SLH_community_bot', botId: '8554485332' },
+        { id: 7, env: 'ADMIN_BOT_TOKEN', username: '@MY_SUPER_ADMIN_bot', botId: '7644371589' },
+        { id: 8, env: 'AIRDROP_BOT_TOKEN', username: '@SLH_AIR_bot', botId: '8530795944' },
+        { id: 9, env: 'CAMPAIGN_TOKEN', username: '@Campaign_SLH_bot', botId: '8075933581' },
+        { id: 10, env: 'GAME_BOT_TOKEN', username: '@G4meb0t_bot_bot', botId: '8298897331' },
+        { id: 11, env: 'TON_MNH_TOKEN', username: '@TON_MNH_bot', botId: '8508943909' },
+        { id: 12, env: 'SLH_TON_TOKEN', username: '@SLH_ton_bot', botId: '8172123240' },
+        { id: 13, env: 'SLH_LEDGER_TOKEN', username: '@SLH_Ledger_bot', botId: '8494620699' },
+        { id: 14, env: 'SLH_SELHA_TOKEN', username: '@Slh_selha_bot ⚡ ExpertNet', botId: '8225059465', note: 'עדכן גם את EXPERTNET_BOT_TOKEN באותו ערך!' },
+        { id: 15, env: 'NIFTI_PUBLISHER_TOKEN', username: '@NIFTI_Publisher_Bot', botId: '8478252455' },
+        { id: 16, env: 'OSIF_SHOP_TOKEN', username: '@OsifShop_bot', botId: '8106987443' },
+        { id: 17, env: 'CHANCE_PAIS_TOKEN', username: '@Chance_Pais_bot', botId: '8415305046' },
+        { id: 18, env: 'NFTY_MADNESS_TOKEN', username: '@NFTY_madness_bot', botId: '7998856873', note: 'אחרי הרוטציה - עדכן גם את SLH_PROJECT_V2/bots/nifty/config.py' },
+        { id: 19, env: 'CRAZY_PANEL_TOKEN', username: '@My_crazy_panel_bot', botId: '8238076648' },
+        { id: 20, env: 'TS_SET_TOKEN', username: '@ts_set_bot', botId: '8692123720' },
+        { id: 21, env: 'MY_NFT_SHOP_TOKEN', username: '@MY_NFT_SHOP_bot', botId: '8394483424' },
+        { id: 22, env: 'BEYNONIBANK_TOKEN', username: '@beynonibank_bot', botId: '8384883433' },
+        { id: 23, env: 'TEST_BOT_TOKEN', username: '@TESTinbot_bot_bot', botId: '8522542493' },
+    ];
+
+    const STORAGE_KEY = 'slh_token_rotation_v1';
+    let state = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+
+    function saveState() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        updateProgress();
+    }
+
+    function render() {
+        const list = document.getElementById('bot-list');
+        list.innerHTML = '';
+        BOTS.forEach(bot => {
+            const botState = state[bot.env] || {};
+            const done = !!botState.done;
+            const token = botState.token || '';
+
+            const card = document.createElement('div');
+            card.className = 'bot-card' + (done ? ' done' : '');
+            card.id = 'bot-' + bot.env;
+
+            const tgUrl = 'https://t.me/BotFather';
+            const noteHtml = bot.note ? `<div class="warning" style="margin-bottom:10px">⚠️ ${bot.note}</div>` : '';
+
+            card.innerHTML = `
+                <div class="bot-head" onclick="toggleCard('${bot.env}')">
+                    <div class="bot-num">${bot.id}</div>
+                    <div class="bot-info">
+                        <div class="bot-username">${bot.username}</div>
+                        <div class="bot-env">${bot.env} · ${bot.botId}</div>
+                    </div>
+                    <div class="bot-status">${done ? '✅' : '○'}</div>
+                </div>
+                <div class="bot-body">
+                    ${noteHtml}
+                    <div class="step-actions">
+                        <a href="${tgUrl}" target="_blank" rel="noopener" class="action-btn telegram">
+                            <i class="fab fa-telegram"></i> פתח @BotFather
+                        </a>
+                        <button class="action-btn copy" onclick="copyEnvName('${bot.env}')">
+                            📋 העתק "${bot.env}"
+                        </button>
+                    </div>
+                    <div class="token-input-wrap">
+                        <input
+                            type="text"
+                            class="token-input"
+                            placeholder="הדבק כאן את הטוקן החדש..."
+                            id="token-${bot.env}"
+                            value="${token}"
+                            oninput="updateToken('${bot.env}', this.value)"
+                            autocomplete="off"
+                            autocapitalize="none"
+                            spellcheck="false"
+                        />
+                        <button class="token-input-clear" onclick="clearToken('${bot.env}')">×</button>
+                    </div>
+                    <button class="mark-done-btn" onclick="toggleDone('${bot.env}')" id="done-${bot.env}">
+                        ${done ? '↺ בטל סימון' : '✅ סמן כבוצע'}
+                    </button>
+                </div>
+            `;
+            list.appendChild(card);
+        });
+        updateProgress();
+    }
+
+    function toggleCard(env) {
+        document.querySelectorAll('.bot-card').forEach(c => {
+            if (c.id === 'bot-' + env) c.classList.toggle('open');
+        });
+    }
+
+    function expandAll() {
+        document.querySelectorAll('.bot-card').forEach(c => c.classList.add('open'));
+    }
+
+    function collapseAll() {
+        document.querySelectorAll('.bot-card').forEach(c => c.classList.remove('open'));
+    }
+
+    function updateToken(env, value) {
+        state[env] = state[env] || {};
+        state[env].token = value.trim();
+        saveState();
+    }
+
+    function clearToken(env) {
+        document.getElementById('token-' + env).value = '';
+        if (state[env]) state[env].token = '';
+        saveState();
+    }
+
+    function toggleDone(env) {
+        state[env] = state[env] || {};
+        const token = state[env].token || '';
+        if (!state[env].done && !token) {
+            toast('⚠️ הדבק טוקן לפני סימון', '#ef4444');
+            return;
+        }
+        state[env].done = !state[env].done;
+        if (state[env].done) {
+            state[env].doneAt = new Date().toISOString();
+            toast('✅ סומן כבוצע', '#22c55e');
+        }
+        saveState();
+        render();
+    }
+
+    function copyEnvName(env) {
+        navigator.clipboard?.writeText(env);
+        toast('📋 הועתק: ' + env);
+    }
+
+    function updateProgress() {
+        const done = BOTS.filter(b => state[b.env]?.done).length;
+        const total = BOTS.length;
+        const pct = Math.round((done / total) * 100);
+        document.getElementById('progress-fill').style.width = pct + '%';
+        document.getElementById('progress-label').textContent = `${done} / ${total} בוצעו`;
+        document.getElementById('progress-percent').textContent = pct + '%';
+        document.getElementById('floating-count').textContent = done;
+        document.getElementById('floating-remaining').textContent = total - done;
+    }
+
+    function exportProgress() {
+        const lines = [];
+        lines.push('# SLH Token Rotation — ' + new Date().toISOString().slice(0, 10));
+        lines.push('# Paste into D:\\SLH_ECOSYSTEM\\.env (replace existing values)');
+        lines.push('');
+        let anyDone = false;
+        BOTS.forEach(bot => {
+            const s = state[bot.env];
+            if (s && s.done && s.token) {
+                lines.push(bot.env + '=' + s.token);
+                anyDone = true;
+                if (bot.env === 'SLH_SELHA_TOKEN') {
+                    lines.push('EXPERTNET_BOT_TOKEN=' + s.token + '  # mirror of SLH_SELHA_TOKEN');
+                }
+            }
+        });
+        if (!anyDone) {
+            lines.push('# No tokens marked as done yet');
+        }
+        lines.push('');
+        lines.push('# After pasting, run:');
+        lines.push('# cd D:\\SLH_ECOSYSTEM && docker compose restart');
+        document.getElementById('export-text').value = lines.join('\n');
+        document.getElementById('export-modal').classList.add('show');
+    }
+
+    function closeModal() {
+        document.getElementById('export-modal').classList.remove('show');
+    }
+
+    function copyExport() {
+        const text = document.getElementById('export-text').value;
+        navigator.clipboard?.writeText(text);
+        toast('📋 הועתק! שלח לעצמך ב-Saved Messages');
+    }
+
+    function sendToTelegram() {
+        const text = document.getElementById('export-text').value;
+        const url = 'https://t.me/share/url?url=' + encodeURIComponent('SLH Token Rotation') + '&text=' + encodeURIComponent(text);
+        window.open(url, '_blank');
+    }
+
+    function toast(msg, color) {
+        const t = document.createElement('div');
+        t.className = 'toast';
+        if (color) t.style.background = color;
+        t.textContent = msg;
+        document.body.appendChild(t);
+        setTimeout(() => t.remove(), 2500);
+    }
+
+    // Init
+    render();
+
+    // Persist on beforeunload
+    window.addEventListener('beforeunload', saveState);
+    </script>
+<div id="bottomnav-root"></div>
+<div id="footer-root"></div>
+<script src="/js/translations.js?v=20260413"></script>
+<script src="/js/shared.js?v=20260413"></script>
+<script>initShared({ activePage: 'tools' });</script>
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260413"></script>
+</body>
+</html>

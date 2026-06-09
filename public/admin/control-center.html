@@ -1,0 +1,498 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Control Center | SLH Admin</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="/favicon-32.png">
+  <style>
+    :root{
+      --bg:#0a0a0a;--bg2:#111;--bg3:#1a1a1a;
+      --accent:#00ff41;--accent2:#39ff14;
+      --cyan:#00e5ff;--gold:#ffd700;--red:#ff0055;--purple:#a855f7;--orange:#ff6b35;
+      --text:#e8e8f0;--text2:#8a8aa0;--text-bright:#fff;
+      --card:rgba(0,255,65,.03);--border:rgba(0,255,65,.15);
+      --font:'Inter',system-ui,sans-serif;
+      --radius:8px;
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;font-size:13px}
+    a{color:var(--accent);text-decoration:none}
+    button{cursor:pointer;font-family:inherit;font-size:12px;border:none}
+
+    /* topbar */
+    .topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 24px;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+    .brand{font-weight:700;color:var(--accent);font-size:16px}
+    .brand span{background:var(--red);color:#fff;padding:2px 8px;font-size:10px;border-radius:3px;margin-right:8px}
+    .tb-right{display:flex;gap:10px;font-size:12px;align-items:center}
+    .tb-right a{padding:6px 12px;border:1px solid var(--border);color:var(--text2);border-radius:var(--radius)}
+    .tb-right a:hover{color:var(--accent);border-color:var(--accent)}
+
+    /* status strip */
+    .status-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;padding:16px 24px;background:var(--bg3);border-bottom:1px solid var(--border)}
+    .stat{display:flex;align-items:center;gap:10px}
+    .stat .dot{width:10px;height:10px;border-radius:50%;background:var(--text2)}
+    .stat.up .dot{background:var(--accent);box-shadow:0 0 8px var(--accent)}
+    .stat.down .dot{background:var(--red);box-shadow:0 0 8px var(--red)}
+    .stat.warn .dot{background:var(--gold)}
+    .stat .l{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:1px}
+    .stat .v{font-size:14px;color:var(--text-bright);font-weight:600}
+
+    /* main */
+    main{max-width:1600px;margin:0 auto;padding:24px}
+
+    /* section title */
+    .sec-title{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:2px;margin:20px 0 12px}
+    .sec-title:first-child{margin-top:0}
+
+    /* tiles grid */
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+    .tile{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;transition:all .15s;position:relative;overflow:hidden}
+    .tile:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,255,65,.08)}
+    .tile .icon{font-size:24px;margin-bottom:10px}
+    .tile h3{font-size:14px;color:var(--text-bright);margin-bottom:6px;font-weight:600}
+    .tile p{font-size:11px;color:var(--text2);line-height:1.5;margin-bottom:12px;min-height:33px}
+    .tile .actions{display:flex;gap:6px;flex-wrap:wrap}
+    .tile .btn{padding:6px 10px;font-size:11px;border-radius:4px;font-weight:600;background:var(--bg3);color:var(--text)}
+    .tile .btn:hover{background:var(--accent);color:#000}
+    .tile .btn.primary{background:var(--accent);color:#000}
+    .tile .btn.primary:hover{background:var(--accent2)}
+    .tile .btn.pop{background:var(--purple);color:#fff}
+    .tile .btn.pop:hover{background:#9333ea}
+    .tile .tag{position:absolute;top:12px;left:12px;font-size:9px;padding:2px 8px;border-radius:2px;text-transform:uppercase;letter-spacing:1px;font-weight:700}
+    .tile .tag.live{background:rgba(0,255,65,.15);color:var(--accent)}
+    .tile .tag.ext{background:rgba(168,85,247,.15);color:var(--purple)}
+    .tile .tag.api{background:rgba(0,229,255,.15);color:var(--cyan)}
+    .tile .tag.vision{background:rgba(255,215,0,.15);color:var(--gold)}
+    .tile .tag.legacy{background:rgba(138,138,160,.15);color:var(--text2)}
+
+    /* bottom info bar */
+    .info-bar{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-top:24px;font-size:12px;color:var(--text2);line-height:1.7}
+    .info-bar b{color:var(--accent)}
+    .info-bar code{background:var(--bg3);padding:2px 6px;border-radius:3px;color:var(--cyan);font-size:11px}
+
+    .quick-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .quick-row button{padding:6px 14px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:var(--radius);font-size:11px}
+    .quick-row button:hover{border-color:var(--accent);color:var(--accent)}
+
+    #toast{position:fixed;bottom:20px;right:20px;background:var(--bg3);color:var(--text-bright);padding:12px 20px;border-radius:var(--radius);border:1px solid var(--accent);z-index:200;display:none}
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><span>ADMIN</span>🎛 SLH Control Center</div>
+  <div class="tb-right">
+    <a href="/admin.html">← Admin Home</a>
+    <a href="/admin/mission-control.html">🎯 Mission Control</a>
+    <a href="#" onclick="openAll();return false" style="color:var(--gold)">🚀 Open All</a>
+  </div>
+</div>
+
+<section class="status-strip" id="status-strip">
+  <div class="stat" id="st-api"><span class="dot"></span><div><div class="l">API</div><div class="v">checking...</div></div></div>
+  <div class="stat" id="st-pages"><span class="dot"></span><div><div class="l">Pages</div><div class="v">checking...</div></div></div>
+  <div class="stat" id="st-tasks"><span class="dot"></span><div><div class="l">Tasks Open</div><div class="v">--</div></div></div>
+  <div class="stat" id="st-p0"><span class="dot"></span><div><div class="l">P0 Blockers</div><div class="v">--</div></div></div>
+  <div class="stat" id="st-blocked"><span class="dot"></span><div><div class="l">Blocked</div><div class="v">--</div></div></div>
+  <div class="stat" id="st-devices"><span class="dot"></span><div><div class="l">ESP Devices</div><div class="v">--</div></div></div>
+</section>
+
+<main>
+
+  <div class="sec-title">⭐ Primary Control Panes — pop out to monitors</div>
+  <div class="grid">
+
+    <div class="tile">
+      <span class="tag live">LIVE</span>
+      <div class="icon">🎯</div>
+      <h3>Mission Control</h3>
+      <p>Tasks kanban · 35 items · team view · event log · CRUD all operations</p>
+      <div class="actions">
+        <button class="btn primary" onclick="open1('mc','/admin/mission-control.html','Mission Control',1400,900)">Open</button>
+        <button class="btn pop" onclick="popout('/admin/mission-control.html','mc',1200,800)">Pop-out ⧉</button>
+        <a class="btn" href="/admin/mission-control.html" target="_blank">New Tab</a>
+      </div>
+    </div>
+
+    <div class="tile">
+      <span class="tag live">LIVE</span>
+      <div class="icon">🔍</div>
+      <h3>Reality Dashboard</h3>
+      <p>Ground truth · registered users · deposits · founders · honest numbers only</p>
+      <div class="actions">
+        <button class="btn primary" onclick="open1('reality','/admin/reality.html','Reality',1200,800)">Open</button>
+        <button class="btn pop" onclick="popout('/admin/reality.html','reality',1100,700)">Pop-out ⧉</button>
+        <a class="btn" href="/admin/reality.html" target="_blank">New Tab</a>
+      </div>
+    </div>
+
+    <div class="tile">
+      <span class="tag live">LIVE</span>
+      <div class="icon">📡</div>
+      <h3>Ops Dashboard</h3>
+      <p>System monitoring · latency · bot health · deploy status · live events</p>
+      <div class="actions">
+        <button class="btn primary" onclick="open1('ops','/ops-dashboard.html','Ops',1200,800)">Open</button>
+        <button class="btn pop" onclick="popout('/ops-dashboard.html','ops',1100,700)">Pop-out ⧉</button>
+        <a class="btn" href="/ops-dashboard.html" target="_blank">New Tab</a>
+      </div>
+    </div>
+
+    <div class="tile">
+      <span class="tag live">LIVE</span>
+      <div class="icon">⛓</div>
+      <h3>Chain Status</h3>
+      <p>Event feed · on-chain activity · audit trail · admin events panel</p>
+      <div class="actions">
+        <button class="btn primary" onclick="open1('chain','/chain-status.html','Chain',1200,800)">Open</button>
+        <button class="btn pop" onclick="popout('/chain-status.html','chain',1100,700)">Pop-out ⧉</button>
+        <a class="btn" href="/chain-status.html" target="_blank">New Tab</a>
+      </div>
+    </div>
+
+    <div class="tile">
+      <span class="tag live">LIVE</span>
+      <div class="icon">🔑</div>
+      <h3>Bot Tokens</h3>
+      <p>Rotation tracker · 25 bots · status · next-action · BotFather links</p>
+      <div class="actions">
+        <button class="btn primary" onclick="open1('tokens','/admin/tokens.html','Tokens',1100,800)">Open</button>
+        <button class="btn pop" onclick="popout('/admin/tokens.html','tokens',1000,700)">Pop-out ⧉</button>
+        <a class="btn" href="/admin/tokens.html" target="_blank">New Tab</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>🔄 Rotate Token</h3>
+      <p>Secure in-browser rotation · validates via Telegram · token never enters DOM/chat · supports bot-swap mode</p>
+      <div class="actions">
+        <button class="btn primary" onclick="open1('rotate','/admin/rotate-token.html','Rotate',900,800)">Open</button>
+        <button class="btn pop" onclick="popout('/admin/rotate-token.html','rotate',900,800)">Pop-out ⧉</button>
+        <a class="btn" href="/admin/rotate-token.html" target="_blank">New Tab</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>🔐 Secrets Vault</h3>
+      <p>Unified inventory of all 12+ credentials · status detection · health probes · rotation tracking · zero secret values stored</p>
+      <div class="actions">
+        <button class="btn primary" onclick="open1('vault','/admin/secrets-vault.html','Secrets Vault',1200,900)">Open</button>
+        <button class="btn pop" onclick="popout('/admin/secrets-vault.html','vault',1200,900)">Pop-out ⧉</button>
+        <a class="btn" href="/admin/secrets-vault.html" target="_blank">New Tab</a>
+      </div>
+    </div>
+
+    <div class="tile">
+      <span class="tag legacy">LEGACY</span>
+      <div class="icon">⚙️</div>
+      <h3>Admin Home (v1)</h3>
+      <p>Original admin · 19 sidebar pages · overview + analytics + users + revenue</p>
+      <div class="actions">
+        <button class="btn primary" onclick="open1('admin','/admin.html','Admin',1400,900)">Open</button>
+        <button class="btn pop" onclick="popout('/admin.html','admin',1200,800)">Pop-out ⧉</button>
+        <a class="btn" href="/admin.html" target="_blank">New Tab</a>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="sec-title">📊 Network + Data Views</div>
+  <div class="grid">
+
+    <div class="tile">
+      <span class="tag live">LIVE</span>
+      <div class="icon">🧠</div>
+      <h3>Neural Network Map</h3>
+      <p>61 nodes · 161 edges · Users/Bots/Tokens/Voice/Swarm layers</p>
+      <div class="actions">
+        <button class="btn primary" onclick="open1('network','/network.html','Network',1400,900)">Open</button>
+        <button class="btn pop" onclick="popout('/network.html','network',1200,800)">Pop-out ⧉</button>
+      </div>
+    </div>
+
+    <div class="tile">
+      <span class="tag live">LIVE</span>
+      <div class="icon">🗺</div>
+      <h3>Project Map</h3>
+      <p>52 pages · full site tree · searchable · with status indicators</p>
+      <div class="actions">
+        <button class="btn primary" onclick="open1('pmap','/project-map.html','Project Map',1200,800)">Open</button>
+        <button class="btn pop" onclick="popout('/project-map.html','pmap',1100,700)">Pop-out ⧉</button>
+      </div>
+    </div>
+
+    <div class="tile">
+      <span class="tag live">LIVE</span>
+      <div class="icon">📅</div>
+      <h3>Roadmap</h3>
+      <p>39 items · Phase 1-4 · Voice + Swarm tracks · filter by category</p>
+      <div class="actions">
+        <button class="btn primary" onclick="open1('roadmap','/roadmap.html','Roadmap',1200,800)">Open</button>
+        <button class="btn pop" onclick="popout('/roadmap.html','roadmap',1100,700)">Pop-out ⧉</button>
+      </div>
+    </div>
+
+    <div class="tile">
+      <span class="tag live">LIVE</span>
+      <div class="icon">💬</div>
+      <h3>Community Feed</h3>
+      <p>Live posts · engagement metrics · user activity · honest zeros</p>
+      <div class="actions">
+        <button class="btn primary" onclick="open1('community','/community.html','Community',1100,800)">Open</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="sec-title">📱 Mini Apps (Telegram in-bot UX)</div>
+  <div class="grid">
+
+    <div class="tile">
+      <span class="tag api">API</span>
+      <div class="icon">🎛</div>
+      <h3>Mini Dashboard</h3>
+      <p>Full dashboard port · real Railway data · Telegram initData auth</p>
+      <div class="actions">
+        <button class="btn primary" onclick="open1('mdash','/miniapp/dashboard.html','MiniApp Dashboard',400,800)">Open</button>
+      </div>
+    </div>
+
+    <div class="tile">
+      <span class="tag api">API</span>
+      <div class="icon">💼</div>
+      <h3>Mini Wallet</h3>
+      <p>Balances · SLH/MNH/ZVK/REP · transactions · stake status</p>
+      <div class="actions">
+        <button class="btn primary" onclick="open1('mwallet','/miniapp/wallet.html','MiniApp Wallet',400,800)">Open</button>
+      </div>
+    </div>
+
+    <div class="tile">
+      <span class="tag api">API</span>
+      <div class="icon">📟</div>
+      <h3>Mini Device</h3>
+      <p>ESP32 command UI · pair status · send to screen · heartbeat</p>
+      <div class="actions">
+        <button class="btn primary" onclick="open1('mdev','/miniapp/device.html','MiniApp Device',400,800)">Open</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="sec-title">🔭 Phase 2 Vision (not commercial yet)</div>
+  <div class="grid">
+
+    <div class="tile">
+      <span class="tag vision">VISION</span>
+      <div class="icon">📞</div>
+      <h3>SLH Voice</h3>
+      <p>Phase 2 · IVR + AI-powered call routing · competitor analysis</p>
+      <div class="actions">
+        <button class="btn primary" onclick="open1('voice','/voice.html','Voice',1100,800)">Open</button>
+      </div>
+    </div>
+
+    <div class="tile">
+      <span class="tag vision">VISION</span>
+      <div class="icon">🛰️</div>
+      <h3>SLH Swarm</h3>
+      <p>Phase 2 · ESP32 mesh · offline-first · kosher-community DePIN</p>
+      <div class="actions">
+        <button class="btn primary" onclick="open1('swarm','/swarm.html','Swarm',1100,800)">Open</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="sec-title">🌐 External dashboards</div>
+  <div class="grid">
+
+    <div class="tile">
+      <span class="tag ext">EXTERNAL</span>
+      <div class="icon">🚂</div>
+      <h3>Railway slh-api</h3>
+      <p>Deployments · logs · env vars · Redeploy button · usage + billing</p>
+      <div class="actions">
+        <a class="btn primary" href="https://railway.com/project/slh-api" target="_blank">Open Railway</a>
+      </div>
+    </div>
+
+    <div class="tile">
+      <span class="tag ext">EXTERNAL</span>
+      <div class="icon">🐙</div>
+      <h3>GitHub slh-api</h3>
+      <p>Commits · PRs · issues · Actions</p>
+      <div class="actions">
+        <a class="btn primary" href="https://github.com/osifeu-prog/slh-api" target="_blank">Open Repo</a>
+      </div>
+    </div>
+
+    <div class="tile">
+      <span class="tag ext">EXTERNAL</span>
+      <div class="icon">🐙</div>
+      <h3>GitHub Pages repo</h3>
+      <p>Commits · deploy history · website changes</p>
+      <div class="actions">
+        <a class="btn primary" href="https://github.com/osifeu-prog/osifeu-prog.github.io" target="_blank">Open Repo</a>
+      </div>
+    </div>
+
+    <div class="tile">
+      <span class="tag ext">EXTERNAL</span>
+      <div class="icon">🔗</div>
+      <h3>BSCScan Token</h3>
+      <p>On-chain · holders · transactions · SLH contract details</p>
+      <div class="actions">
+        <a class="btn primary" href="https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022" target="_blank">Open BSCScan</a>
+      </div>
+    </div>
+
+    <div class="tile">
+      <span class="tag ext">EXTERNAL</span>
+      <div class="icon">🥞</div>
+      <h3>PancakeSwap Pool</h3>
+      <p>DEX trading · liquidity · price · swap interface</p>
+      <div class="actions">
+        <a class="btn primary" href="https://pancakeswap.finance/swap?outputCurrency=0xACb0A09414CEA1C879c67bB7A877E4e19480f022&chain=bsc" target="_blank">Open PancakeSwap</a>
+      </div>
+    </div>
+
+    <div class="tile">
+      <span class="tag ext">EXTERNAL</span>
+      <div class="icon">🤖</div>
+      <h3>BotFather</h3>
+      <p>Bot management · token rotation · Mini App URLs · webhooks</p>
+      <div class="actions">
+        <a class="btn primary" href="https://t.me/BotFather" target="_blank">Open in Telegram</a>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="info-bar">
+    <b>💡 איך להשתמש במוניטורים מרובים:</b><br>
+    1. לחץ <b>Pop-out ⧉</b> על tile — נפתח חלון קטן עצמאי שאפשר לגרור לכל מסך<br>
+    2. שנה גודל + מיקום — Chrome יזכור אותם לפעם הבאה בזכות <code>windowName</code><br>
+    3. <b>Open All</b> למעלה — פותח את 5 הפאנלים הראשיים בו-זמנית עם גדלים מותאמים<br>
+    4. כל פאנל מתרענן עצמאית (Mission Control כל 60s, Deploy status כל 30s)<br><br>
+
+    <b>🎮 Keyboard shortcuts (בדף הזה):</b>
+    <div class="quick-row">
+      <button onclick="open1('mc','/admin/mission-control.html','Mission Control',1400,900)">M → Mission Control</button>
+      <button onclick="open1('reality','/admin/reality.html','Reality',1200,800)">R → Reality</button>
+      <button onclick="open1('ops','/ops-dashboard.html','Ops',1200,800)">O → Ops</button>
+      <button onclick="open1('tokens','/admin/tokens.html','Tokens',1100,800)">T → Tokens</button>
+    </div>
+  </div>
+
+</main>
+
+<div id="toast"></div>
+
+<script>
+const API = 'https://slh-api-production.up.railway.app';
+let ADMIN_KEY = localStorage.getItem('slh_admin_password') || '';
+
+// Each pane gets a unique windowName → Chrome remembers size/position across sessions
+const windows = {};
+function open1(name, url, title, w, h) {
+  const features = `width=${w||1200},height=${h||800},menubar=no,toolbar=no,location=yes,status=no`;
+  windows[name] = window.open(url, 'slh-'+name, features);
+  if (windows[name]) windows[name].focus();
+}
+function popout(url, name, w, h) {
+  const features = `width=${w||1100},height=${h||700},menubar=no,toolbar=no,location=yes`;
+  window.open(url, 'slh-pop-'+name+'-'+Date.now(), features);
+}
+function openAll() {
+  // stagger so windows don't stack directly
+  const panes = [
+    {n:'mc', u:'/admin/mission-control.html', t:'Mission Control', w:1400, h:900},
+    {n:'reality', u:'/admin/reality.html', t:'Reality', w:1200, h:800},
+    {n:'ops', u:'/ops-dashboard.html', t:'Ops', w:1200, h:800},
+    {n:'chain', u:'/chain-status.html', t:'Chain', w:1200, h:800},
+    {n:'tokens', u:'/admin/tokens.html', t:'Tokens', w:1100, h:800},
+  ];
+  panes.forEach((p, i) => setTimeout(() => open1(p.n, p.u, p.t, p.w, p.h), i*150));
+  toast('פתחתי 5 פאנלים ראשיים — גרור למסכים שאתה צריך');
+}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',2500)}
+
+async function apiGet(path) {
+  const headers = ADMIN_KEY ? {'X-Admin-Key': ADMIN_KEY} : {};
+  const r = await fetch(API + path, {headers});
+  if (!r.ok) throw new Error(`${path} -> ${r.status}`);
+  return r.json();
+}
+
+function setStat(id, state, value) {
+  const el = document.getElementById(id);
+  el.className = 'stat ' + state;
+  el.querySelector('.v').textContent = value;
+}
+
+async function refresh() {
+  // API
+  try {
+    const h = await fetch(API+'/api/health').then(r=>r.json());
+    setStat('st-api', h.db === 'connected' ? 'up' : 'warn', h.version || '?');
+  } catch { setStat('st-api', 'down', 'DOWN'); }
+
+  // Pages
+  try {
+    const r = await fetch('https://slh-nft.com/', {method:'HEAD'});
+    setStat('st-pages', r.ok ? 'up' : 'down', r.ok ? 'LIVE' : 'DOWN');
+  } catch { setStat('st-pages', 'down', '?'); }
+
+  // Tasks (needs auth)
+  if (!ADMIN_KEY) {
+    setStat('st-tasks', 'warn', 'no key');
+    setStat('st-p0', 'warn', '--');
+    setStat('st-blocked', 'warn', '--');
+    return;
+  }
+  try {
+    const ov = await apiGet('/api/admin/overview');
+    const c = ov.counts;
+    const open = (c.by_status.open || 0) + (c.by_status.in_progress || 0);
+    const blocked = c.by_status.blocked || 0;
+    setStat('st-tasks', open > 0 ? 'warn' : 'up', open);
+    setStat('st-p0', (c.by_priority.P0||0) > 0 ? 'down' : 'up', c.by_priority.P0 || 0);
+    setStat('st-blocked', blocked > 0 ? 'warn' : 'up', blocked);
+  } catch (e) {
+    setStat('st-tasks', 'down', 'auth?');
+  }
+
+  // Devices
+  try {
+    const d = await apiGet('/api/admin/devices/list');
+    const count = Array.isArray(d.devices) ? d.devices.length : (Array.isArray(d) ? d.length : 0);
+    setStat('st-devices', count > 0 ? 'up' : 'warn', count);
+  } catch {
+    setStat('st-devices', 'warn', '?');
+  }
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  const map = {
+    'm': () => open1('mc','/admin/mission-control.html','Mission Control',1400,900),
+    'r': () => open1('reality','/admin/reality.html','Reality',1200,800),
+    'o': () => open1('ops','/ops-dashboard.html','Ops',1200,800),
+    't': () => open1('tokens','/admin/tokens.html','Tokens',1100,800),
+    'c': () => open1('chain','/chain-status.html','Chain',1200,800),
+    'n': () => open1('network','/network.html','Network',1400,900),
+    'a': openAll,
+  };
+  if (map[e.key.toLowerCase()]) { e.preventDefault(); map[e.key.toLowerCase()](); }
+});
+
+refresh();
+setInterval(refresh, 30000);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🏪 החנות שלי · SLH Spark</title>
+<meta name="description" content="חנות אישית של יוצר — פריטים, מכירות, XP (ROI), סטטיסטיקות. כל יוצר ב-SLH מקבל פרופיל עם ROI שקוף.">
+<link rel="canonical" href="https://slh-nft.com/shop.html">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/slh-design-system.css">
+<meta name="slh-version" content="v1.0-flip">
+<script defer src="/js/slh-flip.js?v=20260417"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Rubik',system-ui,sans-serif;background:#05080f;color:#f5f5f8;min-height:100vh;padding:20px}
+a{color:#00e5ff;text-decoration:none}
+a:hover{text-decoration:underline}
+
+.wrap{max-width:1200px;margin:0 auto;padding:20px 16px 60px}
+.hdr{text-align:center;margin-bottom:24px}
+.hdr h1{font-size:clamp(28px,4vw,40px);font-weight:900;background:linear-gradient(135deg,#00ff41,#00e5ff,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:0 0 8px}
+
+.login-gate{background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.2);border-radius:14px;padding:24px;margin:20px 0;text-align:center}
+.login-gate input{padding:12px 16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.15);border-radius:8px;color:#fff;font-size:16px;width:280px;max-width:100%}
+.login-gate button{padding:12px 24px;background:linear-gradient(135deg,#00ff41,#00e5ff);color:#000;border:none;border-radius:8px;font-weight:700;cursor:pointer;margin-inline-start:8px}
+
+/* XP Hero card */
+.xp-hero{background:linear-gradient(135deg,rgba(0,255,65,.08),rgba(168,85,247,.06));border:2px solid rgba(0,255,65,.25);border-radius:16px;padding:26px;margin:20px 0;position:relative;overflow:hidden}
+.xp-hero::after{content:'⚡';position:absolute;top:-30px;left:-20px;font-size:160px;opacity:.04;pointer-events:none}
+.xp-hero .label{font-size:11px;color:#9ba0b5;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px}
+.xp-hero .value{font-size:clamp(48px,8vw,72px);font-weight:900;font-family:'JetBrains Mono',monospace;line-height:1}
+.xp-hero .value.profit{color:#00ff41}
+.xp-hero .value.loss{color:#ff4444}
+.xp-hero .value.infinite{color:#ffd700}
+.xp-hero .value.even{color:#9ba0b5}
+.xp-hero .status{display:inline-block;padding:4px 12px;border-radius:50px;font-size:12px;font-weight:700;margin-top:10px}
+.xp-hero .status.profit{background:rgba(0,255,65,.15);color:#00ff41}
+.xp-hero .status.loss{background:rgba(255,68,68,.15);color:#ff4444}
+.xp-hero .status.infinite{background:rgba(255,215,0,.15);color:#ffd700}
+.xp-hero .status.even{background:rgba(138,138,160,.15);color:#9ba0b5}
+
+.xp-breakdown{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:18px}
+.xp-cell{background:rgba(0,0,0,.25);border-radius:10px;padding:12px}
+.xp-cell .v{font-size:20px;font-weight:800;font-family:'JetBrains Mono',monospace;color:#fff}
+.xp-cell .l{font-size:10px;color:#9ba0b5;text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+
+/* Stats strip */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:20px 0}
+.stat{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;text-align:center}
+.stat .v{font-size:22px;font-weight:900;color:#00e5ff;font-family:'JetBrains Mono',monospace}
+.stat .l{font-size:10px;color:#9ba0b5;text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+
+h2{font-size:20px;color:#00ff41;margin:30px 0 14px;font-weight:800}
+
+.listings{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.li{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden}
+.li .img{width:100%;aspect-ratio:1;background:#0d1220;display:flex;align-items:center;justify-content:center;color:#5a6078;font-size:32px}
+.li .img img{width:100%;height:100%;object-fit:cover}
+.li .body{padding:12px}
+.li h3{font-size:14px;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.li .meta{display:flex;justify-content:space-between;font-size:12px;margin-top:8px}
+.li .price{color:#ffd700;font-weight:700}
+.li .status{font-size:10px;padding:2px 8px;border-radius:4px;text-transform:uppercase}
+.li .status.approved{background:rgba(0,255,65,.15);color:#00ff41}
+.li .status.pending{background:rgba(255,215,0,.15);color:#ffd700}
+.li .status.rejected{background:rgba(255,68,68,.15);color:#ff4444}
+
+.sales-list{background:#0d1220;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px}
+.sale{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);font-family:'JetBrains Mono',monospace;font-size:13px}
+.sale:last-child{border-bottom:0}
+.sale .amt{color:#ffd700;font-weight:700}
+
+.empty{text-align:center;padding:40px;color:#5a6078}
+.empty a{color:#00ff41}
+
+.foot{text-align:center;margin-top:40px;color:#5a6078;font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hdr">
+    <h1 data-scramble="החנות שלי">החנות שלי</h1>
+    <p style="color:#9ba0b5" id="sub">חנות אישית של יוצר ב-SLH Marketplace</p>
+  </div>
+
+  <div id="login" class="login-gate">
+    <p style="margin-bottom:14px">הכנס Telegram ID שלך כדי לצפות:</p>
+    <input id="tg-id" type="number" placeholder="224223270" inputmode="numeric" />
+    <button onclick="loadShop()">הצג חנות</button>
+  </div>
+
+  <div id="content" style="display:none">
+
+    <!-- XP Hero -->
+    <div class="xp-hero">
+      <div class="label">XP · Your ROI</div>
+      <div class="value" id="xp-val">—</div>
+      <div class="status" id="xp-status">טוען...</div>
+      <div class="xp-breakdown">
+        <div class="xp-cell"><div class="v" id="xp-invested">—</div><div class="l">Invested (USD)</div></div>
+        <div class="xp-cell"><div class="v" id="xp-current">—</div><div class="l">Current value</div></div>
+        <div class="xp-cell"><div class="v" id="xp-slh">—</div><div class="l">SLH held</div></div>
+        <div class="xp-cell"><div class="v" id="xp-aic">—</div><div class="l">AIC held</div></div>
+        <div class="xp-cell"><div class="v" id="xp-rep">—</div><div class="l">REP</div></div>
+        <div class="xp-cell"><div class="v" id="xp-earn">—</div><div class="l">Marketplace earn (USD)</div></div>
+      </div>
+    </div>
+
+    <!-- Quick stats -->
+    <div class="stats">
+      <div class="stat"><div class="v" id="s-listings">—</div><div class="l">פריטים</div></div>
+      <div class="stat"><div class="v" id="s-sales">—</div><div class="l">מכירות</div></div>
+      <div class="stat"><div class="v" id="s-volume">—</div><div class="l">נפח USD</div></div>
+      <div class="stat"><div class="v" id="s-rep">—</div><div class="l">REP</div></div>
+    </div>
+
+    <h2>🎨 הפריטים שלי</h2>
+    <div id="listings" class="listings"></div>
+
+    <h2>💰 מכירות אחרונות</h2>
+    <div id="sales" class="sales-list"></div>
+
+    <div style="text-align:center;margin:30px 0">
+      <a href="/sell.html" style="display:inline-block;padding:14px 30px;background:linear-gradient(135deg,#00ff41,#00e5ff);color:#000;border-radius:50px;font-weight:900;text-decoration:none">🎨 העלה פריט חדש</a>
+    </div>
+
+  </div>
+
+  <div class="foot">
+    <p>ℹ XP מחושב כ-<code>current_value / fiat_invested</code> · ∞ = הרווחת בלי להשקיע · 1.0 = breakeven · &gt;1 = רווח</p>
+    <p style="margin-top:10px"><a href="/gallery.html">גלריה ציבורית</a> · <a href="/alpha-progress.html">SLH Index</a></p>
+  </div>
+</div>
+
+<script>
+const API = 'https://slh-api-production.up.railway.app';
+
+(function(){
+  const p = new URLSearchParams(location.search);
+  const uid = p.get('user') || localStorage.getItem('slh_tg_id');
+  if (uid && /^\d+$/.test(uid)) {
+    document.getElementById('tg-id').value = uid;
+    loadShop();
+  }
+})();
+
+async function loadShop() {
+  const uid = document.getElementById('tg-id').value.trim();
+  if (!uid || !/^\d+$/.test(uid)) return;
+  localStorage.setItem('slh_tg_id', uid);
+  document.getElementById('login').style.display = 'none';
+  document.getElementById('content').style.display = 'block';
+  document.getElementById('sub').textContent = `חנות של משתמש #${uid}`;
+
+  // Fetch combined shop data
+  try {
+    const r = await fetch(`${API}/api/creator/shop/${uid}`);
+    const d = await r.json();
+    renderShop(d);
+  } catch (e) {
+    console.error(e);
+  }
+
+  // Also fetch XP fresh
+  try {
+    const r = await fetch(`${API}/api/creator/xp/${uid}`);
+    const d = await r.json();
+    renderXP(d);
+  } catch (e) {}
+}
+
+function renderXP(x) {
+  const val = document.getElementById('xp-val');
+  const status = document.getElementById('xp-status');
+  const xp = x.xp_ratio;
+
+  if (xp === null || xp === undefined) {
+    val.textContent = '∞';
+    val.className = 'value infinite';
+    status.textContent = '∞ · רווח טהור — לא השקעת עדיין';
+    status.className = 'status infinite';
+  } else if (xp > 1.0) {
+    val.textContent = xp.toFixed(2) + '×';
+    val.className = 'value profit';
+    status.textContent = `↑ ברווח ${((xp - 1) * 100).toFixed(0)}%`;
+    status.className = 'status profit';
+  } else if (xp < 1.0) {
+    val.textContent = xp.toFixed(2) + '×';
+    val.className = 'value loss';
+    status.textContent = `↓ בהפסד ${((1 - xp) * 100).toFixed(0)}%`;
+    status.className = 'status loss';
+  } else {
+    val.textContent = '1.00×';
+    val.className = 'value even';
+    status.textContent = '→ Break even';
+    status.className = 'status even';
+  }
+
+  document.getElementById('xp-invested').textContent = '$' + (x.total_fiat_invested || 0).toFixed(2);
+  document.getElementById('xp-current').textContent = '$' + (x.current_value_usd || 0).toFixed(2);
+  document.getElementById('xp-slh').textContent = (x.slh_held || 0).toFixed(2);
+  document.getElementById('xp-aic').textContent = (x.aic_held || 0).toFixed(2);
+  document.getElementById('xp-rep').textContent = x.rep_held || 0;
+  document.getElementById('xp-earn').textContent = '$' + (x.marketplace_earnings_usd || 0).toFixed(2);
+  document.getElementById('s-rep').textContent = x.rep_held || 0;
+}
+
+function renderShop(d) {
+  document.getElementById('s-listings').textContent = d.listings_count || 0;
+  document.getElementById('s-sales').textContent = d.sales_count || 0;
+  document.getElementById('s-volume').textContent = '$' + (d.total_sales_usd || 0).toFixed(2);
+
+  if (d.xp) renderXP(d.xp);
+
+  // Listings grid
+  const listingsEl = document.getElementById('listings');
+  if (!d.listings || d.listings.length === 0) {
+    listingsEl.innerHTML = '<div class="empty">עוד אין פריטים. <a href="/sell.html">העלה את הראשון →</a></div>';
+  } else {
+    listingsEl.innerHTML = d.listings.map(item => {
+      const img = item.image_url
+        ? `<img src="${item.image_url}" alt="" loading="lazy">`
+        : (item.category === 'course' ? '🎓' : '🎨');
+      return `<div class="li">
+        <div class="img">${img}</div>
+        <div class="body">
+          <h3>${escapeHtml(item.title)}</h3>
+          <div class="meta">
+            <span class="price">${parseFloat(item.price).toFixed(2)} ${item.currency}</span>
+            <span class="status ${item.status}">${item.status}</span>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // Sales list
+  const salesEl = document.getElementById('sales');
+  if (!d.recent_sales || d.recent_sales.length === 0) {
+    salesEl.innerHTML = '<div class="empty">עוד אין מכירות. כשפריט נמכר הוא יופיע כאן.</div>';
+  } else {
+    salesEl.innerHTML = d.recent_sales.map(s => {
+      const date = new Date(s.sold_at).toLocaleDateString('he-IL');
+      return `<div class="sale">
+        <span>#${s.item_id} · ${date}</span>
+        <span class="amt">${parseFloat(s.amount).toFixed(2)} ${s.currency}</span>
+      </div>`;
+    }).join('');
+  }
+}
+
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+</script>
+</body>
+</html>

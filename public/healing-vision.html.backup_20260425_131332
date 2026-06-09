@@ -1,0 +1,575 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH Spark Healing Vision — Community Wellness</title>
+<meta name="description" content="SLH Spark Healing Vision: community wellness coin, mental health education, fair economy, and aid for those in need.">
+<link rel="canonical" href="https://slh-nft.com/healing-vision.html">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="SLH Healing Vision — Community Wellness Fund">
+<meta property="og:description" content="Healing coin, mental health education, and community aid since 2023">
+<meta property="og:image" content="https://slh-nft.com/assets/og/healing.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://slh-nft.com/healing-vision.html">
+<meta property="og:locale" content="he_IL">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SLH Healing Vision — Community Wellness Fund">
+<meta name="twitter:description" content="Healing coin, mental health education, and community aid since 2023">
+<meta name="twitter:image" content="https://slh-nft.com/assets/og/healing.png">
+
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Assistant:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css?v=20260425d">
+
+<style>
+    :root {
+        --bg: #0a1018;
+        --bg2: #0f1a26;
+        --bg3: #162438;
+        --accent: #00e887;
+        --accent2: #00b4d8;
+        --gold: #ffd700;
+        --pink: #ff6b9d;
+        --purple: #a855f7;
+        --text: #e8f4ff;
+        --text2: #9cb8d6;
+        --border: rgba(0, 232, 135, 0.25);
+    }
+    body {
+        background:
+            radial-gradient(ellipse at 30% 20%, rgba(0, 232, 135, 0.08), transparent 60%),
+            radial-gradient(ellipse at 70% 80%, rgba(168, 85, 247, 0.08), transparent 60%),
+            radial-gradient(ellipse at 50% 100%, rgba(255, 215, 0, 0.05), transparent 60%),
+            var(--bg);
+        color: var(--text);
+        font-family: 'Assistant', 'Inter', system-ui, sans-serif;
+        line-height: 1.8;
+        min-height: 100vh;
+    }
+
+    .hero {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 100px 24px 40px;
+        text-align: center;
+    }
+    .lotus {
+        font-size: 80px;
+        margin-bottom: 16px;
+        display: block;
+    }
+    .hero h1 {
+        font-size: clamp(36px, 6vw, 64px);
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--gold), var(--accent), var(--pink));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-bottom: 16px;
+        line-height: 1.2;
+    }
+    .hero .tagline {
+        font-size: 20px;
+        color: var(--text);
+        font-weight: 500;
+        max-width: 700px;
+        margin: 0 auto 12px;
+    }
+    .hero .subtitle {
+        font-size: 14px;
+        color: var(--text2);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .section {
+        max-width: 900px;
+        margin: 0 auto 60px;
+        padding: 0 24px;
+    }
+
+    /* Manifesto card */
+    .manifesto {
+        background: linear-gradient(135deg, rgba(0, 232, 135, 0.06), rgba(168, 85, 247, 0.04));
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        padding: 48px;
+        margin-bottom: 32px;
+        position: relative;
+    }
+    .manifesto::before {
+        content: '"';
+        position: absolute;
+        top: 10px;
+        right: 30px;
+        font-size: 120px;
+        color: var(--accent);
+        opacity: 0.15;
+        font-family: serif;
+        line-height: 1;
+    }
+    .manifesto .date {
+        display: inline-block;
+        padding: 4px 12px;
+        background: rgba(255, 215, 0, 0.1);
+        border: 1px solid var(--gold);
+        color: var(--gold);
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 16px;
+    }
+    .manifesto h2 {
+        font-size: 24px;
+        color: var(--accent);
+        margin-bottom: 16px;
+        font-weight: 800;
+    }
+    .manifesto p {
+        font-size: 15px;
+        color: var(--text);
+        margin-bottom: 14px;
+        line-height: 1.9;
+    }
+    .manifesto p strong {
+        color: var(--gold);
+    }
+
+    /* Pillars */
+    .pillars {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+        margin-top: 40px;
+    }
+    .pillar {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 28px;
+        text-align: center;
+    }
+    .pillar .icon {
+        font-size: 48px;
+        margin-bottom: 12px;
+    }
+    .pillar h3 {
+        font-size: 18px;
+        color: var(--accent2);
+        margin-bottom: 8px;
+        font-weight: 800;
+    }
+    .pillar p {
+        font-size: 13px;
+        color: var(--text2);
+        line-height: 1.7;
+    }
+
+    /* Who is this for */
+    .audience {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+    }
+    .audience-card {
+        background: var(--bg2);
+        border: 2px solid var(--border);
+        border-radius: 20px;
+        padding: 28px;
+        transition: all 0.2s;
+        text-decoration: none;
+        color: var(--text);
+        display: block;
+    }
+    .audience-card:hover {
+        transform: translateY(-4px);
+        border-color: var(--accent);
+    }
+    .audience-card h3 {
+        font-size: 20px;
+        font-weight: 800;
+        margin-bottom: 10px;
+        color: var(--accent);
+    }
+    .audience-card .who {
+        font-size: 13px;
+        color: var(--text2);
+        margin-bottom: 14px;
+        line-height: 1.7;
+    }
+    .audience-card .cta {
+        display: inline-block;
+        padding: 10px 20px;
+        background: rgba(0, 232, 135, 0.1);
+        border: 1px solid var(--accent);
+        color: var(--accent);
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    /* Live stats */
+    .live-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 16px;
+    }
+    .stat {
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+    }
+    .stat .v {
+        font-size: 32px;
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--accent), var(--gold));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+    .stat .l {
+        font-size: 11px;
+        color: var(--text2);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 4px;
+    }
+
+    .section-title {
+        font-size: 32px;
+        font-weight: 900;
+        text-align: center;
+        margin-bottom: 32px;
+        color: var(--text);
+    }
+    .section-title span {
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .cta-bottom {
+        background: linear-gradient(135deg, rgba(255, 215, 0, 0.12), rgba(0, 232, 135, 0.08));
+        border: 2px solid var(--gold);
+        border-radius: 24px;
+        padding: 48px;
+        text-align: center;
+        margin-top: 40px;
+    }
+    .cta-bottom h2 {
+        font-size: 28px;
+        font-weight: 900;
+        color: var(--gold);
+        margin-bottom: 12px;
+    }
+    .cta-bottom p {
+        font-size: 15px;
+        color: var(--text);
+        margin-bottom: 24px;
+    }
+    .cta-bottom a {
+        display: inline-block;
+        padding: 16px 32px;
+        background: linear-gradient(135deg, var(--gold), var(--accent));
+        color: #000;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 900;
+        font-size: 16px;
+        margin: 0 8px;
+    }
+
+    /* ── Theme Switcher ─────────────────────────────────── */
+    #theme-fab{position:fixed;bottom:94px;left:24px;z-index:9997;background:var(--accent);color:#000;width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;font-size:20px;box-shadow:0 4px 16px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center}
+    #theme-panel{position:fixed;bottom:150px;left:24px;z-index:9998;background:var(--bg);border:1px solid var(--border);padding:16px;border-radius:12px;display:none;flex-direction:column;gap:6px;max-width:220px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+    #theme-panel.open{display:flex}
+    #theme-panel button{background:var(--bg);border:1px solid var(--border);color:var(--text);padding:10px 14px;cursor:pointer;font-size:12px;text-align:right;font-family:inherit;border-radius:6px;transition:all .2s}
+    #theme-panel button:hover{background:var(--accent);color:#000;transform:translateX(-4px)}
+    #theme-panel .title{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+
+    [data-theme="dark"]{--bg:#0b0e16;--bg2:#111520;--bg3:#1a1e2e;--accent:#00b4d8;--accent2:#90e0ef;--gold:#ffd700;--pink:#ff6b9d;--purple:#a855f7;--text:#e8e8f0;--text2:#8a8aa0;--border:rgba(0,180,216,.2)}
+    [data-theme="light"]{--bg:#f8f9fb;--bg2:#fff;--bg3:#eee;--accent:#0066cc;--accent2:#0052a3;--gold:#b8860b;--pink:#d63384;--purple:#6f42c1;--text:#1a1a1a;--text2:#555;--border:rgba(0,102,204,.2)}
+    [data-theme="crypto"]{--bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--accent:#f7931a;--accent2:#ffb14e;--gold:#ffd700;--pink:#ff6b9d;--purple:#a855f7;--text:#e8e8f0;--text2:#8a8aa0;--border:rgba(247,147,26,.2)}
+    [data-theme="cyberpunk"]{--bg:#0a0014;--bg2:#140020;--bg3:#1e0030;--accent:#ff00ff;--accent2:#00ffff;--gold:#ffff00;--pink:#ff00ff;--purple:#cc00cc;--text:#ff00ff;--text2:#cc00cc;--border:rgba(255,0,255,.3)}
+    [data-theme="ocean"]{--bg:#001e3c;--bg2:#002952;--bg3:#003566;--accent:#00d9ff;--accent2:#0099cc;--gold:#ffd700;--pink:#ff6b9d;--purple:#a855f7;--text:#b8e6ff;--text2:#6bb6cc;--border:rgba(0,217,255,.2)}
+    [data-theme="sunset"]{--bg:#1a0a14;--bg2:#261018;--bg3:#33161e;--accent:#ff6b6b;--accent2:#ffa07a;--gold:#ffb703;--pink:#ff6b9d;--purple:#a855f7;--text:#ffe5d9;--text2:#c9a88a;--border:rgba(255,107,107,.2)}
+</style>
+</head>
+<body>
+
+<div id="topnav-root"></div>
+
+<section class="hero">
+    <span class="lotus">🌸</span>
+    <h1>המטבע של הריפוי</h1>
+    <p class="tagline">
+        זמן של מטפל = מטבעות שיחולקו לנזקקים
+    </p>
+    <p class="subtitle">
+        SLH Spark הוא לא עוד פרויקט קריפטו. זהו החזון מ-2023 של קרן סלה ללא גבולות —
+        מטבע של ריפוי, חינוך לבריאות הנפש, וכלכלה הוגנת ללא מעילות.
+    </p>
+</section>
+
+<!-- Live launch stats -->
+<section class="section">
+    <div class="live-stats">
+        <div class="stat">
+            <div class="v" id="stat-raised">0.05</div>
+            <div class="l">BNB Raised</div>
+        </div>
+        <div class="stat">
+            <div class="v" id="stat-target">100%</div>
+            <div class="l">של היעד</div>
+        </div>
+        <div class="stat">
+            <div class="v" id="stat-contributors">3</div>
+            <div class="l">שותפים</div>
+        </div>
+        <div class="stat">
+            <div class="v">2026</div>
+            <div class="l">Genesis Year</div>
+        </div>
+    </div>
+</section>
+
+<!-- Manifesto from 2023 -->
+<section class="section">
+    <div class="manifesto">
+        <span class="date">📜 נכתב ב-31/03/2023</span>
+        <h2>רגע מכונן</h2>
+        <p>
+            בדיוק סיימתי להגדיר את הרשת למסחר החדשה שלנו, בה נוכל לקיים
+            <strong>ביטוחים, רפואה, חינוך, ומנהל קהילתי תקין</strong>.
+        </p>
+        <p>
+            הכניסה לרשת הזו של מספר מטבעות שונים מהווה אפשרות למנהל נקי ממעילות, ועל כן
+            <strong>קיום של מסחר הוגן ומרתק</strong> בעבורנו, חברי קהילת הבנק הבינוני הראשון. ❤️
+        </p>
+        <p>
+            🌈 בזאת אנו הופכים לקהילה מסחרית באופן מלא המקיימת מסחר גם על חשבון פיתוח הקניין הרוחני,
+            לשם ניהול כלכלי בריא, ותחילת שנת היובל, בה ניתן כבר לקדם את הכלכלה דרך
+            <strong>מתן סיוע לנזקקים</strong>. 🌺
+        </p>
+        <p>
+            🙏 קרן סלה ללא גבולות לרפואה שלמה מגייסת עכשיו נותני סיוע שיסכימו לקבל תמורה במטבע החדש.
+        </p>
+        <p>
+            המטבע יחולק לכל אדם שזקוק לסיוע, ויונפק רק בעבור ברטרים של שירותי רפואה וחינוך לבריאות הנפש —
+            קידום הכלכלה על ידי מתן מטבע לשיקום וסיוע.
+        </p>
+        <p>
+            או במילים אחרות:
+        </p>
+        <p style="font-size:18px;color:var(--gold);text-align:center;margin-top:20px;font-weight:700">
+            זמן של מטפל = מטבעות שיחולקו לנזקקים.
+        </p>
+    </div>
+</section>
+
+<!-- Pillars -->
+<section class="section">
+    <h2 class="section-title">4 העמודים של <span>SLH Healing</span></h2>
+    <div class="pillars">
+        <div class="pillar">
+            <div class="icon">🏥</div>
+            <h3>רפואה שלמה</h3>
+            <p>מטפלים מקבלים SLH על זמן הטיפול שלהם — פיזיותרפיה, CBT, ייעוץ, שיקום.</p>
+        </div>
+        <div class="pillar">
+            <div class="icon">🧠</div>
+            <h3>בריאות הנפש</h3>
+            <p>חינוך לבריאות הנפש ללא גבולות. SLH מממן קורסים, סדנאות, וליווי אישי.</p>
+        </div>
+        <div class="pillar">
+            <div class="icon">🤝</div>
+            <h3>סיוע לנזקקים</h3>
+            <p>המטבע מחולק חינם לאנשים שזקוקים לסיוע רפואי או פסיכולוגי. הם משלמים בו למטפלים.</p>
+        </div>
+        <div class="pillar">
+            <div class="icon">🏛️</div>
+            <h3>קהילה סוציוקרטית</h3>
+            <p>ניהול ללא מעילות. הקהילה מחליטה ביחד. שקיפות מלאה דרך blockchain.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Who is this for -->
+<section class="section">
+    <h2 class="section-title">למי <span>זה מתאים</span>?</h2>
+    <div class="audience">
+        <a href="/for-therapists.html" class="audience-card">
+            <h3>🩺 למטפלים</h3>
+            <p class="who">
+                פסיכולוגים, מטפלי CBT, פיזיותרפיסטים, יועצים, מטפלי NLP, הומאופתיה, דיקור,
+                רפואה משלימה, קרוסולוגיה, פסיכיאטריה.
+            </p>
+            <span class="cta">הירשם לרשת &larr;</span>
+        </a>
+        <a href="/launch-event.html" class="audience-card">
+            <h3>💰 למשקיעים</h3>
+            <p class="who">
+                מי שרואה בקריפטו הזדמנות להשפיע על עולם אמיתי. מחיר פתיחה: $0.61/SLH,
+                יעד תשואה: 65%+ שנתי דרך staking + buyback-burn.
+            </p>
+            <span class="cta">Join Genesis Launch &larr;</span>
+        </a>
+        <a href="/dashboard.html#register" class="audience-card">
+            <h3>❤️ לנזקקים</h3>
+            <p class="who">
+                מי שזקוק לטיפול אך אין לו יכולת לממן. הקהילה תחלק SLH לפי בקשה +
+                המלצה של מטפל. המטפל מקבל את המטבע כתשלום.
+            </p>
+            <span class="cta">בקש סיוע &larr;</span>
+        </a>
+    </div>
+</section>
+
+<!-- TOKEN ECONOMY OF HEALING -->
+<section class="section">
+    <h2 class="section-title">💎 כלכלת <span>הריפוי</span> — איך המטבעות עובדים</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;margin-bottom:32px">
+        <div style="background:linear-gradient(135deg,rgba(255,215,0,0.08),rgba(0,0,0,0.3));border:2px solid var(--gold);border-radius:16px;padding:24px;text-align:center">
+            <div style="font-size:40px;margin-bottom:8px">💎</div>
+            <div style="font-size:22px;font-weight:900;color:var(--gold)">SLH</div>
+            <div style="font-size:14px;color:var(--gold);margin-bottom:10px">יעד: ₪444 / $122</div>
+            <div style="font-size:12px;color:var(--text2);line-height:1.8;text-align:right">
+                <strong style="color:var(--text)">שליטה וערך:</strong><br>
+                • זכות הצבעה בקהילה (1 SLH = 1 vote)<br>
+                • גישה לפיצ'רים פרימיום<br>
+                • Staking — Revenue Share Pool (Dynamic Yield)<br>
+                • Buyback-burn מרווחי הפלטפורמה<br>
+                • <strong>נדיר</strong> — ככל שהרשת גדלה, הערך עולה
+            </div>
+        </div>
+        <div style="background:linear-gradient(135deg,rgba(0,232,135,0.08),rgba(0,0,0,0.3));border:2px solid var(--accent);border-radius:16px;padding:24px;text-align:center">
+            <div style="font-size:40px;margin-bottom:8px">🪙</div>
+            <div style="font-size:22px;font-weight:900;color:var(--accent)">MNH</div>
+            <div style="font-size:14px;color:var(--accent);margin-bottom:10px">צמוד ₪1 (stablecoin)</div>
+            <div style="font-size:12px;color:var(--text2);line-height:1.8;text-align:right">
+                <strong style="color:var(--text)">תשלומים יומיים:</strong><br>
+                • תשלום למטפלים על שעת עבודה<br>
+                • העברות <strong>חינם</strong> בתוך הרשת<br>
+                • הפקדה ומשיכה בשקלים<br>
+                • יציב — ללא סיכון תנודתיות<br>
+                • <strong>שקלים דיגיטליים</strong> של הקהילה
+            </div>
+        </div>
+        <div style="background:linear-gradient(135deg,rgba(168,85,247,0.08),rgba(0,0,0,0.3));border:2px solid var(--purple);border-radius:16px;padding:24px;text-align:center">
+            <div style="font-size:40px;margin-bottom:8px">⭐</div>
+            <div style="font-size:22px;font-weight:900;color:var(--purple)">ZVK</div>
+            <div style="font-size:14px;color:var(--purple);margin-bottom:10px">~₪4.4 (תגמולים)</div>
+            <div style="font-size:12px;color:var(--text2);line-height:1.8;text-align:right">
+                <strong style="color:var(--text)">פעילות וגמול:</strong><br>
+                • בונוס הצטרפות (100 ZVK)<br>
+                • הפניות (2 רמות: 20% / 5%)<br>
+                • משחקים ומשימות יומיות<br>
+                • Cashback על הפצות<br>
+                • <strong>ניתן להמרה</strong>: 100 ZVK = 1 SLH
+            </div>
+        </div>
+        <div style="background:linear-gradient(135deg,rgba(255,107,157,0.08),rgba(0,0,0,0.3));border:2px solid var(--pink);border-radius:16px;padding:24px;text-align:center">
+            <div style="font-size:40px;margin-bottom:8px">🏅</div>
+            <div style="font-size:22px;font-weight:900;color:var(--pink)">REP</div>
+            <div style="font-size:14px;color:var(--pink);margin-bottom:10px">מדד אישי (בקרוב)</div>
+            <div style="font-size:12px;color:var(--text2);line-height:1.8;text-align:right">
+                <strong style="color:var(--text)">מוניטין אישי:</strong><br>
+                • כל חבר מקבל REP Score<br>
+                • נצבר מ: טיפול, הפניות, תרומה<br>
+                • REP גבוה = יותר ZVK + כוח הצבעה<br>
+                • 4 דרגות: Basic → Active → Senior → Elder<br>
+                • <strong>הקול שלך</strong> בקהילה
+            </div>
+        </div>
+        <div style="background:linear-gradient(135deg,rgba(255,0,85,0.08),rgba(0,0,0,0.3));border:2px solid #ff0055;border-radius:16px;padding:24px;text-align:center">
+            <div style="font-size:40px;margin-bottom:8px">🛡️</div>
+            <div style="font-size:22px;font-weight:900;color:#ff0055">ZUZ</div>
+            <div style="font-size:14px;color:#ff0055;margin-bottom:10px">אות קין — Anti-Fraud</div>
+            <div style="font-size:12px;color:var(--text2);line-height:1.8;text-align:right">
+                <strong style="color:var(--text)">הגנה מפני הונאות:</strong><br>
+                • סימון שלילי לסקאמרים ובוטים<br>
+                • דיווח → ZUZ נצבר על החשוד<br>
+                • 100 ZUZ = חסימה אוטומטית<br>
+                • מודיעין חוצה-קבוצות (Guardian)<br>
+                • <strong>מגן על הקהילה</strong> מפני הונאות
+            </div>
+        </div>
+    </div>
+
+    <!-- How they connect -->
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:28px;text-align:center">
+        <h3 style="color:var(--gold);font-size:20px;margin-bottom:16px">🔄 איך הכל מתחבר</h3>
+        <div style="font-size:14px;color:var(--text);line-height:2.2;max-width:700px;margin:0 auto;text-align:right">
+            <strong style="color:var(--pink)">מטפל</strong> נותן שעת טיפול → מקבל <strong style="color:var(--accent)">MNH</strong> (תשלום מיידי, בחינם)<br>
+            <strong style="color:var(--pink)">נזקק</strong> מקבל <strong style="color:var(--accent)">MNH</strong> מהקהילה → משלם למטפל (ללא עלות לנזקק)<br>
+            <strong style="color:var(--pink)">חבר</strong> מפנה חברים → מרוויח <strong style="color:var(--purple)">ZVK</strong> (Tier 1: 20%, Tier 2: 5%)<br>
+            <strong style="color:var(--purple)">ZVK</strong> נצבר → ניתן להמרה ל-<strong style="color:var(--gold)">SLH</strong> (100:1)<br>
+            <strong style="color:var(--gold)">SLH</strong> עולה בערך → <strong>כל הרשת</strong> מרוויחה מהצמיחה<br>
+            <strong style="color:var(--pink)">REP</strong> גבוה → יותר <strong style="color:var(--purple)">ZVK</strong> rewards + כוח הצבעה ב-<strong style="color:var(--gold)">SLH</strong> governance<br>
+            <strong style="color:#ff0055">ZUZ</strong> "אות קין" → סימון הונאות → <strong>100 ZUZ = חסימה אוטומטית</strong> בכל הרשת (Guardian)
+        </div>
+    </div>
+</section>
+
+<!-- Jubilee Year Connection -->
+<section class="section">
+    <div style="background:linear-gradient(135deg,rgba(255,215,0,0.1),rgba(124,179,66,0.08));border:2px solid rgba(124,179,66,0.4);border-radius:20px;padding:32px;text-align:center">
+        <div style="font-size:48px;margin-bottom:12px">🕊️</div>
+        <h2 style="font-size:26px;font-weight:900;color:#7cb342;margin-bottom:12px">שנת היובל — שיקום ישראל</h2>
+        <p style="font-size:15px;color:var(--text);max-width:600px;margin:0 auto 20px;line-height:1.8">
+            SLH Spark הוא חלק מחזון רחב יותר: תנועת אחדות, מפגשי קירוב לבבות,
+            וטכניקות CBT ו-NLP ב"שער הלב". הכלכלה של הריפוי היא היובל של הדור שלנו.
+        </p>
+        <a href="/jubilee.html" style="display:inline-block;padding:14px 28px;background:#7cb342;color:#000;border-radius:12px;text-decoration:none;font-weight:800;font-size:15px">🕊️ קרא על חזון שנת היובל →</a>
+    </div>
+</section>
+
+<!-- CTA Bottom -->
+<section class="section">
+    <div class="cta-bottom">
+        <h2>🚀 SLH חי ב-PancakeSwap!</h2>
+        <p>
+            Pool SLH/BNB חי ב-DEX. Swap ראשון בוצע. מחיר: $0.596/SLH.
+            הצטרף עכשיו — כמשקיע, כמטפל, או כחבר קהילה.
+        </p>
+        <a href="https://pancakeswap.finance/swap?outputCurrency=0xACb0A09414CEA1C879c67bB7A877E4e19480f022&chain=bsc" target="_blank">🛒 קנה SLH ב-PancakeSwap</a>
+        <a href="/for-therapists.html" style="background:transparent;border:2px solid var(--gold);color:var(--gold)">🩺 אני מטפל/ת</a>
+        <a href="/jubilee.html" style="background:transparent;border:2px solid #7cb342;color:#7cb342">🕊️ שנת היובל</a>
+    </div>
+</section>
+
+<div id="bottomnav-root"></div>
+<div id="footer-root"></div>
+
+<script src="/js/translations.js?v=20260425d"></script>
+<script src="/js/shared.js?v=20260425d"></script>
+<script>
+initShared({ activePage: 'healing', showBottomNav: true });
+
+// Load live stats
+(async function(){
+    try {
+        const r = await fetch('https://slh-api-production.up.railway.app/api/launch/status');
+        const d = await r.json();
+        const raised = (d.raised_bnb_verified || 0) + (d.raised_bnb_pending || 0);
+        document.getElementById('stat-raised').textContent = raised.toFixed(3);
+        document.getElementById('stat-target').textContent = Math.round((d.progress_pct || 0)) + '%';
+        document.getElementById('stat-contributors').textContent = d.contributors_count || 0;
+    } catch(e){}
+})();
+</script>
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260425d"></script>
+</body>
+</html>

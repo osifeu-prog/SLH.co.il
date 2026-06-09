@@ -1,0 +1,326 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta name="robots" content="noindex,nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Device Inventory · SLH Spark Admin</title>
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css?v=20260426e">
+<style>
+  body { font-family:'Inter',system-ui,sans-serif; background:var(--bg,#0a0a0f); color:var(--text,#e0e0e0); margin:0; }
+  .wrap { max-width: 1400px; margin: 0 auto; padding: 24px 20px 60px; }
+  h1 { font-size: 26px; margin: 0 0 6px; background:linear-gradient(135deg,#ffd700,#00e887); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+  .sub { font-size: 13px; color: var(--text2,#9a9aa8); margin-bottom: 22px; }
+
+  .auth-notice { padding:14px; background:rgba(255,71,87,.08); border:1px solid rgba(255,71,87,.3); border-radius:10px; margin-bottom:18px; font-size:13px; display:none; }
+  .auth-notice.show { display:block; }
+  .auth-notice code { background:rgba(0,0,0,.3); padding:2px 6px; border-radius:4px; }
+
+  .toolbar { display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap; align-items:center; }
+  .toolbar input, .toolbar select { padding:9px 12px; background:rgba(0,0,0,.3); border:1px solid rgba(255,255,255,.1); border-radius:8px; color:var(--text); font-family:inherit; font-size:13px; }
+  .btn { padding:9px 16px; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px; }
+  .btn-primary { background:linear-gradient(135deg,#00e887,#00ff41); color:#000; }
+  .btn-secondary { background:rgba(255,255,255,.05); color:var(--text); border:1px solid rgba(255,255,255,.1); }
+
+  .stats { display:grid; grid-template-columns:repeat(auto-fit, minmax(140px,1fr)); gap:10px; margin-bottom:18px; }
+  .stat { padding:14px 16px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08); border-radius:10px; }
+  .stat .v { font-size:22px; font-weight:900; color:#00e887; font-family:monospace; }
+  .stat .l { font-size:11px; color:var(--text2,#9a9aa8); margin-top:3px; }
+
+  table { width:100%; border-collapse:collapse; font-size:12px; background:rgba(255,255,255,.02); border-radius:10px; overflow:hidden; }
+  th, td { text-align:right; padding:10px 12px; border-bottom:1px solid rgba(255,255,255,.05); }
+  th { font-weight:700; color:var(--text2,#9a9aa8); font-size:11px; text-transform:uppercase; letter-spacing:.5px; background:rgba(0,0,0,.3); }
+  tr:hover td { background:rgba(255,255,255,.02); }
+  td.mac { font-family:monospace; font-weight:700; }
+  .badge { display:inline-block; padding:2px 8px; border-radius:10px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; }
+  .badge.in_stock { background:rgba(168,85,247,.1); color:#a855f7; border:1px solid rgba(168,85,247,.3); }
+  .badge.reserved { background:rgba(255,215,0,.1); color:#ffd700; border:1px solid rgba(255,215,0,.3); }
+  .badge.sold     { background:rgba(0,232,135,.1); color:#00e887; border:1px solid rgba(0,232,135,.3); }
+  .badge.shipped  { background:rgba(0,152,234,.1); color:#0098ea; border:1px solid rgba(0,152,234,.3); }
+  .badge.active   { background:rgba(0,255,65,.1);  color:#00ff41; border:1px solid rgba(0,255,65,.3); }
+  .badge.returned { background:rgba(255,165,0,.1); color:#ffa500; border:1px solid rgba(255,165,0,.3); }
+  .badge.dead     { background:rgba(255,71,87,.1); color:#ff6b81; border:1px solid rgba(255,71,87,.3); }
+
+  .empty { padding:30px; text-align:center; color:var(--text2,#9a9aa8); }
+
+  .modal { position:fixed; inset:0; background:rgba(0,0,0,.7); display:none; align-items:center; justify-content:center; padding:20px; z-index:100; }
+  .modal.show { display:flex; }
+  .modal-box { background:#0a0a0f; border:1px solid rgba(255,255,255,.15); border-radius:14px; padding:24px; max-width:500px; width:100%; max-height:90vh; overflow-y:auto; }
+  .modal-box h3 { margin:0 0 16px; font-size:18px; }
+  .field { display:flex; flex-direction:column; gap:6px; margin-bottom:12px; }
+  .field label { font-size:12px; color:var(--text2,#9a9aa8); }
+  .field input, .field select, .field textarea { padding:9px 12px; background:rgba(0,0,0,.3); border:1px solid rgba(255,255,255,.1); border-radius:8px; color:var(--text); font-family:inherit; font-size:13px; }
+  .modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:18px; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <h1>📟 Device Inventory</h1>
+  <p class="sub">קטלוג של כל מכשירי ה-ESP32 במערכת — מהמלאי עד פעיל אצל הלקוח.</p>
+
+  <div class="auth-notice" id="auth-notice">
+    <strong>נדרש admin key.</strong> פתח F12 → Console והדבק:<br>
+    <code>localStorage.setItem('slh_admin_password', '&lt;your admin key&gt;'); location.reload();</code>
+  </div>
+
+  <!-- Stats strip -->
+  <div class="stats" id="stats">
+    <div class="stat"><div class="v" id="s-total">--</div><div class="l">סה"כ מכשירים</div></div>
+    <div class="stat"><div class="v" id="s-stock">--</div><div class="l">במלאי</div></div>
+    <div class="stat"><div class="v" id="s-sold">--</div><div class="l">נמכר</div></div>
+    <div class="stat"><div class="v" id="s-shipped">--</div><div class="l">נשלח</div></div>
+    <div class="stat"><div class="v" id="s-active">--</div><div class="l">פעיל</div></div>
+    <div class="stat"><div class="v" id="s-revenue">--</div><div class="l">הכנסות (₪)</div></div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <button class="btn btn-primary" id="btn-add">+ הוסף מכשיר</button>
+    <select id="f-status">
+      <option value="">כל הסטטוסים</option>
+      <option value="in_stock">במלאי</option>
+      <option value="reserved">משוריין</option>
+      <option value="sold">נמכר</option>
+      <option value="shipped">נשלח</option>
+      <option value="active">פעיל</option>
+      <option value="returned">הוחזר</option>
+      <option value="dead">לא פעיל</option>
+    </select>
+    <input type="text" id="f-search" placeholder="חיפוש: MAC / device_id / שם / טלפון">
+    <button class="btn btn-secondary" id="btn-refresh">↻ רענן</button>
+  </div>
+
+  <!-- Table -->
+  <table id="inv-table">
+    <thead>
+      <tr>
+        <th>MAC</th>
+        <th>Device ID</th>
+        <th>Status</th>
+        <th>Buyer</th>
+        <th>Phone</th>
+        <th>Price ₪</th>
+        <th>Sold</th>
+        <th>FW</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="tbody">
+      <tr><td class="empty" colspan="9">טוען...</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Add modal -->
+<div class="modal" id="modal-add">
+  <div class="modal-box">
+    <h3>הוסף מכשיר חדש</h3>
+    <div class="field"><label>MAC Address (12 תווים, e.g. AA:BB:CC:DD:EE:FF)</label><input type="text" id="m-mac" placeholder="AA:BB:CC:DD:EE:FF" required></div>
+    <div class="field"><label>Hardware revision (אופציונלי)</label><input type="text" id="m-hwrev" placeholder="esp32-cyd-2024-rev2"></div>
+    <div class="field"><label>FW version (אופציונלי)</label><input type="text" id="m-fw" placeholder="slh-v3"></div>
+    <div class="field"><label>Status</label>
+      <select id="m-status">
+        <option value="in_stock" selected>in_stock</option>
+        <option value="reserved">reserved</option>
+      </select>
+    </div>
+    <div class="field"><label>Notes</label><textarea id="m-notes" rows="2" placeholder="אופציונלי"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('modal-add')">ביטול</button>
+      <button class="btn btn-primary" id="btn-save-add">שמור</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit/Sell modal -->
+<div class="modal" id="modal-edit">
+  <div class="modal-box">
+    <h3 id="modal-edit-title">עדכון מכשיר</h3>
+    <input type="hidden" id="e-id">
+    <div class="field"><label>Status</label>
+      <select id="e-status">
+        <option value="in_stock">in_stock</option>
+        <option value="reserved">reserved</option>
+        <option value="sold">sold</option>
+        <option value="shipped">shipped</option>
+        <option value="active">active</option>
+        <option value="returned">returned</option>
+        <option value="dead">dead</option>
+      </select>
+    </div>
+    <div class="field"><label>Buyer name</label><input type="text" id="e-buyer-name"></div>
+    <div class="field"><label>Buyer phone</label><input type="text" id="e-buyer-phone"></div>
+    <div class="field"><label>Buyer Telegram ID</label><input type="number" id="e-buyer-uid"></div>
+    <div class="field"><label>Sale price (₪)</label><input type="number" id="e-price" step="0.01"></div>
+    <div class="field"><label>Notes</label><textarea id="e-notes" rows="2"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('modal-edit')">ביטול</button>
+      <button class="btn btn-primary" id="btn-save-edit">שמור</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = 'https://slh-api-production.up.railway.app';
+const AUTH_KEY = 'slh_admin_password';
+
+function getAdminKey() {
+  return localStorage.getItem(AUTH_KEY) || '';
+}
+
+async function apiCall(method, path, body) {
+  const key = getAdminKey();
+  if (!key) {
+    document.getElementById('auth-notice').classList.add('show');
+    return null;
+  }
+  const opts = {
+    method,
+    headers: { 'X-Admin-Key': key, 'Content-Type': 'application/json' }
+  };
+  if (body) opts.body = JSON.stringify(body);
+  try {
+    const r = await fetch(API + path, opts);
+    if (r.status === 403) {
+      document.getElementById('auth-notice').classList.add('show');
+      return null;
+    }
+    if (r.status === 404) return { _status: 404 };
+    return await r.json();
+  } catch (e) {
+    console.error(method, path, e);
+    return null;
+  }
+}
+
+function fmtDate(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleDateString('he-IL');
+}
+
+function showModal(id) { document.getElementById(id).classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+async function loadStats() {
+  const d = await apiCall('GET', '/api/admin/devices/inventory/stats');
+  if (!d || d._status === 404) return;
+  const by = d.by_status || {};
+  document.getElementById('s-total').textContent = (d.total_devices || 0).toLocaleString('he-IL');
+  document.getElementById('s-stock').textContent = (by.in_stock?.count || 0).toLocaleString('he-IL');
+  document.getElementById('s-sold').textContent = (by.sold?.count || 0).toLocaleString('he-IL');
+  document.getElementById('s-shipped').textContent = (by.shipped?.count || 0).toLocaleString('he-IL');
+  document.getElementById('s-active').textContent = (by.active?.count || 0).toLocaleString('he-IL');
+  document.getElementById('s-revenue').textContent = '₪' + (d.total_revenue_ils || 0).toLocaleString('he-IL', {maximumFractionDigits:2});
+}
+
+async function loadTable() {
+  const status = document.getElementById('f-status').value;
+  const search = document.getElementById('f-search').value;
+  const params = new URLSearchParams();
+  if (status) params.set('status', status);
+  if (search) params.set('search', search);
+  params.set('limit', '200');
+  const d = await apiCall('GET', '/api/admin/devices/inventory?' + params.toString());
+  const tbody = document.getElementById('tbody');
+  if (!d) return;
+  if (d._status === 404) {
+    tbody.innerHTML = '<tr><td class="empty" colspan="9">Endpoint לא פרוס. Railway redeploy?</td></tr>';
+    return;
+  }
+  const devices = d.devices || [];
+  if (!devices.length) {
+    tbody.innerHTML = '<tr><td class="empty" colspan="9">אין מכשירים. לחץ "+ הוסף מכשיר".</td></tr>';
+    return;
+  }
+  tbody.innerHTML = devices.map(d => `
+    <tr>
+      <td class="mac">${d.mac_address}</td>
+      <td>${d.device_id || '—'}</td>
+      <td><span class="badge ${d.status}">${d.status}</span></td>
+      <td>${d.buyer_name || '—'}</td>
+      <td>${d.buyer_phone || '—'}</td>
+      <td>${d.sale_price_ils ? d.sale_price_ils.toLocaleString('he-IL') : '—'}</td>
+      <td>${fmtDate(d.sold_at)}</td>
+      <td>${d.fw_version || '—'}</td>
+      <td><button class="btn btn-secondary" onclick='editDevice(${JSON.stringify(d)})'>ערוך</button></td>
+    </tr>
+  `).join('');
+}
+
+function editDevice(d) {
+  document.getElementById('e-id').value = d.id;
+  document.getElementById('modal-edit-title').textContent = 'עדכון: ' + d.mac_address;
+  document.getElementById('e-status').value = d.status;
+  document.getElementById('e-buyer-name').value = d.buyer_name || '';
+  document.getElementById('e-buyer-phone').value = d.buyer_phone || '';
+  document.getElementById('e-buyer-uid').value = d.buyer_user_id || '';
+  document.getElementById('e-price').value = d.sale_price_ils || '';
+  document.getElementById('e-notes').value = d.notes || '';
+  showModal('modal-edit');
+}
+
+document.getElementById('btn-add').onclick = () => showModal('modal-add');
+document.getElementById('btn-refresh').onclick = () => { loadStats(); loadTable(); };
+document.getElementById('f-status').onchange = loadTable;
+let searchTimeout;
+document.getElementById('f-search').addEventListener('input', () => {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(loadTable, 300);
+});
+
+document.getElementById('btn-save-add').onclick = async () => {
+  const mac = document.getElementById('m-mac').value.trim();
+  if (!mac) { alert('MAC נדרש'); return; }
+  const body = {
+    mac_address: mac,
+    status: document.getElementById('m-status').value,
+    fw_version: document.getElementById('m-fw').value || null,
+    hardware_rev: document.getElementById('m-hwrev').value || null,
+    notes: document.getElementById('m-notes').value || null,
+  };
+  const r = await apiCall('POST', '/api/admin/devices/inventory', body);
+  if (r && r.ok) {
+    closeModal('modal-add');
+    document.getElementById('m-mac').value = '';
+    document.getElementById('m-fw').value = '';
+    document.getElementById('m-hwrev').value = '';
+    document.getElementById('m-notes').value = '';
+    loadStats(); loadTable();
+  } else {
+    alert('שגיאה: ' + JSON.stringify(r));
+  }
+};
+
+document.getElementById('btn-save-edit').onclick = async () => {
+  const id = document.getElementById('e-id').value;
+  const body = {
+    status: document.getElementById('e-status').value,
+    buyer_name: document.getElementById('e-buyer-name').value || null,
+    buyer_phone: document.getElementById('e-buyer-phone').value || null,
+    buyer_user_id: parseInt(document.getElementById('e-buyer-uid').value) || null,
+    sale_price_ils: parseFloat(document.getElementById('e-price').value) || null,
+    notes: document.getElementById('e-notes').value || null,
+  };
+  // If status moves to sold and no sold_at, set it
+  if (body.status === 'sold') body.sold_at = new Date().toISOString();
+  if (body.status === 'shipped') body.shipped_at = new Date().toISOString();
+  if (body.status === 'active') body.activated_at = new Date().toISOString();
+  // Filter null values
+  const clean = Object.fromEntries(Object.entries(body).filter(([_, v]) => v !== null && v !== ''));
+  const r = await apiCall('PATCH', `/api/admin/devices/inventory/${id}`, clean);
+  if (r && r.ok) {
+    closeModal('modal-edit');
+    loadStats(); loadTable();
+  } else {
+    alert('שגיאה: ' + JSON.stringify(r));
+  }
+};
+
+loadStats();
+loadTable();
+</script>
+</body>
+</html>

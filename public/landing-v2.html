@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" data-theme="neural">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SLH Spark — האקוסיסטם הדיגיטלי הראשון בישראל</title>
+  <meta name="description" content="SLH Spark — Digital Investment Ecosystem. 5 tokens, 25 Telegram bots, real blockchain on BSC, Variable Yield 4-12%. Built in Israel.">
+  <meta name="keywords" content="SLH, SLH Spark, BSC, BEP-20, Telegram bots, crypto Israel, investment, yield, blockchain, neural, DNA">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="SLH Spark — The Neural Investment Ecosystem">
+  <meta property="og:description" content="5 tokens · 25 bots · Real blockchain · 4-12% yield · Built in Israel">
+  <meta property="og:image" content="https://slh-nft.com/assets/og/default.png">
+  <link rel="canonical" href="https://slh-nft.com/landing-v2.html">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- SLH base + Neural extension -->
+  <link rel="stylesheet" href="css/shared.css?v=20260427a">
+  <link rel="stylesheet" href="css/slh-neural.css?v=20260427a">
+
+  <style>
+    /* Landing-v2 page-specific tweaks (kept minimal) */
+    body {
+      font-family: 'Heebo', 'Inter', system-ui, sans-serif;
+      color: var(--text); background: var(--bg);
+      margin: 0; min-height: 100vh; overflow-x: hidden;
+    }
+    .topbar {
+      position: fixed; top: 0; inset-inline: 0; z-index: 50;
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      background: rgba(3,6,15,.6);
+      border-bottom: 1px solid var(--border);
+    }
+    .topbar-inner {
+      max-width: 1280px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 24px;
+    }
+    .topbar-brand {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 800; font-size: 1.1rem;
+      color: var(--text); text-decoration: none;
+    }
+    .topbar-brand .brand-logo {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      color: var(--bg); font-weight: 900; font-size: .9rem;
+    }
+    .topbar-nav { display: flex; gap: 28px; align-items: center; }
+    .topbar-nav a {
+      color: var(--text2); text-decoration: none; font-weight: 500;
+      font-size: .95rem; transition: color .2s;
+    }
+    .topbar-nav a:hover { color: var(--accent); }
+    @media (max-width: 720px) {
+      .topbar-nav .topbar-link { display: none; }
+    }
+
+    /* Hero */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 120px 24px 80px;
+      position: relative;
+    }
+    .hero-grid {
+      max-width: 1280px; margin: 0 auto;
+      display: grid; gap: 48px;
+      grid-template-columns: 1.1fr 1fr;
+      align-items: center;
+      width: 100%;
+    }
+    @media (max-width: 960px) {
+      .hero-grid { grid-template-columns: 1fr; text-align: center; }
+      .hero-visual { order: -1; max-width: 380px; margin: 0 auto; }
+    }
+    .hero-cta-row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 28px; }
+    @media (max-width: 960px) { .hero-cta-row { justify-content: center; } }
+    .hero-meta-row {
+      display: flex; gap: 24px; flex-wrap: wrap; margin-top: 32px;
+      padding-top: 28px; border-top: 1px solid var(--border);
+    }
+    @media (max-width: 960px) { .hero-meta-row { justify-content: center; } }
+
+    /* Token constellation */
+    .token-constellation {
+      position: relative; aspect-ratio: 1; max-width: 520px; margin: 0 auto;
+    }
+    .token-constellation svg { width: 100%; height: 100%; }
+    .token-constellation .center-node {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    }
+    .token-orbit {
+      position: absolute; top: 50%; left: 50%;
+      transform-origin: 0 0;
+    }
+
+    /* Footer */
+    footer {
+      padding: 48px 24px 32px; text-align: center;
+      border-top: 1px solid var(--border);
+      background: var(--bg2);
+      color: var(--text3); font-size: .9rem;
+    }
+    footer .footer-links {
+      display: flex; gap: 24px; justify-content: center; flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    footer .footer-links a {
+      color: var(--text2); text-decoration: none; font-size: .9rem;
+    }
+    footer .footer-links a:hover { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient neural background -->
+  <div class="neural-bg" aria-hidden="true"></div>
+
+  <!-- Top navigation -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="/" class="topbar-brand">
+        <span class="brand-logo">SLH</span>
+        <span>Spark Ecosystem</span>
+      </a>
+      <nav class="topbar-nav">
+        <a href="#tokens" class="topbar-link">Tokens</a>
+        <a href="#tech" class="topbar-link">Technology</a>
+        <a href="#trust" class="topbar-link">Trust</a>
+        <a href="#roadmap" class="topbar-link">Roadmap</a>
+        <a href="https://t.me/SLH_AIR_bot" class="neural-btn neural-btn-primary" style="padding: 10px 20px; font-size: .9rem;">
+          <i class="fab fa-telegram"></i> Join
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ═══════════════════ HERO ═══════════════════ -->
+  <section class="hero">
+    <div class="hero-grid">
+      <div>
+        <span class="neural-eyebrow">Live on BSC · 25 Telegram Bots · Built in Israel</span>
+        <h1 class="neural-headline">
+          האקוסיסטם הדיגיטלי שמחבר<br>אנשים, ערך ואמון
+        </h1>
+        <p style="font-size: 1.15rem; color: var(--text2); line-height: 1.65; max-width: 560px;">
+          SLH Spark הוא בית השקעות דיגיטלי מבוסס בלוקצ'יין — חמישה מטבעות, עשרים וחמישה בוטים,
+          ארכיטקטורת DNA המקשרת בין משתמשים, פעילות, ומטבעות בזמן אמת.
+        </p>
+
+        <div class="hero-cta-row">
+          <a href="#invest" class="neural-btn neural-btn-gold">
+            <i class="fas fa-chart-line"></i> דף משקיעים
+          </a>
+          <a href="https://t.me/SLH_AIR_bot" class="neural-btn neural-btn-ghost">
+            <i class="fab fa-telegram"></i> התחל עכשיו
+          </a>
+        </div>
+
+        <div class="hero-meta-row">
+          <div class="trust-badge">
+            <span class="badge-dot"></span>
+            BSC · BEP-20
+          </div>
+          <div class="trust-badge">
+            <span class="badge-dot"></span>
+            PancakeSwap V2 Live
+          </div>
+          <div class="trust-badge">
+            <span class="badge-dot"></span>
+            Variable Yield 4-12%
+          </div>
+        </div>
+      </div>
+
+      <!-- Token constellation visual -->
+      <div class="hero-visual">
+        <div class="token-constellation" id="tokenConstellation" aria-label="Token ecosystem visualization">
+          <!-- SVG: synapse connections -->
+          <svg viewBox="0 0 400 400" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="rgba(255, 209, 102, 0.4)"/>
+                <stop offset="100%" stop-color="rgba(255, 209, 102, 0)"/>
+              </radialGradient>
+            </defs>
+            <!-- Soft glow behind center -->
+            <circle cx="200" cy="200" r="160" fill="url(#centerGlow)"/>
+            <!-- Synapse lines from center to each token (5 nodes around 200,200 at radius 140) -->
+            <line class="synapse-line" x1="200" y1="200" x2="200" y2="60"/>
+            <line class="synapse-line" x1="200" y1="200" x2="333" y2="155" style="animation-delay:.4s"/>
+            <line class="synapse-line" x1="200" y1="200" x2="282" y2="333" style="animation-delay:.8s"/>
+            <line class="synapse-line" x1="200" y1="200" x2="118" y2="333" style="animation-delay:1.2s"/>
+            <line class="synapse-line" x1="200" y1="200" x2="67" y2="155" style="animation-delay:1.6s"/>
+            <!-- Subtle ring -->
+            <circle cx="200" cy="200" r="140" fill="none" stroke="var(--border2)" stroke-width="1" stroke-dasharray="2 6" opacity=".4"/>
+          </svg>
+          <!-- Center: SLH token -->
+          <div class="center-node">
+            <div class="token-node" data-token="SLH" title="SLH — Premium Token">SLH</div>
+          </div>
+          <!-- Orbit nodes (positioned absolutely on top of svg) -->
+          <div style="position:absolute; top:7%; left:50%; transform:translateX(-50%);">
+            <div class="token-node" data-token="MNH" style="width:64px; height:64px; font-size:1rem;" title="MNH — Stable (1 ILS)">MNH</div>
+          </div>
+          <div style="position:absolute; top:32%; right:6%;">
+            <div class="token-node" data-token="ZVK" style="width:64px; height:64px; font-size:1rem;" title="ZVK — Activity rewards">ZVK</div>
+          </div>
+          <div style="position:absolute; bottom:7%; right:22%;">
+            <div class="token-node" data-token="REP" style="width:64px; height:64px; font-size:1rem;" title="REP — Reputation">REP</div>
+          </div>
+          <div style="position:absolute; bottom:7%; left:22%;">
+            <div class="token-node" data-token="ZUZ" style="width:64px; height:64px; font-size:1rem;" title="ZUZ — Anti-fraud guardian">ZUZ</div>
+          </div>
+          <div style="position:absolute; top:32%; left:6%;">
+            <div class="token-node" data-token="MNH" style="width:48px; height:48px; font-size:.85rem; opacity:.5;" title="Future expansion">+</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ LIVE METRICS ═══════════════════ -->
+  <section class="neural-section" style="padding-top:0;">
+    <div class="neural-container">
+      <div class="neural-grid neural-grid-4">
+        <div class="neural-card neural-stat">
+          <div class="stat-value" id="stat-users">9</div>
+          <div class="stat-label">Registered Users</div>
+        </div>
+        <div class="neural-card neural-stat">
+          <div class="stat-value" id="stat-bots">25</div>
+          <div class="stat-label">Active Bots</div>
+        </div>
+        <div class="neural-card neural-stat">
+          <div class="stat-value" id="stat-endpoints">230+</div>
+          <div class="stat-label">API Endpoints</div>
+        </div>
+        <div class="neural-card neural-stat">
+          <div class="stat-value" id="stat-uptime">
+            <span class="live-indicator">LIVE</span>
+          </div>
+          <div class="stat-label">System Status</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="dna-divider" aria-hidden="true">
+    <svg viewBox="0 0 1200 60" preserveAspectRatio="none">
+      <path class="dna-strand" d="M0,30 Q100,5 200,30 T400,30 T600,30 T800,30 T1000,30 T1200,30"/>
+      <path class="dna-strand dna-strand-2" d="M0,30 Q100,55 200,30 T400,30 T600,30 T800,30 T1000,30 T1200,30"/>
+      <line class="dna-rung" x1="100"  y1="15" x2="100"  y2="45"/>
+      <line class="dna-rung" x1="300"  y1="15" x2="300"  y2="45"/>
+      <line class="dna-rung" x1="500"  y1="15" x2="500"  y2="45"/>
+      <line class="dna-rung" x1="700"  y1="15" x2="700"  y2="45"/>
+      <line class="dna-rung" x1="900"  y1="15" x2="900"  y2="45"/>
+      <line class="dna-rung" x1="1100" y1="15" x2="1100" y2="45"/>
+    </svg>
+  </div>
+
+  <!-- ═══════════════════ TOKENS ═══════════════════ -->
+  <section class="neural-section" id="tokens">
+    <div class="neural-container">
+      <div class="section-header">
+        <span class="neural-eyebrow">Token Architecture</span>
+        <h2>חמישה מטבעות, מערכת אחת</h2>
+        <p>כל מטבע הוא נוירון בעל תפקיד ייחודי. יחד הם יוצרים רשת ערך עם איזונים פנימיים שמונעים אינפלציה ופעילות מזיקה.</p>
+      </div>
+      <div class="neural-grid neural-grid-3">
+
+        <article class="neural-card">
+          <div class="card-icon" style="background: linear-gradient(135deg, #ffe18a, var(--token-slh)); color: #2a1f00;">
+            <i class="fas fa-star"></i>
+          </div>
+          <h3 style="margin:0 0 8px;">SLH</h3>
+          <p style="color: var(--text2); margin: 0 0 12px; line-height:1.6;">
+            המטבע הפרימיום ומטבע הניהול. נסחר ב-PancakeSwap, יעד 444 ש"ח. הזיכוי לבעלי תפקידים, premium membership, ו-governance.
+          </p>
+          <div class="trust-badge" style="font-size:.78rem;">
+            <span class="badge-dot"></span> BSC · 0xACb0…f022
+          </div>
+        </article>
+
+        <article class="neural-card">
+          <div class="card-icon" style="background: linear-gradient(135deg, #f4f5f7, var(--token-mnh)); color: #1f2530;">
+            <i class="fas fa-shield-halved"></i>
+          </div>
+          <h3 style="margin:0 0 8px;">MNH</h3>
+          <p style="color: var(--text2); margin: 0; line-height:1.6;">
+            מטבע יציב צמוד ל-1 שקל. משמש לתשלומים, holdings ארוכי טווח, ו-treasury פנימי. ללא תנודתיות, ללא הפתעות.
+          </p>
+        </article>
+
+        <article class="neural-card">
+          <div class="card-icon" style="background: linear-gradient(135deg, #86efac, var(--token-zvk)); color: #052e16;">
+            <i class="fas fa-bolt"></i>
+          </div>
+          <h3 style="margin:0 0 8px;">ZVK</h3>
+          <p style="color: var(--text2); margin: 0; line-height:1.6;">
+            מטבע פעילות. מתקבל על תרומות, הצעות, פרסומים, ו-bug reports. שווי בסיס ~4.4 ש"ח, מתחלף לאחר verification.
+          </p>
+        </article>
+
+        <article class="neural-card">
+          <div class="card-icon" style="background: linear-gradient(135deg, #a7e9ff, var(--token-rep)); color: #003344;">
+            <i class="fas fa-user-shield"></i>
+          </div>
+          <h3 style="margin:0 0 8px;">REP</h3>
+          <p style="color: var(--text2); margin: 0; line-height:1.6;">
+            ציון מוניטין אישי. מ-0 ועד 1000+. נמדד על בסיס פעילות מתמשכת ומפעיל הרשאות מתקדמות במערכת.
+          </p>
+        </article>
+
+        <article class="neural-card">
+          <div class="card-icon" style="background: linear-gradient(135deg, #ffb3c5, var(--token-zuz)); color: #4a0014;">
+            <i class="fas fa-triangle-exclamation"></i>
+          </div>
+          <h3 style="margin:0 0 8px;">ZUZ</h3>
+          <p style="color: var(--text2); margin: 0; line-height:1.6;">
+            "סימן קין" — אות אזהרה לפעילות חשודה. מערכת Guardian אוטומטית, ב-100 ZUZ הגעה = חסימה. שקיפות מלאה.
+          </p>
+        </article>
+
+        <article class="neural-card" style="border-style: dashed; opacity: .85;">
+          <div class="card-icon" style="background: linear-gradient(135deg, var(--accent), var(--accent2));">
+            <i class="fas fa-plus"></i>
+          </div>
+          <h3 style="margin:0 0 8px;">Future Tokens</h3>
+          <p style="color: var(--text2); margin: 0; line-height:1.6;">
+            ארכיטקטורת ה-DNA מתוכננת להרחבה. מטבעות חדשים יתחברו לרשת הקיימת ללא שינוי בקוד הליבה.
+          </p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ TECHNOLOGY ═══════════════════ -->
+  <section class="neural-section" id="tech" style="background: linear-gradient(180deg, transparent, var(--bg2), transparent);">
+    <div class="neural-container">
+      <div class="section-header">
+        <span class="neural-eyebrow">The Architecture</span>
+        <h2>רשת נוירונים, לא מוצר</h2>
+        <p>בניגוד ל-95% מפרוייקטי הקריפטו, SLH לא בנוי כשרת אחד שמחזיק נתונים. הוא רשת של 25 בוטים, API מרכזי, ו-44 דפי ממשק שכולם משתפים אותה DNA.</p>
+      </div>
+
+      <div class="neural-grid neural-grid-3">
+        <div class="neural-card">
+          <div class="card-icon"><i class="fas fa-robot"></i></div>
+          <h3 style="margin:0 0 8px;">25 Telegram Bots</h3>
+          <p style="color: var(--text2); margin:0; line-height:1.6;">
+            Guardian, Wallet, Botshop, Factory, Game, Airdrop, Wellness, ועוד. כל בוט = נוירון מיוחד. כולם מחוברים למסד נתונים אחד.
+          </p>
+        </div>
+
+        <div class="neural-card">
+          <div class="card-icon"><i class="fas fa-server"></i></div>
+          <h3 style="margin:0 0 8px;">FastAPI Core</h3>
+          <p style="color: var(--text2); margin:0; line-height:1.6;">
+            230+ endpoints. PostgreSQL 15 + Redis 7. Deployed Railway, scalable horizontally. SHA-256 audit chain על כל פעולה.
+          </p>
+        </div>
+
+        <div class="neural-card">
+          <div class="card-icon"><i class="fas fa-microchip"></i></div>
+          <h3 style="margin:0 0 8px;">ESP32 Hardware</h3>
+          <p style="color: var(--text2); margin:0; line-height:1.6;">
+            רשת מכשירים פיזיים מחוברת לאקוסיסטם. QR-based onboarding, OTA updates, real-world activity tracking.
+          </p>
+        </div>
+
+        <div class="neural-card">
+          <div class="card-icon"><i class="fab fa-bitcoin"></i></div>
+          <h3 style="margin:0 0 8px;">BSC + TON</h3>
+          <p style="color: var(--text2); margin:0; line-height:1.6;">
+            BEP-20 token live + PancakeSwap V2 pool. שילוב של on-chain (אמון) ו-off-chain (מהירות). Web3 wallet linking לכל משתמש.
+          </p>
+        </div>
+
+        <div class="neural-card">
+          <div class="card-icon"><i class="fas fa-shield-virus"></i></div>
+          <h3 style="margin:0 0 8px;">Guardian System</h3>
+          <p style="color: var(--text2); margin:0; line-height:1.6;">
+            רשת הגנה אוטומטית. Anti-fraud detection בזמן אמת, ZUZ marking, banhammer ב-100 ZUZ. שקיפות מלאה לקהילה.
+          </p>
+        </div>
+
+        <div class="neural-card">
+          <div class="card-icon"><i class="fas fa-language"></i></div>
+          <h3 style="margin:0 0 8px;">Multi-language</h3>
+          <p style="color: var(--text2); margin:0; line-height:1.6;">
+            עברית, אנגלית, רוסית, ערבית, צרפתית. RTL מובנה, i18n על 60% מהדפים, יעד 100% ברבעון הקרוב.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ TRUST ═══════════════════ -->
+  <section class="neural-section" id="trust">
+    <div class="neural-container">
+      <div class="section-header">
+        <span class="neural-eyebrow">Trust & Transparency</span>
+        <h2>אמון נבנה בעובדות, לא ב-promises</h2>
+        <p>כל חלק שאפשר לאמת — מאומת. כל חוזה — on-chain. כל קוד — open architecture. Audits, contracts, וקוד פתוח לבדיקה.</p>
+      </div>
+
+      <div class="neural-grid neural-grid-2" style="max-width: 920px; margin: 0 auto;">
+        <div class="neural-card">
+          <h3 style="margin:0 0 14px; display:flex; align-items:center; gap:10px;">
+            <i class="fas fa-file-contract" style="color: var(--accent);"></i>
+            Smart Contracts
+          </h3>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <a href="https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022" target="_blank" rel="noopener" class="trust-badge" style="justify-content:space-between; text-decoration:none;">
+              <span><span class="badge-dot"></span> SLH (BEP-20)</span>
+              <span style="color: var(--accent);"><i class="fas fa-up-right-from-square"></i></span>
+            </a>
+            <a href="https://bscscan.com/address/0xacea26b6e132cd45f2b8a4754170d4d0d3b8bbee" target="_blank" rel="noopener" class="trust-badge" style="justify-content:space-between; text-decoration:none;">
+              <span><span class="badge-dot"></span> PancakeSwap Pool</span>
+              <span style="color: var(--accent);"><i class="fas fa-up-right-from-square"></i></span>
+            </a>
+            <a href="https://bscscan.com/address/0xd061de73B06d5E91bfA46b35EfB7B08b16903da4" target="_blank" rel="noopener" class="trust-badge" style="justify-content:space-between; text-decoration:none;">
+              <span><span class="badge-dot"></span> Genesis Wallet</span>
+              <span style="color: var(--accent);"><i class="fas fa-up-right-from-square"></i></span>
+            </a>
+          </div>
+        </div>
+
+        <div class="neural-card">
+          <h3 style="margin:0 0 14px; display:flex; align-items:center; gap:10px;">
+            <i class="fas fa-flag-checkered" style="color: var(--accent);"></i>
+            Built in Israel
+          </h3>
+          <p style="color: var(--text2); line-height:1.7; margin:0 0 14px;">
+            מפותח על ידי Osif Kaufman Ungar (SPARK IND). הקוד נכתב בישראל, ה-team ישראלי, היעד הראשון: השוק הישראלי.
+            10+ משקיעים מוסדיים שהביעו עניין (1M+ ש"ח לכל אחד).
+          </p>
+          <div class="trust-badge" style="font-size:.85rem;">
+            <i class="fab fa-telegram" style="color: var(--accent);"></i>
+            @osifeu_prog
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ ROADMAP ═══════════════════ -->
+  <section class="neural-section" id="roadmap" style="background: linear-gradient(180deg, transparent, var(--bg2), transparent);">
+    <div class="neural-container">
+      <div class="section-header">
+        <span class="neural-eyebrow">Roadmap</span>
+        <h2>מאיפה הגענו, ולאן הולכים</h2>
+      </div>
+
+      <div style="max-width: 720px; margin: 0 auto;">
+        <div class="roadmap-timeline">
+
+          <div class="roadmap-item done">
+            <span class="roadmap-date">Q1 2026 — DONE</span>
+            <h4>בנייה ראשונית</h4>
+            <p>SLH token live ב-BSC, PancakeSwap pool פתוח, 5 בוטים ראשונים בייצור.</p>
+          </div>
+
+          <div class="roadmap-item done">
+            <span class="roadmap-date">Q2 2026 — DONE</span>
+            <h4>הרחבת אקוסיסטם</h4>
+            <p>25 בוטים, 230+ endpoints, 44 דפי אתר, מערכת Guardian, 5-token economy.</p>
+          </div>
+
+          <div class="roadmap-item active">
+            <span class="roadmap-date">Q2-Q3 2026 — בעבודה</span>
+            <h4>גיוס משקיעים מוסדיים</h4>
+            <p>סבב seed עם 10+ משקיעי 1M ש"ח. השלמת CertiK audit. השקת academy.</p>
+          </div>
+
+          <div class="roadmap-item">
+            <span class="roadmap-date">Q3 2026</span>
+            <h4>מובייל אפליקציה</h4>
+            <p>React Native app עם מיני-תוכנת Telegram. ESP32 device pairing. NFC payments.</p>
+          </div>
+
+          <div class="roadmap-item">
+            <span class="roadmap-date">Q4 2026</span>
+            <h4>הרחבה בינלאומית</h4>
+            <p>Multi-currency support, 5+ languages, partnerships עם exchanges אזוריים.</p>
+          </div>
+
+          <div class="roadmap-item">
+            <span class="roadmap-date">2027</span>
+            <h4>Marketplace + DAO</h4>
+            <p>Course marketplace, DAO governance על SLH stake. P2P trading layer מלא.</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ INVEST CTA ═══════════════════ -->
+  <section class="neural-section" id="invest">
+    <div class="neural-container">
+      <div class="neural-card" style="text-align:center; max-width: 760px; margin: 0 auto; padding: 56px 32px;">
+        <span class="neural-eyebrow">For Institutional Investors</span>
+        <h2 style="font-size: clamp(1.6rem, 3.5vw, 2.4rem); margin:8px 0 16px;">רוצה להיות חלק מהרשת?</h2>
+        <p style="color: var(--text2); font-size:1.05rem; line-height:1.65; max-width:520px; margin:0 auto 28px;">
+          שלח הודעה ישירות ל-Osif. ה-investor pack כולל: tokenomics deck, audit reports, technical architecture, ו-financial projections.
+        </p>
+        <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap;">
+          <a href="https://t.me/osifeu_prog" class="neural-btn neural-btn-gold">
+            <i class="fab fa-telegram"></i> Talk to Osif
+          </a>
+          <a href="mailto:invest@slh-nft.com" class="neural-btn neural-btn-ghost">
+            <i class="fas fa-envelope"></i> Investor Pack
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ FOOTER ═══════════════════ -->
+  <footer>
+    <div class="footer-links">
+      <a href="/about.html">About</a>
+      <a href="/tokens.html">Tokens</a>
+      <a href="/wallet.html">Wallet</a>
+      <a href="/admin.html">Admin</a>
+      <a href="https://t.me/SLH_AIR_bot">Telegram</a>
+      <a href="https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022">BscScan</a>
+    </div>
+    <div>
+      © 2026 SLH Spark · SPARK IND · Built in Israel ·
+      <span class="live-indicator" style="margin-inline-start: 4px;">SYSTEM ONLINE</span>
+    </div>
+  </footer>
+
+  <!-- Live data fetcher (graceful degradation: keeps fallback values if API unreachable) -->
+  <script>
+    (function fetchLiveStats() {
+      const API = 'https://slhcoil-production.up.railway.app';
+      const elUsers     = document.getElementById('stat-users');
+      const elBots      = document.getElementById('stat-bots');
+      const elEndpoints = document.getElementById('stat-endpoints');
+
+      // Health check: if API is reachable, show LIVE; otherwise keep fallback
+      fetch(API + '/api/health', { mode: 'cors' })
+        .then(r => r.json())
+        .then(data => {
+          if (data && (data.ok || data.status === 'ok' || data.status === 'healthy')) {
+            // API is up — try to enrich stats
+            fetch(API + '/api/stats/public').then(r => r.json()).then(s => {
+              if (s.users)     elUsers.textContent     = s.users.toLocaleString();
+              if (s.bots)      elBots.textContent      = s.bots;
+              if (s.endpoints) elEndpoints.textContent = s.endpoints + '+';
+            }).catch(() => { /* keep fallback */ });
+          }
+        })
+        .catch(() => { /* API unreachable — keep fallback values */ });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,453 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta name="robots" content="noindex,nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guardian Diagnostic Center — מרכז דיאגנוסטיקה מרחוק</title>
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{--bg:#050810;--bg2:#0d1220;--bg3:#151a2e;--gold:#ffd700;--green:#00e887;--red:#ff4444;--orange:#ff9800;--purple:#a855f7;--blue:#3b82f6;--cyan:#06b6d4;--text:#f5f5f8;--text2:#9ba0b5;--text3:#5a6078;--border:rgba(255,68,68,.25)}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Rubik',sans-serif;margin:0;min-height:100vh;line-height:1.5}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(circle at 15% 25%,rgba(255,68,68,.06),transparent 50%),radial-gradient(circle at 85% 75%,rgba(168,85,247,.05),transparent 50%)}
+.header{max-width:1400px;margin:0 auto;padding:30px 20px 20px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px}
+.title{font-size:32px;font-weight:900;background:linear-gradient(135deg,var(--red),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent;margin:0}
+.sub{font-size:13px;color:var(--text2);margin-top:4px}
+.btn{padding:10px 18px;background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:12px;cursor:pointer;font-weight:700;font-size:13px;font-family:inherit;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{border-color:var(--red);color:var(--red)}
+.btn.primary{background:linear-gradient(135deg,var(--red),var(--purple));color:#fff;border:none}
+.btn.green{background:var(--green);color:#000;border:none}
+.kpis{max-width:1400px;margin:0 auto 20px;padding:0 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center}
+.kpi .v{font-size:26px;font-weight:900;color:var(--purple);line-height:1}
+.kpi.green .v{color:var(--green)}
+.kpi.red .v{color:var(--red)}
+.kpi.gold .v{color:var(--gold)}
+.kpi.blue .v{color:var(--blue)}
+.kpi .l{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:1.5px;margin-top:6px}
+.alert{padding:16px;border-radius:14px;margin-bottom:20px;font-size:14px;line-height:1.7}
+.alert.warning{background:rgba(255,215,0,.06);border:1px solid var(--gold);color:var(--gold)}
+.alert.info{background:rgba(59,130,246,.06);border:1px solid var(--blue);color:var(--blue)}
+.alert.danger{background:rgba(255,68,68,.06);border:1px solid var(--red);color:var(--red)}
+.section{max-width:1400px;margin:0 auto 30px;padding:0 20px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:24px;margin-bottom:18px}
+.card h2{margin:0 0 14px;font-size:20px;font-weight:900;color:var(--red);display:flex;align-items:center;gap:8px}
+.diag-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.diag-cmd{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column}
+.diag-cmd:hover{border-color:var(--red);transform:translateY(-2px)}
+.diag-cmd.danger{border-left:4px solid var(--red)}
+.diag-cmd.safe{border-left:4px solid var(--green)}
+.diag-cmd.warning{border-left:4px solid var(--gold)}
+.diag-cmd .name{font-weight:800;color:var(--text);margin-bottom:4px;font-size:14px}
+.diag-cmd .desc{font-size:12px;color:var(--text2);margin-bottom:10px;flex:1;min-height:36px}
+.diag-cmd code{display:block;background:rgba(0,0,0,.3);padding:8px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cyan);margin-bottom:10px;word-break:break-all;direction:ltr;text-align:left}
+.diag-cmd .actions{display:flex;gap:6px}
+.diag-cmd .actions button{flex:1;padding:6px;background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:6px;cursor:pointer;font-size:11px;font-weight:700;font-family:inherit}
+.diag-cmd .actions button.copy:hover{background:var(--gold);color:#000;border-color:var(--gold)}
+.diag-cmd .actions button.run:hover{background:var(--red);color:#fff;border-color:var(--red)}
+.client-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:14px}
+.client-form input,.client-form select{padding:10px 12px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;font-size:13px;font-family:inherit}
+.client-form input:focus,.client-form select:focus{outline:none;border-color:var(--red)}
+.output-box{background:#000;border:1px solid var(--border);border-radius:12px;padding:14px;margin-top:14px;max-height:340px;overflow-y:auto;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--green);white-space:pre-wrap;direction:ltr}
+.modal-bg{position:fixed;inset:0;background:rgba(5,8,16,.85);backdrop-filter:blur(6px);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-bg.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--gold);border-radius:20px;padding:28px;max-width:720px;width:100%;max-height:85vh;overflow-y:auto}
+.modal h2{font-size:22px;margin:0 0 6px;color:var(--gold);font-family:'JetBrains Mono',monospace}
+.modal pre{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text);line-height:1.6;white-space:pre-wrap;word-wrap:break-word;direction:ltr;text-align:left}
+.modal-actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--green);color:#000;padding:12px 24px;border-radius:12px;font-weight:800;z-index:200;display:none}
+.toast.show{display:block}
+.login-gate{max-width:460px;margin:100px auto;padding:40px 32px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;text-align:center}
+.login-gate h2{color:var(--red);margin-bottom:12px}
+.login-gate input{width:100%;padding:14px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:12px;font-size:16px;margin-bottom:14px;font-family:inherit}
+.login-gate button{width:100%;padding:14px;background:linear-gradient(135deg,var(--red),var(--purple));color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:900;cursor:pointer;font-family:inherit}
+.tabs{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap}
+.tab{padding:8px 16px;background:var(--bg2);border:1px solid var(--border);color:var(--text2);border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s}
+.tab.active{background:var(--red);color:#fff;border-color:var(--red)}
+.tab:hover{color:var(--text)}
+.history-item{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;font-size:13px;flex-wrap:wrap;gap:10px}
+.status-badge{padding:3px 10px;border-radius:8px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px}
+.status-badge.ok{background:rgba(0,232,135,.18);color:var(--green)}
+.status-badge.pending{background:rgba(255,215,0,.18);color:var(--gold)}
+.status-badge.failed{background:rgba(255,68,68,.18);color:var(--red)}
+</style>
+</head>
+<body>
+
+<div id="login-gate" class="login-gate" style="display:none">
+  <h2>🛡️ Guardian Diagnostic Center</h2>
+  <p style="color:var(--text2);font-size:13px">דורש סיסמת אדמין · רק owner</p>
+  <input type="password" id="login-pwd" placeholder="סיסמת אדמין">
+  <button onclick="doLogin()">היכנס</button>
+</div>
+
+<div id="main" style="display:none">
+  <div id="topnav-root"></div>
+  <div class="header">
+    <div>
+      <h1 class="title">🛡️ Guardian Diagnostic Center</h1>
+      <p class="sub">מרכז בקרה ל-@Grdian_bot · דיאגנוסטיקה מרחוק · WinRM Agentless</p>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <a href="/admin.html" class="btn"><i class="fas fa-arrow-right"></i> אדמין</a>
+      <a href="/bot-registry.html" class="btn"><i class="fas fa-robot"></i> Bot Registry</a>
+      <a href="https://t.me/Grdian_bot" target="_blank" rel="noopener" class="btn primary"><i class="fab fa-telegram"></i> @Grdian_bot</a>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="alert info">
+      <strong>💡 איך זה עובד?</strong> המערכת משתמשת ב-<strong>WinRM (Agentless Monitoring)</strong> — ללא התקנת סוכן על מחשב הלקוח.
+      הלקוח רק צריך להריץ פעם אחת <code>Enable-PSRemoting -Force</code> ב-PowerShell as Admin.
+      אחרי זה, <strong>@Grdian_bot</strong> יכול להריץ פקודות מרחוק עם אישור הלקוח.
+    </div>
+
+    <div class="alert warning">
+      <strong>🛡️ Two-Factor Approval:</strong> כל פקודה משנה (לא רק קריאה) דורשת <strong>אישור כפול</strong>:
+      (1) האדמין שולח, (2) הלקוח מאשר ב-SMS / טלגרם. הכל מתועד ב-audit_log.
+    </div>
+
+    <div class="kpis">
+      <div class="kpi"><div class="v" id="kpi-clients">0</div><div class="l">לקוחות מחוברים</div></div>
+      <div class="kpi green"><div class="v" id="kpi-online">0</div><div class="l">Online</div></div>
+      <div class="kpi gold"><div class="v" id="kpi-pending">0</div><div class="l">ממתינים אישור</div></div>
+      <div class="kpi blue"><div class="v" id="kpi-runs">0</div><div class="l">פקודות היום</div></div>
+      <div class="kpi red"><div class="v" id="kpi-failed">0</div><div class="l">כשלונות</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="tabs">
+      <button class="tab active" data-tab="commands" onclick="switchTab('commands')">📋 פקודות זמינות</button>
+      <button class="tab" data-tab="run" onclick="switchTab('run')">▶️ הרצת פקודה</button>
+      <button class="tab" data-tab="setup" onclick="switchTab('setup')">⚙️ הגדרת לקוח</button>
+      <button class="tab" data-tab="history" onclick="switchTab('history')">📜 היסטוריה</button>
+      <button class="tab" data-tab="audit" onclick="switchTab('audit')">🔍 Audit Log</button>
+    </div>
+
+    <!-- TAB: COMMANDS -->
+    <div id="tab-commands">
+      <div class="card">
+        <h2><i class="fas fa-list-check"></i> 19 פקודות PowerShell מוכנות</h2>
+        <p style="color:var(--text2);font-size:13px;margin:0 0 16px">
+          לחץ "📋 העתק" כדי להעתיק את הפקודה ולהדביק ב-Telegram (שיטה חצי-אוטומטית) או "▶️ הרץ" לשלוח דרך WinRM אוטומטי.
+        </p>
+        <div id="commands-grid" class="diag-grid"></div>
+      </div>
+    </div>
+
+    <!-- TAB: RUN -->
+    <div id="tab-run" style="display:none">
+      <div class="card">
+        <h2><i class="fas fa-play-circle"></i> הרצת פקודה ידנית</h2>
+        <div class="client-form">
+          <input type="text" id="run-host" placeholder="IP/שם מחשב (לדוגמה: 192.168.1.50)">
+          <input type="text" id="run-user" placeholder="משתמש Windows">
+          <select id="run-mode">
+            <option value="local">מקומי (PowerShell על השרת)</option>
+            <option value="winrm">WinRM (מרחוק)</option>
+            <option value="bot">דרך Telegram bot</option>
+          </select>
+        </div>
+        <textarea id="run-cmd" placeholder="הקש פקודת PowerShell..." style="width:100%;min-height:120px;padding:12px;background:var(--bg);border:1px solid var(--border);color:var(--green);border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:13px;direction:ltr"></textarea>
+        <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn primary" onclick="runCommand()"><i class="fas fa-bolt"></i> הרץ פקודה</button>
+          <button class="btn green" onclick="copyCmd()"><i class="fas fa-copy"></i> העתק לבוט</button>
+          <button class="btn" onclick="document.getElementById('run-cmd').value=''">🗑️ נקה</button>
+        </div>
+        <div id="run-output" class="output-box" style="display:none"></div>
+      </div>
+    </div>
+
+    <!-- TAB: SETUP -->
+    <div id="tab-setup" style="display:none">
+      <div class="card">
+        <h2><i class="fas fa-cog"></i> הגדרת לקוח חדש</h2>
+
+        <h3 style="color:var(--text);font-size:15px;margin:18px 0 8px">שלב 1: הלקוח מריץ אצלו פעם אחת (PowerShell as Admin):</h3>
+        <pre style="background:#000;border:1px solid var(--border);border-radius:10px;padding:14px;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--green);direction:ltr;text-align:left">Enable-PSRemoting -Force
+Set-Item WSMan:\localhost\Client\TrustedHosts -Value "*" -Force
+Restart-Service WinRM
+winrm quickconfig -force
+Write-Host "✅ WinRM enabled successfully" -ForegroundColor Green</pre>
+        <button class="btn green" style="margin-top:8px" onclick="copySetup1()"><i class="fas fa-copy"></i> העתק סקריפט הגדרה</button>
+
+        <h3 style="color:var(--text);font-size:15px;margin:24px 0 8px">שלב 2: הלקוח שולח לבוט פרטי חיבור:</h3>
+        <pre style="background:#000;border:1px solid var(--border);border-radius:10px;padding:14px;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--cyan);direction:ltr;text-align:left">/register_pc
+שם: Avi's Laptop
+IP: 192.168.1.50  (או שם מחשב)
+משתמש Windows: Avi
+טלפון: 050-XXXXXXX (לאישורי SMS)</pre>
+
+        <h3 style="color:var(--text);font-size:15px;margin:24px 0 8px">שלב 3: הבוט יכול להריץ פקודות (אחרי אישור):</h3>
+        <pre style="background:#000;border:1px solid var(--border);border-radius:10px;padding:14px;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--gold);direction:ltr;text-align:left">/diag_full Avi's Laptop  →  בקשה נשלחת ללקוח לאישור
+                          →  לקוח מקבל ב-Telegram: "אדמין מבקש להריץ אבחון מלא, אישור?"
+                          →  לקוח לוחץ ✅ אישור
+                          →  התוצאות נשלחות חזרה לאדמין</pre>
+
+        <div class="alert info" style="margin-top:20px">
+          <strong>📡 פתרונות חלופיים:</strong>
+          <ul style="margin:8px 0 0;padding-inline-start:20px">
+            <li><strong>Option C (Semi-auto):</strong> הבוט שולח לוקות PowerShell להעתקה ב-Telegram. הלקוח מעתיק לחלון PS, מריץ, שולח screenshot חזרה. (הכי בטוח, הכי איטי)</li>
+            <li><strong>Option B (Agent):</strong> הלקוח מתקין SLH_Agent.exe (לעתיד)</li>
+            <li><strong>Option A (WinRM):</strong> כפי שהוצג למעלה — ללא סוכן (מומלץ לרשת ביתית)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: HISTORY -->
+    <div id="tab-history" style="display:none">
+      <div class="card">
+        <h2><i class="fas fa-history"></i> היסטוריית פעולות</h2>
+        <button class="btn" onclick="loadHistory()"><i class="fas fa-sync"></i> רענן</button>
+        <div id="history-list" style="margin-top:14px"></div>
+      </div>
+    </div>
+
+    <!-- TAB: AUDIT -->
+    <div id="tab-audit" style="display:none">
+      <div class="card">
+        <h2><i class="fas fa-file-shield"></i> Audit Log</h2>
+        <p style="color:var(--text2);font-size:13px">כל פעולה נרשמת — מי ביקש, מתי, מה רץ, מה החזיר.</p>
+        <div id="audit-log" style="margin-top:14px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modal-bg" class="modal-bg" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <h2 id="modal-title">cmd-name</h2>
+    <p id="modal-desc" style="color:var(--text2);font-size:13px;margin-bottom:14px"></p>
+    <pre id="modal-cmd"></pre>
+    <div class="modal-actions">
+      <button class="btn green" onclick="copyModalCmd()"><i class="fas fa-copy"></i> העתק</button>
+      <button class="btn primary" onclick="runModalCmd()"><i class="fas fa-bolt"></i> הרץ ב-WinRM</button>
+      <button class="btn" onclick="closeModal()">סגור</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast">✅ הועתק</div>
+
+<script>
+/* === 19 PowerShell Diagnostic Commands === */
+const PS_COMMANDS = [
+  {id:'cpu',name:'🔥 30 תהליכים מובילים ב-CPU',desc:'מציג את התהליכים שצורכים הכי הרבה מעבד',risk:'safe',cmd:`Get-Process | Sort-Object CPU -Descending | Select-Object -First 30 ProcessName,Id,CPU,WS | Format-Table -AutoSize`},
+  {id:'memory',name:'💾 30 תהליכים מובילים בזיכרון',desc:'מציג את התהליכים שצורכים הכי הרבה RAM',risk:'safe',cmd:`Get-Process | Sort-Object WorkingSet -Descending | Select-Object -First 30 ProcessName,Id,@{N='Memory(MB)';E={[math]::Round($_.WorkingSet/1MB,2)}} | Format-Table -AutoSize`},
+  {id:'disk',name:'💽 שטח דיסק',desc:'מציג את שטח הפנוי בכל הדיסקים',risk:'safe',cmd:`Get-PSDrive -PSProvider FileSystem | Select-Object Name,@{N='Used(GB)';E={[math]::Round($_.Used/1GB,2)}},@{N='Free(GB)';E={[math]::Round($_.Free/1GB,2)}}`},
+  {id:'network',name:'🌐 חיבורי TCP פעילים',desc:'מציג את כל החיבורי הרשת הפעילים',risk:'safe',cmd:`Get-NetTCPConnection | Where-Object State -eq Established | Select-Object LocalAddress,LocalPort,RemoteAddress,RemotePort,OwningProcess | Format-Table -AutoSize`},
+  {id:'services',name:'⚙️ שירותים פעילים',desc:'מציג את כל שירותי Windows הפעילים',risk:'safe',cmd:`Get-Service | Where-Object Status -eq 'Running' | Select-Object Name,DisplayName | Sort-Object DisplayName`},
+  {id:'startup',name:'🚀 תוכנות עולות באתחול',desc:'מציג את כל התוכנות שעולות עם Windows',risk:'safe',cmd:`Get-CimInstance Win32_StartupCommand | Select-Object Name,Command,Location,User | Format-Table -AutoSize`},
+  {id:'defender',name:'🛡️ סטטוס Windows Defender',desc:'בודק את מצב האבטחה של Defender',risk:'safe',cmd:`Get-MpComputerStatus | Select-Object AntivirusEnabled,RealTimeProtectionEnabled,QuickScanEndTime,FullScanEndTime`},
+  {id:'threats',name:'⚠️ איומים זוהו',desc:'מציג איומים שזוהו על ידי Defender',risk:'safe',cmd:`Get-MpThreat | Select-Object ThreatName,SeverityID,InitialDetectionTime`},
+  {id:'eventlog',name:'📋 שגיאות מערכת אחרונות',desc:'50 שגיאות מערכת אחרונות',risk:'safe',cmd:`Get-WinEvent -LogName System -MaxEvents 50 | Where-Object LevelDisplayName -in 'Error','Critical' | Select-Object TimeCreated,LevelDisplayName,Id,Message | Format-Table -AutoSize`},
+  {id:'updates',name:'🔄 עדכוני Windows אחרונים',desc:'30 עדכונים אחרונים שהותקנו',risk:'safe',cmd:`Get-HotFix | Sort-Object InstalledOn -Descending | Select-Object -First 30 HotFixID,Description,InstalledOn`},
+  {id:'sysinfo',name:'💻 מידע מערכת מלא',desc:'OS, חומרה, זיכרון',risk:'safe',cmd:`Get-ComputerInfo | Select-Object CsName,WindowsVersion,WindowsBuildLabEx,CsTotalPhysicalMemory,CsManufacturer,CsModel`},
+  {id:'unsigned',name:'🚨 תהליכים ללא חתימה דיגיטלית',desc:'מסוכן! מזהה malware פוטנציאלי',risk:'warning',cmd:`Get-Process | ForEach-Object { if($_.Path){ try{$sig=(Get-AuthenticodeSignature $_.Path).Status; if($sig -ne 'Valid'){[PSCustomObject]@{Name=$_.Name;Path=$_.Path;Status=$sig}}}catch{}}} | Format-Table -AutoSize`},
+  {id:'recent_files',name:'📂 קבצים שונו ב-24 שעות (Desktop)',desc:'מציג קבצים שנכתבו לאחרונה',risk:'safe',cmd:`Get-ChildItem -Path "$env:USERPROFILE\\Desktop" -Recurse -ErrorAction SilentlyContinue | Where-Object LastWriteTime -gt (Get-Date).AddDays(-1) | Select-Object FullName,LastWriteTime,Length | Sort-Object LastWriteTime -Descending`},
+  {id:'large_files',name:'📦 קבצים גדולים בדיסק',desc:'50 קבצים הכי גדולים ב-Documents',risk:'safe',cmd:`Get-ChildItem -Path "$env:USERPROFILE\\Documents" -Recurse -ErrorAction SilentlyContinue | Sort-Object Length -Descending | Select-Object -First 50 FullName,@{N='Size(MB)';E={[math]::Round($_.Length/1MB,2)}}`},
+  {id:'firewall',name:'🔥 כללי Firewall פעילים',desc:'מציג את כל כללי הגנת האש',risk:'safe',cmd:`Get-NetFirewallRule | Where-Object Enabled -eq True | Select-Object DisplayName,Direction,Action,Profile | Format-Table -AutoSize`},
+  {id:'sfc',name:'🔧 בדיקת קבצי מערכת (SFC)',desc:'⚠️ ארוך! 5-15 דקות. סורק קבצי OS פגומים',risk:'warning',cmd:`sfc /scannow`},
+  {id:'dism',name:'🛠️ DISM Repair',desc:'⚠️ ארוך! מתקן את ה-image של Windows',risk:'warning',cmd:`DISM /Online /Cleanup-Image /ScanHealth`},
+  {id:'cleanmgr',name:'🧹 ניקוי דיסק',desc:'⚠️ מסכן! מוחק קבצים זמניים',risk:'danger',cmd:`cleanmgr /sagerun:1`},
+  {id:'restart_defender',name:'🔄 הפעלה מחדש של Defender',desc:'⚠️ מסוכן! משבית זמנית את האנטיוירוס',risk:'danger',cmd:`Restart-Service -Name WinDefend -Force; Get-Service WinDefend`}
+];
+
+/* === Login === */
+function checkAuth(){
+  const p = localStorage.getItem('slh_admin_password');
+  if(p && p.length >= 6){
+    document.getElementById('login-gate').style.display='none';
+    document.getElementById('main').style.display='block';
+    renderCommands();
+    loadStats();
+    return true;
+  }
+  document.getElementById('login-gate').style.display='block';
+  document.getElementById('main').style.display='none';
+}
+function doLogin(){
+  const p = document.getElementById('login-pwd').value;
+  if(p && p.length>=6){ localStorage.setItem('slh_admin_password', p); checkAuth(); }
+}
+document.getElementById('login-pwd')?.addEventListener('keypress', e=>{ if(e.key==='Enter') doLogin(); });
+
+/* === Tabs === */
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+  ['commands','run','setup','history','audit'].forEach(n => {
+    document.getElementById('tab-' + n).style.display = (n === name ? 'block' : 'none');
+  });
+  if(name === 'history') loadHistory();
+  if(name === 'audit') loadAudit();
+}
+
+/* === Render commands === */
+function renderCommands(){
+  const grid = document.getElementById('commands-grid');
+  grid.innerHTML = PS_COMMANDS.map(c => `
+    <div class="diag-cmd ${c.risk}">
+      <div class="name">${c.name}</div>
+      <div class="desc">${c.desc}</div>
+      <code>${c.cmd.length > 80 ? c.cmd.slice(0,80) + '...' : c.cmd}</code>
+      <div class="actions">
+        <button class="copy" onclick='showCmdModal("${c.id}")'>👁️ תצוגה</button>
+        <button class="copy" onclick='copyCommand("${c.id}")'>📋 העתק</button>
+        <button class="run" onclick='runByCommand("${c.id}")'>▶️ הרץ</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+let currentCmd = null;
+function showCmdModal(id){
+  const cmd = PS_COMMANDS.find(c => c.id === id);
+  if(!cmd) return;
+  currentCmd = cmd;
+  document.getElementById('modal-title').textContent = cmd.name;
+  document.getElementById('modal-desc').textContent = cmd.desc;
+  document.getElementById('modal-cmd').textContent = cmd.cmd;
+  document.getElementById('modal-bg').classList.add('open');
+}
+function closeModal(){ document.getElementById('modal-bg').classList.remove('open'); }
+function copyModalCmd(){ navigator.clipboard.writeText(currentCmd.cmd).then(() => showToast('✅ הועתק לקליפבורד')); }
+function runModalCmd(){ closeModal(); runByCommand(currentCmd.id); }
+
+function copyCommand(id){
+  const cmd = PS_COMMANDS.find(c => c.id === id);
+  if(!cmd) return;
+  navigator.clipboard.writeText(cmd.cmd).then(() => showToast('✅ הועתק'));
+}
+
+async function runByCommand(id){
+  const cmd = PS_COMMANDS.find(c => c.id === id);
+  if(!cmd) return;
+  if(cmd.risk === 'danger' && !confirm(`⚠️ פקודה זו עלולה לפגוע במערכת!\n\n${cmd.cmd}\n\nלהמשיך?`)) return;
+  // Show what would happen
+  document.getElementById('run-cmd').value = cmd.cmd;
+  switchTab('run');
+  showToast('📋 הפקודה מוכנה ללשונית הרצה — בחר מצב והרץ');
+}
+
+function copyCmd(){
+  const cmd = document.getElementById('run-cmd').value;
+  if(!cmd) return;
+  navigator.clipboard.writeText(cmd).then(() => showToast('✅ הועתק'));
+}
+
+async function runCommand(){
+  const cmd = document.getElementById('run-cmd').value;
+  const mode = document.getElementById('run-mode').value;
+  const host = document.getElementById('run-host').value;
+  const out = document.getElementById('run-output');
+  if(!cmd){ alert('הקש פקודה'); return; }
+  out.style.display = 'block';
+  out.textContent = '⏳ שולח לשרת...';
+  try {
+    const r = await fetch('https://slh-api-production.up.railway.app/api/admin/guardian/run', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Admin-Key': localStorage.getItem('slh_admin_password') },
+      body: JSON.stringify({ command: cmd, mode, host })
+    });
+    const d = await r.json();
+    out.textContent = d.output || JSON.stringify(d, null, 2);
+  } catch(e) {
+    out.textContent = `❌ שגיאה: ${e.message}\n\n💡 הדף עדיין לא חובר ל-API guardian endpoint. ניתן להעתיק את הפקודה ידנית לבוט.`;
+  }
+}
+
+function copySetup1(){
+  const setup = `Enable-PSRemoting -Force
+Set-Item WSMan:\\localhost\\Client\\TrustedHosts -Value "*" -Force
+Restart-Service WinRM
+winrm quickconfig -force
+Write-Host "✅ WinRM enabled successfully" -ForegroundColor Green`;
+  navigator.clipboard.writeText(setup).then(() => showToast('✅ סקריפט הגדרה הועתק'));
+}
+
+async function loadStats(){
+  // Try to fetch from API; fail silently
+  try {
+    const r = await fetch('https://slh-api-production.up.railway.app/api/admin/guardian/stats', {
+      headers: { 'X-Admin-Key': localStorage.getItem('slh_admin_password') }
+    });
+    const d = await r.json();
+    document.getElementById('kpi-clients').textContent = d.clients || 0;
+    document.getElementById('kpi-online').textContent = d.online || 0;
+    document.getElementById('kpi-pending').textContent = d.pending || 0;
+    document.getElementById('kpi-runs').textContent = d.runs_today || 0;
+    document.getElementById('kpi-failed').textContent = d.failed || 0;
+  } catch(e) {}
+}
+
+async function loadHistory(){
+  const list = document.getElementById('history-list');
+  list.innerHTML = '<div style="color:var(--text2)">⏳ טוען...</div>';
+  try {
+    const r = await fetch('https://slh-api-production.up.railway.app/api/admin/guardian/history?limit=50', {
+      headers: { 'X-Admin-Key': localStorage.getItem('slh_admin_password') }
+    });
+    const d = await r.json();
+    if(!d.history || d.history.length === 0){
+      list.innerHTML = '<div style="text-align:center;color:var(--text2);padding:30px">אין פעולות עדיין · התחל לבדוק עם פקודה ראשונה!</div>';
+      return;
+    }
+    list.innerHTML = d.history.map(h => `
+      <div class="history-item">
+        <div>
+          <div style="font-weight:800">${h.cmd_name || h.cmd?.slice(0,40) || '—'}</div>
+          <div style="color:var(--text2);font-size:11px">${new Date(h.created_at).toLocaleString('he-IL')} · ${h.host || 'local'}</div>
+        </div>
+        <span class="status-badge ${h.status}">${h.status}</span>
+      </div>
+    `).join('');
+  } catch(e) {
+    list.innerHTML = `<div style="color:var(--red)">❌ ${e.message}<br><br>💡 ה-API endpoint עדיין לא נוסף. הדף יעבוד אחרי deploy של ה-Guardian endpoints.</div>`;
+  }
+}
+
+async function loadAudit(){
+  const log = document.getElementById('audit-log');
+  log.innerHTML = '<div style="color:var(--text2)">⏳ טוען...</div>';
+  try {
+    const r = await fetch('https://slh-api-production.up.railway.app/api/admin/guardian/audit?limit=100', {
+      headers: { 'X-Admin-Key': localStorage.getItem('slh_admin_password') }
+    });
+    const d = await r.json();
+    if(!d.audit || d.audit.length === 0){
+      log.innerHTML = '<div style="text-align:center;color:var(--text2);padding:30px">אין רשומות audit · ההיסטוריה תוצג כאן.</div>';
+      return;
+    }
+    log.innerHTML = d.audit.map(a => `
+      <div class="history-item" style="flex-direction:column;align-items:flex-start">
+        <div style="display:flex;justify-content:space-between;width:100%">
+          <div style="font-weight:800">${a.action} <span style="color:var(--text2);font-weight:400">by ${a.admin_username}</span></div>
+          <span style="color:var(--text3);font-size:11px">${new Date(a.timestamp).toLocaleString('he-IL')}</span>
+        </div>
+        <div style="font-size:11px;color:var(--text2);font-family:'JetBrains Mono',monospace;direction:ltr;width:100%;background:rgba(0,0,0,.3);padding:6px;border-radius:6px;margin-top:6px">
+          ${a.details || a.command_executed?.slice(0,200) || '—'}
+        </div>
+      </div>
+    `).join('');
+  } catch(e) {
+    log.innerHTML = `<div style="color:var(--red)">❌ ${e.message}</div>`;
+  }
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+checkAuth();
+</script>
+
+<script src="/js/ai-assistant.js"></script>
+</body>
+</html>

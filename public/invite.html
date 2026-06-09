@@ -1,0 +1,689 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SLH Spark Invite — Refer Friends & Earn</title>
+  <meta name="description" content="שתף את SLH Spark עם חברים דרך WhatsApp, Telegram או Email. תכנית שותפים בת 2 רמות (Tier 1 · 20%, Tier 2 · 5%) מהכנסות אמיתיות.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://slh-nft.com/invite.html">
+
+  <!-- Open Graph — critical for share previews -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="SLH Ecosystem">
+  <meta property="og:title" content="SLH Spark — בית ההשקעות הדיגיטלי של ישראל">
+  <meta property="og:description" content="20+ בוטים בטלגרם, בלוקצ'יין אמיתי, Revenue Share Pool, חנות קהילתית, staking. הצטרף ולמד את המודל לפני שאתה נוגע בו.">
+  <meta property="og:image" content="https://slh-nft.com/assets/og/referral.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url" content="https://slh-nft.com/invite.html">
+  <meta property="og:locale" content="he_IL">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SLH Spark — Invite Friends & Earn Rewards">
+  <meta name="twitter:description" content="Share SLH Spark, earn rewards across 10 referral generations">
+  <meta name="twitter:image" content="https://slh-nft.com/assets/og/referral.png">
+
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/shared.css?v=20260426e">
+
+  <style>
+    .invite-hero {
+      text-align: center;
+      padding: 80px 20px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    .invite-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(255,140,0,.20) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .invite-hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      margin-bottom: 14px;
+      background: linear-gradient(135deg, #ff8c00, #00bcd4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .invite-hero p {
+      font-size: 18px;
+      color: var(--text2);
+      max-width: 640px;
+      margin: 0 auto 24px;
+      line-height: 1.6;
+    }
+    .invite-hero .tag {
+      display: inline-block;
+      padding: 6px 14px;
+      background: rgba(255,140,0,0.14);
+      border: 1px solid rgba(255,140,0,0.3);
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 16px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .referral-card {
+      max-width: 640px;
+      margin: 0 auto 30px;
+      padding: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      text-align: center;
+    }
+    .ref-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text2);
+      margin-bottom: 8px;
+    }
+    .ref-link-box {
+      display: flex;
+      gap: 8px;
+      margin: 12px 0;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 6px;
+    }
+    .ref-link-box input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-size: 14px;
+      padding: 10px 12px;
+      font-family: inherit;
+      direction: ltr;
+      text-align: left;
+    }
+    .ref-link-box input:focus { outline: none; }
+    .copy-btn {
+      padding: 10px 18px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .2s;
+    }
+    .copy-btn:hover { transform: translateY(-1px); }
+    .copy-btn.copied { background: #22c55e; }
+
+    .share-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      max-width: 760px;
+      margin: 0 auto 40px;
+      padding: 0 20px;
+    }
+    .share-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 24px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all .3s;
+    }
+    .share-btn i {
+      font-size: 36px;
+      transition: transform .3s;
+    }
+    .share-btn:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+    }
+    .share-btn:hover i { transform: scale(1.12); }
+    .share-btn.whatsapp i { color: #25d366; }
+    .share-btn.telegram i { color: #0088cc; }
+    .share-btn.email i { color: #ea4335; }
+    .share-btn.copy i { color: var(--accent); }
+    .share-btn.facebook i { color: #1877f2; }
+    .share-btn.twitter i { color: #1da1f2; }
+    .share-btn.linkedin i { color: #0077b5; }
+    .share-btn.native i { color: #8b5cf6; }
+
+    .template-section {
+      max-width: 760px;
+      margin: 0 auto 40px;
+      padding: 0 20px;
+    }
+    .template-section h2 {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 18px;
+      text-align: center;
+    }
+    .template-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+      justify-content: center;
+    }
+    .template-tab {
+      padding: 8px 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      color: var(--text2);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .template-tab.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .template-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      white-space: pre-wrap;
+      line-height: 1.7;
+      color: var(--text);
+      font-size: 14px;
+      min-height: 140px;
+    }
+    .template-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    .template-actions button {
+      flex: 1;
+      min-width: 140px;
+      padding: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .template-actions button:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .benefits {
+      max-width: 960px;
+      margin: 0 auto 50px;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .benefit-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px 18px;
+      text-align: center;
+    }
+    .benefit-card i {
+      font-size: 32px;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .benefit-card h4 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+    .benefit-card p {
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .compliance-note {
+      max-width: 760px;
+      margin: 0 auto 60px;
+      padding: 20px;
+      background: rgba(34, 197, 94, 0.08);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      border-radius: 14px;
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .compliance-note h3 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #22c55e;
+    }
+    .compliance-note ul {
+      margin: 8px 0 0;
+      padding-inline-start: 20px;
+    }
+    .compliance-note li { margin-bottom: 4px; }
+
+    .qr-section {
+      max-width: 400px;
+      margin: 0 auto 50px;
+      text-align: center;
+      padding: 0 20px;
+    }
+    .qr-container {
+      display: inline-block;
+      padding: 18px;
+      background: #fff;
+      border-radius: 16px;
+      margin: 12px 0;
+    }
+    .qr-container img { display: block; }
+
+    @media (max-width: 600px) {
+      .invite-hero { padding: 50px 16px 30px; }
+      .share-buttons { grid-template-columns: repeat(2, 1fr); }
+      .share-btn { padding: 18px 12px; }
+      .share-btn i { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="topnav-root"></div>
+  <div id="ticker-root"></div>
+
+  <!-- HERO -->
+  <section class="invite-hero">
+    <span class="tag"><i class="fas fa-gift"></i> הזמנה אישית</span>
+    <h1>הזמן חברים. קבל הטבות.</h1>
+    <p>שתף את SLH Spark עם החברים שלך בוואטסאפ, טלגרם או אימייל. תכנית שותפים בת 2 רמות: Tier 1 (חבר ישיר) · 20% מרכישות, Tier 2 (החבר של החבר) · 5%. משולם מ-budget נפרד, לא מהפקדות של משתמשים אחרים.</p>
+  </section>
+
+  <!-- GENESIS 49 BETA BANNER -->
+  <div style="max-width:720px;margin:0 auto 30px;padding:0 20px">
+    <div style="padding:22px;background:linear-gradient(135deg,rgba(255,140,0,0.15),rgba(0,188,212,0.15));border:2px solid rgba(255,140,0,0.45);border-radius:18px;text-align:center;box-shadow:0 8px 24px rgba(255,140,0,0.2)">
+      <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);font-weight:800;margin-bottom:8px">🎁 Limited · First 49 Only</div>
+      <div style="font-size:22px;font-weight:800;color:var(--text);margin-bottom:8px">Genesis Members — חינם!</div>
+      <div style="font-size:14px;color:var(--text2);margin-bottom:14px;line-height:1.6">
+        49 המשתמשים הראשונים מקבלים:<br>
+        <b style="color:var(--text)">✨ גישה מלאה לכל המערכת</b> ·
+        <b style="color:var(--text)">💎 10 ZVK + 100 ZVK מתנה אחרי ההפצה</b> ·
+        <b style="color:var(--text)">🎨 NFT Genesis ייחודי</b>
+      </div>
+      <div id="invite-beta-remaining" style="font-size:13px;color:var(--accent);font-weight:700;margin-bottom:14px">⏳ טוען מלאי...</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;max-width:420px;margin:0 auto">
+        <code id="invite-coupon-code" style="flex:1;min-width:140px;padding:12px;background:var(--bg);border:1px solid var(--accent);border-radius:10px;font-size:15px;font-weight:700;color:var(--accent);letter-spacing:2px;cursor:pointer" onclick="copyCouponCode()">GENESIS49</code>
+        <button onclick="copyCouponCode()" style="padding:12px 22px;background:linear-gradient(135deg,var(--accent),#00bcd4);color:#fff;border:none;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer">📋 העתק קוד</button>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-top:12px">
+        📱 פתח <a href="https://t.me/SLH_AIR_bot?start=get_id" target="_blank" style="color:var(--accent)">@SLH_AIR_bot</a> · שלח <code>/start</code> · הדבק קוד ב-<a href="/dashboard.html" style="color:var(--accent)">dashboard</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- REFERRAL CARD -->
+  <div class="referral-card">
+    <div class="ref-label"><i class="fas fa-link"></i> הקישור האישי שלך</div>
+    <div class="ref-link-box">
+      <input type="text" id="ref-link" readonly value="https://slh-nft.com/?ref=LOADING">
+      <button class="copy-btn" id="copy-link-btn" onclick="copyRefLink()"><i class="fas fa-copy"></i> העתק</button>
+    </div>
+    <div class="ref-label" style="margin-top:14px"><i class="fas fa-share-nodes"></i> בחר איך לשתף</div>
+  </div>
+
+  <!-- SHARE BUTTONS -->
+  <div class="share-buttons">
+    <a class="share-btn whatsapp" id="share-whatsapp" href="#" target="_blank" rel="noopener">
+      <i class="fab fa-whatsapp"></i>
+      <span>WhatsApp</span>
+    </a>
+    <a class="share-btn telegram" id="share-telegram" href="#" target="_blank" rel="noopener">
+      <i class="fab fa-telegram"></i>
+      <span>Telegram</span>
+    </a>
+    <a class="share-btn email" id="share-email" href="#">
+      <i class="fas fa-envelope"></i>
+      <span>Email</span>
+    </a>
+    <a class="share-btn facebook" id="share-facebook" href="#" target="_blank" rel="noopener">
+      <i class="fab fa-facebook"></i>
+      <span>Facebook</span>
+    </a>
+    <a class="share-btn twitter" id="share-twitter" href="#" target="_blank" rel="noopener">
+      <i class="fa-brands fa-x-twitter"></i>
+      <span>X / Twitter</span>
+    </a>
+    <a class="share-btn linkedin" id="share-linkedin" href="#" target="_blank" rel="noopener">
+      <i class="fab fa-linkedin"></i>
+      <span>LinkedIn</span>
+    </a>
+    <button class="share-btn native" id="share-native" onclick="nativeShare()">
+      <i class="fas fa-share-nodes"></i>
+      <span>שתף (מערכת)</span>
+    </button>
+    <button class="share-btn copy" onclick="copyRefLink()">
+      <i class="fas fa-copy"></i>
+      <span>העתק קישור</span>
+    </button>
+  </div>
+
+  <!-- MESSAGE TEMPLATE -->
+  <section class="template-section">
+    <h2><i class="fas fa-comment-dots"></i> הודעה מוכנה לשליחה</h2>
+    <div class="template-tabs">
+      <button class="template-tab active" data-template="short">קצר</button>
+      <button class="template-tab" data-template="long">ארוך</button>
+      <button class="template-tab" data-template="story">אישי</button>
+      <button class="template-tab" data-template="business">עסקי</button>
+    </div>
+    <div class="template-box" id="template-box"></div>
+    <div class="template-actions">
+      <button onclick="copyTemplate()"><i class="fas fa-copy"></i> העתק טקסט</button>
+      <button onclick="shareToWhatsAppWithTemplate()"><i class="fab fa-whatsapp"></i> שלח בוואטסאפ</button>
+      <button onclick="shareToTelegramWithTemplate()"><i class="fab fa-telegram"></i> שלח בטלגרם</button>
+    </div>
+  </section>
+
+  <!-- BENEFITS -->
+  <section class="benefits">
+    <div class="benefit-card">
+      <i class="fas fa-sitemap"></i>
+      <h4>2 רמות שקופות</h4>
+      <p>Tier 1: 20% מרכישות של חבר ישיר. Tier 2: 5% מרכישות של החבר-של-החבר. ללא שכבות עמוקות.</p>
+    </div>
+    <div class="benefit-card">
+      <i class="fas fa-coins"></i>
+      <h4>מטבע SLH</h4>
+      <p>מטבע דיגיטלי אמיתי על BSC + TON</p>
+    </div>
+    <div class="benefit-card">
+      <i class="fas fa-robot"></i>
+      <h4>20+ בוטים</h4>
+      <p>מערכת בוטים מלאה בטלגרם</p>
+    </div>
+    <div class="benefit-card">
+      <i class="fas fa-chart-line"></i>
+      <h4>Variable Yield (4-12%)</h4>
+      <p>תוכניות staking עם תשואות אטרקטיביות</p>
+    </div>
+    <div class="benefit-card">
+      <i class="fas fa-store"></i>
+      <h4>חנות קהילתית</h4>
+      <p>קנה ומכור בתוך המערכת</p>
+    </div>
+    <div class="benefit-card">
+      <i class="fas fa-users"></i>
+      <h4>קהילה Genesis 49</h4>
+      <p>קהילת alpha מוקדמת · Genesis 49 NFT · עדכונים יומיים ב-Telegram</p>
+    </div>
+  </section>
+
+  <!-- QR CODE -->
+  <section class="qr-section">
+    <div class="ref-label"><i class="fas fa-qrcode"></i> או סרוק עם הטלפון</div>
+    <div class="qr-container" id="qr-container">
+      <img id="qr-img" src="" alt="QR Code" width="220" height="220">
+    </div>
+    <div style="font-size:12px;color:var(--text2)">הראה ללקוח, והוא יסרוק ישר לקישור האישי שלך</div>
+  </section>
+
+  <!-- COMPLIANCE NOTE -->
+  <div class="compliance-note">
+    <h3><i class="fas fa-shield-check"></i> שימוש חוקי ובטוח — ללא סיכון חסימה</h3>
+    <p>שיטת ההפצה הזו תוכננה להיות <strong>100% תואמת לתנאי השימוש</strong> של WhatsApp, Telegram, Facebook, ואימייל:</p>
+    <ul>
+      <li><strong>אפס אוטומציה</strong> — כל הודעה נשלחת ממך ידנית דרך האפליקציה הרשמית שלהם</li>
+      <li><strong>אפס scraping</strong> — אנחנו לא קוראים את אנשי הקשר שלך</li>
+      <li><strong>אפס Bulk API</strong> — לא עוקפים שום הגבלת שליחה</li>
+      <li><strong>רק אנשים שאתה בוחר</strong> — אתה שולח רק למי שאתה רוצה, אחד אחד או לקבוצה שלך</li>
+      <li><strong>Opt-in מלא</strong> — הנמען רואה שזה ממך ולוחץ מרצונו החופשי</li>
+    </ul>
+    <p style="margin-top:10px"><strong>החלק החוקי ביותר:</strong> WhatsApp/Telegram רואים רק שאתה שולח קישור לחבר — בדיוק כמו לשלוח כל קישור רגיל. זה לא נחשב ספאם בשום מקרה.</p>
+  </div>
+
+  <script src="/js/translations.js?v=20260426e"></script>
+  <script src="/js/shared.js?v=20260426e"></script>
+  <script>
+    /* ====================================================================
+       SLH Invite Page — Compliant sharing (no automation, no scraping)
+       ==================================================================== */
+    const SITE = 'https://slh-nft.com';
+    let refCode = 'friend';
+    let refLink = `${SITE}/?ref=${refCode}`;
+    let currentTemplate = 'short';
+
+    const templates = {
+      short: () => `🚀 גלה את SLH Spark — אקוסיסטם קריפטו ישראלי!
+
+✨ 20+ בוטים בטלגרם
+💎 מטבע SLH + Revenue Share Pool (Dynamic Yield)
+🎓 אקדמיה עם קורס חינמי על כלכלת קריפטו
+🏪 חנות קהילתית ופורום
+
+הצטרף דרך הקישור שלי:
+${refLink}`,
+
+      long: () => `💫 היי! אני רוצה לשתף אותך בפרויקט שאני חלק ממנו - SLH Spark
+
+מה זה?
+🔹 בית השקעות דיגיטלי מלא, מבוסס בלוקצ'יין
+🔹 20+ בוטים חכמים בטלגרם (Wallet, Shop, Community, Academia)
+🔹 מטבע דיגיטלי משלנו על BSC ו-TON
+🔹 Revenue Share Pool — Dynamic Yield מהכנסות אמיתיות
+🔹 חנות פנים-קהילתית לקנייה ומכירה
+🔹 קהילה בבנייה
+
+למה אני משתף?
+כי אני מאמין בפרויקט - וכל מי שמצטרף דרכי מקבל בונוס, ואני מקבל עמלה שקופה מ-2 רמות בלבד (20% ישיר, 5% עקיף). win-win אמיתי.
+
+הצטרף דרך הקישור שלי:
+${refLink}
+
+שאלות? פשוט תענה לי כאן. 🙌`,
+
+      story: () => `אחי/אחותי, אני חייב/ת לספר לך על זה 🔥
+
+לאחרונה גיליתי מערכת שנקראת SLH Spark - זה כמו להיות בעל בנק משלך, רק שהכל דיגיטלי ועל בלוקצ'יין אמיתי.
+
+יש שם 20+ בוטים בטלגרם שעושים הכל: ארנק, חנות, אקדמיה, שגרירים... וכל אחד עם טוקנים משלו.
+
+אני הצטרפתי לפני כמה שבועות ומתחיל ללמוד איך המודל באמת עובד (יש קורס חינמי באקדמיה על Dynamic Yield — ממליץ). הם נתנו לי קישור אישי שאם אתה נכנס דרכו - שנינו מרוויחים מרכישות שאתה עושה בפועל.
+
+רוצה לבדוק?
+${refLink}
+
+זה לא סכימה, זה באמת עובד. 👀`,
+
+      business: () => `שלום,
+
+אני שמח להציג בפניך את SLH Spark - פלטפורמת השקעות דיגיטלית ישראלית מתקדמת.
+
+🔹 מערכת בוטים חכמים בטלגרם (20+ שירותים פעילים)
+🔹 מטבע SLH על BSC + TON - נסחר, עם staking
+🔹 Revenue Share Pool (Dynamic Yield — לא APY קבוע)
+🔹 חנות קהילתית ו-P2P marketplace
+🔹 תכנית שותפים בת 2 רמות
+
+אשמח לענות על שאלות.
+קישור להרשמה:
+${refLink}
+
+בברכה`
+    };
+
+    function getRefCode() {
+      try {
+        const user = JSON.parse(localStorage.getItem('slh_user') || 'null');
+        if (user && user.username) return user.username;
+        if (user && user.telegram_id) return `u${user.telegram_id}`;
+      } catch {}
+      const urlRef = new URL(location.href).searchParams.get('ref');
+      return urlRef || 'friend';
+    }
+
+    function updateRefLink() {
+      refCode = getRefCode();
+      refLink = `${SITE}/?ref=${encodeURIComponent(refCode)}`;
+      document.getElementById('ref-link').value = refLink;
+      buildShareLinks();
+      renderTemplate();
+      updateQR();
+      loadBetaRemaining();
+    }
+
+    async function loadBetaRemaining() {
+      try {
+        const r = await fetch('https://slh-api-production.up.railway.app/api/beta/status');
+        const data = await r.json();
+        const el = document.getElementById('invite-beta-remaining');
+        const codeEl = document.getElementById('invite-coupon-code');
+        if (el && data.coupons && data.coupons.length > 0) {
+          const c = data.coupons[0];
+          if (codeEl) codeEl.textContent = c.code;
+          if (c.remaining > 0) {
+            el.innerHTML = `⏳ נותרו <b>${c.remaining}</b> מתוך ${c.max_uses} מקומות`;
+          } else {
+            el.innerHTML = `❌ כל המקומות נוצלו — השאר בנטרק לסבב הבא!`;
+          }
+        }
+      } catch (e) { console.log('[beta remaining]', e); }
+    }
+
+    function copyCouponCode() {
+      const code = document.getElementById('invite-coupon-code')?.textContent || 'GENESIS49';
+      navigator.clipboard.writeText(code).then(() => {
+        const el = document.getElementById('invite-beta-remaining');
+        if (el) {
+          const orig = el.innerHTML;
+          el.innerHTML = '✅ הקוד הועתק! עכשיו הדבק אותו ב-<a href="/dashboard.html" style="color:var(--text)">dashboard</a>';
+          setTimeout(() => el.innerHTML = orig, 3000);
+        }
+      });
+    }
+
+    function buildShareLinks() {
+      const encoded = encodeURIComponent(refLink);
+      const title = encodeURIComponent('SLH Spark - בית ההשקעות הדיגיטלי');
+      const desc = encodeURIComponent('20+ בוטים בטלגרם, Revenue Share Pool, חנות קהילתית');
+      const shortMsg = encodeURIComponent(templates.short());
+
+      document.getElementById('share-whatsapp').href = `https://wa.me/?text=${shortMsg}`;
+      document.getElementById('share-telegram').href = `https://t.me/share/url?url=${encoded}&text=${title}`;
+      document.getElementById('share-email').href = `mailto:?subject=${title}&body=${shortMsg}`;
+      document.getElementById('share-facebook').href = `https://www.facebook.com/sharer/sharer.php?u=${encoded}`;
+      document.getElementById('share-twitter').href = `https://twitter.com/intent/tweet?url=${encoded}&text=${title}`;
+      document.getElementById('share-linkedin').href = `https://www.linkedin.com/sharing/share-offsite/?url=${encoded}`;
+    }
+
+    function renderTemplate() {
+      const box = document.getElementById('template-box');
+      const fn = templates[currentTemplate] || templates.short;
+      box.textContent = fn();
+    }
+
+    function copyRefLink() {
+      navigator.clipboard.writeText(refLink).then(() => {
+        const btn = document.getElementById('copy-link-btn');
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check"></i> הועתק!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.innerHTML = originalHTML;
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+    function copyTemplate() {
+      const text = (templates[currentTemplate] || templates.short)();
+      navigator.clipboard.writeText(text).then(() => {
+        alert('ההודעה הועתקה! עכשיו הדבק אותה באפליקציה הרצויה.');
+      });
+    }
+
+    function shareToWhatsAppWithTemplate() {
+      const text = encodeURIComponent((templates[currentTemplate] || templates.short)());
+      window.open(`https://wa.me/?text=${text}`, '_blank');
+    }
+
+    function shareToTelegramWithTemplate() {
+      const text = encodeURIComponent((templates[currentTemplate] || templates.short)());
+      const url = encodeURIComponent(refLink);
+      window.open(`https://t.me/share/url?url=${url}&text=${text}`, '_blank');
+    }
+
+    async function nativeShare() {
+      if (!navigator.share) {
+        alert('הדפדפן שלך לא תומך בשיתוף אוטומטי. השתמש בכפתורים הספציפיים.');
+        return;
+      }
+      try {
+        await navigator.share({
+          title: 'SLH Spark - בית ההשקעות הדיגיטלי',
+          text: (templates[currentTemplate] || templates.short)(),
+          url: refLink
+        });
+      } catch (e) {
+        if (e.name !== 'AbortError') console.error(e);
+      }
+    }
+
+    function updateQR() {
+      // Use a free QR API (client-side, no server dependency)
+      const qr = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(refLink)}&color=ff8c00`;
+      document.getElementById('qr-img').src = qr;
+    }
+
+    // Template tabs
+    document.querySelectorAll('.template-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.template-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        currentTemplate = tab.dataset.template;
+        renderTemplate();
+      });
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof initShared === 'function') initShared({ activePage: 'invite', showBottomNav: true });
+      updateRefLink();
+    });
+  </script>
+
+  <div id="footer-root"></div>
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260426e"></script>
+</body>
+</html>

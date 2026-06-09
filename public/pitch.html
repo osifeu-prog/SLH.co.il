@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" data-theme="neural">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SLH Spark · Pitch Deck — Series A $4.4M</title>
+  <meta name="description" content="SLH Spark Series A pitch deck: 18-slide investor presentation covering problem, solution, traction, market, business model, team, and ask.">
+  <meta name="robots" content="noindex,follow">
+  <link rel="canonical" href="https://slh-nft.com/pitch.html">
+  <link rel="icon" type="image/svg+xml" href="/assets/logo/slh-spark-2026.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/shared.css?v=20260427c">
+  <link rel="stylesheet" href="css/slh-neural.css?v=20260427c">
+
+  <style>
+    body {
+      font-family:'Heebo','Inter',system-ui,sans-serif;
+      color: var(--text); background: var(--bg);
+      margin:0; min-height:100vh; overflow-x:hidden;
+    }
+
+    /* slide structure: full viewport for screen, A4-like for print */
+    .slide {
+      min-height: 100vh;
+      padding: 60px 48px 40px;
+      display:flex; flex-direction:column;
+      position:relative;
+      page-break-after: always;
+    }
+    .slide:nth-child(odd) { background: linear-gradient(180deg, transparent, rgba(255,255,255,.01), transparent); }
+    .slide-num {
+      position:absolute; top:20px; right:48px;
+      font-family:'Inter',monospace; font-size:.78rem; font-weight:600;
+      color:var(--text3); letter-spacing:.08em;
+    }
+    .slide-num::before { content: '0'; }
+    .slide-content {
+      max-width: 1200px; width: 100%; margin:0 auto;
+      flex: 1; display:flex; flex-direction:column; justify-content:center;
+    }
+    .slide h1 {
+      font-size: clamp(2.4rem, 5vw, 3.8rem); font-weight:900;
+      letter-spacing:-.025em; line-height:1.05;
+      margin: 0 0 16px;
+    }
+    .slide h2 {
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight:800;
+      letter-spacing:-.02em; line-height:1.15;
+      margin: 0 0 12px;
+    }
+    .slide h3 { font-size:1.3rem; font-weight:700; margin:0 0 8px; }
+    .slide p { font-size:1.05rem; line-height:1.65; color:var(--text2); margin:0 0 14px; max-width: 780px; }
+    .slide .lead { font-size:1.2rem; color:var(--text2); }
+    .slide .eyebrow {
+      display:inline-block; padding:6px 14px; border-radius: 999px;
+      background: rgba(255,209,102,.1); color: var(--accent);
+      font-size:.78rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+      margin-bottom: 18px;
+    }
+    .slide ul { padding-inline-start: 24px; color:var(--text2); line-height:1.85; }
+    .slide ul li { margin-bottom: 8px; }
+
+    /* Print */
+    @media print {
+      body { background: white; color: black; }
+      .topbar, .nav-arrows, .skip-link { display:none !important; }
+      .slide {
+        min-height: 0;
+        height: 100vh; max-height: 100vh;
+        padding: 30px 36px;
+        page-break-inside: avoid;
+      }
+      .slide h1, .slide h2 { color: #1a1a1a; }
+      .slide p, .slide ul { color: #333; }
+      .neural-card { background: #f7f7f7 !important; border: 1px solid #ddd !important; }
+    }
+
+    /* Top bar */
+    .topbar {
+      position: fixed; top:0; inset-inline:0; z-index:50;
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      background: rgba(3,6,15,.7);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .topbar-brand {
+      display:flex; align-items:center; gap:10px;
+      font-weight:800; color:var(--text); text-decoration:none; font-size:.95rem;
+    }
+    .topbar-brand img { width:28px; height:28px; }
+    .topbar-actions {
+      display:flex; gap:10px; align-items:center;
+    }
+    .topbar-actions button {
+      background: var(--bg2); border: 1px solid var(--border);
+      color: var(--text2); padding: 8px 14px; border-radius: 8px;
+      font-size:.82rem; font-weight:600; cursor:pointer;
+    }
+    .topbar-actions button:hover { color:var(--text); border-color: var(--accent); }
+
+    /* Hero grids */
+    .grid-2 { display:grid; grid-template-columns: 1fr 1fr; gap:32px; align-items:center; }
+    .grid-3 { display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; }
+    @media (max-width: 880px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      .grid-3 { grid-template-columns: 1fr; }
+    }
+
+    /* Cover slide */
+    .cover-content {
+      text-align: center; align-items: center; justify-content:center;
+      flex: 1; display:flex; flex-direction:column;
+    }
+    .cover-logo { width: 120px; height: 120px; margin-bottom: 28px; }
+    .cover-tag {
+      font-size:1.2rem; color: var(--text2); font-weight:600;
+      margin: 12px 0 32px;
+    }
+    .cover-figure {
+      font-family:'Inter',sans-serif; font-size: clamp(4rem, 9vw, 7rem);
+      font-weight:900; line-height:.95; letter-spacing:-.04em;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip:text; background-clip:text;
+      -webkit-text-fill-color:transparent; color:transparent;
+      margin: 8px 0;
+    }
+    .cover-meta {
+      display:flex; gap:32px; justify-content:center; flex-wrap:wrap;
+      margin-top: 32px; color: var(--text3); font-size:.9rem;
+    }
+
+    /* Stat block */
+    .stat-block {
+      padding: 28px 24px; border-radius: 14px;
+      background: rgba(255,255,255,.03); border:1px solid var(--border);
+      text-align: center;
+    }
+    .stat-block .num {
+      font-family:'Inter'; font-size: clamp(2rem, 4vw, 3rem); font-weight:900;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+      letter-spacing:-.02em; line-height:1;
+    }
+    .stat-block .lab { color: var(--text2); margin-top:6px; font-size:.9rem; }
+
+    /* timeline */
+    .timeline {
+      display:flex; gap:0; align-items:stretch; flex-wrap:nowrap; overflow-x:auto;
+      padding: 12px 0;
+    }
+    .timeline-step {
+      flex:1; min-width: 200px;
+      padding: 18px; border-right: 2px dashed var(--border);
+      position: relative;
+    }
+    .timeline-step:last-child { border-right: 0; }
+    .timeline-step.now { background: rgba(255,209,102,.06); border-right-color: var(--accent); }
+    .timeline-step .when {
+      font-size:.78rem; font-weight:700; color: var(--accent); letter-spacing:.06em;
+    }
+    .timeline-step h4 { margin: 8px 0 6px; font-size: 1.05rem; }
+    .timeline-step p { font-size:.85rem; line-height:1.5; }
+
+    /* TOC + nav */
+    .nav-arrows {
+      position: fixed; bottom: 24px; right: 24px; z-index: 40;
+      display:flex; gap:8px;
+    }
+    .nav-arrows button {
+      width: 44px; height: 44px; border-radius: 22px; border:1px solid var(--border);
+      background: var(--bg2); color: var(--text); font-size: 1.2rem; cursor:pointer;
+    }
+    .nav-arrows button:hover { background: var(--accent); color: var(--bg); }
+
+    .skip-link {
+      position: absolute; left: -9999px;
+    }
+    .skip-link:focus {
+      position: fixed; top: 60px; left: 24px;
+      background: var(--accent); color: var(--bg); padding: 8px 14px; border-radius: 6px;
+      z-index: 100;
+    }
+
+    /* gradient text */
+    .grad-text {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  </style>
+</head>
+<body>
+
+  <a href="#slide-18" class="skip-link">Skip to ask</a>
+
+  <header class="topbar">
+    <a href="/investors.html" class="topbar-brand">
+      <img src="/assets/logo/slh-spark-2026.svg" alt="">
+      <span>SLH Spark · Pitch Deck</span>
+    </a>
+    <div class="topbar-actions">
+      <button onclick="window.print()" type="button"><i class="fas fa-print"></i> Print / PDF</button>
+      <a href="/investors.html" class="neural-btn neural-btn-ghost" style="padding: 8px 14px; font-size:.82rem;">One-Pager</a>
+    </div>
+  </header>
+
+  <!-- ═════ SLIDE 1: COVER ═════ -->
+  <section class="slide" id="slide-1"><span class="slide-num">1</span>
+    <div class="slide-content cover-content">
+      <img src="/assets/logo/slh-spark-2026.svg" alt="SLH Spark" class="cover-logo">
+      <h1>SLH Spark</h1>
+      <div class="cover-tag">Israel's first neural digital investment ecosystem</div>
+      <div style="font-size:1rem; color:var(--text3); font-weight:600; letter-spacing:.06em; text-transform:uppercase; margin-bottom:18px;">Series A · 2026</div>
+      <div class="cover-figure"><span style="font-size:.5em; color:var(--text2);">$</span>4.4M</div>
+      <div style="color: var(--text2); font-size: 1.1rem;">18-month runway · ₪50K min ticket · 88% Revenue Share</div>
+      <div class="cover-meta">
+        <div>📅 Cutoff: 7.11.2026</div>
+        <div>🌐 slh-nft.com</div>
+        <div>📧 invest@slh-nft.com</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ SLIDE 2: PROBLEM ═════ -->
+  <section class="slide" id="slide-2"><span class="slide-num">2</span>
+    <div class="slide-content">
+      <span class="eyebrow">Problem</span>
+      <h2>שלוש בעיות, חצי-פתרון לכל אחת</h2>
+      <div class="grid-3" style="margin-top: 32px;">
+        <div class="stat-block">
+          <div class="num">87%</div>
+          <div class="lab">מהאוכלוסייה הישראלית לא מבינה מטבעות דיגיטליים</div>
+        </div>
+        <div class="stat-block">
+          <div class="num">$2.3B</div>
+          <div class="lab">שווי שוק חינוך פיננסי לילדים — אבל ללא Web3 / IoT</div>
+        </div>
+        <div class="stat-block">
+          <div class="num">95%</div>
+          <div class="lab">מפרוייקטי קריפטו = vaporware או יעידי FOMO</div>
+        </div>
+      </div>
+      <p style="margin-top: 32px; max-width: 980px;">
+        השוק מציע: <b>fintech</b> ללא חינוך, <b>edutech</b> ללא קריפטו, <b>hardware wallets</b> משעממים.
+        אין שילוב.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═════ SLIDE 3: SOLUTION ═════ -->
+  <section class="slide" id="slide-3"><span class="slide-num">3</span>
+    <div class="slide-content">
+      <span class="eyebrow">Solution</span>
+      <h2>אקוסיסטם נוירוני אחד — שלוש שכבות</h2>
+      <div class="grid-3" style="margin-top: 32px;">
+        <div class="neural-card">
+          <div class="card-icon"><i class="fas fa-microchip"></i></div>
+          <h3>Phygital Layer</h3>
+          <p>מכשיר ESP32 פיזי על השולחן. תצוגת ROI חיה, מגע, הצמדה ל-wallet, OTA updates. <b>פועל היום.</b></p>
+        </div>
+        <div class="neural-card">
+          <div class="card-icon"><i class="fas fa-server"></i></div>
+          <h3>FastAPI Core</h3>
+          <p>230 endpoints, 25 בוטים, 5 מטבעות, BSC + TON, Postgres + Redis ב-Railway. <b>Production-ready.</b></p>
+        </div>
+        <div class="neural-card">
+          <div class="card-icon"><i class="fas fa-graduation-cap"></i></div>
+          <h3>Education Layer</h3>
+          <p>Lumina — Tamagotchi פיננסי-חינוכי לילדים והורים, AI אמפתי, sociocracy במחוזות. <b>Q2-Q3 2027.</b></p>
+        </div>
+      </div>
+      <p style="margin-top: 32px; max-width: 980px; font-size:1.1rem;">
+        <span class="grad-text" style="font-weight:700;">הקסם:</span> השכבות מתקשרות בזמן אמת.
+        ROI מצליח → ESP מאיר → Lumina שמחה → המחוז חוגג.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═════ SLIDE 4: PRODUCT (1/2) ═════ -->
+  <section class="slide" id="slide-4"><span class="slide-num">4</span>
+    <div class="slide-content">
+      <span class="eyebrow">Product · Stack</span>
+      <h2>מה כבר נבנה — Production Live</h2>
+      <div class="grid-3" style="margin-top: 24px; gap: 16px;">
+        <div class="stat-block"><div class="num">230+</div><div class="lab">API Endpoints (FastAPI)</div></div>
+        <div class="stat-block"><div class="num">25</div><div class="lab">Telegram Bots (Aiogram)</div></div>
+        <div class="stat-block"><div class="num">5</div><div class="lab">Tokens (SLH/MNH/ZVK/REP/ZUZ)</div></div>
+        <div class="stat-block"><div class="num">140+</div><div class="lab">HTML Pages</div></div>
+        <div class="stat-block"><div class="num">5</div><div class="lab">Languages (he/en/ru/ar/fr)</div></div>
+        <div class="stat-block"><div class="num">11.7K</div><div class="lab">Lines of Python</div></div>
+      </div>
+      <p style="margin-top: 28px;">
+        Postgres 15 + Redis 7. Docker Compose. Railway production. SHA-256 audit chain על כל פעולה.
+        BSC BEP-20 token live, PancakeSwap V2 pool active.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═════ SLIDE 5: PRODUCT (2/2) — HARDWARE ═════ -->
+  <section class="slide" id="slide-5"><span class="slide-num">5</span>
+    <div class="slide-content">
+      <span class="eyebrow">Product · Hardware</span>
+      <h2>ESP32 — חומרה שלנו, מוכנה לייצור</h2>
+      <div class="grid-2" style="margin-top: 24px;">
+        <div>
+          <p>
+            <b>SLH Hardware Wallet</b> — ESP32-D0WD-V3 + ILI9341 TFT 320×240 + מגע resistive.
+            5 מסכים, ניווט מגע + כפתור פיזי. SLH-OS v4 — 974KB firmware.
+          </p>
+          <ul>
+            <li>QR pairing → phone OTP → token in NVS</li>
+            <li>Live heartbeats כל 30s ל-Railway</li>
+            <li>OTA updates דרך command queue</li>
+            <li>WiFi + HTTPS + JSON API</li>
+            <li>Pre-sale 7.11.2026 · ₪888 ליחידה · 1,000 יחידות</li>
+          </ul>
+          <p style="color: var(--accent); font-weight: 700; margin-top: 18px;">
+            <i class="fas fa-circle" style="font-size:.6em;"></i> The unit on Osif's desk is heart-beating to Railway right now.
+          </p>
+        </div>
+        <div style="background: #050810; border: 3px solid #2a3142; border-radius: 14px; padding: 12px; aspect-ratio: 4/3; max-width: 420px; margin: 0 auto; font-family:monospace; font-size:.78rem;">
+          <div style="display:grid; grid-template-columns: repeat(4,1fr); gap:2px; padding:2px; background: #03060f; margin-bottom:6px;">
+            <div style="padding:6px; background:#1a2b4d; color:var(--accent); text-align:center; border-bottom:2px solid var(--accent);">Home</div>
+            <div style="padding:6px; background:#0a0e1a; color:#888; text-align:center;">Wallet</div>
+            <div style="padding:6px; background:#0a0e1a; color:#888; text-align:center;">Bots</div>
+            <div style="padding:6px; background:#0a0e1a; color:#888; text-align:center;">Sys</div>
+          </div>
+          <div style="padding: 8px; line-height: 1.7;">
+            <div style="color:var(--accent); text-align:center; font-weight:700;">Welcome</div>
+            <div style="color:#4ADE80;">User      #4</div>
+            <div style="color:#aab;">Device    14335C6C32C0</div>
+            <div style="color:#aab;">Net       10.0.0.2</div>
+            <div style="color:#aab;">FW        slh-v4</div>
+          </div>
+          <div style="background:#03060f; padding:6px 10px; border-radius:4px; display:flex; justify-content:space-between; font-size:.65rem; color:#666; margin-top: 8px;">
+            <span style="color:#4ADE80;">● HB OK</span><span>WiFi -53dBm</span><span>00:14:22</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ SLIDE 6: MARKET ═════ -->
+  <section class="slide" id="slide-6"><span class="slide-num">6</span>
+    <div class="slide-content">
+      <span class="eyebrow">Market</span>
+      <h2>שלושה שווקים — חיתוך ייחודי</h2>
+      <div class="grid-3" style="margin-top: 32px;">
+        <div class="neural-card">
+          <div style="font-size:.78rem; color:var(--accent); font-weight:700;">TAM</div>
+          <div style="font-size: 2.2rem; font-weight: 900; margin: 4px 0;">$420B</div>
+          <h3>Global Fintech</h3>
+          <p>Stablecoins, DeFi, hardware wallets — שוק רווי, אבל פתוח לשילובים חדשים.</p>
+        </div>
+        <div class="neural-card">
+          <div style="font-size:.78rem; color:var(--accent); font-weight:700;">SAM</div>
+          <div style="font-size: 2.2rem; font-weight: 900; margin: 4px 0;">$2.3B</div>
+          <h3>Edutech לילדים</h3>
+          <p>Greenlight, Zogo, Step, KidVestors — יעד הורים, ללא Web3 native.</p>
+        </div>
+        <div class="neural-card">
+          <div style="font-size:.78rem; color:var(--accent); font-weight:700;">SOM (12-24m)</div>
+          <div style="font-size: 2.2rem; font-weight: 900; margin: 4px 0;">$15M</div>
+          <h3>ישראל + 5 שפות</h3>
+          <p>1,000 יחידות hardware × ₪888 + premium subs + RevShare. שוק התחלתי שבר.</p>
+        </div>
+      </div>
+      <p style="margin-top: 28px;">
+        חיתוך ייחודי: <b>Israeli first</b> (5 שפות יוצאות מכאן ל-EMEA + global) +
+        <b>family fintech</b> (חינוך לילדים → הורים משלמים) +
+        <b>physical anchor</b> (hardware → אמון פיזי בשוק vaporware).
+      </p>
+    </div>
+  </section>
+
+  <!-- ═════ SLIDE 7: BUSINESS MODEL ═════ -->
+  <section class="slide" id="slide-7"><span class="slide-num">7</span>
+    <div class="slide-content">
+      <span class="eyebrow">Business Model</span>
+      <h2>4 זרמי הכנסה — מגוון ויציב</h2>
+      <div class="grid-2" style="gap: 24px; margin-top: 28px;">
+        <div class="neural-card">
+          <h3><i class="fas fa-microchip" style="color:var(--accent);"></i> Hardware Sales</h3>
+          <p style="margin-bottom:0;"><b>₪888 × 1,000 יחידות = ₪888K</b> בשנה הראשונה.<br>
+          Pre-sale 7.11.2026 + רגיל החל מ-2027. עלות יחידה: ~₪220, gross margin 75%.</p>
+        </div>
+        <div class="neural-card">
+          <h3><i class="fas fa-crown" style="color:var(--accent);"></i> Premium Subscriptions</h3>
+          <p style="margin-bottom:0;"><b>₪29/חודש</b> ל-Lumina Premium AI + DNA traits + parental dashboard.<br>
+          יעד: 5,000 משלמים בשנה השנייה = ₪145K MRR.</p>
+        </div>
+        <div class="neural-card">
+          <h3><i class="fas fa-percent" style="color:var(--accent);"></i> Revenue Share / Staking</h3>
+          <p style="margin-bottom:0;"><b>4-12% Variable Yield</b> על פעילות אמיתית של המערכת.<br>
+          Course sales + marketplace fees + SaaS revenue. אין "yield from new money".</p>
+        </div>
+        <div class="neural-card">
+          <h3><i class="fas fa-handshake" style="color:var(--accent);"></i> Affiliate / Bot Marketplace</h3>
+          <p style="margin-bottom:0;"><b>Telegram Stars + TON</b> payments ל-treats + DNA upgrades.<br>
+          25 בוטים = 25 monetization surfaces. 30% commission על mini-app sales.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ SLIDE 8: TRACTION ═════ -->
+  <section class="slide" id="slide-8"><span class="slide-num">8</span>
+    <div class="slide-content">
+      <span class="eyebrow">Traction</span>
+      <h2>מה כבר קורה — לא בעתיד, היום</h2>
+      <div class="grid-3" style="margin-top: 24px;">
+        <div class="stat-block"><div class="num">9</div><div class="lab">Founding Users (verified)</div></div>
+        <div class="stat-block"><div class="num">25</div><div class="lab">Telegram Bots Deployed</div></div>
+        <div class="stat-block"><div class="num">200 OK</div><div class="lab">API Health (live)</div></div>
+        <div class="stat-block"><div class="num">~30s</div><div class="lab">ESP HB Interval (live)</div></div>
+        <div class="stat-block"><div class="num">10+</div><div class="lab">Inst. Investors Interested</div></div>
+        <div class="stat-block"><div class="num">0.08 BNB</div><div class="lab">Genesis Pool Raised</div></div>
+      </div>
+      <p style="margin-top: 28px;">
+        <b>בדיקה חיה:</b> כשתפתח את <a href="https://slh-nft.com/investors.html" style="color:var(--accent);">slh-nft.com/investors.html</a>
+        תראה את ה-API status + ESP status בזמן אמת. אנחנו לא מציגים screenshots — אנחנו מציגים מערכת רצה.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═════ SLIDE 9: COMPETITION ═════ -->
+  <section class="slide" id="slide-9"><span class="slide-num">9</span>
+    <div class="slide-content">
+      <span class="eyebrow">Competition</span>
+      <h2>איפה אנחנו במפה?</h2>
+      <p>אין מתחרה ישיר — אבל יש שלוש קטגוריות שכל אחת חסרה משהו:</p>
+      <div class="grid-3" style="margin-top: 24px;">
+        <div class="neural-card">
+          <h3>Hardware Wallets</h3>
+          <p style="font-size:.92rem;">Ledger ($1.5B), Trezor — חזקים בstorage, חלשים בUX, אין edutech, אין family.</p>
+        </div>
+        <div class="neural-card">
+          <h3>Edutech לילדים</h3>
+          <p style="font-size:.92rem;">Greenlight ($2.3B), Zogo ($50M raised), Step ($800M) — חזקים בUX להורים, חלשים בWeb3, אין hardware.</p>
+        </div>
+        <div class="neural-card">
+          <h3>Crypto Communities</h3>
+          <p style="font-size:.92rem;">Binance Earn, Coinbase, Kraken — חזקים בtrading, חלשים בקהילה ובחינוך, no kids angle.</p>
+        </div>
+      </div>
+      <p style="margin-top: 28px; font-size:1.1rem;">
+        <span class="grad-text" style="font-weight:700;">SLH Spark</span> = החיתוך של שלושתם — וגם 5 שפות, וגם ישראלי native.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═════ SLIDE 10: ROADMAP ═════ -->
+  <section class="slide" id="slide-10"><span class="slide-num">10</span>
+    <div class="slide-content">
+      <span class="eyebrow">Roadmap</span>
+      <h2>18 חודשים, 5 milestones גדולים</h2>
+      <div class="timeline" style="margin-top: 24px;">
+        <div class="timeline-step now">
+          <div class="when">Q3 2026 NOW</div>
+          <h4>Series A close</h4>
+          <p>$4.4M, lead + 2-3 partners, CertiK kickoff.</p>
+        </div>
+        <div class="timeline-step">
+          <div class="when">Q4 2026</div>
+          <h4>Hardware launch</h4>
+          <p>7.11.26 pre-sale 1,000 יח׳. Mobile app v1.</p>
+        </div>
+        <div class="timeline-step">
+          <div class="when">Q1 2027</div>
+          <h4>International</h4>
+          <p>5 שפות מלא. EMEA partnerships. 5K users.</p>
+        </div>
+        <div class="timeline-step">
+          <div class="when">Q2-Q3 2027</div>
+          <h4>Lumina launch</h4>
+          <p>Edutech layer + Premium subs. 25K users.</p>
+        </div>
+        <div class="timeline-step">
+          <div class="when">Q3-Q4 2027</div>
+          <h4>Series B prep</h4>
+          <p>$5M ARR, 3 geographies, audit complete.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ SLIDE 11: HARDWARE PRE-SALE ═════ -->
+  <section class="slide" id="slide-11"><span class="slide-num">11</span>
+    <div class="slide-content">
+      <span class="eyebrow">Hardware Pre-Sale · 2026-11-07</span>
+      <h2>חומרה כ-anchor למשתמש מוקדם</h2>
+      <div class="grid-2" style="margin-top: 24px;">
+        <div>
+          <p>
+            ב-7.11.2026 משחררים את ה-<b>SLH Hardware Wallet</b> ב-pre-sale ל-1,000 יחידות.
+          </p>
+          <ul>
+            <li><b>מחיר:</b> ₪888 ליחידה (~$240)</li>
+            <li><b>בונוס:</b> 2 SLH לכל רוכש (≈ ₪888 שווי בעת השחרור)</li>
+            <li><b>מודל:</b> פיזי = anchor → קהילה אמיתית, לא רק wallet</li>
+            <li><b>גרסה:</b> v4 firmware מוכן, MFG quote מוכן</li>
+          </ul>
+          <p style="color: var(--accent); font-weight: 700; margin-top: 14px;">
+            ₪888K גרוס בשבוע הראשון = proof of demand למשקיעים.
+          </p>
+        </div>
+        <div>
+          <div class="stat-block" style="margin-bottom: 14px;">
+            <div class="num">₪888</div>
+            <div class="lab">מחיר ליחידה (≈ $240)</div>
+          </div>
+          <div class="stat-block" style="margin-bottom: 14px;">
+            <div class="num">1,000</div>
+            <div class="lab">יחידות שנה ראשונה</div>
+          </div>
+          <div class="stat-block">
+            <div class="num">7.11.26</div>
+            <div class="lab">תאריך שחרור</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ SLIDE 12: INVESTMENT TERMS ═════ -->
+  <section class="slide" id="slide-12"><span class="slide-num">12</span>
+    <div class="slide-content">
+      <span class="eyebrow">Investment Terms</span>
+      <h2>תנאים שקופים — תחזית, לא הבטחה</h2>
+      <div class="grid-2" style="gap: 18px; margin-top: 24px;">
+        <div class="neural-card"><h3>מינימום</h3><div style="font-size:1.8rem; font-weight:900; color:var(--accent);">₪50,000 <span style="font-size:.5em; color:var(--text2);">≈ $13,500</span></div><p style="font-size:.88rem; margin-top:8px;">סף שמסנן באופן מובנה לקרנות + משקיעים מסווגים.</p></div>
+        <div class="neural-card"><h3>מודל</h3><div style="font-size:1.8rem; font-weight:900; color:var(--accent);">88% Revenue Share</div><p style="font-size:.88rem; margin-top:8px;">מרווחי פעילות מכשירי ESP. עד החזר מצטבר מקסימלי.</p></div>
+        <div class="neural-card"><h3>תקופה</h3><div style="font-size:1.8rem; font-weight:900; color:var(--accent);">~5 שנים</div><p style="font-size:.88rem; margin-top:8px;">לאחר מכן: מימוש או חוזה חדש (בהסכמה).</p></div>
+        <div class="neural-card"><h3>סגירה</h3><div style="font-size:1.8rem; font-weight:900; color:var(--accent);">7.11.2026</div><p style="font-size:.88rem; margin-top:8px;">סבב נסגר ביום שחרור החומרה.</p></div>
+      </div>
+      <div style="margin-top: 24px; padding: 18px 22px; border-radius: 10px; background: rgba(255,209,102,.06); border:1px dashed var(--accent);">
+        <b style="color:var(--accent);">יעד תשואה (תחזית):</b> משקיע ב-₪50K עשוי להגיע לתשואה מצטברת של עד <b>פי 3</b> ב-5 שנים — בהתאם לביצועי הפעילות. <i>אין הבטחה.</i>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ SLIDE 13: USE OF FUNDS ═════ -->
+  <section class="slide" id="slide-13"><span class="slide-num">13</span>
+    <div class="slide-content">
+      <span class="eyebrow">Use of Funds · $4.4M</span>
+      <h2>איך מנצלים את הקרן</h2>
+      <div style="display:flex; height:60px; border-radius: 10px; overflow:hidden; margin: 28px 0 18px; box-shadow: inset 0 0 0 1px var(--border);">
+        <div style="flex:35; background:#7c4dff; display:flex; align-items:center; justify-content:center; color:white; font-weight:800;">35%</div>
+        <div style="flex:25; background:#ff8a4d; display:flex; align-items:center; justify-content:center; color:white; font-weight:800;">25%</div>
+        <div style="flex:20; background:#4dd0e1; display:flex; align-items:center; justify-content:center; color:#003344; font-weight:800;">20%</div>
+        <div style="flex:15; background:#ffb74d; display:flex; align-items:center; justify-content:center; color:#4a0014; font-weight:800;">15%</div>
+        <div style="flex:5;  background:#9e9e9e; display:flex; align-items:center; justify-content:center; color:white; font-weight:800;">5%</div>
+      </div>
+      <div class="grid-3" style="gap: 14px;">
+        <div class="neural-card"><h3 style="color:#7c4dff;">Engineering · $1.54M</h3><p style="font-size:.88rem;">4 מהנדסים: backend, mobile, ESP firmware, security/audit.</p></div>
+        <div class="neural-card"><h3 style="color:#ff8a4d;">Hardware · $1.10M</h3><p style="font-size:.88rem;">1,000 יחידות ייצור + R&D + ECad + לוגיסטיקה.</p></div>
+        <div class="neural-card"><h3 style="color:#4dd0e1;">Marketing · $880K</h3><p style="font-size:.88rem;">5 שפות, ישראל + EMEA + global crypto reach.</p></div>
+        <div class="neural-card"><h3 style="color:#ffb74d;">Operations · $660K</h3><p style="font-size:.88rem;">Compliance, legal, audits (CertiK), accounting, office.</p></div>
+        <div class="neural-card"><h3 style="color:#9e9e9e;">Reserve · $220K</h3><p style="font-size:.88rem;">Contingency / opportunistic / cap-table reserves.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ SLIDE 14: VISION (LUMINA) ═════ -->
+  <section class="slide" id="slide-14"><span class="slide-num">14</span>
+    <div class="slide-content">
+      <span class="eyebrow">Vision · Beyond Series A</span>
+      <h2>Lumina — Where We're Going</h2>
+      <div class="grid-2" style="gap: 32px; margin-top: 28px;">
+        <div>
+          <p>
+            Lumina היא <b>טמגוצ'י פיננסי-חינוכי</b> שמתחבר לROI של המשתמש בזמן אמת.
+            ROI עולה → Lumina שמחה. ROI יורד → מציעה שיעורים חינוכיים על ניהול סיכונים.
+          </p>
+          <ul>
+            <li>AI אמפתי (Claude / GPT) עם System Prompt לחינוך פיננסי</li>
+            <li>Sociocracy במחוזות (קבוצות טלגרם = מחוז)</li>
+            <li>Phygital — ה-ESP מציג את Lumina עם haptic + animation</li>
+            <li>Gamification — DNA traits, Treats, evolution, karma</li>
+            <li>Curriculum 8-12 (ילדים) + 13+ (נוער) + הורים dashboard</li>
+          </ul>
+          <p style="margin-top: 14px; color: var(--accent); font-weight: 700;">
+            Q2-Q3 2027 launch · החלק החינוכי שמבדל אותנו מ-95% מקריפטו.
+          </p>
+        </div>
+        <div style="text-align: center; padding: 32px;">
+          <div style="font-size: 5rem;">🐣</div>
+          <div style="margin-top: 12px; color: var(--text2); font-size: 1.05rem;">"חברה דיגיטלית חכמה שגדלה איתך"</div>
+          <div style="margin-top: 4px; color: var(--accent); font-weight: 700;">Lumina v0.1 concept</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ SLIDE 15: TEAM ═════ -->
+  <section class="slide" id="slide-15"><span class="slide-num">15</span>
+    <div class="slide-content">
+      <span class="eyebrow">Team</span>
+      <h2>אנשים — Solo Engineer with Series A Hire Plan</h2>
+      <div class="grid-3" style="margin-top: 24px;">
+        <div class="neural-card" style="text-align:center;">
+          <div style="width:80px; height:80px; border-radius:50%; background:linear-gradient(135deg, var(--accent), var(--accent2)); margin:0 auto 14px; display:flex; align-items:center; justify-content:center; font-weight:900; color:var(--bg); font-size:1.5rem;">OK</div>
+          <h3>Osif Kaufman Ungar</h3>
+          <p style="font-size:.88rem;">Founder · Solo Engineer · Architect<br>11.7K LoC, 25 bots, 230 endpoints, ESP firmware.</p>
+        </div>
+        <div class="neural-card" style="text-align:center;">
+          <div style="width:80px; height:80px; border-radius:50%; background:linear-gradient(135deg, var(--accent), var(--accent2)); margin:0 auto 14px; display:flex; align-items:center; justify-content:center; font-weight:900; color:var(--bg); font-size:1.5rem;">TZ</div>
+          <h3>Tzvika</h3>
+          <p style="font-size:.88rem;">Co-founder · Crypto Trading Lead<br>Active Israeli crypto community trader, social.</p>
+        </div>
+        <div class="neural-card" style="text-align:center; border-style: dashed; opacity: .8;">
+          <div style="width:80px; height:80px; border-radius:50%; background:#444; color:#888; margin:0 auto 14px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:1.5rem;">+</div>
+          <h3>Hiring with Series A</h3>
+          <p style="font-size:.88rem;">CTO · Mobile Lead · Hardware EE · Security/Audit · Marketing Lead</p>
+        </div>
+      </div>
+      <p style="margin-top: 24px;">
+        תורמים פעילים: <b>Eli, Yakir Lisha, Zohar Shefa Dror</b> (verified contributors, paid in ZVK).
+      </p>
+    </div>
+  </section>
+
+  <!-- ═════ SLIDE 16: RISKS ═════ -->
+  <section class="slide" id="slide-16"><span class="slide-num">16</span>
+    <div class="slide-content">
+      <span class="eyebrow">Risks &amp; Mitigations</span>
+      <h2>מה יכול ללכת רע — ואיך אנחנו מטפלים</h2>
+      <div class="grid-2" style="gap: 20px; margin-top: 24px;">
+        <div class="neural-card">
+          <h3 style="color:#FB923C;">⚠️ Hardware Production Delay</h3>
+          <p style="font-size:.92rem;"><b>Risk:</b> ייצור 1,000 יח׳ עלול להתעכב.<br><b>Mitigation:</b> 3 ספקי MFG בtau. Pre-sale modular — נשחרר חלקיים.</p>
+        </div>
+        <div class="neural-card">
+          <h3 style="color:#FB923C;">⚠️ Regulatory (Israel)</h3>
+          <p style="font-size:.92rem;"><b>Risk:</b> רשות ני"ע עלולה לראות את ה-Revenue Share כ"הצעה לציבור".<br><b>Mitigation:</b> ₪50K min + private circle + legal review pre-launch.</p>
+        </div>
+        <div class="neural-card">
+          <h3 style="color:#FB923C;">⚠️ Competition (Greenlight et al)</h3>
+          <p style="font-size:.92rem;"><b>Risk:</b> ענקי edutech יכולים להוסיף Web3 layer.<br><b>Mitigation:</b> אנחנו kids+crypto+hardware = combo קשה לחקות בקצרה.</p>
+        </div>
+        <div class="neural-card">
+          <h3 style="color:#FB923C;">⚠️ Solo Engineer Bottleneck</h3>
+          <p style="font-size:.92rem;"><b>Risk:</b> Osif יחיד = key-person risk.<br><b>Mitigation:</b> 35% מהקרן = hiring 4 engineers ב-3 חודשים ראשונים.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ SLIDE 17: WHY NOW ═════ -->
+  <section class="slide" id="slide-17"><span class="slide-num">17</span>
+    <div class="slide-content">
+      <span class="eyebrow">Why Now</span>
+      <h2>שלוש הזדמנויות נפגשות בנקודה הזו</h2>
+      <div class="grid-3" style="margin-top: 32px;">
+        <div class="neural-card">
+          <h3><i class="fas fa-globe" style="color:var(--accent);"></i> Web3 Mainstream</h3>
+          <p>2026: stablecoins רגולטוריים (MiCA + Genius Act), ETH/BSC ETFs, mass adoption.</p>
+        </div>
+        <div class="neural-card">
+          <h3><i class="fas fa-children" style="color:var(--accent);"></i> Gen Alpha Cripto</h3>
+          <p>הדור הבא נולד דיגיטלי. הורים מחפשים כלי חינוך פיננסי שמדבר בשפת הילדים.</p>
+        </div>
+        <div class="neural-card">
+          <h3><i class="fas fa-microchip" style="color:var(--accent);"></i> AI + Hardware</h3>
+          <p>OpenAI / Claude APIs נגישים. ESP32 ב-$5. Hardware Wallet + AI = שילוב חדש.</p>
+        </div>
+      </div>
+      <p style="margin-top: 28px; font-size: 1.15rem;">
+        <span class="grad-text" style="font-weight:700;">מי שיתפוס את ה-edutech-fintech-IoT combo עד 2027</span> — ינצח את הקטגוריה.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═════ SLIDE 18: ASK ═════ -->
+  <section class="slide" id="slide-18"><span class="slide-num">18</span>
+    <div class="slide-content cover-content">
+      <span class="eyebrow">The Ask</span>
+      <h1>$4.4M Series A</h1>
+      <div style="font-size: 1.4rem; color: var(--text2); font-weight: 600; margin: 12px 0 32px;">
+        18-month runway · ₪50K min · 88% RevShare · Cutoff 7.11.2026
+      </div>
+
+      <div style="display:flex; gap:16px; flex-wrap:wrap; justify-content:center; margin-bottom: 32px;">
+        <a href="https://t.me/osifeu_prog" class="neural-btn neural-btn-gold" style="font-size: 1.1rem;">
+          <i class="fab fa-telegram"></i> קבע שיחה · @osifeu_prog
+        </a>
+        <a href="mailto:invest@slh-nft.com" class="neural-btn neural-btn-ghost" style="font-size: 1.1rem;">
+          <i class="fas fa-envelope"></i> invest@slh-nft.com
+        </a>
+        <a href="/investors.html" class="neural-btn neural-btn-ghost" style="font-size: 1.1rem;">
+          <i class="fas fa-globe"></i> One-Pager
+        </a>
+      </div>
+
+      <div style="display: flex; gap: 24px; justify-content:center; flex-wrap: wrap; padding-top: 32px; border-top: 1px dashed var(--border);">
+        <div class="trust-badge"><span class="badge-dot"></span> Live demo: slh-nft.com</div>
+        <div class="trust-badge"><span class="badge-dot"></span> Hardware demo in Tel Aviv</div>
+        <div class="trust-badge"><span class="badge-dot"></span> BscScan verifiable</div>
+      </div>
+
+      <div style="margin-top: 48px; color: var(--text3); font-size: .85rem;">
+        אני מחכה לשאלות שלכם. כל שאלה — תאמן עם המערכת בעצמך לפני קבלת החלטה.
+      </div>
+    </div>
+  </section>
+
+  <div class="nav-arrows">
+    <button onclick="document.getElementById('slide-1').scrollIntoView({behavior:'smooth'})" title="לתחילה" type="button">⇈</button>
+    <button onclick="document.getElementById('slide-18').scrollIntoView({behavior:'smooth'})" title="ל-Ask" type="button">⇊</button>
+  </div>
+
+  <script>
+    // Keyboard navigation between slides
+    document.addEventListener('keydown', (e) => {
+      const slides = [...document.querySelectorAll('.slide')];
+      const current = slides.findIndex(s => {
+        const r = s.getBoundingClientRect();
+        return r.top >= 0 && r.top < window.innerHeight / 2;
+      });
+      if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
+        if (current >= 0 && current < slides.length - 1) {
+          e.preventDefault();
+          slides[current + 1].scrollIntoView({behavior:'smooth'});
+        }
+      } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+        if (current > 0) {
+          e.preventDefault();
+          slides[current - 1].scrollIntoView({behavior:'smooth'});
+        }
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,488 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SLH Analytics | Dashboard</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="/favicon-32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/shared.css?v=20260426e">
+  <style>
+    /* ── Analytics Admin Theme ────────────────── */
+    .an-gate{position:fixed;inset:0;background:var(--bg);z-index:10000;display:flex;align-items:center;justify-content:center}
+    .an-gate.hidden{display:none}
+    .an-login{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:48px 36px;text-align:center;max-width:380px;width:90%}
+    .an-login h2{font-size:22px;margin-bottom:6px;color:var(--accent2)}
+    .an-login p{font-size:13px;color:var(--text3);margin-bottom:28px}
+    .an-login input{width:100%;padding:12px 16px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:14px;margin-bottom:14px;text-align:center;font-family:var(--font)}
+    .an-login input:focus{outline:none;border-color:var(--accent)}
+    .an-login button{width:100%;padding:12px;background:var(--accent);color:#fff;font-weight:700;border:none;border-radius:var(--radius-sm);font-size:14px;cursor:pointer;font-family:var(--font)}
+    .an-login button:hover{background:var(--accent2)}
+    .an-err{color:var(--red);font-size:12px;margin-top:8px;display:none}
+
+    .an-dash{display:none;padding:calc(var(--topnav-h) + 20px) 24px 40px;max-width:1200px;margin:0 auto}
+    .an-dash.active{display:block}
+    .an-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+    .an-header h1{font-size:24px;font-weight:700}
+    .an-header .badge-mode{font-size:12px;padding:4px 12px;border-radius:var(--radius-xs);background:rgba(255,71,87,.15);color:var(--red);display:none}
+    .an-header .badge-mode.show{display:inline-block}
+    .an-actions{display:flex;gap:8px}
+    .an-actions button{padding:8px 16px;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:var(--radius-sm);font-size:13px;cursor:pointer;font-family:var(--font)}
+    .an-actions button:hover{border-color:var(--accent);color:var(--accent)}
+
+    /* KPI Row */
+    .kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:28px}
+    .kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;position:relative;overflow:hidden}
+    .kpi-card::after{content:'';position:absolute;top:0;right:0;width:4px;height:100%;border-radius:0 var(--radius) var(--radius) 0}
+    .kpi-card.purple::after{background:var(--accent)}
+    .kpi-card.green::after{background:var(--green)}
+    .kpi-card.gold::after{background:var(--gold)}
+    .kpi-card.cyan::after{background:var(--cyan)}
+    .kpi-card.red::after{background:var(--red)}
+    .kpi-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+    .kpi-val{font-size:32px;font-weight:800;color:var(--text)}
+
+    /* Sections */
+    .an-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:20px}
+    .an-section h3{font-size:15px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+    .an-section h3 i{color:var(--accent2);font-size:14px}
+    .an-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+
+    /* Bar chart */
+    .chart-bars{display:flex;align-items:flex-end;gap:8px;height:180px;padding-top:10px}
+    .chart-bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+    .chart-bar{width:100%;border-radius:var(--radius-xs) var(--radius-xs) 0 0;background:linear-gradient(to top,var(--accent),var(--accent2));min-height:4px;transition:height .4s}
+    .chart-bar-label{font-size:10px;color:var(--text3);white-space:nowrap}
+    .chart-bar-val{font-size:11px;color:var(--text2);font-weight:600}
+
+    /* Pie / conic */
+    .pie-wrap{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+    .pie-circle{width:140px;height:140px;border-radius:50%;flex-shrink:0}
+    .pie-legend{display:flex;flex-direction:column;gap:6px}
+    .pie-legend-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2)}
+    .pie-legend-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+
+    /* Tables */
+    .an-table{width:100%;border-collapse:collapse;font-size:13px}
+    .an-table th{text-align:right;padding:10px 12px;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);border-bottom:1px solid var(--border)}
+    .an-table td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text2)}
+    .an-table tr:hover td{background:var(--bg2)}
+
+    /* Activity feed */
+    .feed{max-height:320px;overflow-y:auto}
+    .feed-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+    .feed-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .feed-dot.pv{background:var(--accent)}
+    .feed-dot.cl{background:var(--gold)}
+    .feed-dot.sc{background:var(--cyan)}
+    .feed-dot.hb{background:var(--green)}
+    .feed-text{flex:1;color:var(--text2)}
+    .feed-time{font-size:11px;color:var(--text3);flex-shrink:0}
+
+    @media(max-width:768px){
+      .an-grid{grid-template-columns:1fr}
+      .kpi-row{grid-template-columns:repeat(2,1fr)}
+      .an-header h1{font-size:20px}
+    }
+  </style>
+</head>
+<body>
+  <div id="topnav-root"></div>
+  <div id="ticker-root"></div>
+  <div id="drawer-root"></div>
+
+  <!-- AUTH GATE -->
+  <div class="an-gate" id="an-gate">
+    <div class="an-login">
+      <div style="font-size:40px;margin-bottom:16px"><i class="fas fa-chart-line" style="color:var(--accent2)"></i></div>
+      <h2>Analytics Dashboard</h2>
+      <p>Admin access required</p>
+      <input type="password" id="an-pass" placeholder="Password" autocomplete="off">
+      <button id="an-login-btn">Login</button>
+      <div class="an-err" id="an-err">Incorrect password</div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="an-dash" id="an-dash">
+    <div class="an-header">
+      <div>
+        <h1><i class="fas fa-chart-line"></i> Analytics Dashboard</h1>
+        <span class="badge-mode" id="badge-mode">Local Mode</span>
+      </div>
+      <div class="an-actions">
+        <button id="btn-refresh" title="Refresh"><i class="fas fa-sync-alt"></i> Refresh</button>
+        <button id="btn-export" title="Export CSV"><i class="fas fa-download"></i> Export CSV</button>
+      </div>
+    </div>
+
+    <!-- KPI Row -->
+    <div class="kpi-row">
+      <div class="kpi-card purple"><div class="kpi-label">Total Visits</div><div class="kpi-val" id="kpi-visits">0</div></div>
+      <div class="kpi-card green"><div class="kpi-label">Unique Visitors</div><div class="kpi-val" id="kpi-unique">0</div></div>
+      <div class="kpi-card gold"><div class="kpi-label">Active Now</div><div class="kpi-val" id="kpi-active">0</div></div>
+      <div class="kpi-card cyan"><div class="kpi-label">Avg Session (s)</div><div class="kpi-val" id="kpi-duration">0</div></div>
+      <div class="kpi-card red"><div class="kpi-label">Views Today</div><div class="kpi-val" id="kpi-today">0</div></div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="an-grid">
+      <div class="an-section">
+        <h3><i class="fas fa-chart-bar"></i> Visits (Last 7 Days)</h3>
+        <div class="chart-bars" id="chart-days"></div>
+      </div>
+      <div class="an-section">
+        <h3><i class="fas fa-mobile-alt"></i> Device Breakdown</h3>
+        <div class="pie-wrap">
+          <div class="pie-circle" id="pie-device"></div>
+          <div class="pie-legend" id="legend-device"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tables Row -->
+    <div class="an-grid">
+      <div class="an-section">
+        <h3><i class="fas fa-file-alt"></i> Top Pages</h3>
+        <table class="an-table">
+          <thead><tr><th>Page</th><th>Views</th><th>Unique</th><th>Avg Time</th></tr></thead>
+          <tbody id="tbl-pages"></tbody>
+        </table>
+      </div>
+      <div class="an-section">
+        <h3><i class="fas fa-share-alt"></i> Referral Sources</h3>
+        <table class="an-table">
+          <thead><tr><th>Source</th><th>Visits</th></tr></thead>
+          <tbody id="tbl-refs"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Second Row -->
+    <div class="an-grid">
+      <div class="an-section">
+        <h3><i class="fas fa-globe"></i> Languages</h3>
+        <div class="pie-wrap">
+          <div class="pie-circle" id="pie-lang"></div>
+          <div class="pie-legend" id="legend-lang"></div>
+        </div>
+      </div>
+      <div class="an-section">
+        <h3><i class="fas fa-mouse-pointer"></i> Top Clicked Elements</h3>
+        <table class="an-table">
+          <thead><tr><th>Element</th><th>Clicks</th></tr></thead>
+          <tbody id="tbl-clicks"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Live Feed -->
+    <div class="an-section">
+      <h3><i class="fas fa-bolt"></i> Live Activity Feed</h3>
+      <div class="feed" id="live-feed"><div style="color:var(--text3);font-size:13px">Collecting events...</div></div>
+    </div>
+  </div>
+
+  <div id="bottomnav-root"></div>
+  <div id="footer-root"></div>
+
+  <script src="/js/translations.js?v=20260426e"></script>
+  <script src="/js/shared.js?v=20260426e"></script>
+  <script src="/js/analytics.js"></script>
+  <script>
+  (function(){
+    'use strict';
+    const PASS = localStorage.getItem('slh_admin_password') || '';
+    const API = 'https://slh-api-production.up.railway.app/api/analytics';
+    const STATS_KEY = 'slh_analytics_stats';
+    let isLocal = false;
+    let stats = null;
+    const feedEvents = [];
+
+    /* ── Auth ─────────────────────────────────── */
+    const gate = document.getElementById('an-gate');
+    const dash = document.getElementById('an-dash');
+    const passInput = document.getElementById('an-pass');
+    const errEl = document.getElementById('an-err');
+
+    if (sessionStorage.getItem('slh_an_auth') === '1') unlock();
+
+    document.getElementById('an-login-btn').addEventListener('click', tryLogin);
+    passInput.addEventListener('keydown', function(e){ if(e.key==='Enter') tryLogin(); });
+
+    function tryLogin(){
+      if(passInput.value === PASS){ sessionStorage.setItem('slh_an_auth','1'); unlock(); }
+      else { errEl.style.display='block'; passInput.value=''; }
+    }
+    function unlock(){
+      gate.classList.add('hidden');
+      dash.classList.add('active');
+      loadData();
+    }
+
+    /* ── Data loading ────────────────────────── */
+    let refreshTimer = null;
+
+    async function loadData(){
+      try{
+        const r = await fetch(API+'/stats',{signal:AbortSignal.timeout(5000)});
+        if(!r.ok) throw new Error('API error');
+        stats = await r.json();
+        stats._fromAPI = true;
+        isLocal = false;
+      }catch{
+        stats = readLocal();
+        stats._fromAPI = false;
+        isLocal = true;
+      }
+      document.getElementById('badge-mode').classList.toggle('show', isLocal);
+      render();
+      // Auto-refresh every 30 seconds
+      if(!refreshTimer){
+        refreshTimer = setInterval(loadData, 30000);
+      }
+    }
+
+    function readLocal(){
+      try{ return JSON.parse(localStorage.getItem(STATS_KEY)) || emptyStats(); }catch{ return emptyStats(); }
+    }
+    function emptyStats(){ return {days:{},pages:{},referrers:{},langs:{},devices:{},clicks:{},visitors:{},heartbeats:{}}; }
+
+    /* ── Render ───────────────────────────────── */
+    function render(){
+      if(!stats) return;
+      renderKPI();
+      renderDayChart();
+      renderDevicePie();
+      renderPages();
+      renderRefs();
+      renderLangs();
+      renderClicks();
+    }
+
+    function renderKPI(){
+      if(stats._fromAPI){
+        // API format: {total_events, unique_visitors, today_views, today_visitors, daily, top_pages}
+        document.getElementById('kpi-visits').textContent = (stats.total_events||0).toLocaleString();
+        document.getElementById('kpi-unique').textContent = (stats.unique_visitors||0).toLocaleString();
+        document.getElementById('kpi-today').textContent = (stats.today_views||0).toLocaleString();
+        // Active now: today_visitors as proxy
+        document.getElementById('kpi-active').textContent = (stats.today_visitors||0).toLocaleString();
+        // Avg session: compute from daily if available
+        const daily = stats.daily || [];
+        if(daily.length > 0){
+          const totalViews = daily.reduce(function(s,d){return s+(d.views||0);},0);
+          const totalVisitors = daily.reduce(function(s,d){return s+(d.visitors||0);},0);
+          const avg = totalVisitors ? Math.round(totalViews / totalVisitors) : 0;
+          document.getElementById('kpi-duration').textContent = avg;
+        } else {
+          document.getElementById('kpi-duration').textContent = '0';
+        }
+      } else {
+        // localStorage fallback format
+        const d = stats.days || {};
+        const today = new Date().toISOString().slice(0,10);
+        let totalViews = 0, allVisitors = new Set();
+        Object.values(d).forEach(function(day){ totalViews += day.views||0; (day.visitors||[]).forEach(function(v){allVisitors.add(v);}); });
+        const todayData = d[today] || {views:0};
+        const hb = stats.heartbeats || {};
+        const cutoff = Date.now() - 120000;
+        let activeNow = 0;
+        Object.values(hb).forEach(function(ts){ if(ts > cutoff) activeNow++; });
+        const pages = stats.pages || {};
+        let totalTime = 0, pageCount = 0;
+        Object.values(pages).forEach(function(p){ if(p.totalTime){ totalTime += p.totalTime; pageCount++; } });
+        const avgSession = pageCount ? Math.round(totalTime / pageCount) : 0;
+
+        document.getElementById('kpi-visits').textContent = totalViews.toLocaleString();
+        document.getElementById('kpi-unique').textContent = allVisitors.size.toLocaleString();
+        document.getElementById('kpi-active').textContent = activeNow;
+        document.getElementById('kpi-duration').textContent = avgSession;
+        document.getElementById('kpi-today').textContent = (todayData.views||0).toLocaleString();
+      }
+    }
+
+    function renderDayChart(){
+      const container = document.getElementById('chart-days');
+
+      if(stats._fromAPI && stats.daily){
+        // API format: daily is [{day, views, visitors}, ...]
+        const daily = stats.daily.slice(-7);
+        const days = daily.map(function(d){
+          const dt = new Date(d.day);
+          return {label: dt.toLocaleDateString('he',{weekday:'short'}), val: d.views||0, visitors: d.visitors||0};
+        });
+        const max = Math.max(1, ...days.map(function(x){return x.val;}));
+        container.innerHTML = days.map(function(day){
+          const h = Math.max(4, Math.round((day.val/max)*160));
+          return '<div class="chart-bar-col"><div class="chart-bar-val">'+day.val+'</div><div class="chart-bar" style="height:'+h+'px"></div><div class="chart-bar-label">'+day.label+'</div></div>';
+        }).join('');
+      } else {
+        // localStorage fallback
+        const d = stats.days || {};
+        const days = [];
+        for(let i=6;i>=0;i--){
+          const dt = new Date(); dt.setDate(dt.getDate()-i);
+          const key = dt.toISOString().slice(0,10);
+          days.push({label: dt.toLocaleDateString('he',{weekday:'short'}), val: (d[key]||{}).views||0, key:key});
+        }
+        const max = Math.max(1, ...days.map(function(x){return x.val;}));
+        container.innerHTML = days.map(function(day){
+          const h = Math.max(4, Math.round((day.val/max)*160));
+          return '<div class="chart-bar-col"><div class="chart-bar-val">'+day.val+'</div><div class="chart-bar" style="height:'+h+'px"></div><div class="chart-bar-label">'+day.label+'</div></div>';
+        }).join('');
+      }
+    }
+
+    function makePie(data, el, legendEl, colors){
+      const total = Object.values(data).reduce(function(a,b){return a+b;},0) || 1;
+      const entries = Object.entries(data).sort(function(a,b){return b[1]-a[1];});
+      let conic = [], angle = 0;
+      const palette = colors || ['#6c5ce7','#00cec9','#ffd32a','#ff4757','#00b4d8','#a29bfe','#ffa502'];
+      entries.forEach(function(e,i){
+        const pct = (e[1]/total)*100;
+        const c = palette[i%palette.length];
+        conic.push(c+' '+angle.toFixed(1)+'% '+(angle+pct).toFixed(1)+'%');
+        angle += pct;
+      });
+      el.style.background = 'conic-gradient('+conic.join(',')+')';
+      legendEl.innerHTML = entries.map(function(e,i){
+        const pct = Math.round((e[1]/total)*100);
+        return '<div class="pie-legend-item"><div class="pie-legend-dot" style="background:'+palette[i%palette.length]+'"></div>'+e[0]+' ('+pct+'%)</div>';
+      }).join('');
+    }
+
+    function renderDevicePie(){
+      makePie(stats.devices||{}, document.getElementById('pie-device'), document.getElementById('legend-device'), ['#6c5ce7','#00cec9','#ffd32a']);
+    }
+
+    function renderPages(){
+      const tbody = document.getElementById('tbl-pages');
+
+      if(stats._fromAPI && stats.top_pages){
+        // API format: [{page, views}, ...]
+        const rows = stats.top_pages.slice(0,10);
+        tbody.innerHTML = rows.map(function(r){
+          return '<tr><td>'+r.page+'</td><td>'+r.views+'</td><td>-</td><td>-</td></tr>';
+        }).join('') || '<tr><td colspan="4" style="color:var(--text3)">No data yet</td></tr>';
+      } else {
+        // localStorage fallback
+        const pages = stats.pages || {};
+        const rows = Object.entries(pages).sort(function(a,b){return b[1].views-a[1].views;}).slice(0,10);
+        tbody.innerHTML = rows.map(function(r){
+          const p = r[1];
+          const avg = p.views ? Math.round((p.totalTime||0)/p.views) : 0;
+          return '<tr><td>'+r[0]+'</td><td>'+p.views+'</td><td>'+(p.visitors||[]).length+'</td><td>'+avg+'s</td></tr>';
+        }).join('') || '<tr><td colspan="4" style="color:var(--text3)">No data yet</td></tr>';
+      }
+    }
+
+    function renderRefs(){
+      const tbody = document.getElementById('tbl-refs');
+      const refs = stats.referrers || {};
+      const rows = Object.entries(refs).sort(function(a,b){return b[1]-a[1];}).slice(0,10);
+      tbody.innerHTML = rows.map(function(r){
+        return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>';
+      }).join('') || '<tr><td colspan="2" style="color:var(--text3)">No data yet</td></tr>';
+    }
+
+    function renderLangs(){
+      makePie(stats.langs||{}, document.getElementById('pie-lang'), document.getElementById('legend-lang'), ['#00cec9','#ffd32a','#ff4757','#6c5ce7','#00b4d8']);
+    }
+
+    function renderClicks(){
+      const tbody = document.getElementById('tbl-clicks');
+      const clicks = stats.clicks || {};
+      const rows = Object.entries(clicks).sort(function(a,b){return b[1]-a[1];}).slice(0,10);
+      tbody.innerHTML = rows.map(function(r){
+        return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>';
+      }).join('') || '<tr><td colspan="2" style="color:var(--text3)">No data yet</td></tr>';
+    }
+
+    /* ── Live Feed ────────────────────────────── */
+    function updateFeed(){
+      const feed = document.getElementById('live-feed');
+      if(stats && stats._fromAPI){
+        // Use API data for live feed
+        const todayViews = stats.today_views || 0;
+        const todayVisitors = stats.today_visitors || 0;
+        if(todayViews > 0 || todayVisitors > 0){
+          const item = '<div class="feed-item"><div class="feed-dot hb"></div><div class="feed-text">'+todayVisitors+' visitors today | '+todayViews+' views today</div><div class="feed-time">'+new Date().toLocaleTimeString('he')+'</div></div>';
+          feed.innerHTML = item + (feed.children.length > 20 ? '' : feed.innerHTML);
+        }
+      } else {
+        // localStorage fallback
+        const s = readLocal();
+        const hb = s.heartbeats || {};
+        const now = Date.now();
+        const todayKey = new Date().toISOString().slice(0,10);
+        const todayViews = (s.days[todayKey]||{}).views || 0;
+        const activeCount = Object.values(hb).filter(function(t){return t > now-120000;}).length;
+        if(todayViews > 0 || activeCount > 0){
+          const item = '<div class="feed-item"><div class="feed-dot hb"></div><div class="feed-text">'+activeCount+' active users | '+todayViews+' views today</div><div class="feed-time">'+new Date().toLocaleTimeString('he')+'</div></div>';
+          feed.innerHTML = item + (feed.children.length > 20 ? '' : feed.innerHTML);
+        }
+      }
+    }
+    setInterval(updateFeed, 5000);
+
+    /* ── Export CSV ───────────────────────────── */
+    document.getElementById('btn-export').addEventListener('click', function(){
+      const s = stats || readLocal();
+      let csv = '';
+
+      if(s._fromAPI){
+        // API format export
+        csv += 'Date,Views,Visitors\n';
+        (s.daily||[]).forEach(function(d){
+          csv += d.day+','+(d.views||0)+','+(d.visitors||0)+'\n';
+        });
+        csv += '\nPage,Views\n';
+        (s.top_pages||[]).forEach(function(p){
+          csv += p.page+','+(p.views||0)+'\n';
+        });
+        csv += '\nSummary\n';
+        csv += 'Total Events,'+( s.total_events||0)+'\n';
+        csv += 'Unique Visitors,'+(s.unique_visitors||0)+'\n';
+        csv += 'Today Views,'+(s.today_views||0)+'\n';
+        csv += 'Today Visitors,'+(s.today_visitors||0)+'\n';
+      } else {
+        // localStorage format export
+        csv += 'Date,Views,Unique Visitors\n';
+        Object.entries(s.days||{}).sort().forEach(function(e){
+          csv += e[0]+','+e[1].views+','+(e[1].visitors||[]).length+'\n';
+        });
+        csv += '\nPage,Views,Unique,Avg Time\n';
+        Object.entries(s.pages||{}).forEach(function(e){
+          const p = e[1];
+          csv += e[0]+','+p.views+','+(p.visitors||[]).length+','+(p.views?Math.round((p.totalTime||0)/p.views):0)+'\n';
+        });
+        csv += '\nReferrer,Count\n';
+        Object.entries(s.referrers||{}).forEach(function(e){ csv += e[0]+','+e[1]+'\n'; });
+        csv += '\nElement,Clicks\n';
+        Object.entries(s.clicks||{}).forEach(function(e){ csv += e[0]+','+e[1]+'\n'; });
+      }
+
+      const blob = new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'slh-analytics-'+new Date().toISOString().slice(0,10)+'.csv';
+      a.click();
+    });
+
+    /* ── Refresh ─────────────────────────────── */
+    document.getElementById('btn-refresh').addEventListener('click', loadData);
+
+    /* ── Init shared ─────────────────────────── */
+    document.addEventListener('DOMContentLoaded', function(){
+      if(typeof initShared === 'function') initShared({ activePage: 'analytics' });
+    });
+  })();
+  </script>
+<script src="/js/ai-assistant.js?v=20260426e"></script>
+</body>
+</html>

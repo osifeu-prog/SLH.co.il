@@ -1,0 +1,103 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLH Spark | Neuron Network Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css-neuron/neuron-theme.css">
+</head>
+<body>
+    <canvas id="neuron-canvas"></canvas>
+    
+    <div class="header">
+        <div class="logo">
+            <div class="logo-icon">⚡</div>
+            <span>SLH Spark</span>
+        </div>
+        <div class="nav-links">
+            <a href="#">Dashboard</a>
+            <a href="#">Wallet</a>
+            <a href="#">Staking</a>
+            <a href="#">Trade</a>
+            <a href="#">Community</a>
+        </div>
+    </div>
+    
+    <div class="hero">
+        <h1 class="floating">Neuron Network</h1>
+        <p>Decentralized ecosystem for trading, staking, and community rewards</p>
+    </div>
+    
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-label">SLH Price</div>
+            <div class="stat-value">444</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">Total Value Locked</div>
+            <div class="stat-value">$2.4M</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">Active Users</div>
+            <div class="stat-value">1,234</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">APY</div>
+            <div class="stat-value">8.5%</div>
+        </div>
+    </div>
+    
+    <div class="modules-grid">
+        <div class="neuron-card" onclick="location.href='/wallet.html'">
+            <div class="card-icon">💰</div>
+            <div class="card-title">Multi-Chain Wallet</div>
+            <div class="card-description">BSC + TON support. Hold, send, receive across networks.</div>
+        </div>
+        
+        <div class="neuron-card" onclick="location.href='/staking.html'">
+            <div class="card-icon">🏦</div>
+            <div class="card-title">Dynamic Staking</div>
+            <div class="card-description">Variable yield 4-12% APY. Revenue share pool.</div>
+        </div>
+        
+        <div class="neuron-card" onclick="location.href='/trade.html'">
+            <div class="card-icon">📈</div>
+            <div class="card-title">P2P & CEX Trading</div>
+            <div class="card-description">Bybit, Binance integration. Read-only API keys.</div>
+        </div>
+        
+        <div class="neuron-card" onclick="location.href='/bots.html'">
+            <div class="card-icon">🤖</div>
+            <div class="card-title">Trading Bots</div>
+            <div class="card-description">20+ Docker containers. Automated strategies.</div>
+        </div>
+        
+        <div class="neuron-card" onclick="location.href='/earn.html'">
+            <div class="card-icon">💎</div>
+            <div class="card-title">Earn Rewards</div>
+            <div class="card-description">Complete tasks, earn ZVK points & SLH tokens.</div>
+        </div>
+        
+        <div class="neuron-card" onclick="location.href='/referral.html'">
+            <div class="card-icon">🤝</div>
+            <div class="card-title">Referral Program</div>
+            <div class="card-description">Invite friends, earn commissions.</div>
+        </div>
+        
+        <div class="neuron-card" onclick="location.href='/community.html'">
+            <div class="card-icon">💬</div>
+            <div class="card-title">Community Forum</div>
+            <div class="card-description">Discuss, learn, and grow with the ecosystem.</div>
+        </div>
+        
+        <div class="neuron-card" onclick="location.href='/academy/'">
+            <div class="card-icon">🎓</div>
+            <div class="card-title">SLH Academy</div>
+            <div class="card-description">Learn & Earn. Courses on DeFi and trading.</div>
+        </div>
+    </div>
+    
+    <script src="js-neuron/neuron-network.js"></script>
+</body>
+</html>

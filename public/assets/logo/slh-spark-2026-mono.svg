@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SLH Spark — 2026 Logo · Monochrome variant
+  For: dark-on-white prints, favicons, single-color contexts
+  Same composition as full-color variant; uses `currentColor` so CSS can color it.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="SLH Spark logo monochrome" fill="currentColor">
+  <polygon points="100,18 168,55 168,145 100,182 32,145 32,55"
+           fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" opacity=".9"/>
+  <g opacity=".85">
+    <circle cx="100" cy="20"  r="4.5"/>
+    <circle cx="170" cy="58"  r="4.5"/>
+    <circle cx="170" cy="142" r="4.5"/>
+    <circle cx="100" cy="180" r="4.5"/>
+    <circle cx="30"  cy="142" r="4.5"/>
+    <circle cx="30"  cy="58"  r="4.5"/>
+  </g>
+  <path d="M 130 65 Q 130 50, 110 50 L 90 50 Q 70 50, 70 70 Q 70 90, 90 95 L 110 100 Q 130 105, 130 125 Q 130 145, 110 145 L 90 145 Q 70 145, 70 130"
+        fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <g transform="translate(140, 50)">
+    <path d="M 0 -8 L 2 -2 L 8 0 L 2 2 L 0 8 L -2 2 L -8 0 L -2 -2 Z"/>
+  </g>
+  <circle cx="100" cy="100" r="3"/>
+</svg>

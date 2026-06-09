@@ -1,0 +1,113 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>דייטינג בלי אלגוריתם — @G4meb0t_bot_bot · SLH Spark</title>
+<meta name="description" content="למה בנינו בוט דייטינג בטלגרם במקום אפליקציה חדשה? כי האלגוריתם של Tinder לא עובד לטובתך. זה מה שעשינו אחרת.">
+<meta name="keywords" content="דייטינג, טלגרם, G4meb0t, אלגוריתם, ישראל, SLH">
+<link rel="canonical" href="https://slh-nft.com/blog/dating-without-algorithm.html">
+<link rel="alternate" type="application/rss+xml" href="/api/community/rss" />
+<link rel="stylesheet" href="/css/slh-design-system.css">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta property="og:title" content="דייטינג בלי אלגוריתם — למה בנינו @G4meb0t_bot_bot" />
+<meta property="og:description" content="הפילוסופיה והטכניקה מאחורי בוט הדייטינג של SLH." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://slh-nft.com/blog/dating-without-algorithm.html" />
+<meta property="og:image" content="https://slh-nft.com/assets/og/blog.png" />
+<style>
+.blog-post{max-width:760px;margin:0 auto;padding:var(--space-8) var(--space-4);line-height:var(--line-height-relaxed)}
+.blog-post h1{font-size:var(--font-size-3xl);background:linear-gradient(90deg,var(--color-brand-rose,#ec4899),var(--color-brand-purple,#a855f7));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:var(--space-4)}
+.blog-post h2{font-size:var(--font-size-xl);color:var(--color-brand-primary);margin-top:var(--space-8);margin-bottom:var(--space-3)}
+.blog-post p{margin-bottom:var(--space-4)}
+.blog-post ul{padding-inline-start:var(--space-6);margin-bottom:var(--space-4)}
+.blog-post hr{border:none;border-top:1px solid var(--color-border-subtle);margin:var(--space-8) 0}
+.blog-post a{color:var(--color-brand-secondary);text-decoration:none}
+.blog-post a:hover{text-decoration:underline}
+.abstract{background:rgba(0,229,255,.05);border-inline-start:4px solid var(--color-brand-secondary);padding:var(--space-4);border-radius:var(--radius-md);direction:ltr;text-align:left;margin-top:var(--space-8)}
+</style>
+</head>
+<body>
+<article class="blog-post">
+<h1>דייטינג בלי אלגוריתם — הסיפור מאחורי @G4meb0t_bot_bot</h1>
+
+<p>Tinder מוכרת לך סוודר שאי אפשר להוריד. אתה משלם, גוללת, מקבל דופמין זעיר — והאלגוריתם מוודא שלא תמצא שותף אמיתי, כי אם תמצא — תעזוב את האפליקציה.</p>
+
+<p>בנינו <strong>@G4meb0t_bot_bot</strong> כי חשבנו שמגיע לאנשים משהו אחר.</p>
+
+<hr/>
+
+<h2>4 עקרונות שונים</h2>
+
+<h2>1. אין אלגוריתם של "engagement"</h2>
+
+<p>הבוט לא מנסה לגרום לך להישאר. הוא מנסה לגרום לך <strong>למצוא ולצאת</strong>. ברגע שיש match הדדי — הוא פותח לך צ׳אט טלגרם ישיר ו<em>מפסיק להציק</em>.</p>
+
+<h2>2. Interest-Overlap במקום Physical Appearance</h2>
+
+<p>המנוע שלנו מדרג לפי <strong>חפיפת תחומי עניין</strong>, לא לפי תמונה. יש לנו 28 תגיות — יוגה, פסיכולוגיה, קריפטו, ספרות, ריצה, משקאות קלים, מדיטציה, חילופים תרבותיים.</p>
+
+<p>כשמישהי עם 5 תגיות משותפות לך מופיעה — הסיכוי שתהיה שיחה אמיתית גבוה ב-10 מונים ממה ש-Tinder מציע.</p>
+
+<h2>3. Hebrew-first</h2>
+
+<p>אין אפליקציית דייטינג אחת שבנויה <strong>קודם כל</strong> לעברית. כולן הן פינת "תרגום" אחרי האנגלית. אצלנו עברית היא השפה הראשונה, ה-UI מימין לשמאל, והבוט מדבר איתך כמו חבר.</p>
+
+<h2>4. Age Gate — 18+ קשיח</h2>
+
+<p>אפס פשרות. אם אתה מתחת ל-18 — לא נכנסת. הנכד של המייסד (ID 6466974138) מסומן ידנית כחסום, כדי שהאלגוריתם לא יחשוב עליו בכלל.</p>
+
+<hr/>
+
+<h2>טכנית — איך זה עובד?</h2>
+
+<ul>
+<li><strong>Frontend:</strong> <a href="/dating.html">dating.html</a> — 3 tabs (discover / matches / profile), age gate</li>
+<li><strong>Backend:</strong> 8 endpoints ב-<code>/api/dating/*</code> — profile, candidates, action, matches, stats</li>
+<li><strong>Bot:</strong> @G4meb0t_bot_bot — aiogram 3.x, polling, קורא מ-API, לא שומר state מקומי</li>
+<li><strong>Mutual match:</strong> שני משתמשים לחצו Like → המערכת פותחת t.me deep-link ביניהם</li>
+</ul>
+
+<h2>מה אין לנו (בכוונה)</h2>
+
+<ul>
+<li>לא Stories</li>
+<li>לא Super-Like</li>
+<li>לא תשלום לראות מי חיבבה אותך</li>
+<li>לא Boost</li>
+<li>לא badges של "verified"</li>
+</ul>
+
+<p>כל הדברים האלה הם מנגנוני engagement שמיועדים לעצב אותך. אנחנו לא רוצים לעצב אותך. אנחנו רוצים שתצא לארוחת ערב ב-<strong>@slhniffty</strong> או שתלך ל-<a href="/experts.html">יוגה עם מומחה מאומת</a>.</p>
+
+<h2>סטטוס חי</h2>
+
+<ul>
+<li><strong>API:</strong> 8 endpoints פעילים ב-production</li>
+<li><strong>Web UI:</strong> <a href="/dating.html">dating.html</a> — חי</li>
+<li><strong>Bot:</strong> @G4meb0t_bot_bot — חי (polling מ-17.4.2026)</li>
+<li><strong>Mutual matches:</strong> בהמתנה למשתמשים ראשונים 😊</li>
+</ul>
+
+<hr/>
+
+<h2>הצעד הבא</h2>
+
+<ol>
+<li>לחץ <a href="https://t.me/G4meb0t_bot_bot?start=slh">t.me/G4meb0t_bot_bot</a></li>
+<li>אשר שאתה מעל 18</li>
+<li>מלא 3 תחומי עניין לפחות</li>
+<li>קבל 10 מועמדים/ות — ראה איך Interest-Overlap עובד</li>
+</ol>
+
+<div class="abstract">
+<h3>English Abstract</h3>
+<p>@G4meb0t_bot_bot is SLH's dating bot built on a principle opposite to Tinder's: the algorithm's job is to help you <em>leave</em>, not retain you. Matching is based on interest overlap across 28 tags (yoga, crypto, philosophy, running, meditation, etc.), not appearance. Hebrew-first UI, strict 18+ age gate, and Telegram-native delivery (no separate app to install). Backend: 8 endpoints at /api/dating/*. Frontend: dating.html with 3 tabs. Bot: aiogram 3.x polling from the SLH API. No Stories, Super-Likes, paywalls, or Boost — deliberately. Mutual match triggers a Telegram deep-link and the system stops intruding.</p>
+</div>
+
+<p style="margin-top:var(--space-8);color:var(--color-text-muted);font-size:var(--font-size-sm)">
+📅 17 אפריל 2026 · ⏱ 5 דק׳ קריאה · 🏷 <a href="/blog/">כל הפוסטים</a>
+</p>
+</article>
+</body>
+</html>

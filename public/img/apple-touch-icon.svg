@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" width="180" height="180">
+  <defs>
+    <linearGradient id="touchBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6c5ce7"/>
+      <stop offset="100%" style="stop-color:#4a3ab5"/>
+    </linearGradient>
+    <linearGradient id="touchBolt" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffd32a"/>
+      <stop offset="100%" style="stop-color:#fff176"/>
+    </linearGradient>
+    <linearGradient id="touchHighlight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.15"/>
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0"/>
+    </linearGradient>
+    <filter id="touchGlow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Rounded square background (iOS style) -->
+  <rect x="0" y="0" width="180" height="180" rx="40" ry="40" fill="url(#touchBg)"/>
+
+  <!-- Subtle top highlight -->
+  <rect x="0" y="0" width="180" height="90" rx="40" ry="40" fill="url(#touchHighlight)"/>
+
+  <!-- Hexagon outline accent -->
+  <polygon points="90,25 150,55 150,125 90,155 30,125 30,55"
+           fill="none" stroke="#a855f7" stroke-width="2" opacity="0.3"/>
+
+  <!-- Lightning bolt -->
+  <path d="M 103,35 L 65,95 L 88,95 L 73,145 L 115,82 L 92,82 L 110,35 Z"
+        fill="url(#touchBolt)" filter="url(#touchGlow)"/>
+
+  <!-- Bolt inner highlight -->
+  <path d="M 101,40 L 68,93 L 88,93 L 76,138 L 78,130 L 90,93.5 L 72,93.5 L 103,43 Z"
+        fill="#ffffff" opacity="0.15"/>
+
+  <!-- Corner sparkles -->
+  <circle cx="40" cy="45" r="2.5" fill="#ffd32a" opacity="0.6"/>
+  <circle cx="142" cy="135" r="2" fill="#ffd32a" opacity="0.5"/>
+  <circle cx="138" cy="42" r="1.5" fill="#ffffff" opacity="0.4"/>
+</svg>

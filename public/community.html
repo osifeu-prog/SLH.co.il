@@ -1,0 +1,2935 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLH Spark Community — Posts & Events</title>
+    <meta name="description" content="קהילת המשקיעים של SLH - שתפו, למדו והתחברו עם משקיעים מכל הארץ">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <meta name="theme-color" content="#050510">
+    <link rel="canonical" href="https://slh-nft.com/community.html">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://slh-nft.com/community.html">
+    <meta property="og:title" content="SLH Community - Posts & Events">
+    <meta property="og:description" content="Join the discussion with other SLH holders and partners">
+    <meta property="og:image" content="https://slh-nft.com/assets/og/community.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="he_IL">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SLH Community - Posts & Events">
+    <meta name="twitter:description" content="Join the discussion with other SLH holders and partners">
+    <meta name="twitter:image" content="https://slh-nft.com/assets/og/community.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/shared.css?v=20260426e">
+    <style>
+        /* ── Cover Banner ── */
+        .community-cover {
+            background: linear-gradient(135deg, rgba(108,92,231,.35), rgba(0,206,201,.18), rgba(255,211,42,.1));
+            height: 180px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            margin: calc(var(--topnav-h) + 16px) 24px 0;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            overflow: hidden;
+        }
+        .community-cover::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%236c5ce7' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: .5;
+        }
+        .community-cover h1 {
+            font-size: clamp(28px, 5vw, 42px);
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 0 2px 20px rgba(0,0,0,.3);
+            z-index: 1;
+            margin: 0;
+        }
+        .community-cover .cover-subtitle {
+            font-size: 15px;
+            color: rgba(255,255,255,.7);
+            margin-top: 6px;
+            z-index: 1;
+        }
+        .community-cover .online-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(0,0,0,.35);
+            backdrop-filter: blur(8px);
+            border-radius: 100px;
+            padding: 6px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            color: rgba(255,255,255,.85);
+            margin-top: 12px;
+            z-index: 1;
+        }
+        .community-cover .online-badge .green-dot {
+            width: 8px;
+            height: 8px;
+            background: #00cec9;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 6px #00cec9;
+        }
+
+        /* ── Hero Stats Bar ── */
+        .hero-stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin: 16px auto 0;
+            max-width: 1200px;
+            padding: 0 24px;
+            flex-wrap: wrap;
+        }
+        .hero-stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .hero-stat i { color: var(--accent); }
+        .hero-stat .stat-num { color: var(--gold); }
+
+        /* ── Layout ── */
+        .community-layout {
+            max-width: 1200px;
+            margin: 20px auto 0;
+            padding: 0 24px 80px;
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 24px;
+        }
+
+        /* ── View Switch (Feed / Marketplace) ── */
+        .view-switch {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 20px;
+            padding: 6px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+        }
+        .view-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text2);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .view-btn i { font-size: 15px; }
+        .view-btn:hover { color: var(--text); }
+        .view-btn.active {
+            background: linear-gradient(135deg, var(--accent), var(--cyan));
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(255,140,0,0.25);
+        }
+        .view-panel { display: none; }
+        .view-panel.active { display: block; }
+
+        /* ── Marketplace ── */
+        .marketplace-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 16px 20px;
+            margin-bottom: 18px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            flex-wrap: wrap;
+        }
+        .marketplace-stats {
+            display: flex;
+            gap: 22px;
+        }
+        .mp-stat { display: flex; flex-direction: column; align-items: flex-start; }
+        .mp-stat-num {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--accent);
+            line-height: 1;
+        }
+        .mp-stat-label {
+            font-size: 11px;
+            color: var(--text2);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+        }
+        .mp-new-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 22px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent), var(--cyan));
+            color: #fff;
+            border: none;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(255,140,0,0.3);
+            transition: transform var(--transition);
+        }
+        .mp-new-btn:hover { transform: translateY(-2px); }
+
+        .marketplace-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
+        }
+        .mp-empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 48px 20px;
+            color: var(--text2);
+            font-size: 15px;
+        }
+        .mp-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+        .mp-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+        }
+        .mp-card-image {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background: linear-gradient(135deg, rgba(255,140,0,0.08), rgba(0,188,212,0.08));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .mp-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .mp-card-image .mp-placeholder-icon {
+            font-size: 52px;
+            color: var(--text2);
+            opacity: 0.4;
+        }
+        .mp-card-body {
+            padding: 14px 16px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .mp-card-category {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--accent);
+            font-weight: 700;
+        }
+        .mp-card-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .mp-card-seller {
+            font-size: 12px;
+            color: var(--text2);
+            margin-top: auto;
+        }
+        .mp-card-price {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--accent);
+            margin-top: 6px;
+        }
+        .mp-card-sold-out {
+            display: inline-block;
+            padding: 3px 10px;
+            background: #ef4444;
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            border-radius: 100px;
+            text-transform: uppercase;
+        }
+
+        /* Modals */
+        .mp-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            padding: 20px;
+        }
+        .mp-modal[hidden] { display: none; }
+        .mp-modal-content {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 520px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        .mp-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+        .mp-modal-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .mp-modal-close {
+            background: transparent;
+            border: none;
+            color: var(--text2);
+            font-size: 28px;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0 4px;
+        }
+        .mp-modal-close:hover { color: var(--text); }
+        .mp-form {
+            padding: 20px 24px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .mp-form label {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text2);
+            font-weight: 600;
+        }
+        .mp-form input, .mp-form textarea, .mp-form select {
+            padding: 12px 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 14px;
+            font-family: inherit;
+        }
+        .mp-form textarea { resize: vertical; min-height: 80px; }
+        .mp-form input:focus, .mp-form textarea:focus, .mp-form select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        .mp-form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .mp-submit-btn {
+            padding: 14px;
+            background: linear-gradient(135deg, var(--accent), var(--cyan));
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 4px;
+            transition: transform var(--transition);
+        }
+        .mp-submit-btn:hover { transform: translateY(-2px); }
+        .mp-form-note {
+            font-size: 11px;
+            color: var(--text2);
+            text-align: center;
+            font-style: italic;
+        }
+        .mp-item-details {
+            padding: 20px 24px 24px;
+        }
+        .mp-item-details .mp-detail-image {
+            width: 100%;
+            max-height: 280px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+        .mp-item-details .mp-detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+        .mp-item-details .mp-detail-row:last-of-type { border-bottom: none; }
+        .mp-item-details .mp-detail-label { color: var(--text2); }
+        .mp-item-details .mp-detail-value { color: var(--text); font-weight: 600; }
+        .mp-item-details .mp-detail-desc {
+            margin: 14px 0;
+            padding: 14px;
+            background: var(--surface);
+            border-radius: 10px;
+            line-height: 1.6;
+            color: var(--text);
+            white-space: pre-wrap;
+        }
+        .mp-buy-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--accent), var(--cyan));
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: transform var(--transition);
+        }
+        .mp-buy-btn:hover:not(:disabled) { transform: translateY(-2px); }
+        .mp-buy-btn:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+
+        /* ── Filter Tabs ── */
+        .filter-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .filter-tab {
+            padding: 8px 20px;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text2);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .filter-tab:hover {
+            border-color: var(--accent);
+            color: var(--text);
+        }
+        .filter-tab.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+
+        /* ── New Post Form ── */
+        .new-post-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .new-post-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        .new-post-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--cyan));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .new-post-card textarea {
+            width: 100%;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            font-family: var(--font);
+            font-size: 14px;
+            padding: 14px;
+            resize: vertical;
+            min-height: 80px;
+            transition: border-color var(--transition);
+            box-sizing: border-box;
+        }
+        .new-post-card textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        .new-post-card textarea::placeholder { color: var(--text3); }
+        .new-post-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+        }
+        .post-category-select {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            font-family: var(--font);
+            font-size: 13px;
+            padding: 8px 14px;
+            cursor: pointer;
+        }
+        .post-category-select:focus { outline: none; border-color: var(--accent); }
+        .btn-post {
+            padding: 10px 28px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: var(--font);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-post:hover { background: var(--accent2); transform: translateY(-1px); }
+        .btn-post:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+        /* ── Login Gate ── */
+        .login-gate {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .login-gate h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+        .login-gate p {
+            font-size: 14px;
+            color: var(--text2);
+            margin-bottom: 20px;
+        }
+        .login-gate .login-fields {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 360px;
+            margin: 0 auto;
+        }
+        .login-gate input {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            font-family: var(--font);
+            font-size: 14px;
+            padding: 12px 16px;
+            text-align: center;
+        }
+        .login-gate input:focus { outline: none; border-color: var(--accent); }
+        .login-gate input::placeholder { color: var(--text3); }
+        .btn-login {
+            padding: 12px 32px;
+            background: linear-gradient(135deg, var(--accent), var(--cyan));
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: var(--font);
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .btn-login:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(108,92,231,.3); }
+
+        /* ── Post Cards (Facebook-style) ── */
+        .post-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 16px;
+            transition: all var(--transition);
+            overflow: hidden;
+        }
+        .post-card:hover {
+            border-color: var(--border2);
+            box-shadow: 0 2px 16px rgba(0,0,0,.2);
+        }
+        .post-card-inner {
+            padding: 20px;
+        }
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        .post-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 17px;
+            color: #fff;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,.2);
+        }
+        .post-meta { flex: 1; min-width: 0; }
+        .post-username {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .post-time {
+            font-size: 12px;
+            color: var(--text3);
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .post-time i { font-size: 10px; }
+        .post-category-badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 100px;
+            border: 1px solid transparent;
+            white-space: nowrap;
+        }
+        .post-category-badge.cat-investments { background: rgba(0,206,201,.15); color: #00cec9; border-color: rgba(0,206,201,.25); }
+        .post-category-badge.cat-slh { background: rgba(108,92,231,.15); color: #a29bfe; border-color: rgba(108,92,231,.25); }
+        .post-category-badge.cat-proposals { background: rgba(255,211,42,.12); color: #ffd32a; border-color: rgba(255,211,42,.2); }
+        .post-category-badge.cat-experts { background: rgba(255,165,2,.12); color: #ffa502; border-color: rgba(255,165,2,.2); }
+        .post-category-badge.cat-news { background: rgba(255,71,87,.12); color: #ff4757; border-color: rgba(255,71,87,.2); }
+        .post-category-badge.cat-general { background: var(--bg3); color: var(--text2); border-color: var(--border); }
+        .post-body {
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--text);
+            white-space: pre-wrap;
+            word-break: break-word;
+            padding: 0 20px 0;
+        }
+
+        /* ── Post Image ── */
+        .post-image {
+            margin-top: 12px;
+            overflow: hidden;
+            max-height: 500px;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+        .post-image img {
+            width: 100%;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform .3s;
+            display: block;
+        }
+        .post-image img:hover { transform: scale(1.02); }
+
+        /* ── Reactions Summary (Facebook-style) ── */
+        .post-reactions-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 20px;
+            font-size: 13px;
+            color: var(--text3);
+        }
+        .reactions-left {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .reactions-left .heart-mini {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
+            font-size: 10px;
+            color: #fff;
+        }
+        .reactions-right {
+            display: flex;
+            gap: 12px;
+        }
+        .reactions-right span { cursor: pointer; }
+        .reactions-right span:hover { text-decoration: underline; color: var(--text2); }
+
+        /* ── Action Bar (Facebook-style) ── */
+        .post-actions {
+            display: flex;
+            border-top: 1px solid var(--border);
+            margin: 0;
+            padding: 0;
+        }
+        /* Reaction picker (Layer 1 chat upgrade) */
+        .react-picker { gap: 4px; align-items: center; animation: popUp .2s ease-out; }
+        .react-picker button.react-emoji {
+            background: transparent; border: none; font-size: 22px; padding: 6px 8px;
+            cursor: pointer; border-radius: 50%; transition: transform .15s, background .15s;
+        }
+        .react-picker button.react-emoji:hover {
+            transform: scale(1.3); background: rgba(255,255,255,.06);
+        }
+        @keyframes popUp { from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .presence-dot { pointer-events: none; }
+        .reactions-wrap { flex: 1; }
+        .reactions-wrap .react-toggle { width: 100%; }
+
+        .post-action-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: none;
+            border: none;
+            color: var(--text3);
+            font-family: var(--font);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 12px 8px;
+            transition: all var(--transition);
+            border-radius: 0;
+            position: relative;
+        }
+        .post-action-btn:not(:last-child) {
+            border-inline-end: 1px solid var(--border);
+        }
+        .post-action-btn:hover {
+            background: var(--bg3);
+            color: var(--text);
+        }
+        .post-action-btn.liked { color: var(--red); }
+        .post-action-btn.liked i { animation: likeAnim .4s ease; }
+        .post-action-btn.comment-active { color: var(--accent2); }
+
+        @keyframes likeAnim {
+            0% { transform: scale(1); }
+            30% { transform: scale(1.35); }
+            60% { transform: scale(.9); }
+            100% { transform: scale(1); }
+        }
+
+        /* ── Comments Section ── */
+        .comments-section {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height .35s ease, padding .35s ease;
+            background: var(--bg2);
+            border-top: 1px solid var(--border);
+        }
+        .comments-section.open {
+            max-height: 2000px;
+            padding: 16px 20px;
+        }
+        .comments-list {
+            max-height: 400px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border2) transparent;
+        }
+        .comment {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .comment-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 12px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .comment-bubble {
+            background: var(--bg3);
+            border-radius: 18px;
+            padding: 10px 16px;
+            flex: 1;
+            min-width: 0;
+        }
+        .comment-user {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 2px;
+        }
+        .comment-text {
+            font-size: 13px;
+            color: var(--text2);
+            line-height: 1.5;
+            word-break: break-word;
+        }
+        .comment-time {
+            font-size: 11px;
+            color: var(--text3);
+            margin-top: 4px;
+            padding-inline-start: 48px;
+            margin-bottom: 8px;
+        }
+        .comment-input-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            align-items: center;
+        }
+        .comment-input-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 12px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .comment-input-wrapper {
+            flex: 1;
+            display: flex;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            overflow: hidden;
+            transition: border-color var(--transition);
+        }
+        .comment-input-wrapper:focus-within {
+            border-color: var(--accent);
+        }
+        .comment-input-wrapper input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text);
+            font-family: var(--font);
+            font-size: 13px;
+            padding: 10px 16px;
+            outline: none;
+        }
+        .comment-input-wrapper input::placeholder { color: var(--text3); }
+        .comment-input-wrapper button {
+            padding: 8px 16px;
+            background: none;
+            color: var(--accent);
+            border: none;
+            font-family: var(--font);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+        }
+        .comment-input-wrapper button:hover { color: var(--accent2); }
+        .no-comments-yet {
+            text-align: center;
+            padding: 12px;
+            color: var(--text3);
+            font-size: 13px;
+        }
+
+        /* ── Sidebar ── */
+        .community-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .sidebar-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+        }
+        .sidebar-card h3 {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .sidebar-card h3 i { color: var(--accent); }
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+        .stat-row:last-child { border-bottom: none; }
+        .stat-label { color: var(--text2); }
+        .stat-value { color: var(--text); font-weight: 600; }
+        .online-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--green);
+            border-radius: 50%;
+            margin-inline-end: 6px;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 6px var(--green);
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .4; }
+        }
+
+        /* ── Trending Topics ── */
+        .trending-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            font-size: 13px;
+            color: var(--text2);
+            margin: 0 4px 8px 0;
+            transition: all var(--transition);
+        }
+        .trending-tag:hover { border-color: var(--accent); color: var(--text); cursor: pointer; }
+        .trending-tag .tag-count {
+            font-size: 11px;
+            background: var(--surface2);
+            padding: 1px 7px;
+            border-radius: 100px;
+            color: var(--text3);
+            font-weight: 600;
+        }
+        .trending-category {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            margin-bottom: 6px;
+            border-radius: var(--radius-sm);
+            background: var(--bg3);
+            cursor: pointer;
+            transition: all var(--transition);
+            border: 1px solid transparent;
+        }
+        .trending-category:hover {
+            border-color: var(--accent);
+            background: var(--surface2);
+        }
+        .trending-category .tc-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .trending-category .tc-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        .trending-category .tc-count {
+            font-size: 12px;
+            color: var(--text3);
+            font-weight: 600;
+            background: var(--surface);
+            padding: 2px 10px;
+            border-radius: 100px;
+        }
+
+        /* ── Top Members ── */
+        .top-member {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+        }
+        .top-member-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .top-member-name { font-size: 14px; font-weight: 600; color: var(--text); }
+        .top-member-posts { font-size: 12px; color: var(--text3); }
+
+        /* ── Image Preview ── */
+        .image-preview {
+            position: relative;
+            margin-top: 10px;
+            display: none;
+        }
+        .image-preview.has-image { display: block; }
+        .image-preview img {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+        }
+        .image-preview .remove-image {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(0,0,0,.7);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            border: none;
+        }
+
+        /* ── Post Toolbar ── */
+        .post-toolbar {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .post-tool-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            color: var(--text3);
+            font-size: 13px;
+            background: none;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .post-tool-btn:hover {
+            background: var(--bg3);
+            border-color: var(--border);
+            color: var(--text2);
+        }
+        .post-tool-btn i { font-size: 16px; }
+        .post-tool-btn.photo-btn:hover { color: var(--green); }
+        .post-tool-btn.poll-btn:hover { color: var(--gold); }
+
+        /* ── Proposal/Vote Card ── */
+        .vote-section {
+            margin: 0 20px 4px;
+            padding: 14px;
+            background: var(--bg3);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+        }
+        .vote-bar-bg {
+            height: 28px;
+            background: var(--surface);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            margin: 8px 0 4px;
+        }
+        .vote-bar-fill {
+            height: 100%;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #fff;
+            transition: width .5s ease;
+        }
+        .vote-bar-fill.for { background: var(--green); }
+        .vote-bar-fill.against { background: var(--red); }
+        .vote-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .vote-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            font-family: var(--font);
+            font-weight: 700;
+            font-size: 13px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .vote-btn:hover { transform: translateY(-1px); }
+        .vote-btn.for:hover { border-color: var(--green); color: var(--green); }
+        .vote-btn.against:hover { border-color: var(--red); color: var(--red); }
+        .vote-btn.voted { opacity: .5; cursor: default; }
+
+        /* ── Lightbox ── */
+        .lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.92);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            cursor: zoom-out;
+            backdrop-filter: blur(4px);
+        }
+        .lightbox.open { display: flex; }
+        .lightbox img {
+            max-width: 90vw;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 8px 40px rgba(0,0,0,.5);
+        }
+
+        /* ── Empty State ── */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text3);
+        }
+        .empty-state i { font-size: 48px; margin-bottom: 16px; display: block; color: var(--border2); }
+
+        /* ── Responsive ── */
+        @media (max-width: 900px) {
+            .community-layout {
+                grid-template-columns: 1fr;
+            }
+            .community-sidebar { order: -1; }
+            .hero-stats-bar { gap: 12px; }
+            .hero-stat { font-size: 12px; padding: 6px 14px; }
+            .community-cover { margin: calc(var(--topnav-h) + 8px) 12px 0; height: 140px; }
+        }
+        @media (max-width: 480px) {
+            .community-cover { height: 120px; margin: calc(var(--topnav-h) + 8px) 8px 0; }
+            .community-cover h1 { font-size: 22px; }
+            .hero-stats-bar { padding: 0 12px; }
+            .community-layout { padding: 0 12px 80px; }
+            .new-post-actions { flex-wrap: wrap; gap: 10px; }
+            .post-toolbar { flex-wrap: wrap; }
+            .new-post-card, .sidebar-card { padding: 16px; }
+            .post-card-inner { padding: 16px; }
+            .post-body { padding: 0 16px; }
+            .post-reactions-summary { padding: 8px 16px; }
+            .post-actions { flex-wrap: nowrap; }
+            .post-action-btn { font-size: 12px; padding: 10px 4px; gap: 4px; }
+            .comments-section.open { padding: 12px 16px; }
+            .vote-section { margin: 0 16px 4px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Shared UI Roots -->
+    <div id="topnav-root"></div>
+    <div id="ticker-root"></div>
+
+    <!-- Cover Banner -->
+    <div class="community-cover">
+        <h1 data-i18n="community_title">&#x1F3DB;&#xFE0F; SLH Community</h1>
+        <span class="cover-subtitle" data-i18n="community_subtitle">הצטרפו לקהילת המשקיעים הגדולה בישראל</span>
+        <div style="display:flex;align-items:center;gap:16px;margin-top:6px;flex-wrap:wrap;justify-content:center">
+            <div class="online-badge">
+                <span class="green-dot"></span>
+                <span id="cover-online">--</span>
+                <span data-i18n="community_members_online">חברים מחוברים</span>
+            </div>
+            <div id="community-date-widget" class="date-widget-hero"></div>
+        </div>
+    </div>
+
+    <!-- Hero Stats Bar -->
+    <div class="hero-stats-bar">
+        <div class="hero-stat">
+            <i class="fas fa-users"></i>
+            <span data-i18n="community_members">חברים</span>
+            <span class="stat-num" id="total-members">--</span>
+        </div>
+        <div class="hero-stat">
+            <i class="fas fa-comment-dots"></i>
+            <span data-i18n="community_posts_count">פוסטים</span>
+            <span class="stat-num" id="total-posts">--</span>
+        </div>
+        <div class="hero-stat">
+            <i class="fas fa-fire"></i>
+            <span data-i18n="community_active_today">פעילים היום</span>
+            <span class="stat-num" id="active-today">--</span>
+        </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="community-layout">
+        <!-- Feed Column -->
+        <div class="community-feed">
+            <!-- Main View Switch: Feed <> Marketplace -->
+            <div class="view-switch" id="view-switch">
+                <button class="view-btn active" data-view="feed">
+                    <i class="fas fa-stream"></i>
+                    <span data-i18n="community_view_feed">פיד</span>
+                </button>
+                <button class="view-btn" data-view="marketplace">
+                    <i class="fas fa-store"></i>
+                    <span data-i18n="community_view_marketplace">חנות</span>
+                </button>
+            </div>
+
+            <!-- FEED VIEW -->
+            <div class="view-panel active" id="view-feed">
+                <!-- Login Gate / New Post -->
+                <div id="auth-section"></div>
+
+                <!-- Filter Tabs -->
+                <div class="filter-tabs" id="filter-tabs">
+                    <button class="filter-tab active" data-filter="all" data-i18n="community_filter_all">הכל</button>
+                    <button class="filter-tab" data-filter="investments">📈 <span data-i18n="community_filter_investments">השקעות</span></button>
+                    <button class="filter-tab" data-filter="slh">💎 <span data-i18n="community_filter_slh">SLH</span></button>
+                    <button class="filter-tab" data-filter="proposals">💡 <span data-i18n="community_filter_proposals">הצעות</span></button>
+                    <button class="filter-tab" data-filter="experts">🎓 <span data-i18n="community_filter_experts">מומחים</span></button>
+                    <button class="filter-tab" data-filter="news">📰 <span data-i18n="community_filter_news">חדשות</span></button>
+                    <button class="filter-tab" data-filter="events">🎉 אירועים</button>
+                    <button class="filter-tab" data-filter="guides">📚 מדריכים</button>
+                    <button class="filter-tab" data-filter="questions">❓ שאלות</button>
+                    <button class="filter-tab" data-filter="success">🏆 הצלחות</button>
+                    <button class="filter-tab" data-filter="alerts">🚨 התראות</button>
+                    <button class="filter-tab" data-filter="updates">🔔 עדכונים</button>
+                    <button class="filter-tab" data-filter="general">💬 <span data-i18n="community_filter_general">כללי</span></button>
+                </div>
+
+                <!-- Posts Feed -->
+                <div id="posts-feed"></div>
+            </div>
+
+            <!-- MARKETPLACE VIEW -->
+            <div class="view-panel" id="view-marketplace" hidden>
+                <!-- Header bar with stats + new listing button -->
+                <div class="marketplace-header">
+                    <div class="marketplace-stats">
+                        <div class="mp-stat">
+                            <span class="mp-stat-num" id="mp-total-items">--</span>
+                            <span class="mp-stat-label" data-i18n="marketplace_items">פריטים</span>
+                        </div>
+                        <div class="mp-stat">
+                            <span class="mp-stat-num" id="mp-total-orders">--</span>
+                            <span class="mp-stat-label" data-i18n="marketplace_orders">הזמנות</span>
+                        </div>
+                        <div class="mp-stat">
+                            <span class="mp-stat-num" id="mp-active-sellers">--</span>
+                            <span class="mp-stat-label" data-i18n="marketplace_sellers">מוכרים</span>
+                        </div>
+                    </div>
+                    <button class="mp-new-btn" id="mp-new-listing-btn">
+                        <i class="fas fa-plus"></i>
+                        <span data-i18n="marketplace_new_listing">פריט חדש</span>
+                    </button>
+                </div>
+
+                <!-- Category filters -->
+                <div class="filter-tabs" id="mp-filter-tabs">
+                    <button class="filter-tab active" data-mp-category="" data-i18n="marketplace_cat_all">הכל</button>
+                    <button class="filter-tab" data-mp-category="digital" data-i18n="marketplace_cat_digital">דיגיטלי</button>
+                    <button class="filter-tab" data-mp-category="physical" data-i18n="marketplace_cat_physical">פיזי</button>
+                    <button class="filter-tab" data-mp-category="course" data-i18n="marketplace_cat_course">קורסים</button>
+                    <button class="filter-tab" data-mp-category="service" data-i18n="marketplace_cat_service">שירותים</button>
+                    <button class="filter-tab" data-mp-category="nft" data-i18n="marketplace_cat_nft">NFT</button>
+                </div>
+
+                <!-- Items grid -->
+                <div class="marketplace-grid" id="marketplace-grid">
+                    <div class="mp-empty" data-i18n="marketplace_loading">טוען פריטים...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- New Listing Modal -->
+        <div class="mp-modal" id="mp-new-modal" hidden>
+            <div class="mp-modal-content">
+                <div class="mp-modal-header">
+                    <h3 data-i18n="marketplace_new_listing">פריט חדש</h3>
+                    <button class="mp-modal-close" id="mp-modal-close">&times;</button>
+                </div>
+                <form class="mp-form" id="mp-new-form">
+                    <label>
+                        <span data-i18n="marketplace_title">כותרת</span>
+                        <input type="text" name="title" required minlength="3" maxlength="200">
+                    </label>
+                    <label>
+                        <span data-i18n="marketplace_description">תיאור</span>
+                        <textarea name="description" rows="4" maxlength="2000"></textarea>
+                    </label>
+                    <div class="mp-form-row">
+                        <label>
+                            <span data-i18n="marketplace_price">מחיר</span>
+                            <input type="number" name="price" step="0.01" min="0.01" required>
+                        </label>
+                        <label>
+                            <span data-i18n="marketplace_currency">מטבע</span>
+                            <select name="currency">
+                                <option value="SLH">SLH</option>
+                                <option value="TON">TON</option>
+                                <option value="ILS">₪ ILS</option>
+                                <option value="USD">$ USD</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="mp-form-row">
+                        <label>
+                            <span data-i18n="marketplace_category">קטגוריה</span>
+                            <select name="category">
+                                <option value="digital" data-i18n="marketplace_cat_digital">דיגיטלי</option>
+                                <option value="physical" data-i18n="marketplace_cat_physical">פיזי</option>
+                                <option value="course" data-i18n="marketplace_cat_course">קורסים</option>
+                                <option value="service" data-i18n="marketplace_cat_service">שירותים</option>
+                                <option value="nft" data-i18n="marketplace_cat_nft">NFT</option>
+                                <option value="general">כללי</option>
+                            </select>
+                        </label>
+                        <label>
+                            <span data-i18n="marketplace_stock">מלאי</span>
+                            <input type="number" name="stock" min="1" value="1" required>
+                        </label>
+                    </div>
+                    <label>
+                        <span>📷 תמונת הפריט (אופציונלי)</span>
+                        <input type="file" id="mp-image-file" accept="image/jpeg,image/png,image/webp" onchange="handleMpImageSelect(event)" style="padding:10px 12px">
+                        <small style="color:var(--text2);font-size:11px">עד 2MB — JPG/PNG/WebP</small>
+                    </label>
+                    <div id="mp-image-preview-wrap" style="display:none;position:relative;margin-top:-8px">
+                        <img id="mp-image-preview" src="" style="width:100%;max-height:180px;object-fit:cover;border-radius:10px;border:1px solid var(--border)">
+                        <button type="button" onclick="clearMpImage()" style="position:absolute;top:8px;left:8px;width:28px;height:28px;border-radius:50%;background:#000a;color:#fff;border:none;cursor:pointer">×</button>
+                    </div>
+                    <label>
+                        <span>🔗 או קישור לתמונה חיצונית</span>
+                        <input type="url" name="image_url" placeholder="https://...">
+                    </label>
+                    <label style="background:rgba(255,140,0,0.08);padding:12px;border-radius:10px;border:1px dashed rgba(255,140,0,0.3)">
+                        <span style="color:var(--accent);font-weight:700">🚀 קידום הפריט</span>
+                        <select name="promotion">
+                            <option value="none">ללא קידום (חינם)</option>
+                            <option value="featured">קידום "מומלץ" - 5 SLH ליום</option>
+                            <option value="top">בולט בראש - 15 SLH ליום</option>
+                            <option value="homepage">בעמוד הבית - 50 ZVK ליום</option>
+                        </select>
+                    </label>
+                    <button type="submit" class="mp-submit-btn" data-i18n="marketplace_submit">פרסם</button>
+                    <div class="mp-form-note" data-i18n="marketplace_approval_note">* פריטים חדשים יוצגו לאחר אישור אדמין</div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Item Details Modal -->
+        <div class="mp-modal" id="mp-item-modal" hidden>
+            <div class="mp-modal-content">
+                <div class="mp-modal-header">
+                    <h3 id="mp-item-title"></h3>
+                    <button class="mp-modal-close" id="mp-item-close">&times;</button>
+                </div>
+                <div class="mp-item-details" id="mp-item-details"></div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="community-sidebar">
+            <!-- Community Stats -->
+            <div class="sidebar-card">
+                <h3><i class="fas fa-chart-bar"></i> <span data-i18n="community_stats">סטטיסטיקות</span></h3>
+                <div class="stat-row">
+                    <span class="stat-label" data-i18n="community_total_members">סה"כ חברים</span>
+                    <span class="stat-value" id="sidebar-total-members">--</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label" data-i18n="community_online_now">מחוברים עכשיו</span>
+                    <span class="stat-value"><span class="online-dot"></span><span id="sidebar-online">--</span></span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label" data-i18n="community_posts_today">פוסטים היום</span>
+                    <span class="stat-value" id="posts-today">--</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label" data-i18n="community_new_members_week">חברים חדשים השבוע</span>
+                    <span class="stat-value" id="new-members-week">--</span>
+                </div>
+            </div>
+
+            <!-- System Updates / Changelog -->
+            <div class="sidebar-card">
+                <h3><i class="fas fa-bullhorn"></i> עדכוני מערכת</h3>
+                <div id="system-updates" style="font-size:13px;line-height:1.7;direction:rtl">
+                    <div style="padding:8px 0;border-bottom:1px solid var(--border)">
+                        <div style="color:var(--accent);font-weight:600;font-size:11px">9 אפריל 2026</div>
+                        <div style="color:var(--text)">🎯 פאנל השקעות אינטראקטיבי חדש בדף הבית</div>
+                    </div>
+                    <div style="padding:8px 0;border-bottom:1px solid var(--border)">
+                        <div style="color:var(--accent);font-weight:600;font-size:11px">9 אפריל 2026</div>
+                        <div style="color:var(--text)">🫁 תרגילי נשימה CBT ב-NFTY Bot</div>
+                    </div>
+                    <div style="padding:8px 0;border-bottom:1px solid var(--border)">
+                        <div style="color:var(--accent);font-weight:600;font-size:11px">9 אפריל 2026</div>
+                        <div style="color:var(--text)">🎮 מערכת משימות יומיות חדשה</div>
+                    </div>
+                    <div style="padding:8px 0;border-bottom:1px solid var(--border)">
+                        <div style="color:var(--accent);font-weight:600;font-size:11px">8 אפריל 2026</div>
+                        <div style="color:var(--text)">📅 תאריך עברי + שעון חי בדשבורד</div>
+                    </div>
+                    <div style="padding:8px 0;border-bottom:1px solid var(--border)">
+                        <div style="color:var(--accent);font-weight:600;font-size:11px">8 אפריל 2026</div>
+                        <div style="color:var(--text)">🔧 תיקון 23 קונטיינרים + API Registration</div>
+                    </div>
+                    <div style="padding:8px 0">
+                        <div style="color:var(--accent);font-weight:600;font-size:11px">7 אפריל 2026</div>
+                        <div style="color:var(--text)">🌐 מערכת הרשמה + תשלום 22.221₪</div>
+                    </div>
+                </div>
+                <a href="/roadmap.html" style="display:block;text-align:center;margin-top:10px;font-size:12px;color:var(--accent)">📋 ראו את ה-Roadmap המלא →</a>
+            </div>
+
+            <!-- Trending Topics (Dynamic) -->
+            <div class="sidebar-card">
+                <h3><i class="fas fa-fire"></i> <span data-i18n="community_trending">נושאים חמים</span></h3>
+                <div id="trending-categories"></div>
+                <div id="trending-tags" style="margin-top:12px;">
+                    <span class="trending-tag">#SLH_Token</span>
+                    <span class="trending-tag">#Staking</span>
+                    <span class="trending-tag">#TON</span>
+                    <span class="trending-tag">#DeFi</span>
+                    <span class="trending-tag">#Bots</span>
+                    <span class="trending-tag">#Referral</span>
+                    <span class="trending-tag">#Blockchain</span>
+                </div>
+            </div>
+
+            <!-- Top Sudoku Solvers (weekly) -->
+            <div class="sidebar-card">
+                <h3><i class="fas fa-puzzle-piece" style="color:#a855f7"></i> <span>🧩 Top Sudoku השבוע</span></h3>
+                <div id="top-sudoku" style="font-size:13px;color:var(--text2)">טוען...</div>
+                <a href="/sudoku.html" style="display:block;margin-top:10px;padding:8px;background:rgba(168,85,247,.1);color:#a855f7;border:1px solid rgba(168,85,247,.3);border-radius:8px;text-align:center;font-size:12px;font-weight:700;text-decoration:none">שחק עכשיו →</a>
+            </div>
+
+            <!-- AIC Economy -->
+            <div class="sidebar-card">
+                <h3><i class="fas fa-brain" style="color:#ffd700"></i> <span>🧠 AIC Economy</span></h3>
+                <div id="aic-widget" style="font-size:12px;color:var(--text2);line-height:1.8">טוען...</div>
+                <a href="/admin-tokens.html" style="display:block;margin-top:10px;padding:8px;background:rgba(255,215,0,.1);color:#ffd700;border:1px solid rgba(255,215,0,.3);border-radius:8px;text-align:center;font-size:12px;font-weight:700;text-decoration:none">Admin →</a>
+            </div>
+
+            <!-- Top Members -->
+            <div class="sidebar-card">
+                <h3><i class="fas fa-trophy"></i> <span data-i18n="community_top_members">חברים מובילים</span></h3>
+                <div id="top-members">
+                    <div class="top-member">
+                        <div class="top-member-avatar" style="background:linear-gradient(135deg,#ffd32a,#ffa502)">A</div>
+                        <div><div class="top-member-name">osifeu_prog</div><div class="top-member-posts">מייסד</div></div>
+                    </div>
+                    <div class="top-member">
+                        <div class="top-member-avatar" style="background:linear-gradient(135deg,#6c5ce7,#a29bfe)">M</div>
+                        <div><div class="top-member-name">tzvikatitzrusefa</div><div class="top-member-posts">Co-Founder</div></div>
+                    </div>
+                    <div class="top-member">
+                        <div class="top-member-avatar" style="background:linear-gradient(135deg,#00cec9,#00b4d8)">N</div>
+                        <div><div class="top-member-name">Zohar</div><div class="top-member-posts">Contributor</div></div>
+                    </div>
+                    <div class="top-member">
+                        <div class="top-member-avatar" style="background:linear-gradient(135deg,#ff4757,#ffa502)">D</div>
+                        <div><div class="top-member-name">הצטרף!</div><div class="top-member-posts">Genesis 49</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="sidebar-card">
+                <h3><i class="fas fa-link"></i> <span data-i18n="community_links">קישורים מהירים</span></h3>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                    <a href="/bots.html" style="color:var(--accent2);font-size:14px;text-decoration:none;display:flex;align-items:center;gap:8px;"><i class="fas fa-robot"></i> SLH Bots</a>
+                    <a href="/staking.html" style="color:var(--accent2);font-size:14px;text-decoration:none;display:flex;align-items:center;gap:8px;"><i class="fas fa-coins"></i> Staking</a>
+                    <a href="/trade.html" style="color:var(--accent2);font-size:14px;text-decoration:none;display:flex;align-items:center;gap:8px;"><i class="fas fa-chart-line"></i> Trade</a>
+                    <a href="/blockchain.html" style="color:var(--accent2);font-size:14px;text-decoration:none;display:flex;align-items:center;gap:8px;"><i class="fas fa-cubes"></i> Blockchain</a>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Shared UI Roots -->
+    <div id="bottomnav-root"></div>
+    <div id="footer-root"></div>
+
+    <script src="/js/translations.js?v=20260426e"></script>
+    <script src="/js/shared.js?v=20260426e"></script>
+    <script>
+    /* ============================================================
+       SLH Community — Client-Side Logic (API-backed, Facebook-style)
+       All posts stored in Railway PostgreSQL — shared between ALL users
+       ============================================================ */
+
+    const API = 'https://slh-api-production.up.railway.app';
+
+    const AVATAR_GRADIENTS = [
+        'linear-gradient(135deg,#6c5ce7,#a29bfe)',
+        'linear-gradient(135deg,#00cec9,#00b4d8)',
+        'linear-gradient(135deg,#ffd32a,#ffa502)',
+        'linear-gradient(135deg,#ff4757,#ffa502)',
+        'linear-gradient(135deg,#6c5ce7,#00b4d8)',
+        'linear-gradient(135deg,#00cec9,#ffd32a)',
+        'linear-gradient(135deg,#a29bfe,#00cec9)',
+    ];
+
+    const CATEGORIES = {
+        all: 'הכל',
+        investments: 'השקעות',
+        slh: 'SLH',
+        proposals: 'הצעות',
+        experts: 'מומחים',
+        news: 'חדשות',
+        general: 'כללי'
+    };
+
+    const CATEGORY_COLORS = {
+        investments: '#00cec9',
+        slh: '#a29bfe',
+        proposals: '#ffd32a',
+        experts: '#ffa502',
+        news: '#ff4757',
+        general: '#6a6a88'
+    };
+
+    let pendingImage = null; // base64 image for new post
+
+    /* ── State ── */
+    let currentFilter = 'all';
+    let posts = [];
+    let isLoading = false;
+
+    /* ── localStorage Likes ── */
+    function getLikedPosts() {
+        try { return JSON.parse(localStorage.getItem('slh_liked_posts') || '{}'); } catch { return {}; }
+    }
+    function setLikedPost(postId, liked) {
+        const likes = getLikedPosts();
+        if (liked) { likes[postId] = true; } else { delete likes[postId]; }
+        localStorage.setItem('slh_liked_posts', JSON.stringify(likes));
+    }
+    function isPostLiked(postId) {
+        return !!getLikedPosts()[postId];
+    }
+
+    /* ── Helpers ── */
+    function getUser() {
+        try { return JSON.parse(localStorage.getItem('slh_user')); } catch { return null; }
+    }
+
+    function timeAgo(ts) {
+        if (typeof ts === 'string') ts = new Date(ts).getTime();
+        const diff = Date.now() - ts;
+        const mins = Math.floor(diff / 60000);
+        if (mins < 1) return 'עכשיו';
+        if (mins < 60) return `לפני ${mins} דקות`;
+        const hrs = Math.floor(mins / 60);
+        if (hrs < 24) return `לפני ${hrs} שעות`;
+        const days = Math.floor(hrs / 24);
+        if (days < 7) return `לפני ${days} ימים`;
+        return new Date(ts).toLocaleDateString('he-IL');
+    }
+
+    function gradFor(idx) {
+        if (typeof idx === 'string') {
+            let hash = 0;
+            for (let i = 0; i < idx.length; i++) hash = idx.charCodeAt(i) + ((hash << 5) - hash);
+            idx = Math.abs(hash);
+        }
+        return AVATAR_GRADIENTS[idx % AVATAR_GRADIENTS.length];
+    }
+
+    function escHtml(str) {
+        const d = document.createElement('div');
+        d.textContent = str;
+        return d.innerHTML;
+    }
+
+    // Escape HTML then auto-linkify URLs (safe — escapes first)
+    function linkifyText(str) {
+        const escaped = escHtml(str || '');
+        // Match http(s) URLs, stop at whitespace or common punctuation
+        const urlPattern = /(https?:\/\/[^\s<>"']+)/g;
+        return escaped.replace(/\n/g, '<br>').replace(urlPattern, (url) => {
+            // Clean trailing punctuation
+            let clean = url;
+            const trailing = clean.match(/[.,;:!?]+$/);
+            let suffix = '';
+            if (trailing) { suffix = trailing[0]; clean = clean.slice(0, -suffix.length); }
+            return `<a href="${clean}" target="_blank" rel="noopener nofollow" style="color:#00b4d8;text-decoration:underline;word-break:break-all">${clean}</a>${suffix}`;
+        });
+    }
+
+    /* ── API Calls ── */
+    async function apiGet(path) {
+        try {
+            const r = await fetch(API + path);
+            if (!r.ok) throw new Error(r.status);
+            return await r.json();
+        } catch (e) {
+            console.warn('[community] API GET error:', path, e);
+            return null;
+        }
+    }
+
+    async function apiPost(path, body) {
+        try {
+            const r = await fetch(API + path, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(body)
+            });
+            if (!r.ok) {
+                const err = await r.json().catch(() => ({}));
+                throw new Error(err.detail || r.status);
+            }
+            return await r.json();
+        } catch (e) {
+            console.warn('[community] API POST error:', path, e);
+            return null;
+        }
+    }
+
+    /* ── Load Posts from API ── */
+    /* No demo posts — real data only */
+    const DEMO_POSTS = [];
+
+    async function loadPostsFromAPI() {
+        isLoading = true;
+        renderLoadingState();
+        try {
+            const data = await apiGet(`/api/community/posts?category=${currentFilter}&limit=50`);
+            isLoading = false;
+            if (data && data.posts && data.posts.length > 0) {
+                posts = data.posts;
+            } else {
+                posts = currentFilter === 'all'
+                  ? DEMO_POSTS
+                  : DEMO_POSTS.filter(p => p.category === currentFilter);
+            }
+            try {
+                renderFeed();
+            } catch (renderErr) {
+                console.error('[community] renderFeed failed:', renderErr);
+                const feed = document.getElementById('posts-feed');
+                if (feed) {
+                    feed.innerHTML = `<div class="empty-state" style="padding:40px 20px;text-align:center">
+                        <i class="fas fa-triangle-exclamation" style="color:#ffd700;font-size:32px"></i>
+                        <p style="margin-top:12px;color:#ff4444">שגיאה בהצגת הפיד: ${renderErr.message}</p>
+                        <p style="margin-top:8px;font-size:12px;color:#8a8aa0">${posts.length} פוסטים נטענו אבל לא הצליחו להציג</p>
+                        <button onclick="loadPostsFromAPI()" style="margin-top:14px;padding:10px 20px;background:#00ff41;color:#000;border:none;border-radius:8px;font-weight:700;cursor:pointer">נסה שוב</button>
+                    </div>`;
+                }
+            }
+            loadStats();
+            updateTrendingCategories();
+        } catch (e) {
+            isLoading = false;
+            console.error('[community] loadPostsFromAPI error:', e);
+            const feed = document.getElementById('posts-feed');
+            if (feed) {
+                feed.innerHTML = `<div class="empty-state" style="padding:40px 20px;text-align:center">
+                    <i class="fas fa-wifi-slash" style="color:#ff4444;font-size:32px"></i>
+                    <p style="margin-top:12px;color:#ff4444">לא הצלחנו להתחבר ל-API</p>
+                    <p style="margin-top:8px;font-size:12px;color:#8a8aa0">${e.message}</p>
+                    <button onclick="loadPostsFromAPI()" style="margin-top:14px;padding:10px 20px;background:#00ff41;color:#000;border:none;border-radius:8px;font-weight:700;cursor:pointer">נסה שוב</button>
+                </div>`;
+            }
+        }
+    }
+
+    async function loadStats() {
+        const data = await apiGet('/api/community/stats') || { total_posts: '—', posts_today: '—', active_today: '—', total_users: '—' };
+        if (data) {
+            const el = document.getElementById('total-posts');
+            if (el) el.textContent = (typeof data.total_posts === 'number') ? data.total_posts.toLocaleString('he-IL') : '—';
+
+            const pt = document.getElementById('posts-today');
+            if (pt) pt.textContent = (data.posts_today ?? '—');
+
+            const at = document.getElementById('active-today');
+            if (at) at.textContent = data.active_today || 0;
+
+            const tm = document.getElementById('total-members');
+            if (tm) tm.textContent = (data.total_users || 0).toLocaleString('he-IL');
+
+            const stm = document.getElementById('sidebar-total-members');
+            if (stm) stm.textContent = (data.total_users || 0).toLocaleString('he-IL');
+
+            // Online count — truth only, no phantom fallback (per CLAUDE.md: never fake data)
+            const onlineCount = data.active_today ?? 0;
+            const online = document.getElementById('sidebar-online');
+            if (online) online.textContent = onlineCount;
+            const coverOnline = document.getElementById('cover-online');
+            if (coverOnline) coverOnline.textContent = onlineCount;
+        }
+    }
+
+    /* ── Top Sudoku weekly ── */
+    async function loadTopSudoku() {
+        const el = document.getElementById('top-sudoku');
+        if (!el) return;
+        try {
+            const r = await fetch(API + '/api/sudoku/leaderboard?period=weekly&limit=5');
+            if (!r.ok) throw new Error(r.status);
+            const d = await r.json();
+            const lds = d.leaders || [];
+            if (lds.length === 0) {
+                el.innerHTML = '<div style="color:var(--text3);font-size:12px;text-align:center;padding:10px">אין פותרים השבוע — היה הראשון!</div>';
+                return;
+            }
+            el.innerHTML = lds.map((l, i) => {
+                const medal = ['🥇','🥈','🥉','4','5'][i] || (i+1);
+                return `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border2);font-size:12px"><span><b>${medal}</b> user #${l.user_id}</span><span style="color:#a855f7">${l.solves}×</span></div>`;
+            }).join('');
+        } catch(e) {
+            el.innerHTML = '<div style="color:var(--text3);font-size:12px">אין נתונים</div>';
+        }
+    }
+
+    /* ── AIC widget ── */
+    async function loadAicWidget() {
+        const el = document.getElementById('aic-widget');
+        if (!el) return;
+        try {
+            const r = await fetch(API + '/api/aic/stats');
+            if (!r.ok) throw new Error(r.status);
+            const d = await r.json();
+            el.innerHTML = `
+                <div>💎 Supply: <b style="color:#ffd700">${(d.total_supply||0).toFixed(1)}</b></div>
+                <div>👛 Wallets: <b style="color:#ffd700">${d.wallets_count||0}</b></div>
+                <div>📈 24h earn: <b style="color:var(--accent)">${(d.earned_24h||0).toFixed(1)}</b></div>
+                <div>📉 24h spent: <b style="color:var(--red)">${(d.spent_24h||0).toFixed(1)}</b></div>
+            `;
+        } catch(e) { el.innerHTML = '<div style="color:var(--text3)">אין נתונים</div>'; }
+    }
+
+    /* ── Trending Categories (count posts per category) ── */
+    function updateTrendingCategories() {
+        const counts = {};
+        posts.forEach(p => {
+            const cat = p.category || 'general';
+            counts[cat] = (counts[cat] || 0) + 1;
+        });
+        const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+        const container = document.getElementById('trending-categories');
+        if (!container) return;
+        if (sorted.length === 0) {
+            container.innerHTML = '<div style="color:var(--text3);font-size:13px;">אין נתונים עדיין</div>';
+            return;
+        }
+        container.innerHTML = sorted.map(([cat, count]) => {
+            const color = CATEGORY_COLORS[cat] || '#6a6a88';
+            const label = CATEGORIES[cat] || cat;
+            return `
+                <div class="trending-category" onclick="filterByCategory('${cat}')">
+                    <span class="tc-name"><span class="tc-dot" style="background:${color}"></span>${label}</span>
+                    <span class="tc-count">${count}</span>
+                </div>`;
+        }).join('');
+    }
+
+    function filterByCategory(cat) {
+        document.querySelectorAll('.filter-tab').forEach(t => {
+            t.classList.toggle('active', t.dataset.filter === cat);
+        });
+        currentFilter = cat;
+        loadPostsFromAPI();
+    }
+
+    function renderLoadingState() {
+        const feed = document.getElementById('posts-feed');
+        feed.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-spinner fa-spin" style="color:var(--accent)"></i>
+                <p>טוען פוסטים...</p>
+            </div>`;
+    }
+
+    /* ── Render Auth Section ── */
+    function renderAuthSection() {
+        const container = document.getElementById('auth-section');
+        const user = getUser();
+        const registered = user?.is_registered === true;
+
+        if (!user) {
+            // Not logged in — show login CTA
+            container.innerHTML = `
+                <div class="login-gate">
+                    <h3 data-i18n="community_login_title"><i class="fas fa-user-circle"></i> הצטרפו לקהילה</h3>
+                    <p data-i18n="community_login_subtitle">התחברו כדי לפרסם, להגיב ולהתחבר עם משקיעים אחרים</p>
+                    <div class="login-fields">
+                        <a href="/dashboard.html" class="btn-login" style="display:inline-block;text-align:center;text-decoration:none">
+                            <i class="fas fa-sign-in-alt"></i> <span data-i18n="nav_login">התחברות</span>
+                        </a>
+                    </div>
+                </div>`;
+        } else if (!registered) {
+            // Logged in but NOT registered — show demo mode + beta coupon CTA
+            const uname = user.username || user.first_name || 'User';
+            const initial = (uname.charAt(0) || 'U').toUpperCase();
+            // Load beta remaining count after render
+            setTimeout(loadCommunityBetaStatus, 100);
+            container.innerHTML = `
+                <div style="background:linear-gradient(135deg,rgba(255,140,0,0.12),rgba(0,188,212,0.12));border:2px dashed rgba(255,140,0,0.4);border-radius:16px;padding:20px;margin-bottom:18px">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+                        <span style="font-size:22px">🎁</span>
+                        <div>
+                            <div style="font-weight:800;color:var(--accent);font-size:15px">49 חברי Genesis — חינם!</div>
+                            <div style="font-size:12px;color:var(--text2)">10 ZVK (~44₪) + 100 ZVK מתנה אחרי ההפצה + NFT Genesis</div>
+                        </div>
+                    </div>
+                    <div id="community-beta-remaining" style="font-size:11px;color:var(--text2);margin-bottom:10px">⏳ בודק מלאי...</div>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap">
+                        <input type="text" id="community-coupon-input" placeholder="GENESIS49" dir="ltr" style="flex:1;min-width:140px;padding:10px 12px;background:var(--bg);border:1px solid var(--accent);color:var(--text);font-size:14px;border-radius:8px;font-family:monospace;text-align:center;text-transform:uppercase;letter-spacing:1px">
+                        <button onclick="handleCommunityCoupon()" id="community-coupon-btn" style="padding:10px 20px;background:linear-gradient(135deg,var(--accent),#00bcd4);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer">🔑 פתח</button>
+                    </div>
+                    <div id="community-coupon-status" style="margin-top:8px;font-size:12px;display:none"></div>
+                    <div style="font-size:11px;color:var(--text3);margin-top:10px;text-align:center">
+                        או <a href="/dashboard.html#register" style="color:var(--accent)">לחץ כאן להרשמה בתשלום ₪22.221</a>
+                    </div>
+                </div>
+                <div class="new-post-card" style="opacity:0.7">
+                    <div class="new-post-header">
+                        <div class="new-post-avatar" style="background:${gradFor(user.avatarGrad || uname)}">${initial}</div>
+                        <span style="font-weight:600;color:var(--text)">${escHtml(uname)}</span>
+                        <span style="margin-inline-start:auto;padding:4px 10px;background:rgba(255,140,0,0.15);color:var(--accent);border-radius:100px;font-size:10px;font-weight:700;text-transform:uppercase">🔒 דמו</span>
+                    </div>
+                    <textarea id="new-post-text" placeholder="הזן קוד Genesis למעלה כדי לפרסם בקהילה..." disabled style="opacity:0.5;cursor:not-allowed"></textarea>
+                    <div style="font-size:11px;color:var(--text3);text-align:center;padding:8px">📖 אתה יכול לקרוא, ללייק ולהגיב. להוספת פוסטים — הזן קוד Genesis למעלה.</div>
+                </div>`;
+        } else {
+            const initial = user.username.charAt(0).toUpperCase();
+            container.innerHTML = `
+                <div class="new-post-card">
+                    <div class="new-post-header">
+                        <div class="new-post-avatar" style="background:${gradFor(user.avatarGrad || user.username)}">${initial}</div>
+                        <span style="font-weight:600;color:var(--text)">${escHtml(user.username)}</span>
+                        <button onclick="handleLogout()" style="margin-inline-start:auto;background:none;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text3);padding:6px 12px;font-size:12px;cursor:pointer;font-family:var(--font);">
+                            <i class="fas fa-sign-out-alt"></i> יציאה
+                        </button>
+                    </div>
+                    <textarea id="new-post-text" placeholder="מה חדש? שתפו עם הקהילה..." data-i18n-placeholder="community_new_post"></textarea>
+                    <div class="image-preview" id="image-preview">
+                        <img id="image-preview-img" src="" alt="">
+                        <button class="remove-image" onclick="removeImage()"><i class="fas fa-times"></i></button>
+                    </div>
+                    <!-- Link input (optional) -->
+                    <input type="url" id="new-post-link" placeholder="🔗 הוסף קישור (אופציונלי) — https://..." style="width:100%;padding:10px 12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#e8e8f0;font-size:13px;margin-top:8px;display:none" dir="ltr">
+                    <div class="new-post-actions">
+                        <div class="post-toolbar">
+                            <input type="file" id="image-upload" accept="image/jpeg,image/png,image/webp,image/gif" style="display:none" onchange="handleImageSelect(event)">
+                            <button class="post-tool-btn photo-btn" onclick="document.getElementById('image-upload').click()">
+                                <i class="fas fa-image"></i> תמונה
+                            </button>
+                            <button class="post-tool-btn" onclick="toggleLinkInput()" style="background:rgba(0,180,216,0.1);color:#00b4d8;border:1px solid rgba(0,180,216,0.3);padding:8px 14px;border-radius:8px;cursor:pointer;font-size:12px">
+                                <i class="fas fa-link"></i> קישור
+                            </button>
+                            <select class="post-category-select" id="new-post-category">
+                                <option value="general">💬 כללי</option>
+                                <option value="investments">📈 השקעות</option>
+                                <option value="slh">💎 SLH</option>
+                                <option value="proposals">💡 הצעות</option>
+                                <option value="experts">🎓 מומחים</option>
+                                <option value="news">📰 חדשות</option>
+                                <option value="events">🎉 אירועים</option>
+                                <option value="guides">📚 מדריכים</option>
+                                <option value="questions">❓ שאלות</option>
+                                <option value="success">🏆 סיפורי הצלחה</option>
+                                <option value="alerts">🚨 התראות שוק</option>
+                            </select>
+                        </div>
+                        <button class="btn-post" onclick="handleNewPost()" id="btn-publish" data-i18n="community_post_btn">
+                            <i class="fas fa-paper-plane"></i> פרסום
+                        </button>
+                    </div>
+                </div>`;
+        }
+    }
+
+    /* ── Register — redirect to dashboard for payment ── */
+    function handleRegister() {
+        window.location.href = '/dashboard.html#register';
+    }
+
+    function handleLogout() {
+        localStorage.removeItem('slh_user');
+        localStorage.removeItem('slh_jwt');
+        renderAuthSection();
+    }
+
+    async function loadCommunityBetaStatus() {
+        const el = document.getElementById('community-beta-remaining');
+        if (!el) return;
+        try {
+            const r = await fetch(API + '/api/beta/status');
+            const data = await r.json();
+            if (data.coupons && data.coupons.length > 0) {
+                const c = data.coupons[0];
+                if (c.remaining > 0) {
+                    el.innerHTML = `✨ נותרו <b style="color:var(--accent)">${c.remaining}</b> מתוך ${c.max_uses} · קוד: <code style="background:var(--bg);padding:2px 8px;border-radius:4px">${c.code}</code>`;
+                } else {
+                    el.innerHTML = `❌ כל מקומות ה-Genesis נוצלו`;
+                }
+            }
+        } catch (e) { console.log('[community-beta] err:', e); }
+    }
+
+    async function handleCommunityCoupon() {
+        const user = getUser();
+        if (!user || !user.telegram_id) {
+            alert('עליך להתחבר קודם דרך @SLH_AIR_bot');
+            return;
+        }
+        const input = document.getElementById('community-coupon-input');
+        const code = (input?.value || '').trim().toUpperCase();
+        if (!code) { alert('הזן קוד'); return; }
+        const btn = document.getElementById('community-coupon-btn');
+        const statusEl = document.getElementById('community-coupon-status');
+        if (btn) { btn.disabled = true; btn.innerHTML = '⏳...'; }
+        try {
+            const res = await fetch(API + '/api/registration/unlock', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    user_id: user.telegram_id,
+                    method: 'coupon',
+                    coupon_code: code
+                })
+            });
+            const data = await res.json();
+            if (data.ok && (data.status === 'approved' || data.status === 'already_registered' || data.status === 'already_redeemed')) {
+                user.is_registered = true;
+                if (data.nft_number) user.beta_nft_number = data.nft_number;
+                localStorage.setItem('slh_user', JSON.stringify(user));
+                if (statusEl) {
+                    statusEl.style.display = 'block';
+                    statusEl.style.color = '#22c55e';
+                    statusEl.style.background = 'rgba(34,197,94,0.1)';
+                    statusEl.style.border = '1px solid rgba(34,197,94,0.3)';
+                    statusEl.style.borderRadius = '8px';
+                    statusEl.style.padding = '10px';
+                    if (data.nft_number) {
+                        statusEl.innerHTML = `🎉 Genesis #${data.nft_number}! +${(data.zvk_credited || 10).toLocaleString()} ZVK + 100 ZVK מתנה אחרי ההפצה · רענון...`;
+                    } else {
+                        statusEl.innerHTML = '✅ גישה מלאה נפתחה! רענון...';
+                    }
+                }
+                setTimeout(() => { renderAuthSection(); loadPostsFromAPI(); }, 1500);
+                return;
+            }
+            if (btn) { btn.disabled = false; btn.innerHTML = '🔑 נסה שוב'; }
+            if (statusEl) {
+                statusEl.style.display = 'block';
+                statusEl.style.color = '#ef4444';
+                statusEl.style.background = 'rgba(239,68,68,0.1)';
+                statusEl.style.border = '1px solid rgba(239,68,68,0.3)';
+                statusEl.style.borderRadius = '8px';
+                statusEl.style.padding = '10px';
+                statusEl.innerHTML = '❌ ' + (data.message || data.detail || 'קוד לא תקף');
+            }
+        } catch (e) {
+            console.error('[community-coupon]', e);
+            if (btn) { btn.disabled = false; btn.innerHTML = '🔑 נסה שוב'; }
+            if (statusEl) { statusEl.style.display = 'block'; statusEl.innerHTML = '❌ שגיאת רשת'; }
+        }
+    }
+
+    /* ── Image Handling ── */
+    function handleImageSelect(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        if (file.size > 2 * 1024 * 1024) {
+            alert('Image must be under 2MB');
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            pendingImage = e.target.result;
+            const preview = document.getElementById('image-preview');
+            const img = document.getElementById('image-preview-img');
+            img.src = pendingImage;
+            preview.classList.add('has-image');
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function removeImage() {
+        pendingImage = null;
+        const preview = document.getElementById('image-preview');
+        if (preview) preview.classList.remove('has-image');
+        const input = document.getElementById('image-upload');
+        if (input) input.value = '';
+    }
+
+    function openLightbox(src) {
+        let lb = document.getElementById('lightbox');
+        if (!lb) {
+            lb = document.createElement('div');
+            lb.id = 'lightbox';
+            lb.className = 'lightbox';
+            lb.onclick = () => lb.classList.remove('open');
+            lb.innerHTML = '<img id="lightbox-img" src="" alt="">';
+            document.body.appendChild(lb);
+        }
+        document.getElementById('lightbox-img').src = src;
+        lb.classList.add('open');
+    }
+
+    /* ── Vote on Proposal ── */
+    async function voteOnPost(postId, vote) {
+        const user = getUser();
+        if (!user) return;
+        const result = await apiPost(`/api/community/posts/${postId}/vote`, {
+            username: user.username,
+            vote: vote
+        });
+        if (result) {
+            const post = posts.find(p => p.id == postId);
+            if (post) {
+                if (!post.votes) post.votes = { for: 0, against: 0, voters: [] };
+                post.votes[vote] = (post.votes[vote] || 0) + 1;
+                if (!post.votes.voters) post.votes.voters = [];
+                post.votes.voters.push(user.username);
+                renderFeed();
+            }
+        }
+    }
+
+    /* ── New Post (API) ── */
+    function toggleLinkInput() {
+        const el = document.getElementById('new-post-link');
+        if (el) el.style.display = el.style.display === 'none' || !el.style.display ? 'block' : 'none';
+        if (el && el.style.display === 'block') el.focus();
+    }
+    async function handleNewPost() {
+        const user = getUser();
+        if (!user || !user.username) {
+            alert('עליך להתחבר כדי לפרסם');
+            window.location.href = '/dashboard.html';
+            return;
+        }
+        // If localStorage is missing is_registered, re-check against the API
+        // (stale cache sometimes shows logged-in user as not registered)
+        if (!user.is_registered && user.id) {
+            try {
+                const r = await fetch(API + '/api/user/' + user.id);
+                if (r.ok) {
+                    const d = await r.json();
+                    if (d.user && d.user.is_registered) {
+                        user.is_registered = true;
+                        localStorage.setItem('slh_user', JSON.stringify(user));
+                    }
+                }
+            } catch(e) {}
+        }
+        if (!user.is_registered) {
+            if (confirm('כדי לפרסם צריך להשלים הרשמה. לעבור עכשיו לדף ההרשמה?')) {
+                window.location.href = '/dashboard.html#register';
+            }
+            return;
+        }
+        const textarea = document.getElementById('new-post-text');
+        let text = textarea.value.trim();
+        if (!text) { textarea.style.borderColor = 'var(--red)'; return; }
+
+        // Optional link — append to text if present and valid
+        const linkEl = document.getElementById('new-post-link');
+        const linkVal = (linkEl?.value || '').trim();
+        if (linkVal) {
+            try {
+                new URL(linkVal); // validates
+                // Only allow http/https
+                if (!/^https?:\/\//i.test(linkVal)) throw new Error('must be http(s)');
+                text += '\n\n🔗 ' + linkVal;
+            } catch(e) {
+                if (linkEl) linkEl.style.borderColor = 'var(--red)';
+                return;
+            }
+        }
+
+        const category = document.getElementById('new-post-category').value;
+        const btn = document.getElementById('btn-publish');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> שולח...';
+
+        const postData = {
+            username: user.username,
+            text: text,
+            category: category,
+            telegram_id: user.telegram || user.id || null,
+            image_data: pendingImage || null
+        };
+        const result = await apiPost('/api/community/posts', postData);
+
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-paper-plane"></i> פרסום';
+
+        if (result && result.id) {
+            textarea.value = '';
+            textarea.style.borderColor = '';
+            if (linkEl) { linkEl.value = ''; linkEl.style.display = 'none'; linkEl.style.borderColor = ''; }
+            removeImage();
+            await loadPostsFromAPI();
+        } else {
+            textarea.style.borderColor = 'var(--red)';
+            console.error('Failed to create post');
+        }
+    }
+
+    /* ── Like (API + localStorage) ── */
+    async function toggleLike(postId) {
+        const user = getUser();
+        if (!user) return;
+
+        const wasLiked = isPostLiked(postId);
+        // Optimistic update
+        setLikedPost(postId, !wasLiked);
+        const post = posts.find(p => p.id == postId);
+        if (post) {
+            post.likes_count = (post.likes_count || 0) + (wasLiked ? -1 : 1);
+            if (post.likes_count < 0) post.likes_count = 0;
+        }
+        renderFeed();
+        // Re-open comments if they were open
+        reopenComments();
+
+        const result = await apiPost(`/api/community/posts/${postId}/like`, {
+            username: user.username
+        });
+        if (result) {
+            if (post) {
+                // Sync with server response if available
+                if (result.action === 'liked') {
+                    setLikedPost(postId, true);
+                } else {
+                    setLikedPost(postId, false);
+                }
+            }
+        }
+    }
+
+    /* ── Track open comments across re-renders ── */
+    let openCommentsSet = new Set();
+
+    function toggleComments(postId) {
+        if (openCommentsSet.has(postId)) {
+            openCommentsSet.delete(postId);
+        } else {
+            openCommentsSet.add(postId);
+        }
+        const el = document.getElementById('comments-' + postId);
+        if (el) el.classList.toggle('open');
+    }
+
+    function reopenComments() {
+        openCommentsSet.forEach(id => {
+            const el = document.getElementById('comments-' + id);
+            if (el) el.classList.add('open');
+        });
+    }
+
+    /* ── Add Comment (API) ── */
+    async function addComment(postId) {
+        const user = getUser();
+        if (!user) return;
+        const input = document.getElementById('comment-input-' + postId);
+        const text = input.value.trim();
+        if (!text) return;
+
+        input.disabled = true;
+        const result = await apiPost(`/api/community/posts/${postId}/comments`, {
+            username: user.username,
+            text: text
+        });
+        input.disabled = false;
+
+        if (result && result.id) {
+            input.value = '';
+            const post = posts.find(p => p.id == postId);
+            if (post) {
+                if (!post.comments) post.comments = [];
+                post.comments.push(result);
+                openCommentsSet.add(postId);
+                renderFeed();
+                reopenComments();
+            }
+        }
+    }
+
+    /* ── Render Single Post (Facebook-style) ── */
+    function renderPost(post) {
+        const user = getUser();
+        const catLabel = CATEGORIES[post.category] || post.category;
+        const catClass = 'cat-' + (post.category || 'general');
+        const initial = post.username ? post.username.charAt(0).toUpperCase() : '?';
+        const liked = isPostLiked(post.id);
+        const likesCount = post.likes_count || 0;
+        const commentsCount = (post.comments || []).length;
+        const imgSrc = post.image_url || post.image_data || '';
+
+        // Comments HTML
+        const commentsHtml = (post.comments || []).map(c => {
+            const ci = c.username ? c.username.charAt(0).toUpperCase() : '?';
+            return `
+            <div class="comment">
+                <div class="comment-avatar" style="background:${gradFor(c.username || '')}">${ci}</div>
+                <div class="comment-bubble">
+                    <div class="comment-user">${escHtml(c.username)}</div>
+                    <div class="comment-text">${escHtml(c.text)}</div>
+                </div>
+            </div>
+            <div class="comment-time">${c.created_at ? timeAgo(c.created_at) : ''}</div>`;
+        }).join('');
+
+        const commentInputHtml = user ? `
+            <div class="comment-input-row">
+                <div class="comment-input-avatar" style="background:${gradFor(user.username)}">${user.username.charAt(0).toUpperCase()}</div>
+                <div class="comment-input-wrapper">
+                    <input type="text" id="comment-input-${post.id}" placeholder="כתבו תגובה..." onkeydown="if(event.key==='Enter')addComment(${post.id})">
+                    <button onclick="addComment(${post.id})"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>` : '';
+
+        return `
+            <div class="post-card">
+                <div class="post-card-inner">
+                    <div class="post-header">
+                        <div class="post-avatar" style="background:${gradFor(post.username || '')}">${initial}</div>
+                        <div class="post-meta">
+                            <div class="post-username">
+                                ${escHtml(post.username)}
+                                <span class="post-category-badge ${catClass}">${catLabel}</span>
+                            </div>
+                            <div class="post-time"><i class="far fa-clock"></i> ${timeAgo(post.created_at)}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="post-body">${linkifyText(post.text)}</div>
+                ${imgSrc ? `<div class="post-image" onclick="openLightbox('${imgSrc}')"><img src="${imgSrc}" alt="" loading="lazy"></div>` : ''}
+                ${post.category === 'proposals' ? renderVoteSection(post) : ''}
+                <div class="post-reactions-summary">
+                    <div class="reactions-left">
+                        ${likesCount > 0 ? `<span class="heart-mini"><i class="fas fa-heart"></i></span> <span>${likesCount}</span>` : ''}
+                    </div>
+                    <div class="reactions-right">
+                        ${commentsCount > 0 ? `<span onclick="toggleComments(${post.id})">${commentsCount} תגובות</span>` : ''}
+                    </div>
+                </div>
+                <div class="post-actions" data-post-id="${post.id}">
+                    <div class="reactions-wrap" style="position:relative;display:inline-block">
+                        <button class="post-action-btn react-toggle ${liked ? 'liked' : ''}" data-post-id="${post.id}">
+                            <i class="${liked ? 'fas' : 'far'} fa-heart"></i>
+                            <span>${liked ? 'אהבתי' : 'הגב'}</span>
+                        </button>
+                        <div class="react-picker" id="picker-${post.id}" style="display:none;position:absolute;bottom:100%;right:0;background:var(--surface,#14142b);border:1px solid var(--border,#1e1e3a);border-radius:32px;padding:6px 10px;box-shadow:0 4px 20px rgba(0,0,0,.4);z-index:20;white-space:nowrap">
+                            <button class="react-emoji" data-post-id="${post.id}" data-type="like" title="לייק">👍</button>
+                            <button class="react-emoji" data-post-id="${post.id}" data-type="love" title="אהבתי">❤️</button>
+                            <button class="react-emoji" data-post-id="${post.id}" data-type="laugh" title="מצחיק">😂</button>
+                            <button class="react-emoji" data-post-id="${post.id}" data-type="wow" title="וואו">😮</button>
+                            <button class="react-emoji" data-post-id="${post.id}" data-type="sad" title="עצוב">😢</button>
+                            <button class="react-emoji" data-post-id="${post.id}" data-type="angry" title="כועס">😡</button>
+                        </div>
+                    </div>
+                    <button class="post-action-btn ${openCommentsSet.has(post.id) ? 'comment-active' : ''}" onclick="toggleComments(${post.id})">
+                        <i class="far fa-comment"></i>
+                        <span>תגובה</span>
+                    </button>
+                    <button class="post-action-btn" onclick="sharePost(${post.id})">
+                        <i class="fas fa-share"></i>
+                        <span>שיתוף</span>
+                    </button>
+                    <button class="post-action-btn dm-btn" data-username="${escHtml(post.username || '')}" data-tgid="${escHtml((post.telegram_id || '').toString())}" title="שלח הודעה פרטית בטלגרם">
+                        <i class="fa-brands fa-telegram" style="color:#26a5e4"></i>
+                        <span>DM</span>
+                    </button>
+                </div>
+                <div class="comments-section ${openCommentsSet.has(post.id) ? 'open' : ''}" id="comments-${post.id}">
+                    <div class="comments-list">
+                        ${commentsHtml || '<div class="no-comments-yet">אין תגובות עדיין. היו הראשונים!</div>'}
+                    </div>
+                    ${commentInputHtml}
+                </div>
+            </div>`;
+    }
+
+    /* ── DM button delegation (safe — no inline JS that breaks on special chars) ── */
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.dm-btn');
+        if (btn) {
+            const username = btn.dataset.username || '';
+            const tgid = btn.dataset.tgid || '';
+            messagePrivately(username, tgid);
+            return;
+        }
+
+        /* ── Reactions: toggle picker ── */
+        const rToggle = e.target.closest('.react-toggle');
+        if (rToggle) {
+            e.preventDefault();
+            const pid = rToggle.dataset.postId;
+            document.querySelectorAll('.react-picker').forEach(p => {
+                if (p.id !== 'picker-' + pid) p.style.display = 'none';
+            });
+            const p = document.getElementById('picker-' + pid);
+            if (p) p.style.display = p.style.display === 'flex' ? 'none' : 'flex';
+            return;
+        }
+
+        /* ── Reactions: pick emoji ── */
+        const rEmoji = e.target.closest('.react-emoji');
+        if (rEmoji) {
+            e.preventDefault();
+            const pid = rEmoji.dataset.postId;
+            const type = rEmoji.dataset.type;
+            sendReaction(parseInt(pid, 10), type);
+            const p = document.getElementById('picker-' + pid);
+            if (p) p.style.display = 'none';
+            return;
+        }
+
+        /* ── Close any open picker on outside click ── */
+        if (!e.target.closest('.reactions-wrap')) {
+            document.querySelectorAll('.react-picker').forEach(p => p.style.display = 'none');
+        }
+    });
+
+    /* ── Reactions: send to API ── */
+    const REACTION_EMOJI = { like: '👍', love: '❤️', laugh: '😂', wow: '😮', sad: '😢', angry: '😡' };
+    const REACTION_LABEL = { like: 'אהבתי', love: 'אהבה', laugh: 'מצחיק', wow: 'וואו', sad: 'עצוב', angry: 'כועס' };
+
+    async function sendReaction(postId, reactionType) {
+        const user = getUser();
+        if (!user || !user.username) {
+            alert('עליך להתחבר כדי להגיב');
+            return;
+        }
+        try {
+            const r = await fetch(API + '/api/community/posts/' + postId + '/react', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ username: user.username, reaction_type: reactionType })
+            });
+            const d = await r.json();
+            if (!r.ok) throw new Error(d.detail || 'reaction failed');
+
+            // Update UI for this post
+            const btn = document.querySelector('.react-toggle[data-post-id="' + postId + '"]');
+            if (btn) {
+                if (d.action === 'removed') {
+                    btn.classList.remove('liked');
+                    btn.innerHTML = '<i class="far fa-heart"></i><span>הגב</span>';
+                } else {
+                    btn.classList.add('liked');
+                    btn.innerHTML = '<span style="font-size:16px;margin-left:6px">' + (REACTION_EMOJI[reactionType] || '👍') + '</span><span>' + (REACTION_LABEL[reactionType] || 'הגב') + '</span>';
+                }
+            }
+        } catch (e) {
+            console.warn('[reactions] error:', e);
+        }
+    }
+
+    /* ── Presence: heartbeat every 60s so friends see me online ── */
+    async function presenceHeartbeat() {
+        const user = getUser();
+        if (!user || !user.username) return;
+        try {
+            await fetch(API + '/api/presence/heartbeat', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ username: user.username, user_id: user.id || null })
+            });
+        } catch (e) {}
+    }
+
+    /* ── Presence: refresh online dots every 60s ── */
+    async function refreshOnlineDots() {
+        const unames = Array.from(new Set(
+            Array.from(document.querySelectorAll('.post-username')).map(el => el.textContent.trim().split(/\s+/)[0])
+        )).filter(u => u && u.length < 60).slice(0, 50);
+        if (!unames.length) return;
+        try {
+            const r = await fetch(API + '/api/presence/bulk?usernames=' + encodeURIComponent(unames.join(',')));
+            if (!r.ok) return;
+            const data = await r.json();
+            const onlineSet = new Set((data.users || []).filter(u => u.online).map(u => u.username));
+            document.querySelectorAll('.post-avatar').forEach(av => {
+                const card = av.closest('.post-card');
+                if (!card) return;
+                const uname = card.querySelector('.post-username')?.textContent.trim().split(/\s+/)[0];
+                const existing = av.querySelector('.presence-dot');
+                if (existing) existing.remove();
+                if (onlineSet.has(uname)) {
+                    const dot = document.createElement('span');
+                    dot.className = 'presence-dot';
+                    dot.style.cssText = 'position:absolute;bottom:0;right:0;width:12px;height:12px;background:#00ff41;border:2px solid var(--bg,#05080f);border-radius:50%;box-shadow:0 0 8px rgba(0,255,65,.6)';
+                    av.style.position = 'relative';
+                    av.appendChild(dot);
+                }
+            });
+        } catch (e) {}
+    }
+
+    // Init heartbeat + online refresh
+    presenceHeartbeat();
+    refreshOnlineDots();
+    setInterval(presenceHeartbeat, 60000);
+    setInterval(refreshOnlineDots, 60000);
+
+    /* ── Private message (Telegram deep-link) ── */
+    function messagePrivately(username, telegramId) {
+        const me = getUser();
+        if (!me) {
+            alert('עליך להתחבר כדי לשלוח הודעה פרטית');
+            window.location.href = '/dashboard.html';
+            return;
+        }
+        if (username === me.username) {
+            alert('זה אתה! 😊');
+            return;
+        }
+        // Prefer direct Telegram ID if available (opens chat by user_id)
+        // Fallback: use username as @handle
+        const cleanHandle = (username || '').replace(/^@/, '').trim();
+        let tgUrl;
+        if (telegramId && !isNaN(telegramId)) {
+            tgUrl = `tg://user?id=${telegramId}`;
+        } else if (cleanHandle) {
+            tgUrl = `https://t.me/${cleanHandle}`;
+        } else {
+            alert('לא ניתן לשלוח הודעה — חסרים פרטי יצירת קשר');
+            return;
+        }
+        // Show option modal: public reply vs private TG
+        const choice = confirm(
+            `שלח הודעה פרטית ל-${username} בטלגרם?\n\n` +
+            `✅ OK = פתח צ'אט פרטי בטלגרם\n` +
+            `❌ ביטול = הוסף תגובה פומבית לפוסט הזה`
+        );
+        if (choice) {
+            window.open(tgUrl, '_blank');
+        } else {
+            // Scroll to comment input of this post
+            const post = posts.find(p => p.username === username);
+            if (post) {
+                toggleComments(post.id);
+                setTimeout(() => {
+                    const input = document.getElementById('comment-input-' + post.id);
+                    if (input) input.focus();
+                }, 300);
+            }
+        }
+    }
+
+    function sharePost(postId) {
+        const post = posts.find(p => p.id == postId);
+        if (!post) return;
+        const postText = post.text.slice(0, 200);
+        const shareUrl = `https://slh-nft.com/community.html#post-${postId}`;
+        const shareText = `${post.username}: ${postText}\n\nקהילת SLH Spark`;
+
+        // Dynamically update OG image meta tag for post-specific image
+        const ogImage = post.image_url || 'https://slh-nft.com/og.png';
+        document.querySelector('meta[property="og:image"]')?.setAttribute('content', ogImage);
+        document.querySelector('meta[name="twitter:image"]')?.setAttribute('content', ogImage);
+        document.querySelector('meta[property="og:url"]')?.setAttribute('content', shareUrl);
+
+        if (navigator.share) {
+            navigator.share({ title: 'SLH Community', text: shareText, url: shareUrl }).catch(() => {});
+            return;
+        }
+
+        const existing = document.getElementById('share-menu-' + postId);
+        if (existing) { existing.remove(); return; }
+
+        const encodedText = encodeURIComponent(shareText);
+        const encodedUrl = encodeURIComponent(shareUrl);
+
+        const menu = document.createElement('div');
+        menu.id = 'share-menu-' + postId;
+        menu.style.cssText = 'position:absolute;right:0;top:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:8px;z-index:100;display:flex;gap:6px;box-shadow:var(--shadow)';
+        menu.innerHTML = `
+            <a href="https://api.whatsapp.com/send?text=${encodedText}%20${encodedUrl}" target="_blank" style="width:36px;height:36px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;text-decoration:none"><i class="fab fa-whatsapp"></i></a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}" target="_blank" style="width:36px;height:36px;border-radius:50%;background:#1877F2;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;text-decoration:none"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}" target="_blank" style="width:36px;height:36px;border-radius:50%;background:#1DA1F2;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;text-decoration:none"><i class="fab fa-twitter"></i></a>
+            <a href="https://t.me/share/url?url=${encodedUrl}&text=${encodedText}" target="_blank" style="width:36px;height:36px;border-radius:50%;background:#0088cc;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;text-decoration:none"><i class="fab fa-telegram-plane"></i></a>
+            <button onclick="navigator.clipboard.writeText('${shareText.replace(/'/g,"\\'")} ${shareUrl}');this.parentElement.remove()" style="width:36px;height:36px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:14px;cursor:pointer"><i class="fas fa-link"></i></button>`;
+
+        const btn = event.currentTarget;
+        btn.style.position = 'relative';
+        btn.appendChild(menu);
+        setTimeout(() => document.addEventListener('click', function removeMenu(e) {
+            if (!menu.contains(e.target)) { menu.remove(); document.removeEventListener('click', removeMenu); }
+        }), 100);
+    }
+
+    /* ── Render Vote Section for Proposals ── */
+    function renderVoteSection(post) {
+        const user = getUser();
+        const votes = post.votes || { for: 0, against: 0, voters: [] };
+        const total = (votes.for || 0) + (votes.against || 0);
+        const forPct = total > 0 ? Math.round((votes.for / total) * 100) : 50;
+        const againstPct = 100 - forPct;
+        const hasVoted = user && votes.voters && votes.voters.includes(user.username);
+
+        return `
+            <div class="vote-section">
+                <div style="font-size:12px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">
+                    <i class="fas fa-poll"></i> הצבעת קהילה
+                </div>
+                <div class="vote-bar-bg">
+                    <div class="vote-bar-fill for" style="width:${forPct}%">${forPct}% בעד</div>
+                </div>
+                <div class="vote-bar-bg">
+                    <div class="vote-bar-fill against" style="width:${againstPct}%">${againstPct}% נגד</div>
+                </div>
+                <div style="font-size:11px;color:var(--text3);margin-top:4px">${total} הצביעו</div>
+                ${!hasVoted && user ? `
+                <div class="vote-buttons">
+                    <button class="vote-btn for" onclick="voteOnPost(${post.id},'for')"><i class="fas fa-check"></i> בעד</button>
+                    <button class="vote-btn against" onclick="voteOnPost(${post.id},'against')"><i class="fas fa-times"></i> נגד</button>
+                </div>` : hasVoted ? '<div style="font-size:12px;color:var(--green);margin-top:8px"><i class="fas fa-check-circle"></i> הצבעתך נרשמה</div>' : ''}
+            </div>`;
+    }
+
+    /* ── Render Feed ── */
+    function renderFeed() {
+        const feed = document.getElementById('posts-feed');
+
+        if (posts.length === 0 && !isLoading) {
+            feed.innerHTML = `
+                <div class="empty-state">
+                    <i class="far fa-comment-dots"></i>
+                    <p>אין פוסטים עדיין בקטגוריה הזו. היו הראשונים!</p>
+                </div>`;
+        } else if (posts.length > 0) {
+            feed.innerHTML = posts.map(renderPost).join('');
+        }
+
+        const tp = document.getElementById('total-posts');
+        if (tp && posts.length > 0) tp.textContent = posts.length.toLocaleString('he-IL');
+    }
+
+    /* ── Filter Tabs (Feed) ── */
+    document.getElementById('filter-tabs').addEventListener('click', (e) => {
+        const tab = e.target.closest('.filter-tab');
+        if (!tab) return;
+        // Only affect feed filter tabs (scoped to #filter-tabs)
+        document.querySelectorAll('#filter-tabs .filter-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        currentFilter = tab.dataset.filter;
+        loadPostsFromAPI();
+    });
+
+    /* ============================================================
+       MARKETPLACE LOGIC
+       ============================================================ */
+    const CURRENCY_SYMBOLS = { SLH: '◆', TON: 'TON', ILS: '₪', USD: '$' };
+    const CATEGORY_ICONS = {
+        digital: 'fa-download', physical: 'fa-box', course: 'fa-graduation-cap',
+        service: 'fa-handshake', nft: 'fa-gem', general: 'fa-tag'
+    };
+    let mpCurrentCategory = '';
+    let mpItems = [];
+    let mpPendingImage = null; // base64 data URL for new listing
+
+    function handleMpImageSelect(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        if (file.size > 2 * 1024 * 1024) {
+            alert('התמונה חייבת להיות עד 2MB');
+            event.target.value = '';
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            mpPendingImage = e.target.result;
+            document.getElementById('mp-image-preview').src = mpPendingImage;
+            document.getElementById('mp-image-preview-wrap').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function clearMpImage() {
+        mpPendingImage = null;
+        document.getElementById('mp-image-file').value = '';
+        document.getElementById('mp-image-preview-wrap').style.display = 'none';
+    }
+
+    function formatPrice(price, currency) {
+        const symbol = CURRENCY_SYMBOLS[currency] || currency;
+        const num = Number(price).toLocaleString('he-IL', { maximumFractionDigits: 2 });
+        return currency === 'ILS' || currency === 'USD' ? `${symbol}${num}` : `${num} ${symbol}`;
+    }
+
+    async function loadMarketplaceStats() {
+        try {
+            const data = await apiGet('/api/marketplace/stats');
+            document.getElementById('mp-total-items').textContent = data.total_items ?? 0;
+            document.getElementById('mp-total-orders').textContent = data.total_orders ?? 0;
+            document.getElementById('mp-active-sellers').textContent = data.active_sellers ?? 0;
+        } catch (e) {
+            console.error('[Marketplace] stats error:', e);
+        }
+    }
+
+    async function loadMarketplaceItems() {
+        const grid = document.getElementById('marketplace-grid');
+        grid.innerHTML = '<div class="mp-empty"><i class="fas fa-spinner fa-spin"></i> טוען פריטים...</div>';
+        try {
+            const qs = mpCurrentCategory ? `?category=${encodeURIComponent(mpCurrentCategory)}` : '';
+            const data = await apiGet(`/api/marketplace/items${qs}`);
+            mpItems = data.items || [];
+            renderMarketplaceGrid();
+        } catch (e) {
+            console.error('[Marketplace] items error:', e);
+            grid.innerHTML = '<div class="mp-empty"><i class="fas fa-exclamation-triangle"></i> שגיאה בטעינת החנות</div>';
+        }
+    }
+
+    function renderMarketplaceGrid() {
+        const grid = document.getElementById('marketplace-grid');
+        if (!mpItems.length) {
+            grid.innerHTML = `
+                <div class="mp-empty">
+                    <i class="fas fa-store-slash" style="font-size:42px;opacity:0.35;display:block;margin-bottom:12px"></i>
+                    אין פריטים להצגה עדיין.<br><small>היו הראשונים להעלות פריט לחנות!</small>
+                </div>`;
+            return;
+        }
+        grid.innerHTML = mpItems.map(item => {
+            const soldOut = item.status === 'sold_out' || item.stock === 0;
+            const catIcon = CATEGORY_ICONS[item.category] || 'fa-tag';
+            const img = item.image_url
+                ? `<img src="${escapeAttr(item.image_url)}" alt="${escapeAttr(item.title)}" onerror="this.style.display='none';this.parentElement.innerHTML='<i class=\\'fas ${catIcon} mp-placeholder-icon\\'></i>'">`
+                : `<i class="fas ${catIcon} mp-placeholder-icon"></i>`;
+            return `
+                <div class="mp-card" onclick="openMarketplaceItem(${item.id})">
+                    <div class="mp-card-image">${img}</div>
+                    <div class="mp-card-body">
+                        <span class="mp-card-category">${escapeHtml(item.category)}</span>
+                        <div class="mp-card-title">${escapeHtml(item.title)}</div>
+                        <div class="mp-card-seller">@${escapeHtml(item.seller_name || 'user' + item.seller_id)}</div>
+                        <div class="mp-card-price">
+                            ${formatPrice(item.price, item.currency)}
+                            ${soldOut ? '<span class="mp-card-sold-out">אזל</span>' : ''}
+                        </div>
+                    </div>
+                </div>`;
+        }).join('');
+    }
+
+    function escapeHtml(s) {
+        return String(s ?? '').replace(/[&<>"']/g, c => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[c]));
+    }
+    function escapeAttr(s) { return escapeHtml(s); }
+
+    async function openMarketplaceItem(itemId) {
+        const modal = document.getElementById('mp-item-modal');
+        const titleEl = document.getElementById('mp-item-title');
+        const details = document.getElementById('mp-item-details');
+        titleEl.textContent = 'טוען...';
+        details.innerHTML = '<div class="mp-empty"><i class="fas fa-spinner fa-spin"></i></div>';
+        modal.hidden = false;
+        try {
+            const item = await apiGet(`/api/marketplace/items/${itemId}`);
+            titleEl.textContent = item.title;
+            const user = getUser();
+            const isOwnItem = user && user.telegram_id === item.seller_id;
+            const soldOut = item.status === 'sold_out' || item.stock === 0;
+            const catIcon = CATEGORY_ICONS[item.category] || 'fa-tag';
+            const img = item.image_url
+                ? `<img src="${escapeAttr(item.image_url)}" class="mp-detail-image" onerror="this.style.display='none'">`
+                : `<div class="mp-card-image" style="border-radius:12px;margin-bottom:16px"><i class="fas ${catIcon} mp-placeholder-icon"></i></div>`;
+            details.innerHTML = `
+                ${img}
+                <div class="mp-detail-desc">${escapeHtml(item.description || 'אין תיאור')}</div>
+                <div class="mp-detail-row">
+                    <span class="mp-detail-label">מחיר</span>
+                    <span class="mp-detail-value" style="color:var(--accent);font-size:18px">${formatPrice(item.price, item.currency)}</span>
+                </div>
+                <div class="mp-detail-row">
+                    <span class="mp-detail-label">קטגוריה</span>
+                    <span class="mp-detail-value">${escapeHtml(item.category)}</span>
+                </div>
+                <div class="mp-detail-row">
+                    <span class="mp-detail-label">מלאי</span>
+                    <span class="mp-detail-value">${item.stock}</span>
+                </div>
+                <div class="mp-detail-row">
+                    <span class="mp-detail-label">מוכר</span>
+                    <span class="mp-detail-value">@${escapeHtml(item.seller_name || 'user' + item.seller_id)}</span>
+                </div>
+                <button class="mp-buy-btn" id="mp-buy-action"
+                    ${!user ? 'disabled' : ''}
+                    ${isOwnItem ? 'disabled' : ''}
+                    ${soldOut ? 'disabled' : ''}>
+                    ${!user ? 'התחבר כדי לרכוש'
+                      : isOwnItem ? 'זה הפריט שלך'
+                      : soldOut ? 'אזל מהמלאי'
+                      : `<i class="fas fa-shopping-cart"></i> רכוש עכשיו`}
+                </button>`;
+            const buyBtn = document.getElementById('mp-buy-action');
+            if (buyBtn && user && !isOwnItem && !soldOut) {
+                buyBtn.addEventListener('click', () => buyMarketplaceItem(item.id, buyBtn));
+            }
+        } catch (e) {
+            console.error('[Marketplace] item detail error:', e);
+            details.innerHTML = '<div class="mp-empty">שגיאה בטעינת הפריט</div>';
+        }
+    }
+
+    async function buyMarketplaceItem(itemId, btn) {
+        const user = getUser();
+        if (!user) { alert('עליך להתחבר כדי לרכוש'); return; }
+        if (!confirm('לאשר רכישת הפריט?')) return;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> מעבד...';
+        try {
+            const result = await apiPost('/api/marketplace/buy', {
+                buyer_id: user.telegram_id,
+                item_id: itemId,
+                quantity: 1
+            });
+            if (result.ok) {
+                alert(`הזמנה #${result.order_id} נוצרה!\nסה"כ: ${formatPrice(result.total_price, result.currency)}\n\n${result.message}`);
+                document.getElementById('mp-item-modal').hidden = true;
+                loadMarketplaceItems();
+                loadMarketplaceStats();
+            } else {
+                alert(result.message || 'שגיאה ביצירת ההזמנה');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-shopping-cart"></i> רכוש עכשיו';
+            }
+        } catch (e) {
+            console.error('[Marketplace] buy error:', e);
+            alert('שגיאה: ' + (e.message || 'לא ניתן לבצע את הרכישה'));
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-shopping-cart"></i> רכוש עכשיו';
+        }
+    }
+
+    async function submitNewListing(e) {
+        e.preventDefault();
+        const user = getUser();
+        if (!user) { alert('עליך להתחבר כדי לפרסם פריט'); return; }
+
+        const form = e.target;
+        const fd = new FormData(form);
+        // Prefer uploaded base64 image, fall back to external URL
+        const imageValue = mpPendingImage || fd.get('image_url') || '';
+        const payload = {
+            seller_id: user.telegram_id,
+            title: fd.get('title'),
+            description: fd.get('description') || '',
+            price: parseFloat(fd.get('price')),
+            currency: fd.get('currency'),
+            category: fd.get('category'),
+            stock: parseInt(fd.get('stock'), 10) || 1,
+            image_url: imageValue,
+            promotion: fd.get('promotion') || 'none'
+        };
+        const btn = form.querySelector('.mp-submit-btn');
+        btn.disabled = true;
+        btn.textContent = 'מפרסם...';
+        try {
+            const result = await apiPost('/api/marketplace/list', payload);
+            if (result.ok) {
+                alert(result.message || 'הפריט הועלה בהצלחה!');
+                form.reset();
+                clearMpImage();
+                document.getElementById('mp-new-modal').hidden = true;
+                loadMarketplaceItems();
+                loadMarketplaceStats();
+            } else {
+                alert('שגיאה: ' + (result.message || 'לא ניתן לפרסם'));
+            }
+        } catch (e) {
+            console.error('[Marketplace] list error:', e);
+            alert('שגיאה: ' + (e.message || 'לא ניתן לפרסם את הפריט'));
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'פרסם';
+        }
+    }
+
+    /* ── Marketplace: View switching ── */
+    document.getElementById('view-switch').addEventListener('click', (e) => {
+        const btn = e.target.closest('.view-btn');
+        if (!btn) return;
+        const view = btn.dataset.view;
+        document.querySelectorAll('.view-btn').forEach(b => b.classList.toggle('active', b === btn));
+        document.getElementById('view-feed').classList.toggle('active', view === 'feed');
+        document.getElementById('view-feed').hidden = view !== 'feed';
+        document.getElementById('view-marketplace').classList.toggle('active', view === 'marketplace');
+        document.getElementById('view-marketplace').hidden = view !== 'marketplace';
+        if (view === 'marketplace') {
+            loadMarketplaceStats();
+            loadMarketplaceItems();
+        }
+    });
+
+    /* ── Marketplace: Category filter ── */
+    document.getElementById('mp-filter-tabs').addEventListener('click', (e) => {
+        const tab = e.target.closest('.filter-tab');
+        if (!tab) return;
+        document.querySelectorAll('#mp-filter-tabs .filter-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        mpCurrentCategory = tab.dataset.mpCategory || '';
+        loadMarketplaceItems();
+    });
+
+    /* ── Marketplace: New listing modal ── */
+    document.getElementById('mp-new-listing-btn').addEventListener('click', () => {
+        const user = getUser();
+        if (!user) { alert('עליך להתחבר כדי לפרסם פריט'); return; }
+        document.getElementById('mp-new-modal').hidden = false;
+    });
+    document.getElementById('mp-modal-close').addEventListener('click', () => {
+        document.getElementById('mp-new-modal').hidden = true;
+    });
+    document.getElementById('mp-new-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'mp-new-modal') e.target.hidden = true;
+    });
+    document.getElementById('mp-new-form').addEventListener('submit', submitNewListing);
+
+    /* ── Marketplace: Item details modal close ── */
+    document.getElementById('mp-item-close').addEventListener('click', () => {
+        document.getElementById('mp-item-modal').hidden = true;
+    });
+    document.getElementById('mp-item-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'mp-item-modal') e.target.hidden = true;
+    });
+
+    /* ── Init ── */
+    // Enrich user data from API (fix "User" display name issue)
+    async function enrichUserFromAPI() {
+        const user = getUser();
+        if (!user || !user.id) return;
+        try {
+            const r = await fetch(API + '/api/user/' + user.id);
+            if (!r.ok) return;
+            const d = await r.json();
+            if (d.user) {
+                // Update localStorage with real data from DB
+                if (d.user.username && d.user.username !== '') user.username = d.user.username;
+                if (d.user.first_name && d.user.first_name !== 'User') user.first_name = d.user.first_name;
+                if (d.user.display_name) user.display_name = d.user.display_name;
+                if (d.user.photo_url) user.photo_url = d.user.photo_url;
+                if (d.user.is_registered) user.is_registered = true;
+                // Fix: ensure username is not empty for posting
+                if (!user.username || user.username === '') {
+                    user.username = user.first_name || user.display_name || 'User_' + user.id;
+                }
+                localStorage.setItem('slh_user', JSON.stringify(user));
+            }
+        } catch(e) { console.warn('[community] enrich error:', e); }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        initShared({ activePage: 'community', showBottomNav: true });
+        await enrichUserFromAPI(); // Fix user identity before rendering
+        renderAuthSection();
+        loadPostsFromAPI();
+        loadTopSudoku();
+        loadAicWidget();
+        if (typeof renderDateWidget === 'function') renderDateWidget('community-date-widget');
+
+        // Auto-refresh posts every 45s
+        setInterval(loadPostsFromAPI, 45000);
+        setInterval(loadTopSudoku, 120000);  // 2min
+        setInterval(loadAicWidget, 60000);   // 1min
+    });
+    </script>
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260426e"></script>
+</body>
+</html>

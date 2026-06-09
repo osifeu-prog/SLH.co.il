@@ -1,0 +1,244 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH Investment Tracker — מעקב פקדון + ריבית דה ריבית</title>
+<meta name="description" content="מעקב חי על פקדונות עם חישוב ריבית דה ריבית אוטומטי.">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{--bg:#050810;--bg2:#0d1220;--gold:#ffd700;--green:#00e887;--red:#ff4444;--blue:#3b82f6;--purple:#a855f7;--cyan:#06b6d4;--text:#f5f5f8;--text2:#9ba0b5;--text3:#5a6078;--border:rgba(0,232,135,.3)}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Rubik',sans-serif;margin:0;min-height:100vh;line-height:1.6}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(ellipse at 20% 10%,rgba(0,232,135,.08),transparent 50%),radial-gradient(ellipse at 85% 75%,rgba(255,215,0,.06),transparent 50%)}
+.container{max-width:900px;margin:30px auto;padding:0 20px}
+.header{text-align:center;margin-bottom:30px}
+.header h1{font-size:32px;font-weight:900;background:linear-gradient(135deg,var(--green),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent;margin:0 0 8px}
+.header p{color:var(--text2);font-size:14px;margin:0}
+.deposit-card{background:linear-gradient(135deg,rgba(0,232,135,.08),rgba(255,215,0,.04));border:2px solid var(--green);border-radius:24px;padding:32px;margin-bottom:20px;position:relative;overflow:hidden}
+.deposit-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--green),var(--gold),var(--green));animation:shimmer 3s ease-in-out infinite}
+@keyframes shimmer{50%{opacity:.5}}
+.test-badge{display:inline-block;padding:4px 12px;background:var(--blue);color:#fff;border-radius:12px;font-size:11px;font-weight:800;margin-bottom:14px}
+.main-value{text-align:center;margin-bottom:20px}
+.main-value .lbl{font-size:12px;color:var(--text2);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px}
+.main-value .amount{font-size:56px;font-weight:900;color:var(--gold);font-family:'JetBrains Mono',monospace;line-height:1}
+.main-value .currency{font-size:16px;color:var(--text2);margin-right:8px}
+.interest-box{background:var(--bg2);border:1px solid var(--green);border-radius:16px;padding:20px;text-align:center;margin:20px 0}
+.interest-box .lbl{font-size:12px;color:var(--text2);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px}
+.interest-box .amount{font-size:36px;font-weight:900;color:var(--green);font-family:'JetBrains Mono',monospace;line-height:1}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:20px}
+.stat{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+.stat .v{font-size:18px;font-weight:900;color:var(--gold);font-family:'JetBrains Mono',monospace;line-height:1}
+.stat .l{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-top:6px}
+.progress-bar{width:100%;height:10px;background:var(--bg2);border-radius:5px;overflow:hidden;margin:20px 0}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--gold));transition:width 1s ease}
+.info-section{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:20px;margin-top:18px}
+.info-section h3{margin:0 0 14px;font-size:16px;color:var(--gold);font-weight:900}
+.info-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:13px}
+.info-row:last-child{border:none}
+.info-row .lbl{color:var(--text2)}
+.info-row .val{color:var(--text);font-weight:700;font-family:'JetBrains Mono',monospace}
+.reminder-note{background:rgba(255,215,0,.08);border:1px solid var(--gold);border-radius:14px;padding:16px;margin-top:18px;font-size:13px;color:var(--text)}
+.cta-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px}
+.btn{padding:12px 22px;background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:12px;text-decoration:none;font-weight:700;font-size:13px;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{border-color:var(--gold)}
+.btn.primary{background:linear-gradient(135deg,var(--green),var(--gold));color:#000;border:none}
+.login-gate{max-width:420px;margin:80px auto;padding:36px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;text-align:center}
+.login-gate h2{color:var(--green);margin-bottom:14px}
+.login-gate input{width:100%;padding:13px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;font-size:16px;margin-bottom:12px;font-family:inherit}
+.login-gate button{width:100%;padding:14px;background:var(--green);color:#000;border:none;border-radius:12px;font-size:15px;font-weight:900;cursor:pointer;font-family:inherit}
+.hebrew-date{text-align:center;color:var(--text3);font-size:12px;padding:20px;margin-top:20px;border-top:1px solid var(--border)}
+.chart-section{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:20px;margin-top:18px}
+#growth-chart{width:100%;height:180px;display:block}
+</style>
+</head>
+<body>
+
+<div id="login-gate" class="login-gate" style="display:none">
+  <h2>💰 Investment Tracker</h2>
+  <p style="color:var(--text2);font-size:13px;margin-bottom:16px">הזן User ID שלך כדי לראות את הפקדונות</p>
+  <input type="number" id="uid-input" placeholder="User ID (מספר טלגרם)">
+  <button onclick="login()">הצג הפקדות</button>
+  <p style="margin-top:14px;font-size:11px;color:var(--text3)">ה-User ID שלך מופיע ב-@SLH_community_bot בפקודה /whoami</p>
+</div>
+
+<div id="main" style="display:none">
+  <div class="container">
+    <div class="header">
+      <h1>💰 מעקב פקדון</h1>
+      <p id="user-subtitle">טוען...</p>
+    </div>
+
+    <div id="deposits-container"></div>
+
+    <div class="cta-row">
+      <a href="#" onclick="switchUser()" class="btn"><i class="fas fa-user"></i> החלף משתמש</a>
+      <button onclick="refreshAll()" class="btn primary"><i class="fas fa-sync"></i> רענן נתונים</button>
+      <a href="/promo-shekel.html" class="btn"><i class="fas fa-fire"></i> הוסף עוד</a>
+    </div>
+
+    <div class="hebrew-date" id="hebrew-date"></div>
+  </div>
+</div>
+
+<script>
+const API = 'https://slh-api-production.up.railway.app';
+
+function login(){
+  const uid = document.getElementById('uid-input').value.trim();
+  if(uid && /^\d+$/.test(uid)){
+    localStorage.setItem('slh_my_user_id', uid);
+    checkAuth();
+  } else {
+    alert('User ID חייב להיות מספר');
+  }
+}
+
+function switchUser(){
+  localStorage.removeItem('slh_my_user_id');
+  checkAuth();
+}
+
+function checkAuth(){
+  const urlUid = new URLSearchParams(location.search).get('uid');
+  const uid = urlUid || localStorage.getItem('slh_my_user_id');
+  if(uid){
+    document.getElementById('login-gate').style.display = 'none';
+    document.getElementById('main').style.display = 'block';
+    refreshAll();
+    setInterval(refreshAll, 60000);
+  } else {
+    document.getElementById('login-gate').style.display = 'block';
+    document.getElementById('main').style.display = 'none';
+  }
+}
+
+async function refreshAll(){
+  const uid = new URLSearchParams(location.search).get('uid') || localStorage.getItem('slh_my_user_id');
+  if(!uid) return;
+  document.getElementById('user-subtitle').textContent = `User #${uid} · עדכון אחרון: ${new Date().toLocaleTimeString('he-IL')}`;
+
+  try {
+    const r = await fetch(`${API}/api/deposits/user/${uid}`);
+    const d = await r.json();
+    render(d);
+  } catch(e){
+    document.getElementById('deposits-container').innerHTML =
+      `<div class="deposit-card" style="text-align:center"><p>שגיאה בטעינה: ${e.message}</p></div>`;
+  }
+}
+
+function render(d){
+  const container = document.getElementById('deposits-container');
+  const deposits = d.deposits || [];
+
+  if(deposits.length === 0){
+    container.innerHTML = `
+      <div class="deposit-card" style="text-align:center">
+        <div style="font-size:48px;margin-bottom:14px">📭</div>
+        <h3 style="margin:0 0 8px">אין עדיין פקדונות</h3>
+        <p style="color:var(--text2);margin:0 0 18px">פנה לברוקר שלך או למנהל לפתיחת פקדון ראשון</p>
+        <a href="https://t.me/Grdian_bot" target="_blank" class="btn primary">
+          <i class="fab fa-telegram"></i> פנה לתמיכה
+        </a>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = deposits.map(dep => {
+    const progress = Math.min(100, (dep.months_elapsed / dep.term_months) * 100).toFixed(1);
+    const isTest = dep.is_test;
+    const color = dep.current_value >= dep.principal * 1.04 ? 'var(--green)' : 'var(--gold)';
+    return `
+      <div class="deposit-card">
+        ${isTest ? '<div class="test-badge">🧪 בדיקה</div>' : ''}
+
+        <div class="main-value">
+          <div class="lbl">ערך נוכחי (כולל ריבית)</div>
+          <div class="amount" style="color:${color}">
+            <span class="currency">$</span>${dep.current_value?.toLocaleString() || '0'}
+          </div>
+        </div>
+
+        <div class="interest-box">
+          <div class="lbl">רווח מצטבר · ריבית דה ריבית</div>
+          <div class="amount">+$${(dep.interest_accrued || 0).toFixed(4)}</div>
+        </div>
+
+        <div class="progress-bar">
+          <div class="progress-fill" style="width:${progress}%"></div>
+        </div>
+        <div style="text-align:center;font-size:12px;color:var(--text2);margin-top:-10px;margin-bottom:10px">
+          ${progress}% מתוך התקופה · נותרו ${Math.max(0, dep.term_months - dep.months_elapsed).toFixed(2)} חודשים
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat">
+            <div class="v">$${dep.principal}</div>
+            <div class="l">קרן</div>
+          </div>
+          <div class="stat">
+            <div class="v">${dep.monthly_rate_pct}%</div>
+            <div class="l">ריבית חודשית</div>
+          </div>
+          <div class="stat">
+            <div class="v">${dep.term_months}ח'</div>
+            <div class="l">תקופה</div>
+          </div>
+          <div class="stat">
+            <div class="v">${dep.compounding || 'monthly'}</div>
+            <div class="l">דריכה</div>
+          </div>
+          <div class="stat">
+            <div class="v">${dep.slh_received || 0}</div>
+            <div class="l">SLH שהתקבל</div>
+          </div>
+          <div class="stat">
+            <div class="v">${dep.days_elapsed?.toFixed(0) || 0}</div>
+            <div class="l">ימים עברו</div>
+          </div>
+        </div>
+
+        <div class="info-section">
+          <h3>📊 פרטי הפקדון</h3>
+          <div class="info-row"><span class="lbl">מזהה פקדון:</span> <span class="val">#${dep.id}</span></div>
+          <div class="info-row"><span class="lbl">הופקד בתאריך:</span> <span class="val">${new Date(dep.deposited_at).toLocaleDateString('he-IL')}</span></div>
+          <div class="info-row"><span class="lbl">תאריך פדיון:</span> <span class="val">${dep.maturity_at ? new Date(dep.maturity_at).toLocaleDateString('he-IL') : '—'}</span></div>
+          <div class="info-row"><span class="lbl">סטטוס:</span> <span class="val">${dep.status}</span></div>
+          ${dep.notes ? `<div class="info-row"><span class="lbl">הערות:</span> <span class="val">${dep.notes}</span></div>` : ''}
+        </div>
+
+        ${isTest && dep.months_elapsed >= 0.23 ? `
+          <div class="reminder-note">
+            <strong>⏰ תזכורת:</strong> עברו 7+ ימים מאז הפקדון הראשוני.
+            הגיע הזמן להפקיד עוד $999 כדי להתחיל את הפקדון הראשי של 2 חודשים (ריבית 4% חודשי).
+            <br><br>
+            <a href="https://t.me/Grdian_bot" target="_blank" class="btn primary" style="margin-top:10px">
+              <i class="fab fa-telegram"></i> פנה לאדמין
+            </a>
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+function updateHebDate(){
+  try{
+    const now = new Date();
+    const heb = new Intl.DateTimeFormat('he-IL-u-ca-hebrew',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(now);
+    const greg = new Intl.DateTimeFormat('he-IL',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(now);
+    document.getElementById('hebrew-date').textContent = `📅 ${heb} · ${greg} · ${now.toLocaleTimeString('he-IL')}`;
+  }catch(e){}
+}
+setInterval(updateHebDate, 1000);
+updateHebDate();
+
+checkAuth();
+</script>
+<script src="/js/ai-assistant.js"></script>
+</body>
+</html>

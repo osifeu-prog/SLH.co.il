@@ -1,0 +1,1074 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLH Spark Guides — Step-by-Step Tutorials</title>
+    <meta name="description" content="Complete guides for SLH Ecosystem - how to invest, stake, transfer tokens, use bots, manage inventory, and earn referral commissions.">
+    <link rel="canonical" href="https://slh-nft.com/guides.html">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://slh-nft.com/guides.html">
+    <meta property="og:title" content="SLH Guides - Step-by-step Tutorials">
+    <meta property="og:description" content="Learn how to use every part of the SLH ecosystem">
+    <meta property="og:image" content="https://slh-nft.com/assets/og/guides.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="he_IL">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SLH Guides - Step-by-step Tutorials">
+    <meta name="twitter:description" content="Learn how to use every part of the SLH ecosystem">
+    <meta name="twitter:image" content="https://slh-nft.com/assets/og/guides.png">
+    <link rel="icon" type="image/png" href="/favicon-32.png">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/shared.css?v=20260426e">
+    <style>
+        :root{--bg:#0a0a0a;--accent:#00ff41;--accent2:#39ff14;--cyan:#00e5ff;--gold:#ffd700;--red:#ff0055;--text:#00ff41;--text2:#008f11;--border:rgba(0,255,65,.15);--font:'Space Mono','Courier New',monospace}
+        /* Theme overrides — controlled by FAB */
+        [data-theme="dark"]{--bg:#0b0e16;--accent:#00b4d8;--accent2:#90e0ef;--cyan:#00e5ff;--gold:#ffd700;--text:#e8e8f0;--text2:#8a8aa0;--border:rgba(0,180,216,.2);--font:'Inter',system-ui,sans-serif}
+        [data-theme="light"]{--bg:#f8f9fb;--accent:#0066cc;--accent2:#0052a3;--cyan:#0077aa;--gold:#b8860b;--text:#1a1a1a;--text2:#555;--border:rgba(0,102,204,.2);--font:'Inter',system-ui,sans-serif}
+        [data-theme="cyberpunk"]{--bg:#0a0014;--accent:#ff00ff;--accent2:#00ffff;--cyan:#00ffff;--gold:#ffff00;--text:#ff00ff;--text2:#cc00cc;--border:rgba(255,0,255,.3);--font:'Space Mono',monospace}
+        [data-theme="ocean"]{--bg:#001e3c;--accent:#00d9ff;--accent2:#0099cc;--cyan:#00d9ff;--gold:#ffd700;--text:#b8e6ff;--text2:#6bb6cc;--border:rgba(0,217,255,.2);--font:'Inter',system-ui,sans-serif}
+        [data-theme="sunset"]{--bg:#1a0a14;--accent:#ff6b6b;--accent2:#ffa07a;--cyan:#ffd93d;--gold:#ffb703;--text:#ffe5d9;--text2:#c9a88a;--border:rgba(255,107,107,.2);--font:'Inter',system-ui,sans-serif}
+        [data-theme="crypto"]{--bg:#0d1117;--accent:#f7931a;--accent2:#ffb14e;--cyan:#00d4ff;--gold:#ffd700;--text:#e8e8f0;--text2:#8a8aa0;--border:rgba(247,147,26,.2);--font:'Inter',system-ui,sans-serif}
+        /* Theme FAB — above the AI FAB to avoid overlap */
+        #theme-fab{position:fixed;bottom:94px;left:24px;z-index:9997;background:var(--accent);color:#000;width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;font-size:20px;box-shadow:0 4px 16px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center}
+        #theme-panel{position:fixed;bottom:150px;left:24px;z-index:9998;background:var(--bg);border:1px solid var(--border);padding:16px;border-radius:12px;display:none;flex-direction:column;gap:6px;max-width:220px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+        #theme-panel.open{display:flex}
+        #theme-panel button{background:var(--bg);border:1px solid var(--border);color:var(--text);padding:10px 14px;cursor:pointer;font-size:12px;text-align:right;font-family:inherit;border-radius:6px;transition:all .2s}
+        #theme-panel button:hover{background:var(--accent);color:#000;transform:translateX(-4px)}
+        #theme-panel .title{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.8}
+        body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.03) 0px,rgba(0,0,0,.03) 1px,transparent 1px,transparent 3px);pointer-events:none;z-index:9999}
+        .g{max-width:860px;margin:0 auto;padding:40px 24px 80px}
+        .back{display:inline-flex;align-items:center;gap:6px;color:var(--text2);text-decoration:none;font-size:13px;margin-bottom:32px}.back:hover{color:var(--accent)}
+        h1{font-size:clamp(24px,4vw,40px);font-weight:700;margin-bottom:8px;color:var(--accent);text-shadow:0 0 20px rgba(0,255,65,.2)}
+        .subtitle{font-size:15px;color:var(--text2);margin-bottom:40px}
+        .toc{background:rgba(0,255,65,.02);border:1px solid var(--border);padding:24px;margin-bottom:40px}
+        .toc h3{font-size:13px;color:var(--accent);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px}
+        .toc a{display:block;color:var(--text2);text-decoration:none;font-size:14px;padding:4px 0;transition:.3s}
+        .toc a:hover{color:var(--accent);padding-right:8px}
+        .toc a::before{content:'> ';color:var(--accent);opacity:.5}
+        h2{font-size:22px;color:var(--accent);margin:48px 0 16px;padding-top:20px;border-top:1px solid var(--border)}
+        h2 .num{color:var(--text2);margin-left:8px;font-size:14px}
+        h3{font-size:16px;color:var(--cyan);margin:24px 0 8px}
+        p{font-size:14px;color:var(--text);margin-bottom:12px}
+        .step{background:rgba(0,255,65,.02);border:1px solid var(--border);padding:20px;margin:16px 0;position:relative;padding-right:40px}
+        .step::before{content:attr(data-step);position:absolute;top:12px;right:12px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border:1px solid var(--accent);color:var(--accent);font-size:14px;font-weight:700}
+        .step-title{font-size:14px;font-weight:700;color:var(--accent);margin-bottom:6px}
+        .step p{font-size:13px;color:var(--text2);margin:0}
+        code{background:rgba(0,255,65,.08);padding:2px 8px;color:var(--accent);font-size:13px}
+        .warn{background:rgba(255,0,85,.05);border:1px solid rgba(255,0,85,.2);padding:14px;margin:16px 0;font-size:13px;color:var(--red)}
+        .warn::before{content:'WARNING: ';font-weight:700}
+        .tip{background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.2);padding:14px;margin:16px 0;font-size:13px;color:var(--cyan)}
+        .tip::before{content:'TIP: ';font-weight:700}
+        .guide-card{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin:24px 0}
+        .guide-card a{background:rgba(0,255,65,.02);border:1px solid var(--border);padding:20px;text-decoration:none;color:var(--text);transition:.3s}
+        .guide-card a:hover{border-color:var(--accent);box-shadow:0 0 15px rgba(0,255,65,.1)}
+        .guide-card .icon{font-size:28px;margin-bottom:8px}
+        .guide-card .title{font-size:14px;font-weight:700;color:var(--accent);margin-bottom:4px}
+        .guide-card .desc{font-size:12px;color:var(--text2)}
+        .footer-links{display:flex;gap:20px;flex-wrap:wrap;margin-top:48px;padding-top:20px;border-top:1px solid var(--border)}
+        .footer-links a{color:var(--text2);text-decoration:none;font-size:12px}.footer-links a:hover{color:var(--accent)}
+        @media(max-width:768px){.step{padding-right:20px}.step::before{position:static;margin-bottom:8px}}
+        .lang-bar{display:flex;gap:8px;justify-content:center;margin-bottom:32px;flex-wrap:wrap}
+        .lang-btn{background:rgba(0,255,65,.05);border:1px solid var(--border);color:var(--text2);padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);transition:.3s}
+        .lang-btn:hover,.lang-btn.active{background:var(--accent);color:#000;border-color:var(--accent)}
+        html[dir="ltr"] .toc a:hover{padding-right:0;padding-left:8px}
+        html[dir="ltr"] .step{padding-right:20px;padding-left:40px}
+        html[dir="ltr"] .step::before{right:auto;left:12px}
+        html[dir="ltr"] h2 .num{margin-left:0;margin-right:8px}
+    </style>
+</head>
+<body>
+<div id="topnav-root"></div>
+<div id="ticker-root"></div>
+
+<div class="g">
+    <div class="lang-bar">
+        <button class="lang-btn" onclick="setLang('he')">🇮🇱 HE</button>
+        <button class="lang-btn" onclick="setLang('en')">🇺🇸 EN</button>
+        <button class="lang-btn" onclick="setLang('ru')">🇷🇺 RU</button>
+        <button class="lang-btn" onclick="setLang('ar')">🇸🇦 AR</button>
+        <button class="lang-btn" onclick="setLang('fr')">🇫🇷 FR</button>
+    </div>
+    <a href="/" class="back" data-i18n="g_back">&larr; Back to SLH Ecosystem</a>
+
+    <h1 data-i18n="g_title">[ USER GUIDES ]</h1>
+    <div class="subtitle" data-i18n="g_subtitle">Step-by-step tutorials for every feature in the SLH Ecosystem</div>
+
+    <!-- QUICK LINKS -->
+    <div class="guide-card">
+        <a href="#getting-started"><div class="icon">🚀</div><div class="title" data-i18n="qc_start_t">Getting Started</div><div class="desc" data-i18n="qc_start_d">First steps, creating account, understanding the ecosystem</div></a>
+        <a href="#investment"><div class="icon">💎</div><div class="title" data-i18n="qc_invest_t">Investment Guide</div><div class="desc" data-i18n="qc_invest_d">Deposits, staking plans, earning returns</div></a>
+        <a href="#wallet"><div class="icon">💰</div><div class="title" data-i18n="qc_wallet_t">Wallet & Transfers</div><div class="desc" data-i18n="qc_wallet_d">Managing tokens, sending, receiving</div></a>
+        <a href="#referral"><div class="icon">👥</div><div class="title" data-i18n="qc_ref_t">Referral Network</div><div class="desc" data-i18n="qc_ref_d">Building your network, earning commissions</div></a>
+        <a href="#shop"><div class="icon">🛒</div><div class="title" data-i18n="qc_shop_t">OsifShop Guide</div><div class="desc" data-i18n="qc_shop_d">Inventory management, barcode scanning</div></a>
+        <a href="#dashboard"><div class="icon">📊</div><div class="title" data-i18n="qc_dash_t">Dashboard Guide</div><div class="desc" data-i18n="qc_dash_d">Web dashboard, portfolio, staking UI</div></a>
+        <a href="#nft"><div class="icon">🎨</div><div class="title" data-i18n="qc_nft_t">NFT Marketplace</div><div class="desc" data-i18n="qc_nft_d">Buying, selling, virtual pets</div></a>
+        <a href="#security"><div class="icon">🛡️</div><div class="title" data-i18n="qc_sec_t">Security Guide</div><div class="desc" data-i18n="qc_sec_d">Protecting your account, KYC, PIN</div></a>
+    </div>
+
+    <!-- TABLE OF CONTENTS -->
+    <div class="toc">
+        <h3 data-i18n="toc_title">Table of Contents</h3>
+        <a href="#getting-started" data-i18n="toc_1">1. Getting Started</a>
+        <a href="#find-id" data-i18n="toc_2">2. How to Find Your Telegram ID</a>
+        <a href="#investment" data-i18n="toc_3">3. Investment Guide (SLH_AIR_bot)</a>
+        <a href="#staking" data-i18n="toc_4">4. Staking Plans Explained</a>
+        <a href="#wallet" data-i18n="toc_5">5. Wallet & Token Transfers</a>
+        <a href="#referral" data-i18n="toc_6">6. Referral Network (10 Generations)</a>
+        <a href="#shop" data-i18n="toc_7">7. OsifShop - Inventory SaaS</a>
+        <a href="#dashboard" data-i18n="toc_8">8. Web Dashboard</a>
+        <a href="#nft" data-i18n="toc_9">9. NFT Marketplace</a>
+        <a href="#games" data-i18n="toc_10">10. Games & ZVK Tokens</a>
+        <a href="#security" data-i18n="toc_11">11. Security Best Practices</a>
+        <a href="#faq" data-i18n="toc_12">12. FAQ</a>
+    </div>
+
+    <!-- 1. GETTING STARTED -->
+    <h2 id="getting-started"><span data-i18n="s1_title">Getting Started</span> <span class="num">#01</span></h2>
+    <p data-i18n="s1_intro">Welcome to the SLH Ecosystem. Here is how to start using the platform in 3 minutes.</p>
+
+    <div class="step" data-step="1">
+        <div class="step-title" data-i18n="s1_s1t">Open Telegram</div>
+        <p data-i18n="s1_s1p">Download Telegram from telegram.org if you do not have it. Available on iOS, Android, Desktop, and Web.</p>
+    </div>
+    <div class="step" data-step="2">
+        <div class="step-title" data-i18n="s1_s2t">Find our main bot</div>
+        <p>
+            <span data-i18n="s1_s2p">Search for @SLH_AIR_bot in Telegram, or click:</span>
+            <a href="https://t.me/SLH_AIR_bot" style="color:var(--accent)">t.me/SLH_AIR_bot</a>
+        </p>
+    </div>
+    <div class="step" data-step="3">
+        <div class="step-title" data-i18n="s1_s3t">Send /start</div>
+        <p data-i18n="s1_s3p">The bot will greet you and show your dashboard with SLH and ZVK token balances. You can explore all free features immediately.</p>
+    </div>
+    <div class="step" data-step="4">
+        <div class="step-title" data-i18n="s1_s4t">Explore the menu</div>
+        <p data-i18n="s1_s4p">You will see buttons for: Market Prices, Investments, Wallet, Risk Management, Games, and Referrals. Try each one to understand the system.</p>
+    </div>
+
+    <div class="tip" data-i18n="s1_tip">All basic features are free. You only pay when you want to make real deposits or access premium features.</div>
+
+    <!-- 2. FIND YOUR ID -->
+    <h2 id="find-id"><span data-i18n="s2_title">How to Find Your Telegram ID</span> <span class="num">#02</span></h2>
+    <p data-i18n="s2_intro">Your Telegram ID is a unique number that identifies your account. You need it to log into the web dashboard.</p>
+
+    <h3 data-i18n="s2_m1">Method 1: Using @userinfobot (Easiest)</h3>
+    <div class="step" data-step="1">
+        <div class="step-title" data-i18n="s2_m1s1t">Open @userinfobot</div>
+        <p data-i18n="s2_m1s1p">Search for @userinfobot in Telegram and open the chat.</p>
+    </div>
+    <div class="step" data-step="2">
+        <div class="step-title" data-i18n="s2_m1s2t">Send /start</div>
+        <p data-i18n="s2_m1s2p">The bot will immediately reply with your ID, username, and name. Copy the number.</p>
+    </div>
+
+    <h3 data-i18n="s2_m2">Method 2: Using SLH_AIR_bot</h3>
+    <div class="step" data-step="1">
+        <div class="step-title" data-i18n="s2_m2s1t">Open @SLH_AIR_bot</div>
+        <p data-i18n="s2_m2s1p">Send /start to the bot. Your dashboard will show your current balances.</p>
+    </div>
+    <div class="step" data-step="2">
+        <div class="step-title" data-i18n="s2_m2s2t">Check the referral link</div>
+        <p data-i18n="s2_m2s2p">Click "Invite" in the menu. Your referral link contains your ID: t.me/SLH_AIR_bot?start=YOUR_ID</p>
+    </div>
+
+    <h3 data-i18n="s2_m3">Method 3: Using Telegram Settings</h3>
+    <p data-i18n="s2_m3p">On some Telegram clients, go to Settings and your ID may be shown under your profile. On Telegram Desktop, it might be visible in the API section.</p>
+
+    <!-- 3. INVESTMENT GUIDE -->
+    <h2 id="investment"><span data-i18n="s3_title">Investment Guide</span> <span class="num">#03</span></h2>
+    <p data-i18n="s3_intro">The SLH Investment House offers real cryptocurrency deposits with monthly returns.</p>
+
+    <h3 data-i18n="s3_how">How Deposits Work</h3>
+    <div class="step" data-step="1">
+        <div class="step-title" data-i18n="s3_s1t">Choose a plan</div>
+        <p data-i18n="s3_s1p">Send "Investments" in the bot menu. 4 plans available: Monthly (4%), Quarterly (4.5%), Semi-Annual (5%), Annual (5.4%).</p>
+    </div>
+    <div class="step" data-step="2">
+        <div class="step-title" data-i18n="s3_s2t">Send TON</div>
+        <p data-i18n="s3_s2p">Transfer TON cryptocurrency to the wallet address shown. Minimum depends on plan (1-25 TON).</p>
+    </div>
+    <div class="step" data-step="3">
+        <div class="step-title" data-i18n="s3_s3t">Send screenshot proof</div>
+        <p data-i18n="s3_s3p">Take a screenshot of your transfer confirmation and send it to the bot as a photo.</p>
+    </div>
+    <div class="step" data-step="4">
+        <div class="step-title" data-i18n="s3_s4t">Wait for approval</div>
+        <p data-i18n="s3_s4p">An admin will verify your payment and approve it. You will get a confirmation message.</p>
+    </div>
+    <div class="step" data-step="5">
+        <div class="step-title" data-i18n="s3_s5t">Earn monthly returns</div>
+        <p data-i18n="s3_s5p">Returns are calculated monthly and added to your account. Check with /mydeposits command.</p>
+    </div>
+
+    <div class="warn" data-i18n="s3_warn">Never invest more than you can afford to lose. Cryptocurrency investments carry risk. Past returns do not guarantee future results.</div>
+
+    <h3 data-i18n="s3_cmds">Useful Commands</h3>
+    <p><code>/deposit</code> - <span data-i18n="s3_cmd1">Start a new deposit</span></p>
+    <p><code>/mydeposits</code> - <span data-i18n="s3_cmd2">View your active deposits</span></p>
+    <p><code>/statement</code> - <span data-i18n="s3_cmd3">View your account statement</span></p>
+    <p><code>/portfolio</code> - <span data-i18n="s3_cmd4">View your full portfolio</span></p>
+    <p><code>/withdraw</code> - <span data-i18n="s3_cmd5">Request a withdrawal</span></p>
+
+    <!-- 4. STAKING -->
+    <h2 id="staking"><span data-i18n="s4_title">Staking Plans Explained</span> <span class="num">#04</span></h2>
+
+    <h3 data-i18n="s4_compare">Plan Comparison</h3>
+    <div style="overflow-x:auto">
+    <table style="width:100%;border-collapse:collapse;margin:16px 0">
+        <tr style="border-bottom:1px solid var(--border)">
+            <th style="text-align:left;padding:8px;color:var(--text2);font-size:11px" data-i18n="s4_th_plan">PLAN</th>
+            <th style="text-align:left;padding:8px;color:var(--text2);font-size:11px" data-i18n="s4_th_monthly">MONTHLY</th>
+            <th style="text-align:left;padding:8px;color:var(--text2);font-size:11px" data-i18n="s4_th_annual">ANNUAL</th>
+            <th style="text-align:left;padding:8px;color:var(--text2);font-size:11px" data-i18n="s4_th_lock">LOCK</th>
+            <th style="text-align:left;padding:8px;color:var(--text2);font-size:11px" data-i18n="s4_th_min">MIN</th>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(0,255,65,.05)"><td style="padding:8px;font-size:13px" data-i18n="s4_r1">Monthly</td><td style="padding:8px;color:var(--accent)">4%</td><td style="padding:8px">48%</td><td style="padding:8px" data-i18n="s4_30d">30 days</td><td style="padding:8px">1 TON</td></tr>
+        <tr style="border-bottom:1px solid rgba(0,255,65,.05)"><td style="padding:8px;font-size:13px" data-i18n="s4_r2">Quarterly</td><td style="padding:8px;color:var(--accent)">4.5%</td><td style="padding:8px">55%</td><td style="padding:8px" data-i18n="s4_90d">90 days</td><td style="padding:8px">5 TON</td></tr>
+        <tr style="border-bottom:1px solid rgba(0,255,65,.05)"><td style="padding:8px;font-size:13px" data-i18n="s4_r3">Semi-Annual</td><td style="padding:8px;color:var(--accent)">5%</td><td style="padding:8px">60%</td><td style="padding:8px" data-i18n="s4_180d">180 days</td><td style="padding:8px">10 TON</td></tr>
+        <tr><td style="padding:8px;font-size:13px" data-i18n="s4_r4">Annual</td><td style="padding:8px;color:var(--gold)">5.4%</td><td style="padding:8px;color:var(--gold)">Variable</td><td style="padding:8px" data-i18n="s4_365d">365 days</td><td style="padding:8px">25 TON</td></tr>
+    </table>
+    </div>
+
+    <div class="tip" data-i18n="s4_tip">The longer the lock period, the higher the return. Annual plan gives the best APY at Variable per year.</div>
+
+    <!-- 5. WALLET -->
+    <h2 id="wallet"><span data-i18n="s5_title">Wallet & Token Transfers</span> <span class="num">#05</span></h2>
+    <p data-i18n="s5_intro">The SLH ecosystem uses 4 types of tokens:</p>
+
+    <h3 data-i18n="s5_types">Token Types</h3>
+    <p><strong style="color:var(--accent)">TON</strong> - <span data-i18n="s5_ton">Real cryptocurrency. Used for deposits and withdrawals. Tradable on exchanges.</span></p>
+    <p><strong style="color:var(--gold)">SLH</strong> - <span data-i18n="s5_slh">Ecosystem utility token on BSC blockchain. Used for premium access and governance.</span></p>
+    <p><strong style="color:var(--cyan)">ZVK</strong> - <span data-i18n="s5_zvk">Internal reward token. Earned through games and referrals. Convertible to TON.</span></p>
+    <p><strong style="color:#e74c3c">🛡️ ZUZ</strong> - <span data-i18n="s5_zuz">Anti-fraud "Mark of Cain" token. Assigned by Guardian bot reports. 100 ZUZ = auto-ban across all groups. Cross-group intelligence.</span></p>
+
+    <h3 data-i18n="s5_how">How to Transfer Tokens</h3>
+    <div class="step" data-step="1">
+        <div class="step-title" data-i18n="s5_s1t">Internal transfer (SLH/ZVK)</div>
+        <p data-i18n="s5_s1p">Use /pay [amount] [token] [user_id] in the bot. Or use the web dashboard Transfer tab.</p>
+    </div>
+    <div class="step" data-step="2">
+        <div class="step-title" data-i18n="s5_s2t">Blockchain transfer</div>
+        <p data-i18n="s5_s2p">Use /send in the bot for on-chain TON transfers.</p>
+    </div>
+
+    <h3 data-i18n="s5_conv">ZVK to TON Conversion</h3>
+    <p>10 ZVK = 1 TON | 50 ZVK = 4 TON | 100 ZVK = 7 TON</p>
+
+    <!-- 6. REFERRAL -->
+    <h2 id="referral"><span data-i18n="s6_title">Affiliate Program (2 Tiers)</span> <span class="num">#06</span></h2>
+    <p data-i18n="s6_intro">Two-tier affiliate program. Earn from purchases of your direct referrals and their referrals only. No deeper levels.</p>
+
+    <h3 data-i18n="s6_rates">Commission Rates</h3>
+    <p><strong style="color:var(--accent)" data-i18n="s6_g1">Tier 1 (direct):</strong> <span data-i18n="s6_g1v">20% of their purchases</span></p>
+    <p><strong>Tier 2 (their referrals):</strong> 5% of purchases</p>
+    <p><em>Paid from referral budget funded by real system revenue. Not from other users' deposits.</em></p>
+    <p><strong>Gen 4:</strong> 2%</p>
+    <p><strong>Gen 5:</strong> 1%</p>
+    <p><strong style="color:var(--text2)">Gen 6-10:</strong> <span data-i18n="s6_g6v">0.5% each</span></p>
+
+    <h3 data-i18n="s6_how">How to Refer</h3>
+    <div class="step" data-step="1">
+        <div class="step-title" data-i18n="s6_s1t">Get your referral link</div>
+        <p data-i18n="s6_s1p">In @SLH_AIR_bot, click "Invite" to get your unique link: t.me/SLH_AIR_bot?start=YOUR_ID</p>
+    </div>
+    <div class="step" data-step="2">
+        <div class="step-title" data-i18n="s6_s2t">Share with friends</div>
+        <p data-i18n="s6_s2p">Send the link to friends, post on social media, or share in groups.</p>
+    </div>
+    <div class="step" data-step="3">
+        <div class="step-title" data-i18n="s6_s3t">Earn automatically</div>
+        <p data-i18n="s6_s3p">When anyone in your network makes a deposit, you earn commission automatically. Check on the web dashboard.</p>
+    </div>
+
+    <h3 data-i18n="s6_example">Example: 100 TON Deposit in Your Network</h3>
+    <p data-i18n="s6_example_p">If someone 3 levels deep deposits 100 TON, you earn 3 TON (3%). If it was a direct referral, you earn 10 TON (10%).</p>
+
+    <div class="tip" data-i18n="s6_tip">Your network grows exponentially. If each person refers just 3 people, by generation 5 you have 243 people earning you commissions!</div>
+
+    <!-- 7. SHOP -->
+    <h2 id="shop"><span data-i18n="s7_title">OsifShop - Inventory SaaS</span> <span class="num">#07</span></h2>
+    <p data-i18n="s7_intro">OsifShop is an inventory management system with camera barcode scanning.</p>
+
+    <div class="step" data-step="1">
+        <div class="step-title" data-i18n="s7_s1t">Open @OsifShop_bot</div>
+        <p data-i18n="s7_s1p">Search for @OsifShop_bot in Telegram and send /start.</p>
+    </div>
+    <div class="step" data-step="2">
+        <div class="step-title" data-i18n="s7_s2t">Add products</div>
+        <p data-i18n="s7_s2p">Use the "Add Product" button to add items. Enter name, price, and quantity.</p>
+    </div>
+    <div class="step" data-step="3">
+        <div class="step-title" data-i18n="s7_s3t">Scan barcodes</div>
+        <p data-i18n="s7_s3p">Click "Scan" to open the camera scanner (Mini App). Point your camera at any barcode to scan products.</p>
+    </div>
+    <div class="step" data-step="4">
+        <div class="step-title" data-i18n="s7_s4t">View reports</div>
+        <p data-i18n="s7_s4p">Get inventory reports, low-stock alerts, and export to CSV.</p>
+    </div>
+
+    <!-- 8. DASHBOARD -->
+    <h2 id="dashboard"><span data-i18n="s8_title">Web Dashboard</span> <span class="num">#08</span></h2>
+    <p><span data-i18n="s8_intro">Access your personal dashboard at</span> <a href="/dashboard.html" style="color:var(--accent)">slh-nft.com/dashboard.html</a></p>
+
+    <h3 data-i18n="s8_login">Login Options</h3>
+    <div class="step" data-step="1">
+        <div class="step-title" data-i18n="s8_s1t">Option A: Telegram Widget (Recommended)</div>
+        <p data-i18n="s8_s1p">Click the "Log in with Telegram" button. A popup will ask you to confirm. One click and you are in.</p>
+    </div>
+    <div class="step" data-step="2">
+        <div class="step-title" data-i18n="s8_s2t">Option B: Manual ID</div>
+        <p data-i18n="s8_s2p">Enter your Telegram ID number. See "How to Find Your Telegram ID" above.</p>
+    </div>
+
+    <h3 data-i18n="s8_features">Dashboard Features</h3>
+    <p><strong data-i18n="s8_f1t">Portfolio</strong> - <span data-i18n="s8_f1d">View all your active deposits and their status</span></p>
+    <p><strong data-i18n="s8_f2t">Staking</strong> - <span data-i18n="s8_f2d">Create new staking positions directly from the web</span></p>
+    <p><strong data-i18n="s8_f3t">Transfer</strong> - <span data-i18n="s8_f3d">Send SLH/ZVK tokens to other users</span></p>
+    <p><strong data-i18n="s8_f4t">Referrals</strong> - <span data-i18n="s8_f4d">View your referral tree, earnings by generation, copy referral link</span></p>
+    <p><strong data-i18n="s8_f5t">Quick Actions</strong> - <span data-i18n="s8_f5d">Direct links to all bots and documentation</span></p>
+
+    <!-- 9. NFT -->
+    <h2 id="nft"><span data-i18n="s9_title">NFT Marketplace</span> <span class="num">#09</span></h2>
+    <p data-i18n="s9_intro">The NFTY Marketplace lets you buy and sell digital assets with a virtual pet companion.</p>
+
+    <div class="step" data-step="1">
+        <div class="step-title" data-i18n="s9_s1t">Open @NIFTI_Publisher_Bot</div>
+        <p data-i18n="s9_s1p">Send /start to the bot. You will get a virtual pet (Sparky!) automatically.</p>
+    </div>
+    <div class="step" data-step="2">
+        <div class="step-title" data-i18n="s9_s2t">Browse marketplace</div>
+        <p data-i18n="s9_s2p">Use /browse to see available digital assets for sale.</p>
+    </div>
+    <div class="step" data-step="3">
+        <div class="step-title" data-i18n="s9_s3t">List your items</div>
+        <p data-i18n="s9_s3p">Use /sell to create a new listing. Set title, description, price, and category.</p>
+    </div>
+    <div class="step" data-step="4">
+        <div class="step-title" data-i18n="s9_s4t">Care for your pet</div>
+        <p data-i18n="s9_s4p">Use /feed, /play, /learn, /sleep to keep your virtual pet happy and evolving!</p>
+    </div>
+
+    <!-- 10. GAMES -->
+    <h2 id="games"><span data-i18n="s10_title">Games & ZVK Tokens</span> <span class="num">#10</span></h2>
+    <p data-i18n="s10_intro">Play games to earn ZVK tokens, which can be converted to TON.</p>
+
+    <h3 data-i18n="s10_available">Available Games</h3>
+    <p><strong>Slots</strong> - <span data-i18n="s10_slots">Spin and win up to 25 ZVK per round</span></p>
+    <p><strong>Dice</strong> - <span data-i18n="s10_dice">Roll 6 = 5 ZVK, Roll 4-5 = 2 ZVK</span></p>
+    <p><strong>Basketball</strong> - <span data-i18n="s10_basket">Score 4+ = 3 ZVK</span></p>
+    <p><strong>Darts</strong> - <span data-i18n="s10_darts">Bullseye (6) = 5 ZVK, 4-5 = 2 ZVK</span></p>
+
+    <p data-i18n="s10_cost">Each game costs 1 ZVK to play. Open the Games menu in @SLH_AIR_bot to start.</p>
+
+    <!-- 11. SECURITY -->
+    <h2 id="security"><span data-i18n="s11_title">Security Best Practices</span> <span class="num">#11</span></h2>
+
+    <div class="warn" data-i18n="s11_warn">Never share your private keys, PIN codes, or wallet seed phrases with anyone. SLH staff will NEVER ask for these.</div>
+
+    <p><span data-i18n="s11_2fa">Enable 2FA in Telegram settings for extra account protection.</span></p>
+    <p><span data-i18n="s11_verify">Verify bot names - only use official @SLH_AIR_bot. Beware of fake bots with similar names.</span></p>
+    <p><span data-i18n="s11_records">Keep records - use /statement to regularly check your account activity.</span></p>
+    <p><span data-i18n="s11_report">Report suspicious activity - contact /support or call 058-420-3384.</span></p>
+
+    <!-- 12. FAQ -->
+    <h2 id="faq"><span data-i18n="s12_title">Frequently Asked Questions</span> <span class="num">#12</span></h2>
+
+    <h3 data-i18n="faq_q1">Q: Is this a real investment platform?</h3>
+    <p data-i18n="faq_a1">SLH is a digital investment ecosystem built on real blockchain technology. All TON deposits are real cryptocurrency transactions. However, like all investments, returns are not guaranteed.</p>
+
+    <h3 data-i18n="faq_q2">Q: How do I withdraw my money?</h3>
+    <p data-i18n="faq_a2">Use /withdraw in @SLH_AIR_bot. Withdrawals are processed within 24 hours after admin approval.</p>
+
+    <h3 data-i18n="faq_q3">Q: What happens if I lose my phone?</h3>
+    <p data-i18n="faq_a3">Your account is tied to your Telegram account. Log into Telegram on a new device and all your data will be there.</p>
+
+    <h3 data-i18n="faq_q4">Q: Can I use this from outside Israel?</h3>
+    <p data-i18n="faq_a4">Yes! The platform supports Hebrew, English, Russian, Arabic, and French. Anyone with Telegram can use it.</p>
+
+    <h3 data-i18n="faq_q5">Q: How do I contact support?</h3>
+    <p data-i18n="faq_a5">Send /support in any SLH bot, or call 058-420-3384, or email osif@spark-ind.com.</p>
+
+    <h3 data-i18n="faq_q6">Q: What is the minimum investment?</h3>
+    <p data-i18n="faq_a6">The monthly plan starts at just 1 TON (approximately 4 ILS at current prices).</p>
+
+    <!-- FOOTER -->
+    <div class="footer-links">
+        <a href="/" data-i18n="ft_home">Home</a>
+        <a href="/dashboard.html" data-i18n="ft_dash">Dashboard</a>
+        <a href="/whitepaper.html" data-i18n="ft_wp">Whitepaper</a>
+        <a href="https://t.me/SLH_AIR_bot" data-i18n="ft_bot">Investment Bot</a>
+        <a href="https://slh-api-production.up.railway.app/docs">API Docs</a>
+        <a href="tel:0584203384" data-i18n="ft_support">Support: 058-420-3384</a>
+    </div>
+</div>
+
+<script>
+// Guides-specific translations — namespaced to avoid collision with global T in translations.js
+const GUIDES_T = {
+he: {
+    g_back:"\u2190 חזרה לאקוסיסטם SLH",
+    g_title:"[ מדריכים למשתמש ]",
+    g_subtitle:"מדריכים צעד אחר צעד לכל פיצ'ר באקוסיסטם SLH",
+    qc_start_t:"התחלה מהירה",qc_start_d:"צעדים ראשונים, יצירת חשבון, הכרת האקוסיסטם",
+    qc_invest_t:"מדריך השקעות",qc_invest_d:"הפקדות, תוכניות סטייקינג, תשואות",
+    qc_wallet_t:"ארנק והעברות",qc_wallet_d:"ניהול טוקנים, שליחה וקבלה",
+    qc_ref_t:"רשת הפניות",qc_ref_d:"בניית הרשת שלך, עמלות",
+    qc_shop_t:"מדריך OsifShop",qc_shop_d:"ניהול מלאי, סריקת ברקוד",
+    qc_dash_t:"מדריך דשבורד",qc_dash_d:"דשבורד אינטרנטי, תיק השקעות, ממשק סטייקינג",
+    qc_nft_t:"שוק NFT",qc_nft_d:"קנייה, מכירה, חיות מחמד וירטואליות",
+    qc_sec_t:"מדריך אבטחה",qc_sec_d:"הגנה על החשבון, KYC, PIN",
+    toc_title:"תוכן עניינים",
+    toc_1:"1. התחלה מהירה",toc_2:"2. איך למצוא את מזהה הטלגרם שלך",toc_3:"3. מדריך השקעות (SLH_AIR_bot)",
+    toc_4:"4. הסבר תוכניות סטייקינג",toc_5:"5. ארנק והעברות טוקנים",toc_6:"6. תכנית שותפים (2 רמות)",
+    toc_7:"7. OsifShop - מלאי SaaS",toc_8:"8. דשבורד אינטרנטי",toc_9:"9. שוק NFT",
+    toc_10:"10. משחקים וטוקני ZVK",toc_11:"11. שיטות אבטחה מומלצות",toc_12:"12. שאלות נפוצות",
+    s1_title:"התחלה מהירה",s1_intro:"ברוכים הבאים לאקוסיסטם SLH. הנה איך להתחיל להשתמש בפלטפורמה ב-3 דקות.",
+    s1_s1t:"פתח טלגרם",s1_s1p:"הורד טלגרם מ-telegram.org אם אין לך. זמין ל-iOS, אנדרואיד, דסקטופ ואינטרנט.",
+    s1_s2t:"מצא את הבוט הראשי",s1_s2p:"חפש @SLH_AIR_bot בטלגרם, או לחץ:",
+    s1_s3t:"שלח /start",s1_s3p:"הבוט יברך אותך ויציג את הדשבורד שלך עם יתרות טוקני SLH ו-ZVK. אפשר לחקור את כל הפיצ'רים החינמיים מיד.",
+    s1_s4t:"חקור את התפריט",s1_s4p:"תראה כפתורים: מחירי שוק, השקעות, ארנק, ניהול סיכונים, משחקים והפניות. נסה כל אחד כדי להבין את המערכת.",
+    s1_tip:"כל הפיצ'רים הבסיסיים חינמיים. משלמים רק כשרוצים להפקיד או לגשת לפיצ'רים פרימיום.",
+    s2_title:"איך למצוא את מזהה הטלגרם שלך",s2_intro:"מזהה הטלגרם שלך הוא מספר ייחודי שמזהה את החשבון שלך. צריך אותו כדי להתחבר לדשבורד האינטרנטי.",
+    s2_m1:"שיטה 1: באמצעות @userinfobot (הקלה ביותר)",
+    s2_m1s1t:"פתח @userinfobot",s2_m1s1p:"חפש @userinfobot בטלגרם ופתח את הצ'אט.",
+    s2_m1s2t:"שלח /start",s2_m1s2p:"הבוט ישיב מיד עם המזהה, שם המשתמש והשם שלך. העתק את המספר.",
+    s2_m2:"שיטה 2: באמצעות SLH_AIR_bot",
+    s2_m2s1t:"פתח @SLH_AIR_bot",s2_m2s1p:"שלח /start לבוט. הדשבורד יציג את היתרות שלך.",
+    s2_m2s2t:"בדוק את לינק ההפניה",s2_m2s2p:"לחץ על 'הזמן' בתפריט. לינק ההפניה שלך מכיל את המזהה: t.me/SLH_AIR_bot?start=YOUR_ID",
+    s2_m3:"שיטה 3: באמצעות הגדרות טלגרם",
+    s2_m3p:"בחלק מלקוחות הטלגרם, לך להגדרות והמזהה שלך עשוי להופיע תחת הפרופיל. בטלגרם דסקטופ, אפשר למצוא את זה בחלק ה-API.",
+    s3_title:"מדריך השקעות",s3_intro:"בית ההשקעות SLH מציע הפקדות קריפטו אמיתיות עם תשואה חודשית.",
+    s3_how:"איך הפקדות עובדות",
+    s3_s1t:"בחר תוכנית",s3_s1p:"שלח 'השקעות' בתפריט הבוט. 4 תוכניות זמינות: חודשי (4%), רבעוני (4.5%), חצי שנתי (5%), שנתי (5.4%).",
+    s3_s2t:"שלח TON",s3_s2p:"העבר מטבע TON לכתובת הארנק שמוצגת. מינימום תלוי בתוכנית (1-25 TON).",
+    s3_s3t:"שלח צילום מסך כהוכחה",s3_s3p:"צלם מסך של אישור ההעברה ושלח לבוט כתמונה.",
+    s3_s4t:"המתן לאישור",s3_s4p:"מנהל יאמת את התשלום ויאשר אותו. תקבל הודעת אישור.",
+    s3_s5t:"הרווח תשואה חודשית",s3_s5p:"התשואה מחושבת מדי חודש ונוספת לחשבון. בדוק עם הפקודה /mydeposits.",
+    s3_warn:"לעולם אל תשקיע יותר ממה שאתה יכול להרשות לעצמך להפסיד. השקעות קריפטו מלוות בסיכון. תשואות עבר אינן מבטיחות תוצאות עתידיות.",
+    s3_cmds:"פקודות שימושיות",
+    s3_cmd1:"התחל הפקדה חדשה",s3_cmd2:"צפה בהפקדות הפעילות",s3_cmd3:"צפה בדף חשבון",s3_cmd4:"צפה בתיק ההשקעות המלא",s3_cmd5:"בקש משיכה",
+    s4_title:"הסבר תוכניות סטייקינג",s4_compare:"השוואת תוכניות",
+    s4_th_plan:"תוכנית",s4_th_monthly:"חודשי",s4_th_annual:"שנתי",s4_th_lock:"נעילה",s4_th_min:"מינימום",
+    s4_r1:"חודשי",s4_r2:"רבעוני",s4_r3:"חצי שנתי",s4_r4:"שנתי",
+    s4_30d:"30 ימים",s4_90d:"90 ימים",s4_180d:"180 ימים",s4_365d:"365 ימים",
+    s4_tip:"ככל שתקופת הנעילה ארוכה יותר, כך התשואה גבוהה יותר. התוכנית השנתית נותנת את ה-APY הטוב ביותר - Variable בשנה.",
+    s5_title:"ארנק והעברות טוקנים",s5_intro:"אקוסיסטם SLH משתמש ב-4 סוגי טוקנים:",
+    s5_types:"סוגי טוקנים",
+    s5_ton:"מטבע קריפטו אמיתי. משמש להפקדות ומשיכות. ניתן למסחר בבורסות.",
+    s5_slh:"טוקן שימושי של האקוסיסטם על בלוקצ'יין BSC. משמש לגישת פרימיום וממשל.",
+    s5_zvk:"טוקן תגמולים פנימי. מרוויחים דרך משחקים והפניות. ניתן להמרה ל-TON.",
+    s5_zuz:"טוקן אנטי-הונאה \"אות קין\". מוקצה ע\"י דיווחי בוט Guardian. 100 ZUZ = חסימה אוטומטית בכל הקבוצות. מודיעין חוצה-קבוצות.",
+    s5_how:"איך להעביר טוקנים",
+    s5_s1t:"העברה פנימית (SLH/ZVK)",s5_s1p:"השתמש ב-/pay [סכום] [טוקן] [מזהה_משתמש] בבוט. או השתמש בלשונית העברות בדשבורד.",
+    s5_s2t:"העברת בלוקצ'יין",s5_s2p:"השתמש ב-/send בבוט להעברות TON על הבלוקצ'יין.",
+    s5_conv:"המרת ZVK ל-TON",
+    s6_title:"תכנית שותפים (2 רמות)",s6_intro:"תכנית 2 רמות שקופה. עמלה מרכישות של Tier 1 ו-Tier 2 בלבד, ממומנת מהכנסות המערכת.",
+    s6_rates:"שיעורי עמלה",
+    s6_g1:"Tier 1 (ישיר):",s6_g1v:"20% מהרכישות שלהם",s6_g6v:"",
+    s6_how:"איך להפנות",
+    s6_s1t:"קבל את לינק ההפניה שלך",s6_s1p:"ב-@SLH_AIR_bot, לחץ על 'הזמן' כדי לקבל את הלינק הייחודי שלך: t.me/SLH_AIR_bot?start=YOUR_ID",
+    s6_s2t:"שתף עם חברים",s6_s2p:"שלח את הלינק לחברים, פרסם ברשתות חברתיות או שתף בקבוצות.",
+    s6_s3t:"הרווח אוטומטית",s6_s3p:"כשמישהו ברשת שלך מפקיד, אתה מרוויח עמלה אוטומטית. בדוק בדשבורד.",
+    s6_example:"דוגמה: הפקדת 100 TON ברשת שלך",
+    s6_example_p:"אם מישהו 3 רמות עמוק מפקיד 100 TON, אתה מרוויח 3 TON (3%). אם זו הפניה ישירה, אתה מרוויח 10 TON (10%).",
+    s6_tip:"הרשת שלך גדלה אקספוננציאלית. אם כל אחד מפנה רק 3 אנשים, עד דור 5 יש לך 243 אנשים שמרוויחים לך עמלות!",
+    s7_title:"OsifShop - מלאי SaaS",s7_intro:"OsifShop היא מערכת ניהול מלאי עם סריקת ברקוד במצלמה.",
+    s7_s1t:"פתח @OsifShop_bot",s7_s1p:"חפש @OsifShop_bot בטלגרם ושלח /start.",
+    s7_s2t:"הוסף מוצרים",s7_s2p:"לחץ על 'הוסף מוצר' כדי להוסיף פריטים. הזן שם, מחיר וכמות.",
+    s7_s3t:"סרוק ברקודים",s7_s3p:"לחץ על 'סרוק' כדי לפתוח את סורק המצלמה (Mini App). כוון את המצלמה לכל ברקוד לסריקה.",
+    s7_s4t:"צפה בדוחות",s7_s4p:"קבל דוחות מלאי, התראות מלאי נמוך וייצוא ל-CSV.",
+    s8_title:"דשבורד אינטרנטי",s8_intro:"גש לדשבורד האישי שלך ב-",
+    s8_login:"אפשרויות התחברות",
+    s8_s1t:"אפשרות א: ווידג'ט טלגרם (מומלץ)",s8_s1p:"לחץ על 'התחבר עם טלגרם'. חלון קופץ יבקש אישור. לחיצה אחת ואתה בפנים.",
+    s8_s2t:"אפשרות ב: מזהה ידני",s8_s2p:"הזן את מספר מזהה הטלגרם שלך. ראה 'איך למצוא את מזהה הטלגרם' למעלה.",
+    s8_features:"תכונות הדשבורד",
+    s8_f1t:"תיק השקעות",s8_f1d:"צפה בכל ההפקדות הפעילות והסטטוס שלהן",
+    s8_f2t:"סטייקינג",s8_f2d:"צור פוזיציות סטייקינג חדשות ישירות מהאינטרנט",
+    s8_f3t:"העברות",s8_f3d:"שלח טוקני SLH/ZVK למשתמשים אחרים",
+    s8_f4t:"הפניות",s8_f4d:"צפה בעץ ההפניות, רווחים לפי דור, העתק לינק הפניה",
+    s8_f5t:"פעולות מהירות",s8_f5d:"לינקים ישירים לכל הבוטים והתיעוד",
+    s9_title:"שוק NFT",s9_intro:"שוק NFTY מאפשר לקנות ולמכור נכסים דיגיטליים עם חיית מחמד וירטואלית.",
+    s9_s1t:"פתח @NIFTI_Publisher_Bot",s9_s1p:"שלח /start לבוט. תקבל חיית מחמד וירטואלית (Sparky!) אוטומטית.",
+    s9_s2t:"עיין בשוק",s9_s2p:"השתמש ב-/browse כדי לראות נכסים דיגיטליים למכירה.",
+    s9_s3t:"רשום את הפריטים שלך",s9_s3p:"השתמש ב-/sell ליצירת רישום חדש. הגדר כותרת, תיאור, מחיר וקטגוריה.",
+    s9_s4t:"טפל בחיית המחמד שלך",s9_s4p:"השתמש ב-/feed, /play, /learn, /sleep כדי לשמור על חיית המחמד הוירטואלית שלך שמחה ומתפתחת!",
+    s10_title:"משחקים וטוקני ZVK",s10_intro:"שחק משחקים כדי להרוויח טוקני ZVK, שניתן להמיר ל-TON.",
+    s10_available:"משחקים זמינים",
+    s10_slots:"סובב והרווח עד 25 ZVK בסיבוב",
+    s10_dice:"גלגל 6 = 5 ZVK, גלגל 4-5 = 2 ZVK",
+    s10_basket:"קלע 4+ = 3 ZVK",
+    s10_darts:"מרכז (6) = 5 ZVK, 4-5 = 2 ZVK",
+    s10_cost:"כל משחק עולה 1 ZVK. פתח את תפריט המשחקים ב-@SLH_AIR_bot כדי להתחיל.",
+    s11_title:"שיטות אבטחה מומלצות",
+    s11_warn:"לעולם אל תשתף מפתחות פרטיים, קודי PIN או ביטויי זרע עם אף אחד. צוות SLH לעולם לא יבקש אותם.",
+    s11_2fa:"הפעל אימות דו-שלבי בהגדרות טלגרם להגנה נוספת על החשבון.",
+    s11_verify:"וודא שמות בוטים - השתמש רק ב-@SLH_AIR_bot הרשמי. היזהר מבוטים מזויפים עם שמות דומים.",
+    s11_records:"שמור רישומים - השתמש ב-/statement כדי לבדוק באופן קבוע את פעילות החשבון.",
+    s11_report:"דווח על פעילות חשודה - צור קשר ב-/support או התקשר 058-420-3384.",
+    s12_title:"שאלות נפוצות",
+    faq_q1:"ש: האם זו פלטפורמת השקעות אמיתית?",
+    faq_a1:"SLH הוא אקוסיסטם השקעות דיגיטלי הבנוי על טכנולוגיית בלוקצ'יין אמיתית. כל הפקדות TON הן עסקאות קריפטו אמיתיות. עם זאת, כמו כל השקעה, תשואות אינן מובטחות.",
+    faq_q2:"ש: איך אני מושך את הכסף שלי?",
+    faq_a2:"השתמש ב-/withdraw ב-@SLH_AIR_bot. משיכות מעובדות תוך 24 שעות לאחר אישור מנהל.",
+    faq_q3:"ש: מה קורה אם אני מאבד את הטלפון?",
+    faq_a3:"החשבון שלך קשור לחשבון הטלגרם. התחבר לטלגרם ממכשיר חדש וכל הנתונים שלך יהיו שם.",
+    faq_q4:"ש: אפשר להשתמש מחוץ לישראל?",
+    faq_a4:"כן! הפלטפורמה תומכת בעברית, אנגלית, רוסית, ערבית וצרפתית. כל מי שיש לו טלגרם יכול להשתמש.",
+    faq_q5:"ש: איך יוצרים קשר עם התמיכה?",
+    faq_a5:"שלח /support בכל בוט SLH, או התקשר 058-420-3384, או שלח מייל ל-osif@spark-ind.com.",
+    faq_q6:"ש: מה ההשקעה המינימלית?",
+    faq_a6:"התוכנית החודשית מתחילה מ-1 TON בלבד (כ-4 שקלים במחירים נוכחיים).",
+    ft_home:"בית",ft_dash:"דשבורד",ft_wp:"נייר לבן",ft_bot:"בוט השקעות",ft_support:"תמיכה: 058-420-3384"
+},
+en: {
+    g_back:"\u2190 Back to SLH Ecosystem",
+    g_title:"[ USER GUIDES ]",
+    g_subtitle:"Step-by-step tutorials for every feature in the SLH Ecosystem",
+    qc_start_t:"Getting Started",qc_start_d:"First steps, creating account, understanding the ecosystem",
+    qc_invest_t:"Investment Guide",qc_invest_d:"Deposits, staking plans, earning returns",
+    qc_wallet_t:"Wallet & Transfers",qc_wallet_d:"Managing tokens, sending, receiving",
+    qc_ref_t:"Referral Network",qc_ref_d:"Building your network, earning commissions",
+    qc_shop_t:"OsifShop Guide",qc_shop_d:"Inventory management, barcode scanning",
+    qc_dash_t:"Dashboard Guide",qc_dash_d:"Web dashboard, portfolio, staking UI",
+    qc_nft_t:"NFT Marketplace",qc_nft_d:"Buying, selling, virtual pets",
+    qc_sec_t:"Security Guide",qc_sec_d:"Protecting your account, KYC, PIN",
+    toc_title:"Table of Contents",
+    toc_1:"1. Getting Started",toc_2:"2. How to Find Your Telegram ID",toc_3:"3. Investment Guide (SLH_AIR_bot)",
+    toc_4:"4. Staking Plans Explained",toc_5:"5. Wallet & Token Transfers",toc_6:"6. Referral Network (10 Generations)",
+    toc_7:"7. OsifShop - Inventory SaaS",toc_8:"8. Web Dashboard",toc_9:"9. NFT Marketplace",
+    toc_10:"10. Games & ZVK Tokens",toc_11:"11. Security Best Practices",toc_12:"12. FAQ",
+    s1_title:"Getting Started",s1_intro:"Welcome to the SLH Ecosystem. Here is how to start using the platform in 3 minutes.",
+    s1_s1t:"Open Telegram",s1_s1p:"Download Telegram from telegram.org if you do not have it. Available on iOS, Android, Desktop, and Web.",
+    s1_s2t:"Find our main bot",s1_s2p:"Search for @SLH_AIR_bot in Telegram, or click:",
+    s1_s3t:"Send /start",s1_s3p:"The bot will greet you and show your dashboard with SLH and ZVK token balances. You can explore all free features immediately.",
+    s1_s4t:"Explore the menu",s1_s4p:"You will see buttons for: Market Prices, Investments, Wallet, Risk Management, Games, and Referrals. Try each one to understand the system.",
+    s1_tip:"All basic features are free. You only pay when you want to make real deposits or access premium features.",
+    s2_title:"How to Find Your Telegram ID",s2_intro:"Your Telegram ID is a unique number that identifies your account. You need it to log into the web dashboard.",
+    s2_m1:"Method 1: Using @userinfobot (Easiest)",
+    s2_m1s1t:"Open @userinfobot",s2_m1s1p:"Search for @userinfobot in Telegram and open the chat.",
+    s2_m1s2t:"Send /start",s2_m1s2p:"The bot will immediately reply with your ID, username, and name. Copy the number.",
+    s2_m2:"Method 2: Using SLH_AIR_bot",
+    s2_m2s1t:"Open @SLH_AIR_bot",s2_m2s1p:"Send /start to the bot. Your dashboard will show your current balances.",
+    s2_m2s2t:"Check the referral link",s2_m2s2p:"Click \"Invite\" in the menu. Your referral link contains your ID: t.me/SLH_AIR_bot?start=YOUR_ID",
+    s2_m3:"Method 3: Using Telegram Settings",
+    s2_m3p:"On some Telegram clients, go to Settings and your ID may be shown under your profile. On Telegram Desktop, it might be visible in the API section.",
+    s3_title:"Investment Guide",s3_intro:"The SLH Investment House offers real cryptocurrency deposits with monthly returns.",
+    s3_how:"How Deposits Work",
+    s3_s1t:"Choose a plan",s3_s1p:"Send \"Investments\" in the bot menu. 4 plans available: Monthly (4%), Quarterly (4.5%), Semi-Annual (5%), Annual (5.4%).",
+    s3_s2t:"Send TON",s3_s2p:"Transfer TON cryptocurrency to the wallet address shown. Minimum depends on plan (1-25 TON).",
+    s3_s3t:"Send screenshot proof",s3_s3p:"Take a screenshot of your transfer confirmation and send it to the bot as a photo.",
+    s3_s4t:"Wait for approval",s3_s4p:"An admin will verify your payment and approve it. You will get a confirmation message.",
+    s3_s5t:"Earn monthly returns",s3_s5p:"Returns are calculated monthly and added to your account. Check with /mydeposits command.",
+    s3_warn:"Never invest more than you can afford to lose. Cryptocurrency investments carry risk. Past returns do not guarantee future results.",
+    s3_cmds:"Useful Commands",
+    s3_cmd1:"Start a new deposit",s3_cmd2:"View your active deposits",s3_cmd3:"View your account statement",s3_cmd4:"View your full portfolio",s3_cmd5:"Request a withdrawal",
+    s4_title:"Staking Plans Explained",s4_compare:"Plan Comparison",
+    s4_th_plan:"PLAN",s4_th_monthly:"MONTHLY",s4_th_annual:"ANNUAL",s4_th_lock:"LOCK",s4_th_min:"MIN",
+    s4_r1:"Monthly",s4_r2:"Quarterly",s4_r3:"Semi-Annual",s4_r4:"Annual",
+    s4_30d:"30 days",s4_90d:"90 days",s4_180d:"180 days",s4_365d:"365 days",
+    s4_tip:"The longer the lock period, the higher the return. Annual plan gives the best APY at Variable per year.",
+    s5_title:"Wallet & Token Transfers",s5_intro:"The SLH ecosystem uses 4 types of tokens:",
+    s5_types:"Token Types",
+    s5_ton:"Real cryptocurrency. Used for deposits and withdrawals. Tradable on exchanges.",
+    s5_slh:"Ecosystem utility token on BSC blockchain. Used for premium access and governance.",
+    s5_zvk:"Internal reward token. Earned through games and referrals. Convertible to TON.",
+    s5_zuz:"Anti-fraud \"Mark of Cain\" token. Assigned by Guardian bot reports. 100 ZUZ = auto-ban across all groups. Cross-group intelligence.",
+    s5_how:"How to Transfer Tokens",
+    s5_s1t:"Internal transfer (SLH/ZVK)",s5_s1p:"Use /pay [amount] [token] [user_id] in the bot. Or use the web dashboard Transfer tab.",
+    s5_s2t:"Blockchain transfer",s5_s2p:"Use /send in the bot for on-chain TON transfers.",
+    s5_conv:"ZVK to TON Conversion",
+    s6_title:"Affiliate Program (2 Tiers)",s6_intro:"Two-tier affiliate program. Earn from Tier 1 and Tier 2 purchases only. Paid from real revenue, not other users' deposits.",
+    s6_rates:"Commission Rates",
+    s6_g1:"Tier 1 (direct):",s6_g1v:"20% of purchases",s6_g6v:"",
+    s6_how:"How to Refer",
+    s6_s1t:"Get your referral link",s6_s1p:"In @SLH_AIR_bot, click \"Invite\" to get your unique link: t.me/SLH_AIR_bot?start=YOUR_ID",
+    s6_s2t:"Share with friends",s6_s2p:"Send the link to friends, post on social media, or share in groups.",
+    s6_s3t:"Earn automatically",s6_s3p:"When anyone in your network makes a deposit, you earn commission automatically. Check on the web dashboard.",
+    s6_example:"Example: 100 TON Deposit in Your Network",
+    s6_example_p:"If someone 3 levels deep deposits 100 TON, you earn 3 TON (3%). If it was a direct referral, you earn 10 TON (10%).",
+    s6_tip:"Your network grows exponentially. If each person refers just 3 people, by generation 5 you have 243 people earning you commissions!",
+    s7_title:"OsifShop - Inventory SaaS",s7_intro:"OsifShop is an inventory management system with camera barcode scanning.",
+    s7_s1t:"Open @OsifShop_bot",s7_s1p:"Search for @OsifShop_bot in Telegram and send /start.",
+    s7_s2t:"Add products",s7_s2p:"Use the \"Add Product\" button to add items. Enter name, price, and quantity.",
+    s7_s3t:"Scan barcodes",s7_s3p:"Click \"Scan\" to open the camera scanner (Mini App). Point your camera at any barcode to scan products.",
+    s7_s4t:"View reports",s7_s4p:"Get inventory reports, low-stock alerts, and export to CSV.",
+    s8_title:"Web Dashboard",s8_intro:"Access your personal dashboard at",
+    s8_login:"Login Options",
+    s8_s1t:"Option A: Telegram Widget (Recommended)",s8_s1p:"Click the \"Log in with Telegram\" button. A popup will ask you to confirm. One click and you are in.",
+    s8_s2t:"Option B: Manual ID",s8_s2p:"Enter your Telegram ID number. See \"How to Find Your Telegram ID\" above.",
+    s8_features:"Dashboard Features",
+    s8_f1t:"Portfolio",s8_f1d:"View all your active deposits and their status",
+    s8_f2t:"Staking",s8_f2d:"Create new staking positions directly from the web",
+    s8_f3t:"Transfer",s8_f3d:"Send SLH/ZVK tokens to other users",
+    s8_f4t:"Referrals",s8_f4d:"View your referral tree, earnings by generation, copy referral link",
+    s8_f5t:"Quick Actions",s8_f5d:"Direct links to all bots and documentation",
+    s9_title:"NFT Marketplace",s9_intro:"The NFTY Marketplace lets you buy and sell digital assets with a virtual pet companion.",
+    s9_s1t:"Open @NIFTI_Publisher_Bot",s9_s1p:"Send /start to the bot. You will get a virtual pet (Sparky!) automatically.",
+    s9_s2t:"Browse marketplace",s9_s2p:"Use /browse to see available digital assets for sale.",
+    s9_s3t:"List your items",s9_s3p:"Use /sell to create a new listing. Set title, description, price, and category.",
+    s9_s4t:"Care for your pet",s9_s4p:"Use /feed, /play, /learn, /sleep to keep your virtual pet happy and evolving!",
+    s10_title:"Games & ZVK Tokens",s10_intro:"Play games to earn ZVK tokens, which can be converted to TON.",
+    s10_available:"Available Games",
+    s10_slots:"Spin and win up to 25 ZVK per round",
+    s10_dice:"Roll 6 = 5 ZVK, Roll 4-5 = 2 ZVK",
+    s10_basket:"Score 4+ = 3 ZVK",
+    s10_darts:"Bullseye (6) = 5 ZVK, 4-5 = 2 ZVK",
+    s10_cost:"Each game costs 1 ZVK to play. Open the Games menu in @SLH_AIR_bot to start.",
+    s11_title:"Security Best Practices",
+    s11_warn:"Never share your private keys, PIN codes, or wallet seed phrases with anyone. SLH staff will NEVER ask for these.",
+    s11_2fa:"Enable 2FA in Telegram settings for extra account protection.",
+    s11_verify:"Verify bot names - only use official @SLH_AIR_bot. Beware of fake bots with similar names.",
+    s11_records:"Keep records - use /statement to regularly check your account activity.",
+    s11_report:"Report suspicious activity - contact /support or call 058-420-3384.",
+    s12_title:"Frequently Asked Questions",
+    faq_q1:"Q: Is this a real investment platform?",
+    faq_a1:"SLH is a digital investment ecosystem built on real blockchain technology. All TON deposits are real cryptocurrency transactions. However, like all investments, returns are not guaranteed.",
+    faq_q2:"Q: How do I withdraw my money?",
+    faq_a2:"Use /withdraw in @SLH_AIR_bot. Withdrawals are processed within 24 hours after admin approval.",
+    faq_q3:"Q: What happens if I lose my phone?",
+    faq_a3:"Your account is tied to your Telegram account. Log into Telegram on a new device and all your data will be there.",
+    faq_q4:"Q: Can I use this from outside Israel?",
+    faq_a4:"Yes! The platform supports Hebrew, English, Russian, Arabic, and French. Anyone with Telegram can use it.",
+    faq_q5:"Q: How do I contact support?",
+    faq_a5:"Send /support in any SLH bot, or call 058-420-3384, or email osif@spark-ind.com.",
+    faq_q6:"Q: What is the minimum investment?",
+    faq_a6:"The monthly plan starts at just 1 TON (approximately 4 ILS at current prices).",
+    ft_home:"Home",ft_dash:"Dashboard",ft_wp:"Whitepaper",ft_bot:"Investment Bot",ft_support:"Support: 058-420-3384"
+},
+ru: {
+    g_back:"\u2190 \u0412\u0435\u0440\u043d\u0443\u0442\u044c\u0441\u044f \u043a SLH Ecosystem",
+    g_title:"[ \u0420\u0423\u041a\u041e\u0412\u041e\u0414\u0421\u0422\u0412\u0410 ]",
+    g_subtitle:"\u041f\u043e\u0448\u0430\u0433\u043e\u0432\u044b\u0435 \u0438\u043d\u0441\u0442\u0440\u0443\u043a\u0446\u0438\u0438 \u0434\u043b\u044f \u043a\u0430\u0436\u0434\u043e\u0439 \u0444\u0443\u043d\u043a\u0446\u0438\u0438 \u044d\u043a\u043e\u0441\u0438\u0441\u0442\u0435\u043c\u044b SLH",
+    qc_start_t:"\u041d\u0430\u0447\u0430\u043b\u043e \u0440\u0430\u0431\u043e\u0442\u044b",qc_start_d:"\u041f\u0435\u0440\u0432\u044b\u0435 \u0448\u0430\u0433\u0438, \u0441\u043e\u0437\u0434\u0430\u043d\u0438\u0435 \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0430, \u043e\u0431\u0437\u043e\u0440 \u044d\u043a\u043e\u0441\u0438\u0441\u0442\u0435\u043c\u044b",
+    qc_invest_t:"\u0413\u0438\u0434 \u043f\u043e \u0438\u043d\u0432\u0435\u0441\u0442\u0438\u0446\u0438\u044f\u043c",qc_invest_d:"\u0414\u0435\u043f\u043e\u0437\u0438\u0442\u044b, \u043f\u043b\u0430\u043d\u044b \u0441\u0442\u0435\u0439\u043a\u0438\u043d\u0433\u0430, \u0434\u043e\u0445\u043e\u0434\u043d\u043e\u0441\u0442\u044c",
+    qc_wallet_t:"\u041a\u043e\u0448\u0435\u043b\u0451\u043a \u0438 \u043f\u0435\u0440\u0435\u0432\u043e\u0434\u044b",qc_wallet_d:"\u0423\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u0435 \u0442\u043e\u043a\u0435\u043d\u0430\u043c\u0438, \u043e\u0442\u043f\u0440\u0430\u0432\u043a\u0430, \u043f\u043e\u043b\u0443\u0447\u0435\u043d\u0438\u0435",
+    qc_ref_t:"\u0420\u0435\u0444\u0435\u0440\u0430\u043b\u044c\u043d\u0430\u044f \u0441\u0435\u0442\u044c",qc_ref_d:"\u041f\u043e\u0441\u0442\u0440\u043e\u0435\u043d\u0438\u0435 \u0441\u0435\u0442\u0438, \u043a\u043e\u043c\u0438\u0441\u0441\u0438\u0438",
+    qc_shop_t:"\u0413\u0438\u0434 OsifShop",qc_shop_d:"\u0423\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u0435 \u0438\u043d\u0432\u0435\u043d\u0442\u0430\u0440\u0451\u043c, \u0441\u043a\u0430\u043d\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u0435 \u0448\u0442\u0440\u0438\u0445\u043a\u043e\u0434\u043e\u0432",
+    qc_dash_t:"\u0413\u0438\u0434 \u043f\u043e \u0434\u0430\u0448\u0431\u043e\u0440\u0434\u0443",qc_dash_d:"\u0412\u0435\u0431-\u0434\u0430\u0448\u0431\u043e\u0440\u0434, \u043f\u043e\u0440\u0442\u0444\u0435\u043b\u044c, \u0438\u043d\u0442\u0435\u0440\u0444\u0435\u0439\u0441 \u0441\u0442\u0435\u0439\u043a\u0438\u043d\u0433\u0430",
+    qc_nft_t:"\u041c\u0430\u0440\u043a\u0435\u0442\u043f\u043b\u0435\u0439\u0441 NFT",qc_nft_d:"\u041f\u043e\u043a\u0443\u043f\u043a\u0430, \u043f\u0440\u043e\u0434\u0430\u0436\u0430, \u0432\u0438\u0440\u0442\u0443\u0430\u043b\u044c\u043d\u044b\u0435 \u043f\u0438\u0442\u043e\u043c\u0446\u044b",
+    qc_sec_t:"\u0413\u0438\u0434 \u043f\u043e \u0431\u0435\u0437\u043e\u043f\u0430\u0441\u043d\u043e\u0441\u0442\u0438",qc_sec_d:"\u0417\u0430\u0449\u0438\u0442\u0430 \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0430, KYC, PIN",
+    toc_title:"\u0421\u043e\u0434\u0435\u0440\u0436\u0430\u043d\u0438\u0435",
+    toc_1:"1. \u041d\u0430\u0447\u0430\u043b\u043e \u0440\u0430\u0431\u043e\u0442\u044b",toc_2:"2. \u041a\u0430\u043a \u043d\u0430\u0439\u0442\u0438 \u0441\u0432\u043e\u0439 Telegram ID",toc_3:"3. \u0413\u0438\u0434 \u043f\u043e \u0438\u043d\u0432\u0435\u0441\u0442\u0438\u0446\u0438\u044f\u043c (SLH_AIR_bot)",
+    toc_4:"4. \u041e\u0431\u044a\u044f\u0441\u043d\u0435\u043d\u0438\u0435 \u043f\u043b\u0430\u043d\u043e\u0432 \u0441\u0442\u0435\u0439\u043a\u0438\u043d\u0433\u0430",toc_5:"5. \u041a\u043e\u0448\u0435\u043b\u0451\u043a \u0438 \u043f\u0435\u0440\u0435\u0432\u043e\u0434\u044b \u0442\u043e\u043a\u0435\u043d\u043e\u0432",toc_6:"6. \u0420\u0435\u0444\u0435\u0440\u0430\u043b\u044c\u043d\u0430\u044f \u0441\u0435\u0442\u044c (10 \u043f\u043e\u043a\u043e\u043b\u0435\u043d\u0438\u0439)",
+    toc_7:"7. OsifShop - \u0418\u043d\u0432\u0435\u043d\u0442\u0430\u0440\u044c SaaS",toc_8:"8. \u0412\u0435\u0431-\u0434\u0430\u0448\u0431\u043e\u0440\u0434",toc_9:"9. \u041c\u0430\u0440\u043a\u0435\u0442\u043f\u043b\u0435\u0439\u0441 NFT",
+    toc_10:"10. \u0418\u0433\u0440\u044b \u0438 \u0442\u043e\u043a\u0435\u043d\u044b ZVK",toc_11:"11. \u041b\u0443\u0447\u0448\u0438\u0435 \u043f\u0440\u0430\u043a\u0442\u0438\u043a\u0438 \u0431\u0435\u0437\u043e\u043f\u0430\u0441\u043d\u043e\u0441\u0442\u0438",toc_12:"12. \u0427\u0430\u0441\u0442\u044b\u0435 \u0432\u043e\u043f\u0440\u043e\u0441\u044b",
+    s1_title:"\u041d\u0430\u0447\u0430\u043b\u043e \u0440\u0430\u0431\u043e\u0442\u044b",s1_intro:"\u0414\u043e\u0431\u0440\u043e \u043f\u043e\u0436\u0430\u043b\u043e\u0432\u0430\u0442\u044c \u0432 \u044d\u043a\u043e\u0441\u0438\u0441\u0442\u0435\u043c\u0443 SLH. \u0412\u043e\u0442 \u043a\u0430\u043a \u043d\u0430\u0447\u0430\u0442\u044c \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u044c\u0441\u044f \u043f\u043b\u0430\u0442\u0444\u043e\u0440\u043c\u043e\u0439 \u0437\u0430 3 \u043c\u0438\u043d\u0443\u0442\u044b.",
+    s1_s1t:"\u041e\u0442\u043a\u0440\u043e\u0439\u0442\u0435 Telegram",s1_s1p:"\u0421\u043a\u0430\u0447\u0430\u0439\u0442\u0435 Telegram \u0441 telegram.org, \u0435\u0441\u043b\u0438 \u0443 \u0432\u0430\u0441 \u0435\u0433\u043e \u043d\u0435\u0442. \u0414\u043e\u0441\u0442\u0443\u043f\u0435\u043d \u043d\u0430 iOS, Android, \u0434\u0435\u0441\u043a\u0442\u043e\u043f\u0435 \u0438 \u0432 \u0432\u0435\u0431\u0435.",
+    s1_s2t:"\u041d\u0430\u0439\u0434\u0438\u0442\u0435 \u043d\u0430\u0448\u0435\u0433\u043e \u0433\u043b\u0430\u0432\u043d\u043e\u0433\u043e \u0431\u043e\u0442\u0430",s1_s2p:"\u041d\u0430\u0439\u0434\u0438\u0442\u0435 @SLH_AIR_bot \u0432 Telegram \u0438\u043b\u0438 \u043d\u0430\u0436\u043c\u0438\u0442\u0435:",
+    s1_s3t:"\u041e\u0442\u043f\u0440\u0430\u0432\u044c\u0442\u0435 /start",s1_s3p:"\u0411\u043e\u0442 \u043f\u043e\u043f\u0440\u0438\u0432\u0435\u0442\u0441\u0442\u0432\u0443\u0435\u0442 \u0432\u0430\u0441 \u0438 \u043f\u043e\u043a\u0430\u0436\u0435\u0442 \u0434\u0430\u0448\u0431\u043e\u0440\u0434 \u0441 \u0431\u0430\u043b\u0430\u043d\u0441\u0430\u043c\u0438 SLH \u0438 ZVK. \u0412\u0441\u0435 \u0431\u0435\u0441\u043f\u043b\u0430\u0442\u043d\u044b\u0435 \u0444\u0443\u043d\u043a\u0446\u0438\u0438 \u0434\u043e\u0441\u0442\u0443\u043f\u043d\u044b \u0441\u0440\u0430\u0437\u0443.",
+    s1_s4t:"\u0418\u0437\u0443\u0447\u0438\u0442\u0435 \u043c\u0435\u043d\u044e",s1_s4p:"\u0412\u044b \u0443\u0432\u0438\u0434\u0438\u0442\u0435 \u043a\u043d\u043e\u043f\u043a\u0438: \u0426\u0435\u043d\u044b \u0440\u044b\u043d\u043a\u0430, \u0418\u043d\u0432\u0435\u0441\u0442\u0438\u0446\u0438\u0438, \u041a\u043e\u0448\u0435\u043b\u0451\u043a, \u0423\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u0435 \u0440\u0438\u0441\u043a\u0430\u043c\u0438, \u0418\u0433\u0440\u044b \u0438 \u0420\u0435\u0444\u0435\u0440\u0430\u043b\u044b. \u041f\u043e\u043f\u0440\u043e\u0431\u0443\u0439\u0442\u0435 \u043a\u0430\u0436\u0434\u0443\u044e.",
+    s1_tip:"\u0412\u0441\u0435 \u0431\u0430\u0437\u043e\u0432\u044b\u0435 \u0444\u0443\u043d\u043a\u0446\u0438\u0438 \u0431\u0435\u0441\u043f\u043b\u0430\u0442\u043d\u044b. \u041e\u043f\u043b\u0430\u0442\u0430 \u0442\u043e\u043b\u044c\u043a\u043e \u043f\u0440\u0438 \u0440\u0435\u0430\u043b\u044c\u043d\u044b\u0445 \u0434\u0435\u043f\u043e\u0437\u0438\u0442\u0430\u0445 \u0438\u043b\u0438 \u043f\u0440\u0435\u043c\u0438\u0443\u043c-\u0434\u043e\u0441\u0442\u0443\u043f\u0435.",
+    s2_title:"\u041a\u0430\u043a \u043d\u0430\u0439\u0442\u0438 \u0441\u0432\u043e\u0439 Telegram ID",s2_intro:"\u0412\u0430\u0448 Telegram ID - \u044d\u0442\u043e \u0443\u043d\u0438\u043a\u0430\u043b\u044c\u043d\u044b\u0439 \u043d\u043e\u043c\u0435\u0440 \u0432\u0430\u0448\u0435\u0433\u043e \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0430. \u041e\u043d \u043d\u0443\u0436\u0435\u043d \u0434\u043b\u044f \u0432\u0445\u043e\u0434\u0430 \u0432 \u0432\u0435\u0431-\u0434\u0430\u0448\u0431\u043e\u0440\u0434.",
+    s2_m1:"\u0421\u043f\u043e\u0441\u043e\u0431 1: \u0427\u0435\u0440\u0435\u0437 @userinfobot (\u041f\u0440\u043e\u0441\u0442\u0435\u0439\u0448\u0438\u0439)",
+    s2_m1s1t:"\u041e\u0442\u043a\u0440\u043e\u0439\u0442\u0435 @userinfobot",s2_m1s1p:"\u041d\u0430\u0439\u0434\u0438\u0442\u0435 @userinfobot \u0432 Telegram \u0438 \u043e\u0442\u043a\u0440\u043e\u0439\u0442\u0435 \u0447\u0430\u0442.",
+    s2_m1s2t:"\u041e\u0442\u043f\u0440\u0430\u0432\u044c\u0442\u0435 /start",s2_m1s2p:"\u0411\u043e\u0442 \u0441\u0440\u0430\u0437\u0443 \u043e\u0442\u0432\u0435\u0442\u0438\u0442 \u0432\u0430\u0448\u0438\u043c ID, \u0438\u043c\u0435\u043d\u0435\u043c \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044f \u0438 \u0438\u043c\u0435\u043d\u0435\u043c. \u0421\u043a\u043e\u043f\u0438\u0440\u0443\u0439\u0442\u0435 \u043d\u043e\u043c\u0435\u0440.",
+    s2_m2:"\u0421\u043f\u043e\u0441\u043e\u0431 2: \u0427\u0435\u0440\u0435\u0437 SLH_AIR_bot",
+    s2_m2s1t:"\u041e\u0442\u043a\u0440\u043e\u0439\u0442\u0435 @SLH_AIR_bot",s2_m2s1p:"\u041e\u0442\u043f\u0440\u0430\u0432\u044c\u0442\u0435 /start \u0431\u043e\u0442\u0443. \u0414\u0430\u0448\u0431\u043e\u0440\u0434 \u043f\u043e\u043a\u0430\u0436\u0435\u0442 \u0432\u0430\u0448\u0438 \u0431\u0430\u043b\u0430\u043d\u0441\u044b.",
+    s2_m2s2t:"\u041f\u0440\u043e\u0432\u0435\u0440\u044c\u0442\u0435 \u0440\u0435\u0444\u0435\u0440\u0430\u043b\u044c\u043d\u0443\u044e \u0441\u0441\u044b\u043b\u043a\u0443",s2_m2s2p:"\u041d\u0430\u0436\u043c\u0438\u0442\u0435 \u00ab\u041f\u0440\u0438\u0433\u043b\u0430\u0441\u0438\u0442\u044c\u00bb \u0432 \u043c\u0435\u043d\u044e. \u0412\u0430\u0448\u0430 \u0440\u0435\u0444\u0435\u0440\u0430\u043b\u044c\u043d\u0430\u044f \u0441\u0441\u044b\u043b\u043a\u0430 \u0441\u043e\u0434\u0435\u0440\u0436\u0438\u0442 \u0432\u0430\u0448 ID: t.me/SLH_AIR_bot?start=YOUR_ID",
+    s2_m3:"\u0421\u043f\u043e\u0441\u043e\u0431 3: \u0427\u0435\u0440\u0435\u0437 \u043d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438 Telegram",
+    s2_m3p:"\u0412 \u043d\u0435\u043a\u043e\u0442\u043e\u0440\u044b\u0445 \u043a\u043b\u0438\u0435\u043d\u0442\u0430\u0445 Telegram \u043f\u0435\u0440\u0435\u0439\u0434\u0438\u0442\u0435 \u0432 \u041d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438, \u0438 \u0432\u0430\u0448 ID \u043c\u043e\u0436\u0435\u0442 \u0431\u044b\u0442\u044c \u043f\u043e\u043a\u0430\u0437\u0430\u043d \u0432 \u043f\u0440\u043e\u0444\u0438\u043b\u0435. \u0412 Telegram Desktop \u043e\u043d \u043c\u043e\u0436\u0435\u0442 \u0431\u044b\u0442\u044c \u0432 \u0440\u0430\u0437\u0434\u0435\u043b\u0435 API.",
+    s3_title:"\u0413\u0438\u0434 \u043f\u043e \u0438\u043d\u0432\u0435\u0441\u0442\u0438\u0446\u0438\u044f\u043c",s3_intro:"\u0418\u043d\u0432\u0435\u0441\u0442\u0438\u0446\u0438\u043e\u043d\u043d\u044b\u0439 \u0434\u043e\u043c SLH \u043f\u0440\u0435\u0434\u043b\u0430\u0433\u0430\u0435\u0442 \u0440\u0435\u0430\u043b\u044c\u043d\u044b\u0435 \u043a\u0440\u0438\u043f\u0442\u043e\u0434\u0435\u043f\u043e\u0437\u0438\u0442\u044b \u0441 \u0435\u0436\u0435\u043c\u0435\u0441\u044f\u0447\u043d\u043e\u0439 \u0434\u043e\u0445\u043e\u0434\u043d\u043e\u0441\u0442\u044c\u044e.",
+    s3_how:"\u041a\u0430\u043a \u0440\u0430\u0431\u043e\u0442\u0430\u044e\u0442 \u0434\u0435\u043f\u043e\u0437\u0438\u0442\u044b",
+    s3_s1t:"\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u043f\u043b\u0430\u043d",s3_s1p:"\u041e\u0442\u043f\u0440\u0430\u0432\u044c\u0442\u0435 \u00ab\u0418\u043d\u0432\u0435\u0441\u0442\u0438\u0446\u0438\u0438\u00bb \u0432 \u043c\u0435\u043d\u044e \u0431\u043e\u0442\u0430. 4 \u043f\u043b\u0430\u043d\u0430: \u041c\u0435\u0441\u044f\u0447\u043d\u044b\u0439 (4%), \u041a\u0432\u0430\u0440\u0442\u0430\u043b\u044c\u043d\u044b\u0439 (4.5%), \u041f\u043e\u043b\u0443\u0433\u043e\u0434\u043e\u0432\u043e\u0439 (5%), \u0413\u043e\u0434\u043e\u0432\u043e\u0439 (5.4%).",
+    s3_s2t:"\u041e\u0442\u043f\u0440\u0430\u0432\u044c\u0442\u0435 TON",s3_s2p:"\u041f\u0435\u0440\u0435\u0432\u0435\u0434\u0438\u0442\u0435 TON \u043d\u0430 \u0443\u043a\u0430\u0437\u0430\u043d\u043d\u044b\u0439 \u0430\u0434\u0440\u0435\u0441 \u043a\u043e\u0448\u0435\u043b\u044c\u043a\u0430. \u041c\u0438\u043d\u0438\u043c\u0443\u043c \u0437\u0430\u0432\u0438\u0441\u0438\u0442 \u043e\u0442 \u043f\u043b\u0430\u043d\u0430 (1-25 TON).",
+    s3_s3t:"\u041e\u0442\u043f\u0440\u0430\u0432\u044c\u0442\u0435 \u0441\u043a\u0440\u0438\u043d\u0448\u043e\u0442-\u043f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0435\u043d\u0438\u0435",s3_s3p:"\u0421\u0434\u0435\u043b\u0430\u0439\u0442\u0435 \u0441\u043a\u0440\u0438\u043d\u0448\u043e\u0442 \u043f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0435\u043d\u0438\u044f \u043f\u0435\u0440\u0435\u0432\u043e\u0434\u0430 \u0438 \u043e\u0442\u043f\u0440\u0430\u0432\u044c\u0442\u0435 \u0431\u043e\u0442\u0443 \u043a\u0430\u043a \u0444\u043e\u0442\u043e.",
+    s3_s4t:"\u0414\u043e\u0436\u0434\u0438\u0442\u0435\u0441\u044c \u043e\u0434\u043e\u0431\u0440\u0435\u043d\u0438\u044f",s3_s4p:"\u0410\u0434\u043c\u0438\u043d \u043f\u0440\u043e\u0432\u0435\u0440\u0438\u0442 \u043f\u043b\u0430\u0442\u0451\u0436 \u0438 \u043e\u0434\u043e\u0431\u0440\u0438\u0442 \u0435\u0433\u043e. \u0412\u044b \u043f\u043e\u043b\u0443\u0447\u0438\u0442\u0435 \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0435-\u043f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0435\u043d\u0438\u0435.",
+    s3_s5t:"\u041f\u043e\u043b\u0443\u0447\u0430\u0439\u0442\u0435 \u0435\u0436\u0435\u043c\u0435\u0441\u044f\u0447\u043d\u044b\u0439 \u0434\u043e\u0445\u043e\u0434",s3_s5p:"\u0414\u043e\u0445\u043e\u0434 \u0440\u0430\u0441\u0441\u0447\u0438\u0442\u044b\u0432\u0430\u0435\u0442\u0441\u044f \u0435\u0436\u0435\u043c\u0435\u0441\u044f\u0447\u043d\u043e \u0438 \u0434\u043e\u0431\u0430\u0432\u043b\u044f\u0435\u0442\u0441\u044f \u043d\u0430 \u0430\u043a\u043a\u0430\u0443\u043d\u0442. \u041f\u0440\u043e\u0432\u0435\u0440\u044f\u0439\u0442\u0435 \u043a\u043e\u043c\u0430\u043d\u0434\u043e\u0439 /mydeposits.",
+    s3_warn:"\u041d\u0438\u043a\u043e\u0433\u0434\u0430 \u043d\u0435 \u0438\u043d\u0432\u0435\u0441\u0442\u0438\u0440\u0443\u0439\u0442\u0435 \u0431\u043e\u043b\u044c\u0448\u0435, \u0447\u0435\u043c \u043c\u043e\u0436\u0435\u0442\u0435 \u043f\u043e\u0437\u0432\u043e\u043b\u0438\u0442\u044c \u0441\u0435\u0431\u0435 \u043f\u043e\u0442\u0435\u0440\u044f\u0442\u044c. \u041a\u0440\u0438\u043f\u0442\u043e\u0438\u043d\u0432\u0435\u0441\u0442\u0438\u0446\u0438\u0438 \u0441\u043e\u043f\u0440\u044f\u0436\u0435\u043d\u044b \u0441 \u0440\u0438\u0441\u043a\u043e\u043c. \u041f\u0440\u043e\u0448\u043b\u044b\u0435 \u0440\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442\u044b \u043d\u0435 \u0433\u0430\u0440\u0430\u043d\u0442\u0438\u0440\u0443\u044e\u0442 \u0431\u0443\u0434\u0443\u0449\u0438\u0445.",
+    s3_cmds:"\u041f\u043e\u043b\u0435\u0437\u043d\u044b\u0435 \u043a\u043e\u043c\u0430\u043d\u0434\u044b",
+    s3_cmd1:"\u041d\u0430\u0447\u0430\u0442\u044c \u043d\u043e\u0432\u044b\u0439 \u0434\u0435\u043f\u043e\u0437\u0438\u0442",s3_cmd2:"\u041f\u043e\u0441\u043c\u043e\u0442\u0440\u0435\u0442\u044c \u0430\u043a\u0442\u0438\u0432\u043d\u044b\u0435 \u0434\u0435\u043f\u043e\u0437\u0438\u0442\u044b",s3_cmd3:"\u041f\u043e\u0441\u043c\u043e\u0442\u0440\u0435\u0442\u044c \u0432\u044b\u043f\u0438\u0441\u043a\u0443 \u043f\u043e \u0441\u0447\u0451\u0442\u0443",s3_cmd4:"\u041f\u043e\u0441\u043c\u043e\u0442\u0440\u0435\u0442\u044c \u043f\u043e\u043b\u043d\u044b\u0439 \u043f\u043e\u0440\u0442\u0444\u0435\u043b\u044c",s3_cmd5:"\u0417\u0430\u043f\u0440\u043e\u0441\u0438\u0442\u044c \u0432\u044b\u0432\u043e\u0434 \u0441\u0440\u0435\u0434\u0441\u0442\u0432",
+    s4_title:"\u041e\u0431\u044a\u044f\u0441\u043d\u0435\u043d\u0438\u0435 \u043f\u043b\u0430\u043d\u043e\u0432 \u0441\u0442\u0435\u0439\u043a\u0438\u043d\u0433\u0430",s4_compare:"\u0421\u0440\u0430\u0432\u043d\u0435\u043d\u0438\u0435 \u043f\u043b\u0430\u043d\u043e\u0432",
+    s4_th_plan:"\u041f\u041b\u0410\u041d",s4_th_monthly:"\u041c\u0415\u0421\u042f\u0427\u041d\u041e",s4_th_annual:"\u0413\u041e\u0414\u041e\u0412\u041e\u0419",s4_th_lock:"\u0411\u041b\u041e\u041a\u0418\u0420\u041e\u0412\u041a\u0410",s4_th_min:"\u041c\u0418\u041d",
+    s4_r1:"\u041c\u0435\u0441\u044f\u0447\u043d\u044b\u0439",s4_r2:"\u041a\u0432\u0430\u0440\u0442\u0430\u043b\u044c\u043d\u044b\u0439",s4_r3:"\u041f\u043e\u043b\u0443\u0433\u043e\u0434\u043e\u0432\u043e\u0439",s4_r4:"\u0413\u043e\u0434\u043e\u0432\u043e\u0439",
+    s4_30d:"30 \u0434\u043d\u0435\u0439",s4_90d:"90 \u0434\u043d\u0435\u0439",s4_180d:"180 \u0434\u043d\u0435\u0439",s4_365d:"365 \u0434\u043d\u0435\u0439",
+    s4_tip:"\u0427\u0435\u043c \u0434\u043b\u0438\u043d\u043d\u0435\u0435 \u043f\u0435\u0440\u0438\u043e\u0434 \u0431\u043b\u043e\u043a\u0438\u0440\u043e\u0432\u043a\u0438, \u0442\u0435\u043c \u0432\u044b\u0448\u0435 \u0434\u043e\u0445\u043e\u0434\u043d\u043e\u0441\u0442\u044c. \u0413\u043e\u0434\u043e\u0432\u043e\u0439 \u043f\u043b\u0430\u043d \u0434\u0430\u0451\u0442 \u043b\u0443\u0447\u0448\u0438\u0439 APY - Variable \u0432 \u0433\u043e\u0434.",
+    s5_title:"\u041a\u043e\u0448\u0435\u043b\u0451\u043a \u0438 \u043f\u0435\u0440\u0435\u0432\u043e\u0434\u044b \u0442\u043e\u043a\u0435\u043d\u043e\u0432",s5_intro:"\u042d\u043a\u043e\u0441\u0438\u0441\u0442\u0435\u043c\u0430 SLH \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u0435\u0442 3 \u0442\u0438\u043f\u0430 \u0442\u043e\u043a\u0435\u043d\u043e\u0432:",
+    s5_types:"\u0422\u0438\u043f\u044b \u0442\u043e\u043a\u0435\u043d\u043e\u0432",
+    s5_ton:"\u0420\u0435\u0430\u043b\u044c\u043d\u0430\u044f \u043a\u0440\u0438\u043f\u0442\u043e\u0432\u0430\u043b\u044e\u0442\u0430. \u0414\u043b\u044f \u0434\u0435\u043f\u043e\u0437\u0438\u0442\u043e\u0432 \u0438 \u0432\u044b\u0432\u043e\u0434\u043e\u0432. \u0422\u043e\u0440\u0433\u0443\u0435\u0442\u0441\u044f \u043d\u0430 \u0431\u0438\u0440\u0436\u0430\u0445.",
+    s5_slh:"\u0423\u0442\u0438\u043b\u0438\u0442\u0430\u0440\u043d\u044b\u0439 \u0442\u043e\u043a\u0435\u043d \u044d\u043a\u043e\u0441\u0438\u0441\u0442\u0435\u043c\u044b \u043d\u0430 \u0431\u043b\u043e\u043a\u0447\u0435\u0439\u043d\u0435 BSC. \u0414\u043b\u044f \u043f\u0440\u0435\u043c\u0438\u0443\u043c-\u0434\u043e\u0441\u0442\u0443\u043f\u0430 \u0438 \u0443\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u044f.",
+    s5_zvk:"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u0442\u043e\u043a\u0435\u043d \u043d\u0430\u0433\u0440\u0430\u0434. \u0417\u0430\u0440\u0430\u0431\u0430\u0442\u044b\u0432\u0430\u0435\u0442\u0441\u044f \u0447\u0435\u0440\u0435\u0437 \u0438\u0433\u0440\u044b \u0438 \u0440\u0435\u0444\u0435\u0440\u0430\u043b\u043e\u0432. \u041a\u043e\u043d\u0432\u0435\u0440\u0442\u0438\u0440\u0443\u0435\u0442\u0441\u044f \u0432 TON.",
+    s5_how:"\u041a\u0430\u043a \u043f\u0435\u0440\u0435\u0432\u043e\u0434\u0438\u0442\u044c \u0442\u043e\u043a\u0435\u043d\u044b",
+    s5_s1t:"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043f\u0435\u0440\u0435\u0432\u043e\u0434 (SLH/ZVK)",s5_s1p:"\u0418\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u0439\u0442\u0435 /pay [\u0441\u0443\u043c\u043c\u0430] [\u0442\u043e\u043a\u0435\u043d] [ID] \u0432 \u0431\u043e\u0442\u0435. \u0418\u043b\u0438 \u0432\u043a\u043b\u0430\u0434\u043a\u0443 \u041f\u0435\u0440\u0435\u0432\u043e\u0434\u044b \u0432 \u0434\u0430\u0448\u0431\u043e\u0440\u0434\u0435.",
+    s5_s2t:"\u0411\u043b\u043e\u043a\u0447\u0435\u0439\u043d-\u043f\u0435\u0440\u0435\u0432\u043e\u0434",s5_s2p:"\u0418\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u0439\u0442\u0435 /send \u0432 \u0431\u043e\u0442\u0435 \u0434\u043b\u044f \u043e\u043d\u0447\u0435\u0439\u043d-\u043f\u0435\u0440\u0435\u0432\u043e\u0434\u043e\u0432 TON.",
+    s5_conv:"\u041a\u043e\u043d\u0432\u0435\u0440\u0442\u0430\u0446\u0438\u044f ZVK \u0432 TON",
+    s6_title:"\u0420\u0435\u0444\u0435\u0440\u0430\u043b\u044c\u043d\u0430\u044f \u0441\u0435\u0442\u044c (10 \u043f\u043e\u043a\u043e\u043b\u0435\u043d\u0438\u0439)",s6_intro:"\u0417\u0430\u0440\u0430\u0431\u0430\u0442\u044b\u0432\u0430\u0439\u0442\u0435 \u043a\u043e\u043c\u0438\u0441\u0441\u0438\u044e \u043d\u0430 \u0430\u043a\u0442\u0438\u0432\u043d\u043e\u0441\u0442\u0438 \u0432\u0430\u0448\u0435\u0439 \u0441\u0435\u0442\u0438 \u0434\u043e 10 \u043f\u043e\u043a\u043e\u043b\u0435\u043d\u0438\u0439 \u0432\u0433\u043b\u0443\u0431\u044c.",
+    s6_rates:"\u0421\u0442\u0430\u0432\u043a\u0438 \u043a\u043e\u043c\u0438\u0441\u0441\u0438\u0438",
+    s6_g1:"\u041f\u043e\u043a\u043e\u043b\u0435\u043d\u0438\u0435 1 (\u043f\u0440\u044f\u043c\u043e\u0435):",s6_g1v:"10% \u043e\u0442 \u0438\u0445 \u0434\u0435\u043f\u043e\u0437\u0438\u0442\u043e\u0432",s6_g6v:"0.5% \u043a\u0430\u0436\u0434\u044b\u0439",
+    s6_how:"\u041a\u0430\u043a \u043f\u0440\u0438\u0433\u043b\u0430\u0441\u0438\u0442\u044c",
+    s6_s1t:"\u041f\u043e\u043b\u0443\u0447\u0438\u0442\u0435 \u0440\u0435\u0444\u0435\u0440\u0430\u043b\u044c\u043d\u0443\u044e \u0441\u0441\u044b\u043b\u043a\u0443",s6_s1p:"\u0412 @SLH_AIR_bot \u043d\u0430\u0436\u043c\u0438\u0442\u0435 \u00ab\u041f\u0440\u0438\u0433\u043b\u0430\u0441\u0438\u0442\u044c\u00bb \u0434\u043b\u044f \u043f\u043e\u043b\u0443\u0447\u0435\u043d\u0438\u044f \u0443\u043d\u0438\u043a\u0430\u043b\u044c\u043d\u043e\u0439 \u0441\u0441\u044b\u043b\u043a\u0438: t.me/SLH_AIR_bot?start=YOUR_ID",
+    s6_s2t:"\u041f\u043e\u0434\u0435\u043b\u0438\u0442\u0435\u0441\u044c \u0441 \u0434\u0440\u0443\u0437\u044c\u044f\u043c\u0438",s6_s2p:"\u041e\u0442\u043f\u0440\u0430\u0432\u044c\u0442\u0435 \u0441\u0441\u044b\u043b\u043a\u0443 \u0434\u0440\u0443\u0437\u044c\u044f\u043c, \u043e\u043f\u0443\u0431\u043b\u0438\u043a\u0443\u0439\u0442\u0435 \u0432 \u0441\u043e\u0446\u0441\u0435\u0442\u044f\u0445 \u0438\u043b\u0438 \u043f\u043e\u0434\u0435\u043b\u0438\u0442\u0435\u0441\u044c \u0432 \u0433\u0440\u0443\u043f\u043f\u0430\u0445.",
+    s6_s3t:"\u0417\u0430\u0440\u0430\u0431\u0430\u0442\u044b\u0432\u0430\u0439\u0442\u0435 \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0438",s6_s3p:"\u041a\u043e\u0433\u0434\u0430 \u043a\u0442\u043e-\u0442\u043e \u0432 \u0432\u0430\u0448\u0435\u0439 \u0441\u0435\u0442\u0438 \u0432\u043d\u043e\u0441\u0438\u0442 \u0434\u0435\u043f\u043e\u0437\u0438\u0442, \u0432\u044b \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0438 \u043f\u043e\u043b\u0443\u0447\u0430\u0435\u0442\u0435 \u043a\u043e\u043c\u0438\u0441\u0441\u0438\u044e. \u041f\u0440\u043e\u0432\u0435\u0440\u044f\u0439\u0442\u0435 \u0432 \u0434\u0430\u0448\u0431\u043e\u0440\u0434\u0435.",
+    s6_example:"\u041f\u0440\u0438\u043c\u0435\u0440: \u0434\u0435\u043f\u043e\u0437\u0438\u0442 100 TON \u0432 \u0432\u0430\u0448\u0435\u0439 \u0441\u0435\u0442\u0438",
+    s6_example_p:"\u0415\u0441\u043b\u0438 \u043a\u0442\u043e-\u0442\u043e \u043d\u0430 3 \u0443\u0440\u043e\u0432\u043d\u044f\u0445 \u0432\u043d\u043e\u0441\u0438\u0442 100 TON, \u0432\u044b \u043f\u043e\u043b\u0443\u0447\u0430\u0435\u0442\u0435 3 TON (3%). \u0415\u0441\u043b\u0438 \u044d\u0442\u043e \u043f\u0440\u044f\u043c\u043e\u0439 \u0440\u0435\u0444\u0435\u0440\u0430\u043b, \u0432\u044b \u043f\u043e\u043b\u0443\u0447\u0430\u0435\u0442\u0435 10 TON (10%).",
+    s6_tip:"\u0412\u0430\u0448\u0430 \u0441\u0435\u0442\u044c \u0440\u0430\u0441\u0442\u0451\u0442 \u044d\u043a\u0441\u043f\u043e\u043d\u0435\u043d\u0446\u0438\u0430\u043b\u044c\u043d\u043e. \u0415\u0441\u043b\u0438 \u043a\u0430\u0436\u0434\u044b\u0439 \u043f\u0440\u0438\u0433\u043b\u0430\u0441\u0438\u0442 3 \u0447\u0435\u043b\u043e\u0432\u0435\u043a\u0430, \u043a 5-\u043c\u0443 \u043f\u043e\u043a\u043e\u043b\u0435\u043d\u0438\u044e \u0443 \u0432\u0430\u0441 243 \u0447\u0435\u043b\u043e\u0432\u0435\u043a\u0430, \u043f\u0440\u0438\u043d\u043e\u0441\u044f\u0449\u0438\u0445 \u043a\u043e\u043c\u0438\u0441\u0441\u0438\u044e!",
+    s7_title:"OsifShop - \u0418\u043d\u0432\u0435\u043d\u0442\u0430\u0440\u044c SaaS",s7_intro:"OsifShop - \u0441\u0438\u0441\u0442\u0435\u043c\u0430 \u0443\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u044f \u0438\u043d\u0432\u0435\u043d\u0442\u0430\u0440\u0451\u043c \u0441\u043e \u0441\u043a\u0430\u043d\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u0435\u043c \u0448\u0442\u0440\u0438\u0445\u043a\u043e\u0434\u043e\u0432 \u0447\u0435\u0440\u0435\u0437 \u043a\u0430\u043c\u0435\u0440\u0443.",
+    s7_s1t:"\u041e\u0442\u043a\u0440\u043e\u0439\u0442\u0435 @OsifShop_bot",s7_s1p:"\u041d\u0430\u0439\u0434\u0438\u0442\u0435 @OsifShop_bot \u0432 Telegram \u0438 \u043e\u0442\u043f\u0440\u0430\u0432\u044c\u0442\u0435 /start.",
+    s7_s2t:"\u0414\u043e\u0431\u0430\u0432\u044c\u0442\u0435 \u0442\u043e\u0432\u0430\u0440\u044b",s7_s2p:"\u041d\u0430\u0436\u043c\u0438\u0442\u0435 \u00ab\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c \u0442\u043e\u0432\u0430\u0440\u00bb. \u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u043d\u0430\u0437\u0432\u0430\u043d\u0438\u0435, \u0446\u0435\u043d\u0443 \u0438 \u043a\u043e\u043b\u0438\u0447\u0435\u0441\u0442\u0432\u043e.",
+    s7_s3t:"\u0421\u043a\u0430\u043d\u0438\u0440\u0443\u0439\u0442\u0435 \u0448\u0442\u0440\u0438\u0445\u043a\u043e\u0434\u044b",s7_s3p:"\u041d\u0430\u0436\u043c\u0438\u0442\u0435 \u00ab\u0421\u043a\u0430\u043d\u0438\u0440\u043e\u0432\u0430\u0442\u044c\u00bb \u0434\u043b\u044f \u043e\u0442\u043a\u0440\u044b\u0442\u0438\u044f \u043a\u0430\u043c\u0435\u0440\u044b (Mini App). \u041d\u0430\u0432\u0435\u0434\u0438\u0442\u0435 \u043a\u0430\u043c\u0435\u0440\u0443 \u043d\u0430 \u043b\u044e\u0431\u043e\u0439 \u0448\u0442\u0440\u0438\u0445\u043a\u043e\u0434.",
+    s7_s4t:"\u041f\u0440\u043e\u0441\u043c\u043e\u0442\u0440\u0438\u0442\u0435 \u043e\u0442\u0447\u0451\u0442\u044b",s7_s4p:"\u041f\u043e\u043b\u0443\u0447\u0430\u0439\u0442\u0435 \u043e\u0442\u0447\u0451\u0442\u044b \u043f\u043e \u0438\u043d\u0432\u0435\u043d\u0442\u0430\u0440\u044e, \u043e\u043f\u043e\u0432\u0435\u0449\u0435\u043d\u0438\u044f \u043e \u043d\u0438\u0437\u043a\u043e\u043c \u043e\u0441\u0442\u0430\u0442\u043a\u0435 \u0438 \u044d\u043a\u0441\u043f\u043e\u0440\u0442 \u0432 CSV.",
+    s8_title:"\u0412\u0435\u0431-\u0434\u0430\u0448\u0431\u043e\u0440\u0434",s8_intro:"\u041f\u0435\u0440\u0435\u0439\u0434\u0438\u0442\u0435 \u0432 \u043b\u0438\u0447\u043d\u044b\u0439 \u0434\u0430\u0448\u0431\u043e\u0440\u0434 \u043d\u0430",
+    s8_login:"\u0421\u043f\u043e\u0441\u043e\u0431\u044b \u0432\u0445\u043e\u0434\u0430",
+    s8_s1t:"\u0412\u0430\u0440\u0438\u0430\u043d\u0442 \u0410: \u0412\u0438\u0434\u0436\u0435\u0442 Telegram (\u0420\u0435\u043a\u043e\u043c\u0435\u043d\u0434\u0443\u0435\u0442\u0441\u044f)",s8_s1p:"\u041d\u0430\u0436\u043c\u0438\u0442\u0435 \u00ab\u0412\u043e\u0439\u0442\u0438 \u0447\u0435\u0440\u0435\u0437 Telegram\u00bb. \u041f\u043e\u044f\u0432\u0438\u0442\u0441\u044f \u043e\u043a\u043d\u043e \u043f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0435\u043d\u0438\u044f. \u041e\u0434\u0438\u043d \u043a\u043b\u0438\u043a \u0438 \u0432\u044b \u0432\u043d\u0443\u0442\u0440\u0438.",
+    s8_s2t:"\u0412\u0430\u0440\u0438\u0430\u043d\u0442 \u0411: \u0420\u0443\u0447\u043d\u043e\u0439 ID",s8_s2p:"\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u0432\u0430\u0448 Telegram ID. \u0421\u043c. \u00ab\u041a\u0430\u043a \u043d\u0430\u0439\u0442\u0438 \u0441\u0432\u043e\u0439 Telegram ID\u00bb \u0432\u044b\u0448\u0435.",
+    s8_features:"\u0424\u0443\u043d\u043a\u0446\u0438\u0438 \u0434\u0430\u0448\u0431\u043e\u0440\u0434\u0430",
+    s8_f1t:"\u041f\u043e\u0440\u0442\u0444\u0435\u043b\u044c",s8_f1d:"\u041f\u0440\u043e\u0441\u043c\u043e\u0442\u0440 \u0432\u0441\u0435\u0445 \u0430\u043a\u0442\u0438\u0432\u043d\u044b\u0445 \u0434\u0435\u043f\u043e\u0437\u0438\u0442\u043e\u0432 \u0438 \u0438\u0445 \u0441\u0442\u0430\u0442\u0443\u0441\u0430",
+    s8_f2t:"\u0421\u0442\u0435\u0439\u043a\u0438\u043d\u0433",s8_f2d:"\u0421\u043e\u0437\u0434\u0430\u0432\u0430\u0439\u0442\u0435 \u043d\u043e\u0432\u044b\u0435 \u043f\u043e\u0437\u0438\u0446\u0438\u0438 \u0441\u0442\u0435\u0439\u043a\u0438\u043d\u0433\u0430 \u043f\u0440\u044f\u043c\u043e \u0438\u0437 \u0432\u0435\u0431\u0430",
+    s8_f3t:"\u041f\u0435\u0440\u0435\u0432\u043e\u0434\u044b",s8_f3d:"\u041e\u0442\u043f\u0440\u0430\u0432\u043b\u044f\u0439\u0442\u0435 \u0442\u043e\u043a\u0435\u043d\u044b SLH/ZVK \u0434\u0440\u0443\u0433\u0438\u043c \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044f\u043c",
+    s8_f4t:"\u0420\u0435\u0444\u0435\u0440\u0430\u043b\u044b",s8_f4d:"\u0421\u043c\u043e\u0442\u0440\u0438\u0442\u0435 \u0434\u0435\u0440\u0435\u0432\u043e \u0440\u0435\u0444\u0435\u0440\u0430\u043b\u043e\u0432, \u0434\u043e\u0445\u043e\u0434 \u043f\u043e \u043f\u043e\u043a\u043e\u043b\u0435\u043d\u0438\u044f\u043c, \u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u0435 \u0441\u0441\u044b\u043b\u043a\u0438",
+    s8_f5t:"\u0411\u044b\u0441\u0442\u0440\u044b\u0435 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044f",s8_f5d:"\u041f\u0440\u044f\u043c\u044b\u0435 \u0441\u0441\u044b\u043b\u043a\u0438 \u043d\u0430 \u0432\u0441\u0435\u0445 \u0431\u043e\u0442\u043e\u0432 \u0438 \u0434\u043e\u043a\u0443\u043c\u0435\u043d\u0442\u0430\u0446\u0438\u044e",
+    s9_title:"\u041c\u0430\u0440\u043a\u0435\u0442\u043f\u043b\u0435\u0439\u0441 NFT",s9_intro:"\u041c\u0430\u0440\u043a\u0435\u0442\u043f\u043b\u0435\u0439\u0441 NFTY \u043f\u043e\u0437\u0432\u043e\u043b\u044f\u0435\u0442 \u043f\u043e\u043a\u0443\u043f\u0430\u0442\u044c \u0438 \u043f\u0440\u043e\u0434\u0430\u0432\u0430\u0442\u044c \u0446\u0438\u0444\u0440\u043e\u0432\u044b\u0435 \u0430\u043a\u0442\u0438\u0432\u044b \u0441 \u0432\u0438\u0440\u0442\u0443\u0430\u043b\u044c\u043d\u044b\u043c \u043f\u0438\u0442\u043e\u043c\u0446\u0435\u043c.",
+    s9_s1t:"\u041e\u0442\u043a\u0440\u043e\u0439\u0442\u0435 @NIFTI_Publisher_Bot",s9_s1p:"\u041e\u0442\u043f\u0440\u0430\u0432\u044c\u0442\u0435 /start \u0431\u043e\u0442\u0443. \u0412\u044b \u043f\u043e\u043b\u0443\u0447\u0438\u0442\u0435 \u0432\u0438\u0440\u0442\u0443\u0430\u043b\u044c\u043d\u043e\u0433\u043e \u043f\u0438\u0442\u043e\u043c\u0446\u0430 (Sparky!) \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0438.",
+    s9_s2t:"\u041e\u0431\u0437\u043e\u0440 \u043c\u0430\u0440\u043a\u0435\u0442\u043f\u043b\u0435\u0439\u0441\u0430",s9_s2p:"\u0418\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u0439\u0442\u0435 /browse \u0434\u043b\u044f \u043f\u0440\u043e\u0441\u043c\u043e\u0442\u0440\u0430 \u0434\u043e\u0441\u0442\u0443\u043f\u043d\u044b\u0445 \u0446\u0438\u0444\u0440\u043e\u0432\u044b\u0445 \u0430\u043a\u0442\u0438\u0432\u043e\u0432.",
+    s9_s3t:"\u0420\u0430\u0437\u043c\u0435\u0441\u0442\u0438\u0442\u0435 \u0441\u0432\u043e\u0438 \u043f\u0440\u0435\u0434\u043c\u0435\u0442\u044b",s9_s3p:"\u0418\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u0439\u0442\u0435 /sell \u0434\u043b\u044f \u0441\u043e\u0437\u0434\u0430\u043d\u0438\u044f \u043e\u0431\u044a\u044f\u0432\u043b\u0435\u043d\u0438\u044f. \u0423\u043a\u0430\u0436\u0438\u0442\u0435 \u043d\u0430\u0437\u0432\u0430\u043d\u0438\u0435, \u043e\u043f\u0438\u0441\u0430\u043d\u0438\u0435, \u0446\u0435\u043d\u0443 \u0438 \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u044e.",
+    s9_s4t:"\u0423\u0445\u0430\u0436\u0438\u0432\u0430\u0439\u0442\u0435 \u0437\u0430 \u043f\u0438\u0442\u043e\u043c\u0446\u0435\u043c",s9_s4p:"\u0418\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u0439\u0442\u0435 /feed, /play, /learn, /sleep \u0434\u043b\u044f \u0437\u0430\u0431\u043e\u0442\u044b \u043e \u043f\u0438\u0442\u043e\u043c\u0446\u0435!",
+    s10_title:"\u0418\u0433\u0440\u044b \u0438 \u0442\u043e\u043a\u0435\u043d\u044b ZVK",s10_intro:"\u0418\u0433\u0440\u0430\u0439\u0442\u0435 \u0434\u043b\u044f \u0437\u0430\u0440\u0430\u0431\u043e\u0442\u043a\u0430 ZVK, \u043a\u043e\u0442\u043e\u0440\u044b\u0435 \u043a\u043e\u043d\u0432\u0435\u0440\u0442\u0438\u0440\u0443\u044e\u0442\u0441\u044f \u0432 TON.",
+    s10_available:"\u0414\u043e\u0441\u0442\u0443\u043f\u043d\u044b\u0435 \u0438\u0433\u0440\u044b",
+    s10_slots:"\u041a\u0440\u0443\u0442\u0438\u0442\u0435 \u0438 \u0432\u044b\u0438\u0433\u0440\u044b\u0432\u0430\u0439\u0442\u0435 \u0434\u043e 25 ZVK \u0437\u0430 \u0440\u0430\u0443\u043d\u0434",
+    s10_dice:"\u0411\u0440\u043e\u0441\u043e\u043a 6 = 5 ZVK, \u0411\u0440\u043e\u0441\u043e\u043a 4-5 = 2 ZVK",
+    s10_basket:"\u041f\u043e\u043f\u0430\u0434\u0430\u043d\u0438\u0435 4+ = 3 ZVK",
+    s10_darts:"\u0411\u0443\u043b\u043b\u044c\u0441\u0430\u0439 (6) = 5 ZVK, 4-5 = 2 ZVK",
+    s10_cost:"\u041a\u0430\u0436\u0434\u0430\u044f \u0438\u0433\u0440\u0430 \u0441\u0442\u043e\u0438\u0442 1 ZVK. \u041e\u0442\u043a\u0440\u043e\u0439\u0442\u0435 \u043c\u0435\u043d\u044e \u0418\u0433\u0440\u044b \u0432 @SLH_AIR_bot.",
+    s11_title:"\u041b\u0443\u0447\u0448\u0438\u0435 \u043f\u0440\u0430\u043a\u0442\u0438\u043a\u0438 \u0431\u0435\u0437\u043e\u043f\u0430\u0441\u043d\u043e\u0441\u0442\u0438",
+    s11_warn:"\u041d\u0438\u043a\u043e\u0433\u0434\u0430 \u043d\u0435 \u0434\u0435\u043b\u0438\u0442\u0435\u0441\u044c \u043f\u0440\u0438\u0432\u0430\u0442\u043d\u044b\u043c\u0438 \u043a\u043b\u044e\u0447\u0430\u043c\u0438, PIN-\u043a\u043e\u0434\u0430\u043c\u0438 \u0438\u043b\u0438 \u0441\u0438\u0434-\u0444\u0440\u0430\u0437\u0430\u043c\u0438. \u0421\u043e\u0442\u0440\u0443\u0434\u043d\u0438\u043a\u0438 SLH \u041d\u0418\u041a\u041e\u0413\u0414\u0410 \u043d\u0435 \u043f\u043e\u043f\u0440\u043e\u0441\u044f\u0442 \u0438\u0445.",
+    s11_2fa:"\u0412\u043a\u043b\u044e\u0447\u0438\u0442\u0435 \u0434\u0432\u0443\u0445\u0444\u0430\u043a\u0442\u043e\u0440\u043d\u0443\u044e \u0430\u0443\u0442\u0435\u043d\u0442\u0438\u0444\u0438\u043a\u0430\u0446\u0438\u044e \u0432 \u043d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0430\u0445 Telegram \u0434\u043b\u044f \u0434\u043e\u043f\u043e\u043b\u043d\u0438\u0442\u0435\u043b\u044c\u043d\u043e\u0439 \u0437\u0430\u0449\u0438\u0442\u044b.",
+    s11_verify:"\u041f\u0440\u043e\u0432\u0435\u0440\u044f\u0439\u0442\u0435 \u0438\u043c\u0435\u043d\u0430 \u0431\u043e\u0442\u043e\u0432 - \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u0439\u0442\u0435 \u0442\u043e\u043b\u044c\u043a\u043e @SLH_AIR_bot. \u041e\u0441\u0442\u0435\u0440\u0435\u0433\u0430\u0439\u0442\u0435\u0441\u044c \u043f\u043e\u0434\u0434\u0435\u043b\u044c\u043d\u044b\u0445 \u0431\u043e\u0442\u043e\u0432.",
+    s11_records:"\u0412\u0435\u0434\u0438\u0442\u0435 \u0443\u0447\u0451\u0442 - \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u0439\u0442\u0435 /statement \u0434\u043b\u044f \u0440\u0435\u0433\u0443\u043b\u044f\u0440\u043d\u043e\u0439 \u043f\u0440\u043e\u0432\u0435\u0440\u043a\u0438 \u0430\u043a\u0442\u0438\u0432\u043d\u043e\u0441\u0442\u0438.",
+    s11_report:"\u0421\u043e\u043e\u0431\u0449\u0430\u0439\u0442\u0435 \u043e \u043f\u043e\u0434\u043e\u0437\u0440\u0438\u0442\u0435\u043b\u044c\u043d\u043e\u0439 \u0430\u043a\u0442\u0438\u0432\u043d\u043e\u0441\u0442\u0438 - /support \u0438\u043b\u0438 058-420-3384.",
+    s12_title:"\u0427\u0430\u0441\u0442\u043e \u0437\u0430\u0434\u0430\u0432\u0430\u0435\u043c\u044b\u0435 \u0432\u043e\u043f\u0440\u043e\u0441\u044b",
+    faq_q1:"\u0412: \u042d\u0442\u043e \u0440\u0435\u0430\u043b\u044c\u043d\u0430\u044f \u0438\u043d\u0432\u0435\u0441\u0442\u0438\u0446\u0438\u043e\u043d\u043d\u0430\u044f \u043f\u043b\u0430\u0442\u0444\u043e\u0440\u043c\u0430?",
+    faq_a1:"SLH - \u0446\u0438\u0444\u0440\u043e\u0432\u0430\u044f \u0438\u043d\u0432\u0435\u0441\u0442\u0438\u0446\u0438\u043e\u043d\u043d\u0430\u044f \u044d\u043a\u043e\u0441\u0438\u0441\u0442\u0435\u043c\u0430 \u043d\u0430 \u0440\u0435\u0430\u043b\u044c\u043d\u043e\u043c \u0431\u043b\u043e\u043a\u0447\u0435\u0439\u043d\u0435. \u0412\u0441\u0435 \u0434\u0435\u043f\u043e\u0437\u0438\u0442\u044b TON - \u0440\u0435\u0430\u043b\u044c\u043d\u044b\u0435 \u043a\u0440\u0438\u043f\u0442\u043e\u0442\u0440\u0430\u043d\u0437\u0430\u043a\u0446\u0438\u0438. \u041e\u0434\u043d\u0430\u043a\u043e \u0434\u043e\u0445\u043e\u0434\u043d\u043e\u0441\u0442\u044c \u043d\u0435 \u0433\u0430\u0440\u0430\u043d\u0442\u0438\u0440\u043e\u0432\u0430\u043d\u0430.",
+    faq_q2:"\u0412: \u041a\u0430\u043a \u0432\u044b\u0432\u0435\u0441\u0442\u0438 \u0434\u0435\u043d\u044c\u0433\u0438?",
+    faq_a2:"\u0418\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u0439\u0442\u0435 /withdraw \u0432 @SLH_AIR_bot. \u0412\u044b\u0432\u043e\u0434\u044b \u043e\u0431\u0440\u0430\u0431\u0430\u0442\u044b\u0432\u0430\u044e\u0442\u0441\u044f \u0432 \u0442\u0435\u0447\u0435\u043d\u0438\u0435 24 \u0447\u0430\u0441\u043e\u0432 \u043f\u043e\u0441\u043b\u0435 \u043e\u0434\u043e\u0431\u0440\u0435\u043d\u0438\u044f.",
+    faq_q3:"\u0412: \u0427\u0442\u043e \u0434\u0435\u043b\u0430\u0442\u044c \u043f\u0440\u0438 \u043f\u043e\u0442\u0435\u0440\u0435 \u0442\u0435\u043b\u0435\u0444\u043e\u043d\u0430?",
+    faq_a3:"\u0410\u043a\u043a\u0430\u0443\u043d\u0442 \u043f\u0440\u0438\u0432\u044f\u0437\u0430\u043d \u043a Telegram. \u0412\u043e\u0439\u0434\u0438\u0442\u0435 \u0432 Telegram \u043d\u0430 \u043d\u043e\u0432\u043e\u043c \u0443\u0441\u0442\u0440\u043e\u0439\u0441\u0442\u0432\u0435, \u0438 \u0432\u0441\u0435 \u0434\u0430\u043d\u043d\u044b\u0435 \u0431\u0443\u0434\u0443\u0442 \u0442\u0430\u043c.",
+    faq_q4:"\u0412: \u041c\u043e\u0436\u043d\u043e \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u044c \u0437\u0430 \u043f\u0440\u0435\u0434\u0435\u043b\u0430\u043c\u0438 \u0418\u0437\u0440\u0430\u0438\u043b\u044f?",
+    faq_a4:"\u0414\u0430! \u041f\u043b\u0430\u0442\u0444\u043e\u0440\u043c\u0430 \u043f\u043e\u0434\u0434\u0435\u0440\u0436\u0438\u0432\u0430\u0435\u0442 \u0438\u0432\u0440\u0438\u0442, \u0430\u043d\u0433\u043b\u0438\u0439\u0441\u043a\u0438\u0439, \u0440\u0443\u0441\u0441\u043a\u0438\u0439, \u0430\u0440\u0430\u0431\u0441\u043a\u0438\u0439 \u0438 \u0444\u0440\u0430\u043d\u0446\u0443\u0437\u0441\u043a\u0438\u0439. \u041b\u044e\u0431\u043e\u0439 \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c Telegram \u043c\u043e\u0436\u0435\u0442 \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u044c\u0441\u044f.",
+    faq_q5:"\u0412: \u041a\u0430\u043a \u0441\u0432\u044f\u0437\u0430\u0442\u044c\u0441\u044f \u0441 \u043f\u043e\u0434\u0434\u0435\u0440\u0436\u043a\u043e\u0439?",
+    faq_a5:"\u041e\u0442\u043f\u0440\u0430\u0432\u044c\u0442\u0435 /support \u0432 \u043b\u044e\u0431\u043e\u043c \u0431\u043e\u0442\u0435 SLH, \u043f\u043e\u0437\u0432\u043e\u043d\u0438\u0442\u0435 058-420-3384 \u0438\u043b\u0438 \u043d\u0430\u043f\u0438\u0448\u0438\u0442\u0435 \u043d\u0430 osif@spark-ind.com.",
+    faq_q6:"\u0412: \u041a\u0430\u043a\u043e\u0432 \u043c\u0438\u043d\u0438\u043c\u0430\u043b\u044c\u043d\u044b\u0439 \u0432\u043a\u043b\u0430\u0434?",
+    faq_a6:"\u041c\u0435\u0441\u044f\u0447\u043d\u044b\u0439 \u043f\u043b\u0430\u043d \u043d\u0430\u0447\u0438\u043d\u0430\u0435\u0442\u0441\u044f \u043e\u0442 1 TON (\u043f\u0440\u0438\u043c\u0435\u0440\u043d\u043e 4 \u0448\u0435\u043a\u0435\u043b\u044f \u043f\u043e \u0442\u0435\u043a\u0443\u0449\u0438\u043c \u0446\u0435\u043d\u0430\u043c).",
+    ft_home:"\u0413\u043b\u0430\u0432\u043d\u0430\u044f",ft_dash:"\u0414\u0430\u0448\u0431\u043e\u0440\u0434",ft_wp:"\u0411\u0435\u043b\u0430\u044f \u043a\u043d\u0438\u0433\u0430",ft_bot:"\u0411\u043e\u0442 \u0438\u043d\u0432\u0435\u0441\u0442\u0438\u0446\u0438\u0439",ft_support:"\u041f\u043e\u0434\u0434\u0435\u0440\u0436\u043a\u0430: 058-420-3384"
+},
+ar: {
+    g_back:"\u2190 \u0627\u0644\u0639\u0648\u062f\u0629 \u0625\u0644\u0649 \u0646\u0638\u0627\u0645 SLH",
+    g_title:"[ \u062f\u0644\u064a\u0644 \u0627\u0644\u0645\u0633\u062a\u062e\u062f\u0645 ]",
+    g_subtitle:"\u062f\u0631\u0648\u0633 \u062a\u0639\u0644\u064a\u0645\u064a\u0629 \u062e\u0637\u0648\u0629 \u0628\u062e\u0637\u0648\u0629 \u0644\u0643\u0644 \u0645\u064a\u0632\u0629 \u0641\u064a \u0646\u0638\u0627\u0645 SLH",
+    qc_start_t:"\u0627\u0644\u0628\u062f\u0627\u064a\u0629",qc_start_d:"\u0627\u0644\u062e\u0637\u0648\u0627\u062a \u0627\u0644\u0623\u0648\u0644\u0649\u060c \u0625\u0646\u0634\u0627\u0621 \u062d\u0633\u0627\u0628\u060c \u0641\u0647\u0645 \u0627\u0644\u0646\u0638\u0627\u0645",
+    qc_invest_t:"\u062f\u0644\u064a\u0644 \u0627\u0644\u0627\u0633\u062a\u062b\u0645\u0627\u0631",qc_invest_d:"\u0627\u0644\u0625\u064a\u062f\u0627\u0639\u0627\u062a\u060c \u062e\u0637\u0637 \u0627\u0644\u0633\u062a\u064a\u0643\u064a\u0646\u063a\u060c \u0627\u0644\u0639\u0648\u0627\u0626\u062f",
+    qc_wallet_t:"\u0627\u0644\u0645\u062d\u0641\u0638\u0629 \u0648\u0627\u0644\u062a\u062d\u0648\u064a\u0644\u0627\u062a",qc_wallet_d:"\u0625\u062f\u0627\u0631\u0629 \u0627\u0644\u0631\u0645\u0648\u0632\u060c \u0627\u0644\u0625\u0631\u0633\u0627\u0644 \u0648\u0627\u0644\u0627\u0633\u062a\u0642\u0628\u0627\u0644",
+    qc_ref_t:"\u0634\u0628\u0643\u0629 \u0627\u0644\u0625\u062d\u0627\u0644\u0627\u062a",qc_ref_d:"\u0628\u0646\u0627\u0621 \u0634\u0628\u0643\u062a\u0643\u060c \u0643\u0633\u0628 \u0627\u0644\u0639\u0645\u0648\u0644\u0627\u062a",
+    qc_shop_t:"\u062f\u0644\u064a\u0644 OsifShop",qc_shop_d:"\u0625\u062f\u0627\u0631\u0629 \u0627\u0644\u0645\u062e\u0632\u0648\u0646\u060c \u0645\u0633\u062d \u0627\u0644\u0628\u0627\u0631\u0643\u0648\u062f",
+    qc_dash_t:"\u062f\u0644\u064a\u0644 \u0644\u0648\u062d\u0629 \u0627\u0644\u062a\u062d\u0643\u0645",qc_dash_d:"\u0644\u0648\u062d\u0629 \u0627\u0644\u0648\u064a\u0628\u060c \u0627\u0644\u0645\u062d\u0641\u0638\u0629\u060c \u0648\u0627\u062c\u0647\u0629 \u0627\u0644\u0633\u062a\u064a\u0643\u064a\u0646\u063a",
+    qc_nft_t:"\u0633\u0648\u0642 NFT",qc_nft_d:"\u0627\u0644\u0634\u0631\u0627\u0621\u060c \u0627\u0644\u0628\u064a\u0639\u060c \u0627\u0644\u062d\u064a\u0648\u0627\u0646\u0627\u062a \u0627\u0644\u0627\u0641\u062a\u0631\u0627\u0636\u064a\u0629",
+    qc_sec_t:"\u062f\u0644\u064a\u0644 \u0627\u0644\u0623\u0645\u0627\u0646",qc_sec_d:"\u062d\u0645\u0627\u064a\u0629 \u062d\u0633\u0627\u0628\u0643\u060c KYC\u060c PIN",
+    toc_title:"\u062c\u062f\u0648\u0644 \u0627\u0644\u0645\u062d\u062a\u0648\u064a\u0627\u062a",
+    toc_1:"1. \u0627\u0644\u0628\u062f\u0627\u064a\u0629",toc_2:"2. \u0643\u064a\u0641 \u062a\u062c\u062f \u0645\u0639\u0631\u0641 \u062a\u0644\u064a\u062c\u0631\u0627\u0645 \u0627\u0644\u062e\u0627\u0635 \u0628\u0643",toc_3:"3. \u062f\u0644\u064a\u0644 \u0627\u0644\u0627\u0633\u062a\u062b\u0645\u0627\u0631 (SLH_AIR_bot)",
+    toc_4:"4. \u0634\u0631\u062d \u062e\u0637\u0637 \u0627\u0644\u0633\u062a\u064a\u0643\u064a\u0646\u063a",toc_5:"5. \u0627\u0644\u0645\u062d\u0641\u0638\u0629 \u0648\u062a\u062d\u0648\u064a\u0644 \u0627\u0644\u0631\u0645\u0648\u0632",toc_6:"6. \u0634\u0628\u0643\u0629 \u0627\u0644\u0625\u062d\u0627\u0644\u0627\u062a (10 \u0623\u062c\u064a\u0627\u0644)",
+    toc_7:"7. OsifShop - \u0646\u0638\u0627\u0645 \u0627\u0644\u0645\u062e\u0632\u0648\u0646 SaaS",toc_8:"8. \u0644\u0648\u062d\u0629 \u0627\u0644\u062a\u062d\u0643\u0645 \u0627\u0644\u0625\u0644\u0643\u062a\u0631\u0648\u0646\u064a\u0629",toc_9:"9. \u0633\u0648\u0642 NFT",
+    toc_10:"10. \u0627\u0644\u0623\u0644\u0639\u0627\u0628 \u0648\u0631\u0645\u0648\u0632 ZVK",toc_11:"11. \u0623\u0641\u0636\u0644 \u0645\u0645\u0627\u0631\u0633\u0627\u062a \u0627\u0644\u0623\u0645\u0627\u0646",toc_12:"12. \u0627\u0644\u0623\u0633\u0626\u0644\u0629 \u0627\u0644\u0634\u0627\u0626\u0639\u0629",
+    s1_title:"\u0627\u0644\u0628\u062f\u0627\u064a\u0629",s1_intro:"\u0645\u0631\u062d\u0628\u0627\u064b \u0628\u0643 \u0641\u064a \u0646\u0638\u0627\u0645 SLH. \u0625\u0644\u064a\u0643 \u0643\u064a\u0641\u064a\u0629 \u0627\u0644\u0628\u062f\u0621 \u0641\u064a 3 \u062f\u0642\u0627\u0626\u0642.",
+    s1_s1t:"\u0627\u0641\u062a\u062d \u062a\u0644\u064a\u062c\u0631\u0627\u0645",s1_s1p:"\u062d\u0645\u0651\u0644 \u062a\u0644\u064a\u062c\u0631\u0627\u0645 \u0645\u0646 telegram.org \u0625\u0630\u0627 \u0644\u0645 \u064a\u0643\u0646 \u0644\u062f\u064a\u0643. \u0645\u062a\u0627\u062d \u0639\u0644\u0649 iOS \u0648Android \u0648\u0627\u0644\u062d\u0627\u0633\u0648\u0628 \u0648\u0627\u0644\u0648\u064a\u0628.",
+    s1_s2t:"\u0627\u0628\u062d\u062b \u0639\u0646 \u0627\u0644\u0628\u0648\u062a \u0627\u0644\u0631\u0626\u064a\u0633\u064a",s1_s2p:"\u0627\u0628\u062d\u062b \u0639\u0646 @SLH_AIR_bot \u0641\u064a \u062a\u0644\u064a\u062c\u0631\u0627\u0645\u060c \u0623\u0648 \u0627\u0646\u0642\u0631:",
+    s1_s3t:"\u0623\u0631\u0633\u0644 /start",s1_s3p:"\u0633\u064a\u0631\u062d\u0628 \u0628\u0643 \u0627\u0644\u0628\u0648\u062a \u0648\u064a\u0639\u0631\u0636 \u0644\u0648\u062d\u0629 \u0627\u0644\u062a\u062d\u0643\u0645 \u0645\u0639 \u0623\u0631\u0635\u062f\u0629 SLH \u0648ZVK. \u064a\u0645\u0643\u0646\u0643 \u0627\u0633\u062a\u0643\u0634\u0627\u0641 \u062c\u0645\u064a\u0639 \u0627\u0644\u0645\u064a\u0632\u0627\u062a \u0627\u0644\u0645\u062c\u0627\u0646\u064a\u0629 \u0641\u0648\u0631\u0627\u064b.",
+    s1_s4t:"\u0627\u0633\u062a\u0643\u0634\u0641 \u0627\u0644\u0642\u0627\u0626\u0645\u0629",s1_s4p:"\u0633\u062a\u0631\u0649 \u0623\u0632\u0631\u0627\u0631: \u0623\u0633\u0639\u0627\u0631 \u0627\u0644\u0633\u0648\u0642\u060c \u0627\u0644\u0627\u0633\u062a\u062b\u0645\u0627\u0631\u0627\u062a\u060c \u0627\u0644\u0645\u062d\u0641\u0638\u0629\u060c \u0625\u062f\u0627\u0631\u0629 \u0627\u0644\u0645\u062e\u0627\u0637\u0631\u060c \u0627\u0644\u0623\u0644\u0639\u0627\u0628\u060c \u0648\u0627\u0644\u0625\u062d\u0627\u0644\u0627\u062a. \u062c\u0631\u0628 \u0643\u0644 \u0648\u0627\u062d\u062f.",
+    s1_tip:"\u062c\u0645\u064a\u0639 \u0627\u0644\u0645\u064a\u0632\u0627\u062a \u0627\u0644\u0623\u0633\u0627\u0633\u064a\u0629 \u0645\u062c\u0627\u0646\u064a\u0629. \u062a\u062f\u0641\u0639 \u0641\u0642\u0637 \u0639\u0646\u062f \u0627\u0644\u0625\u064a\u062f\u0627\u0639 \u0627\u0644\u0641\u0639\u0644\u064a \u0623\u0648 \u0627\u0644\u0648\u0635\u0648\u0644 \u0644\u0644\u0645\u064a\u0632\u0627\u062a \u0627\u0644\u0645\u0645\u064a\u0632\u0629.",
+    s2_title:"\u0643\u064a\u0641 \u062a\u062c\u062f \u0645\u0639\u0631\u0641 \u062a\u0644\u064a\u062c\u0631\u0627\u0645 \u0627\u0644\u062e\u0627\u0635 \u0628\u0643",s2_intro:"\u0645\u0639\u0631\u0641 \u062a\u0644\u064a\u062c\u0631\u0627\u0645 \u0647\u0648 \u0631\u0642\u0645 \u0641\u0631\u064a\u062f \u064a\u062d\u062f\u062f \u062d\u0633\u0627\u0628\u0643. \u062a\u062d\u062a\u0627\u062c\u0647 \u0644\u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u062f\u062e\u0648\u0644 \u0625\u0644\u0649 \u0644\u0648\u062d\u0629 \u0627\u0644\u062a\u062d\u0643\u0645.",
+    s2_m1:"\u0627\u0644\u0637\u0631\u064a\u0642\u0629 1: \u0639\u0628\u0631 @userinfobot (\u0627\u0644\u0623\u0633\u0647\u0644)",
+    s2_m1s1t:"\u0627\u0641\u062a\u062d @userinfobot",s2_m1s1p:"\u0627\u0628\u062d\u062b \u0639\u0646 @userinfobot \u0641\u064a \u062a\u0644\u064a\u062c\u0631\u0627\u0645 \u0648\u0627\u0641\u062a\u062d \u0627\u0644\u0645\u062d\u0627\u062f\u062b\u0629.",
+    s2_m1s2t:"\u0623\u0631\u0633\u0644 /start",s2_m1s2p:"\u0633\u064a\u0631\u062f \u0627\u0644\u0628\u0648\u062a \u0641\u0648\u0631\u0627\u064b \u0628\u0645\u0639\u0631\u0641\u0643 \u0648\u0627\u0633\u0645 \u0627\u0644\u0645\u0633\u062a\u062e\u062f\u0645 \u0648\u0627\u0633\u0645\u0643. \u0627\u0646\u0633\u062e \u0627\u0644\u0631\u0642\u0645.",
+    s2_m2:"\u0627\u0644\u0637\u0631\u064a\u0642\u0629 2: \u0639\u0628\u0631 SLH_AIR_bot",
+    s2_m2s1t:"\u0627\u0641\u062a\u062d @SLH_AIR_bot",s2_m2s1p:"\u0623\u0631\u0633\u0644 /start \u0644\u0644\u0628\u0648\u062a. \u0633\u062a\u0639\u0631\u0636 \u0644\u0648\u062d\u0629 \u0627\u0644\u062a\u062d\u0643\u0645 \u0623\u0631\u0635\u062f\u062a\u0643.",
+    s2_m2s2t:"\u062a\u062d\u0642\u0642 \u0645\u0646 \u0631\u0627\u0628\u0637 \u0627\u0644\u0625\u062d\u0627\u0644\u0629",s2_m2s2p:"\u0627\u0646\u0642\u0631 \u0639\u0644\u0649 \u00ab\u062f\u0639\u0648\u0629\u00bb \u0641\u064a \u0627\u0644\u0642\u0627\u0626\u0645\u0629. \u0631\u0627\u0628\u0637 \u0627\u0644\u0625\u062d\u0627\u0644\u0629 \u064a\u062d\u062a\u0648\u064a \u0639\u0644\u0649 \u0645\u0639\u0631\u0641\u0643: t.me/SLH_AIR_bot?start=YOUR_ID",
+    s2_m3:"\u0627\u0644\u0637\u0631\u064a\u0642\u0629 3: \u0639\u0628\u0631 \u0625\u0639\u062f\u0627\u062f\u0627\u062a \u062a\u0644\u064a\u062c\u0631\u0627\u0645",
+    s2_m3p:"\u0641\u064a \u0628\u0639\u0636 \u0639\u0645\u0644\u0627\u0621 \u062a\u0644\u064a\u062c\u0631\u0627\u0645\u060c \u0627\u0630\u0647\u0628 \u0625\u0644\u0649 \u0627\u0644\u0625\u0639\u062f\u0627\u062f\u0627\u062a \u0648\u0642\u062f \u064a\u0638\u0647\u0631 \u0645\u0639\u0631\u0641\u0643 \u062a\u062d\u062a \u0627\u0644\u0645\u0644\u0641 \u0627\u0644\u0634\u062e\u0635\u064a. \u0641\u064a \u062a\u0644\u064a\u062c\u0631\u0627\u0645 \u0644\u0644\u062d\u0627\u0633\u0648\u0628\u060c \u0642\u062f \u064a\u0643\u0648\u0646 \u0641\u064a \u0642\u0633\u0645 API.",
+    s3_title:"\u062f\u0644\u064a\u0644 \u0627\u0644\u0627\u0633\u062a\u062b\u0645\u0627\u0631",s3_intro:"\u064a\u0642\u062f\u0645 \u0628\u064a\u062a \u0627\u0633\u062a\u062b\u0645\u0627\u0631 SLH \u0625\u064a\u062f\u0627\u0639\u0627\u062a \u0639\u0645\u0644\u0627\u062a \u0631\u0642\u0645\u064a\u0629 \u062d\u0642\u064a\u0642\u064a\u0629 \u0645\u0639 \u0639\u0648\u0627\u0626\u062f \u0634\u0647\u0631\u064a\u0629.",
+    s3_how:"\u0643\u064a\u0641 \u062a\u0639\u0645\u0644 \u0627\u0644\u0625\u064a\u062f\u0627\u0639\u0627\u062a",
+    s3_s1t:"\u0627\u062e\u062a\u0631 \u062e\u0637\u0629",s3_s1p:"\u0623\u0631\u0633\u0644 \u00ab\u0627\u0633\u062a\u062b\u0645\u0627\u0631\u0627\u062a\u00bb \u0641\u064a \u0642\u0627\u0626\u0645\u0629 \u0627\u0644\u0628\u0648\u062a. 4 \u062e\u0637\u0637: \u0634\u0647\u0631\u064a (4%)\u060c \u0631\u0628\u0639 \u0633\u0646\u0648\u064a (4.5%)\u060c \u0646\u0635\u0641 \u0633\u0646\u0648\u064a (5%)\u060c \u0633\u0646\u0648\u064a (5.4%).",
+    s3_s2t:"\u0623\u0631\u0633\u0644 TON",s3_s2p:"\u062d\u0648\u0651\u0644 \u0639\u0645\u0644\u0629 TON \u0625\u0644\u0649 \u0639\u0646\u0648\u0627\u0646 \u0627\u0644\u0645\u062d\u0641\u0638\u0629 \u0627\u0644\u0645\u0639\u0631\u0648\u0636. \u0627\u0644\u062d\u062f \u0627\u0644\u0623\u062f\u0646\u0649 \u064a\u0639\u062a\u0645\u062f \u0639\u0644\u0649 \u0627\u0644\u062e\u0637\u0629 (1-25 TON).",
+    s3_s3t:"\u0623\u0631\u0633\u0644 \u0644\u0642\u0637\u0629 \u0634\u0627\u0634\u0629 \u0643\u0625\u062b\u0628\u0627\u062a",s3_s3p:"\u0627\u0644\u062a\u0642\u0637 \u0644\u0642\u0637\u0629 \u0634\u0627\u0634\u0629 \u0644\u062a\u0623\u0643\u064a\u062f \u0627\u0644\u062a\u062d\u0648\u064a\u0644 \u0648\u0623\u0631\u0633\u0644\u0647\u0627 \u0644\u0644\u0628\u0648\u062a \u0643\u0635\u0648\u0631\u0629.",
+    s3_s4t:"\u0627\u0646\u062a\u0638\u0631 \u0627\u0644\u0645\u0648\u0627\u0641\u0642\u0629",s3_s4p:"\u0633\u064a\u062a\u062d\u0642\u0642 \u0627\u0644\u0645\u0633\u0624\u0648\u0644 \u0645\u0646 \u0627\u0644\u062f\u0641\u0639 \u0648\u064a\u0648\u0627\u0641\u0642 \u0639\u0644\u064a\u0647. \u0633\u062a\u062a\u0644\u0642\u0649 \u0631\u0633\u0627\u0644\u0629 \u062a\u0623\u0643\u064a\u062f.",
+    s3_s5t:"\u0627\u0643\u0633\u0628 \u0639\u0648\u0627\u0626\u062f \u0634\u0647\u0631\u064a\u0629",s3_s5p:"\u062a\u064f\u062d\u0633\u0628 \u0627\u0644\u0639\u0648\u0627\u0626\u062f \u0634\u0647\u0631\u064a\u0627\u064b \u0648\u062a\u064f\u0636\u0627\u0641 \u0644\u062d\u0633\u0627\u0628\u0643. \u062a\u062d\u0642\u0642 \u0628\u0623\u0645\u0631 /mydeposits.",
+    s3_warn:"\u0644\u0627 \u062a\u0633\u062a\u062b\u0645\u0631 \u0623\u0643\u062b\u0631 \u0645\u0645\u0627 \u064a\u0645\u0643\u0646\u0643 \u062a\u062d\u0645\u0644 \u062e\u0633\u0627\u0631\u062a\u0647. \u0627\u0633\u062a\u062b\u0645\u0627\u0631\u0627\u062a \u0627\u0644\u0639\u0645\u0644\u0627\u062a \u0627\u0644\u0631\u0642\u0645\u064a\u0629 \u0645\u062d\u0641\u0648\u0641\u0629 \u0628\u0627\u0644\u0645\u062e\u0627\u0637\u0631. \u0627\u0644\u0639\u0648\u0627\u0626\u062f \u0627\u0644\u0633\u0627\u0628\u0642\u0629 \u0644\u0627 \u062a\u0636\u0645\u0646 \u0627\u0644\u0646\u062a\u0627\u0626\u062c \u0627\u0644\u0645\u0633\u062a\u0642\u0628\u0644\u064a\u0629.",
+    s3_cmds:"\u0623\u0648\u0627\u0645\u0631 \u0645\u0641\u064a\u062f\u0629",
+    s3_cmd1:"\u0628\u062f\u0621 \u0625\u064a\u062f\u0627\u0639 \u062c\u062f\u064a\u062f",s3_cmd2:"\u0639\u0631\u0636 \u0625\u064a\u062f\u0627\u0639\u0627\u062a\u0643 \u0627\u0644\u0646\u0634\u0637\u0629",s3_cmd3:"\u0639\u0631\u0636 \u0643\u0634\u0641 \u062d\u0633\u0627\u0628\u0643",s3_cmd4:"\u0639\u0631\u0636 \u0645\u062d\u0641\u0638\u062a\u0643 \u0627\u0644\u0643\u0627\u0645\u0644\u0629",s3_cmd5:"\u0637\u0644\u0628 \u0633\u062d\u0628",
+    s4_title:"\u0634\u0631\u062d \u062e\u0637\u0637 \u0627\u0644\u0633\u062a\u064a\u0643\u064a\u0646\u063a",s4_compare:"\u0645\u0642\u0627\u0631\u0646\u0629 \u0627\u0644\u062e\u0637\u0637",
+    s4_th_plan:"\u0627\u0644\u062e\u0637\u0629",s4_th_monthly:"\u0634\u0647\u0631\u064a",s4_th_annual:"\u0633\u0646\u0648\u064a",s4_th_lock:"\u0642\u0641\u0644",s4_th_min:"\u0623\u062f\u0646\u0649",
+    s4_r1:"\u0634\u0647\u0631\u064a",s4_r2:"\u0631\u0628\u0639 \u0633\u0646\u0648\u064a",s4_r3:"\u0646\u0635\u0641 \u0633\u0646\u0648\u064a",s4_r4:"\u0633\u0646\u0648\u064a",
+    s4_30d:"30 \u064a\u0648\u0645\u0627\u064b",s4_90d:"90 \u064a\u0648\u0645\u0627\u064b",s4_180d:"180 \u064a\u0648\u0645\u0627\u064b",s4_365d:"365 \u064a\u0648\u0645\u0627\u064b",
+    s4_tip:"\u0643\u0644\u0645\u0627 \u0637\u0627\u0644\u062a \u0641\u062a\u0631\u0629 \u0627\u0644\u0642\u0641\u0644\u060c \u0632\u0627\u062f\u062a \u0627\u0644\u0639\u0648\u0627\u0626\u062f. \u0627\u0644\u062e\u0637\u0629 \u0627\u0644\u0633\u0646\u0648\u064a\u0629 \u062a\u0645\u0646\u062d \u0623\u0641\u0636\u0644 APY \u0628\u0646\u0633\u0628\u0629 Variable \u0633\u0646\u0648\u064a\u0627\u064b.",
+    s5_title:"\u0627\u0644\u0645\u062d\u0641\u0638\u0629 \u0648\u062a\u062d\u0648\u064a\u0644 \u0627\u0644\u0631\u0645\u0648\u0632",s5_intro:"\u064a\u0633\u062a\u062e\u062f\u0645 \u0646\u0638\u0627\u0645 SLH \u062b\u0644\u0627\u062b\u0629 \u0623\u0646\u0648\u0627\u0639 \u0645\u0646 \u0627\u0644\u0631\u0645\u0648\u0632:",
+    s5_types:"\u0623\u0646\u0648\u0627\u0639 \u0627\u0644\u0631\u0645\u0648\u0632",
+    s5_ton:"\u0639\u0645\u0644\u0629 \u0631\u0642\u0645\u064a\u0629 \u062d\u0642\u064a\u0642\u064a\u0629. \u0644\u0644\u0625\u064a\u062f\u0627\u0639\u0627\u062a \u0648\u0627\u0644\u0633\u062d\u0648\u0628\u0627\u062a. \u0642\u0627\u0628\u0644\u0629 \u0644\u0644\u062a\u062f\u0627\u0648\u0644 \u0641\u064a \u0627\u0644\u0628\u0648\u0631\u0635\u0627\u062a.",
+    s5_slh:"\u0631\u0645\u0632 \u062e\u062f\u0645\u0629 \u0627\u0644\u0646\u0638\u0627\u0645 \u0639\u0644\u0649 \u0628\u0644\u0648\u0643\u062a\u0634\u064a\u0646 BSC. \u0644\u0644\u0648\u0635\u0648\u0644 \u0627\u0644\u0645\u0645\u064a\u0632 \u0648\u0627\u0644\u062d\u0648\u0643\u0645\u0629.",
+    s5_zvk:"\u0631\u0645\u0632 \u0645\u0643\u0627\u0641\u0622\u062a \u062f\u0627\u062e\u0644\u064a. \u064a\u064f\u0643\u0633\u0628 \u0639\u0628\u0631 \u0627\u0644\u0623\u0644\u0639\u0627\u0628 \u0648\u0627\u0644\u0625\u062d\u0627\u0644\u0627\u062a. \u0642\u0627\u0628\u0644 \u0644\u0644\u062a\u062d\u0648\u064a\u0644 \u0625\u0644\u0649 TON.",
+    s5_how:"\u0643\u064a\u0641\u064a\u0629 \u062a\u062d\u0648\u064a\u0644 \u0627\u0644\u0631\u0645\u0648\u0632",
+    s5_s1t:"\u062a\u062d\u0648\u064a\u0644 \u062f\u0627\u062e\u0644\u064a (SLH/ZVK)",s5_s1p:"\u0627\u0633\u062a\u062e\u062f\u0645 /pay [\u0627\u0644\u0645\u0628\u0644\u063a] [\u0627\u0644\u0631\u0645\u0632] [\u0645\u0639\u0631\u0641_\u0627\u0644\u0645\u0633\u062a\u062e\u062f\u0645] \u0641\u064a \u0627\u0644\u0628\u0648\u062a. \u0623\u0648 \u0639\u0644\u0627\u0645\u0629 \u0627\u0644\u062a\u062d\u0648\u064a\u0644\u0627\u062a \u0641\u064a \u0644\u0648\u062d\u0629 \u0627\u0644\u062a\u062d\u0643\u0645.",
+    s5_s2t:"\u062a\u062d\u0648\u064a\u0644 \u0628\u0644\u0648\u0643\u062a\u0634\u064a\u0646",s5_s2p:"\u0627\u0633\u062a\u062e\u062f\u0645 /send \u0641\u064a \u0627\u0644\u0628\u0648\u062a \u0644\u062a\u062d\u0648\u064a\u0644\u0627\u062a TON \u0639\u0644\u0649 \u0627\u0644\u0633\u0644\u0633\u0644\u0629.",
+    s5_conv:"\u062a\u062d\u0648\u064a\u0644 ZVK \u0625\u0644\u0649 TON",
+    s6_title:"\u0634\u0628\u0643\u0629 \u0627\u0644\u0625\u062d\u0627\u0644\u0627\u062a (10 \u0623\u062c\u064a\u0627\u0644)",s6_intro:"\u0627\u0643\u0633\u0628 \u0639\u0645\u0648\u0644\u0627\u062a \u0639\u0644\u0649 \u0646\u0634\u0627\u0637 \u0634\u0628\u0643\u062a\u0643 \u062d\u062a\u0649 10 \u0623\u062c\u064a\u0627\u0644.",
+    s6_rates:"\u0645\u0639\u062f\u0644\u0627\u062a \u0627\u0644\u0639\u0645\u0648\u0644\u0629",
+    s6_g1:"\u0627\u0644\u062c\u064a\u0644 1 (\u0645\u0628\u0627\u0634\u0631):",s6_g1v:"10% \u0645\u0646 \u0625\u064a\u062f\u0627\u0639\u0627\u062a\u0647\u0645",s6_g6v:"0.5% \u0644\u0643\u0644 \u062c\u064a\u0644",
+    s6_how:"\u0643\u064a\u0641\u064a\u0629 \u0627\u0644\u0625\u062d\u0627\u0644\u0629",
+    s6_s1t:"\u0627\u062d\u0635\u0644 \u0639\u0644\u0649 \u0631\u0627\u0628\u0637 \u0627\u0644\u0625\u062d\u0627\u0644\u0629",s6_s1p:"\u0641\u064a @SLH_AIR_bot\u060c \u0627\u0646\u0642\u0631 \u00ab\u062f\u0639\u0648\u0629\u00bb \u0644\u0644\u062d\u0635\u0648\u0644 \u0639\u0644\u0649 \u0631\u0627\u0628\u0637\u0643 \u0627\u0644\u0641\u0631\u064a\u062f: t.me/SLH_AIR_bot?start=YOUR_ID",
+    s6_s2t:"\u0634\u0627\u0631\u0643 \u0645\u0639 \u0627\u0644\u0623\u0635\u062f\u0642\u0627\u0621",s6_s2p:"\u0623\u0631\u0633\u0644 \u0627\u0644\u0631\u0627\u0628\u0637 \u0644\u0623\u0635\u062f\u0642\u0627\u0626\u0643\u060c \u0627\u0646\u0634\u0631\u0647 \u0639\u0644\u0649 \u0648\u0633\u0627\u0626\u0644 \u0627\u0644\u062a\u0648\u0627\u0635\u0644 \u0627\u0644\u0627\u062c\u062a\u0645\u0627\u0639\u064a \u0623\u0648 \u0634\u0627\u0631\u0643\u0647 \u0641\u064a \u0627\u0644\u0645\u062c\u0645\u0648\u0639\u0627\u062a.",
+    s6_s3t:"\u0627\u0643\u0633\u0628 \u062a\u0644\u0642\u0627\u0626\u064a\u0627\u064b",s6_s3p:"\u0639\u0646\u062f\u0645\u0627 \u064a\u0642\u0648\u0645 \u0623\u064a \u0634\u062e\u0635 \u0641\u064a \u0634\u0628\u0643\u062a\u0643 \u0628\u0625\u064a\u062f\u0627\u0639\u060c \u062a\u0643\u0633\u0628 \u0639\u0645\u0648\u0644\u0629 \u062a\u0644\u0642\u0627\u0626\u064a\u0627\u064b. \u062a\u062d\u0642\u0642 \u0641\u064a \u0644\u0648\u062d\u0629 \u0627\u0644\u062a\u062d\u0643\u0645.",
+    s6_example:"\u0645\u062b\u0627\u0644: \u0625\u064a\u062f\u0627\u0639 100 TON \u0641\u064a \u0634\u0628\u0643\u062a\u0643",
+    s6_example_p:"\u0625\u0630\u0627 \u0623\u0648\u062f\u0639 \u0634\u062e\u0635 \u0639\u0644\u0649 \u0628\u0639\u062f 3 \u0645\u0633\u062a\u0648\u064a\u0627\u062a 100 TON\u060c \u062a\u0643\u0633\u0628 3 TON (3%). \u0625\u0630\u0627 \u0643\u0627\u0646 \u0625\u062d\u0627\u0644\u0629 \u0645\u0628\u0627\u0634\u0631\u0629\u060c \u062a\u0643\u0633\u0628 10 TON (10%).",
+    s6_tip:"\u0634\u0628\u0643\u062a\u0643 \u062a\u0646\u0645\u0648 \u0628\u0634\u0643\u0644 \u0623\u0633\u064a. \u0625\u0630\u0627 \u0623\u062d\u0627\u0644 \u0643\u0644 \u0634\u062e\u0635 3 \u0623\u0634\u062e\u0627\u0635 \u0641\u0642\u0637\u060c \u0628\u062d\u0644\u0648\u0644 \u0627\u0644\u062c\u064a\u0644 5 \u0633\u064a\u0643\u0648\u0646 \u0644\u062f\u064a\u0643 243 \u0634\u062e\u0635\u0627\u064b \u064a\u0643\u0633\u0628\u0648\u0646\u0643 \u0639\u0645\u0648\u0644\u0627\u062a!",
+    s7_title:"OsifShop - \u0646\u0638\u0627\u0645 \u0627\u0644\u0645\u062e\u0632\u0648\u0646 SaaS",s7_intro:"OsifShop \u0646\u0638\u0627\u0645 \u0625\u062f\u0627\u0631\u0629 \u0645\u062e\u0632\u0648\u0646 \u0645\u0639 \u0645\u0633\u062d \u0628\u0627\u0631\u0643\u0648\u062f \u0628\u0627\u0644\u0643\u0627\u0645\u064a\u0631\u0627.",
+    s7_s1t:"\u0627\u0641\u062a\u062d @OsifShop_bot",s7_s1p:"\u0627\u0628\u062d\u062b \u0639\u0646 @OsifShop_bot \u0641\u064a \u062a\u0644\u064a\u062c\u0631\u0627\u0645 \u0648\u0623\u0631\u0633\u0644 /start.",
+    s7_s2t:"\u0623\u0636\u0641 \u0645\u0646\u062a\u062c\u0627\u062a",s7_s2p:"\u0627\u0646\u0642\u0631 \u0639\u0644\u0649 \u00ab\u0625\u0636\u0627\u0641\u0629 \u0645\u0646\u062a\u062c\u00bb. \u0623\u062f\u062e\u0644 \u0627\u0644\u0627\u0633\u0645 \u0648\u0627\u0644\u0633\u0639\u0631 \u0648\u0627\u0644\u0643\u0645\u064a\u0629.",
+    s7_s3t:"\u0627\u0645\u0633\u062d \u0627\u0644\u0628\u0627\u0631\u0643\u0648\u062f",s7_s3p:"\u0627\u0646\u0642\u0631 \u0639\u0644\u0649 \u00ab\u0645\u0633\u062d\u00bb \u0644\u0641\u062a\u062d \u0627\u0644\u0643\u0627\u0645\u064a\u0631\u0627 (Mini App). \u0648\u062c\u0647 \u0627\u0644\u0643\u0627\u0645\u064a\u0631\u0627 \u0625\u0644\u0649 \u0623\u064a \u0628\u0627\u0631\u0643\u0648\u062f.",
+    s7_s4t:"\u0627\u0639\u0631\u0636 \u0627\u0644\u062a\u0642\u0627\u0631\u064a\u0631",s7_s4p:"\u0627\u062d\u0635\u0644 \u0639\u0644\u0649 \u062a\u0642\u0627\u0631\u064a\u0631 \u0627\u0644\u0645\u062e\u0632\u0648\u0646\u060c \u062a\u0646\u0628\u064a\u0647\u0627\u062a \u0627\u0644\u0645\u062e\u0632\u0648\u0646 \u0627\u0644\u0645\u0646\u062e\u0641\u0636 \u0648\u062a\u0635\u062f\u064a\u0631 CSV.",
+    s8_title:"\u0644\u0648\u062d\u0629 \u0627\u0644\u062a\u062d\u0643\u0645 \u0627\u0644\u0625\u0644\u0643\u062a\u0631\u0648\u0646\u064a\u0629",s8_intro:"\u0627\u0644\u0648\u0635\u0648\u0644 \u0625\u0644\u0649 \u0644\u0648\u062d\u0629 \u062a\u062d\u0643\u0645\u0643 \u0627\u0644\u0634\u062e\u0635\u064a\u0629 \u0639\u0644\u0649",
+    s8_login:"\u062e\u064a\u0627\u0631\u0627\u062a \u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u062f\u062e\u0648\u0644",
+    s8_s1t:"\u0627\u0644\u062e\u064a\u0627\u0631 \u0623: \u0648\u064a\u062c\u062a \u062a\u0644\u064a\u062c\u0631\u0627\u0645 (\u0645\u0648\u0635\u0649 \u0628\u0647)",s8_s1p:"\u0627\u0646\u0642\u0631 \u0639\u0644\u0649 \u00ab\u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u062f\u062e\u0648\u0644 \u0628\u062a\u0644\u064a\u062c\u0631\u0627\u0645\u00bb. \u0633\u064a\u0638\u0647\u0631 \u0646\u0627\u0641\u0630\u0629 \u062a\u0623\u0643\u064a\u062f. \u0646\u0642\u0631\u0629 \u0648\u0627\u062d\u062f\u0629 \u0648\u0623\u0646\u062a \u0628\u0627\u0644\u062f\u0627\u062e\u0644.",
+    s8_s2t:"\u0627\u0644\u062e\u064a\u0627\u0631 \u0628: \u0645\u0639\u0631\u0641 \u064a\u062f\u0648\u064a",s8_s2p:"\u0623\u062f\u062e\u0644 \u0631\u0642\u0645 \u0645\u0639\u0631\u0641 \u062a\u0644\u064a\u062c\u0631\u0627\u0645. \u0627\u0646\u0638\u0631 \u00ab\u0643\u064a\u0641 \u062a\u062c\u062f \u0645\u0639\u0631\u0641 \u062a\u0644\u064a\u062c\u0631\u0627\u0645\u00bb \u0623\u0639\u0644\u0627\u0647.",
+    s8_features:"\u0645\u064a\u0632\u0627\u062a \u0644\u0648\u062d\u0629 \u0627\u0644\u062a\u062d\u0643\u0645",
+    s8_f1t:"\u0627\u0644\u0645\u062d\u0641\u0638\u0629",s8_f1d:"\u0639\u0631\u0636 \u062c\u0645\u064a\u0639 \u0625\u064a\u062f\u0627\u0639\u0627\u062a\u0643 \u0627\u0644\u0646\u0634\u0637\u0629 \u0648\u062d\u0627\u0644\u062a\u0647\u0627",
+    s8_f2t:"\u0627\u0644\u0633\u062a\u064a\u0643\u064a\u0646\u063a",s8_f2d:"\u0623\u0646\u0634\u0626 \u0645\u0631\u0627\u0643\u0632 \u0633\u062a\u064a\u0643\u064a\u0646\u063a \u062c\u062f\u064a\u062f\u0629 \u0645\u0628\u0627\u0634\u0631\u0629 \u0645\u0646 \u0627\u0644\u0648\u064a\u0628",
+    s8_f3t:"\u0627\u0644\u062a\u062d\u0648\u064a\u0644\u0627\u062a",s8_f3d:"\u0623\u0631\u0633\u0644 \u0631\u0645\u0648\u0632 SLH/ZVK \u0644\u0645\u0633\u062a\u062e\u062f\u0645\u064a\u0646 \u0622\u062e\u0631\u064a\u0646",
+    s8_f4t:"\u0627\u0644\u0625\u062d\u0627\u0644\u0627\u062a",s8_f4d:"\u0639\u0631\u0636 \u0634\u062c\u0631\u0629 \u0625\u062d\u0627\u0644\u0627\u062a\u0643\u060c \u0627\u0644\u0623\u0631\u0628\u0627\u062d \u062d\u0633\u0628 \u0627\u0644\u062c\u064a\u0644\u060c \u0646\u0633\u062e \u0631\u0627\u0628\u0637 \u0627\u0644\u0625\u062d\u0627\u0644\u0629",
+    s8_f5t:"\u0625\u062c\u0631\u0627\u0621\u0627\u062a \u0633\u0631\u064a\u0639\u0629",s8_f5d:"\u0631\u0648\u0627\u0628\u0637 \u0645\u0628\u0627\u0634\u0631\u0629 \u0644\u062c\u0645\u064a\u0639 \u0627\u0644\u0628\u0648\u062a\u0627\u062a \u0648\u0627\u0644\u062a\u0648\u062b\u064a\u0642",
+    s9_title:"\u0633\u0648\u0642 NFT",s9_intro:"\u0633\u0648\u0642 NFTY \u064a\u062a\u064a\u062d \u0644\u0643 \u0634\u0631\u0627\u0621 \u0648\u0628\u064a\u0639 \u0627\u0644\u0623\u0635\u0648\u0644 \u0627\u0644\u0631\u0642\u0645\u064a\u0629 \u0645\u0639 \u062d\u064a\u0648\u0627\u0646 \u0623\u0644\u064a\u0641 \u0627\u0641\u062a\u0631\u0627\u0636\u064a.",
+    s9_s1t:"\u0627\u0641\u062a\u062d @NIFTI_Publisher_Bot",s9_s1p:"\u0623\u0631\u0633\u0644 /start \u0644\u0644\u0628\u0648\u062a. \u0633\u062a\u062d\u0635\u0644 \u0639\u0644\u0649 \u062d\u064a\u0648\u0627\u0646 \u0623\u0644\u064a\u0641 \u0627\u0641\u062a\u0631\u0627\u0636\u064a (Sparky!) \u062a\u0644\u0642\u0627\u0626\u064a\u0627\u064b.",
+    s9_s2t:"\u062a\u0635\u0641\u062d \u0627\u0644\u0633\u0648\u0642",s9_s2p:"\u0627\u0633\u062a\u062e\u062f\u0645 /browse \u0644\u0631\u0624\u064a\u0629 \u0627\u0644\u0623\u0635\u0648\u0644 \u0627\u0644\u0631\u0642\u0645\u064a\u0629 \u0627\u0644\u0645\u062a\u0627\u062d\u0629.",
+    s9_s3t:"\u0627\u0639\u0631\u0636 \u0639\u0646\u0627\u0635\u0631\u0643",s9_s3p:"\u0627\u0633\u062a\u062e\u062f\u0645 /sell \u0644\u0625\u0646\u0634\u0627\u0621 \u0625\u0639\u0644\u0627\u0646 \u062c\u062f\u064a\u062f. \u062d\u062f\u062f \u0627\u0644\u0639\u0646\u0648\u0627\u0646 \u0648\u0627\u0644\u0648\u0635\u0641 \u0648\u0627\u0644\u0633\u0639\u0631 \u0648\u0627\u0644\u0641\u0626\u0629.",
+    s9_s4t:"\u0627\u0639\u062a\u0646\u0650 \u0628\u062d\u064a\u0648\u0627\u0646\u0643 \u0627\u0644\u0623\u0644\u064a\u0641",s9_s4p:"\u0627\u0633\u062a\u062e\u062f\u0645 /feed\u060c /play\u060c /learn\u060c /sleep \u0644\u0644\u0627\u0639\u062a\u0646\u0627\u0621 \u0628\u062d\u064a\u0648\u0627\u0646\u0643 \u0627\u0644\u0627\u0641\u062a\u0631\u0627\u0636\u064a!",
+    s10_title:"\u0627\u0644\u0623\u0644\u0639\u0627\u0628 \u0648\u0631\u0645\u0648\u0632 ZVK",s10_intro:"\u0627\u0644\u0639\u0628 \u0644\u0643\u0633\u0628 \u0631\u0645\u0648\u0632 ZVK \u0627\u0644\u0642\u0627\u0628\u0644\u0629 \u0644\u0644\u062a\u062d\u0648\u064a\u0644 \u0625\u0644\u0649 TON.",
+    s10_available:"\u0627\u0644\u0623\u0644\u0639\u0627\u0628 \u0627\u0644\u0645\u062a\u0627\u062d\u0629",
+    s10_slots:"\u0623\u062f\u0631 \u0648\u0627\u0631\u0628\u062d \u062d\u062a\u0649 25 ZVK \u0641\u064a \u0627\u0644\u062c\u0648\u0644\u0629",
+    s10_dice:"\u0631\u0645\u064a 6 = 5 ZVK\u060c \u0631\u0645\u064a 4-5 = 2 ZVK",
+    s10_basket:"\u062a\u0633\u062c\u064a\u0644 4+ = 3 ZVK",
+    s10_darts:"\u0625\u0635\u0627\u0628\u0629 \u0627\u0644\u0645\u0631\u0643\u0632 (6) = 5 ZVK\u060c 4-5 = 2 ZVK",
+    s10_cost:"\u0643\u0644 \u0644\u0639\u0628\u0629 \u062a\u0643\u0644\u0641 1 ZVK. \u0627\u0641\u062a\u062d \u0642\u0627\u0626\u0645\u0629 \u0627\u0644\u0623\u0644\u0639\u0627\u0628 \u0641\u064a @SLH_AIR_bot.",
+    s11_title:"\u0623\u0641\u0636\u0644 \u0645\u0645\u0627\u0631\u0633\u0627\u062a \u0627\u0644\u0623\u0645\u0627\u0646",
+    s11_warn:"\u0644\u0627 \u062a\u0634\u0627\u0631\u0643 \u0645\u0641\u0627\u062a\u064a\u062d\u0643 \u0627\u0644\u062e\u0627\u0635\u0629 \u0623\u0648 \u0631\u0645\u0648\u0632 PIN \u0623\u0648 \u0639\u0628\u0627\u0631\u0627\u062a \u0627\u0644\u0627\u0633\u062a\u0631\u062f\u0627\u062f \u0645\u0639 \u0623\u064a \u0634\u062e\u0635. \u0641\u0631\u064a\u0642 SLH \u0644\u0646 \u064a\u0637\u0644\u0628\u0647\u0627 \u0623\u0628\u062f\u0627\u064b.",
+    s11_2fa:"\u0641\u0639\u0651\u0644 \u0627\u0644\u0645\u0635\u0627\u062f\u0642\u0629 \u0627\u0644\u062b\u0646\u0627\u0626\u064a\u0629 \u0641\u064a \u0625\u0639\u062f\u0627\u062f\u0627\u062a \u062a\u0644\u064a\u062c\u0631\u0627\u0645 \u0644\u062d\u0645\u0627\u064a\u0629 \u0625\u0636\u0627\u0641\u064a\u0629.",
+    s11_verify:"\u062a\u062d\u0642\u0642 \u0645\u0646 \u0623\u0633\u0645\u0627\u0621 \u0627\u0644\u0628\u0648\u062a\u0627\u062a - \u0627\u0633\u062a\u062e\u062f\u0645 \u0641\u0642\u0637 @SLH_AIR_bot \u0627\u0644\u0631\u0633\u0645\u064a. \u0627\u062d\u0630\u0631 \u0645\u0646 \u0627\u0644\u0628\u0648\u062a\u0627\u062a \u0627\u0644\u0645\u0632\u064a\u0641\u0629.",
+    s11_records:"\u0627\u062d\u062a\u0641\u0638 \u0628\u0627\u0644\u0633\u062c\u0644\u0627\u062a - \u0627\u0633\u062a\u062e\u062f\u0645 /statement \u0644\u0644\u062a\u062d\u0642\u0642 \u0627\u0644\u0645\u0646\u062a\u0638\u0645 \u0645\u0646 \u0646\u0634\u0627\u0637 \u062d\u0633\u0627\u0628\u0643.",
+    s11_report:"\u0623\u0628\u0644\u063a \u0639\u0646 \u0646\u0634\u0627\u0637 \u0645\u0634\u0628\u0648\u0647 - /support \u0623\u0648 \u0627\u062a\u0635\u0644 058-420-3384.",
+    s12_title:"\u0627\u0644\u0623\u0633\u0626\u0644\u0629 \u0627\u0644\u0634\u0627\u0626\u0639\u0629",
+    faq_q1:"\u0633: \u0647\u0644 \u0647\u0630\u0647 \u0645\u0646\u0635\u0629 \u0627\u0633\u062a\u062b\u0645\u0627\u0631 \u062d\u0642\u064a\u0642\u064a\u0629\u061f",
+    faq_a1:"SLH \u0646\u0638\u0627\u0645 \u0627\u0633\u062a\u062b\u0645\u0627\u0631 \u0631\u0642\u0645\u064a \u0645\u0628\u0646\u064a \u0639\u0644\u0649 \u0628\u0644\u0648\u0643\u062a\u0634\u064a\u0646 \u062d\u0642\u064a\u0642\u064a. \u062c\u0645\u064a\u0639 \u0625\u064a\u062f\u0627\u0639\u0627\u062a TON \u0647\u064a \u0645\u0639\u0627\u0645\u0644\u0627\u062a \u0639\u0645\u0644\u0627\u062a \u0631\u0642\u0645\u064a\u0629 \u062d\u0642\u064a\u0642\u064a\u0629. \u0644\u0643\u0646 \u0627\u0644\u0639\u0648\u0627\u0626\u062f \u063a\u064a\u0631 \u0645\u0636\u0645\u0648\u0646\u0629.",
+    faq_q2:"\u0633: \u0643\u064a\u0641 \u0623\u0633\u062d\u0628 \u0623\u0645\u0648\u0627\u0644\u064a\u061f",
+    faq_a2:"\u0627\u0633\u062a\u062e\u062f\u0645 /withdraw \u0641\u064a @SLH_AIR_bot. \u062a\u062a\u0645 \u0645\u0639\u0627\u0644\u062c\u0629 \u0627\u0644\u0633\u062d\u0648\u0628\u0627\u062a \u062e\u0644\u0627\u0644 24 \u0633\u0627\u0639\u0629 \u0628\u0639\u062f \u0645\u0648\u0627\u0641\u0642\u0629 \u0627\u0644\u0645\u0633\u0624\u0648\u0644.",
+    faq_q3:"\u0633: \u0645\u0627\u0630\u0627 \u064a\u062d\u062f\u062b \u0625\u0630\u0627 \u0641\u0642\u062f\u062a \u0647\u0627\u062a\u0641\u064a\u061f",
+    faq_a3:"\u062d\u0633\u0627\u0628\u0643 \u0645\u0631\u062a\u0628\u0637 \u0628\u062d\u0633\u0627\u0628 \u062a\u0644\u064a\u062c\u0631\u0627\u0645. \u0633\u062c\u0644 \u0627\u0644\u062f\u062e\u0648\u0644 \u0645\u0646 \u062c\u0647\u0627\u0632 \u062c\u062f\u064a\u062f \u0648\u0633\u062a\u062c\u062f \u062c\u0645\u064a\u0639 \u0628\u064a\u0627\u0646\u0627\u062a\u0643.",
+    faq_q4:"\u0633: \u0647\u0644 \u064a\u0645\u0643\u0646 \u0627\u0644\u0627\u0633\u062a\u062e\u062f\u0627\u0645 \u0645\u0646 \u062e\u0627\u0631\u062c \u0625\u0633\u0631\u0627\u0626\u064a\u0644\u061f",
+    faq_a4:"\u0646\u0639\u0645! \u0627\u0644\u0645\u0646\u0635\u0629 \u062a\u062f\u0639\u0645 \u0627\u0644\u0639\u0628\u0631\u064a\u0629 \u0648\u0627\u0644\u0625\u0646\u062c\u0644\u064a\u0632\u064a\u0629 \u0648\u0627\u0644\u0631\u0648\u0633\u064a\u0629 \u0648\u0627\u0644\u0639\u0631\u0628\u064a\u0629 \u0648\u0627\u0644\u0641\u0631\u0646\u0633\u064a\u0629. \u0623\u064a \u0645\u0633\u062a\u062e\u062f\u0645 \u062a\u0644\u064a\u062c\u0631\u0627\u0645 \u064a\u0645\u0643\u0646\u0647 \u0627\u0644\u0627\u0633\u062a\u062e\u062f\u0627\u0645.",
+    faq_q5:"\u0633: \u0643\u064a\u0641 \u0623\u062a\u0648\u0627\u0635\u0644 \u0645\u0639 \u0627\u0644\u062f\u0639\u0645\u061f",
+    faq_a5:"\u0623\u0631\u0633\u0644 /support \u0641\u064a \u0623\u064a \u0628\u0648\u062a SLH\u060c \u0623\u0648 \u0627\u062a\u0635\u0644 058-420-3384\u060c \u0623\u0648 \u0631\u0627\u0633\u0644 osif@spark-ind.com.",
+    faq_q6:"\u0633: \u0645\u0627 \u0627\u0644\u062d\u062f \u0627\u0644\u0623\u062f\u0646\u0649 \u0644\u0644\u0627\u0633\u062a\u062b\u0645\u0627\u0631\u061f",
+    faq_a6:"\u0627\u0644\u062e\u0637\u0629 \u0627\u0644\u0634\u0647\u0631\u064a\u0629 \u062a\u0628\u062f\u0623 \u0645\u0646 1 TON \u0641\u0642\u0637 (\u062d\u0648\u0627\u0644\u064a 4 \u0634\u064a\u0643\u0644 \u0628\u0627\u0644\u0623\u0633\u0639\u0627\u0631 \u0627\u0644\u062d\u0627\u0644\u064a\u0629).",
+    ft_home:"\u0627\u0644\u0631\u0626\u064a\u0633\u064a\u0629",ft_dash:"\u0644\u0648\u062d\u0629 \u0627\u0644\u062a\u062d\u0643\u0645",ft_wp:"\u0627\u0644\u0648\u0631\u0642\u0629 \u0627\u0644\u0628\u064a\u0636\u0627\u0621",ft_bot:"\u0628\u0648\u062a \u0627\u0644\u0627\u0633\u062a\u062b\u0645\u0627\u0631",ft_support:"\u0627\u0644\u062f\u0639\u0645: 058-420-3384"
+},
+fr: {
+    g_back:"\u2190 Retour \u00e0 SLH Ecosystem",
+    g_title:"[ GUIDES UTILISATEUR ]",
+    g_subtitle:"Tutoriels pas \u00e0 pas pour chaque fonctionnalit\u00e9 de l'\u00e9cosyst\u00e8me SLH",
+    qc_start_t:"D\u00e9marrage",qc_start_d:"Premiers pas, cr\u00e9ation de compte, comprendre l'\u00e9cosyst\u00e8me",
+    qc_invest_t:"Guide d'investissement",qc_invest_d:"D\u00e9p\u00f4ts, plans de staking, rendements",
+    qc_wallet_t:"Portefeuille & Transferts",qc_wallet_d:"Gestion des jetons, envoi et r\u00e9ception",
+    qc_ref_t:"R\u00e9seau de parrainage",qc_ref_d:"Construire votre r\u00e9seau, gagner des commissions",
+    qc_shop_t:"Guide OsifShop",qc_shop_d:"Gestion d'inventaire, scan de codes-barres",
+    qc_dash_t:"Guide du tableau de bord",qc_dash_d:"Tableau de bord web, portefeuille, interface de staking",
+    qc_nft_t:"March\u00e9 NFT",qc_nft_d:"Achat, vente, animaux virtuels",
+    qc_sec_t:"Guide de s\u00e9curit\u00e9",qc_sec_d:"Protection du compte, KYC, PIN",
+    toc_title:"Table des mati\u00e8res",
+    toc_1:"1. D\u00e9marrage",toc_2:"2. Comment trouver votre ID Telegram",toc_3:"3. Guide d'investissement (SLH_AIR_bot)",
+    toc_4:"4. Explication des plans de staking",toc_5:"5. Portefeuille & Transferts de jetons",toc_6:"6. R\u00e9seau de parrainage (10 g\u00e9n\u00e9rations)",
+    toc_7:"7. OsifShop - Inventaire SaaS",toc_8:"8. Tableau de bord web",toc_9:"9. March\u00e9 NFT",
+    toc_10:"10. Jeux & Jetons ZVK",toc_11:"11. Meilleures pratiques de s\u00e9curit\u00e9",toc_12:"12. FAQ",
+    s1_title:"D\u00e9marrage",s1_intro:"Bienvenue dans l'\u00e9cosyst\u00e8me SLH. Voici comment commencer en 3 minutes.",
+    s1_s1t:"Ouvrir Telegram",s1_s1p:"T\u00e9l\u00e9chargez Telegram depuis telegram.org si vous ne l'avez pas. Disponible sur iOS, Android, bureau et web.",
+    s1_s2t:"Trouvez notre bot principal",s1_s2p:"Recherchez @SLH_AIR_bot dans Telegram, ou cliquez :",
+    s1_s3t:"Envoyez /start",s1_s3p:"Le bot vous accueillera et affichera votre tableau de bord avec les soldes SLH et ZVK. Vous pouvez explorer toutes les fonctionnalit\u00e9s gratuites imm\u00e9diatement.",
+    s1_s4t:"Explorez le menu",s1_s4p:"Vous verrez des boutons : Prix du march\u00e9, Investissements, Portefeuille, Gestion des risques, Jeux et Parrainages. Essayez chacun pour comprendre le syst\u00e8me.",
+    s1_tip:"Toutes les fonctionnalit\u00e9s de base sont gratuites. Vous ne payez que pour les d\u00e9p\u00f4ts r\u00e9els ou les fonctionnalit\u00e9s premium.",
+    s2_title:"Comment trouver votre ID Telegram",s2_intro:"Votre ID Telegram est un num\u00e9ro unique identifiant votre compte. Vous en avez besoin pour acc\u00e9der au tableau de bord.",
+    s2_m1:"M\u00e9thode 1 : Via @userinfobot (La plus simple)",
+    s2_m1s1t:"Ouvrez @userinfobot",s2_m1s1p:"Recherchez @userinfobot dans Telegram et ouvrez la conversation.",
+    s2_m1s2t:"Envoyez /start",s2_m1s2p:"Le bot r\u00e9pondra imm\u00e9diatement avec votre ID, nom d'utilisateur et nom. Copiez le num\u00e9ro.",
+    s2_m2:"M\u00e9thode 2 : Via SLH_AIR_bot",
+    s2_m2s1t:"Ouvrez @SLH_AIR_bot",s2_m2s1p:"Envoyez /start au bot. Le tableau de bord affichera vos soldes.",
+    s2_m2s2t:"V\u00e9rifiez le lien de parrainage",s2_m2s2p:"Cliquez sur \u00ab Inviter \u00bb dans le menu. Votre lien contient votre ID : t.me/SLH_AIR_bot?start=YOUR_ID",
+    s2_m3:"M\u00e9thode 3 : Via les param\u00e8tres Telegram",
+    s2_m3p:"Sur certains clients Telegram, allez dans Param\u00e8tres et votre ID peut \u00eatre affich\u00e9 sous votre profil. Sur Telegram Desktop, il peut \u00eatre visible dans la section API.",
+    s3_title:"Guide d'investissement",s3_intro:"La maison d'investissement SLH offre des d\u00e9p\u00f4ts en cryptomonnaie r\u00e9els avec des rendements mensuels.",
+    s3_how:"Comment fonctionnent les d\u00e9p\u00f4ts",
+    s3_s1t:"Choisissez un plan",s3_s1p:"Envoyez \u00ab Investissements \u00bb dans le menu du bot. 4 plans : Mensuel (4%), Trimestriel (4,5%), Semestriel (5%), Annuel (5,4%).",
+    s3_s2t:"Envoyez du TON",s3_s2p:"Transf\u00e9rez du TON \u00e0 l'adresse de portefeuille affich\u00e9e. Le minimum d\u00e9pend du plan (1-25 TON).",
+    s3_s3t:"Envoyez une capture d'\u00e9cran",s3_s3p:"Prenez une capture d'\u00e9cran de la confirmation de transfert et envoyez-la au bot comme photo.",
+    s3_s4t:"Attendez l'approbation",s3_s4p:"Un administrateur v\u00e9rifiera votre paiement et l'approuvera. Vous recevrez un message de confirmation.",
+    s3_s5t:"Gagnez des rendements mensuels",s3_s5p:"Les rendements sont calcul\u00e9s mensuellement et ajout\u00e9s \u00e0 votre compte. V\u00e9rifiez avec /mydeposits.",
+    s3_warn:"N'investissez jamais plus que ce que vous pouvez vous permettre de perdre. Les investissements en cryptomonnaie comportent des risques. Les rendements pass\u00e9s ne garantissent pas les r\u00e9sultats futurs.",
+    s3_cmds:"Commandes utiles",
+    s3_cmd1:"D\u00e9marrer un nouveau d\u00e9p\u00f4t",s3_cmd2:"Voir vos d\u00e9p\u00f4ts actifs",s3_cmd3:"Voir votre relev\u00e9 de compte",s3_cmd4:"Voir votre portefeuille complet",s3_cmd5:"Demander un retrait",
+    s4_title:"Explication des plans de staking",s4_compare:"Comparaison des plans",
+    s4_th_plan:"PLAN",s4_th_monthly:"MENSUEL",s4_th_annual:"ANNUEL",s4_th_lock:"BLOCAGE",s4_th_min:"MIN",
+    s4_r1:"Mensuel",s4_r2:"Trimestriel",s4_r3:"Semestriel",s4_r4:"Annuel",
+    s4_30d:"30 jours",s4_90d:"90 jours",s4_180d:"180 jours",s4_365d:"365 jours",
+    s4_tip:"Plus la p\u00e9riode de blocage est longue, plus le rendement est \u00e9lev\u00e9. Le plan annuel offre le meilleur APY \u00e0 Variable par an.",
+    s5_title:"Portefeuille & Transferts de jetons",s5_intro:"L'\u00e9cosyst\u00e8me SLH utilise 3 types de jetons :",
+    s5_types:"Types de jetons",
+    s5_ton:"Cryptomonnaie r\u00e9elle. Utilis\u00e9e pour les d\u00e9p\u00f4ts et retraits. N\u00e9gociable sur les \u00e9changes.",
+    s5_slh:"Jeton utilitaire de l'\u00e9cosyst\u00e8me sur la blockchain BSC. Pour l'acc\u00e8s premium et la gouvernance.",
+    s5_zvk:"Jeton de r\u00e9compense interne. Gagn\u00e9 par les jeux et parrainages. Convertible en TON.",
+    s5_how:"Comment transf\u00e9rer des jetons",
+    s5_s1t:"Transfert interne (SLH/ZVK)",s5_s1p:"Utilisez /pay [montant] [jeton] [id_utilisateur] dans le bot. Ou l'onglet Transferts du tableau de bord.",
+    s5_s2t:"Transfert blockchain",s5_s2p:"Utilisez /send dans le bot pour les transferts TON on-chain.",
+    s5_conv:"Conversion ZVK en TON",
+    s6_title:"R\u00e9seau de parrainage (10 g\u00e9n\u00e9rations)",s6_intro:"Gagnez des commissions sur l'activit\u00e9 de votre r\u00e9seau jusqu'\u00e0 10 g\u00e9n\u00e9rations.",
+    s6_rates:"Taux de commission",
+    s6_g1:"G\u00e9n 1 (direct) :",s6_g1v:"10% de leurs d\u00e9p\u00f4ts",s6_g6v:"0,5% chacun",
+    s6_how:"Comment parrainer",
+    s6_s1t:"Obtenez votre lien de parrainage",s6_s1p:"Dans @SLH_AIR_bot, cliquez \u00ab Inviter \u00bb pour obtenir votre lien unique : t.me/SLH_AIR_bot?start=YOUR_ID",
+    s6_s2t:"Partagez avec vos amis",s6_s2p:"Envoyez le lien \u00e0 vos amis, publiez sur les r\u00e9seaux sociaux ou partagez dans les groupes.",
+    s6_s3t:"Gagnez automatiquement",s6_s3p:"Quand quelqu'un dans votre r\u00e9seau fait un d\u00e9p\u00f4t, vous gagnez une commission automatiquement. V\u00e9rifiez sur le tableau de bord.",
+    s6_example:"Exemple : D\u00e9p\u00f4t de 100 TON dans votre r\u00e9seau",
+    s6_example_p:"Si quelqu'un au niveau 3 d\u00e9pose 100 TON, vous gagnez 3 TON (3%). S'il s'agit d'un parrainage direct, vous gagnez 10 TON (10%).",
+    s6_tip:"Votre r\u00e9seau cro\u00eet de mani\u00e8re exponentielle. Si chaque personne parraine 3 personnes, \u00e0 la g\u00e9n\u00e9ration 5 vous avez 243 personnes qui vous rapportent des commissions !",
+    s7_title:"OsifShop - Inventaire SaaS",s7_intro:"OsifShop est un syst\u00e8me de gestion d'inventaire avec scan de codes-barres par cam\u00e9ra.",
+    s7_s1t:"Ouvrez @OsifShop_bot",s7_s1p:"Recherchez @OsifShop_bot dans Telegram et envoyez /start.",
+    s7_s2t:"Ajoutez des produits",s7_s2p:"Cliquez sur \u00ab Ajouter un produit \u00bb. Entrez le nom, le prix et la quantit\u00e9.",
+    s7_s3t:"Scannez les codes-barres",s7_s3p:"Cliquez sur \u00ab Scanner \u00bb pour ouvrir la cam\u00e9ra (Mini App). Pointez vers n'importe quel code-barres.",
+    s7_s4t:"Consultez les rapports",s7_s4p:"Obtenez des rapports d'inventaire, alertes de stock bas et export CSV.",
+    s8_title:"Tableau de bord web",s8_intro:"Acc\u00e9dez \u00e0 votre tableau de bord personnel sur",
+    s8_login:"Options de connexion",
+    s8_s1t:"Option A : Widget Telegram (Recommand\u00e9)",s8_s1p:"Cliquez sur \u00ab Se connecter avec Telegram \u00bb. Une fen\u00eatre de confirmation appara\u00eetra. Un clic et vous \u00eates connect\u00e9.",
+    s8_s2t:"Option B : ID manuel",s8_s2p:"Entrez votre num\u00e9ro d'ID Telegram. Voir \u00ab Comment trouver votre ID Telegram \u00bb ci-dessus.",
+    s8_features:"Fonctionnalit\u00e9s du tableau de bord",
+    s8_f1t:"Portefeuille",s8_f1d:"Voir tous vos d\u00e9p\u00f4ts actifs et leur statut",
+    s8_f2t:"Staking",s8_f2d:"Cr\u00e9er de nouvelles positions de staking directement depuis le web",
+    s8_f3t:"Transferts",s8_f3d:"Envoyer des jetons SLH/ZVK \u00e0 d'autres utilisateurs",
+    s8_f4t:"Parrainages",s8_f4d:"Voir votre arbre de parrainage, gains par g\u00e9n\u00e9ration, copier le lien",
+    s8_f5t:"Actions rapides",s8_f5d:"Liens directs vers tous les bots et la documentation",
+    s9_title:"March\u00e9 NFT",s9_intro:"Le march\u00e9 NFTY vous permet d'acheter et vendre des actifs num\u00e9riques avec un animal virtuel.",
+    s9_s1t:"Ouvrez @NIFTI_Publisher_Bot",s9_s1p:"Envoyez /start au bot. Vous recevrez un animal virtuel (Sparky!) automatiquement.",
+    s9_s2t:"Parcourez le march\u00e9",s9_s2p:"Utilisez /browse pour voir les actifs num\u00e9riques disponibles.",
+    s9_s3t:"Listez vos articles",s9_s3p:"Utilisez /sell pour cr\u00e9er une annonce. D\u00e9finissez titre, description, prix et cat\u00e9gorie.",
+    s9_s4t:"Prenez soin de votre animal",s9_s4p:"Utilisez /feed, /play, /learn, /sleep pour garder votre animal virtuel heureux !",
+    s10_title:"Jeux & Jetons ZVK",s10_intro:"Jouez pour gagner des jetons ZVK convertibles en TON.",
+    s10_available:"Jeux disponibles",
+    s10_slots:"Tournez et gagnez jusqu'\u00e0 25 ZVK par tour",
+    s10_dice:"Lanc\u00e9 6 = 5 ZVK, Lanc\u00e9 4-5 = 2 ZVK",
+    s10_basket:"Score 4+ = 3 ZVK",
+    s10_darts:"Centre (6) = 5 ZVK, 4-5 = 2 ZVK",
+    s10_cost:"Chaque jeu co\u00fbte 1 ZVK. Ouvrez le menu Jeux dans @SLH_AIR_bot.",
+    s11_title:"Meilleures pratiques de s\u00e9curit\u00e9",
+    s11_warn:"Ne partagez jamais vos cl\u00e9s priv\u00e9es, codes PIN ou phrases de r\u00e9cup\u00e9ration. L'\u00e9quipe SLH ne les demandera JAMAIS.",
+    s11_2fa:"Activez la 2FA dans les param\u00e8tres Telegram pour une protection suppl\u00e9mentaire.",
+    s11_verify:"V\u00e9rifiez les noms des bots - utilisez uniquement @SLH_AIR_bot officiel. M\u00e9fiez-vous des faux bots.",
+    s11_records:"Gardez des traces - utilisez /statement pour v\u00e9rifier r\u00e9guli\u00e8rement l'activit\u00e9 de votre compte.",
+    s11_report:"Signalez toute activit\u00e9 suspecte - /support ou appelez le 058-420-3384.",
+    s12_title:"Questions fr\u00e9quemment pos\u00e9es",
+    faq_q1:"Q : Est-ce une vraie plateforme d'investissement ?",
+    faq_a1:"SLH est un \u00e9cosyst\u00e8me d'investissement num\u00e9rique bas\u00e9 sur la blockchain r\u00e9elle. Tous les d\u00e9p\u00f4ts TON sont de vraies transactions crypto. Cependant, les rendements ne sont pas garantis.",
+    faq_q2:"Q : Comment retirer mon argent ?",
+    faq_a2:"Utilisez /withdraw dans @SLH_AIR_bot. Les retraits sont trait\u00e9s sous 24 heures apr\u00e8s approbation.",
+    faq_q3:"Q : Que se passe-t-il si je perds mon t\u00e9l\u00e9phone ?",
+    faq_a3:"Votre compte est li\u00e9 \u00e0 votre compte Telegram. Connectez-vous depuis un nouvel appareil et toutes vos donn\u00e9es seront l\u00e0.",
+    faq_q4:"Q : Puis-je l'utiliser depuis l'\u00e9tranger ?",
+    faq_a4:"Oui ! La plateforme supporte l'h\u00e9breu, l'anglais, le russe, l'arabe et le fran\u00e7ais. Tout utilisateur Telegram peut l'utiliser.",
+    faq_q5:"Q : Comment contacter le support ?",
+    faq_a5:"Envoyez /support dans n'importe quel bot SLH, appelez le 058-420-3384 ou \u00e9crivez \u00e0 osif@spark-ind.com.",
+    faq_q6:"Q : Quel est l'investissement minimum ?",
+    faq_a6:"Le plan mensuel commence \u00e0 seulement 1 TON (environ 4 ILS aux prix actuels).",
+    ft_home:"Accueil",ft_dash:"Tableau de bord",ft_wp:"Livre blanc",ft_bot:"Bot d'investissement",ft_support:"Support : 058-420-3384"
+}
+};
+
+// === LANGUAGE ENGINE ===
+let currentLang = localStorage.getItem('slh_lang') || 'he';
+
+function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('slh_lang', lang);
+    const rtl = lang === 'he' || lang === 'ar';
+    document.documentElement.dir = rtl ? 'rtl' : 'ltr';
+    document.documentElement.lang = lang;
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        // 1) page-specific guides translations take priority
+        if (GUIDES_T[lang] && GUIDES_T[lang][key]) {
+            el.textContent = GUIDES_T[lang][key];
+            return;
+        }
+        // 2) fall back to global T from translations.js (nav_*, footer_*, etc)
+        if (typeof T !== 'undefined' && T[lang] && T[lang][key]) {
+            el.textContent = T[lang][key];
+        }
+    });
+
+    document.querySelectorAll('.lang-btn').forEach(b => {
+        b.classList.toggle('active', b.textContent.includes(lang.toUpperCase()));
+    });
+}
+
+// Run once now for inline GUIDES_T strings...
+setLang(currentLang);
+// ...and run again AFTER translations.js has loaded (it's included below this script)
+document.addEventListener('DOMContentLoaded', () => setLang(currentLang));
+</script>
+
+<div id="bottomnav-root"></div>
+<div id="footer-root"></div>
+
+<!-- Theme Switcher FAB -->
+<button id="theme-fab" onclick="toggleThemePanel()" title="ערכת צבעים">🎨</button>
+<div id="theme-panel">
+    <div class="title">בחר ערכת צבעים</div>
+    <button onclick="applyGuideTheme('terminal')">🟢 Terminal (ברירת מחדל)</button>
+    <button onclick="applyGuideTheme('dark')">🌙 Dark</button>
+    <button onclick="applyGuideTheme('light')">☀️ Light</button>
+    <button onclick="applyGuideTheme('crypto')">₿ Crypto</button>
+    <button onclick="applyGuideTheme('cyberpunk')">👾 Cyberpunk</button>
+    <button onclick="applyGuideTheme('ocean')">🌊 Ocean</button>
+    <button onclick="applyGuideTheme('sunset')">🌅 Sunset</button>
+</div>
+
+<script src="/js/translations.js?v=20260426e"></script>
+<script src="/js/shared.js?v=20260426e"></script>
+<script>
+    initShared({ activePage: 'guides' });
+
+    // Theme Switcher
+    function toggleThemePanel() {
+        document.getElementById('theme-panel').classList.toggle('open');
+    }
+    function applyGuideTheme(name) {
+        if (name === 'terminal') {
+            document.documentElement.removeAttribute('data-theme');
+        } else {
+            document.documentElement.setAttribute('data-theme', name);
+        }
+        localStorage.setItem('slh_guides_theme', name);
+        document.getElementById('theme-panel').classList.remove('open');
+    }
+    // Restore saved theme on load
+    (function() {
+        const saved = localStorage.getItem('slh_guides_theme');
+        if (saved && saved !== 'terminal') {
+            document.documentElement.setAttribute('data-theme', saved);
+        }
+    })();
+    // Close panel on outside click
+    document.addEventListener('click', (e) => {
+        const panel = document.getElementById('theme-panel');
+        const fab = document.getElementById('theme-fab');
+        if (panel && fab && !panel.contains(e.target) && !fab.contains(e.target)) {
+            panel.classList.remove('open');
+        }
+    });
+</script>
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260426e"></script>
+</body>
+</html>

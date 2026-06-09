@@ -1,0 +1,771 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl" data-theme="neural">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SLH Spark — Digital Investment Ecosystem</title>
+  <meta name="description" content="SLH Digital Investment House - 20+ Telegram bots, blockchain deposits, crypto trading, Variable Yield (4-12%). Built in Israel.">
+  <meta name="keywords" content="SLH Spark, slhalpa, SLH token, BSC BEP-20, SPARK IND, Telegram bots, crypto Israel, TON, blockchain, investment, staking, trading, קריפטו ישראלי">
+  <meta name="author" content="SPARK IND · Osif Kaufman Ungar">
+  <meta name="slh:unique-id" content="slhalpa">
+  <meta name="slh:contract" content="0xACb0A09414CEA1C879c67bB7A877E4e19480f022">
+  <meta name="slh:blockchain" content="Binance Smart Chain (BSC)">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://slh-nft.com/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="SLH Ecosystem">
+  <meta property="og:title" content="SLH — האקוסיסטם של העולם החדש">
+  <meta property="og:description" content="20+ Telegram bots · Real blockchain · Variable Yield (4-12%) · Built in Israel">
+  <meta property="og:image" content="https://slh-nft.com/assets/og/default.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="SLH Ecosystem - The Ecosystem of the New World">
+  <meta property="og:url" content="https://slh-nft.com">
+  <meta property="og:locale" content="he_IL">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta property="og:locale:alternate" content="ru_RU">
+  <meta property="og:locale:alternate" content="ar_SA">
+  <meta property="og:locale:alternate" content="fr_FR">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SLH — The Ecosystem of the New World">
+  <meta name="twitter:description" content="20+ Telegram bots · Real blockchain · Variable Yield (4-12%) · Built in Israel">
+  <meta name="twitter:image" content="https://slh-nft.com/assets/og/default.png">
+
+  <!-- hreflang -->
+  <link rel="alternate" hreflang="he" href="https://slh-nft.com/">
+  <link rel="alternate" hreflang="en" href="https://slh-nft.com/?lang=en">
+  <link rel="alternate" hreflang="ru" href="https://slh-nft.com/?lang=ru">
+  <link rel="alternate" hreflang="ar" href="https://slh-nft.com/?lang=ar">
+  <link rel="alternate" hreflang="fr" href="https://slh-nft.com/?lang=fr">
+  <link rel="alternate" hreflang="x-default" href="https://slh-nft.com/">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Shared CSS -->
+  <link rel="stylesheet" href="css/shared.css?v=20260426e">
+  <link rel="stylesheet" href="css/slh-neural.css?v=20260427a">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "SLH Ecosystem",
+    "alternateName": "SPARK IND",
+    "url": "https://slh-nft.com",
+    "logo": "https://slh-nft.com/img/logo.svg",
+    "description": "Digital Investment House — 20+ Telegram bots, blockchain deposits, crypto trading, Variable Yield (4-12%).",
+    "foundingLocation": { "@type": "Country", "name": "Israel" },
+    "sameAs": [
+      "https://t.me/SLH_AIR_bot"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "customer service",
+      "url": "https://t.me/SLH_AIR_bot"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "SLH Spark",
+    "url": "https://slh-nft.com",
+    "description": "Digital ecosystem with 25+ Telegram bots, blockchain, and Variable Yield (4-12%) staking"
+  }
+  </script>
+
+  <!-- Landing-specific styles -->
+  <style>
+    .hero {
+      position: relative;
+      padding: calc(var(--topnav-h) + 60px) 24px 60px;
+      text-align: center;
+      overflow: hidden;
+      background: url('assets/img/cyberpunk-hero.png') center/cover no-repeat fixed;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(10,10,18,0.82) 0%, rgba(10,10,18,0.65) 50%, rgba(10,10,18,0.92) 100%);
+      z-index: 1;
+    }
+    .hero-inner { max-width: 800px; margin: 0 auto; position: relative; z-index: 2; }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, var(--accent2), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      color: var(--text2);
+      max-width: 640px;
+      margin: 0 auto 32px;
+      line-height: 1.6;
+    }
+    .hero-ctas { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .hero-ctas .btn { padding: 12px 28px; font-size: 15px; }
+
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      flex-wrap: wrap;
+      margin-top: 48px;
+      padding: 20px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .stat-item { text-align: center; }
+    .stat-num { font-size: 24px; font-weight: 800; color: var(--accent2); }
+    .stat-label { font-size: 13px; color: var(--text3); margin-top: 4px; }
+
+    .landing-section {
+      padding: 64px 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .landing-section .section-tag {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--accent2);
+      margin-bottom: 8px;
+    }
+    .landing-section h2 {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .landing-section .section-sub {
+      color: var(--text2);
+      font-size: 15px;
+      max-width: 560px;
+      margin-bottom: 36px;
+    }
+
+    /* Quick Join */
+    .quick-join { max-width: 520px; margin: 0 auto; }
+    .quick-join .card { text-align: center; }
+    .join-input-row { display: flex; gap: 8px; margin-top: 16px; }
+    .join-input-row input {
+      flex: 1;
+      padding: 10px 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      color: var(--text);
+      font-size: 14px;
+    }
+    .join-input-row input:focus { outline: none; border-color: var(--accent); }
+    .join-result { margin-top: 16px; display: none; }
+    .join-result.active { display: block; }
+    .join-result .link-box {
+      display: flex; align-items: center; gap: 8px; margin-top: 8px;
+      padding: 8px 12px; background: var(--bg2); border-radius: var(--radius-sm);
+      border: 1px solid var(--border); font-size: 13px; color: var(--accent2);
+      word-break: break-all;
+    }
+    .join-result .link-box code { flex: 1; font-family: var(--font-mono); }
+
+    /* Steps */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+    .step-card { text-align: center; }
+    .step-card .step-num {
+      width: 48px; height: 48px; margin: 0 auto 16px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff; font-weight: 800; font-size: 18px;
+    }
+    .step-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .step-card p { font-size: 14px; color: var(--text2); line-height: 1.5; }
+
+    /* Features */
+    .feat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .feat-card .feat-icon {
+      width: 44px; height: 44px; margin-bottom: 16px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: var(--radius-sm);
+      background: rgba(108, 92, 231, .12);
+      color: var(--accent2); font-size: 20px;
+    }
+    .feat-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .feat-card p { font-size: 14px; color: var(--text2); line-height: 1.5; }
+
+    /* Ecosystem Grid */
+    .eco-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+    .bot-card { display: flex; align-items: center; gap: 16px; }
+    .bot-card .bot-icon {
+      width: 48px; height: 48px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff; font-size: 20px;
+    }
+    .bot-card .bot-info h4 { font-size: 15px; font-weight: 600; }
+    .bot-card .bot-info p { font-size: 13px; color: var(--text3); }
+    .view-all { margin-top: 24px; text-align: center; }
+
+    /* CTA Banner */
+    .cta-banner {
+      text-align: center;
+      padding: 56px 24px;
+      margin: 0 auto;
+      max-width: 1100px;
+    }
+    .cta-banner h2 {
+      font-size: clamp(1.4rem, 3vw, 1.8rem);
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 640px) {
+      .hero { padding: calc(var(--topnav-h) + 40px) 16px 40px; }
+      .stats-bar { gap: 20px; }
+      .stat-num { font-size: 20px; }
+      .landing-section { padding: 48px 16px; }
+      .join-input-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+<div class="neural-bg" aria-hidden="true"></div>
+
+  <!-- Shared Roots -->
+  <div id="topnav-root"></div>
+  <div id="drawer-root"></div>
+  <div id="ticker-root"></div>
+
+  <!-- 🚀 SLH LIVE ON PANCAKESWAP -->
+  <a href="https://pancakeswap.finance/swap?outputCurrency=0xACb0A09414CEA1C879c67bB7A877E4e19480f022&chain=bsc" target="_blank" rel="noopener" style="display:block;text-decoration:none;background:linear-gradient(90deg,rgba(0,232,135,0.2),rgba(255,215,0,0.18),rgba(243,186,47,0.15));border-top:3px solid #00e887;border-bottom:3px solid #ffd700;padding:16px 20px;text-align:center">
+    <div style="font-size:12px;color:#00e887;text-transform:uppercase;letter-spacing:2px;font-weight:800;margin-bottom:4px">🚀 SLH LIVE ON PANCAKESWAP · $0.596/SLH · TRADE NOW</div>
+    <div style="font-size:17px;color:#e8e8f0;font-weight:700">SLH Spark נסחר ציבורית ב-PancakeSwap! לחץ לקנייה →</div>
+  </a>
+
+  <!-- 🔥 SHEKEL PROMO BANNER (48h only) -->
+  <a href="/promo-shekel.html" style="display:block;text-decoration:none;background:linear-gradient(90deg,rgba(255,68,68,0.15),rgba(255,215,0,0.2),rgba(0,232,135,0.15));border-top:2px solid #ff4444;border-bottom:2px solid #00e887;padding:14px 20px;text-align:center;position:relative;overflow:hidden">
+    <div style="font-size:11px;color:#ff4444;text-transform:uppercase;letter-spacing:2px;font-weight:800;margin-bottom:4px">🔥 חלון 48 שעות · דולר חלש, שקל חזק</div>
+    <div style="font-size:18px;color:#fff;font-weight:800">Starter Pack — <span style="text-decoration:line-through;color:#888;font-size:14px">₪222</span> <span style="color:#ffd700;font-size:22px">₪22.221</span> בלבד <span style="color:#00e887">· 4 נתיבים · 5 שפות ←</span></div>
+  </a>
+
+  <!-- 🌸 HEALING VISION LINK -->
+  <a href="/healing-vision.html" style="display:block;text-decoration:none;background:linear-gradient(90deg,rgba(255,107,157,0.08),rgba(0,232,135,0.06));padding:10px 20px;text-align:center;font-size:13px;color:#ff6b9d;border-bottom:1px solid rgba(255,107,157,0.2)">
+    🌸 <strong>חדש</strong>: חזון הריפוי של SLH — מטבע עבור מטפלים ונזקקים <span style="color:#00e887">| הכר את המשימה שלנו ←</span>
+  </a>
+
+  <!-- 🕊️ KOSHER WALLET TEASER -->
+  <a href="/kosher-wallet.html" style="display:block;text-decoration:none;background:linear-gradient(90deg,rgba(212,175,55,0.12),rgba(91,163,255,0.08));padding:10px 20px;text-align:center;font-size:13px;color:#d4af37;border-bottom:1px solid rgba(212,175,55,0.3)">
+    🕊️ <strong>בקרוב</strong>: ארנק קריפטו כשר — לציבור החרדי דרך טלפון כשר ב-SMS · השקה 17/12/2026 · ₪888 במכירה מוקדמת <span style="color:#ffd700">←</span>
+  </a>
+
+  <!-- 📰 BLOG TEASER -->
+  <a href="/blog.html" style="display:block;text-decoration:none;background:linear-gradient(90deg,rgba(168,85,247,0.12),rgba(0,232,135,0.06));padding:10px 20px;text-align:center;font-size:13px;color:#a855f7;border-bottom:1px solid rgba(168,85,247,0.3)">
+    📰 <strong>בלוג SLH Spark</strong> — מאמר חדש: "המוח שלנו הוא Legacy Code" · 7 פרקים על AI + CBT + NLP <span style="color:#00e887">| קרא ←</span>
+  </a>
+
+  <!-- 📡 LIVE STATUS / TRANSPARENCY -->
+  <a href="/status.html" style="display:block;text-decoration:none;background:linear-gradient(90deg,rgba(0,255,65,0.08),rgba(0,229,255,0.06));padding:10px 20px;text-align:center;font-size:13px;color:#00ff41;border-bottom:1px solid rgba(0,255,65,0.25)">
+    📡 <strong>שקיפות חיה</strong> — כל המספרים שלנו בזמן אמת: משתמשים, הכנסות, באגים ידועים <span style="color:#00e5ff">| צפה בסטטוס ←</span>
+  </a>
+
+  <!-- 🛰 AGENT HUB (internal tool, noindex) -->
+  <a href="/agent-hub.html" style="display:block;text-decoration:none;background:linear-gradient(90deg,rgba(168,85,247,0.08),rgba(0,229,255,0.05));padding:8px 20px;text-align:center;font-size:12px;color:#a855f7;border-bottom:1px solid rgba(168,85,247,0.2)">
+    🛰 <strong>Agent Hub</strong> — מרכז תיאום סוכני AI (Claude · Copilot · Gemini · Grok) <span style="color:#00e5ff">| פתח ←</span>
+  </a>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner rv">
+      <h1 data-i18n="landing_hero_title">SLH — The Ecosystem of the New World</h1>
+      <p class="hero-sub" data-i18n="landing_hero_sub">25 Telegram bots. Real blockchain. Variable yield staking. Built in Israel.</p>
+      <div class="hero-ctas">
+        <a href="/trade.html" class="btn btn-primary" data-i18n="landing_cta_trade" data-track="hero-start-trading">Start Trading</a>
+        <a href="/academia.html" class="btn btn-gold" data-track="hero-academia">🎓 Academia — Learn & Earn</a>
+        <a href="/earn.html" class="btn btn-outline" data-i18n="landing_cta_earn" data-track="hero-staking">Variable Staking</a>
+        <a href="/bots.html" class="btn btn-outline" data-i18n="landing_cta_bots" data-track="hero-view-bots">View Bots</a>
+      </div>
+      <div class="stats-bar">
+        <div class="stat-item">
+          <div class="stat-num">20</div>
+          <div class="stat-label" data-i18n="landing_stat_containers">Containers</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">12</div>
+          <div class="stat-label" data-i18n="landing_stat_coins">Coins</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">Dynamic</div>
+          <div class="stat-label" data-i18n="landing_stat_apy">Revenue Share</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">24/7</div>
+          <div class="stat-label" data-i18n="landing_stat_uptime">Uptime</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GENESIS SUNDAY PROMO BANNER -->
+  <section id="promo-banner" style="max-width:900px;margin:0 auto;padding:0 24px">
+    <div style="background:linear-gradient(135deg,#ffd700 0%,#ff6b35 50%,#ff0080 100%);border-radius:16px;padding:28px 24px;text-align:center;position:relative;overflow:hidden;margin-bottom:24px">
+      <div style="position:absolute;inset:0;background:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2220%22 cy=%2230%22 r=%2240%22 fill=%22rgba(255,255,255,0.05)%22/><circle cx=%2280%22 cy=%2270%22 r=%2260%22 fill=%22rgba(255,255,255,0.03)%22/></svg>');"></div>
+      <div style="position:relative;z-index:1">
+        <div style="display:inline-block;padding:4px 16px;background:rgba(0,0,0,.3);border-radius:20px;font-size:11px;color:#fff;font-weight:700;letter-spacing:1px;margin-bottom:12px">LIMITED TIME</div>
+        <h2 style="color:#fff;font-size:24px;font-weight:800;margin-bottom:8px;text-shadow:0 2px 8px rgba(0,0,0,.3)">Genesis Sunday — x3 Rewards!</h2>
+        <p style="color:rgba(255,255,255,.9);font-size:14px;margin-bottom:16px;max-width:500px;margin-left:auto;margin-right:auto">
+          הצטרף היום ל-Genesis 49 וקבל <strong>פי 3 תגמולים</strong>: 1,500 ZVK + 300 REP + NFT ייחודי. נשארו רק <span id="promo-spots">44</span> מקומות!
+        </p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <a href="/launch-event.html" style="display:inline-block;padding:12px 28px;background:#000;color:#ffd700;font-weight:800;border-radius:10px;font-size:15px;text-decoration:none">🚀 הצטרף עכשיו</a>
+          <a href="/earn.html" style="display:inline-block;padding:12px 28px;background:rgba(0,0,0,.2);color:#fff;font-weight:700;border-radius:10px;font-size:14px;text-decoration:none;border:1px solid rgba(255,255,255,.3)">📈 Staking (Variable)</a>
+        </div>
+        <div style="display:flex;gap:24px;justify-content:center;margin-top:16px;font-size:12px;color:rgba(255,255,255,.7)">
+          <span>🏆 1,500 ZVK</span>
+          <span>⭐ 300 REP</span>
+          <span>🎨 Genesis NFT</span>
+          <span>📈 Variable Yield (4-12%)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STAKING HIGHLIGHT -->
+  <section style="max-width:900px;margin:0 auto 24px;padding:0 24px">
+    <div style="background:var(--surface,#14142b);border:1px solid var(--border,#1e1e3a);border-radius:16px;padding:24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;text-align:center">
+      <div>
+        <div style="font-size:32px;font-weight:800;color:var(--accent,#00ff41)">Dynamic</div>
+        <div style="font-size:12px;color:var(--text2,#888)">Revenue Share Pool</div>
+      </div>
+      <div>
+        <div style="font-size:32px;font-weight:800;color:var(--cyan,#00e5ff)">4</div>
+        <div style="font-size:12px;color:var(--text2,#888)">תוכניות Staking</div>
+      </div>
+      <div>
+        <div style="font-size:32px;font-weight:800;color:#ffd700">1 TON</div>
+        <div style="font-size:12px;color:var(--text2,#888)">מינימום להפקדה</div>
+      </div>
+      <div>
+        <div style="font-size:32px;font-weight:800;color:var(--purple,#a855f7)">5</div>
+        <div style="font-size:12px;color:var(--text2,#888)">מטבעות במערכת</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUICK JOIN -->
+  <section class="landing-section">
+    <div class="quick-join rv">
+      <div class="card">
+        <span class="section-tag" data-i18n="join_tag">Join Now</span>
+        <h2 data-i18n="landing_join_title">Start in Seconds</h2>
+        <p class="section-sub" style="margin:0 auto 16px" data-i18n="landing_join_sub">Enter your Telegram username or open the bot directly.</p>
+        <div class="join-input-row">
+          <input type="text" id="join-username" data-i18n="landing_join_placeholder" placeholder="@username">
+          <button class="btn btn-primary" id="join-btn" data-i18n="join_btn" data-track="join-get-started">Get Started</button>
+        </div>
+        <a href="https://t.me/SLH_AIR_bot" target="_blank" rel="noopener" class="btn btn-outline" data-track="join-open-telegram" style="margin-top:12px;width:100%">
+          <i class="fab fa-telegram"></i>
+          <span data-i18n="join_telegram">Open Bot on Telegram</span>
+        </a>
+        <div class="join-result" id="join-result">
+          <p data-i18n="join_welcome">Welcome to the SLH ecosystem!</p>
+          <div class="link-box">
+            <code id="join-link"></code>
+            <button class="btn btn-outline" style="padding:6px 12px;font-size:12px" onclick="copyToClipboard(document.getElementById('join-link').textContent)" data-i18n="common_copy">Copy</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="landing-section">
+    <div class="rv">
+      <span class="section-tag" data-i18n="how_tag">How It Works</span>
+      <h2 data-i18n="how_title">Four Steps to Get Started</h2>
+      <p class="section-sub" data-i18n="landing_how_sub">From sign-up to passive income in minutes.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="card step-card rv">
+        <div class="step-num">1</div>
+        <h3 data-i18n="s1t">Open Bot</h3>
+        <p data-i18n="s1p">Open our Telegram bot and sign up in seconds.</p>
+      </div>
+      <div class="card step-card rv">
+        <div class="step-num">2</div>
+        <h3 data-i18n="s2t">Explore</h3>
+        <p data-i18n="s2p">Receive SLH tokens as a sign-up bonus and with every action.</p>
+      </div>
+      <div class="card step-card rv">
+        <div class="step-num">3</div>
+        <h3 data-i18n="s3t">Deposit</h3>
+        <p data-i18n="s3p">Trade tokens, invest in earning plans, and build passive income.</p>
+      </div>
+      <div class="card step-card rv">
+        <div class="step-num">4</div>
+        <h3 data-i18n="s4t">Earn</h3>
+        <p data-i18n="s4p">Invite friends, earn commissions, and build a revenue network.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="landing-section">
+    <div class="rv">
+      <span class="section-tag" data-i18n="feat_title">Platform Features</span>
+      <h2 data-i18n="landing_feat_heading">Enterprise-Grade Infrastructure</h2>
+      <p class="section-sub" data-i18n="feat_sub">Advanced technology for a community-driven economy</p>
+    </div>
+    <div class="feat-grid">
+      <div class="card feat-card rv">
+        <div class="feat-icon"><i class="fas fa-cubes"></i></div>
+        <h3 data-i18n="landing_feat1_title">Real Blockchain Deposits</h3>
+        <p data-i18n="landing_feat1_desc">TON, BSC, and multi-chain support. Every deposit verified on-chain with full transparency.</p>
+      </div>
+      <div class="card feat-card rv">
+        <div class="feat-icon"><i class="fas fa-wallet"></i></div>
+        <h3 data-i18n="landing_feat2_title">Multi-Asset Wallet</h3>
+        <p data-i18n="landing_feat2_desc">Hold BTC, ETH, TON, BNB, SLH and more in a unified wallet with instant swaps.</p>
+      </div>
+      <div class="card feat-card rv">
+        <div class="feat-icon"><i class="fas fa-server"></i></div>
+        <h3 data-i18n="landing_feat3_title">Enterprise Infrastructure</h3>
+        <p data-i18n="landing_feat3_desc">20 Docker containers, auto-scaling, 24/7 monitoring. 99.9% uptime guaranteed.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ECOSYSTEM PREVIEW -->
+  <section class="landing-section">
+    <div class="rv">
+      <span class="section-tag" data-i18n="bots_title">Bots</span>
+      <h2 data-i18n="landing_eco_heading">Ecosystem Preview</h2>
+      <p class="section-sub" data-i18n="landing_eco_sub">Each bot is an independent economic engine with its own tokens and revenue model.</p>
+    </div>
+    <div class="eco-grid" id="eco-grid">
+      <!-- Populated by JS -->
+    </div>
+    <div class="view-all rv">
+      <a href="/bots.html" class="btn btn-outline" data-i18n="landing_view_all" data-track="eco-view-all-bots">View All Bots &rarr;</a>
+    </div>
+  </section>
+
+  <!-- INVESTMENT INTAKE FUNNEL + MANIFESTO -->
+  <section class="landing-section rv" style="text-align:center;padding:48px 24px">
+    <div id="invest-funnel" style="max-width:720px;margin:0 auto;background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(245,158,11,.08));border:1px solid rgba(139,92,246,.25);border-radius:16px;padding:40px 32px;direction:rtl">
+
+      <!-- Step 0: Manifesto intro -->
+      <div id="funnel-intro">
+        <h2 style="font-size:28px;font-weight:800;margin-bottom:8px"><span style="display:block;font-size:20px;color:var(--text2);margin-bottom:6px">יש לכם כסף להשקיע?</span><span style="background:linear-gradient(135deg,var(--accent),#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">SLH זו הבחירה החכמה</span></h2>
+        <div style="font-size:15px;line-height:2;color:var(--text2);margin-bottom:24px">
+          ברור שפספסתם את הביטקויין,<br>
+          לא הבנתם מה זה אומר,<br>
+          <b style="color:var(--text)">ביט,</b> או <b style="color:var(--text)">קויין..</b><br><br>
+          היום אתם משלמים ב<b style="color:var(--accent)">ביט</b> כמעט בכל רכישה,<br>
+          אבל עדיין לא מבינים ש<b style="color:#f59e0b">קויין</b> — זה למעשה <b style="color:var(--text)">בחירה.</b><br><br>
+          מי שישן על האף לא ירוויח כסף, בעולם של כיסופים..<br>
+          מי שישן על האף לא יקום, בעולם של מתעוררים...<br><br>
+          <span style="font-size:18px;font-weight:700;color:var(--accent)">סוציוקרטיה — מנהל, לא משטר ולא ממשל.</span><br>
+          <span style="font-size:20px;font-weight:800;color:var(--text)">קהילה. 🏛️</span>
+        </div>
+        <button onclick="startFunnel()" class="btn btn-primary" style="padding:14px 36px;font-size:16px;font-weight:700;border-radius:12px">
+          🚀 בואו נבנה לכם תיק השקעות
+        </button>
+        <div style="margin-top:16px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <a href="/community.html" class="btn btn-outline" data-track="manifesto-join-community" style="padding:10px 20px;font-size:13px"><i class="fas fa-users"></i> הצטרף לקהילה</a>
+          <a href="https://t.me/SLH_AIR_bot" target="_blank" rel="noopener" class="btn btn-outline" data-track="manifesto-open-bot" style="padding:10px 20px;font-size:13px"><i class="fab fa-telegram"></i> SLH Bot</a>
+        </div>
+      </div>
+
+      <!-- Step 1: יש לכם כסף להשקיע? -->
+      <div id="funnel-q1" style="display:none">
+        <div style="font-size:13px;color:var(--accent);margin-bottom:8px;letter-spacing:1px">שאלה 1 מתוך 3</div>
+        <div style="height:4px;background:var(--bg);border-radius:4px;margin-bottom:24px;overflow:hidden"><div style="width:33%;height:100%;background:linear-gradient(90deg,var(--accent),#f59e0b);border-radius:4px;transition:width .5s"></div></div>
+        <h3 style="font-size:26px;font-weight:800;margin-bottom:8px;color:var(--text-bright)">💰 יש לכם כסף להשקיע?</h3>
+        <p style="color:var(--text2);margin-bottom:24px;font-size:15px">לפני שנתחיל, חשוב להבין — השקעה היא רק מכסף פנוי, לא מכסף שאתם צריכים למחיה.</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <button onclick="funnelNext(1,'yes')" class="btn btn-primary" style="padding:14px 32px;font-size:16px;border-radius:12px">✅ כן, יש לי כסף פנוי</button>
+          <button onclick="funnelNext(1,'no')" class="btn btn-outline" style="padding:14px 32px;font-size:16px;border-radius:12px">🤔 עוד לא בטוח</button>
+        </div>
+      </div>
+
+      <!-- Step 2: איזה סכום? -->
+      <div id="funnel-q2" style="display:none">
+        <div style="font-size:13px;color:var(--accent);margin-bottom:8px;letter-spacing:1px">שאלה 2 מתוך 3</div>
+        <div style="height:4px;background:var(--bg);border-radius:4px;margin-bottom:24px;overflow:hidden"><div style="width:66%;height:100%;background:linear-gradient(90deg,var(--accent),#f59e0b);border-radius:4px;transition:width .5s"></div></div>
+        <h3 style="font-size:26px;font-weight:800;margin-bottom:8px;color:var(--text-bright)">📊 איזה סכום תרצו להשקיע?</h3>
+        <p style="color:var(--text2);margin-bottom:24px;font-size:15px">אין סכום מינימלי — כל סכום הוא התחלה. אנחנו נתאים את התיק לפי היכולת שלכם.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:400px;margin:0 auto">
+          <button onclick="funnelNext(2,'500')" class="btn btn-outline" style="padding:14px;font-size:15px;border-radius:10px">עד ₪500/חודש</button>
+          <button onclick="funnelNext(2,'1000')" class="btn btn-outline" style="padding:14px;font-size:15px;border-radius:10px">₪500 – ₪1,000</button>
+          <button onclick="funnelNext(2,'5000')" class="btn btn-outline" style="padding:14px;font-size:15px;border-radius:10px">₪1,000 – ₪5,000</button>
+          <button onclick="funnelNext(2,'5000+')" class="btn btn-primary" style="padding:14px;font-size:15px;border-radius:10px">₪5,000+</button>
+        </div>
+      </div>
+
+      <!-- Step 3: לאיזה תקופה? -->
+      <div id="funnel-q3" style="display:none">
+        <div style="font-size:13px;color:var(--accent);margin-bottom:8px;letter-spacing:1px">שאלה 3 מתוך 3</div>
+        <div style="height:4px;background:var(--bg);border-radius:4px;margin-bottom:24px;overflow:hidden"><div style="width:100%;height:100%;background:linear-gradient(90deg,var(--accent),#f59e0b);border-radius:4px;transition:width .5s"></div></div>
+        <h3 style="font-size:26px;font-weight:800;margin-bottom:8px;color:var(--text-bright)">⏱️ לאיזה תקופה?</h3>
+        <p style="color:var(--text2);margin-bottom:24px;font-size:15px">טווח ההשקעה משפיע על סוג התיק שנבנה — ככל שהתקופה ארוכה יותר, הפוטנציאל גדול יותר.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:400px;margin:0 auto">
+          <button onclick="funnelNext(3,'3m')" class="btn btn-outline" style="padding:14px;font-size:15px;border-radius:10px">עד 3 חודשים</button>
+          <button onclick="funnelNext(3,'6m')" class="btn btn-outline" style="padding:14px;font-size:15px;border-radius:10px">3–6 חודשים</button>
+          <button onclick="funnelNext(3,'12m')" class="btn btn-primary" style="padding:14px;font-size:15px;border-radius:10px">6–12 חודשים</button>
+          <button onclick="funnelNext(3,'12m+')" class="btn btn-primary" style="padding:14px;font-size:15px;border-radius:10px">שנה+</button>
+        </div>
+      </div>
+
+      <!-- Step 4: Results - Portfolio Summary -->
+      <div id="funnel-result" style="display:none">
+        <div style="font-size:36px;margin-bottom:8px">🎯</div>
+        <h3 style="font-size:24px;font-weight:800;margin-bottom:6px;color:var(--text-bright)">התיק שלכם מוכן!</h3>
+        <p style="color:var(--text2);margin-bottom:20px;font-size:14px">על בסיס התשובות שלכם, הנה ההמלצה הראשונית:</p>
+
+        <div id="portfolio-card" style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:24px;text-align:right;margin-bottom:20px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+            <span id="res-plan" style="font-size:14px;font-weight:700;background:linear-gradient(135deg,var(--accent),#f59e0b);color:#000;padding:4px 14px;border-radius:20px"></span>
+            <span id="res-period" style="font-size:13px;color:var(--text2)"></span>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+            <div style="background:var(--bg2);border-radius:8px;padding:12px;text-align:center">
+              <div style="font-size:11px;color:var(--text2);margin-bottom:4px">חיסכון חודשי</div>
+              <div id="res-monthly" style="font-size:20px;font-weight:800;color:var(--accent)"></div>
+            </div>
+            <div style="background:var(--bg2);border-radius:8px;padding:12px;text-align:center">
+              <div style="font-size:11px;color:var(--text2);margin-bottom:4px">תשואה צפויה</div>
+              <div id="res-yield" style="font-size:20px;font-weight:800;color:#f59e0b"></div>
+            </div>
+          </div>
+
+          <div style="font-size:13px;color:var(--text2);line-height:1.8;border-top:1px solid var(--border);padding-top:12px">
+            <div style="margin-bottom:6px">📌 <b style="color:var(--text)">מה כולל התיק:</b></div>
+            <div id="res-includes" style="padding-right:8px"></div>
+          </div>
+        </div>
+
+        <p style="font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.6">
+          💡 זו המלצה ראשונית בלבד. בשיחה אישית נבנה תיק מפורט הכולל:<br>
+          <b style="color:var(--text)">מאזן הוצאות והכנסות</b> • <b style="color:var(--text)">ניתוח תזרים</b> • <b style="color:var(--text)">תוכנית חיסכון מותאמת</b>
+        </p>
+
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <a href="/dashboard.html" class="btn btn-primary" style="padding:14px 28px;font-size:15px;border-radius:12px">📋 הרשם ובנה תיק מלא</a>
+          <a href="https://t.me/osifeu_prog" target="_blank" rel="noopener" class="btn btn-outline" style="padding:14px 28px;font-size:15px;border-radius:12px">💬 שיחה אישית עם יועץ</a>
+        </div>
+        <button onclick="resetFunnel()" style="margin-top:12px;background:none;border:none;color:var(--text2);font-size:12px;cursor:pointer;text-decoration:underline">↩️ התחל מחדש</button>
+      </div>
+
+      <!-- "Not ready" path -->
+      <div id="funnel-notready" style="display:none">
+        <div style="font-size:36px;margin-bottom:8px">🌱</div>
+        <h3 style="font-size:22px;font-weight:800;margin-bottom:8px;color:var(--text-bright)">מעולה שאתם כאן!</h3>
+        <p style="color:var(--text2);font-size:15px;line-height:1.8;margin-bottom:20px">
+          גם אם עדיין אין לכם כסף להשקיע — הצעד הראשון הוא <b style="color:var(--text)">ללמוד ולהבין</b>.<br>
+          הצטרפו לקהילה, עקבו אחרי התוכן שלנו, ובנו את הידע שלכם.<br>
+          כשתהיו מוכנים — אנחנו כאן.
+        </p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <a href="/community.html" class="btn btn-primary" style="padding:12px 28px;border-radius:12px"><i class="fas fa-users"></i> הצטרפו לקהילה</a>
+          <a href="/guides.html" class="btn btn-outline" style="padding:12px 28px;border-radius:12px">📚 מדריכים חינמיים</a>
+        </div>
+        <button onclick="resetFunnel()" style="margin-top:12px;background:none;border:none;color:var(--text2);font-size:12px;cursor:pointer;text-decoration:underline">↩️ חזרה</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BANNER -->
+  <section class="cta-banner rv">
+    <h2 data-i18n="landing_cta_title">Start your investment journey</h2>
+    <p class="section-sub" style="max-width:480px;margin:0 auto 24px;color:var(--text2)" data-i18n="landing_cta_sub">Join thousands of users already earning with SLH Spark.</p>
+    <a href="https://t.me/SLH_AIR_bot" target="_blank" rel="noopener" class="btn btn-primary" data-track="cta-open-slh-bot" style="padding:14px 36px;font-size:16px">
+      <i class="fab fa-telegram"></i>
+      <span data-i18n="landing_cta_open">Open SLH Bot</span>
+    </a>
+  </section>
+
+  <!-- Footer -->
+  <div id="bottomnav-root"></div>
+  <div id="footer-root"></div>
+
+  <!-- Scripts -->
+  <script src="js/translations.js?v=20260426e"></script>
+  <script src="js/shared.js?v=20260426e"></script>
+  <script>
+    // Featured bots for ecosystem preview
+    const FEATURED_BOTS = [
+      { name: 'SLH Investment House', desc: 'השקעות, Revenue Share Pool, למידה כלכלית', icon: 'fa-bolt', link: 'https://t.me/SLH_AIR_bot' },
+      { name: 'Guardian Security', desc: 'אבטחת קבוצות ואנטי-ספאם', icon: 'fa-shield-alt', link: 'https://t.me/Grdian_bot' },
+      { name: 'SLH Academy', desc: 'חינוך, קורסים ו-VIP', icon: 'fa-graduation-cap', link: 'https://t.me/SLH_Academia_bot' },
+      { name: 'BotShop', desc: 'שוק בוטים מוכנים למכירה', icon: 'fa-store', link: 'https://t.me/Buy_My_Shop_bot' },
+      { name: 'SLH Wallet', desc: 'ארנק TON + BSC מרובה מטבעות', icon: 'fa-wallet', link: 'https://t.me/SLH_Wallet_bot' },
+      { name: 'Game Bot', desc: 'משחקים, טורנירים ופרסים', icon: 'fa-gamepad', link: 'https://t.me/G4meb0t_bot_bot' }
+    ];
+
+    function renderEcoGrid() {
+      const grid = document.getElementById('eco-grid');
+      if (!grid) return;
+      grid.innerHTML = FEATURED_BOTS.map(bot => `
+        <a href="${bot.link}" target="_blank" rel="noopener" class="card bot-card rv">
+          <div class="bot-icon"><i class="fas ${bot.icon}"></i></div>
+          <div class="bot-info">
+            <h4>${bot.name}</h4>
+            <p>${bot.desc}</p>
+          </div>
+        </a>
+      `).join('');
+    }
+
+    function handleQuickJoin() {
+      const input = document.getElementById('join-username');
+      const result = document.getElementById('join-result');
+      const linkEl = document.getElementById('join-link');
+      const btn = document.getElementById('join-btn');
+
+      btn.addEventListener('click', () => {
+        let username = input.value.trim().replace(/^@/, '');
+        if (!username) {
+          window.open('https://t.me/SLH_AIR_bot', '_blank');
+          return;
+        }
+        const refLink = `https://t.me/SLH_AIR_bot?start=ref_${username}`;
+        linkEl.textContent = refLink;
+        result.classList.add('active');
+      });
+
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') btn.click();
+      });
+    }
+
+    // === INVESTMENT INTAKE FUNNEL ===
+    const funnelData = { hasCapital: null, amount: null, period: null };
+
+    function startFunnel() {
+      document.getElementById('funnel-intro').style.display = 'none';
+      document.getElementById('funnel-q1').style.display = 'block';
+      document.getElementById('invest-funnel').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function funnelNext(step, answer) {
+      if (step === 1) {
+        funnelData.hasCapital = answer;
+        document.getElementById('funnel-q1').style.display = 'none';
+        if (answer === 'no') {
+          document.getElementById('funnel-notready').style.display = 'block';
+        } else {
+          document.getElementById('funnel-q2').style.display = 'block';
+        }
+      } else if (step === 2) {
+        funnelData.amount = answer;
+        document.getElementById('funnel-q2').style.display = 'none';
+        document.getElementById('funnel-q3').style.display = 'block';
+      } else if (step === 3) {
+        funnelData.period = answer;
+        document.getElementById('funnel-q3').style.display = 'none';
+        showPortfolio();
+      }
+    }
+
+    function showPortfolio() {
+      const a = funnelData.amount;
+      const p = funnelData.period;
+
+      // Portfolio recommendations based on answers
+      // Yields are derived from Revenue Share Pool (see /academy/course-1-dynamic-yield.html)
+      // Not promised. See /risk.html.
+      const plans = {
+        '500':  { name: 'תיק התחלתי',  monthly: '₪300–500', yieldRange: 'Revenue Share (variable)' },
+        '1000': { name: 'תיק צמיחה',   monthly: '₪500–1,000', yieldRange: 'Revenue Share (variable)' },
+        '5000': { name: 'תיק מתקדם',   monthly: '₪1,000–5,000', yieldRange: 'Revenue Share (variable)' },
+        '5000+':{ name: 'תיק פרימיום',  monthly: '₪5,000+', yieldRange: 'Revenue Share (variable) + Pro course' }
+      };
+      const periods = {
+        '3m':  { label: 'עד 3 חודשים — טווח קצר', staking: 'Dynamic Yield · Tier 1' },
+        '6m':  { label: '3–6 חודשים — טווח בינוני', staking: 'Dynamic Yield · Tier 2' },
+        '12m': { label: '6–12 חודשים — טווח ארוך', staking: 'Dynamic Yield · Tier 3' },
+        '12m+':{ label: 'שנה+ — טווח אסטרטגי', staking: 'Dynamic Yield · Tier 4 (higher k allocation)' }
+      };
+
+      const plan = plans[a] || plans['500'];
+      const period = periods[p] || periods['3m'];
+
+      document.getElementById('res-plan').textContent = plan.name;
+      document.getElementById('res-period').textContent = period.label;
+      document.getElementById('res-monthly').textContent = plan.monthly;
+      document.getElementById('res-yield').textContent = plan.yieldRange;
+
+      const includes = [
+        '✅ מאזן הוצאות והכנסות אישי',
+        '✅ ניתוח תזרים חודשי',
+        `✅ Staking: ${period.staking}`,
+        '✅ חיסכון חודשי מותאם לשאיפות שלכם',
+        '✅ גישה לקהילת המשקיעים של SLH',
+        '✅ ליווי אישי ובניית תיק מפורט'
+      ];
+      document.getElementById('res-includes').innerHTML = includes.join('<br>');
+      document.getElementById('funnel-result').style.display = 'block';
+      document.getElementById('invest-funnel').scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      // Save to localStorage for dashboard pre-fill
+      localStorage.setItem('slh_funnel', JSON.stringify(funnelData));
+    }
+
+    function resetFunnel() {
+      ['funnel-q1','funnel-q2','funnel-q3','funnel-result','funnel-notready'].forEach(id => {
+        document.getElementById(id).style.display = 'none';
+      });
+      document.getElementById('funnel-intro').style.display = 'block';
+      funnelData.hasCapital = null;
+      funnelData.amount = null;
+      funnelData.period = null;
+    }
+
+    // Init
+    document.addEventListener('DOMContentLoaded', () => {
+      initShared({ activePage: 'home', showTicker: true });
+      renderEcoGrid();
+      handleQuickJoin();
+    });
+  </script>
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260426e"></script>
+</body>
+</html>

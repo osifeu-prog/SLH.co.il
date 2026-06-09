@@ -1,0 +1,254 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>התחלת עבודה · SLH Spark Creator</title>
+<meta name="description" content="טופס התחלת עבודה ליוצרי קורסים ב-SLH Spark.">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://slh-nft.com/creator-intake.html">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="/css/shared.css?v=20260426e">
+<style>
+  body { font-family:'Inter',system-ui,sans-serif; background:var(--bg,#0a0a0f); color:var(--text,#e0e0e0); margin:0; line-height:1.6; }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 30px 20px 100px; }
+
+  .header { text-align:center; margin-bottom: 28px; }
+  .header .eyebrow { display:inline-block; padding:4px 14px; background:rgba(0,232,135,.08); border:1px solid rgba(0,232,135,.3); border-radius:20px; font-size:11px; color:#00e887; letter-spacing:.5px; margin-bottom:12px; }
+  .header h1 { font-size:28px; font-weight:900; margin:0 0 8px; background:linear-gradient(135deg,#ffd700,#00e887); -webkit-background-clip:text; -webkit-text-fill-color:transparent; line-height:1.25; }
+  .header .sub { font-size:14px; color:var(--text2,#9a9aa8); }
+
+  .step { background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07); border-radius:14px; padding: 18px 20px; margin-bottom: 14px; }
+  .step .label { display:flex; align-items:center; gap:10px; font-weight:700; margin-bottom: 12px; font-size:15px; }
+  .step .label .num { width:28px; height:28px; background: linear-gradient(135deg,#ffd700,#00e887); color:#000; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:900; }
+  .step .hint { font-size:12px; color:var(--text2,#9a9aa8); margin-bottom:10px; }
+
+  input[type="text"], input[type="number"], input[type="email"], input[type="url"], textarea {
+    width:100%; padding:12px 14px; background:rgba(0,0,0,.3); border:1px solid rgba(255,255,255,.1); border-radius:10px; color:var(--text,#e0e0e0); font-family:inherit; font-size:14px; box-sizing:border-box;
+  }
+  input:focus, textarea:focus { outline:none; border-color:#00e887; }
+  textarea { resize:vertical; min-height:80px; }
+
+  .channels { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width:500px) { .channels { grid-template-columns:1fr; } }
+  .channels label { display:flex; flex-direction:column; gap:4px; }
+  .channels label span.cap { font-size:12px; color:var(--text2,#9a9aa8); padding-right:4px; }
+
+  .checks { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  @media (max-width:500px) { .checks { grid-template-columns:1fr; } }
+  .checks label { display:flex; align-items:center; gap:8px; padding:10px 12px; background:rgba(0,0,0,.2); border:1px solid rgba(255,255,255,.07); border-radius:8px; cursor:pointer; font-size:13px; }
+  .checks label:hover { border-color:rgba(0,232,135,.3); }
+  .checks input[type="checkbox"] { width:16px; height:16px; accent-color:#00e887; }
+  .checks label.checked { border-color:#00e887; background:rgba(0,232,135,.06); }
+
+  .submit-bar { position: sticky; bottom: 0; background: linear-gradient(to top, rgba(10,10,15,.98), rgba(10,10,15,.9)); padding: 18px 0 14px; margin-top: 20px; }
+  .btn-submit {
+    width:100%; padding:18px; border:none; border-radius:14px; font-size:17px; font-weight:800; cursor:pointer;
+    background:linear-gradient(135deg,#25D366,#1da851); color:#fff;
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    box-shadow:0 4px 20px rgba(37,211,102,.3);
+    transition:transform .15s, box-shadow .15s;
+  }
+  .btn-submit:hover { transform:translateY(-2px); box-shadow:0 6px 24px rgba(37,211,102,.4); }
+  .btn-submit:disabled { opacity:.5; cursor:not-allowed; transform:none; }
+  .submit-note { font-size:12px; color:var(--text2,#9a9aa8); text-align:center; margin-top:8px; }
+
+  .ai-invite { margin-top:28px; padding:18px; background:linear-gradient(135deg,rgba(255,215,0,.06),rgba(0,232,135,.04)); border:1px solid rgba(255,215,0,.25); border-radius:14px; text-align:center; }
+  .ai-invite p { margin:0 0 10px; font-size:14px; color:var(--text,#e0e0e0); }
+  .ai-invite button { padding:10px 18px; background:transparent; color:#ffd700; border:1px solid #ffd700; border-radius:10px; font-weight:700; cursor:pointer; font-size:13px; }
+  .ai-invite button:hover { background:rgba(255,215,0,.08); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="header">
+    <div class="eyebrow">⚡ השלב הבא</div>
+    <h1>נעים להכיר 🌿</h1>
+    <p class="sub">5 שאלות קצרות — 3 דקות — ואנחנו מתחילים לעבוד.</p>
+  </div>
+
+  <form id="intake-form" autocomplete="off">
+
+    <!-- Q1 -->
+    <div class="step">
+      <div class="label"><div class="num">1</div>שם מלא וכותרת הקורס</div>
+      <input type="text" name="name" placeholder="יערה · 'מסע ריפוי CBT'" required>
+    </div>
+
+    <!-- Q2 -->
+    <div class="step">
+      <div class="label"><div class="num">2</div>תיאור קצר — מה הקורס מלמד?</div>
+      <div class="hint">שורה-שתיים. ממה המשתתפים יצאו עם הקורס?</div>
+      <textarea name="description" placeholder="הקורס מלווה נשים בגילאי 35-55 במסע ריפוי של 21 יום, משלב CBT ונשימות, עם ליווי יומי בקבוצת וואטסאפ..." required></textarea>
+    </div>
+
+    <!-- Q3 -->
+    <div class="step">
+      <div class="label"><div class="num">3</div>חומרי הקורס — איפה הם?</div>
+      <div class="hint">סמני כל מה שרלוונטי. קישורים עוזרים לנו לעבור עליהם מראש.</div>
+      <div class="checks">
+        <label><input type="checkbox" name="has_pdf"> יש PDF / מצגת</label>
+        <label><input type="checkbox" name="has_video"> יש וידאו מוקלט</label>
+        <label><input type="checkbox" name="has_live"> מפגשים חיים (Zoom)</label>
+        <label><input type="checkbox" name="has_group"> קבוצה אקטיבית (WhatsApp/Telegram)</label>
+      </div>
+      <div class="channels" style="margin-top:12px">
+        <label><span class="cap">YouTube (לא חובה)</span><input type="url" name="youtube" placeholder="https://youtube.com/@..."></label>
+        <label><span class="cap">Facebook (לא חובה)</span><input type="url" name="facebook" placeholder="https://facebook.com/..."></label>
+        <label><span class="cap">Instagram (לא חובה)</span><input type="url" name="instagram" placeholder="https://instagram.com/..."></label>
+        <label><span class="cap">Telegram (לא חובה)</span><input type="url" name="telegram" placeholder="https://t.me/..."></label>
+      </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="step">
+      <div class="label"><div class="num">4</div>איך את מקבלת תשלומים היום?</div>
+      <div class="hint">סמני את כל מה שיש לך כבר. אם חסר — נעזור לפתוח.</div>
+      <div class="checks">
+        <label><input type="checkbox" name="pay_bit"> Bit</label>
+        <label><input type="checkbox" name="pay_paybox"> PayBox</label>
+        <label><input type="checkbox" name="pay_bank"> העברה בנקאית</label>
+        <label><input type="checkbox" name="pay_cc"> כרטיס אשראי (Cardcom/PayPal)</label>
+        <label><input type="checkbox" name="pay_ton"> ארנק TON</label>
+        <label><input type="checkbox" name="pay_none"> אין עדיין — צריכה ייעוץ</label>
+      </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="step">
+      <div class="label"><div class="num">5</div>כמה אנשים ברשימת ההמתנה / הקהילה?</div>
+      <div class="hint">הערכה גסה — לא חייב מדויק. זה עוזר לנו לבנות את הפורמט הנכון.</div>
+      <input type="text" name="audience_size" placeholder="~50 | ~200 | ~1000 | עוד לא התחלתי">
+    </div>
+
+    <!-- Q6 (optional) -->
+    <div class="step">
+      <div class="label"><div class="num">💬</div>משהו שאת רוצה שאקרא לפני השיחה?</div>
+      <div class="hint">אופציונלי. חששות, שאלות, חלומות, מה שעולה.</div>
+      <textarea name="notes" placeholder="לא חובה"></textarea>
+    </div>
+
+    <div class="submit-bar">
+      <button type="submit" class="btn-submit">
+        <i class="fa-brands fa-whatsapp" style="font-size:22px"></i>
+        שלחי לי את זה בוואטסאפ → אני קורא ומחזיר תוך שעה
+      </button>
+      <div class="submit-note">לחיצה פותחת את WhatsApp עם ההודעה מלאה. את לוחצת "שלח" ואוסיף מקבל הכל מסודר.</div>
+    </div>
+
+  </form>
+
+  <!-- AI invite -->
+  <div class="ai-invite">
+    <p>💡 <strong>עוד לפני השיחה?</strong> האסיסטנט של SLH זמין לשאלות (איך זה עובד, מה החבילה כוללת, תשלומים, מה שתרצי).</p>
+    <button id="open-ai">פתיחת צ'אט AI</button>
+  </div>
+
+</div>
+
+<!-- Shared scripts: analytics + AI widget -->
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js"></script>
+<script>
+  // Query params for attribution
+  const params = new URLSearchParams(location.search);
+  const UID      = params.get('uid')      || 'anon';
+  const SRC      = params.get('src')      || 'direct';
+  const CAMPAIGN = params.get('campaign') || 'creator-intake-v1';
+
+  if (window.SLH_Analytics) {
+    window.SLH_Analytics.trackEvent('creator_intake_view', { uid: UID, src: SRC, campaign: CAMPAIGN });
+  }
+
+  // Checkbox visual state
+  document.querySelectorAll('.checks input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      cb.closest('label').classList.toggle('checked', cb.checked);
+    });
+  });
+
+  // Form → WhatsApp submission
+  const form = document.getElementById('intake-form');
+  form.addEventListener('submit', (ev) => {
+    ev.preventDefault();
+    const data = new FormData(form);
+
+    const bool = (k) => data.get(k) === 'on' ? '✅' : '❌';
+    const hasPayment =
+      bool('pay_bit') === '✅' ||
+      bool('pay_paybox') === '✅' ||
+      bool('pay_bank') === '✅' ||
+      bool('pay_cc') === '✅' ||
+      bool('pay_ton') === '✅';
+
+    const lines = [
+      '🌿 *Creator Intake — יערה*',
+      '',
+      `*שם / קורס:*  ${data.get('name') || '—'}`,
+      '',
+      `*תיאור:*  ${data.get('description') || '—'}`,
+      '',
+      '*חומרים קיימים:*',
+      `${bool('has_pdf')} PDF / מצגת`,
+      `${bool('has_video')} וידאו מוקלט`,
+      `${bool('has_live')} מפגשים חיים`,
+      `${bool('has_group')} קבוצה פעילה`,
+      '',
+      '*ערוצים:*',
+      data.get('youtube')   ? `• YouTube: ${data.get('youtube')}` : null,
+      data.get('facebook')  ? `• Facebook: ${data.get('facebook')}` : null,
+      data.get('instagram') ? `• Instagram: ${data.get('instagram')}` : null,
+      data.get('telegram')  ? `• Telegram: ${data.get('telegram')}` : null,
+      '',
+      '*תשלומים:*',
+      `${bool('pay_bit')} Bit`,
+      `${bool('pay_paybox')} PayBox`,
+      `${bool('pay_bank')} העברה בנקאית`,
+      `${bool('pay_cc')} אשראי / PayPal`,
+      `${bool('pay_ton')} TON wallet`,
+      data.get('pay_none') === 'on' ? '⚠️ צריכה ייעוץ בתשלומים' : null,
+      '',
+      `*גודל קהל:*  ${data.get('audience_size') || '—'}`,
+      '',
+      data.get('notes') ? `*הערה לאוסיף:*\n${data.get('notes')}` : null,
+      '',
+      `_מקור: ${SRC} · uid: ${UID}_`,
+    ].filter(Boolean).join('\n');
+
+    const waPhone = '972584203384';
+    const waUrl = 'https://wa.me/' + waPhone + '?text=' + encodeURIComponent(lines);
+
+    if (window.SLH_Analytics) {
+      window.SLH_Analytics.trackEvent('creator_intake_submit', {
+        uid: UID, src: SRC, campaign: CAMPAIGN,
+        has_pdf: data.get('has_pdf') === 'on',
+        has_video: data.get('has_video') === 'on',
+        has_audience: !!data.get('audience_size'),
+        has_payment: hasPayment,
+      });
+    }
+
+    // Open WhatsApp in new tab
+    window.open(waUrl, '_blank', 'noopener');
+  });
+
+  // AI button — opens the shared ai-assistant widget if present
+  document.getElementById('open-ai').addEventListener('click', () => {
+    if (window.SLH_Analytics) {
+      window.SLH_Analytics.trackEvent('creator_intake_ai_open', { uid: UID, src: SRC });
+    }
+    // ai-assistant.js typically exposes a global; try common hooks
+    if (window.SLH_AI && typeof window.SLH_AI.open === 'function')      window.SLH_AI.open();
+    else if (window.openAiAssistant)                                     window.openAiAssistant();
+    else if (document.querySelector('#ai-chat-btn'))                     document.querySelector('#ai-chat-btn').click();
+    else if (document.querySelector('[data-ai-toggle]'))                 document.querySelector('[data-ai-toggle]').click();
+    else alert('פתיחת ה-AI חווייתה בעיה. לחצי על הצ׳אט הצף בפינה, או תחזרי לטופס.');
+  });
+</script>
+
+</body>
+</html>

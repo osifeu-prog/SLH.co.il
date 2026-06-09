@@ -1,0 +1,1365 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLH Spark P2P — Buy Crypto & Trade</title>
+    <meta name="description" content="Buy BNB, ETH, BTC with credit card. Gas fee calculator and P2P SLH marketplace. Part of the SLH Spark ecosystem.">
+    <link rel="canonical" href="https://slh-nft.com/p2p.html">
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://slh-nft.com/p2p.html">
+    <meta property="og:title" content="SLH P2P - Buy Crypto + Trade SLH">
+    <meta property="og:description" content="Buy BNB/ETH/BTC with credit card, compare gas fees, and trade SLH peer-to-peer">
+    <meta property="og:image" content="https://slh-nft.com/assets/og/default.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="he_IL">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SLH P2P - Buy Crypto + Trade SLH">
+    <meta name="twitter:description" content="Buy BNB/ETH/BTC with credit card, compare gas fees, and trade SLH peer-to-peer">
+    <meta name="twitter:image" content="https://slh-nft.com/assets/og/default.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <meta name="theme-color" content="#0a0e1a">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/shared.css?v=20260426e">
+    <style>
+        /* ── P2P Page ── */
+        .p2p-page {
+            padding-top: calc(var(--topnav-h) + 20px);
+            min-height: 100vh;
+        }
+        .p2p-container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px 120px;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        /* ── Hero ── */
+        .p2p-hero {
+            text-align: center;
+            padding: 24px 0 8px;
+        }
+        .p2p-hero h1 {
+            font-size: clamp(26px, 5vw, 38px);
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent2), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+        .p2p-hero p {
+            color: var(--text2);
+            font-size: 15px;
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        /* ── Section Card ── */
+        .p2p-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+        .p2p-section-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .p2p-section-header h2 {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0;
+        }
+        .p2p-section-header i {
+            font-size: 20px;
+            color: var(--accent);
+        }
+        .p2p-section-body {
+            padding: 24px;
+        }
+
+        /* ── Buy Crypto Tabs ── */
+        .buy-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .buy-tab {
+            flex: 1;
+            min-width: 80px;
+            padding: 12px 16px;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text2);
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all var(--transition);
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .buy-tab:hover {
+            border-color: var(--accent);
+            color: var(--text);
+        }
+        .buy-tab.active {
+            background: linear-gradient(135deg, rgba(108,92,231,0.15), rgba(0,180,216,0.1));
+            border-color: var(--accent);
+            color: var(--accent2);
+            box-shadow: 0 0 12px rgba(108,92,231,0.2);
+        }
+        .buy-tab .tab-icon {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 800;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .tab-bnb { background: linear-gradient(135deg, #F0B90B, #F8D12F); color: #000 !important; }
+        .tab-eth { background: linear-gradient(135deg, #627eea, #8c9eff); }
+        .tab-btc { background: linear-gradient(135deg, #f7931a, #ffb347); }
+        .tab-ton { background: linear-gradient(135deg, #0098ea, #00b4d8); }
+
+        .buy-iframe-wrap {
+            text-align: center;
+        }
+        .buy-iframe-wrap iframe {
+            border-radius: 16px;
+            overflow: hidden;
+            max-width: 600px;
+            margin: 0 auto;
+            display: block;
+        }
+
+        /* ── Gas Calculator ── */
+        .gas-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 24px;
+        }
+        .gas-table th {
+            padding: 10px 14px;
+            text-align: right;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            color: var(--text3);
+            background: var(--bg2);
+            border-bottom: 1px solid var(--border);
+        }
+        .gas-table td {
+            padding: 14px;
+            font-size: 14px;
+            color: var(--text);
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+        .gas-table tr:last-child td {
+            border-bottom: none;
+        }
+        .gas-table tr:hover td {
+            background: rgba(108,92,231,0.04);
+        }
+        .gas-network-name {
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .gas-network-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 800;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .net-internal { background: linear-gradient(135deg, #00e887, #00cec9); }
+        .net-bsc { background: linear-gradient(135deg, #F0B90B, #F8D12F); color: #000; }
+        .net-ton { background: linear-gradient(135deg, #0098ea, #00b4d8); }
+        .net-eth { background: linear-gradient(135deg, #627eea, #8c9eff); }
+        .net-btc { background: linear-gradient(135deg, #f7931a, #ffb347); }
+
+        .gas-free {
+            color: #00e887;
+            font-weight: 800;
+            font-size: 15px;
+        }
+        .gas-bar-cell {
+            width: 30%;
+        }
+        .gas-bar-wrap {
+            background: var(--bg3);
+            border-radius: 4px;
+            height: 8px;
+            overflow: hidden;
+        }
+        .gas-bar {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.6s ease;
+        }
+        .gas-bar.bar-free { background: #00e887; width: 0%; }
+        .gas-bar.bar-bsc { background: #F0B90B; width: 2%; }
+        .gas-bar.bar-ton { background: #0098ea; width: 0.1%; }
+        .gas-bar.bar-eth { background: #627eea; width: 64%; }
+        .gas-bar.bar-btc { background: #f7931a; width: 100%; }
+
+        .gas-usd {
+            font-weight: 600;
+            color: var(--text2);
+            font-size: 13px;
+        }
+
+        /* Gas Calc Form */
+        .gas-calc {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+        }
+        .gas-calc h3 {
+            font-size: 15px;
+            font-weight: 700;
+            margin: 0 0 16px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .gas-calc-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+        .gas-calc-grid .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .gas-calc-grid label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text3);
+        }
+        .gas-calc-grid input,
+        .gas-calc-grid select {
+            padding: 11px 14px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xs);
+            color: var(--text);
+            font-size: 14px;
+            font-family: var(--font);
+            transition: border-color var(--transition);
+        }
+        .gas-calc-grid input:focus,
+        .gas-calc-grid select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        .gas-result {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        .gas-result-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xs);
+            padding: 14px;
+            text-align: center;
+        }
+        .gas-result-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            margin-bottom: 6px;
+        }
+        .gas-result-value {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text);
+        }
+        .gas-result-value.highlight-green {
+            color: #00e887;
+        }
+
+        /* ── P2P Marketplace ── */
+        .p2p-coming-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: linear-gradient(135deg, rgba(108,92,231,0.15), rgba(0,180,216,0.1));
+            border: 1px solid var(--accent);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--accent2);
+        }
+        .p2p-orderbook {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+        .p2p-orderbook th {
+            padding: 10px 14px;
+            text-align: right;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            color: var(--text3);
+            background: var(--bg2);
+            border-bottom: 1px solid var(--border);
+        }
+        .p2p-orderbook td {
+            padding: 14px;
+            font-size: 14px;
+            color: var(--text);
+            border-bottom: 1px solid var(--border);
+        }
+        .p2p-orderbook tr:last-child td {
+            border-bottom: none;
+        }
+        .p2p-orderbook tr:hover td {
+            background: rgba(108,92,231,0.04);
+        }
+        .p2p-seller {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .p2p-seller-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .p2p-btn-buy {
+            padding: 8px 16px;
+            background: var(--green);
+            color: #000;
+            border: none;
+            border-radius: var(--radius-xs);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        .p2p-sell-form {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            margin-top: 20px;
+            position: relative;
+        }
+        .p2p-sell-form::after {
+            content: '🟢 LIVE';
+            position: absolute;
+            top: 12px;
+            inset-inline-end: 12px;
+            font-size: 11px;
+            font-weight: 900;
+            color: #00e887;
+            background: rgba(0,232,135,.1);
+            border: 1px solid #00e887;
+            padding: 3px 10px;
+            border-radius: 12px;
+            letter-spacing: 1px;
+            pointer-events: none;
+        }
+        .p2p-sell-form h3 {
+            font-size: 15px;
+            font-weight: 700;
+            margin: 0 0 16px;
+            color: var(--text);
+        }
+        .p2p-sell-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        .p2p-sell-grid .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .p2p-sell-grid label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text3);
+        }
+        .p2p-sell-grid input {
+            padding: 11px 14px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xs);
+            color: var(--text3);
+            font-size: 14px;
+            font-family: var(--font);
+        }
+        .p2p-sell-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            font-weight: 700;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        .p2p-note {
+            margin-top: 16px;
+            padding: 14px;
+            background: rgba(0,232,135,0.05);
+            border: 1px solid rgba(0,232,135,0.3);
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            color: var(--text2);
+            line-height: 1.7;
+        }
+        .p2p-note strong {
+            color: #00e887;
+        }
+
+        /* ── Educational Guide Section ── */
+        .edu-section-title {
+            font-size: clamp(22px, 4.5vw, 32px);
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--accent2), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .edu-section-subtitle {
+            text-align: center;
+            color: var(--text3);
+            font-size: 14px;
+            margin-bottom: 28px;
+        }
+        .edu-subsection-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .edu-subsection-title i {
+            color: var(--accent);
+            font-size: 20px;
+        }
+
+        /* Comparison cards */
+        .edu-compare-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        .edu-card {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 22px 18px;
+            position: relative;
+            overflow: hidden;
+            transition: border-color var(--transition), box-shadow var(--transition);
+        }
+        .edu-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 4px 24px rgba(108,92,231,0.12);
+        }
+        .edu-card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: #fff;
+            margin-bottom: 14px;
+        }
+        .edu-card-icon.cex { background: linear-gradient(135deg, #6c5ce7, #a29bfe); }
+        .edu-card-icon.dex { background: linear-gradient(135deg, #00b4d8, #0077b6); }
+        .edu-card-icon.p2p { background: linear-gradient(135deg, #00e887, #00cec9); }
+        .edu-card h4 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+            margin: 0 0 6px;
+        }
+        .edu-card .edu-card-examples {
+            font-size: 12px;
+            color: var(--accent2);
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .edu-card-features {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .edu-card-features li {
+            font-size: 13px;
+            color: var(--text2);
+            padding: 5px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .edu-card-features li:last-child {
+            border-bottom: none;
+        }
+        .edu-card-features li i {
+            font-size: 11px;
+            flex-shrink: 0;
+            width: 16px;
+            text-align: center;
+        }
+        .edu-card-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 10px;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+        .edu-card-badge.popular { background: rgba(108,92,231,0.15); color: var(--accent2); }
+        .edu-card-badge.decentralized { background: rgba(0,180,216,0.15); color: #00b4d8; }
+        .edu-card-badge.free { background: rgba(0,232,135,0.15); color: #00e887; }
+
+        /* Gas explainer */
+        .edu-gas-explainer {
+            margin-bottom: 24px;
+        }
+        .edu-gas-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .edu-gas-card {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 18px;
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+        }
+        .edu-gas-card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .edu-gas-card h5 {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text);
+            margin: 0 0 4px;
+        }
+        .edu-gas-card p {
+            font-size: 13px;
+            color: var(--text2);
+            margin: 0;
+            line-height: 1.6;
+        }
+        .edu-gas-network-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .edu-gas-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            border: 1px solid var(--border);
+            background: var(--bg3);
+            color: var(--text);
+        }
+        .edu-gas-pill .pill-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        .edu-gas-connector {
+            text-align: center;
+            padding: 12px;
+            font-size: 13px;
+            color: var(--text3);
+            font-weight: 600;
+        }
+        .edu-gas-connector i {
+            color: var(--accent);
+            margin: 0 6px;
+        }
+
+        /* Safety rules */
+        .edu-safety-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+        .edu-safety-rule {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            padding: 16px 18px;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            transition: border-color var(--transition);
+        }
+        .edu-safety-rule:hover {
+            border-color: var(--accent);
+        }
+        .edu-safety-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, rgba(108,92,231,0.2), rgba(0,180,216,0.15));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--accent2);
+            flex-shrink: 0;
+        }
+        .edu-safety-content h5 {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text);
+            margin: 0 0 4px;
+        }
+        .edu-safety-content p {
+            font-size: 13px;
+            color: var(--text2);
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .p2p-container { padding: 0 16px 100px; }
+            .p2p-section-body { padding: 16px; }
+            .buy-tabs { gap: 6px; }
+            .buy-tab { padding: 10px 12px; font-size: 13px; min-width: 70px; }
+            .gas-calc-grid { grid-template-columns: 1fr; }
+            .gas-result { grid-template-columns: 1fr; }
+            .gas-bar-cell { display: none; }
+            .p2p-sell-grid { grid-template-columns: 1fr; }
+            .edu-compare-grid { grid-template-columns: 1fr; }
+            .edu-gas-cards { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 480px) {
+            .buy-tabs { flex-wrap: wrap; }
+            .buy-tab { min-width: calc(50% - 4px); }
+        }
+    /* Theme Switcher */
+    #theme-fab{position:fixed;bottom:94px;left:24px;z-index:9997;background:var(--accent,#00e887);color:#000;width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;font-size:20px;box-shadow:0 4px 16px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center}
+    #theme-panel{position:fixed;bottom:150px;left:24px;z-index:9998;background:var(--bg,#0a0a0a);border:1px solid rgba(255,255,255,.15);padding:16px;border-radius:12px;display:none;flex-direction:column;gap:6px;max-width:220px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+    #theme-panel.open{display:flex}
+    #theme-panel button{background:var(--bg,#0a0a0a);border:1px solid rgba(255,255,255,.1);color:#e8e8f0;padding:10px 14px;cursor:pointer;font-size:12px;text-align:right;font-family:inherit;border-radius:6px;transition:all .2s}
+    #theme-panel button:hover{background:var(--accent,#00e887);color:#000}
+    [data-theme="dark"]{--bg:#0b0e16;--bg2:#111628;--accent:#00b4d8;--text:#e8e8f0;--text2:#8a8aa0;--border:rgba(0,180,216,.2)}
+    [data-theme="light"]{--bg:#f8f9fb;--bg2:#fff;--accent:#0066cc;--text:#1a1a1a;--text2:#555;--border:rgba(0,102,204,.2)}
+    [data-theme="crypto"]{--bg:#0d1117;--bg2:#161b22;--accent:#f7931a;--text:#e8e8f0;--text2:#8a8aa0;--border:rgba(247,147,26,.2)}
+    [data-theme="ocean"]{--bg:#001e3c;--bg2:#002c55;--accent:#00d9ff;--text:#b8e6ff;--text2:#6bb6cc;--border:rgba(0,217,255,.2)}
+    [data-theme="sunset"]{--bg:#1a0a14;--bg2:#251018;--accent:#ff6b6b;--text:#ffe5d9;--text2:#c9a88a;--border:rgba(255,107,107,.2)}
+    </style>
+</head>
+<body>
+
+    <!-- Top Nav -->
+    <div id="topnav-root"></div>
+
+    <!-- Ticker -->
+    <div id="ticker-root"></div>
+
+    <div class="p2p-page">
+        <div class="p2p-container">
+
+            <!-- Hero -->
+            <div class="p2p-hero rv">
+                <h1>P2P Trading & Buy Crypto</h1>
+                <p>קנה קריפטו בכרטיס אשראי, השווה עמלות גז, וסחר SLH ישירות</p>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <!-- EDUCATIONAL GUIDE                                           -->
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <div class="p2p-section rv">
+                <div class="p2p-section-header">
+                    <i class="fas fa-book-open"></i>
+                    <h2>&#x1F4DA; &#x05DE;&#x05D3;&#x05E8;&#x05D9;&#x05DA; &#x05DE;&#x05E1;&#x05D7;&#x05E8; &mdash; &#x05D4;&#x05DB;&#x05DC; &#x05D1;&#x05DE;&#x05E7;&#x05D5;&#x05DD; &#x05D0;&#x05D7;&#x05D3;</h2>
+                </div>
+                <div class="p2p-section-body">
+
+                    <!-- Subsection A: Exchange Comparison -->
+                    <div class="edu-subsection-title">
+                        <i class="fas fa-balance-scale"></i>
+                        &#x05DE;&#x05D4; &#x05D4;&#x05D4;&#x05D1;&#x05D3;&#x05DC;?
+                    </div>
+
+                    <div class="edu-compare-grid">
+                        <!-- CEX Card -->
+                        <div class="edu-card">
+                            <span class="edu-card-badge popular">&#x05E4;&#x05D5;&#x05E4;&#x05D5;&#x05DC;&#x05E8;&#x05D9;</span>
+                            <div class="edu-card-icon cex">
+                                <i class="fas fa-building"></i>
+                            </div>
+                            <h4>&#x05D1;&#x05D5;&#x05E8;&#x05E1;&#x05D4; &#x05DE;&#x05E8;&#x05DB;&#x05D6;&#x05D9;&#x05EA; (CEX)</h4>
+                            <div class="edu-card-examples">Binance, Bybit, OKX</div>
+                            <ul class="edu-card-features">
+                                <li><i class="fas fa-database" style="color:#6c5ce7"></i> &#x05DE;&#x05D0;&#x05D2;&#x05E8; &#x05DE;&#x05E8;&#x05DB;&#x05D6;&#x05D9; &mdash; &#x05D4;&#x05D1;&#x05D5;&#x05E8;&#x05E1;&#x05D4; &#x05DE;&#x05D7;&#x05D6;&#x05D9;&#x05E7;&#x05D4; &#x05D0;&#x05EA; &#x05D4;&#x05DB;&#x05E1;&#x05E3;</li>
+                                <li><i class="fas fa-id-card" style="color:#ffa502"></i> &#x05D3;&#x05E8;&#x05D5;&#x05E9; KYC &mdash; &#x05D0;&#x05D9;&#x05DE;&#x05D5;&#x05EA; &#x05D6;&#x05D4;&#x05D5;&#x05EA;</li>
+                                <li><i class="fas fa-percent" style="color:#00b4d8"></i> &#x05E2;&#x05DE;&#x05DC;&#x05D5;&#x05EA; ~0.1% &#x05DC;&#x05E2;&#x05E1;&#x05E7;&#x05D4;</li>
+                                <li><i class="fas fa-bolt" style="color:#F0B90B"></i> &#x05DE;&#x05D4;&#x05D9;&#x05E8; &mdash; &#x05D1;&#x05D9;&#x05E6;&#x05D5;&#x05E2; &#x05DE;&#x05D9;&#x05D9;&#x05D3;&#x05D9;</li>
+                                <li><i class="fas fa-headset" style="color:#a29bfe"></i> &#x05EA;&#x05DE;&#x05D9;&#x05DB;&#x05D4; &#x05D8;&#x05DB;&#x05E0;&#x05D9;&#x05EA; 24/7</li>
+                            </ul>
+                        </div>
+
+                        <!-- DEX Card -->
+                        <div class="edu-card">
+                            <span class="edu-card-badge decentralized">&#x05DE;&#x05D1;&#x05D5;&#x05D6;&#x05E8;</span>
+                            <div class="edu-card-icon dex">
+                                <i class="fas fa-project-diagram"></i>
+                            </div>
+                            <h4>&#x05D1;&#x05D5;&#x05E8;&#x05E1;&#x05D4; &#x05DE;&#x05D1;&#x05D5;&#x05D6;&#x05E8;&#x05EA; (DEX)</h4>
+                            <div class="edu-card-examples">PancakeSwap, Uniswap, Jupiter</div>
+                            <ul class="edu-card-features">
+                                <li><i class="fas fa-user-shield" style="color:#00b4d8"></i> &#x05D1;&#x05DC;&#x05D9; &#x05DE;&#x05EA;&#x05D5;&#x05D5;&#x05DA; &mdash; &#x05D0;&#x05EA;&#x05D4; &#x05E9;&#x05D5;&#x05DC;&#x05D8; &#x05D1;&#x05DB;&#x05E1;&#x05E3;</li>
+                                <li><i class="fas fa-mask" style="color:#a29bfe"></i> &#x05DC;&#x05DC;&#x05D0; KYC &mdash; &#x05D0;&#x05E0;&#x05D5;&#x05E0;&#x05D9;&#x05DE;&#x05D9;</li>
+                                <li><i class="fas fa-file-contract" style="color:#00e887"></i> Smart Contract &mdash; &#x05D7;&#x05D5;&#x05D6;&#x05D4; &#x05D0;&#x05D5;&#x05D8;&#x05D5;&#x05DE;&#x05D8;&#x05D9;</li>
+                                <li><i class="fas fa-gas-pump" style="color:#ff6348"></i> &#x05E2;&#x05DE;&#x05DC;&#x05EA; Gas &#x05E2;&#x05DC; &#x05DB;&#x05DC; &#x05E4;&#x05E2;&#x05D5;&#x05DC;&#x05D4;</li>
+                                <li><i class="fas fa-coins" style="color:#F0B90B"></i> &#x05D2;&#x05D9;&#x05E9;&#x05D4; &#x05DC;&#x05D0;&#x05DC;&#x05E4;&#x05D9; &#x05D8;&#x05D5;&#x05E7;&#x05E0;&#x05D9;&#x05DD;</li>
+                            </ul>
+                        </div>
+
+                        <!-- P2P Card -->
+                        <div class="edu-card">
+                            <span class="edu-card-badge free">&#x05D7;&#x05D9;&#x05E0;&#x05DD; / FREE</span>
+                            <div class="edu-card-icon p2p">
+                                <i class="fas fa-handshake"></i>
+                            </div>
+                            <h4>P2P &mdash; &#x05D9;&#x05E9;&#x05D9;&#x05E8; &#x05D1;&#x05D9;&#x05DF; &#x05D0;&#x05E0;&#x05E9;&#x05D9;&#x05DD;</h4>
+                            <div class="edu-card-examples">SLH P2P, Binance P2P, Paxful</div>
+                            <ul class="edu-card-features">
+                                <li><i class="fas fa-hand-holding-usd" style="color:#00e887"></i> &#x05D1;&#x05DC;&#x05D9; &#x05E2;&#x05DE;&#x05DC;&#x05D5;&#x05EA; &mdash; &#x05D9;&#x05E9;&#x05D9;&#x05E8;&#x05D5;&#x05EA; &#x05D1;&#x05D9;&#x05DF; &#x05E7;&#x05D5;&#x05E0;&#x05D4; &#x05DC;&#x05DE;&#x05D5;&#x05DB;&#x05E8;</li>
+                                <li><i class="fas fa-ban" style="color:#ff4757"></i> &#x05D1;&#x05DC;&#x05D9; &#x05DE;&#x05EA;&#x05D5;&#x05D5;&#x05DA; &#x05D1;&#x05DB;&#x05DC;&#x05DC;</li>
+                                <li><i class="fas fa-shield-alt" style="color:#6c5ce7"></i> Escrow &#x05DE;&#x05D2;&#x05DF; &#x05E2;&#x05DC; &#x05E9;&#x05E0;&#x05D9; &#x05D4;&#x05E6;&#x05D3;&#x05D3;&#x05D9;&#x05DD;</li>
+                                <li><i class="fas fa-star" style="color:#F0B90B"></i> &#x05D4;&#x05E2;&#x05D1;&#x05E8;&#x05D5;&#x05EA; MNH &#x05D1;&#x05E8;&#x05E9;&#x05EA; SLH &mdash; &#x05D7;&#x05D9;&#x05E0;&#x05DD;!</li>
+                                <li><i class="fas fa-wallet" style="color:#00b4d8"></i> &#x05EA;&#x05E9;&#x05DC;&#x05D5;&#x05DD; &#x05D1;-USDT-TON, TON &#x05D0;&#x05D5; MNH (&#x05DC;&#x05DC;&#x05D0; &#x05E2;&#x05DE;&#x05DC;&#x05D4;)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Subsection B: Gas Explainer -->
+                    <div class="edu-subsection-title">
+                        <i class="fas fa-gas-pump"></i>
+                        &#x05E2;&#x05DE;&#x05DC;&#x05D5;&#x05EA; Gas &mdash; &#x05DC;&#x05DE;&#x05D4; &#x05D5;&#x05D0;&#x05D9;&#x05DA;?
+                    </div>
+
+                    <div class="edu-gas-explainer">
+                        <div class="edu-gas-cards">
+                            <div class="edu-gas-card">
+                                <div class="edu-gas-card-icon" style="background:linear-gradient(135deg,#6c5ce7,#a29bfe)">
+                                    <i class="fas fa-question-circle"></i>
+                                </div>
+                                <div>
+                                    <h5>&#x05DE;&#x05D4; &#x05D6;&#x05D4; Gas?</h5>
+                                    <p>&#x05E2;&#x05DE;&#x05DC;&#x05D4; &#x05E9;&#x05DE;&#x05E9;&#x05DC;&#x05DE;&#x05D9;&#x05DD; &#x05DC;&#x05DB;&#x05D5;&#x05E8;&#x05D9;&#x05DD; (&#x05DE;&#x05D0;&#x05DE;&#x05EA;&#x05D9;&#x05DD;) &#x05E2;&#x05D1;&#x05D5;&#x05E8; &#x05E2;&#x05D9;&#x05D1;&#x05D5;&#x05D3; &#x05D4;&#x05E2;&#x05E1;&#x05E7;&#x05D4; &#x05E9;&#x05DC;&#x05DA; &#x05E2;&#x05DC; &#x05D4;&#x05D1;&#x05DC;&#x05D5;&#x05E7;&#x05E6;&#x05F3;&#x05D9;&#x05D9;&#x05DF;. &#x05DB;&#x05DC; &#x05E4;&#x05E2;&#x05D5;&#x05DC;&#x05D4; &#x05D1;&#x05E8;&#x05E9;&#x05EA; &#x05E2;&#x05D5;&#x05DC;&#x05D4; &#x05DB;&#x05E1;&#x05E3;.</p>
+                                </div>
+                            </div>
+                            <div class="edu-gas-card">
+                                <div class="edu-gas-card-icon" style="background:linear-gradient(135deg,#F0B90B,#F8D12F)">
+                                    <i class="fas fa-network-wired"></i>
+                                </div>
+                                <div>
+                                    <h5>&#x05DC;&#x05DE;&#x05D4; &#x05D4;&#x05DE;&#x05D7;&#x05D9;&#x05E8; &#x05DE;&#x05E9;&#x05EA;&#x05E0;&#x05D4;?</h5>
+                                    <p>&#x05DB;&#x05DC; &#x05E8;&#x05E9;&#x05EA; (BSC, ETH, TON) &#x05DE;&#x05EA;&#x05D5;&#x05DB;&#x05E0;&#x05E0;&#x05EA; &#x05D0;&#x05D7;&#x05E8;&#x05EA;. BSC &#x05D6;&#x05D5;&#x05DC;&#x05D4;, ETH &#x05D9;&#x05E7;&#x05E8;&#x05D4;, TON &#x05D4;&#x05DB;&#x05D9; &#x05D6;&#x05D5;&#x05DC;&#x05D4;, &#x05D5;&#x05D4;&#x05E2;&#x05D1;&#x05E8;&#x05D5;&#x05EA; &#x05E4;&#x05E0;&#x05D9;&#x05DE;&#x05D9;&#x05D5;&#x05EA; &#x05D1;-SLH &mdash; &#x05D1;&#x05D7;&#x05D9;&#x05E0;&#x05DD;!</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="edu-gas-network-pills">
+                            <span class="edu-gas-pill"><span class="pill-dot" style="background:#00e887"></span> Internal = FREE</span>
+                            <span class="edu-gas-pill"><span class="pill-dot" style="background:#0098ea"></span> TON ~ $0.007</span>
+                            <span class="edu-gas-pill"><span class="pill-dot" style="background:#F0B90B"></span> BSC ~ $0.12</span>
+                            <span class="edu-gas-pill"><span class="pill-dot" style="background:#627eea"></span> ETH ~ $4.50</span>
+                            <span class="edu-gas-pill"><span class="pill-dot" style="background:#f7931a"></span> BTC ~ $7.00</span>
+                        </div>
+
+                        <div class="edu-gas-connector">
+                            <i class="fas fa-arrow-down"></i> &#x05D4;&#x05E9;&#x05EA;&#x05DE;&#x05E9; &#x05D1;&#x05DE;&#x05D7;&#x05E9;&#x05D1;&#x05D5;&#x05DF; &#x05DC;&#x05DE;&#x05D8;&#x05D4; &#x05DC;&#x05D1;&#x05D3;&#x05D5;&#x05E7; &#x05DB;&#x05DE;&#x05D4; &#x05D9;&#x05E2;&#x05DC;&#x05D4; &#x05DC;&#x05DA; <i class="fas fa-arrow-down"></i>
+                        </div>
+                    </div>
+
+                    <!-- Subsection C: Safety Rules -->
+                    <div class="edu-subsection-title">
+                        <i class="fas fa-shield-alt"></i>
+                        &#x05D1;&#x05D8;&#x05D9;&#x05D7;&#x05D5;&#x05EA; &mdash; 5 &#x05DB;&#x05DC;&#x05DC;&#x05D9; &#x05D6;&#x05D4;&#x05D1;
+                    </div>
+
+                    <div class="edu-safety-grid">
+                        <div class="edu-safety-rule">
+                            <div class="edu-safety-number">1</div>
+                            <div class="edu-safety-content">
+                                <h5>&#x05DC;&#x05E2;&#x05D5;&#x05DC;&#x05DD; &#x05DC;&#x05D0; &#x05DC;&#x05E9;&#x05EA;&#x05E3; Seed Phrase &#x05D0;&#x05D5; Private Key</h5>
+                                <p>&#x05D4;&#x05DE;&#x05D9;&#x05DC;&#x05D9;&#x05DD; &#x05D4;&#x05D0;&#x05DC;&#x05D4; &#x05D4;&#x05DD; &#x05D4;&#x05DE;&#x05E4;&#x05EA;&#x05D7; &#x05DC;&#x05D0;&#x05E8;&#x05E0;&#x05E7; &#x05E9;&#x05DC;&#x05DA;. &#x05D0;&#x05E3; &#x05D0;&#x05D7;&#x05D3; &#x05DC;&#x05D0; &#x05E6;&#x05E8;&#x05D9;&#x05DA; &#x05D0;&#x05D5;&#x05EA;&#x05DD;, &#x05DB;&#x05D5;&#x05DC;&#x05DC; &#x05EA;&#x05DE;&#x05D9;&#x05DB;&#x05D4; &#x05D8;&#x05DB;&#x05E0;&#x05D9;&#x05EA;.</p>
+                            </div>
+                        </div>
+                        <div class="edu-safety-rule">
+                            <div class="edu-safety-number">2</div>
+                            <div class="edu-safety-content">
+                                <h5>&#x05EA;&#x05DE;&#x05D9;&#x05D3; &#x05DC;&#x05D0;&#x05DE;&#x05EA; Contract Address &#x05DC;&#x05E4;&#x05E0;&#x05D9; &#x05E7;&#x05E0;&#x05D9;&#x05D9;&#x05D4;</h5>
+                                <p>&#x05D8;&#x05D5;&#x05E7;&#x05E0;&#x05D9;&#x05DD; &#x05DE;&#x05D6;&#x05D5;&#x05D9;&#x05E4;&#x05D9;&#x05DD; (scam tokens) &#x05E0;&#x05E4;&#x05D5;&#x05E6;&#x05D9;&#x05DD;. &#x05EA;&#x05DE;&#x05D9;&#x05D3; &#x05DC;&#x05D1;&#x05D3;&#x05D5;&#x05E7; &#x05D0;&#x05EA; &#x05DB;&#x05EA;&#x05D5;&#x05D1;&#x05EA; &#x05D4;&#x05D7;&#x05D5;&#x05D6;&#x05D4; &#x05D1;-BscScan &#x05D0;&#x05D5; &#x05D1;&#x05D0;&#x05EA;&#x05E8; &#x05D4;&#x05E8;&#x05E9;&#x05DE;&#x05D9;.</p>
+                            </div>
+                        </div>
+                        <div class="edu-safety-rule">
+                            <div class="edu-safety-number">3</div>
+                            <div class="edu-safety-content">
+                                <h5>&#x05D1;&#x05D3;&#x05D5;&#x05E7; Liquidity &#x05DC;&#x05E4;&#x05E0;&#x05D9; &#x05DE;&#x05E1;&#x05D7;&#x05E8;</h5>
+                                <p>&#x05E0;&#x05D6;&#x05D9;&#x05DC;&#x05D5;&#x05EA; &#x05E0;&#x05DE;&#x05D5;&#x05DB;&#x05D4; = slippage &#x05D2;&#x05D1;&#x05D5;&#x05D4;. &#x05D0;&#x05DD; &#x05D4;-Liquidity &#x05E0;&#x05DE;&#x05D5;&#x05DA;, &#x05D0;&#x05EA;&#x05D4; &#x05EA;&#x05E7;&#x05D1;&#x05DC; &#x05E4;&#x05D7;&#x05D5;&#x05EA; &#x05DE;&#x05D4;&#x05DE;&#x05D7;&#x05D9;&#x05E8; &#x05E9;&#x05D1;&#x05D9;&#x05E7;&#x05E9;&#x05EA;.</p>
+                            </div>
+                        </div>
+                        <div class="edu-safety-rule">
+                            <div class="edu-safety-number">4</div>
+                            <div class="edu-safety-content">
+                                <h5>&#x05D4;&#x05E9;&#x05EA;&#x05DE;&#x05E9; &#x05D1;-Read-Only API Keys &#x05DC;&#x05DE;&#x05E2;&#x05E7;&#x05D1; &#x05EA;&#x05D9;&#x05E7;&#x05D9;&#x05DD;</h5>
+                                <p>&#x05DB;&#x05E9;&#x05DE;&#x05D7;&#x05D1;&#x05E8;&#x05D9;&#x05DD; API &#x05E9;&#x05DC; &#x05D1;&#x05D5;&#x05E8;&#x05E1;&#x05D4; &#x05DC;&#x05D0;&#x05E4;&#x05DC;&#x05D9;&#x05E7;&#x05E6;&#x05D9;&#x05D4; &mdash; &#x05DC;&#x05E2;&#x05D5;&#x05DC;&#x05DD; &#x05DC;&#x05D0; &#x05DC;&#x05EA;&#x05EA; &#x05D4;&#x05E8;&#x05E9;&#x05D0;&#x05D5;&#x05EA; &#x05DE;&#x05E1;&#x05D7;&#x05E8; (trade/withdraw).</p>
+                            </div>
+                        </div>
+                        <div class="edu-safety-rule">
+                            <div class="edu-safety-number">5</div>
+                            <div class="edu-safety-content">
+                                <h5>&#x05D0;&#x05DD; &#x05D6;&#x05D4; &#x05E0;&#x05E9;&#x05DE;&#x05E2; &#x05D8;&#x05D5;&#x05D1; &#x05DE;&#x05D3;&#x05D9; &mdash; &#x05DB;&#x05E0;&#x05E8;&#x05D0;&#x05D4; &#x05D6;&#x05D4; &#x05DC;&#x05D0; &#x05D0;&#x05DE;&#x05D9;&#x05EA;&#x05D9;</h5>
+                                <p>&#x05D4;&#x05D1;&#x05D8;&#x05D7;&#x05D5;&#x05EA; &#x05E9;&#x05DC; "&#x05EA;&#x05E9;&#x05D5;&#x05D0;&#x05D4; &#x05DE;&#x05D5;&#x05D1;&#x05D8;&#x05D7;&#x05EA;", "x100 &#x05D1;&#x05D9;&#x05D5;&#x05DD;", &#x05D0;&#x05D5; "&#x05DE;&#x05D8;&#x05D1;&#x05E2; &#x05D7;&#x05D3;&#x05E9;" &#x05D4;&#x05DF; &#x05DB;&#x05DE;&#x05E2;&#x05D8; &#x05EA;&#x05DE;&#x05D9;&#x05D3; &#x05E1;&#x05D9;&#x05DE;&#x05DF; &#x05DC;&#x05D4;&#x05D5;&#x05E0;&#x05D0;&#x05D4;.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <!-- SECTION 1: BUY CRYPTO                                      -->
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <div class="p2p-section rv">
+                <div class="p2p-section-header">
+                    <i class="fas fa-credit-card"></i>
+                    <h2>קנה קריפטו בכרטיס אשראי</h2>
+                </div>
+                <div class="p2p-section-body">
+                    <!-- Crypto Tabs -->
+                    <div class="buy-tabs" id="buy-tabs">
+                        <button class="buy-tab active" data-coin="bnb" onclick="switchCoin('bnb')">
+                            <span class="tab-icon tab-bnb">B</span> BNB
+                        </button>
+                        <button class="buy-tab" data-coin="eth" onclick="switchCoin('eth')">
+                            <span class="tab-icon tab-eth">E</span> ETH
+                        </button>
+                        <button class="buy-tab" data-coin="btc" onclick="switchCoin('btc')">
+                            <span class="tab-icon tab-btc">B</span> BTC
+                        </button>
+                        <button class="buy-tab" data-coin="ton" onclick="switchCoin('ton')">
+                            <span class="tab-icon tab-ton">T</span> TON
+                        </button>
+                    </div>
+
+                    <!-- Changelly Widget -->
+                    <div class="buy-iframe-wrap">
+                        <iframe id="changelly-widget"
+                            src="https://widget.changelly.com?from=usd&to=bnb&amount=50&address=&fromDefault=usd&toDefault=bnb&merchant_id=&payment_id=&v=3&type=no-rev-share&color=00e887&headerId=&buyButtonTextId=buy&theme=dark&lang=en"
+                            width="100%" height="550" frameborder="0"
+                            style="border-radius:16px;overflow:hidden;max-width:600px;margin:0 auto;display:block"
+                            allow="payment"></iframe>
+                    </div>
+
+                    <div style="text-align:center;margin-top:14px;font-size:12px;color:var(--text3)">
+                        Powered by <a href="https://changelly.com" target="_blank" rel="noopener" style="color:var(--accent2)">Changelly</a> &mdash; Visa, Mastercard, Apple Pay
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <!-- SECTION 2: GAS CALCULATOR                                  -->
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <div class="p2p-section rv">
+                <div class="p2p-section-header">
+                    <i class="fas fa-gas-pump"></i>
+                    <h2>השוואת עמלות גז</h2>
+                </div>
+                <div class="p2p-section-body">
+
+                    <!-- Comparison Table -->
+                    <div class="table-wrap">
+                        <table class="gas-table">
+                            <thead>
+                                <tr>
+                                    <th>רשת</th>
+                                    <th>עמלת גז</th>
+                                    <th>עלות ב-$</th>
+                                    <th class="gas-bar-cell">השוואה יחסית</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="gas-network-name">
+                                            <span class="gas-network-icon net-internal">S</span>
+                                            Internal (MNH/ZVK/SLH)
+                                        </div>
+                                    </td>
+                                    <td><span class="gas-free">FREE</span></td>
+                                    <td><span class="gas-free">$0.00</span></td>
+                                    <td class="gas-bar-cell">
+                                        <div class="gas-bar-wrap"><div class="gas-bar bar-free"></div></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="gas-network-name">
+                                            <span class="gas-network-icon net-ton">T</span>
+                                            TON Network
+                                        </div>
+                                    </td>
+                                    <td>~0.005 TON</td>
+                                    <td><span class="gas-usd">~$0.007</span></td>
+                                    <td class="gas-bar-cell">
+                                        <div class="gas-bar-wrap"><div class="gas-bar bar-ton"></div></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="gas-network-name">
+                                            <span class="gas-network-icon net-bsc">B</span>
+                                            BSC (BNB Chain)
+                                        </div>
+                                    </td>
+                                    <td>~0.0002 BNB</td>
+                                    <td><span class="gas-usd">~$0.12</span></td>
+                                    <td class="gas-bar-cell">
+                                        <div class="gas-bar-wrap"><div class="gas-bar bar-bsc"></div></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="gas-network-name">
+                                            <span class="gas-network-icon net-eth">E</span>
+                                            Ethereum
+                                        </div>
+                                    </td>
+                                    <td>~0.002 ETH</td>
+                                    <td><span class="gas-usd">~$4.50</span></td>
+                                    <td class="gas-bar-cell">
+                                        <div class="gas-bar-wrap"><div class="gas-bar bar-eth"></div></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="gas-network-name">
+                                            <span class="gas-network-icon net-btc">B</span>
+                                            Bitcoin
+                                        </div>
+                                    </td>
+                                    <td>~0.0001 BTC</td>
+                                    <td><span class="gas-usd">~$7.00</span></td>
+                                    <td class="gas-bar-cell">
+                                        <div class="gas-bar-wrap"><div class="gas-bar bar-btc"></div></div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Interactive Calculator -->
+                    <div class="gas-calc">
+                        <h3><i class="fas fa-calculator" style="color:var(--accent)"></i> מחשבון עמלות</h3>
+                        <div class="gas-calc-grid">
+                            <div class="form-group">
+                                <label>סכום לשליחה</label>
+                                <input type="number" id="gas-amount" placeholder="100" step="any" min="0" value="100" oninput="calcGas()">
+                            </div>
+                            <div class="form-group">
+                                <label>רשת</label>
+                                <select id="gas-network" onchange="calcGas()">
+                                    <option value="internal">Internal (MNH/ZVK/SLH)</option>
+                                    <option value="bsc" selected>BSC (BNB Chain)</option>
+                                    <option value="ton">TON Network</option>
+                                    <option value="eth">Ethereum</option>
+                                    <option value="btc">Bitcoin</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="gas-result">
+                            <div class="gas-result-card">
+                                <div class="gas-result-label">עמלת גז</div>
+                                <div class="gas-result-value" id="calc-gas-fee">$0.12</div>
+                            </div>
+                            <div class="gas-result-card">
+                                <div class="gas-result-label">סה"כ עלות</div>
+                                <div class="gas-result-value" id="calc-total">$100.12</div>
+                            </div>
+                            <div class="gas-result-card">
+                                <div class="gas-result-label">הנמען מקבל</div>
+                                <div class="gas-result-value highlight-green" id="calc-received">$100.00</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <!-- SECTION 3: P2P MARKETPLACE                                 -->
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <div class="p2p-section rv">
+                <div class="p2p-section-header">
+                    <i class="fas fa-exchange-alt"></i>
+                    <h2>P2P Marketplace</h2>
+                    <span style="padding:4px 12px;background:rgba(0,255,65,.1);border:1px solid rgba(0,255,65,.3);border-radius:12px;font-size:11px;color:var(--accent,#00ff41);font-weight:700">🟢 LIVE</span>
+                </div>
+                <div class="p2p-section-body">
+
+                    <!-- Live Order Book from API -->
+                    <h3 style="font-size:15px;font-weight:700;margin:0 0 4px;color:var(--text)">
+                        <i class="fas fa-list-alt" style="color:var(--accent);margin-left:6px"></i>
+                        הצעות מסחר פעילות
+                    </h3>
+                    <div style="font-size:12px;color:var(--text3);margin-bottom:12px">
+                        הצעות אמיתיות מהקהילה · <button onclick="loadP2POrders()" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:12px">🔄 רענן</button>
+                    </div>
+
+                    <div class="table-wrap">
+                        <table class="p2p-orderbook">
+                            <thead>
+                                <tr>
+                                    <th>מוכר</th>
+                                    <th>מטבע</th>
+                                    <th>כמות</th>
+                                    <th>מחיר</th>
+                                    <th>פעולה</th>
+                                </tr>
+                            </thead>
+                            <tbody id="p2p-orders-body">
+                                <tr><td colspan="5" style="text-align:center;color:var(--text3);padding:24px">טוען הצעות...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Create Order Form (LIVE) -->
+                    <div class="p2p-sell-form">
+                        <h3><i class="fas fa-tag" style="color:var(--accent);margin-left:6px"></i> פרסם הצעת מכירה</h3>
+                        <div class="p2p-sell-grid">
+                            <div class="form-group">
+                                <label>מטבע</label>
+                                <select id="p2p-token" style="width:100%;padding:10px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px">
+                                    <option value="SLH">SLH</option>
+                                    <option value="ZVK">ZVK</option>
+                                    <option value="MNH">MNH</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>כמות</label>
+                                <input type="number" id="p2p-amount" placeholder="100">
+                            </div>
+                            <div class="form-group">
+                                <label>מחיר ליחידה (ILS)</label>
+                                <input type="number" id="p2p-price" placeholder="444">
+                            </div>
+                            <div class="form-group">
+                                <label>שיטת תשלום</label>
+                                <select id="p2p-payment" style="width:100%;padding:10px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px">
+                                    <option value="USDT-TON">USDT-TON (יציב, צמוד לדולר)</option>
+                                    <option value="MNH">MNH Transfer (חינם!)</option>
+                                    <option value="TON">TON Transfer</option>
+                                    <option value="BNB">BNB on BSC</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button class="p2p-sell-btn" onclick="createP2POrder()">📝 פרסם הצעה</button>
+                        <div id="p2p-create-result" style="margin-top:8px;font-size:12px"></div>
+                    </div>
+
+                    <!-- Note -->
+                    <div class="p2p-note">
+                        <strong>P2P trading is LIVE — MNH transfers within the SLH network are fee-free (0%).</strong><br>
+                        העברות MNH פנימיות ברשת SLH ללא עמלה &mdash; 0% fee.
+                        כל עסקה עוברת דרך escrow אוטומטי שמגן על שני הצדדים.
+                        <br><br>
+                        <strong style="color:var(--accent)">⚠️ דרישה לפרסום הצעה:</strong>
+                        חייב להיות מחובר דרך <a href="https://t.me/SLH_AIR_bot" target="_blank" rel="noopener" style="color:var(--accent)">@SLH_AIR_bot</a>
+                        (לחץ /start ב-bot — ייצור לך user_id ויחבר את הדפדפן אוטומטית).
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /p2p-container -->
+    </div><!-- /p2p-page -->
+
+    <!-- Footer -->
+    <div id="footer-root"></div>
+
+    <!-- Bottom Nav -->
+    <div id="bottomnav-root"></div>
+
+    <script src="/js/translations.js?v=20260426e"></script>
+    <script src="/js/shared.js?v=20260426e"></script>
+    <script>
+    /* ═══════════════════════════════════════════════════════
+       P2P Page — Logic
+       ═══════════════════════════════════════════════════════ */
+
+    /* ── Buy Crypto Tab Switching ── */
+    const CHANGELLY_BASE = 'https://widget.changelly.com?from=usd&amount=50&address=&fromDefault=usd&merchant_id=&payment_id=&v=3&type=no-rev-share&color=00e887&headerId=&buyButtonTextId=buy&theme=dark&lang=en';
+
+    function switchCoin(coin) {
+        // Update active tab
+        document.querySelectorAll('.buy-tab').forEach(t => t.classList.remove('active'));
+        document.querySelector(`.buy-tab[data-coin="${coin}"]`).classList.add('active');
+
+        // Update iframe src
+        const iframe = document.getElementById('changelly-widget');
+        const url = `${CHANGELLY_BASE}&to=${coin}&toDefault=${coin}`;
+        iframe.src = url;
+    }
+
+    /* ── Gas Calculator ── */
+    const GAS_DATA = {
+        internal: { fee: 0,     label: 'FREE',      native: '' },
+        bsc:      { fee: 0.12,  label: '~0.0002 BNB', native: 'BNB' },
+        ton:      { fee: 0.007, label: '~0.005 TON',  native: 'TON' },
+        eth:      { fee: 4.50,  label: '~0.002 ETH',  native: 'ETH' },
+        btc:      { fee: 7.00,  label: '~0.0001 BTC', native: 'BTC' }
+    };
+
+    function calcGas() {
+        const amount = parseFloat(document.getElementById('gas-amount').value) || 0;
+        const network = document.getElementById('gas-network').value;
+        const data = GAS_DATA[network];
+
+        const fee = data.fee;
+        const total = amount + fee;
+        const received = amount;
+
+        const feeEl = document.getElementById('calc-gas-fee');
+        const totalEl = document.getElementById('calc-total');
+        const receivedEl = document.getElementById('calc-received');
+
+        if (network === 'internal') {
+            feeEl.textContent = 'FREE';
+            feeEl.classList.add('highlight-green');
+        } else {
+            feeEl.textContent = '$' + fee.toFixed(2);
+            feeEl.classList.remove('highlight-green');
+        }
+
+        totalEl.textContent = '$' + total.toFixed(2);
+        receivedEl.textContent = '$' + received.toFixed(2);
+    }
+
+    /* ── P2P Live Trading ── */
+    const P2P_API = 'https://slh-api-production.up.railway.app';
+
+    function getUser() {
+        try { return JSON.parse(localStorage.getItem('slh_user')); } catch { return null; }
+    }
+
+    async function loadP2POrders() {
+        const tbody = document.getElementById('p2p-orders-body');
+        try {
+            const r = await fetch(P2P_API + '/api/p2p/v2/orders');
+            const d = await r.json();
+            const orders = d.orders || d || [];
+            if (Array.isArray(orders) && orders.length > 0) {
+                tbody.innerHTML = orders.map(o => {
+                    const initial = (o.seller_name || o.user_id || '?').toString().charAt(0).toUpperCase();
+                    const colors = ['#6c5ce7','#00cec9','#ffa502','#ff4757','#00b4d8','#a855f7'];
+                    const color = colors[Math.abs(o.user_id || 0) % colors.length];
+                    return `<tr>
+                        <td><div class="p2p-seller"><span class="p2p-seller-avatar" style="background:${color}">${initial}</span><div><div style="font-weight:600">${o.seller_name || 'User #' + o.user_id}</div></div></div></td>
+                        <td style="font-weight:700">${o.token || 'SLH'}</td>
+                        <td style="font-weight:700">${o.amount || 0}</td>
+                        <td style="direction:ltr;text-align:right">${o.price_ils || o.price || 444} ILS</td>
+                        <td><button class="p2p-btn-buy" onclick="fillOrder(${o.id})">קנה עכשיו</button></td>
+                    </tr>`;
+                }).join('');
+            } else {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:24px">
+                    <div style="font-size:14px;color:var(--text);margin-bottom:8px">אין הצעות פעילות עדיין</div>
+                    <div style="font-size:12px;color:var(--text3)">היה הראשון לפרסם הצעת מכירה! ⬇️</div>
+                </td></tr>`;
+            }
+        } catch(e) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text3)">
+                אין הצעות פעילות · פרסם הצעה ראשונה!
+            </td></tr>`;
+        }
+    }
+
+    async function createP2POrder() {
+        const user = getUser();
+        // user_id can come from localStorage (Telegram bot login) OR fall back to a
+        // page-prompted ID for first-time visitors who want to test the flow.
+        let sellerId = user?.id || user?.telegram_id;
+        if (!sellerId) {
+            const promptedId = prompt('יש להתחבר קודם דרך @SLH_AIR_bot.\n\nאם כבר נרשמת — הכנס Telegram ID שלך (מספר):');
+            if (!promptedId || isNaN(parseInt(promptedId))) {
+                alert('בטל. פתח את https://t.me/SLH_AIR_bot ולחץ /start');
+                return;
+            }
+            sellerId = parseInt(promptedId);
+        }
+
+        const token = document.getElementById('p2p-token').value;
+        const amount = parseFloat(document.getElementById('p2p-amount').value);
+        const price = parseFloat(document.getElementById('p2p-price').value);
+        const payment = document.getElementById('p2p-payment').value;
+        const result = document.getElementById('p2p-create-result');
+
+        if (!amount || !price) { result.textContent = 'מלא כמות ומחיר'; result.style.color = 'var(--red)'; return; }
+        if (amount <= 0 || price <= 0) { result.textContent = 'כמות ומחיר חייבים להיות חיוביים'; result.style.color = 'var(--red)'; return; }
+
+        result.textContent = 'שולח...'; result.style.color = 'var(--accent)';
+        try {
+            // Use v1 endpoint (public, no JWT required). v2 requires bearer token.
+            const r = await fetch(P2P_API + '/api/p2p/create-order', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    seller_id: sellerId,
+                    token: token,
+                    amount: amount,
+                    price_per_unit: price,
+                    currency: 'ILS',
+                    payment_method: payment
+                })
+            });
+            const d = await r.json();
+            if (d.ok && d.order) {
+                result.innerHTML = `✅ הצעה פורסמה! מספר: <strong>#${d.order.id}</strong> · ${d.order.amount} ${d.order.token} @ ${d.order.price_per_unit} ${d.order.currency}`;
+                result.style.color = 'var(--accent)';
+                document.getElementById('p2p-amount').value = '';
+                document.getElementById('p2p-price').value = '';
+                loadP2POrders();
+            } else if (d.detail) {
+                // FastAPI validation errors come as array
+                const msg = Array.isArray(d.detail) ? d.detail.map(e => e.msg + ' (' + e.loc.join('.') + ')').join(' · ') : d.detail;
+                result.textContent = '❌ ' + msg;
+                result.style.color = 'var(--red)';
+            } else {
+                result.textContent = '❌ ' + JSON.stringify(d);
+                result.style.color = 'var(--red)';
+            }
+        } catch(e) {
+            result.textContent = '❌ תקלת רשת: ' + e.message; result.style.color = 'var(--red)';
+        }
+    }
+
+    async function fillOrder(orderId) {
+        const user = getUser();
+        if (!user || !user.id) { alert('יש להתחבר קודם דרך @SLH_AIR_bot'); return; }
+        if (!confirm('לקנות הצעה זו?')) return;
+        try {
+            const r = await fetch(P2P_API + '/api/p2p/v2/fill-order', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ order_id: orderId, buyer_id: user.id || user.telegram_id })
+            });
+            const d = await r.json();
+            alert(d.ok ? '✅ הצעה נקנתה!' : '❌ ' + (d.detail || d.error || 'שגיאה'));
+            loadP2POrders();
+        } catch(e) { alert('❌ ' + e.message); }
+    }
+
+    /* ── Init ── */
+    document.addEventListener('DOMContentLoaded', () => {
+        initShared({ activePage: 'p2p', showTicker: true, showBottomNav: true });
+        calcGas();
+        loadP2POrders();
+        setInterval(loadP2POrders, 30000);
+    });
+    </script>
+    <script src="/js/analytics.js"></script>
+    <script src="/js/ai-assistant.js?v=20260426e"></script>
+<button id="theme-fab" onclick="document.getElementById('theme-panel').classList.toggle('open')" title="Theme">🎨</button>
+<div id="theme-panel">
+    <div style="font-size:11px;color:var(--text2,#8a8aa0);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">ערכת צבעים</div>
+    <button onclick="document.documentElement.removeAttribute('data-theme');localStorage.setItem('slh_page_theme','default');document.getElementById('theme-panel').classList.remove('open')">🟢 Default</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','dark');localStorage.setItem('slh_page_theme','dark');document.getElementById('theme-panel').classList.remove('open')">🌙 Dark</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','light');localStorage.setItem('slh_page_theme','light');document.getElementById('theme-panel').classList.remove('open')">☀️ Light</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','crypto');localStorage.setItem('slh_page_theme','crypto');document.getElementById('theme-panel').classList.remove('open')">₿ Crypto</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','ocean');localStorage.setItem('slh_page_theme','ocean');document.getElementById('theme-panel').classList.remove('open')">🌊 Ocean</button>
+    <button onclick="document.documentElement.setAttribute('data-theme','sunset');localStorage.setItem('slh_page_theme','sunset');document.getElementById('theme-panel').classList.remove('open')">🌅 Sunset</button>
+</div>
+<script>
+(function(){var t=localStorage.getItem('slh_page_theme');if(t&&t!=='default')document.documentElement.setAttribute('data-theme',t);document.addEventListener('click',function(e){var p=document.getElementById('theme-panel'),f=document.getElementById('theme-fab');if(p&&f&&!p.contains(e.target)&&!f.contains(e.target))p.classList.remove('open');});})();
+</script>
+</body>
+</html>

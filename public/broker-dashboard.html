@@ -1,0 +1,217 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH Broker Dashboard — לוח בקרה לברוקר</title>
+<meta name="description" content="לוח בקרה לברוקרים — מעקב הפניות, עמלות, הפקדות ורכישות ESP.">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/shared.css?v=20260426e">
+<style>
+:root{--bg:#050810;--bg2:#0d1220;--gold:#ffd700;--green:#00e887;--red:#ff4444;--orange:#ff9800;--purple:#a855f7;--blue:#3b82f6;--cyan:#06b6d4;--text:#f5f5f8;--text2:#9ba0b5;--text3:#5a6078;--border:rgba(0,232,135,.3)}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Rubik',sans-serif;margin:0;min-height:100vh;line-height:1.5}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(ellipse at 20% 10%,rgba(0,232,135,.07),transparent 50%),radial-gradient(ellipse at 85% 75%,rgba(168,85,247,.06),transparent 50%)}
+.header{max-width:1400px;margin:0 auto;padding:30px 20px 16px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px}
+.title{font-size:30px;font-weight:900;background:linear-gradient(135deg,var(--green),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent;margin:0}
+.sub{font-size:13px;color:var(--text2)}
+.btn{padding:10px 18px;background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:12px;cursor:pointer;font-weight:700;font-size:13px;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all .2s}
+.btn:hover{border-color:var(--green);color:var(--green)}
+.kpis{max-width:1400px;margin:0 auto 20px;padding:0 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:20px;text-align:center}
+.kpi .v{font-size:32px;font-weight:900;color:var(--green);line-height:1;font-family:'JetBrains Mono',monospace}
+.kpi.gold .v{color:var(--gold)}
+.kpi.blue .v{color:var(--blue)}
+.kpi.purple .v{color:var(--purple)}
+.kpi .l{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:1.5px;margin-top:8px}
+.section{max-width:1400px;margin:0 auto 24px;padding:0 20px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:22px}
+.card h2{margin:0 0 14px;font-size:18px;font-weight:900;color:var(--gold)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+table th{text-align:right;padding:10px;color:var(--text2);border-bottom:1px solid var(--border);font-weight:700;text-transform:uppercase;letter-spacing:1px;font-size:11px}
+table td{padding:10px;border-bottom:1px solid rgba(255,255,255,.04)}
+.status-badge{padding:3px 10px;border-radius:8px;font-size:11px;font-weight:800;display:inline-block}
+.status-active{background:rgba(0,232,135,.18);color:var(--green)}
+.status-pending{background:rgba(255,215,0,.18);color:var(--gold)}
+.status-paid{background:rgba(0,232,135,.18);color:var(--green)}
+.status-approved{background:rgba(0,232,135,.18);color:var(--green)}
+.login-gate{max-width:460px;margin:100px auto;padding:40px 32px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;text-align:center}
+.login-gate h2{color:var(--green);margin-bottom:12px}
+.login-gate input{width:100%;padding:14px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:12px;font-size:16px;margin-bottom:14px;font-family:inherit}
+.login-gate button{width:100%;padding:14px;background:var(--green);color:#000;border:none;border-radius:12px;font-size:16px;font-weight:900;cursor:pointer;font-family:inherit}
+.hebrew-date{text-align:center;color:var(--text3);font-size:12px;padding:20px;margin-top:30px;border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+
+<div id="login-gate" class="login-gate" style="display:none">
+  <h2>🤝 Broker Dashboard — Admin / Broker Only</h2>
+  <input type="text" id="broker-id-input" placeholder="Broker ID (או admin password)">
+  <input type="password" id="login-pwd" placeholder="סיסמה">
+  <button onclick="doLogin()">היכנס</button>
+  <p style="margin-top:14px;font-size:12px;color:var(--text2)">Brokers — הזן את ה-Broker ID שלך + הסיסמה שקיבלת</p>
+</div>
+
+<div id="main" style="display:none">
+  <div id="topnav-root"></div>
+
+  <div class="header">
+    <div>
+      <h1 class="title">🤝 Broker Dashboard</h1>
+      <div class="sub" id="broker-name">טוען...</div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <a href="/admin.html" class="btn"><i class="fas fa-arrow-right"></i> אדמין</a>
+      <button class="btn" onclick="refreshAll()"><i class="fas fa-sync"></i> רענן</button>
+      <button class="btn" onclick="exportData()"><i class="fas fa-download"></i> ייצוא CSV</button>
+    </div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="v" id="kpi-referrals">0</div><div class="l">הפניות פעילות</div></div>
+    <div class="kpi gold"><div class="v" id="kpi-esp">0</div><div class="l">הזמנות ESP</div></div>
+    <div class="kpi blue"><div class="v" id="kpi-deposits">0</div><div class="l">הפקדות</div></div>
+    <div class="kpi purple"><div class="v" id="kpi-commission">₪0</div><div class="l">עמלות (שקל)</div></div>
+    <div class="kpi"><div class="v" id="kpi-zvk">0</div><div class="l">עמלות ZVK</div></div>
+  </div>
+
+  <div class="section">
+    <div class="card">
+      <h2>🎁 הזמנות ESP (מכירה מוקדמת)</h2>
+      <div id="esp-list">טוען...</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="card">
+      <h2>💰 הפקדות הלקוחות שלך</h2>
+      <div id="deposits-list">טוען...</div>
+    </div>
+  </div>
+
+  <div class="hebrew-date" id="hebrew-date"></div>
+</div>
+
+<script src="/js/shared.js?v=20260426e"></script>
+<script>
+const API = 'https://slh-api-production.up.railway.app';
+
+function doLogin(){
+  const brokerId = document.getElementById('broker-id-input').value;
+  const pwd = document.getElementById('login-pwd').value;
+  if(pwd && pwd.length >= 6){
+    localStorage.setItem('slh_admin_password', pwd);
+    if(brokerId) localStorage.setItem('slh_broker_id', brokerId);
+    checkAuth();
+  }
+}
+function checkAuth(){
+  const p = localStorage.getItem('slh_admin_password');
+  if(p && p.length >= 6){
+    document.getElementById('login-gate').style.display='none';
+    document.getElementById('main').style.display='block';
+    refreshAll();
+    setInterval(refreshAll, 30000);
+  } else {
+    document.getElementById('login-gate').style.display='block';
+  }
+}
+
+let brokerData = null;
+
+async function refreshAll(){
+  const urlBrokerId = new URLSearchParams(location.search).get('id');
+  const brokerId = urlBrokerId || localStorage.getItem('slh_broker_id') || '1';
+  try {
+    const r = await fetch(`${API}/api/brokers/${brokerId}/dashboard`, {
+      headers: {'X-Admin-Key': localStorage.getItem('slh_admin_password')}
+    });
+    if(!r.ok){
+      document.getElementById('broker-name').textContent = 'Broker not found or unauthorized';
+      return;
+    }
+    brokerData = await r.json();
+    render(brokerData);
+  } catch(e){
+    document.getElementById('broker-name').textContent = 'שגיאה: ' + e.message;
+  }
+}
+
+function render(d){
+  const b = d.broker || {};
+  document.getElementById('broker-name').textContent =
+    `${b.display_name || '—'} · ${b.role || 'broker'} · ${b.commission_pct || 0}% עמלה`;
+
+  const sum = d.summary || {};
+  document.getElementById('kpi-referrals').textContent = sum.total_referrals || 0;
+  document.getElementById('kpi-esp').textContent = sum.total_esp_orders || 0;
+  document.getElementById('kpi-deposits').textContent = sum.total_deposits || 0;
+  document.getElementById('kpi-commission').textContent = '₪' + (sum.commissions_ils || 0).toLocaleString();
+  document.getElementById('kpi-zvk').textContent = (sum.commissions_zvk || 0).toLocaleString();
+
+  // ESP orders table
+  const espDiv = document.getElementById('esp-list');
+  const esp = d.esp_preorders || [];
+  if(esp.length === 0){
+    espDiv.innerHTML = '<div style="padding:30px;text-align:center;color:var(--text2)">עוד אין הזמנות דרכך</div>';
+  } else {
+    espDiv.innerHTML = `<table><thead><tr><th>ID</th><th>שם קונה</th><th>סכום</th><th>סטטוס</th><th>SLH מתנה</th><th>תאריך</th></tr></thead><tbody>${
+      esp.map(o => `<tr>
+        <td>#${o.id}</td>
+        <td>${o.buyer_name}</td>
+        <td>₪${o.amount_paid_ils}</td>
+        <td><span class="status-badge status-${o.payment_status}">${o.payment_status}</span></td>
+        <td>${o.slh_gift_granted || 0} SLH</td>
+        <td>${new Date(o.created_at).toLocaleDateString('he-IL')}</td>
+      </tr>`).join('')
+    }</tbody></table>`;
+  }
+
+  // Deposits table
+  const depDiv = document.getElementById('deposits-list');
+  const dep = d.deposits || [];
+  if(dep.length === 0){
+    depDiv.innerHTML = '<div style="padding:30px;text-align:center;color:var(--text2)">עוד אין הפקדות דרכך</div>';
+  } else {
+    depDiv.innerHTML = `<table><thead><tr><th>ID</th><th>משתמש</th><th>סכום $</th><th>ריבית חודשית</th><th>תקופה</th><th>ריבית נצברת</th><th>סטטוס</th></tr></thead><tbody>${
+      dep.map(o => `<tr>
+        <td>#${o.id}</td>
+        <td>${o.user_id}</td>
+        <td>$${o.amount_usd}</td>
+        <td>${o.monthly_rate_pct}%</td>
+        <td>${o.term_months}ח'</td>
+        <td style="color:var(--green);font-weight:900">$${(o.total_interest_accrued || 0).toFixed(4)}</td>
+        <td><span class="status-badge status-${o.status}">${o.status}</span></td>
+      </tr>`).join('')
+    }</tbody></table>`;
+  }
+}
+
+function exportData(){
+  if(!brokerData) return;
+  const data = JSON.stringify(brokerData, null, 2);
+  const blob = new Blob([data], {type: 'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `broker_${brokerData.broker?.id}_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+}
+
+function updateHebDate(){
+  try{
+    const now = new Date();
+    const heb = new Intl.DateTimeFormat('he-IL-u-ca-hebrew',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(now);
+    const greg = new Intl.DateTimeFormat('he-IL',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(now);
+    document.getElementById('hebrew-date').textContent = `📅 ${heb} · ${greg} · ${now.toLocaleTimeString('he-IL')}`;
+  }catch(e){}
+}
+setInterval(updateHebDate, 1000);
+updateHebDate();
+
+checkAuth();
+</script>
+<script src="/js/ai-assistant.js"></script>
+</body>
+</html>

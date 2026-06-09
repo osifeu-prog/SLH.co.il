@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" data-theme="neural">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SLH Spark · Series A — $4.4M for Israel's Neural Investment Ecosystem</title>
+  <meta name="description" content="SLH Spark — Series A $4.4M. Production stack live: 230 API endpoints, 25 Telegram bots, custom ESP32 hardware, 5-token economy on BSC. Hardware pre-sale Nov 7, 2026 at ₪888.">
+  <meta name="keywords" content="SLH Spark, Series A, Israel fintech, Pitango, Pico Venture, blockchain investment, ESP32 hardware, Telegram bots, BSC BEP-20">
+  <meta name="robots" content="index,follow">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="SLH Spark · Series A — $4.4M Investment Round">
+  <meta property="og:description" content="Israel's first neural investment ecosystem. Production stack live, hardware ships Nov 7, 2026. Open to institutional partners.">
+  <meta property="og:image" content="https://slh-nft.com/assets/og/investors.png">
+  <meta property="og:url" content="https://slh-nft.com/investors.html">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SLH Spark · Series A">
+  <meta name="twitter:description" content="$4.4M institutional round. Production stack live. Hardware Nov 7, 2026.">
+
+  <link rel="canonical" href="https://slh-nft.com/investors.html">
+  <link rel="icon" type="image/svg+xml" href="/assets/logo/slh-spark-2026.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <link rel="stylesheet" href="css/shared.css?v=20260427b">
+  <link rel="stylesheet" href="css/slh-neural.css?v=20260427b">
+
+  <style>
+    body {
+      font-family: 'Heebo','Inter',system-ui,sans-serif;
+      color: var(--text); background: var(--bg);
+      margin:0; min-height:100vh; overflow-x:hidden;
+    }
+    /* Top bar */
+    .topbar {
+      position:fixed; top:0; inset-inline:0; z-index:50;
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      background: rgba(3,6,15,.7);
+      border-bottom: 1px solid var(--border);
+    }
+    .topbar-inner {
+      max-width:1280px; margin:0 auto;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 24px;
+    }
+    .topbar-brand {
+      display:flex; align-items:center; gap:10px;
+      font-weight:800; font-size:1.05rem; color:var(--text); text-decoration:none;
+    }
+    .topbar-brand .brand-logo {
+      width:36px; height:36px; display:flex; align-items:center; justify-content:center;
+    }
+    .topbar-brand .brand-logo img { width:100%; height:100%; }
+    .topbar-actions { display:flex; gap:14px; align-items:center; }
+    .lang-toggle {
+      display:flex; gap:6px; padding:6px; background:var(--bg2); border-radius:10px;
+      border:1px solid var(--border);
+    }
+    .lang-toggle button {
+      background:transparent; border:0; color:var(--text2); font-weight:600;
+      font-size:.78rem; padding:6px 10px; border-radius:6px; cursor:pointer;
+      transition: all .15s;
+    }
+    .lang-toggle button.active {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: var(--bg);
+    }
+    .lang-toggle button:hover:not(.active) { color:var(--text); background:var(--bg3); }
+
+    /* Print */
+    @media print {
+      .topbar, .no-print { display:none !important; }
+      body { background:white; color:black; }
+      .neural-card { background:#f7f7f7 !important; border:1px solid #ddd !important; box-shadow:none !important; }
+      .neural-section { padding:24px 0 !important; page-break-inside: avoid; }
+    }
+
+    /* Hero */
+    .hero-investor {
+      min-height: 88vh;
+      display:flex; align-items:center;
+      padding: 120px 24px 60px;
+    }
+    .hero-grid-inv {
+      max-width:1280px; margin:0 auto;
+      display:grid; gap:48px;
+      grid-template-columns: 1.1fr 1fr;
+      align-items:center; width:100%;
+    }
+    @media (max-width: 960px) {
+      .hero-grid-inv { grid-template-columns: 1fr; text-align:center; }
+    }
+    .ask-pill {
+      display:inline-flex; align-items:center; gap:10px;
+      padding:8px 16px; background: rgba(255,209,102,.1);
+      border: 1px solid var(--accent); border-radius:999px;
+      color: var(--accent); font-weight:700; font-size:.85rem;
+      margin-bottom:18px;
+    }
+    .ask-pill .dot {
+      width:8px; height:8px; border-radius:50%; background:var(--accent);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:.4 } }
+
+    .ask-figure {
+      font-family:'Inter','Heebo',sans-serif;
+      font-size: clamp(3rem, 7vw, 5rem); font-weight:900;
+      line-height:.95; letter-spacing:-.03em;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip:text; background-clip:text;
+      -webkit-text-fill-color:transparent; color:transparent;
+      margin: 8px 0 4px;
+    }
+    .ask-currency { font-size:.4em; color:var(--text2); font-weight:600; }
+
+    /* Investor card stack (right side of hero) */
+    .stack-card {
+      background: rgba(255,255,255,.03); border:1px solid var(--border);
+      border-radius:14px; padding:18px; margin-bottom:12px;
+      backdrop-filter: blur(10px);
+    }
+    .stack-card .row {
+      display:flex; align-items:center; justify-content:space-between;
+      margin-bottom:8px;
+    }
+    .stack-card .row:last-child { margin-bottom:0; }
+    .stack-card .row .label { color:var(--text2); font-size:.85rem; font-weight:500; }
+    .stack-card .row .value { color:var(--text); font-weight:700; font-family:'JetBrains Mono',monospace; }
+    .stack-card .row .value.live { color: var(--token-zvk); }
+    .stack-card .row .value .live-indicator { font-size:.7em; }
+
+    /* Use of funds */
+    .funds-bar {
+      display:flex; height:48px; border-radius:10px; overflow:hidden;
+      box-shadow: inset 0 0 0 1px var(--border);
+      margin: 32px 0 16px;
+    }
+    .funds-bar > div {
+      display:flex; align-items:center; justify-content:center;
+      color: var(--bg); font-weight:700; font-size:.78rem;
+      transition: filter .2s;
+    }
+    .funds-bar > div:hover { filter: brightness(1.2); }
+    .funds-eng    { background:#7c4dff; flex: 35; }
+    .funds-hw     { background:#ff8a4d; flex: 25; }
+    .funds-mkt    { background:#4dd0e1; flex: 20; }
+    .funds-ops    { background:#ffb74d; flex: 15; }
+    .funds-res    { background:#9e9e9e; flex: 5; }
+    .funds-legend {
+      display:grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap:14px; margin-top:14px;
+    }
+    .funds-legend .li {
+      display:flex; align-items:center; gap:8px; color:var(--text2); font-size:.88rem;
+    }
+    .funds-legend .li .swatch { width:14px; height:14px; border-radius:4px; }
+
+    /* Section dividers */
+    section.investor-section { padding: 80px 24px; }
+    section.investor-section .container {
+      max-width:1180px; margin:0 auto;
+    }
+    section.investor-section .container > .neural-eyebrow {
+      display:inline-block; margin-bottom:8px;
+    }
+    section.investor-section h2 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 800; letter-spacing:-.02em;
+      margin: 0 0 14px;
+    }
+    section.investor-section .lead {
+      font-size: 1.1rem; color: var(--text2); line-height: 1.6;
+      max-width: 720px; margin-bottom: 36px;
+    }
+
+    /* Footer */
+    footer {
+      padding: 48px 24px 32px; text-align:center;
+      border-top: 1px solid var(--border);
+      background: var(--bg2);
+      color: var(--text3); font-size: .9rem;
+    }
+    footer .footer-links {
+      display:flex; gap:24px; justify-content:center; flex-wrap:wrap;
+      margin-bottom: 16px;
+    }
+    footer .footer-links a {
+      color: var(--text2); text-decoration:none; font-size:.9rem;
+    }
+
+    /* Hardware demo box */
+    .hw-spotlight {
+      display:grid; grid-template-columns: 1fr 1.2fr;
+      gap:32px; align-items:center;
+      padding:32px; border-radius: 18px;
+      background: linear-gradient(135deg, rgba(255,138,77,.08), rgba(255,209,102,.05));
+      border: 1px solid rgba(255,138,77,.25);
+    }
+    @media (max-width:880px) { .hw-spotlight { grid-template-columns:1fr; text-align:center; } }
+    .hw-mockup {
+      aspect-ratio: 4/3; max-width: 420px; margin: 0 auto;
+      background: #050810; border:3px solid #2a3142; border-radius: 16px;
+      display:flex; flex-direction:column; padding:14px;
+      position:relative; overflow:hidden;
+    }
+    .hw-mockup::before {
+      content:''; position:absolute; right:-3px; top:30%; bottom:30%;
+      width:8px; background:#444; border-radius:2px;  /* USB indicator (right side) */
+    }
+    .hw-mockup .hw-tabbar {
+      display:grid; grid-template-columns: repeat(4,1fr); gap:2px;
+      background: #03060f; padding:2px;
+    }
+    .hw-mockup .hw-tab {
+      padding:8px; font-size:.7rem; font-family:'JetBrains Mono',monospace;
+      color:#888; text-align:center; background:#0a0e1a;
+    }
+    .hw-mockup .hw-tab.active {
+      background: #1a2b4d; color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+    }
+    .hw-mockup .hw-body {
+      flex:1; padding:10px; display:flex; flex-direction:column; gap:6px;
+      font-size:.78rem; font-family:'JetBrains Mono',monospace;
+    }
+    .hw-mockup .hw-body .row { color:#aab; }
+    .hw-mockup .hw-body .row.green { color: var(--token-zvk); }
+    .hw-mockup .hw-body .row.cyan  { color: var(--accent); }
+    .hw-mockup .hw-status {
+      background:#03060f; padding:6px 10px; border-radius:4px;
+      display:flex; justify-content:space-between; font-size:.65rem;
+      color:#666; font-family:'JetBrains Mono',monospace;
+    }
+    .hw-mockup .hw-status .hb-dot {
+      display:inline-block; width:6px; height:6px; border-radius:50%;
+      background: var(--token-zvk); margin-inline-end:5px;
+      animation: pulse 1.6s ease-in-out infinite;
+    }
+
+    /* Timeline */
+    .timeline-grid {
+      display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap:18px; margin-top: 24px;
+    }
+    .timeline-item {
+      padding:18px; border-radius:12px;
+      background: rgba(255,255,255,.02); border:1px solid var(--border);
+    }
+    .timeline-item.now { border-color: var(--accent); background: rgba(255,209,102,.06); }
+    .timeline-item.next { border-color: var(--token-zvk); }
+    .timeline-item .when {
+      font-size:.78rem; color:var(--accent); font-weight:700;
+      margin-bottom:8px; text-transform:uppercase; letter-spacing:.04em;
+    }
+    .timeline-item h4 { margin: 0 0 6px; font-size:1.05rem; }
+    .timeline-item p { margin:0; color:var(--text2); font-size:.9rem; line-height:1.55; }
+
+    /* Team */
+    .team-grid {
+      display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+    }
+    .team-card {
+      padding:24px; border-radius:14px;
+      background: rgba(255,255,255,.03); border:1px solid var(--border);
+      text-align:center;
+    }
+    .team-card.open { border-style: dashed; opacity:.7; }
+    .team-card .avatar {
+      width:64px; height:64px; border-radius:50%;
+      margin:0 auto 12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display:flex; align-items:center; justify-content:center;
+      color: var(--bg); font-weight:900; font-size:1.4rem;
+    }
+    .team-card.open .avatar { background:#444; color:#888; }
+    .team-card .name { font-weight:700; margin-bottom:4px; }
+    .team-card .role { color: var(--text2); font-size:.85rem; }
+
+    /* Investor logos placeholder */
+    .investor-logos {
+      display:flex; flex-wrap:wrap; gap:24px; justify-content:center;
+      align-items:center; padding:24px; opacity:.7;
+    }
+    .investor-logos .logo-item {
+      display:flex; flex-direction:column; align-items:center; gap:6px;
+      padding:14px 24px; border-radius:8px; background:rgba(255,255,255,.03);
+      border:1px solid var(--border);
+    }
+    .investor-logos .logo-name { font-weight:700; font-size:1.05rem; }
+    .investor-logos .logo-tag { color: var(--text2); font-size:.75rem; text-transform:uppercase; letter-spacing:.06em; }
+  </style>
+</head>
+<body>
+
+  <div class="neural-bg" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="/" class="topbar-brand">
+        <span class="brand-logo"><img src="/assets/logo/slh-spark-2026.svg" alt="SLH Spark" width="36" height="36"></span>
+        <span data-i18n-key="brand">SLH Spark</span>
+      </a>
+      <div class="topbar-actions">
+        <div class="lang-toggle" role="group" aria-label="Language">
+          <button data-lang="he" class="active" type="button">עב</button>
+          <button data-lang="en" type="button">EN</button>
+          <button data-lang="ru" type="button">RU</button>
+          <button data-lang="ar" type="button">AR</button>
+          <button data-lang="fr" type="button">FR</button>
+        </div>
+        <a href="https://t.me/osifeu_prog" class="neural-btn neural-btn-primary no-print" style="padding:10px 18px; font-size:.88rem;">
+          <i class="fab fa-telegram"></i> <span data-i18n-key="cta_topbar">שיחה ישירה</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═════════ HERO ═════════ -->
+  <section class="hero-investor">
+    <div class="hero-grid-inv">
+      <div>
+        <div class="ask-pill"><span class="dot"></span> <span data-i18n-key="hero_pill">פתוח לסבב Series A · 2026</span></div>
+        <h1 class="neural-headline" style="margin:8px 0 8px;">
+          <span data-i18n-key="hero_h1_a">SLH Spark</span><br>
+          <span style="color:var(--text2); font-weight:600; font-size:.6em;" data-i18n-key="hero_h1_b">האקוסיסטם הנוירוני להשקעות</span>
+        </h1>
+
+        <div class="ask-figure"><span class="ask-currency">$</span>4.4M</div>
+        <div style="font-size:1.1rem; color: var(--text2); font-weight:600; margin-bottom: 8px;" data-i18n-key="hero_round">סבב Series A · 18 חודשי runway</div>
+        <div style="font-size:.95rem; color: var(--text2); margin-bottom: 18px; display:flex; gap:16px; flex-wrap:wrap;">
+          <span><i class="fas fa-coins" style="color:var(--accent);"></i> <span data-i18n-key="hero_min">מינ׳ כניסה: ₪50,000</span> <span style="color:var(--text3);">(~$13,500)</span></span>
+          <span><i class="fas fa-calendar-check" style="color:var(--accent);"></i> <span data-i18n-key="hero_close">סגירה: 7.11.2026</span></span>
+        </div>
+
+        <p style="font-size:1.05rem; color: var(--text2); line-height:1.65; max-width:560px;" data-i18n-key="hero_lead">
+          סטאק ייצור חי, חומרה משלנו שמשתחררת בpre-sale 7.11.2026, וטראקשן שמוכיח שאנחנו לא vaporware:
+          ESP32 שלנו שולח heartbeat ל-Postgres כל 30 שניות בזמן שאתה קורא את זה.
+        </p>
+
+        <div class="hero-cta-row no-print" style="display:flex; gap:14px; flex-wrap:wrap; margin-top:28px;">
+          <a href="https://t.me/osifeu_prog" class="neural-btn neural-btn-gold">
+            <i class="fab fa-telegram"></i> <span data-i18n-key="cta_call">קבע שיחה</span>
+          </a>
+          <a href="#deck" class="neural-btn neural-btn-ghost">
+            <i class="fas fa-file-pdf"></i> <span data-i18n-key="cta_deck">Pitch Deck</span>
+          </a>
+          <button onclick="window.print()" class="neural-btn neural-btn-ghost" style="cursor:pointer;">
+            <i class="fas fa-print"></i> <span data-i18n-key="cta_print">הדפס One-Pager</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Right column: live status stack -->
+      <div class="hero-visual">
+        <div class="stack-card">
+          <div class="row"><span class="label" data-i18n-key="stk_round">סוג סבב</span><span class="value">Series A</span></div>
+          <div class="row"><span class="label" data-i18n-key="stk_ask">סכום בקשה</span><span class="value">$4,400,000</span></div>
+          <div class="row"><span class="label" data-i18n-key="stk_runway">runway</span><span class="value">18 חודשים</span></div>
+        </div>
+
+        <div class="stack-card">
+          <div class="row"><span class="label" data-i18n-key="stk_users">משתמשים רשומים</span><span class="value" id="kpi-users">9</span></div>
+          <div class="row"><span class="label" data-i18n-key="stk_bots">בוטים פעילים</span><span class="value">25</span></div>
+          <div class="row"><span class="label" data-i18n-key="stk_endpoints">API endpoints</span><span class="value">230+</span></div>
+          <div class="row"><span class="label" data-i18n-key="stk_pages">דפי אתר</span><span class="value">140+</span></div>
+        </div>
+
+        <div class="stack-card">
+          <div class="row"><span class="label" data-i18n-key="stk_api">API status</span><span class="value live" id="kpi-api"><span class="live-indicator">LIVE</span></span></div>
+          <div class="row"><span class="label" data-i18n-key="stk_esp">ESP32 hardware</span><span class="value live" id="kpi-esp"><span class="live-indicator">PAIRED</span></span></div>
+          <div class="row"><span class="label" data-i18n-key="stk_chain">SLH on BSC</span><span class="value live"><span class="live-indicator">LIVE</span></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ PROOF OF EXECUTION ═════════ -->
+  <section class="investor-section" id="proof">
+    <div class="container">
+      <span class="neural-eyebrow" data-i18n-key="proof_eyebrow">Proof of Execution</span>
+      <h2 data-i18n-key="proof_h2">מה כבר נבנה — לא vaporware</h2>
+      <p class="lead" data-i18n-key="proof_lead">
+        רוב פרוייקטי הקריפטו במחנה הזה מציגים deck. אנחנו מציגים מערכת בייצור.
+        ה-stack שלנו רץ עכשיו, השרתים מקבלים תעבורה, החומרה שלנו על השולחן ומתקשרת ל-Postgres.
+      </p>
+
+      <div class="neural-grid neural-grid-3">
+        <div class="neural-card">
+          <div class="card-icon"><i class="fas fa-server"></i></div>
+          <h3 style="margin:0 0 6px;" data-i18n-key="proof_api_h">FastAPI Production</h3>
+          <p style="color:var(--text2); margin:0 0 10px; line-height:1.55;" data-i18n-key="proof_api_p">
+            230+ endpoints. PostgreSQL 15 + Redis 7 ב-Railway. SHA-256 audit chain.
+            ~11,765 שורות Python. Production-ready, deployed.
+          </p>
+          <div class="trust-badge"><span class="badge-dot"></span> <span data-i18n-key="proof_api_badge">200 OK בזמן אמת</span></div>
+        </div>
+
+        <div class="neural-card">
+          <div class="card-icon"><i class="fas fa-robot"></i></div>
+          <h3 style="margin:0 0 6px;" data-i18n-key="proof_bots_h">25 Telegram Bots</h3>
+          <p style="color:var(--text2); margin:0 0 10px; line-height:1.55;" data-i18n-key="proof_bots_p">
+            Guardian, Wallet, Botshop, Factory, Game, Airdrop. כולם ב-Docker Compose,
+            connected to single Postgres. Aiogram 3.x.
+          </p>
+          <div class="trust-badge"><span class="badge-dot"></span> <span data-i18n-key="proof_bots_badge">Docker · 25 services</span></div>
+        </div>
+
+        <div class="neural-card">
+          <div class="card-icon"><i class="fas fa-microchip"></i></div>
+          <h3 style="margin:0 0 6px;" data-i18n-key="proof_esp_h">ESP32 Hardware OS</h3>
+          <p style="color:var(--text2); margin:0 0 10px; line-height:1.55;" data-i18n-key="proof_esp_p">
+            CYD board עם firmware קסטום (slh-v4). 5 מסכים, מגע, QR pairing,
+            HTTPS heartbeats. NVS persistence, OTA-ready.
+          </p>
+          <div class="trust-badge"><span class="badge-dot"></span> <span data-i18n-key="proof_esp_badge">Heartbeat 30s · LIVE</span></div>
+        </div>
+
+        <div class="neural-card">
+          <div class="card-icon"><i class="fab fa-bitcoin"></i></div>
+          <h3 style="margin:0 0 6px;" data-i18n-key="proof_chain_h">On-Chain (BSC)</h3>
+          <p style="color:var(--text2); margin:0 0 10px; line-height:1.55;" data-i18n-key="proof_chain_p">
+            SLH BEP-20 token live. PancakeSwap V2 pool active.
+            Genesis wallet on-chain. כל פעולה ניתנת לאימות מ-BscScan.
+          </p>
+          <a href="https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022" class="trust-badge" style="text-decoration:none;" target="_blank" rel="noopener">
+            <span class="badge-dot"></span> <span data-i18n-key="proof_chain_badge">0xACb0…f022</span>
+          </a>
+        </div>
+
+        <div class="neural-card">
+          <div class="card-icon"><i class="fas fa-language"></i></div>
+          <h3 style="margin:0 0 6px;" data-i18n-key="proof_lang_h">5 שפות בייצור</h3>
+          <p style="color:var(--text2); margin:0 0 10px; line-height:1.55;" data-i18n-key="proof_lang_p">
+            Hebrew, English, Russian, Arabic, French. RTL מובנה.
+            פתח אוסיף לשוק היהודי, ערבי, פרנקופוני, סלאבי, ובינלאומי.
+          </p>
+          <div class="trust-badge"><span class="badge-dot"></span> <span data-i18n-key="proof_lang_badge">181KB translations.js</span></div>
+        </div>
+
+        <div class="neural-card">
+          <div class="card-icon"><i class="fas fa-shield-virus"></i></div>
+          <h3 style="margin:0 0 6px;" data-i18n-key="proof_guard_h">Guardian System</h3>
+          <p style="color:var(--text2); margin:0 0 10px; line-height:1.55;" data-i18n-key="proof_guard_p">
+            Anti-fraud detection אוטומטי. ZUZ marking system, banhammer ב-100.
+            audit chain. שקיפות מלאה לקהילה ול-regulators.
+          </p>
+          <div class="trust-badge"><span class="badge-dot"></span> <span data-i18n-key="proof_guard_badge">SHA-256 chained events</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ HARDWARE PRE-SALE ═════════ -->
+  <section class="investor-section" style="background: linear-gradient(180deg, transparent, var(--bg2), transparent);" id="hardware">
+    <div class="container">
+      <span class="neural-eyebrow" data-i18n-key="hw_eyebrow">Hardware Pre-Sale · Nov 7, 2026</span>
+      <h2 data-i18n-key="hw_h2">חומרה כ-anchor למשתמש מוקדם</h2>
+      <p class="lead" data-i18n-key="hw_lead">
+        ב-7 בנובמבר 2026 משחררים את ה-SLH Hardware Wallet ב-pre-sale ל-rוכשים מוקדמים.
+        ₪888 ליחידה — לא רק wallet אלא anchor פיזי לפעילות אקוסיסטם, על משקל BTC ב-2010.
+        כל יחידה כוללת bonus של 2 SLH לרוכש (≈ ₪888 שווי בעת השחרור).
+      </p>
+
+      <div class="hw-spotlight">
+        <!-- ASCII-style mockup of the actual hardware screen -->
+        <div class="hw-mockup">
+          <div class="hw-tabbar">
+            <div class="hw-tab active">Home</div>
+            <div class="hw-tab">Wallet</div>
+            <div class="hw-tab">Bots</div>
+            <div class="hw-tab">Sys</div>
+          </div>
+          <div class="hw-body">
+            <div class="row" style="text-align:center; color:var(--accent); font-weight:700; margin:6px 0 2px;">Welcome</div>
+            <div class="row green">User      #4</div>
+            <div class="row">Device    14335C6C32C0</div>
+            <div class="row">Net       10.0.0.2</div>
+            <div class="row">FW        slh-v4</div>
+            <div class="row" style="margin-top:auto;"></div>
+          </div>
+          <div class="hw-status">
+            <span><span class="hb-dot"></span>HB OK</span>
+            <span>WiFi -53dBm</span>
+            <span>00:14:22</span>
+          </div>
+        </div>
+
+        <div>
+          <h3 style="margin:0 0 12px;" data-i18n-key="hw_specs_h">SLH Hardware Wallet · Specs</h3>
+          <ul style="color:var(--text2); line-height:1.85; padding-inline-start:20px;">
+            <li data-i18n-key="hw_spec_1"><b>SoC:</b> ESP32-D0WD-V3 (dual-core, 240MHz, 4MB flash)</li>
+            <li data-i18n-key="hw_spec_2"><b>Display:</b> ILI9341 TFT 320×240 landscape, מגע resistive</li>
+            <li data-i18n-key="hw_spec_3"><b>OS:</b> SLH-OS v4 — 5 מסכים, ניווט מגע + כפתור פיזי</li>
+            <li data-i18n-key="hw_spec_4"><b>Connectivity:</b> WiFi 802.11 b/g/n + HTTPS to Railway</li>
+            <li data-i18n-key="hw_spec_5"><b>Pairing:</b> QR scan → phone OTP → token saved to NVS</li>
+            <li data-i18n-key="hw_spec_6"><b>Persistence:</b> NVS (signing token survives reboot)</li>
+            <li data-i18n-key="hw_spec_7"><b>Updates:</b> OTA via /api/esp/commands queue</li>
+          </ul>
+          <div style="display:flex; gap:14px; flex-wrap:wrap; margin-top:18px;">
+            <div class="trust-badge"><span class="badge-dot"></span> <span data-i18n-key="hw_pricing">₪888 / יחידה</span></div>
+            <div class="trust-badge"><span class="badge-dot"></span> <span data-i18n-key="hw_target">יעד: 1,000 יחידות</span></div>
+            <div class="trust-badge"><span class="badge-dot"></span> <span data-i18n-key="hw_launch">Launch: 7.11.2026</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ INVESTMENT TERMS ═════════ -->
+  <section class="investor-section" id="terms">
+    <div class="container">
+      <span class="neural-eyebrow" data-i18n-key="terms_eyebrow">Investment Terms</span>
+      <h2 data-i18n-key="terms_h2">תנאי ההשקעה — שקופים, לא מובטחים</h2>
+      <p class="lead" data-i18n-key="terms_lead">
+        אנחנו מציעים השתתפות ישירה ברווחי הפעילות של מכשירי ה-ESP — לא הבטחה לתשואה.
+        המודל שקוף, מחובר לביצועים בפועל, ומוגבל לסכום החזר מקסימלי.
+      </p>
+
+      <div class="neural-grid neural-grid-2" style="gap:20px; max-width: 1080px; margin: 0 auto;">
+        <div class="neural-card">
+          <div class="card-icon"><i class="fas fa-coins"></i></div>
+          <h3 style="margin:0 0 10px;" data-i18n-key="terms_min_h">מינימום כניסה</h3>
+          <div style="font-size: 2rem; font-weight: 900; color: var(--accent); margin-bottom:4px;">
+            ₪50,000
+          </div>
+          <div style="color: var(--text2); font-size:.9rem;" data-i18n-key="terms_min_usd">
+            ≈ $13,500 USD <span style="color:var(--text3);">(₪3.7/USD)</span>
+          </div>
+          <p style="color: var(--text2); margin: 12px 0 0; line-height:1.6; font-size:.95rem;" data-i18n-key="terms_min_p">
+            סף שמסנן באופן מובנה לקרנות + משקיעים מסווגים. תשואה רגילה — לא הצעה לציבור.
+          </p>
+        </div>
+
+        <div class="neural-card">
+          <div class="card-icon"><i class="fas fa-percent"></i></div>
+          <h3 style="margin:0 0 10px;" data-i18n-key="terms_share_h">מודל החזר</h3>
+          <div style="font-size: 2rem; font-weight: 900; color: var(--accent); margin-bottom:4px;">
+            88% <span style="font-size:.65em; color:var(--text2);" data-i18n-key="terms_share_unit">Revenue Share</span>
+          </div>
+          <div style="color: var(--text2); font-size:.9rem;" data-i18n-key="terms_share_until">
+            <span data-i18n-key="terms_share_cap">עד החזר מצטבר של ~פי 3 על הקרן</span>
+          </div>
+          <p style="color: var(--text2); margin: 12px 0 0; line-height:1.6; font-size:.95rem;" data-i18n-key="terms_share_p">
+            המשקיעים מקבלים 88% מרווחי פעילות ה-ESP — עד להחזר מצטבר מקסימלי שנקבע מראש.
+            אין דילול. אין משחקים.
+          </p>
+        </div>
+
+        <div class="neural-card">
+          <div class="card-icon"><i class="fas fa-calendar-week"></i></div>
+          <h3 style="margin:0 0 10px;" data-i18n-key="terms_period_h">תקופה</h3>
+          <div style="font-size: 2rem; font-weight: 900; color: var(--accent); margin-bottom:4px;">
+            ~5 <span style="font-size:.65em; color:var(--text2);" data-i18n-key="terms_period_unit">שנים</span>
+          </div>
+          <div style="color: var(--text2); font-size:.9rem;" data-i18n-key="terms_period_then">
+            לאחר מכן: מימוש או חוזה חדש — בהסכמה
+          </div>
+          <p style="color: var(--text2); margin: 12px 0 0; line-height:1.6; font-size:.95rem;" data-i18n-key="terms_period_p">
+            בתום ~5 שנים, המשקיע יכול לבחור בין מימוש (מכירת המניה חזרה) לבין המשך השתתפות בחוזה חדש.
+            כל פעולה דורשת הסכמת שני הצדדים.
+          </p>
+        </div>
+
+        <div class="neural-card">
+          <div class="card-icon"><i class="fas fa-flag-checkered"></i></div>
+          <h3 style="margin:0 0 10px;" data-i18n-key="terms_close_h">סגירת סבב</h3>
+          <div style="font-size: 2rem; font-weight: 900; color: var(--accent); margin-bottom:4px;">
+            7.11.2026
+          </div>
+          <div style="color: var(--text2); font-size:.9rem;" data-i18n-key="terms_close_align">
+            ביום שחרור החומרה ב-pre-sale
+          </div>
+          <p style="color: var(--text2); margin: 12px 0 0; line-height:1.6; font-size:.95rem;" data-i18n-key="terms_close_p">
+            ההצטרפות לסבב פתוחה עד 7.11.2026. הסבב נסגר ביום שחרור המכשירים, מסונכרן עם תחילת הפעילות שמייצרת את ה-Revenue Share.
+          </p>
+        </div>
+      </div>
+
+      <!-- Target return illustration -->
+      <div style="max-width: 1080px; margin: 36px auto 0; padding: 28px 24px; border-radius: 14px; background: rgba(255,209,102,.05); border: 1px dashed var(--accent);">
+        <h3 style="margin:0 0 12px; color: var(--accent);" data-i18n-key="terms_target_h">
+          <i class="fas fa-bullseye"></i> יעד תשואה (תחזית עסקית — לא הבטחה)
+        </h3>
+        <p style="color: var(--text2); margin: 0 0 14px; line-height:1.65;" data-i18n-key="terms_target_p1">
+          על פי התחזית העסקית שלנו (1,000 יחידות בשנה הראשונה, growth שנתי, עלויות וייצור),
+          משקיע שנכנס ב-₪50,000 <b>עשוי להגיע לתשואה מצטברת של עד פי 3 לאורך תקופה של ~5 שנים</b> —
+          <u>בהתאם לביצועי הפעילות בפועל</u>.
+        </p>
+        <p style="color: var(--text3); margin: 0; line-height:1.6; font-size:.88rem;" data-i18n-key="terms_target_p2">
+          <i class="fas fa-info-circle"></i>
+          <b>חשוב:</b> אין כאן הבטחה לתשואה. המודל מבוסס על Revenue Share אמיתי —
+          אם הפעילות לא מצליחה, התשואה תהיה נמוכה בהתאם, ובסיכון של כל ההון.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ USE OF FUNDS ═════════ -->
+  <section class="investor-section" id="funds">
+    <div class="container">
+      <span class="neural-eyebrow" data-i18n-key="funds_eyebrow">Use of Funds · $4.4M</span>
+      <h2 data-i18n-key="funds_h2">איך ה-$4.4M ממומשים</h2>
+      <p class="lead" data-i18n-key="funds_lead">
+        חלוקה שמרנית ל-18 חודשי runway. הליבה: hiring (יוצא מ-solo dev ל-team), חומרה (1,000 יחידות),
+        ושיווק רב-לשוני (Pitango/Pico בארץ + 5 שפות לשוק העולמי).
+      </p>
+
+      <div class="funds-bar" role="img" aria-label="Use of funds breakdown">
+        <div class="funds-eng">35%</div>
+        <div class="funds-hw">25%</div>
+        <div class="funds-mkt">20%</div>
+        <div class="funds-ops">15%</div>
+        <div class="funds-res">5%</div>
+      </div>
+      <div class="funds-legend">
+        <div class="li"><span class="swatch funds-eng"></span><div><b>Engineering · $1.54M</b><br><span style="color:var(--text3); font-size:.8rem;" data-i18n-key="funds_eng_p">4 מהנדסים: backend, mobile, ESP firmware, security</span></div></div>
+        <div class="li"><span class="swatch funds-hw"></span><div><b>Hardware · $1.10M</b><br><span style="color:var(--text3); font-size:.8rem;" data-i18n-key="funds_hw_p">1,000 יחידות + R&D + ייצור + לוגיסטיקה</span></div></div>
+        <div class="li"><span class="swatch funds-mkt"></span><div><b>Marketing · $880K</b><br><span style="color:var(--text3); font-size:.8rem;" data-i18n-key="funds_mkt_p">5 שפות, ישראל + EMEA + global crypto reach</span></div></div>
+        <div class="li"><span class="swatch funds-ops"></span><div><b>Operations · $660K</b><br><span style="color:var(--text3); font-size:.8rem;" data-i18n-key="funds_ops_p">Compliance, legal, audits (CertiK), accounting</span></div></div>
+        <div class="li"><span class="swatch funds-res"></span><div><b>Reserve · $220K</b><br><span style="color:var(--text3); font-size:.8rem;" data-i18n-key="funds_res_p">Contingency / opportunistic</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ ROADMAP / MILESTONES ═════════ -->
+  <section class="investor-section" style="background: linear-gradient(180deg, transparent, var(--bg2), transparent);" id="roadmap">
+    <div class="container">
+      <span class="neural-eyebrow" data-i18n-key="rm_eyebrow">18-Month Roadmap</span>
+      <h2 data-i18n-key="rm_h2">מה מספקים על ה-$4.4M</h2>
+
+      <div class="timeline-grid">
+        <div class="timeline-item now">
+          <div class="when" data-i18n-key="rm_now_when">Q3 2026 · NOW</div>
+          <h4 data-i18n-key="rm_now_h">Series A close</h4>
+          <p data-i18n-key="rm_now_p">$4.4M, lead investor + 2-3 strategic partners. CertiK audit kickoff.</p>
+        </div>
+        <div class="timeline-item next">
+          <div class="when" data-i18n-key="rm_q4_when">Q4 2026</div>
+          <h4 data-i18n-key="rm_q4_h">Hardware pre-sale launch</h4>
+          <p data-i18n-key="rm_q4_p">7.11.2026 — 1,000 יחידות ב-₪888. mobile app v1 (React Native). 4 הנדסיים נכנסים.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="when" data-i18n-key="rm_q1_when">Q1 2027</div>
+          <h4 data-i18n-key="rm_q1_h">International rollout</h4>
+          <p data-i18n-key="rm_q1_p">5 שפות מלא, EMEA partnerships, יעד 5,000 משתמשים פעילים.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="when" data-i18n-key="rm_q2_when">Q2 2027</div>
+          <h4 data-i18n-key="rm_q2_h">Marketplace + DAO</h4>
+          <p data-i18n-key="rm_q2_p">Course marketplace, DAO governance על SLH stake, P2P trading layer.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="when" data-i18n-key="rm_q3_when">Q3 2027</div>
+          <h4 data-i18n-key="rm_q3_h">Series B prep</h4>
+          <p data-i18n-key="rm_q3_p">Metrics ready: 25,000 users, $5M ARR, 3 strategic geographies.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ VISION: BEYOND SERIES A ═════════ -->
+  <section class="investor-section" id="vision">
+    <div class="container">
+      <span class="neural-eyebrow" data-i18n-key="vis_eyebrow">Vision · Beyond Series A</span>
+      <h2 data-i18n-key="vis_h2">לא עוד staking — חינוך פיננסי בוגר לעולם</h2>
+      <p class="lead" data-i18n-key="vis_lead">
+        ה-$4.4M זה לא סוף הסיפור. אחרי הסבב, נבנה את <b>Lumina</b> —
+        שכבת חינוך-קהילה בתוך האקוסיסטם שמלמדת ילדים, נוער והורים ניהול כלכלי בוגר דרך חוויה מצויירת,
+        על המכשיר הפיזי שלנו. זה ההבדל בין "עוד crypto" ל-EduTech-FinTech-IoT אמיתי.
+      </p>
+
+      <div class="neural-grid neural-grid-3">
+        <div class="neural-card">
+          <div class="card-icon" style="background: linear-gradient(135deg, #4ADE80, #22D3EE); color: #003344;">
+            <i class="fas fa-heart-pulse"></i>
+          </div>
+          <h3 style="margin:0 0 8px;" data-i18n-key="vis_lumina_h">Lumina — Companion Tamagotchi</h3>
+          <p style="color:var(--text2); margin:0; line-height:1.55;" data-i18n-key="vis_lumina_p">
+            יצור דיגיטלי שמשקף את ה-ROI של המשתמש בזמן אמת. ROI עולה → Lumina שמחה.
+            ROI יורד → מציעה שיעורים חינוכיים. AI אמפתי, סוציוקרטיה במחוזות, gamification.
+          </p>
+        </div>
+
+        <div class="neural-card">
+          <div class="card-icon" style="background: linear-gradient(135deg, #FB923C, #FACC15); color: #4a0014;">
+            <i class="fas fa-graduation-cap"></i>
+          </div>
+          <h3 style="margin:0 0 8px;" data-i18n-key="vis_edu_h">Curriculum 8-12 / 13+</h3>
+          <p style="color:var(--text2); margin:0; line-height:1.55;" data-i18n-key="vis_edu_p">
+            תכנית לימוד שלמה: חיסכון, דחיית סיפוקים, ניהול סיכונים, אוריינות Web3.
+            מצב ילדים = simulation בלבד (ללא כסף אמיתי). מצב הורים עם dashboard.
+          </p>
+        </div>
+
+        <div class="neural-card">
+          <div class="card-icon" style="background: linear-gradient(135deg, #a7e9ff, #22D3EE); color: #003344;">
+            <i class="fas fa-microchip"></i>
+          </div>
+          <h3 style="margin:0 0 8px;" data-i18n-key="vis_phygital_h">Phygital — ESP על השולחן</h3>
+          <p style="color:var(--text2); margin:0; line-height:1.55;" data-i18n-key="vis_phygital_p">
+            המכשיר הפיזי שלנו (המוכן כבר היום) מציג את Lumina עם אנימציה + haptic.
+            למשפחות = פעילות יומית משותפת. חיבור רגשי שלא קיים בקריפטו רגיל.
+          </p>
+        </div>
+      </div>
+
+      <div style="max-width: 980px; margin: 32px auto 0; padding: 24px; border-radius: 12px; background: rgba(74,222,128,.05); border:1px solid rgba(74,222,128,.2);">
+        <p style="margin:0; color:var(--text2); line-height:1.7;" data-i18n-key="vis_why">
+          <i class="fas fa-lightbulb" style="color:#FACC15;"></i>
+          <b data-i18n-key="vis_why_b">למה זה חשוב למשקיע:</b> Lumina מבדיל את SLH מ-95% מפרוייקטי הקריפטו — זה לא עוד yield farming.
+          זה edutech עם חומרה, AI, וקהילה. שוק יעד עולמי (Greenlight $2.3B valuation, Zogo $50M+ raised) — וכבר יש לנו את כל החלקים.
+          Roadmap: Q2-Q3 2027.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ TEAM ═════════ -->
+  <section class="investor-section" id="team">
+    <div class="container">
+      <span class="neural-eyebrow" data-i18n-key="tm_eyebrow">Team</span>
+      <h2 data-i18n-key="tm_h2">אנשים</h2>
+      <p class="lead" data-i18n-key="tm_lead">
+        Solo dev עם traction של team. אחרי Series A: גיוס CTO, mobile lead, hardware EE, security/audit.
+      </p>
+
+      <div class="team-grid">
+        <div class="team-card">
+          <div class="avatar">OK</div>
+          <div class="name">Osif Kaufman Ungar</div>
+          <div class="role" data-i18n-key="tm_osif">Founder · Solo Engineer · Architect</div>
+        </div>
+        <div class="team-card">
+          <div class="avatar">TZ</div>
+          <div class="name">Tzvika</div>
+          <div class="role" data-i18n-key="tm_tzvika">Co-founder · Crypto Trading Lead</div>
+        </div>
+        <div class="team-card">
+          <div class="avatar">EL</div>
+          <div class="name">Eli, Yakir, Zohar</div>
+          <div class="role" data-i18n-key="tm_contribs">Active Contributors</div>
+        </div>
+        <div class="team-card open">
+          <div class="avatar">+</div>
+          <div class="name" data-i18n-key="tm_open_h">CTO · Mobile · Security</div>
+          <div class="role" data-i18n-key="tm_open_p">Hiring with Series A</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ TARGET INVESTORS ═════════ -->
+  <section class="investor-section" style="background: linear-gradient(180deg, transparent, var(--bg2), transparent);" id="targets">
+    <div class="container">
+      <span class="neural-eyebrow" data-i18n-key="ti_eyebrow">Target Investors</span>
+      <h2 data-i18n-key="ti_h2">למי שלחנו pitch</h2>
+      <p class="lead" data-i18n-key="ti_lead">
+        קרנות ישראליות + שותפים בינלאומיים שמתמחים בפרוייקטים עם hardware angle ו-multi-jurisdictional reach.
+      </p>
+
+      <div class="investor-logos">
+        <div class="logo-item"><div class="logo-name">Pitango</div><div class="logo-tag" data-i18n-key="ti_target">Target · Israel</div></div>
+        <div class="logo-item"><div class="logo-name">Pico Venture</div><div class="logo-tag" data-i18n-key="ti_target">Target · Israel</div></div>
+        <div class="logo-item"><div class="logo-name">Aleph</div><div class="logo-tag" data-i18n-key="ti_target">Target · Israel</div></div>
+        <div class="logo-item"><div class="logo-name">+ International</div><div class="logo-tag" data-i18n-key="ti_intl">5 languages reach</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ ASK ═════════ -->
+  <section class="investor-section" id="ask">
+    <div class="container" style="text-align:center;">
+      <span class="neural-eyebrow" data-i18n-key="ask_eyebrow">The Ask</span>
+      <h2 style="font-size: clamp(2rem, 5vw, 3.2rem); margin:8px 0 16px;" data-i18n-key="ask_h2">$4.4M Series A · 18-month runway</h2>
+      <p class="lead" style="margin-left:auto; margin-right:auto;" data-i18n-key="ask_lead">
+        חיים. מודעים. מוכנים לבדיקה. ה-stack מוכן לשיחה היום, ה-cap table פתוח.
+        תאמון מבוסס על קוד שרץ — לא על הבטחות.
+      </p>
+
+      <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin-top:32px;">
+        <a href="https://t.me/osifeu_prog" class="neural-btn neural-btn-gold" style="font-size:1.05rem;">
+          <i class="fab fa-telegram"></i> <span data-i18n-key="ask_cta_tg">קבע שיחה · @osifeu_prog</span>
+        </a>
+        <a href="mailto:invest@slh-nft.com" class="neural-btn neural-btn-ghost" style="font-size:1.05rem;">
+          <i class="fas fa-envelope"></i> invest@slh-nft.com
+        </a>
+      </div>
+
+      <div style="margin-top:32px; padding-top:32px; border-top: 1px dashed var(--border); display:flex; gap:24px; flex-wrap:wrap; justify-content:center;">
+        <div class="trust-badge"><span class="badge-dot"></span> <span data-i18n-key="ask_link_demo">Live demo: slh-nft.com</span></div>
+        <div class="trust-badge"><span class="badge-dot"></span> <span data-i18n-key="ask_link_chain">On-chain: BscScan</span></div>
+        <div class="trust-badge"><span class="badge-dot"></span> <span data-i18n-key="ask_link_hw">Hardware demo: in-person Tel Aviv</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ DISCLAIMER ═════════ -->
+  <section class="investor-section" style="padding: 40px 24px; background: rgba(0,0,0,.3);">
+    <div class="container" style="max-width: 980px;">
+      <details style="border: 1px solid var(--border); border-radius: 10px; padding: 18px 22px; background: rgba(255,255,255,.02);">
+        <summary style="cursor: pointer; font-weight: 700; color: var(--text2); font-size: .92rem; user-select:none;" data-i18n-key="disc_h">
+          <i class="fas fa-shield-halved"></i> Legal & Risk Disclosure · גילוי משפטי וסיכונים
+        </summary>
+        <div style="margin-top: 18px; color: var(--text3); font-size: .82rem; line-height: 1.7;">
+          <p data-i18n-key="disc_p1">
+            <b>אין הבטחה לתשואה.</b> ההצעה היא לרכישת השתתפות ברווחי פעילות מכשירי ESP של SLH Spark.
+            התשואה תלויה לחלוטין בביצועי המוצר בשוק. תיאורי "פי 3" או "5 שנים" הם <b>תחזית עסקית</b>, לא התחייבות.
+            תוצאות בפועל עשויות להיות שונות לחלוטין, לרבות אובדן מלא של ההשקעה.
+          </p>
+          <p data-i18n-key="disc_p2">
+            <b>סיכון גבוה.</b> השקעות מסוג זה (early-stage, hardware, blockchain-adjacent) נושאות סיכון מהותי לאובדן הקרן.
+            המוצר טרם הושק, השוק טרם נבחן, ומשקיעים רציונליים חייבים לתמחר תרחיש של אובדן 100%.
+            אין להשקיע סכום שלא ניתן להפסיד.
+          </p>
+          <p data-i18n-key="disc_p3">
+            <b>לא הצעה לציבור.</b> ההצעה הזו אינה מהווה "הצעה לציבור" כהגדרתה בחוק ניירות ערך הישראלי.
+            פנייה למשקיעים תיעשה במסגרת חוג קרוב/משקיעים מסווגים בלבד. כל משקיע נדרש לאמת את כשירותו לפני סגירת השקעה.
+            ההצעה אינה מבוססת תשקיף, ולא נבדקה על ידי הרשות לניירות ערך.
+          </p>
+          <p data-i18n-key="disc_p4">
+            <b>ייעוץ עצמאי.</b> אין באמור באתר זה משום ייעוץ השקעות, ייעוץ פיננסי, ייעוץ משפטי או ייעוץ מס.
+            כל החלטת השקעה היא באחריות המשקיע בלבד. מומלץ להתייעץ עם רואה חשבון, עורך דין ויועץ פיננסי מוסמך לפני קבלת החלטה.
+          </p>
+          <p data-i18n-key="disc_p5">
+            <b>נתונים בזמן אמת.</b> המספרים המוצגים בעמוד זה (משתמשים, heartbeats, API status) נשלפים מהמערכת הפעילה ב-Railway,
+            ויכולים להשתנות. ייתכנו שיבושי תקשורת זמניים. בעת מחלוקת לגבי נתון — נתוני המערכת הפנימיים גוברים.
+          </p>
+          <p style="color:var(--text2); margin-top:14px;" data-i18n-key="disc_contact">
+            לשאלות משפטיות וחומרים נוספים (term sheet, audit, מסמכי תאגיד): <a href="mailto:invest@slh-nft.com" style="color:var(--accent);">invest@slh-nft.com</a>
+          </p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-links">
+      <a href="/landing-v2.html" data-i18n-key="ft_main">Main site</a>
+      <a href="/investors.html" data-i18n-key="ft_inv">Investors</a>
+      <a href="#terms" data-i18n-key="ft_terms">Investment Terms</a>
+      <a href="#vision" data-i18n-key="ft_vision">Vision (Lumina)</a>
+      <a href="https://t.me/osifeu_prog">@osifeu_prog</a>
+      <a href="https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022">BscScan</a>
+      <a href="mailto:invest@slh-nft.com">invest@slh-nft.com</a>
+    </div>
+    <div>
+      © 2026 SLH Spark · SPARK IND · Built in Israel ·
+      <span class="live-indicator" style="margin-inline-start: 4px;">SYSTEM ONLINE</span>
+    </div>
+    <div style="margin-top: 10px; color: var(--text3); font-size: .75rem;" data-i18n-key="ft_disclaim_short">
+      Investment offering: NOT a public solicitation. Subject to legal review. High risk — read full disclosure above.
+    </div>
+  </footer>
+
+  <!-- ═════════ Scripts ═════════ -->
+  <script>
+    // ── Live data: API health + ESP heartbeat ──
+    (function fetchLive() {
+      const API = 'https://slh-api-production.up.railway.app';
+      // API status
+      fetch(API + '/api/health', { mode: 'cors' })
+        .then(r => r.json())
+        .then(data => {
+          const ok = data && (data.ok || data.status === 'ok');
+          const el = document.getElementById('kpi-api');
+          if (el) el.innerHTML = ok ? '<span class="live-indicator">LIVE</span>' : '<span style="color:var(--token-zuz);">DOWN</span>';
+        })
+        .catch(() => {
+          const el = document.getElementById('kpi-api');
+          if (el) el.innerHTML = '<span style="color:var(--text3);">checking…</span>';
+        });
+
+      // ESP status — checks claim endpoint for Osif's specific device.
+      // {paired: false} or {paired: true} both mean device row exists & API reachable.
+      const DEVICE_ID = 'esp32-14335C6C32C0';
+      fetch(API + '/api/device/claim/' + DEVICE_ID, { mode: 'cors' })
+        .then(r => r.json())
+        .then(data => {
+          const el = document.getElementById('kpi-esp');
+          if (!el) return;
+          if (data && (data.paired === true || data.paired === false)) {
+            el.innerHTML = '<span class="live-indicator">PAIRED</span>';
+          }
+        })
+        .catch(() => { /* keep fallback */ });
+    })();
+
+    // ── Language toggle (basic — full strings would require translations bundle) ──
+    document.querySelectorAll('.lang-toggle button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const lang = btn.dataset.lang;
+        document.querySelectorAll('.lang-toggle button').forEach(b => b.classList.toggle('active', b === btn));
+        document.documentElement.lang = lang;
+        document.documentElement.dir = (lang === 'he' || lang === 'ar') ? 'rtl' : 'ltr';
+        // For now, only Hebrew/English have full content; ru/ar/fr fall back to Hebrew.
+        // Full translations.js integration is the next step.
+        if (window.applyTranslations) window.applyTranslations(lang);
+      });
+    });
+  </script>
+</body>
+</html>

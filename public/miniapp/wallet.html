@@ -1,0 +1,144 @@
+﻿<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>SLH — ארנק</title>
+  <link rel="stylesheet" href="miniapp.css" />
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <h1>הארנק שלי</h1>
+      <div class="user" id="user-greeting">—</div>
+    </header>
+
+    <nav class="nav">
+      <a href="dashboard.html">סקירה</a>
+      <a href="wallet.html" class="active">ארנק</a>
+      <a href="device.html">מכשיר</a>
+      <a href="swarm.html">Swarm</a>
+    </nav>
+
+    <section class="card">
+      <h2>יתרות</h2>
+      <div id="balances"><div class="placeholder">טוען...</div></div>
+    </section>
+
+    <section class="card">
+      <h2>שווי כולל (₪)</h2>
+      <div class="kpi" id="totals">
+        <div><div class="label">שווי SLH</div><div class="value placeholder">--</div></div>
+        <div><div class="label">שווי כולל</div><div class="value placeholder">--</div></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>תנועות אחרונות</h2>
+      <div id="transactions"><div class="placeholder">טוען...</div></div>
+    </section>
+  </div>
+
+  <script src="miniapp.js"></script>
+  <script>
+    (async function () {
+      const slh = window.SLH_init({ title: "SLH Wallet" });
+      const balancesEl = document.getElementById("balances");
+      const totalsEl = document.getElementById("totals");
+      const txEl = document.getElementById("transactions");
+
+      if (!slh.user) {
+        const msg =
+          '<div class="placeholder">פתח את הארנק מתוך בוט @WEWORK_teamviwer_bot.</div>';
+        balancesEl.innerHTML = msg;
+        txEl.innerHTML = msg;
+        return;
+      }
+
+      let slhUserId = null;
+      try {
+        const u = await slh.api("/api/user/" + slh.user.id);
+        if (!u || !u.id) throw new Error("לא מזוהה במערכת");
+        slhUserId = u.id;
+      } catch (e) {
+        slh.renderErr(balancesEl, e);
+        return;
+      }
+
+      // Balances + totals
+      try {
+        const [bal, prices] = await Promise.all([
+          slh.api("/api/wallet/" + slhUserId + "/balances"),
+          slh.api("/api/prices").catch(function () { return { prices: {} }; }),
+        ]);
+        const b = bal.balances || bal || {};
+        const p = (prices && (prices.prices || prices)) || {};
+        balancesEl.innerHTML =
+          '<div class="token-row"><span class="sym">SLH</span><span class="name">Spark — פרימיום</span><span class="amount">' +
+            slh.fmt(b.SLH, 4) +
+          '</span></div>' +
+          '<div class="token-row"><span class="sym">MNH</span><span class="name">מנחה — יציב ל-₪</span><span class="amount">' +
+            slh.fmt(b.MNH, 2) +
+          '</span></div>' +
+          '<div class="token-row"><span class="sym">ZVK</span><span class="name">פעילות — תגמול</span><span class="amount">' +
+            slh.fmt(b.ZVK, 2) +
+          '</span></div>' +
+          '<div class="token-row"><span class="sym">REP</span><span class="name">מוניטין</span><span class="amount">' +
+            slh.fmt(b.REP, 0) +
+          '</span></div>';
+
+        const slhValue = (Number(b.SLH) || 0) * (Number(p.SLH) || 0);
+        const total =
+          slhValue +
+          (Number(b.MNH) || 0) * 1 +
+          (Number(b.ZVK) || 0) * (Number(p.ZVK) || 0);
+        totalsEl.innerHTML =
+          '<div><div class="label">שווי SLH</div><div class="value">' +
+            slh.fmt(slhValue, 2) +
+          ' ₪</div></div>' +
+          '<div><div class="label">שווי כולל</div><div class="value">' +
+            slh.fmt(total, 2) +
+          ' ₪</div></div>';
+      } catch (e) {
+        slh.renderErr(balancesEl, e);
+      }
+
+      // Transactions
+      try {
+        const tx = await slh.api("/api/wallet/" + slhUserId + "/transactions");
+        const items = (tx && (tx.transactions || tx)) || [];
+        if (!items.length) {
+          txEl.innerHTML = '<div class="placeholder">אין תנועות עדיין.</div>';
+        } else {
+          txEl.innerHTML = items
+            .slice(0, 12)
+            .map(function (t) {
+              const amount = slh.fmt(t.amount, 4);
+              const token = t.token || t.currency || "SLH";
+              const sign = Number(t.amount) > 0 ? "+" : "";
+              const when = t.created_at
+                ? new Date(t.created_at).toLocaleDateString("he-IL")
+                : "--";
+              return (
+                '<div class="row"><span class="label">' +
+                (t.type || t.description || "תנועה") +
+                " · " +
+                when +
+                '</span><span class="value">' +
+                sign +
+                amount +
+                " " +
+                token +
+                "</span></div>"
+              );
+            })
+            .join("");
+        }
+      } catch (e) {
+        slh.renderErr(txEl, e);
+      }
+    })();
+  </script>
+</body>
+</html>

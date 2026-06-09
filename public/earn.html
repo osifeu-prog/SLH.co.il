@@ -1,0 +1,1742 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SLH Spark Earn — Staking & Variable Yield (4-12%)</title>
+  <meta name="description" content="Earn passive income with SLH staking plans. Up to Variable Yield (4-12%). Stake TON tokens and earn daily returns.">
+  <meta name="keywords" content="SLH, staking, earn, passive income, APY, TON, crypto, yield, investment, MNH">
+  <link rel="canonical" href="https://slh-nft.com/earn.html">
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://slh-nft.com/earn.html">
+  <meta property="og:title" content="SLH Earn - Variable Yield (4-12%) Staking">
+  <meta property="og:description" content="SLH Revenue Share Pool — dynamic yield derived from real system revenue. Pre-launch. Not guaranteed.">
+  <meta property="og:image" content="https://slh-nft.com/assets/og/earn.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="he_IL">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SLH Earn - Variable Yield (4-12%) Staking">
+  <meta name="twitter:description" content="SLH Revenue Share Pool — dynamic yield derived from real system revenue. Pre-launch. Not guaranteed.">
+  <meta name="twitter:image" content="https://slh-nft.com/assets/og/earn.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/shared.css?v=20260426e">
+  <style>
+    /* ── Earn Page — Premium Redesign ── */
+    .earn-page { padding-top: calc(var(--topnav-h) + 20px); min-height: 100vh; }
+    .earn-container { max-width: 1200px; margin: 0 auto; padding: 0 20px 100px; }
+
+    /* ── Hero ── */
+    .earn-hero {
+      text-align: center;
+      padding: 60px 20px 50px;
+      position: relative;
+    }
+    .earn-hero::before {
+      content: '';
+      position: absolute;
+      top: -100px; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(108,92,231,.12) 0%, rgba(0,206,201,.06) 40%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .earn-hero > * { position: relative; z-index: 1; }
+    .earn-hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(108, 92, 231, .15);
+      border: 1px solid rgba(108, 92, 231, .3);
+      border-radius: 100px;
+      padding: 8px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent2);
+      margin-bottom: 20px;
+      animation: pulse-badge 2s ease-in-out infinite;
+    }
+    @keyframes pulse-badge {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(108,92,231,.3); }
+      50% { box-shadow: 0 0 20px 4px rgba(108,92,231,.15); }
+    }
+    .earn-hero-badge i { font-size: 14px; }
+    .earn-hero h1 {
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .earn-hero .apy-highlight {
+      background: linear-gradient(135deg, var(--gold), var(--orange));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .earn-hero p {
+      font-size: 18px;
+      color: var(--text2);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* ── Stats Bar ── */
+    .earn-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin: 40px 0;
+    }
+    .earn-stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+      transition: all var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .earn-stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--green));
+      opacity: 0;
+      transition: opacity var(--transition);
+    }
+    .earn-stat-card:hover::before { opacity: 1; }
+    .earn-stat-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .earn-stat-card .stat-icon {
+      font-size: 18px;
+      color: var(--text3);
+      margin-bottom: 8px;
+    }
+    .earn-stat-card .stat-value {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--accent2);
+    }
+    .earn-stat-card .stat-value.gold { color: var(--gold); }
+    .earn-stat-card .stat-value.green { color: var(--green); }
+    .earn-stat-card .stat-label {
+      font-size: 13px;
+      color: var(--text3);
+      margin-top: 4px;
+    }
+
+    /* ── Section titles ── */
+    .section-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--accent2);
+      margin-bottom: 8px;
+    }
+    .section-title {
+      font-size: clamp(24px, 3vw, 36px);
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .section-sub {
+      font-size: 15px;
+      color: var(--text2);
+      margin-bottom: 32px;
+    }
+
+    /* ── MNH Token Section ── */
+    .mnh-section { margin-bottom: 60px; }
+    .mnh-card {
+      background: linear-gradient(135deg, rgba(108,92,231,.08), rgba(0,206,201,.05));
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      padding: 40px 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .mnh-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--cyan), var(--green));
+    }
+    .mnh-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .mnh-logo {
+      width: 56px; height: 56px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--accent), var(--cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 900;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .mnh-header-text h2 {
+      font-size: clamp(22px, 3vw, 30px);
+      font-weight: 800;
+      margin: 0;
+    }
+    .mnh-header-text .mnh-peg {
+      font-size: 14px;
+      color: var(--green);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+    .mnh-desc {
+      font-size: 15px;
+      color: var(--text2);
+      line-height: 1.7;
+      margin-bottom: 28px;
+      max-width: 700px;
+    }
+    .mnh-features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .mnh-feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px;
+      background: rgba(0,0,0,.2);
+      border-radius: var(--radius-sm);
+    }
+    .mnh-feature i {
+      color: var(--accent2);
+      font-size: 16px;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+    .mnh-feature span {
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.5;
+    }
+    /* MNH Flow Diagram */
+    .mnh-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 24px 16px;
+      background: rgba(0,0,0,.25);
+      border-radius: var(--radius);
+      margin-top: 8px;
+    }
+    .mnh-flow-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 16px;
+      min-width: 80px;
+    }
+    .mnh-flow-step .flow-icon {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: rgba(108,92,231,.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: var(--accent2);
+    }
+    .mnh-flow-step .flow-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text2);
+      text-align: center;
+    }
+    .mnh-flow-arrow {
+      font-size: 18px;
+      color: var(--text3);
+      flex-shrink: 0;
+    }
+
+    /* ── Staking Plans Grid ── */
+    .plans-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 20px;
+      margin-bottom: 60px;
+    }
+    .plan-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      position: relative;
+      overflow: hidden;
+      transition: all var(--transition);
+    }
+    .plan-card:hover {
+      border-color: transparent;
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg), 0 0 0 1px rgba(108,92,231,.3);
+    }
+    .plan-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius);
+      padding: 1px;
+      background: linear-gradient(135deg, var(--accent), var(--cyan));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0;
+      transition: opacity var(--transition);
+      pointer-events: none;
+    }
+    .plan-card:hover::after { opacity: 1; }
+    .plan-card.popular { border-color: var(--gold); }
+    .plan-card.popular::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--gold), var(--orange));
+    }
+    .plan-card .popular-badge {
+      position: absolute;
+      top: 12px;
+      inset-inline-end: 12px;
+      background: linear-gradient(135deg, var(--gold), var(--orange));
+      color: #000;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 100px;
+      animation: badge-glow 2s ease-in-out infinite;
+    }
+    @keyframes badge-glow {
+      0%, 100% { box-shadow: 0 0 8px rgba(255,211,42,.3); }
+      50% { box-shadow: 0 0 20px rgba(255,211,42,.5); }
+    }
+    .plan-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .plan-icon.monthly { background: rgba(0, 180, 216, .15); color: var(--cyan); }
+    .plan-icon.quarterly { background: rgba(108, 92, 231, .15); color: var(--accent2); }
+    .plan-icon.semi { background: rgba(0, 206, 201, .15); color: var(--green); }
+    .plan-icon.annual { background: rgba(255, 211, 42, .15); color: var(--gold); }
+    .plan-icon .lock-anim {
+      position: absolute;
+      top: -4px;
+      inset-inline-end: -4px;
+      font-size: 10px;
+      color: var(--text3);
+      animation: lock-bounce 3s ease-in-out infinite;
+    }
+    @keyframes lock-bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+    .plan-name {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .plan-apy {
+      font-size: 32px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--green));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 12px 0;
+    }
+    .plan-apy small {
+      font-size: 14px;
+      font-weight: 600;
+      -webkit-text-fill-color: var(--text2);
+    }
+    .plan-details {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 16px 0 16px;
+    }
+    .plan-detail {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+    .plan-detail .label { color: var(--text3); }
+    .plan-detail .value { font-weight: 600; color: var(--text); }
+    /* Plan fill bar */
+    .plan-fill-wrap {
+      margin-bottom: 16px;
+    }
+    .plan-fill-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text3);
+      margin-bottom: 4px;
+    }
+    .plan-fill-bar {
+      height: 6px;
+      background: var(--bg2);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .plan-fill-bar .fill {
+      height: 100%;
+      border-radius: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--green));
+      transition: width 1.5s ease;
+    }
+    .plan-btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      text-align: center;
+      text-decoration: none;
+      box-sizing: border-box;
+    }
+    .plan-btn:hover {
+      background: var(--accent2);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(108,92,231,.3);
+    }
+
+    /* ── Calculator ── */
+    .calc-section { margin-bottom: 60px; }
+    .calc-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .calc-inputs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    .calc-group { display: flex; flex-direction: column; gap: 6px; }
+    .calc-group label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text2);
+    }
+    .calc-group input,
+    .calc-group select {
+      padding: 12px 16px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 16px;
+      outline: none;
+      transition: border-color var(--transition);
+    }
+    .calc-group input:focus,
+    .calc-group select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(108,92,231,.15);
+    }
+    .calc-group select option { background: var(--bg2); color: var(--text); }
+    .calc-results {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+    .calc-result {
+      text-align: center;
+      padding: 16px;
+      background: var(--bg2);
+      border-radius: var(--radius-sm);
+    }
+    .calc-result .res-label {
+      font-size: 12px;
+      color: var(--text3);
+      margin-bottom: 6px;
+    }
+    .calc-result .res-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--green);
+    }
+    .calc-result .res-sub {
+      font-size: 12px;
+      color: var(--text3);
+      margin-top: 4px;
+    }
+    /* Earnings Chart */
+    .calc-chart-wrap {
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+    .calc-chart-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text2);
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .calc-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      height: 160px;
+      padding: 0 8px;
+    }
+    .chart-bar-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      min-width: 0;
+    }
+    .chart-bar {
+      width: 100%;
+      max-width: 40px;
+      border-radius: 4px 4px 0 0;
+      background: linear-gradient(180deg, var(--accent), var(--cyan));
+      transition: height 0.8s ease;
+      min-height: 4px;
+    }
+    .chart-bar-label {
+      font-size: 10px;
+      color: var(--text3);
+      white-space: nowrap;
+    }
+    .chart-bar-value {
+      font-size: 10px;
+      color: var(--accent2);
+      font-weight: 600;
+    }
+
+    /* Plans comparison table */
+    .plans-compare-section { margin-bottom: 60px; }
+    .plans-compare-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow-x: auto;
+    }
+    .plans-compare {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      min-width: 500px;
+    }
+    .plans-compare th {
+      padding: 16px;
+      text-align: center;
+      font-weight: 700;
+      color: var(--text);
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .plans-compare th:first-child {
+      text-align: start;
+      color: var(--text3);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      font-size: 11px;
+    }
+    .plans-compare th.highlight {
+      background: rgba(108,92,231,.08);
+      color: var(--gold);
+    }
+    .plans-compare td {
+      padding: 14px 16px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .plans-compare td:first-child {
+      text-align: start;
+      color: var(--text2);
+      font-weight: 500;
+    }
+    .plans-compare td.highlight {
+      background: rgba(108,92,231,.04);
+      font-weight: 600;
+    }
+    .plans-compare tr:last-child td { border-bottom: none; }
+    .plans-compare tr:hover td { background: rgba(108,92,231,.04); }
+    .plans-compare tr:hover td.highlight { background: rgba(108,92,231,.08); }
+
+    /* ── How to Earn Steps ── */
+    .steps-section { margin-bottom: 60px; }
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+    }
+    .step-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      text-align: center;
+      position: relative;
+      transition: all var(--transition);
+    }
+    .step-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+    }
+    .step-num {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      font-size: 18px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+    }
+    .step-icon {
+      font-size: 28px;
+      color: var(--accent2);
+      margin-bottom: 12px;
+    }
+    .step-card h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .step-card p {
+      font-size: 14px;
+      color: var(--text2);
+      line-height: 1.6;
+    }
+
+    /* ── Positions Table ── */
+    .positions-section { margin-bottom: 60px; }
+    .positions-table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow-x: auto;
+    }
+    .positions-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    .positions-table th {
+      padding: 14px 16px;
+      text-align: start;
+      font-weight: 600;
+      color: var(--text3);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .positions-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .positions-table tr:last-child td { border-bottom: none; }
+    .positions-table tr:hover td { background: rgba(108, 92, 231, .04); }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .status-badge.active { background: rgba(0, 206, 201, .15); color: var(--green); }
+    .status-badge.locked { background: rgba(255, 165, 2, .15); color: var(--orange); }
+    .status-badge.completed { background: rgba(108, 92, 231, .15); color: var(--accent2); }
+    .positions-empty {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--text3);
+    }
+    .positions-empty i { font-size: 40px; margin-bottom: 12px; display: block; color: var(--text3); }
+    .positions-login-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 16px;
+      padding: 10px 24px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+      transition: all var(--transition);
+    }
+    .positions-login-btn:hover { background: var(--accent2); color: #fff; }
+
+    /* ── Deals Section ── */
+    .deals-section { margin-bottom: 60px; }
+    .deals-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .deal-card {
+      background: linear-gradient(135deg, rgba(108, 92, 231, .1), rgba(0, 206, 201, .05));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      transition: all var(--transition);
+    }
+    .deal-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow);
+    }
+    .deal-card .deal-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 100px;
+      margin-bottom: 12px;
+    }
+    .deal-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+    .deal-card p { font-size: 13px; color: var(--text2); margin-bottom: 12px; line-height: 1.5; }
+    .deal-code {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg2);
+      border: 1px dashed var(--border2);
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gold);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .deal-code:hover { border-color: var(--gold); background: rgba(255,211,42,.05); }
+    .deal-code i { font-size: 12px; color: var(--text3); }
+
+    /* ── Testimonials ── */
+    .testimonials-section { margin-bottom: 60px; }
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .testimonial-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      position: relative;
+      transition: all var(--transition);
+    }
+    .testimonial-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .testimonial-card .quote-icon {
+      position: absolute;
+      top: 16px;
+      inset-inline-end: 20px;
+      font-size: 28px;
+      color: rgba(108,92,231,.15);
+    }
+    .testimonial-stars {
+      color: var(--gold);
+      font-size: 13px;
+      margin-bottom: 12px;
+      display: flex;
+      gap: 2px;
+    }
+    .testimonial-text {
+      font-size: 14px;
+      color: var(--text2);
+      line-height: 1.7;
+      margin-bottom: 16px;
+      font-style: italic;
+    }
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .testimonial-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .testimonial-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .testimonial-handle {
+      font-size: 12px;
+      color: var(--text3);
+    }
+
+    /* ── Security Badges ── */
+    .security-section { margin-bottom: 60px; }
+    .security-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .security-badge-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 20px;
+      text-align: center;
+      transition: all var(--transition);
+    }
+    .security-badge-card:hover {
+      border-color: var(--green);
+      transform: translateY(-2px);
+    }
+    .security-icon {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: rgba(0,206,201,.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+      font-size: 20px;
+      color: var(--green);
+    }
+    .security-badge-card h4 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .security-badge-card p {
+      font-size: 12px;
+      color: var(--text3);
+      line-height: 1.5;
+    }
+
+    /* ── FAQ Accordion ── */
+    .faq-section { margin-bottom: 60px; }
+    .faq-list {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .faq-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: border-color var(--transition);
+    }
+    .faq-item.open { border-color: var(--accent); }
+    .faq-q {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 22px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 600;
+      gap: 12px;
+      user-select: none;
+      transition: color var(--transition);
+    }
+    .faq-q:hover { color: var(--accent2); }
+    .faq-q i {
+      font-size: 12px;
+      color: var(--text3);
+      transition: transform var(--transition);
+      flex-shrink: 0;
+    }
+    .faq-item.open .faq-q i { transform: rotate(180deg); color: var(--accent); }
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .35s ease, padding .35s ease;
+    }
+    .faq-item.open .faq-a {
+      max-height: 300px;
+      padding: 0 22px 18px;
+    }
+    .faq-a p {
+      font-size: 14px;
+      color: var(--text2);
+      line-height: 1.7;
+    }
+
+    /* ── CTA Bottom ── */
+    .earn-cta {
+      text-align: center;
+      padding: 48px 24px;
+      background: linear-gradient(135deg, rgba(108,92,231,.1), rgba(0,206,201,.05));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 40px;
+    }
+    .earn-cta h2 {
+      font-size: clamp(22px, 3vw, 32px);
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+    .earn-cta p {
+      font-size: 15px;
+      color: var(--text2);
+      margin-bottom: 24px;
+    }
+    .earn-cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all var(--transition);
+      text-decoration: none;
+    }
+    .earn-cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(108,92,231,.4);
+      color: #fff;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .earn-hero { padding: 40px 10px 30px; }
+      .calc-inputs { grid-template-columns: 1fr; }
+      .calc-results { grid-template-columns: 1fr; }
+      .plans-grid { grid-template-columns: 1fr; }
+      .earn-stats { grid-template-columns: repeat(2, 1fr); }
+      .mnh-flow { gap: 4px; }
+      .mnh-flow-step { min-width: 60px; padding: 8px; }
+      .mnh-flow-step .flow-icon { width: 36px; height: 36px; font-size: 14px; }
+      .calc-chart { height: 120px; }
+    }
+    @media (max-width: 480px) {
+      .earn-stats { grid-template-columns: 1fr; }
+      .mnh-card { padding: 24px 16px; }
+      .mnh-features { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Shared: Top Nav -->
+  <div id="topnav-root"></div>
+
+  <!-- Shared: Ticker -->
+  <div id="ticker-root"></div>
+
+  <main class="earn-page">
+    <div class="earn-container">
+
+      <!-- 1. Hero Banner -->
+      <section class="earn-hero rv">
+        <div class="earn-hero-badge">
+          <i class="fas fa-fire"></i>
+          <span data-i18n="earn_hero_badge">Live Staking Plans</span>
+        </div>
+        <h1>
+          <span data-i18n="earn_hero_title">Earn Passive Income</span><br>
+          <span class="apy-highlight" data-i18n="earn_hero_apy">Up to Variable Yield (4-12%)</span>
+        </h1>
+        <p data-i18n="earn_sub">Stake your tokens and earn daily returns.</p>
+      </section>
+
+      <!-- Quick Stats -->
+      <section class="earn-stats rv">
+        <div class="earn-stat-card">
+          <div class="stat-icon"><i class="fas fa-lock"></i></div>
+          <div class="stat-value gold" id="stat-tvl">--</div>
+          <div class="stat-label" data-i18n="earn_stat_tvl">Total Value Locked</div>
+        </div>
+        <div class="earn-stat-card">
+          <div class="stat-icon"><i class="fas fa-users"></i></div>
+          <div class="stat-value green" id="stat-stakers">--</div>
+          <div class="stat-label" data-i18n="earn_stat_stakers">Active Stakers</div>
+        </div>
+        <div class="earn-stat-card">
+          <div class="stat-icon"><i class="fas fa-coins"></i></div>
+          <div class="stat-value" id="stat-paid">--</div>
+          <div class="stat-label" data-i18n="earn_stat_paid">Total Paid Out</div>
+        </div>
+        <div class="earn-stat-card">
+          <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+          <div class="stat-value green" id="stat-max-apy">Dynamic</div>
+          <div class="stat-label" data-i18n="earn_stat_max_apy">Yield Model (Revenue Share)</div>
+        </div>
+      </section>
+
+      <!-- 2. MNH Token Section -->
+      <section class="mnh-section rv">
+        <div class="section-tag"><i class="fas fa-gem"></i> <span data-i18n="earn_mnh_tag">MNH Token</span></div>
+        <div class="mnh-card">
+          <div class="mnh-header">
+            <div class="mnh-logo">₪</div>
+            <div class="mnh-header-text">
+              <h2 data-i18n="earn_mnh_title">MNH — Savings Token</h2>
+              <div class="mnh-peg"><i class="fas fa-link" style="font-size:12px;margin-inline-end:4px"></i> <span data-i18n="earn_mnh_peg">1 MNH = ₪1 ILS (Pegged)</span></div>
+            </div>
+          </div>
+          <p class="mnh-desc" data-i18n="earn_mnh_desc">MNH is the internal savings currency of the SLH ecosystem. It is pegged 1:1 to ILS, giving you a stable way to earn yield without crypto volatility. Deposit ILS, TON, or BNB to receive MNH tokens, stake them in our plans, and redeem for ILS or trade on the P2P market at maturity.</p>
+
+          <div class="mnh-features">
+            <div class="mnh-feature">
+              <i class="fas fa-shield-halved"></i>
+              <span data-i18n="earn_mnh_f1">Stable value pegged 1:1 to ILS — no volatility risk</span>
+            </div>
+            <div class="mnh-feature">
+              <i class="fas fa-percent"></i>
+              <span data-i18n="earn_mnh_f2">Earn yield in staking plans — up to Variable Yield (4-12%)</span>
+            </div>
+            <div class="mnh-feature">
+              <i class="fas fa-arrows-rotate"></i>
+              <span data-i18n="earn_mnh_f3">Deposit ILS / TON / BNB and receive MNH instantly</span>
+            </div>
+            <div class="mnh-feature">
+              <i class="fas fa-money-bill-transfer"></i>
+              <span data-i18n="earn_mnh_f4">Redeem MNH for ILS or trade on P2P market</span>
+            </div>
+          </div>
+
+          <div class="mnh-flow">
+            <div class="mnh-flow-step">
+              <div class="flow-icon"><i class="fas fa-wallet"></i></div>
+              <div class="flow-label" data-i18n="earn_mnh_flow1">Deposit</div>
+            </div>
+            <div class="mnh-flow-arrow"><i class="fas fa-arrow-left"></i></div>
+            <div class="mnh-flow-step">
+              <div class="flow-icon" style="background:rgba(0,206,201,.2);color:var(--green)"><i class="fas fa-coins"></i></div>
+              <div class="flow-label" data-i18n="earn_mnh_flow2">Get MNH</div>
+            </div>
+            <div class="mnh-flow-arrow"><i class="fas fa-arrow-left"></i></div>
+            <div class="mnh-flow-step">
+              <div class="flow-icon" style="background:rgba(255,211,42,.15);color:var(--gold)"><i class="fas fa-lock"></i></div>
+              <div class="flow-label" data-i18n="earn_mnh_flow3">Stake</div>
+            </div>
+            <div class="mnh-flow-arrow"><i class="fas fa-arrow-left"></i></div>
+            <div class="mnh-flow-step">
+              <div class="flow-icon" style="background:rgba(0,206,201,.2);color:var(--green)"><i class="fas fa-chart-line"></i></div>
+              <div class="flow-label" data-i18n="earn_mnh_flow4">Earn</div>
+            </div>
+            <div class="mnh-flow-arrow"><i class="fas fa-arrow-left"></i></div>
+            <div class="mnh-flow-step">
+              <div class="flow-icon" style="background:rgba(108,92,231,.2);color:var(--accent2)"><i class="fas fa-money-bill-wave"></i></div>
+              <div class="flow-label" data-i18n="earn_mnh_flow5">Redeem</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Staking Plans Grid -->
+      <section class="plans-section rv">
+        <div class="section-tag"><i class="fas fa-coins"></i> <span data-i18n="earn_plans">Staking Plans</span></div>
+        <h2 class="section-title" data-i18n="earn_plans_title">Choose Your Staking Plan</h2>
+        <p class="section-sub" data-i18n="earn_plans_sub">Stake TON tokens to participate in the SLH Revenue Share Pool. Returns vary with real system activity.</p>
+        <div class="plans-grid" id="plans-grid">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- 4. Plans Comparison Table -->
+      <section class="plans-compare-section rv">
+        <div class="section-tag"><i class="fas fa-table"></i> <span data-i18n="earn_compare_tag">Plan Comparison</span></div>
+        <h2 class="section-title" data-i18n="earn_compare_title">Compare All Plans</h2>
+        <p class="section-sub" data-i18n="earn_compare_sub">See all staking plans side by side to choose the best fit.</p>
+        <div class="plans-compare-wrap" id="plans-compare-wrap">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- 5. Earnings Calculator -->
+      <section class="calc-section rv">
+        <div class="section-tag"><i class="fas fa-calculator"></i> <span data-i18n="earn_calculator">Profit Calculator</span></div>
+        <h2 class="section-title" data-i18n="earn_calc_title">Calculate Your Earnings</h2>
+        <p class="section-sub" data-i18n="earn_calc_sub">See how much you can earn with SLH staking.</p>
+        <div class="calc-card">
+          <div class="calc-inputs">
+            <div class="calc-group">
+              <label data-i18n="earn_calc_amount">Amount (TON)</label>
+              <input type="number" id="calc-amount" min="1" step="0.1" value="10" placeholder="10">
+            </div>
+            <div class="calc-group">
+              <label data-i18n="earn_calc_plan">Select Plan</label>
+              <select id="calc-plan">
+                <option value="monthly" data-i18n="earn_monthly">Monthly</option>
+                <option value="quarterly" data-i18n="earn_quarterly">Quarterly</option>
+                <option value="semi" data-i18n="earn_semi">Semi-Annual</option>
+                <option value="annual" data-i18n="earn_annual">Annual</option>
+              </select>
+            </div>
+          </div>
+          <div class="calc-results">
+            <div class="calc-result">
+              <div class="res-label" data-i18n="earn_calc_monthly_return">Monthly Return</div>
+              <div class="res-value" id="calc-monthly">0 TON</div>
+            </div>
+            <div class="calc-result">
+              <div class="res-label" data-i18n="earn_calc_total_return">Total Return</div>
+              <div class="res-value" id="calc-total">0 TON</div>
+            </div>
+            <div class="calc-result">
+              <div class="res-label" data-i18n="earn_calc_unlock">Unlock Date</div>
+              <div class="res-value" id="calc-unlock" style="font-size:16px;">--</div>
+            </div>
+          </div>
+          <!-- Earnings over time chart -->
+          <div class="calc-chart-wrap">
+            <div class="calc-chart-title" data-i18n="earn_chart_title">Earnings Over Time</div>
+            <div class="calc-chart" id="calc-chart">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. How to Earn -->
+      <section class="steps-section rv">
+        <div class="section-tag"><i class="fas fa-route"></i> <span data-i18n="earn_how">How It Works</span></div>
+        <h2 class="section-title" data-i18n="earn_how_title">Start Earning in 3 Steps</h2>
+        <p class="section-sub" data-i18n="earn_how_sub">Simple, transparent, and secure staking process.</p>
+        <div class="steps-grid">
+          <div class="step-card rv">
+            <div class="step-num">1</div>
+            <div class="step-icon"><i class="fas fa-wallet"></i></div>
+            <h3 data-i18n="earn_step1_title">Connect Wallet</h3>
+            <p data-i18n="earn_step1_desc">Link your TON wallet or log in through our Telegram bot to get started.</p>
+          </div>
+          <div class="step-card rv">
+            <div class="step-num">2</div>
+            <div class="step-icon"><i class="fas fa-hand-pointer"></i></div>
+            <h3 data-i18n="earn_step2_title">Choose a Plan</h3>
+            <p data-i18n="earn_step2_desc">Select a staking plan that fits your goals. Higher lock periods mean higher returns.</p>
+          </div>
+          <div class="step-card rv">
+            <div class="step-num">3</div>
+            <div class="step-icon"><i class="fas fa-chart-line"></i></div>
+            <h3 data-i18n="earn_step3_title">Earn Returns</h3>
+            <p data-i18n="earn_step3_desc">Watch your earnings grow daily. Withdraw or re-stake when the lock period ends.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. My Positions -->
+      <section class="positions-section rv">
+        <div class="section-tag"><i class="fas fa-layer-group"></i> <span data-i18n="earn_positions">My Positions</span></div>
+        <h2 class="section-title" data-i18n="earn_positions_title">Active Staking Positions</h2>
+        <p class="section-sub" data-i18n="earn_positions_sub">Track your staking activity and returns.</p>
+        <div class="positions-table-wrap" id="positions-wrap">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- 8. Deals Section -->
+      <section class="deals-section rv">
+        <div class="section-tag"><i class="fas fa-tags"></i> <span data-i18n="earn_deals">Active Promotions</span></div>
+        <h2 class="section-title" data-i18n="earn_deals_title">Special Deals & Bonuses</h2>
+        <p class="section-sub" data-i18n="earn_deals_sub">Take advantage of limited-time offers for extra returns.</p>
+        <div class="deals-grid" id="deals-grid">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- 9. Community CTA (replaces former testimonials) -->
+      <section class="testimonials-section rv" style="text-align:center;">
+        <div class="section-tag"><i class="fas fa-users"></i> <span data-i18n="earn_community_tag">Community</span></div>
+        <h2 class="section-title" data-i18n="earn_community_title">Join the SLH Community</h2>
+        <p class="section-sub" data-i18n="earn_community_sub">Connect with other stakers, share strategies, and stay updated.</p>
+        <a href="/community.html" class="earn-cta-btn" style="margin-top:8px;">
+          <i class="fas fa-comments"></i>
+          <span data-i18n="earn_community_btn">See What the Community Says</span>
+        </a>
+      </section>
+
+      <!-- 10. Security Trust Badges -->
+      <section class="security-section rv">
+        <div class="section-tag"><i class="fas fa-shield-halved"></i> <span data-i18n="earn_security_tag">Security</span></div>
+        <h2 class="section-title" data-i18n="earn_security_title">Your Funds Are Safe</h2>
+        <p class="section-sub" data-i18n="earn_security_sub">Built with enterprise-grade security from the ground up.</p>
+        <div class="security-grid" id="security-grid">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- 11. FAQ Accordion -->
+      <section class="faq-section rv">
+        <div class="section-tag"><i class="fas fa-question-circle"></i> <span data-i18n="earn_faq">FAQ</span></div>
+        <h2 class="section-title" data-i18n="earn_faq_title">Frequently Asked Questions</h2>
+        <p class="section-sub" data-i18n="earn_faq_sub">Everything you need to know about SLH staking.</p>
+        <div class="faq-list" id="faq-list">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- 12. Bottom CTA -->
+      <section class="earn-cta rv">
+        <h2 data-i18n="earn_cta_title">Ready to Start Earning?</h2>
+        <p data-i18n="earn_cta_sub">Join hundreds of stakers already earning passive income with SLH.</p>
+        <a href="https://t.me/SLH_AIR_bot" target="_blank" class="earn-cta-btn">
+          <i class="fab fa-telegram"></i>
+          <span data-i18n="earn_cta_btn">Start Staking Now</span>
+        </a>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Shared: Bottom Nav -->
+  <div id="bottomnav-root"></div>
+
+  <!-- Shared: Footer -->
+  <div id="footer-root"></div>
+
+  <script src="js/translations.js?v=20260426e"></script>
+  <script src="js/shared.js?v=20260426e"></script>
+  <script>
+  /* ====================================================
+     Earn Page — Premium Inline Script
+     ==================================================== */
+
+  /* ── Plan Definitions (fallback if API unavailable) ── */
+  const DEFAULT_PLANS = [
+    {
+      id: 'monthly',
+      nameKey: 'earn_monthly',
+      icon: 'fa-calendar-day',
+      iconClass: 'monthly',
+      weight: 1.0,
+      minDeposit: 1,
+      lockDays: 30,
+      popular: false
+    },
+    {
+      id: 'quarterly',
+      nameKey: 'earn_quarterly',
+      icon: 'fa-calendar-week',
+      iconClass: 'quarterly',
+      weight: 1.15,
+      minDeposit: 5,
+      lockDays: 90,
+      popular: false
+    },
+    {
+      id: 'semi',
+      nameKey: 'earn_semi',
+      icon: 'fa-calendar-alt',
+      iconClass: 'semi',
+      weight: 1.3,
+      minDeposit: 10,
+      lockDays: 180,
+      popular: true
+    },
+    {
+      id: 'annual',
+      nameKey: 'earn_annual',
+      icon: 'fa-calendar-check',
+      iconClass: 'annual',
+      weight: 1.5,
+      minDeposit: 25,
+      lockDays: 365,
+      popular: false
+    }
+  ];
+
+  const DEALS = [
+    {
+      code: 'LAUNCH30',
+      titleKey: 'earn_deal1_title',
+      titleFallback: 'Launch Bonus',
+      descKey: 'earn_deal1_desc',
+      descFallback: 'Get 30% extra tokens on your first stake. New users only.',
+      badge: 'NEW'
+    },
+    {
+      code: 'BUNDLE_ALL',
+      titleKey: 'earn_deal2_title',
+      titleFallback: 'Bundle Deal',
+      descKey: 'earn_deal2_desc',
+      descFallback: 'Stake in 3+ plans and receive a 10% APY boost across all positions.',
+      badge: 'HOT'
+    },
+    {
+      code: 'REFER50',
+      titleKey: 'earn_deal3_title',
+      titleFallback: 'Referral Reward',
+      descKey: 'earn_deal3_desc',
+      descFallback: 'Earn 50 bonus ZVK for every friend who stakes. Unlimited referrals.',
+      badge: 'EARN'
+    }
+  ];
+
+  const FAQ_ITEMS = [
+    {
+      qKey: 'earn_faq1_q', qFallback: 'What is staking and how does it work?',
+      aKey: 'earn_faq1_a', aFallback: 'Staking means locking your TON tokens in a smart contract for a fixed period. In return, you earn daily interest at the rate specified by your chosen plan. Your principal plus returns are unlocked at the end of the lock period.'
+    },
+    {
+      qKey: 'earn_faq2_q', qFallback: 'What is the minimum amount to stake?',
+      aKey: 'earn_faq2_a', aFallback: 'The minimum depends on the plan: Monthly requires 1 TON, Quarterly 5 TON, Semi-Annual 10 TON, and Annual 25 TON.'
+    },
+    {
+      qKey: 'earn_faq3_q', qFallback: 'Can I withdraw before the lock period ends?',
+      aKey: 'earn_faq3_a', aFallback: 'Early withdrawal is possible but may incur a penalty fee depending on the plan. We recommend staking only amounts you can lock for the full period to maximize your returns.'
+    },
+    {
+      qKey: 'earn_faq4_q', qFallback: 'How are returns calculated?',
+      aKey: 'earn_faq4_a', aFallback: 'Returns are calculated daily based on the monthly rate of your plan. For example, 4% monthly on 10 TON yields 0.4 TON per month. Returns accrue daily and compound automatically if you re-stake.'
+    },
+    {
+      qKey: 'earn_faq5_q', qFallback: 'Is my staked amount safe?',
+      aKey: 'earn_faq5_a', aFallback: 'All staked funds are secured by TON blockchain smart contracts. The SLH ecosystem uses multi-layer security including cold storage and real-time monitoring to protect your assets.'
+    },
+    {
+      qKey: 'earn_faq6_q', qFallback: 'What is MNH and how does it relate to staking?',
+      aKey: 'earn_faq6_a', aFallback: 'MNH is the SLH savings token pegged 1:1 to ILS. When you deposit funds, you receive MNH tokens which you can stake. At maturity, redeem your MNH for ILS or trade on the P2P market.'
+    },
+    {
+      qKey: 'earn_faq7_q', qFallback: 'What is ZUZ and how does it protect stakers?',
+      aKey: 'earn_faq7_a', aFallback: 'ZUZ is the anti-fraud "Mark of Cain" token in the SLH ecosystem. It is NOT a currency — it is a negative reputation marker assigned by Guardian bot reports to flag scammers. Users with 100 ZUZ are automatically banned across all groups. This cross-group intelligence system protects all ecosystem participants, including stakers.'
+    }
+  ];
+
+  /* Testimonials removed — replaced by community CTA */
+
+  const SECURITY_BADGES = [
+    {
+      icon: 'fa-file-shield',
+      titleKey: 'earn_sec1_title', titleFallback: 'Full Transparency',
+      descKey: 'earn_sec1_desc', descFallback: 'Every action logged in a SHA-256 audit trail for full accountability.'
+    },
+    {
+      icon: 'fa-key',
+      titleKey: 'earn_sec2_title', titleFallback: 'Non-Custodial',
+      descKey: 'earn_sec2_desc', descFallback: 'You retain full control of your private keys at all times.'
+    },
+    {
+      icon: 'fa-clock',
+      titleKey: 'earn_sec3_title', titleFallback: 'Daily Rewards',
+      descKey: 'earn_sec3_desc', descFallback: 'Rewards are calculated and distributed every 24 hours.'
+    },
+    {
+      icon: 'fa-bolt',
+      titleKey: 'earn_sec4_title', titleFallback: 'Instant Withdrawal',
+      descKey: 'earn_sec4_desc', descFallback: 'Withdraw your funds instantly when the lock period ends.'
+    }
+  ];
+
+  let activePlans = DEFAULT_PLANS;
+
+  /* ── Render: Plans Grid ── */
+  function renderPlans(plans) {
+    const grid = document.getElementById('plans-grid');
+    if (!grid) return;
+
+    grid.innerHTML = plans.map(p => {
+      return `
+      <div class="plan-card ${p.popular ? 'popular' : ''}">
+        ${p.popular ? `<span class="popular-badge" data-i18n="earn_popular">${t('earn_popular') || 'Popular'}</span>` : ''}
+        <div class="plan-icon ${p.iconClass}">
+          <i class="fas ${p.icon}"></i>
+          <span class="lock-anim"><i class="fas fa-lock"></i></span>
+        </div>
+        <div class="plan-name" data-i18n="${p.nameKey}">${t(p.nameKey)}</div>
+        <div class="plan-apy">
+          Pool Share
+        </div>
+        <div class="plan-details">
+          <div class="plan-detail">
+            <span class="label">Pool weight</span>
+            <span class="value">${p.weight}&times;</span>
+          </div>
+          <div class="plan-detail">
+            <span class="label" data-i18n="earn_min">${t('earn_min')}</span>
+            <span class="value">${p.minDeposit} TON</span>
+          </div>
+          <div class="plan-detail">
+            <span class="label" data-i18n="earn_lock">${t('earn_lock')}</span>
+            <span class="value">${p.lockDays} ${t('earn_days') || 'days'}</span>
+          </div>
+        </div>
+        <a href="/dashboard.html#staking" class="plan-btn" data-i18n="earn_stake_now">${t('earn_stake_now') || 'Stake Now'}</a>
+      </div>`;
+    }).join('');
+
+  }
+
+  /* ── Render: Plans Comparison Table ── */
+  function renderCompareTable(plans) {
+    const wrap = document.getElementById('plans-compare-wrap');
+    if (!wrap) return;
+    const semiIdx = plans.findIndex(p => p.id === 'semi');
+    const headers = plans.map((p, i) => {
+      const cls = i === semiIdx ? ' class="highlight"' : '';
+      return `<th${cls} data-i18n="${p.nameKey}">${t(p.nameKey)}</th>`;
+    }).join('');
+    const rows = [
+      { labelKey: 'earn_pool_weight', labelFallback: 'Pool Weight', vals: plans.map(p => p.weight + '\u00d7') },
+      { labelKey: 'earn_min', labelFallback: 'Minimum Deposit', vals: plans.map(p => p.minDeposit + ' TON') },
+      { labelKey: 'earn_lock', labelFallback: 'Lock Period', vals: plans.map(p => p.lockDays + ' ' + (t('earn_days') || 'days')) }
+    ];
+    const rowsHtml = rows.map(r => {
+      const cells = r.vals.map((v, i) => {
+        const cls = i === semiIdx ? ' class="highlight"' : '';
+        return `<td${cls}>${v}</td>`;
+      }).join('');
+      return `<tr><td>${t(r.labelKey) || r.labelFallback}</td>${cells}</tr>`;
+    }).join('');
+
+    wrap.innerHTML = `
+      <table class="plans-compare">
+        <thead><tr><th></th>${headers}</tr></thead>
+        <tbody>${rowsHtml}</tbody>
+      </table>`;
+  }
+
+  /* ── Render: Calculator ── */
+  function updateCalc() {
+    const amount = parseFloat(document.getElementById('calc-amount').value) || 0;
+    const planId = document.getElementById('calc-plan').value;
+    const plan = activePlans.find(p => p.id === planId) || activePlans[0];
+
+    const monthlyReturn = amount * (plan.monthlyRate / 100);
+    const totalMonths = plan.lockDays / 30;
+    const totalReturn = monthlyReturn * totalMonths;
+
+    const unlockDate = new Date();
+    unlockDate.setDate(unlockDate.getDate() + plan.lockDays);
+    const formattedDate = unlockDate.toLocaleDateString(getLang() === 'he' ? 'he-IL' : getLang() === 'ar' ? 'ar-SA' : getLang() === 'ru' ? 'ru-RU' : 'en-US', {
+      year: 'numeric', month: 'short', day: 'numeric'
+    });
+
+    document.getElementById('calc-monthly').textContent = `${monthlyReturn.toFixed(2)} TON`;
+    document.getElementById('calc-total').textContent = `${totalReturn.toFixed(2)} TON`;
+    document.getElementById('calc-unlock').textContent = formattedDate;
+
+    // Update earnings chart
+    renderEarningsChart(amount, plan);
+  }
+
+  /* ── Render: Earnings Chart ── */
+  function renderEarningsChart(amount, plan) {
+    const chart = document.getElementById('calc-chart');
+    if (!chart) return;
+    const totalMonths = Math.ceil(plan.lockDays / 30);
+    const maxBars = Math.min(totalMonths, 12);
+    const step = Math.max(1, Math.floor(totalMonths / maxBars));
+    const bars = [];
+    for (let m = step; m <= totalMonths; m += step) {
+      const earned = amount * (plan.monthlyRate / 100) * m;
+      bars.push({ month: m, earned: earned });
+    }
+    const maxVal = bars.length ? bars[bars.length - 1].earned : 1;
+
+    chart.innerHTML = bars.map(b => {
+      const h = Math.max(4, (b.earned / maxVal) * 140);
+      const label = (getLang() === 'he' ? 'ח\'' : 'M') + b.month;
+      return `
+        <div class="chart-bar-group">
+          <div class="chart-bar-value">${b.earned.toFixed(1)}</div>
+          <div class="chart-bar" style="height:${h}px"></div>
+          <div class="chart-bar-label">${label}</div>
+        </div>`;
+    }).join('');
+  }
+
+  /* ── Render: Positions ── */
+  function renderPositions(positions) {
+    const wrap = document.getElementById('positions-wrap');
+    if (!wrap) return;
+
+    if (!isLoggedIn()) {
+      wrap.innerHTML = `
+        <div class="positions-empty">
+          <i class="fas fa-lock"></i>
+          <p data-i18n="earn_positions_login">${t('earn_positions_login') || 'Log in to view your staking positions'}</p>
+          <a href="/dashboard.html" class="positions-login-btn">
+            <i class="fas fa-sign-in-alt"></i>
+            <span data-i18n="nav_login">${t('nav_login')}</span>
+          </a>
+        </div>`;
+      return;
+    }
+
+    if (!positions || positions.length === 0) {
+      wrap.innerHTML = `
+        <div class="positions-empty">
+          <i class="fas fa-inbox"></i>
+          <p data-i18n="earn_no_positions">${t('earn_no_positions') || 'No active staking positions yet. Choose a plan above to start earning.'}</p>
+        </div>`;
+      return;
+    }
+
+    const rows = positions.map(pos => {
+      const statusClass = pos.status === 'active' ? 'active' : pos.status === 'locked' ? 'locked' : 'completed';
+      const statusText = pos.status === 'active' ? (t('earn_status_active') || 'Active')
+                       : pos.status === 'locked' ? (t('earn_status_locked') || 'Locked')
+                       : (t('earn_status_completed') || 'Completed');
+      const startDate = new Date(pos.startDate).toLocaleDateString();
+      const endDate = new Date(pos.endDate).toLocaleDateString();
+      return `<tr>
+        <td>${pos.planName || pos.plan || '--'}</td>
+        <td><strong>${formatNumber(pos.amount)} TON</strong></td>
+        <td>${pos.apy || pos.annualRate || '--'}%</td>
+        <td>${startDate}</td>
+        <td>${endDate}</td>
+        <td><span class="status-badge ${statusClass}"><i class="fas fa-circle" style="font-size:6px"></i> ${statusText}</span></td>
+        <td><strong style="color:var(--green)">+${formatNumber(pos.earned || 0)} TON</strong></td>
+      </tr>`;
+    }).join('');
+
+    wrap.innerHTML = `
+      <table class="positions-table">
+        <thead>
+          <tr>
+            <th data-i18n="earn_col_plan">${t('earn_col_plan') || 'Plan'}</th>
+            <th data-i18n="common_amount">${t('common_amount')}</th>
+            <th data-i18n="earn_apy">${t('earn_apy')}</th>
+            <th data-i18n="earn_col_start">${t('earn_col_start') || 'Start'}</th>
+            <th data-i18n="earn_col_end">${t('earn_col_end') || 'End'}</th>
+            <th data-i18n="earn_col_status">${t('earn_col_status') || 'Status'}</th>
+            <th data-i18n="earn_col_earned">${t('earn_col_earned') || 'Earned'}</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  }
+
+  /* ── Render: Deals ── */
+  function renderDeals() {
+    const grid = document.getElementById('deals-grid');
+    if (!grid) return;
+
+    grid.innerHTML = DEALS.map(d => `
+      <div class="deal-card">
+        <span class="deal-badge">${d.badge}</span>
+        <h3 data-i18n="${d.titleKey}">${t(d.titleKey) || d.titleFallback}</h3>
+        <p data-i18n="${d.descKey}">${t(d.descKey) || d.descFallback}</p>
+        <div class="deal-code" onclick="copyToClipboard('${d.code}')" title="Click to copy">
+          <i class="fas fa-copy"></i> ${d.code}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  /* Testimonials render removed — section replaced by community CTA */
+
+  /* ── Render: Security Badges ── */
+  function renderSecurity() {
+    const grid = document.getElementById('security-grid');
+    if (!grid) return;
+
+    grid.innerHTML = SECURITY_BADGES.map(s => `
+      <div class="security-badge-card">
+        <div class="security-icon"><i class="fas ${s.icon}"></i></div>
+        <h4 data-i18n="${s.titleKey}">${t(s.titleKey) || s.titleFallback}</h4>
+        <p data-i18n="${s.descKey}">${t(s.descKey) || s.descFallback}</p>
+      </div>
+    `).join('');
+  }
+
+  /* ── Render: FAQ ── */
+  function renderFAQ() {
+    const list = document.getElementById('faq-list');
+    if (!list) return;
+
+    list.innerHTML = FAQ_ITEMS.map((faq, i) => `
+      <div class="faq-item" data-faq="${i}">
+        <div class="faq-q" onclick="toggleFaq(${i})">
+          <span data-i18n="${faq.qKey}">${t(faq.qKey) || faq.qFallback}</span>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-a">
+          <p data-i18n="${faq.aKey}">${t(faq.aKey) || faq.aFallback}</p>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function toggleFaq(index) {
+    const items = document.querySelectorAll('.faq-item');
+    items.forEach((item, i) => {
+      if (i === index) {
+        item.classList.toggle('open');
+      } else {
+        item.classList.remove('open');
+      }
+    });
+  }
+
+  /* ── Handle Stake Action ── */
+  function handleStake(planId) {
+    window.location.href = '/dashboard.html#staking';
+  }
+
+  /* ── Fetch Plans from API ── */
+  async function loadPlans() {
+    const data = await apiGet('/api/staking/plans');
+    if (data && Array.isArray(data) && data.length > 0) {
+      activePlans = data.map(p => ({
+        id: p.id || p.name,
+        nameKey: p.nameKey || `earn_${p.id}`,
+        icon: p.icon || 'fa-coins',
+        iconClass: p.iconClass || p.id || 'monthly',
+        weight: p.weight || 1.0,
+        minDeposit: p.minDeposit || p.min,
+        lockDays: p.lockDays || p.lock,
+        popular: p.popular || false
+      }));
+    }
+    renderPlans(activePlans);
+    renderCompareTable(activePlans);
+    updateCalc();
+  }
+
+  /* ── Fetch Positions from API ── */
+  async function loadPositions() {
+    if (!isLoggedIn()) {
+      renderPositions(null);
+      return;
+    }
+    const user = getCurrentUser();
+    const data = await apiGet(`/api/staking/positions/${user.id}`);
+    renderPositions(data && Array.isArray(data) ? data : []);
+  }
+
+  /* ── Fetch Stats from /api/stats ── */
+  async function loadStats() {
+    try {
+      const data = await apiGet('/api/stats');
+      if (data) {
+        // TVL: total_staked_ton converted to ILS (approx TON price)
+        if (data.total_staked_ton != null) {
+          // Fetch TON price for ILS conversion; fallback to showing TON amount
+          let tonPrice = null;
+          try {
+            const priceResp = await fetch('https://slh-api-production.up.railway.app/api/ton-price');
+            const priceData = await priceResp.json();
+            tonPrice = priceData && priceData.ils ? priceData.ils : null;
+          } catch(e) { /* price unavailable */ }
+          if (tonPrice) {
+            const tvlIls = Math.round(data.total_staked_ton * tonPrice);
+            document.getElementById('stat-tvl').textContent = '\u20AA' + formatNumber(tvlIls);
+          } else {
+            document.getElementById('stat-tvl').textContent = formatNumber(data.total_staked_ton) + ' TON';
+          }
+        }
+        // Active stakers: use premium_users as proxy for active stakers
+        if (data.premium_users != null) {
+          document.getElementById('stat-stakers').textContent = formatNumber(data.premium_users);
+        } else if (data.total_users != null) {
+          document.getElementById('stat-stakers').textContent = formatNumber(data.total_users);
+        }
+        // Total paid: use total_deposits_ton if available
+        if (data.total_deposits_ton != null) {
+          document.getElementById('stat-paid').textContent = formatNumber(data.total_deposits_ton) + ' TON';
+        }
+        // Max APY stays at Variable (hardcoded correctly)
+      }
+    } catch(e) {
+      console.warn('Failed to load stats:', e);
+      // Placeholders ("--") remain from HTML
+    }
+  }
+
+  /* ── Init ── */
+  document.addEventListener('DOMContentLoaded', () => {
+    initShared({ activePage: 'earn', showTicker: true, showBottomNav: true });
+
+    // Render static sections
+    renderDeals();
+    renderFAQ();
+    renderSecurity();
+
+    // Load dynamic data
+    loadPlans();
+    loadPositions();
+    loadStats();
+
+    // Calculator listeners
+    document.getElementById('calc-amount').addEventListener('input', updateCalc);
+    document.getElementById('calc-plan').addEventListener('change', updateCalc);
+  });
+  </script>
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260426e"></script>
+</body>
+</html>

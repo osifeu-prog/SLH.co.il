@@ -1,0 +1,460 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH · הכרויות איכותיות · 18+</title>
+<meta name="description" content="הכרויות לאנשים עם ערכים. מומחים מאומתים. לא Tinder — קהילה.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+  --bg:#05080f; --bg2:#0c1018; --bg3:#141924; --bg4:#1a2030;
+  --accent:#00ff41; --cyan:#00e5ff; --gold:#ffd700;
+  --rose:#ec4899; --purple:#a855f7; --red:#ff0055;
+  --text:#f5f5f8; --text2:#9ba0b5; --text3:#5a6078;
+  --border2:rgba(255,255,255,.06);
+  --font:'Rubik',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;padding-bottom:40px}
+a{color:var(--rose);text-decoration:none}
+body::before{content:'';position:fixed;inset:0;background:
+  radial-gradient(900px 500px at 20% -5%, rgba(236,72,153,.08), transparent 60%),
+  radial-gradient(700px 400px at 90% 50%, rgba(168,85,247,.06), transparent 60%);
+  pointer-events:none;z-index:0}
+.wrap{position:relative;z-index:1;max-width:620px;margin:0 auto;padding:16px}
+
+.hdr{text-align:center;padding:12px 0 20px}
+.hdr h1{font-size:28px;font-weight:900;background:linear-gradient(135deg,var(--rose),var(--purple),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hdr .sub{color:var(--text2);font-size:13px;margin-top:4px}
+.hdr .beta{display:inline-block;margin-top:10px;padding:4px 12px;background:rgba(255,215,0,.1);color:var(--gold);border:1px solid rgba(255,215,0,.3);border-radius:12px;font-size:11px;font-weight:700}
+
+.age-gate{padding:30px;background:var(--bg2);border:1px solid var(--border2);border-radius:14px;text-align:center;margin:40px auto;max-width:420px}
+.age-gate h2{margin-bottom:10px}
+.age-gate p{color:var(--text2);font-size:13px;margin-bottom:20px}
+.age-gate button{padding:12px 24px;background:var(--rose);color:#fff;border:none;border-radius:8px;font-weight:800;cursor:pointer;margin:0 6px;font-family:inherit}
+.age-gate button.no{background:var(--bg3);color:var(--text2)}
+
+.tabs{display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap}
+.tab{padding:10px 18px;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:10px;cursor:pointer;font-size:13px;font-weight:700;font-family:inherit;transition:.15s}
+.tab.active{background:rgba(236,72,153,.1);color:var(--rose);border-color:rgba(236,72,153,.3)}
+.tab:hover{color:var(--text)}
+
+.panel{background:linear-gradient(180deg,var(--bg2),var(--bg3));border:1px solid var(--border2);border-radius:16px;padding:20px;margin-bottom:16px}
+
+/* Profile form */
+.form-grid{display:grid;gap:12px}
+.field label{display:block;font-size:11px;color:var(--text2);margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.field input, .field select, .field textarea{width:100%;padding:12px;background:var(--bg);border:1px solid var(--border2);color:var(--text);border-radius:8px;font-family:inherit;font-size:14px}
+.field textarea{min-height:80px;resize:vertical}
+.chips-grid{display:flex;flex-wrap:wrap;gap:6px}
+.chip-toggle{padding:6px 12px;background:var(--bg4);border:1px solid var(--border2);color:var(--text2);border-radius:14px;cursor:pointer;font-size:12px;font-family:inherit;transition:.15s}
+.chip-toggle.on{background:rgba(236,72,153,.15);color:var(--rose);border-color:rgba(236,72,153,.4)}
+.btn{padding:14px;background:linear-gradient(135deg,var(--rose),var(--purple));color:#fff;border:none;border-radius:10px;font-weight:800;cursor:pointer;font-family:inherit;font-size:14px;width:100%;margin-top:10px}
+.btn:hover{opacity:.9}
+.btn.sec{background:var(--bg3);color:var(--text)}
+
+/* Candidate card */
+.card{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:18px;margin-bottom:14px;transition:.2s}
+.card:hover{border-color:rgba(236,72,153,.2)}
+.card-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.avatar{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--rose));display:grid;place-items:center;color:#fff;font-size:22px;font-weight:900;flex-shrink:0;overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.card-name{flex:1}
+.card-name h3{font-size:18px;margin-bottom:3px}
+.card-meta{font-size:12px;color:var(--text2)}
+.card-badge{font-size:10px;padding:3px 8px;border-radius:4px;font-weight:700}
+.badge-verified{background:rgba(0,255,65,.1);color:var(--accent)}
+.badge-unverified{background:var(--bg4);color:var(--text3)}
+.card-bio{font-size:13px;color:var(--text);margin:10px 0;line-height:1.7;padding:10px;background:var(--bg3);border-radius:8px;border-right:3px solid var(--rose)}
+.card-interests{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.card-interest{padding:2px 8px;background:rgba(168,85,247,.1);color:var(--purple);border-radius:4px;font-size:11px;font-weight:600}
+.card-overlap{font-size:11px;color:var(--accent);margin-top:8px}
+.card-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px}
+.card-actions button{padding:10px;border-radius:8px;border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:13px;transition:.15s}
+.btn-pass{background:var(--bg4);color:var(--text2)}
+.btn-like{background:linear-gradient(135deg,var(--rose),#f472b6);color:#fff}
+.btn-super{background:linear-gradient(135deg,var(--gold),#f59e0b);color:#000}
+.card-actions button:hover{transform:translateY(-2px)}
+
+/* Match card */
+.match-card{background:linear-gradient(135deg,rgba(236,72,153,.08),rgba(168,85,247,.06));border:1px solid rgba(236,72,153,.2);border-radius:14px;padding:16px;margin-bottom:12px;display:flex;align-items:center;gap:14px}
+.match-card .badge{display:inline-block;padding:2px 8px;background:rgba(0,255,65,.1);color:var(--accent);border-radius:4px;font-size:10px;font-weight:700;margin-right:6px}
+.match-tg{padding:10px 18px;background:var(--cyan);color:#000;border:none;border-radius:8px;font-weight:800;cursor:pointer;text-decoration:none;font-size:12px}
+
+.empty{text-align:center;padding:40px;color:var(--text3);font-size:13px}
+
+.stats-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:14px}
+.stat{padding:8px 14px;background:var(--bg3);border:1px solid var(--border2);border-radius:20px;font-size:12px}
+.stat b{color:var(--rose)}
+
+.warn{padding:12px;background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.25);border-radius:10px;color:var(--gold);font-size:12px;text-align:center;margin-bottom:14px}
+
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);padding:14px 22px;background:var(--rose);color:#fff;border-radius:10px;font-weight:700;z-index:9999;display:none;box-shadow:0 6px 30px rgba(236,72,153,.3)}
+.toast.show{display:block;animation:slideUp .3s}
+.toast.match{background:linear-gradient(135deg,var(--accent),var(--cyan));color:#000}
+@keyframes slideUp{from{transform:translate(-50%,20px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+</style>
+<meta name="slh-version" content="v1.0-flip">
+<script defer src="/js/slh-flip.js?v=20260426e"></script>
+</head>
+<body>
+<style>
+.slh-beta-banner{position:sticky;top:0;z-index:9998;background:linear-gradient(90deg,#ff9900,#ffd700,#00ff41);color:#000;font-weight:700;font-size:12px;padding:6px 14px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.slh-beta-banner a{color:#000;text-decoration:underline;font-weight:800}
+.slh-beta-banner button{background:rgba(0,0,0,.15);color:#000;border:none;padding:3px 10px;border-radius:12px;font-size:11px;cursor:pointer;font-weight:700}
+.slh-bug-fab{position:fixed;bottom:20px;left:20px;z-index:9999;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#ff4444,#ff9900);display:grid;place-items:center;font-size:24px;text-decoration:none;box-shadow:0 4px 20px rgba(255,68,68,.4);transition:transform .2s;animation:bugPulse 3s infinite}
+.slh-bug-fab:hover{transform:scale(1.1)}
+@keyframes bugPulse{0%,100%{box-shadow:0 4px 20px rgba(255,68,68,.4)}50%{box-shadow:0 4px 30px rgba(255,153,0,.6)}}
+@media(max-width:600px){.slh-bug-fab{bottom:80px;width:46px;height:46px;font-size:20px}}
+</style>
+<div class="slh-beta-banner" id="slhBeta">
+  <span>🚧 <b>BETA</b></span>
+  <span style="opacity:.85">אם משהו לא עובד —</span>
+  <a href="/bug-report.html">🐛 דווח באג</a>
+  <button onclick="localStorage.setItem('slh_beta_dismissed','1');this.parentElement.remove()">✕</button>
+</div>
+<a href="/bug-report.html" class="slh-bug-fab" title="דווח באג">🐛</a>
+<script>if(localStorage.getItem('slh_beta_dismissed')==='1'){var b=document.getElementById('slhBeta');if(b)b.remove();}</script>
+
+
+<!-- Age gate -->
+<div id="ageGate" class="age-gate">
+  <h2 style="color:var(--rose)">💘 SLH Dating</h2>
+  <p>שירות הכרויות ל-18+ · איכותיות על כמות · לא Tinder<br><br>
+  האם אתה/את מעל גיל 18?</p>
+  <button onclick="passGate()">כן, יש לי 18+</button>
+  <button class="no" onclick="window.location='/'">לא · חזרה</button>
+</div>
+
+<div id="app" class="wrap" style="display:none">
+
+  <header class="hdr">
+    <h1>💘 SLH Dating</h1>
+    <p class="sub">הכרויות לאנשים עם ערכים · מומחים מאומתים · ישראל + גלובלי</p>
+    <span class="beta">🚧 BETA · גרסת ניסוי</span>
+  </header>
+
+  <div class="warn">
+    ⚠️ פרטיות: ההודעה הראשונה מתקיימת רק אחרי "התאמה הדדית" דרך Telegram. מידע אישי (טלפון/אימייל) לא מופיע לאחרים.
+  </div>
+
+  <div class="stats-row" id="statsRow"><span class="stat">טוען...</span></div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('discover')">🔍 גלה</button>
+    <button class="tab" onclick="showTab('matches')">💘 התאמות</button>
+    <button class="tab" onclick="showTab('profile')">👤 פרופיל</button>
+  </div>
+
+  <!-- Discover tab -->
+  <div id="tab-discover">
+    <div id="candidates"><div class="empty">טוען מועמדים...</div></div>
+  </div>
+
+  <!-- Matches tab -->
+  <div id="tab-matches" style="display:none">
+    <div id="matchList"><div class="empty">טוען התאמות...</div></div>
+  </div>
+
+  <!-- Profile tab -->
+  <div id="tab-profile" style="display:none">
+    <div class="panel">
+      <h2 style="font-size:18px;margin-bottom:14px">👤 הפרופיל שלי</h2>
+      <div class="form-grid">
+        <div class="field"><label>שם תצוגה *</label><input type="text" id="f-name" required></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="field"><label>גיל (18+) *</label><input type="number" id="f-age" min="18" max="99" required></div>
+          <div class="field"><label>Telegram username</label><input type="text" id="f-tg" placeholder="לדוגמה: osifeu_prog"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="field"><label>מגדר</label>
+            <select id="f-gender"><option value="">-</option><option value="male">זכר</option><option value="female">נקבה</option><option value="nonbinary">לא-בינארי</option></select>
+          </div>
+          <div class="field"><label>מחפש/ת</label>
+            <select id="f-seeking"><option value="">כולם</option><option value="male">זכר</option><option value="female">נקבה</option></select>
+          </div>
+        </div>
+        <div class="field"><label>עיר</label><input type="text" id="f-city" placeholder="לדוגמה: כפר יונה"></div>
+        <div class="field"><label>מטרה</label>
+          <select id="f-looking">
+            <option value="serious_relationship">קשר רציני</option>
+            <option value="friendship">חברות</option>
+            <option value="partnership">שותפות עסקית</option>
+            <option value="community">קהילה</option>
+          </select>
+        </div>
+        <div class="field"><label>מקצוע / תחום</label><input type="text" id="f-profession" placeholder="לדוגמה: נוירולוג, מנצח תזמורת"></div>
+        <div class="field">
+          <label>על עצמי (3-5 שורות · כנות עובדת)</label>
+          <textarea id="f-bio" placeholder="הסיפור שלך, המה שחשוב לך באמת..."></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="field"><label>יש ילדים?</label>
+            <select id="f-haskids"><option value="">-</option><option value="true">כן</option><option value="false">לא</option></select>
+          </div>
+          <div class="field"><label>רוצה ילדים?</label>
+            <select id="f-wantskids"><option value="">-</option><option value="true">כן</option><option value="false">לא</option><option value="maybe">אולי</option></select>
+          </div>
+        </div>
+        <div class="field">
+          <label>תחומי עניין (בחר לפחות 3)</label>
+          <div id="interests-grid" class="chips-grid"></div>
+        </div>
+        <button class="btn" onclick="saveProfile()">💾 שמור פרופיל</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const API = 'https://slh-api-production.up.railway.app';
+const INTERESTS = [
+  'yoga','meditation','music','conducting','philosophy','neuroscience','psychology',
+  'extreme_sports','climbing','surfing','parenting','family','hiking','leadership',
+  'entrepreneurship','crypto','cooking','vegan','kosher','literature','chess','art',
+  'therapy','writing','travel','running','nature','spirituality'
+];
+const INTEREST_LABELS = {
+  yoga:'🧘 יוגה',meditation:'🕯 מדיטציה',music:'🎵 מוזיקה',conducting:'🎻 ניצוח',
+  philosophy:'🤔 פילוסופיה',neuroscience:'🧠 מדעי המוח',psychology:'🛋 פסיכולוגיה',
+  extreme_sports:'🪂 אקסטרים',climbing:'🧗 טיפוס',surfing:'🏄 גלישה',
+  parenting:'👶 הורות',family:'👪 משפחה',hiking:'🥾 טיולים',leadership:'🎖 הנהגה',
+  entrepreneurship:'💼 יזמות',crypto:'₿ קריפטו',cooking:'🍳 בישול',
+  vegan:'🌱 טבעוני',kosher:'✡ כשרות',literature:'📚 ספרות',chess:'♟ שחמט',
+  art:'🎨 אומנות',therapy:'💚 טיפול',writing:'✍️ כתיבה',travel:'✈️ טיולים',
+  running:'🏃 ריצה',nature:'🌳 טבע',spirituality:'🙏 רוחניות'
+};
+let selectedInterests = [];
+let currentUserId = null;
+
+function getUser(){
+  try { return JSON.parse(localStorage.getItem('slh_user') || '{}'); }
+  catch(e) { return {}; }
+}
+
+function passGate(){
+  localStorage.setItem('slh_dating_18plus', '1');
+  document.getElementById('ageGate').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  initApp();
+}
+
+function showTab(name){
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  ['discover','matches','profile'].forEach(n => {
+    document.getElementById('tab-'+n).style.display = n === name ? 'block' : 'none';
+  });
+  if (name === 'matches') loadMatches();
+  if (name === 'discover') loadCandidates();
+}
+
+function toast(msg, isMatch){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (isMatch ? ' match' : '');
+  setTimeout(() => t.className = 'toast', 3000);
+}
+
+function buildInterestsGrid(){
+  const g = document.getElementById('interests-grid');
+  g.innerHTML = INTERESTS.map(i => `<button type="button" class="chip-toggle" data-int="${i}" onclick="toggleInterest('${i}')">${INTEREST_LABELS[i]||i}</button>`).join('');
+}
+
+function toggleInterest(i){
+  const btn = document.querySelector(`[data-int="${i}"]`);
+  if (selectedInterests.includes(i)) {
+    selectedInterests = selectedInterests.filter(x => x !== i);
+    btn.classList.remove('on');
+  } else {
+    selectedInterests.push(i);
+    btn.classList.add('on');
+  }
+}
+
+async function loadStats(){
+  try {
+    const r = await fetch(API + '/api/dating/stats');
+    const d = await r.json();
+    document.getElementById('statsRow').innerHTML = `
+      <span class="stat">פרופילים: <b>${d.active_profiles || 0}</b></span>
+      <span class="stat">מאומתים: <b>${d.verified_profiles || 0}</b></span>
+      <span class="stat">התאמות השבוע: <b>${d.matches_this_week || 0}</b></span>
+    `;
+  } catch(e) {}
+}
+
+async function loadMyProfile(){
+  if (!currentUserId) return;
+  try {
+    const r = await fetch(API + '/api/dating/profile/' + currentUserId);
+    const d = await r.json();
+    if (!d.exists) return;
+    document.getElementById('f-name').value = d.display_name || '';
+    document.getElementById('f-age').value = d.age || '';
+    document.getElementById('f-tg').value = d.tg_username || '';
+    document.getElementById('f-gender').value = d.gender || '';
+    document.getElementById('f-seeking').value = d.seeking_gender || '';
+    document.getElementById('f-city').value = d.city || '';
+    document.getElementById('f-looking').value = d.looking_for || 'serious_relationship';
+    document.getElementById('f-profession').value = d.profession || '';
+    document.getElementById('f-bio').value = d.bio || '';
+    document.getElementById('f-haskids').value = d.has_children === true ? 'true' : d.has_children === false ? 'false' : '';
+    document.getElementById('f-wantskids').value = d.wants_children === true ? 'true' : d.wants_children === false ? 'false' : '';
+    selectedInterests = Array.from(d.interests || []);
+    document.querySelectorAll('[data-int]').forEach(b => {
+      b.classList.toggle('on', selectedInterests.includes(b.dataset.int));
+    });
+  } catch(e) {}
+}
+
+async function saveProfile(){
+  if (!currentUserId) { alert('התחבר קודם'); return; }
+  const body = {
+    user_id: currentUserId,
+    display_name: document.getElementById('f-name').value.trim(),
+    age: parseInt(document.getElementById('f-age').value, 10),
+    tg_username: document.getElementById('f-tg').value.trim().replace('@','') || null,
+    gender: document.getElementById('f-gender').value || null,
+    seeking_gender: document.getElementById('f-seeking').value || null,
+    city: document.getElementById('f-city').value.trim() || null,
+    profession: document.getElementById('f-profession').value.trim() || null,
+    bio: document.getElementById('f-bio').value.trim() || null,
+    looking_for: document.getElementById('f-looking').value,
+    interests: selectedInterests,
+    has_children: document.getElementById('f-haskids').value === 'true' ? true : document.getElementById('f-haskids').value === 'false' ? false : null,
+    wants_children: document.getElementById('f-wantskids').value === 'true' ? true : document.getElementById('f-wantskids').value === 'false' ? false : null,
+    languages: ['he']
+  };
+  if (!body.display_name || !body.age) { toast('חובה: שם + גיל'); return; }
+  if (selectedInterests.length < 3) { toast('בחר לפחות 3 תחומי עניין'); return; }
+  try {
+    const r = await fetch(API + '/api/dating/profile', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail);
+    toast('✅ ' + d.message);
+    loadStats();
+  } catch(e) { toast('❌ ' + e.message); }
+}
+
+async function loadCandidates(){
+  if (!currentUserId) { document.getElementById('candidates').innerHTML = '<div class="empty">התחבר + צור פרופיל → טאב "פרופיל"</div>'; return; }
+  try {
+    const r = await fetch(API + '/api/dating/match/candidates', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({user_id: currentUserId, limit: 10})
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail);
+    const cands = d.candidates || [];
+    if (cands.length === 0) {
+      document.getElementById('candidates').innerHTML = '<div class="empty">אין מועמדים חדשים כרגע. חזור מאוחר יותר.</div>';
+      return;
+    }
+    document.getElementById('candidates').innerHTML = cands.map(renderCard).join('');
+  } catch(e) {
+    document.getElementById('candidates').innerHTML = '<div class="empty">❌ ' + e.message + '<br>אם זו שגיאת "create your profile first" - עבור לטאב "פרופיל".</div>';
+  }
+}
+
+function renderCard(c){
+  const initial = (c.display_name || '?').charAt(0);
+  const verifyBadge = c.verified ? '<span class="card-badge badge-verified">✓ מאומת</span>' : '<span class="card-badge badge-unverified">לא מאומת</span>';
+  const interests = (c.interests || []).map(i => `<span class="card-interest">${INTEREST_LABELS[i]||i}</span>`).join('');
+  return `
+    <div class="card" id="card-${c.user_id}">
+      <div class="card-head">
+        <div class="avatar">${c.photo_url ? `<img src="${c.photo_url}">` : initial}</div>
+        <div class="card-name">
+          <h3>${c.display_name} · ${c.age}</h3>
+          <div class="card-meta">${c.city || ''} ${verifyBadge}</div>
+        </div>
+      </div>
+      ${c.bio ? `<div class="card-bio">${c.bio}</div>` : ''}
+      <div class="card-interests">${interests}</div>
+      ${c.overlap_count > 0 ? `<div class="card-overlap">💫 ${c.overlap_count} תחומי עניין משותפים</div>` : ''}
+      <div class="card-actions">
+        <button class="btn-pass" onclick="doAction(${c.user_id}, 'pass')">✗ דלג</button>
+        <button class="btn-like" onclick="doAction(${c.user_id}, 'like')">♥ לייק</button>
+        <button class="btn-super" onclick="doAction(${c.user_id}, 'superlike')">⭐ Super</button>
+      </div>
+    </div>
+  `;
+}
+
+async function doAction(toId, action){
+  if (!currentUserId) return;
+  try {
+    const r = await fetch(API + '/api/dating/match/action', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({from_user_id: currentUserId, to_user_id: toId, action})
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail);
+    if (d.is_match) toast('🎉 התאמה הדדית! ראה בטאב "התאמות"', true);
+    else if (action === 'like' || action === 'superlike') toast('♥ נשלח');
+    // Remove card
+    const card = document.getElementById('card-' + toId);
+    if (card) card.style.opacity = '0.3';
+  } catch(e) { toast('❌ ' + e.message); }
+}
+
+async function loadMatches(){
+  if (!currentUserId) { document.getElementById('matchList').innerHTML = '<div class="empty">התחבר קודם</div>'; return; }
+  try {
+    const r = await fetch(API + '/api/dating/matches/' + currentUserId);
+    const d = await r.json();
+    const matches = d.matches || [];
+    if (matches.length === 0) {
+      document.getElementById('matchList').innerHTML = '<div class="empty">עדיין אין התאמות הדדיות. המשך לחפש.</div>';
+      return;
+    }
+    document.getElementById('matchList').innerHTML = matches.map(m => {
+      const initial = (m.display_name || '?').charAt(0);
+      return `
+        <div class="match-card">
+          <div class="avatar">${m.photo_url ? `<img src="${m.photo_url}">` : initial}</div>
+          <div style="flex:1">
+            <h3>${m.display_name} · ${m.age}</h3>
+            <div style="font-size:12px;color:var(--text2)">${m.city || ''} ${m.verified ? '<span class="badge">✓ מאומת</span>' : ''}</div>
+            ${m.bio ? `<div style="font-size:12px;color:var(--text2);margin-top:4px">${m.bio.slice(0,80)}${m.bio.length>80?'...':''}</div>` : ''}
+          </div>
+          ${m.tg_link ? `<a class="match-tg" href="${m.tg_link}" target="_blank">💬 TG</a>` : '<span style="color:var(--text3);font-size:11px">אין TG</span>'}
+        </div>
+      `;
+    }).join('');
+  } catch(e) { document.getElementById('matchList').innerHTML = '<div class="empty">❌ ' + e.message + '</div>'; }
+}
+
+function initApp(){
+  const u = getUser();
+  currentUserId = u.id || null;
+  if (!currentUserId) {
+    document.getElementById('candidates').innerHTML = '<div class="empty">כדי להשתמש, <a href="/dashboard.html">התחבר עם Telegram</a> קודם.</div>';
+  }
+  buildInterestsGrid();
+  loadStats();
+  loadMyProfile();
+  loadCandidates();
+}
+
+// Check age gate
+if (localStorage.getItem('slh_dating_18plus') === '1') {
+  document.getElementById('ageGate').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  initApp();
+}
+</script>
+
+</body>
+</html>

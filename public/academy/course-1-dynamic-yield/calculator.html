@@ -1,0 +1,398 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dynamic Yield Calculator | Course #1</title>
+<meta name="description" content="מחשבון אינטראקטיבי ל-Dynamic Yield. הזן TVL, הכנסות, עלויות — ראה CR, P_t, APY_implied, ו-circuit breaker state בזמן אמת.">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{--bg:#050810;--bg2:#0d1220;--bg3:#151a2e;--gold:#ffd700;--green:#00e887;--red:#ff4444;--orange:#ff9800;--yellow:#ffc107;--purple:#a855f7;--blue:#3b82f6;--cyan:#06b6d4;--text:#f5f5f8;--text2:#9ba0b5;--text3:#5a6078;--border:rgba(168,85,247,.25)}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Rubik',sans-serif;margin:0;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(circle at 15% 25%,rgba(168,85,247,.06),transparent 50%),radial-gradient(circle at 85% 75%,rgba(6,182,212,.05),transparent 50%)}
+
+.wrapper{max-width:1400px;margin:0 auto;padding:30px 20px}
+.header{text-align:center;margin-bottom:28px}
+.header h1{font-size:clamp(26px,4vw,40px);font-weight:900;background:linear-gradient(135deg,var(--purple),var(--cyan),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent;margin:0 0 8px}
+.header p{color:var(--text2);margin:0;font-size:14px}
+.header .back{display:inline-block;margin-top:12px;color:var(--cyan);text-decoration:none;font-size:13px}
+
+.grid{display:grid;grid-template-columns:380px 1fr;gap:24px;align-items:start}
+@media (max-width:900px){.grid{grid-template-columns:1fr}}
+
+/* Inputs panel */
+.panel{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:24px;position:sticky;top:20px}
+.panel h2{margin:0 0 16px;font-size:18px;color:var(--text);display:flex;align-items:center;gap:8px}
+.panel h2 i{color:var(--cyan)}
+.group{margin-bottom:20px}
+.group-title{font-size:11px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+
+.field{margin-bottom:14px}
+.field label{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:5px;font-weight:600}
+.field label span.val{color:var(--gold);font-family:'JetBrains Mono',monospace;font-weight:700}
+.field input[type=range]{width:100%;height:4px;border-radius:4px;background:var(--bg3);accent-color:var(--purple)}
+.field input[type=number]{width:100%;padding:9px 12px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600}
+.field input[type=number]:focus{outline:none;border-color:var(--purple)}
+.field .help{font-size:10px;color:var(--text3);margin-top:3px;font-style:italic}
+
+.preset-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.preset{padding:5px 10px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit}
+.preset:hover{background:var(--purple);color:#fff;border-color:var(--purple)}
+
+/* Output panel */
+.output{display:flex;flex-direction:column;gap:20px}
+
+.verdict-card{padding:24px;border-radius:16px;text-align:center;transition:all .3s;border:2px solid}
+.verdict-card.green{background:rgba(0,232,135,.06);border-color:rgba(0,232,135,.4)}
+.verdict-card.yellow{background:rgba(255,193,7,.06);border-color:rgba(255,193,7,.4)}
+.verdict-card.orange{background:rgba(255,152,0,.06);border-color:rgba(255,152,0,.4)}
+.verdict-card.red{background:rgba(255,68,68,.06);border-color:rgba(255,68,68,.4)}
+.verdict-card.black{background:rgba(0,0,0,.5);border-color:var(--text3)}
+.verdict-card .emoji{font-size:40px;margin-bottom:6px}
+.verdict-card h3{margin:0 0 4px;font-size:22px}
+.verdict-card p{margin:0;font-size:13px;color:var(--text2)}
+.verdict-card.green h3{color:var(--green)}
+.verdict-card.yellow h3{color:var(--yellow)}
+.verdict-card.orange h3{color:var(--orange)}
+.verdict-card.red h3{color:var(--red)}
+
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+.metric{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px 16px}
+.metric .lbl{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:6px}
+.metric .val{font-size:24px;font-weight:900;color:var(--text);font-family:'JetBrains Mono',monospace}
+.metric .val.gold{color:var(--gold)}
+.metric .val.green{color:var(--green)}
+.metric .val.red{color:var(--red)}
+.metric .val.orange{color:var(--orange)}
+.metric .sub{font-size:11px;color:var(--text2);margin-top:4px}
+
+.breakers-panel{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px}
+.breakers-panel h3{margin:0 0 14px;font-size:15px;color:var(--text)}
+.breaker-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+.breaker-row:last-child{border-bottom:none}
+.breaker-row .name{color:var(--text2)}
+.breaker-row .status{padding:2px 10px;border-radius:20px;font-size:11px;font-weight:800;font-family:'JetBrains Mono',monospace}
+.breaker-row .status.ready{background:rgba(0,232,135,.15);color:var(--green)}
+.breaker-row .status.active{background:rgba(255,68,68,.15);color:var(--red)}
+.breaker-row .reason{font-size:11px;color:var(--text3);max-width:220px;text-align:end}
+
+.formula-box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.8;color:var(--text2);overflow-x:auto}
+.formula-box .label{color:var(--cyan);font-weight:700}
+.formula-box .num{color:var(--gold)}
+.formula-box h3{font-family:'Rubik',sans-serif;color:var(--text);margin:0 0 12px;font-size:15px}
+
+footer{text-align:center;padding:30px 20px;color:var(--text3);font-size:12px}
+footer a{color:var(--cyan);text-decoration:none;margin:0 8px}
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="header">
+    <h1><i class="fa-solid fa-calculator"></i> Dynamic Yield Calculator</h1>
+    <p>הזן את הפרמטרים של המערכת שלך — צפה ב-CR, P_t, APY, וב-Circuit Breakers בזמן אמת</p>
+    <a class="back" href="/academy/course-1-dynamic-yield.html">← חזרה לקורס</a>
+  </div>
+
+  <div class="grid">
+    <aside class="panel">
+      <h2><i class="fa-solid fa-sliders"></i>פרמטרים</h2>
+
+      <div class="preset-row">
+        <button class="preset" data-preset="healthy">מצב בריא</button>
+        <button class="preset" data-preset="stressed">מצב סטרס</button>
+        <button class="preset" data-preset="crisis">משבר</button>
+        <button class="preset" data-preset="recovery">התאוששות</button>
+      </div>
+
+      <div class="group">
+        <div class="group-title">State</div>
+        <div class="field">
+          <label>U — TVL <span class="val" id="U-val">$100,000</span></label>
+          <input type="range" id="U" min="10000" max="5000000" step="5000" value="100000">
+        </div>
+        <div class="field">
+          <label>B — Buffer <span class="val" id="B-val">$25,000</span></label>
+          <input type="range" id="B" min="0" max="2000000" step="1000" value="25000">
+        </div>
+        <div class="field">
+          <label>L — Liquid assets <span class="val" id="L-val">$30,000</span></label>
+          <input type="range" id="L" min="0" max="2000000" step="1000" value="30000">
+        </div>
+      </div>
+
+      <div class="group">
+        <div class="group-title">Flows (this period)</div>
+        <div class="field">
+          <label>R — Revenue <span class="val" id="R-val">$12,000</span></label>
+          <input type="range" id="R" min="0" max="500000" step="500" value="12000">
+          <div class="help">מכירת קורסים, עמלות marketplace, SaaS</div>
+        </div>
+        <div class="field">
+          <label>C — Costs <span class="val" id="C-val">$4,000</span></label>
+          <input type="range" id="C" min="0" max="100000" step="100" value="4000">
+        </div>
+        <div class="field">
+          <label>Ref — Referrals <span class="val" id="Ref-val">$1,500</span></label>
+          <input type="range" id="Ref" min="0" max="100000" step="100" value="1500">
+        </div>
+        <div class="field">
+          <label>W — Withdrawals (24h) <span class="val" id="W-val">$8,000</span></label>
+          <input type="range" id="W" min="0" max="1000000" step="500" value="8000">
+        </div>
+      </div>
+
+      <div class="group">
+        <div class="group-title">Parameters</div>
+        <div class="field">
+          <label>k — Distribution <span class="val" id="k-val">0.50</span></label>
+          <input type="range" id="k" min="0" max="0.7" step="0.05" value="0.5">
+          <div class="help">חלק מ-Net שמתחלק (max 0.7)</div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="output">
+      <div class="verdict-card green" id="verdict">
+        <div class="emoji" id="verdict-emoji">✓</div>
+        <h3 id="verdict-title">Healthy</h3>
+        <p id="verdict-desc">המערכת עומדת בכל הקריטריונים. Distribution מלאה.</p>
+      </div>
+
+      <div class="metrics">
+        <div class="metric">
+          <div class="lbl">Net Revenue</div>
+          <div class="val gold" id="m-net">$6,500</div>
+          <div class="sub">R - C - Ref</div>
+        </div>
+        <div class="metric">
+          <div class="lbl">Pool Distributed</div>
+          <div class="val gold" id="m-pool">$3,250</div>
+          <div class="sub">k × Net</div>
+        </div>
+        <div class="metric">
+          <div class="lbl">Coverage Ratio</div>
+          <div class="val green" id="m-cr">2.80</div>
+          <div class="sub" id="m-cr-sub">(Net+B) / (P+W)</div>
+        </div>
+        <div class="metric">
+          <div class="lbl">Implied APY</div>
+          <div class="val gold" id="m-apy">39.0%</div>
+          <div class="sub">last period × 12</div>
+        </div>
+        <div class="metric">
+          <div class="lbl">Buffer Ratio</div>
+          <div class="val green" id="m-buf">25.0%</div>
+          <div class="sub">B / U (target ≥ 30%)</div>
+        </div>
+        <div class="metric">
+          <div class="lbl">Run Threshold</div>
+          <div class="val green" id="m-run">30.0%</div>
+          <div class="sub">L / U (target ≥ 30%)</div>
+        </div>
+      </div>
+
+      <div class="breakers-panel">
+        <h3><i class="fa-solid fa-bolt"></i> Circuit Breakers</h3>
+        <div class="breaker-row" data-breaker="COVERAGE_GUARDRAIL">
+          <span class="name">#1 Coverage Guardrail</span>
+          <span class="reason"></span>
+          <span class="status ready">READY</span>
+        </div>
+        <div class="breaker-row" data-breaker="WITHDRAWAL_THROTTLE">
+          <span class="name">#2 Withdrawal Throttle</span>
+          <span class="reason"></span>
+          <span class="status ready">READY</span>
+        </div>
+        <div class="breaker-row" data-breaker="DEPOSIT_FREEZE">
+          <span class="name">#3 Deposit Freeze</span>
+          <span class="reason"></span>
+          <span class="status ready">READY</span>
+        </div>
+        <div class="breaker-row" data-breaker="BUFFER_RECOVERY">
+          <span class="name">#4 Buffer Recovery</span>
+          <span class="reason"></span>
+          <span class="status ready">READY</span>
+        </div>
+        <div class="breaker-row" data-breaker="ORACLE_FREEZE">
+          <span class="name">#5 Oracle Freeze</span>
+          <span class="reason">לא נכלל במחשבון — דורש oracle חיצוני</span>
+          <span class="status ready">N/A</span>
+        </div>
+      </div>
+
+      <div class="formula-box">
+        <h3><i class="fa-solid fa-function"></i> חישוב שלב-אחר-שלב</h3>
+        <div><span class="label">Net_t</span> = max(0, <span class="num" id="f-R">12000</span> − <span class="num" id="f-C">4000</span> − <span class="num" id="f-Ref">1500</span>) = <span class="num" id="f-net">6500</span></div>
+        <div><span class="label">P_t</span> = <span class="num" id="f-k">0.5</span> × <span class="num" id="f-net2">6500</span> = <span class="num" id="f-pool">3250</span></div>
+        <div><span class="label">CR_t</span> = (<span class="num" id="f-net3">6500</span> + <span class="num" id="f-B">25000</span>) / (<span class="num" id="f-pool2">3250</span> + <span class="num" id="f-W">8000</span>) = <span class="num" id="f-cr">2.80</span></div>
+        <div><span class="label">APY</span> = (<span class="num" id="f-pool3">3250</span> / <span class="num" id="f-U">100000</span>) × 12 = <span class="num" id="f-apy">39.0%</span></div>
+        <div><span class="label">Run</span> = <span class="num" id="f-L">30000</span> / <span class="num" id="f-U2">100000</span> = <span class="num" id="f-run">30.0%</span></div>
+      </div>
+    </main>
+  </div>
+
+  <footer>
+    <a href="/academy/course-1-dynamic-yield.html">חזרה לקורס</a> ·
+    <a href="/academy/course-1-dynamic-yield/module-3.md">חזרה למודול 3</a> ·
+    <a href="/academy/course-1-dynamic-yield/treasury_simulation.py">הורד Python Simulator</a>
+  </footer>
+</div>
+
+<script>
+const state = {
+  U: 100000, B: 25000, L: 30000,
+  R: 12000, C: 4000, Ref: 1500, W: 8000,
+  k: 0.5
+};
+
+const presets = {
+  healthy:   { U: 500000, B: 150000, L: 180000, R: 35000, C: 12000, Ref: 4000, W: 15000, k: 0.5 },
+  stressed:  { U: 400000, B: 80000, L: 60000, R: 8000, C: 11000, Ref: 1000, W: 50000, k: 0.5 },
+  crisis:    { U: 400000, B: 60000, L: 90000, R: 15000, C: 11000, Ref: 2000, W: 150000, k: 0.5 },
+  recovery:  { U: 350000, B: 45000, L: 70000, R: 28000, C: 12000, Ref: 3000, W: 5000, k: 0.4 }
+};
+
+const fmt = (n) => '$' + Math.round(n).toLocaleString();
+const pct = (n) => (n * 100).toFixed(1) + '%';
+
+function calculate() {
+  const net = Math.max(0, state.R - state.C - state.Ref);
+  const pool = state.k * net;
+  const denom = pool + state.W;
+  const cr = denom === 0 ? 999 : (net + state.B) / denom;
+  const apy = state.U === 0 ? 0 : (pool / state.U) * 12;
+  const bufRatio = state.U === 0 ? 0 : state.B / state.U;
+  const runThreshold = state.U === 0 ? 0 : state.L / state.U;
+  const withdrawalRatio = state.U === 0 ? 0 : state.W / state.U;
+
+  // Update input display
+  document.getElementById('U-val').textContent = fmt(state.U);
+  document.getElementById('B-val').textContent = fmt(state.B);
+  document.getElementById('L-val').textContent = fmt(state.L);
+  document.getElementById('R-val').textContent = fmt(state.R);
+  document.getElementById('C-val').textContent = fmt(state.C);
+  document.getElementById('Ref-val').textContent = fmt(state.Ref);
+  document.getElementById('W-val').textContent = fmt(state.W);
+  document.getElementById('k-val').textContent = state.k.toFixed(2);
+
+  // Update metrics
+  document.getElementById('m-net').textContent = fmt(net);
+  document.getElementById('m-pool').textContent = fmt(pool);
+  document.getElementById('m-cr').textContent = cr >= 100 ? '∞' : cr.toFixed(2);
+  document.getElementById('m-apy').textContent = pct(apy);
+  document.getElementById('m-buf').textContent = pct(bufRatio);
+  document.getElementById('m-run').textContent = pct(runThreshold);
+
+  // Color CR
+  const crEl = document.getElementById('m-cr');
+  crEl.className = 'val ' + (cr >= 1.5 ? 'green' : cr >= 1.0 ? 'orange' : 'red');
+
+  const bufEl = document.getElementById('m-buf');
+  bufEl.className = 'val ' + (bufRatio >= 0.30 ? 'green' : bufRatio >= 0.15 ? 'orange' : 'red');
+
+  const runEl = document.getElementById('m-run');
+  runEl.className = 'val ' + (runThreshold >= 0.30 ? 'green' : runThreshold >= 0.15 ? 'orange' : 'red');
+
+  // Update formula display
+  document.getElementById('f-R').textContent = Math.round(state.R).toLocaleString();
+  document.getElementById('f-C').textContent = Math.round(state.C).toLocaleString();
+  document.getElementById('f-Ref').textContent = Math.round(state.Ref).toLocaleString();
+  document.getElementById('f-net').textContent = Math.round(net).toLocaleString();
+  document.getElementById('f-k').textContent = state.k.toFixed(2);
+  document.getElementById('f-net2').textContent = Math.round(net).toLocaleString();
+  document.getElementById('f-pool').textContent = Math.round(pool).toLocaleString();
+  document.getElementById('f-net3').textContent = Math.round(net).toLocaleString();
+  document.getElementById('f-B').textContent = Math.round(state.B).toLocaleString();
+  document.getElementById('f-pool2').textContent = Math.round(pool).toLocaleString();
+  document.getElementById('f-W').textContent = Math.round(state.W).toLocaleString();
+  document.getElementById('f-cr').textContent = cr >= 100 ? '∞' : cr.toFixed(2);
+  document.getElementById('f-pool3').textContent = Math.round(pool).toLocaleString();
+  document.getElementById('f-U').textContent = Math.round(state.U).toLocaleString();
+  document.getElementById('f-apy').textContent = pct(apy);
+  document.getElementById('f-L').textContent = Math.round(state.L).toLocaleString();
+  document.getElementById('f-U2').textContent = Math.round(state.U).toLocaleString();
+  document.getElementById('f-run').textContent = pct(runThreshold);
+
+  // Circuit Breakers
+  const breakers = {
+    COVERAGE_GUARDRAIL: { active: cr < 1.0, reason: cr < 1.0 ? `CR=${cr.toFixed(2)} < 1.0` : '' },
+    WITHDRAWAL_THROTTLE: { active: withdrawalRatio > 0.15, reason: withdrawalRatio > 0.15 ? `W/U=${pct(withdrawalRatio)} > 15%` : '' },
+    DEPOSIT_FREEZE: { active: cr < 0.5, reason: cr < 0.5 ? `CR=${cr.toFixed(2)} < 0.5` : '' },
+    BUFFER_RECOVERY: { active: bufRatio < 0.10, reason: bufRatio < 0.10 ? `B/U=${pct(bufRatio)} < 10%` : '' }
+  };
+
+  let activeCount = 0;
+  for (const [key, b] of Object.entries(breakers)) {
+    const row = document.querySelector(`[data-breaker="${key}"]`);
+    const statusEl = row.querySelector('.status');
+    const reasonEl = row.querySelector('.reason');
+    if (b.active) {
+      statusEl.className = 'status active';
+      statusEl.textContent = 'ACTIVE';
+      reasonEl.textContent = b.reason;
+      activeCount++;
+    } else {
+      statusEl.className = 'status ready';
+      statusEl.textContent = 'READY';
+      reasonEl.textContent = '';
+    }
+  }
+
+  // Verdict
+  const verdict = document.getElementById('verdict');
+  const emoji = document.getElementById('verdict-emoji');
+  const title = document.getElementById('verdict-title');
+  const desc = document.getElementById('verdict-desc');
+
+  verdict.className = 'verdict-card ';
+  if (breakers.DEPOSIT_FREEZE.active) {
+    verdict.className += 'red';
+    emoji.textContent = '🚨';
+    title.textContent = 'Emergency Mode';
+    desc.textContent = 'CR < 0.5 — הפקדות חדשות קפואות. רק משיכות זמינות.';
+  } else if (activeCount >= 2) {
+    verdict.className += 'orange';
+    emoji.textContent = '⚠️';
+    title.textContent = 'Stressed';
+    desc.textContent = `${activeCount} breakers פעילים. החלוקה מופחתת, מערכת בהגנה.`;
+  } else if (activeCount === 1) {
+    verdict.className += 'yellow';
+    emoji.textContent = '⚡';
+    title.textContent = 'Caution';
+    desc.textContent = 'Breaker אחד פעיל. צריך התערבות בקרוב.';
+  } else {
+    verdict.className += 'green';
+    emoji.textContent = '✓';
+    title.textContent = 'Healthy';
+    desc.textContent = 'המערכת עומדת בכל הקריטריונים. Distribution מלאה.';
+  }
+}
+
+// Wire up inputs
+['U','B','L','R','C','Ref','W','k'].forEach(id => {
+  const el = document.getElementById(id);
+  el.addEventListener('input', () => {
+    state[id] = parseFloat(el.value);
+    calculate();
+  });
+});
+
+// Presets
+document.querySelectorAll('.preset').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const preset = presets[btn.dataset.preset];
+    Object.assign(state, preset);
+    ['U','B','L','R','C','Ref','W','k'].forEach(id => {
+      document.getElementById(id).value = state[id];
+    });
+    calculate();
+  });
+});
+
+calculate();
+</script>
+</body>
+</html>

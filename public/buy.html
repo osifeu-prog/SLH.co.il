@@ -1,0 +1,1012 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH Spark — Buy SLH Tokens | רכישת מטבעות SLH</title>
+<meta name="description" content="Buy SLH tokens securely. Credit card, crypto, or bank transfer. Genesis pricing available.">
+<link rel="canonical" href="https://slh-nft.com/buy.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Buy SLH Tokens — Genesis Pricing">
+<meta property="og:description" content="Secure your position in SLH Spark. Credit card, crypto, bank transfer.">
+<meta property="og:image" content="https://slh-nft.com/assets/og/launch.png">
+<meta property="og:url" content="https://slh-nft.com/buy.html">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="/css/shared.css?v=20260426e">
+<style>
+    body{font-family:'Inter',system-ui,sans-serif;background:var(--bg,#0a0a0f);color:var(--text,#e0e0e0);margin:0}
+    .buy-hero{text-align:center;padding:50px 24px 30px;max-width:800px;margin:0 auto}
+    .buy-hero h1{font-size:36px;font-weight:900;margin-bottom:12px;background:linear-gradient(135deg,#ffd700,#00e887);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .buy-hero .sub{font-size:15px;color:var(--text2,#888);max-width:550px;margin:0 auto;line-height:1.8}
+    .section{max-width:900px;margin:0 auto 24px;padding:0 24px}
+
+    .price-card{background:linear-gradient(135deg,rgba(255,215,0,.06),rgba(0,232,135,.04));border:2px solid var(--gold,#ffd700);border-radius:20px;padding:32px;text-align:center;margin-bottom:24px}
+    .price-card .price{font-size:48px;font-weight:900;color:var(--gold,#ffd700)}
+    .price-card .price-sub{font-size:14px;color:var(--text2);margin-top:4px}
+    .price-card .live-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;background:rgba(0,255,65,.08);border:1px solid rgba(0,255,65,.3);border-radius:20px;font-size:11px;color:var(--accent,#00ff41);margin-top:12px}
+    .price-card .live-badge .pulse{width:8px;height:8px;background:var(--accent);border-radius:50%;animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+    .buy-form{background:var(--surface,#14142b);border:1px solid var(--border,#1e1e3a);border-radius:20px;padding:32px;margin-bottom:24px}
+    .buy-form h2{font-size:20px;font-weight:800;margin-bottom:20px;color:var(--text)}
+    .form-row{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+    .form-group{flex:1;min-width:200px}
+    .form-group label{display:block;font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:600}
+    .form-group input,.form-group select{width:100%;padding:14px 16px;background:var(--bg,#0a0a0f);border:1px solid var(--border);color:var(--text);border-radius:12px;font-size:15px;font-family:inherit}
+    .form-group input:focus,.form-group select:focus{border-color:var(--accent);outline:none}
+
+    .bonus-tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin:16px 0}
+    .bonus-tier{padding:12px;background:var(--bg,#0a0a0f);border:1px solid var(--border);border-radius:10px;text-align:center;cursor:pointer;transition:all .2s}
+    .bonus-tier:hover,.bonus-tier.active{border-color:var(--gold);background:rgba(255,215,0,.06)}
+    .bonus-tier .amount{font-size:16px;font-weight:800;color:var(--text)}
+    .bonus-tier .bonus{font-size:12px;color:var(--gold);margin-top:4px}
+
+    .payment-methods{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:20px 0}
+    .pay-method{padding:20px;background:var(--bg);border:2px solid var(--border);border-radius:14px;text-align:center;cursor:pointer;transition:all .2s}
+    .pay-method:hover,.pay-method.selected{border-color:var(--accent);background:rgba(0,255,65,.04)}
+    .pay-method .icon{font-size:28px;margin-bottom:8px}
+    .pay-method .name{font-size:14px;font-weight:700}
+    .pay-method .detail{font-size:11px;color:var(--text2);margin-top:4px}
+
+    .buy-btn{display:block;width:100%;padding:18px;background:linear-gradient(135deg,#ffd700,#00e887);color:#000;font-size:18px;font-weight:900;border:none;border-radius:14px;cursor:pointer;margin-top:20px;font-family:inherit;transition:transform .2s}
+    .buy-btn:hover{transform:translateY(-2px)}
+
+    .summary-card{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px;margin:16px 0}
+    .summary-row{display:flex;justify-content:space-between;padding:8px 0;font-size:14px;border-bottom:1px solid rgba(255,255,255,.05)}
+    .summary-row:last-child{border:none;font-weight:700;color:var(--accent)}
+
+    .trust-strip{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin:20px 0;font-size:12px;color:var(--text2)}
+    .trust-item{display:flex;align-items:center;gap:6px}
+
+    .security-note{background:rgba(0,255,65,.04);border:1px solid rgba(0,255,65,.2);border-radius:12px;padding:16px;font-size:12px;color:var(--text2);line-height:1.8;margin:20px 0}
+</style>
+</head>
+<body>
+
+<div id="topnav-root"></div>
+<div id="ticker-root"></div>
+
+<div class="buy-hero">
+    <h1>💎 רכישת מטבעות SLH</h1>
+    <p class="sub">הבטח את מקומך באקוסיסטם של העולם החדש. רכישה ב-PancakeSwap או דרך IDO רשמי (Marshall Islands DAO).</p>
+</div>
+
+<!-- Page routing: regular buy vs IDO -->
+<div class="section">
+    <div style="padding:22px 26px; background:rgba(94,214,255,.06); border:1px solid rgba(94,214,255,.25); border-radius:14px; margin-bottom:24px">
+        <h3 style="margin:0 0 10px; color:#5ed6ff; font-size:1.1rem; font-weight:700; display:flex; align-items:center; gap:8px">
+            <i class="fas fa-route"></i> מה הדף הזה? ההבדל מ-IDO
+        </h3>
+        <p style="margin:0 0 12px; color:var(--text2); font-size:.94rem; line-height:1.7">
+            <strong>הדף הזה (/buy):</strong> רכישה <strong>שוטפת</strong> של SLH דרך PancakeSwap, P2P, או העברה בנקאית. SLH כבר נסחר. מחיר השוק כרגע ~₪444.
+        </p>
+        <p style="margin:0 0 12px; color:var(--text2); font-size:.94rem; line-height:1.7">
+            <strong>דף ה-IDO (<a href="/ido.html" style="color:#5ed6ff">/ido.html</a>):</strong> השקה ראשונית של 110.75M טוקנים <strong>במחיר מופחת</strong> (~25% הנחה לעומת השוק) דרך PinkSale. נפתח ב-Day 14 בלוח הזמנים. גיוס דרך Marshall Islands DAO LLC, audited, LP locked 365 ימים.
+        </p>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:14px">
+            <a href="/ido.html" style="padding:10px 18px; background:linear-gradient(135deg,#ffd700,#ffe18a); color:#1a1a00; border-radius:8px; font-weight:700; text-decoration:none; font-size:.92rem">
+                🚀 רוצה את ההנחה? → דף IDO
+            </a>
+            <a href="#buy-form" style="padding:10px 18px; background:rgba(255,255,255,.05); border:1px solid var(--border); color:var(--text); border-radius:8px; font-weight:600; text-decoration:none; font-size:.92rem">
+                💎 רכישה שוטפת עכשיו (כאן)
+            </a>
+        </div>
+    </div>
+
+    <!-- Pre-purchase checklist -->
+    <div style="padding:22px 26px; background:rgba(255,209,102,.06); border:1px solid rgba(255,209,102,.25); border-radius:14px; margin-bottom:24px">
+        <h3 style="margin:0 0 10px; color:var(--accent); font-size:1.1rem; font-weight:700; display:flex; align-items:center; gap:8px">
+            <i class="fas fa-clipboard-check"></i> צ'קליסט לפני הרכישה — 4 שניות
+        </h3>
+        <ul style="margin:0; padding-inline-start:22px; color:var(--text2); font-size:.92rem; line-height:1.85">
+            <li>✅ יש לי <strong>ארנק MetaMask / Trust Wallet</strong> מוכן (חדש? <a href="/ido.html#how-participate" style="color:var(--accent)">מדריך התקנה</a>)</li>
+            <li>✅ יש לי <strong>BNB ברשת BSC</strong> בארנק (לא ERC20! בודקים פעמיים)</li>
+            <li>✅ הסכום שאני משקיע — <strong>אני יכול להפסיד אותו</strong> (ערך SLH יכול לרדת)</li>
+            <li>✅ אני מבין שיש <strong>חבות מס בישראל</strong> במכירה ברווח (25% מס רווחי הון — <a href="/ido.html#tax" style="color:var(--accent)">פרטים</a>)</li>
+        </ul>
+    </div>
+</div>
+
+<div class="section" id="buy-form">
+    <!-- Live Price -->
+    <div class="price-card">
+        <div class="price" id="slh-price">₪444</div>
+        <div class="price-sub">SLH Spark Token · BSC (BEP-20)</div>
+        <div class="price-sub" id="slh-price-usd">~$122 USD</div>
+        <div class="live-badge"><span class="pulse"></span> LIVE on PancakeSwap</div>
+    </div>
+
+    <!-- Volume Bonus -->
+    <div style="background:linear-gradient(135deg,rgba(168,85,247,.08),rgba(255,215,0,.06));border:1px solid rgba(168,85,247,.3);border-radius:16px;padding:20px;text-align:center;margin-bottom:24px">
+        <div style="font-size:20px;margin-bottom:4px">🎉</div>
+        <div style="font-size:16px;font-weight:800;color:var(--purple,#a855f7)">Volume Bonus Program</div>
+        <div style="font-size:13px;color:var(--text2);margin-top:8px">רכישות מעל $100 מקבלות בונוס עד 10%! · Genesis Contributors מקבלים עד 30% בונוס</div>
+    </div>
+
+    <!-- Buy Form -->
+    <div class="buy-form">
+        <h2>💳 פרטי רכישה</h2>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>סכום לרכישה</label>
+                <input type="number" id="buy-amount" value="100" min="10" placeholder="100" oninput="updateSummary()">
+            </div>
+            <div class="form-group">
+                <label>מטבע תשלום</label>
+                <select id="buy-currency" onchange="updateSummary()">
+                    <option value="ILS">ILS (₪)</option>
+                    <option value="USD">USD ($)</option>
+                    <option value="BNB">BNB</option>
+                    <option value="USDT">USDT</option>
+                    <option value="TON">TON</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>מטבע לקנייה</label>
+                <select id="buy-token" onchange="updateSummary();updateBuyLink()" style="width:100%;padding:14px 16px;background:var(--bg,#0a0a0f);border:1px solid var(--border);color:var(--text);border-radius:12px;font-size:15px">
+                    <option value="SLH">💎 SLH (Premium)</option>
+                    <option value="ZVK">⭐ ZVK (Rewards)</option>
+                    <option value="MNH">🪙 MNH (Stablecoin ₪1)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Bonus Tiers -->
+        <div style="padding:12px;background:rgba(0,232,135,.06);border:1px solid rgba(0,232,135,.2);border-radius:10px;margin-bottom:12px;font-size:12px;color:var(--text2)">
+            💎 <strong style="color:var(--accent)">בונוס!</strong> כל רכישת SLH מעניקה גם <strong>ZVK</strong> בונוס (10% מהסכום) + <strong>REP</strong> points!
+        </div>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:8px">🎁 בונוס לפי נפח:</div>
+        <div class="bonus-tiers">
+            <div class="bonus-tier" onclick="setAmount(100)"><div class="amount">$100</div><div class="bonus">+2%</div></div>
+            <div class="bonus-tier" onclick="setAmount(500)"><div class="amount">$500</div><div class="bonus">+3%</div></div>
+            <div class="bonus-tier" onclick="setAmount(1000)"><div class="amount">$1,000</div><div class="bonus">+5%</div></div>
+            <div class="bonus-tier" onclick="setAmount(5000)"><div class="amount">$5,000</div><div class="bonus">+10%</div></div>
+        </div>
+
+        <!-- Payment Methods -->
+        <div style="font-size:13px;color:var(--text2);margin:16px 0 8px">💳 שיטת תשלום:</div>
+        <div class="payment-methods">
+            <div class="pay-method selected" onclick="selectPayment(this,'pancakeswap')" style="cursor:pointer">
+                <a href="https://pancakeswap.finance/swap?outputCurrency=0xACb0A09414CEA1C879c67bB7A877E4e19480f022&chain=bsc" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:block">
+                <div class="icon">🥞</div>
+                <div class="name">PancakeSwap</div>
+                <div class="detail">Swap BNB → SLH ישירות</div>
+                </a>
+            </div>
+            <div class="pay-method" onclick="window.location.href='/p2p.html'" style="cursor:pointer">
+                <div class="icon">🤝</div>
+                <div class="name">P2P (חינם!)</div>
+                <div class="detail">USDT-TON · TON · MNH</div>
+            </div>
+            <div class="pay-method" onclick="window.location.href='/launch-event.html#send-bnb'" style="cursor:pointer">
+                <div class="icon">💎</div>
+                <div class="name">Genesis Deposit</div>
+                <div class="detail">BNB ישירות לארנק Genesis</div>
+            </div>
+            <div class="pay-method" onclick="openTonPayModal()" style="cursor:pointer">
+                <div class="icon">💎</div>
+                <div class="name">TON Direct</div>
+                <div class="detail">Tonkeeper / Wallet · אימות אוטומטי ב-30ש</div>
+            </div>
+            <div class="pay-method" onclick="openBscPayModal()" style="cursor:pointer">
+                <div class="icon">🟡</div>
+                <div class="name">BNB Direct</div>
+                <div class="detail">MetaMask / Trust · BSC · אימות אוטומטי</div>
+            </div>
+            <div class="pay-method" onclick="openBankTransferModal()" style="cursor:pointer">
+                <div class="icon">🏦</div>
+                <div class="name">העברה בנקאית</div>
+                <div class="detail">לצביקה קאופמן (מנכ"ל) · 8 שדות חובה</div>
+            </div>
+            <div class="pay-method" onclick="window.open('https://t.me/SLH_AIR_bot?start=buy','_blank')" style="cursor:pointer">
+                <div class="icon">📱</div>
+                <div class="name">Telegram Bot</div>
+                <div class="detail">רכישה דרך @SLH_AIR_bot · /buy</div>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="summary-card">
+            <div class="summary-row"><span>סכום</span><span id="sum-amount">₪100</span></div>
+            <div class="summary-row"><span>בונוס</span><span id="sum-bonus" style="color:var(--gold)">+2%</span></div>
+            <div class="summary-row"><span>SLH שתקבל</span><span id="sum-slh" style="color:var(--accent)">~0.225 SLH</span></div>
+            <div class="summary-row"><span>שיטת תשלום</span><span id="sum-method">PancakeSwap</span></div>
+        </div>
+
+        <a id="buy-link" href="https://pancakeswap.finance/swap?outputCurrency=0xACb0A09414CEA1C879c67bB7A877E4e19480f022&chain=bsc" target="_blank" rel="noopener" class="buy-btn" style="text-decoration:none;text-align:center;display:block">🚀 רכוש SLH עכשיו</a>
+        <div style="text-align:center;margin-top:8px">
+            <a href="https://pancakeswap.finance/swap?outputCurrency=0xACb0A09414CEA1C879c67bB7A877E4e19480f022&chain=bsc" target="_blank" rel="noopener" style="color:var(--text2);font-size:11px">לא נפתח? לחץ כאן ←</a>
+        </div>
+        <div id="buy-result" style="margin-top:12px;font-size:13px;text-align:center"></div>
+
+        <!-- ═══ Auto-verify payment section ═══ -->
+        <div style="margin-top:30px;padding:24px;background:linear-gradient(135deg,rgba(0,255,65,.06),rgba(0,229,255,.04));border:1px solid rgba(0,255,65,.3);border-radius:16px">
+            <h3 style="color:var(--accent,#00ff41);margin:0 0 10px;font-size:18px">⚡ כבר שילמת? אמת עכשיו — Premium תוך 30 שניות</h3>
+            <div style="color:var(--text2);font-size:13px;margin-bottom:18px">
+                הדבק את ה-TX hash שלך מהארנק (PancakeSwap, Tonkeeper, MetaMask) ונאמת אוטומטית על הבלוקצ'יין. לא מחכים 24 שעות.
+            </div>
+
+            <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+                <button onclick="setVerifyNet('bsc')" id="net-bsc" class="net-btn net-active">🟡 BNB / PancakeSwap</button>
+                <button onclick="setVerifyNet('ton')" id="net-ton" class="net-btn">💎 TON</button>
+            </div>
+
+            <input type="text" id="verify-txhash" placeholder="TX hash (0x... או TON hash)"
+                style="width:100%;padding:14px;background:var(--bg,#0a0a0f);border:1px solid var(--border);color:var(--text);border-radius:10px;font-family:monospace;font-size:12px;margin-bottom:10px;direction:ltr;text-align:left">
+
+            <input type="number" id="verify-userid" placeholder="User ID שלך (Telegram ID)"
+                style="width:100%;padding:14px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;font-size:14px;margin-bottom:14px;direction:ltr;text-align:right">
+
+            <button onclick="verifyPayment()" id="verify-btn"
+                style="width:100%;padding:14px;background:linear-gradient(135deg,#00ff41,#00e5ff);color:#000;border:none;border-radius:10px;font-size:15px;font-weight:900;cursor:pointer">
+                🔐 אמת תשלום והפעל Premium
+            </button>
+
+            <div id="verify-result" style="margin-top:14px;font-size:13px;text-align:center;min-height:20px"></div>
+
+            <div style="margin-top:14px;padding:10px;background:rgba(0,0,0,.3);border-radius:8px;font-size:11px;color:var(--text2);line-height:1.7">
+                💡 <b>איך זה עובד:</b><br>
+                1. שילמת דרך PancakeSwap / Tonkeeper / ארנק אחר<br>
+                2. העתק את ה-TX hash (מהקבלה של הארנק)<br>
+                3. הדבק כאן + ה-User ID שלך → Premium מופעל מיד + קבלה דיגיטלית
+            </div>
+
+            <style>
+              .net-btn{padding:10px 16px;background:var(--bg);border:1px solid var(--border);color:var(--text2);border-radius:8px;cursor:pointer;font-size:13px;font-family:inherit;transition:.15s}
+              .net-btn:hover{border-color:var(--accent,#00ff41);color:var(--text)}
+              .net-btn.net-active{background:rgba(0,255,65,.08);color:var(--accent,#00ff41);border-color:var(--accent,#00ff41)}
+            </style>
+        </div>
+
+    </div>
+
+    <!-- Critical network warning -->
+    <div style="margin:24px 0; padding:20px 24px; background:rgba(220,38,38,.08); border:1px solid rgba(220,38,38,.35); border-radius:14px">
+        <h3 style="margin:0 0 10px; color:#ff6b6b; font-size:1.05rem; font-weight:700; display:flex; align-items:center; gap:8px">
+            <i class="fas fa-triangle-exclamation"></i> אזהרת רשת — קריאה חובה לפני שליחת BNB
+        </h3>
+        <ul style="margin:0; padding-inline-start:22px; color:var(--text2); font-size:.92rem; line-height:1.75">
+            <li>SLH יושב על רשת <strong>BSC (BEP-20)</strong>. לא Ethereum. לא BEP-2.</li>
+            <li>אם תשלח BNB ברשת ERC20 במקום BEP20 — <strong>הכסף נעלם לנצח</strong>. אין refund. אין שחזור.</li>
+            <li>תמיד שלח <strong>0.01 BNB ניסיון ראשון</strong>. אם הגיע — שלח את השאר. אם לא — עצור.</li>
+            <li>בדוק בעיניים ש-4 התווים הראשונים והאחרונים של כתובת היעד תואמים למה שמופיע על המסך.</li>
+        </ul>
+    </div>
+
+    <!-- Trust Strip -->
+    <div class="trust-strip">
+        <div class="trust-item"><i class="fas fa-lock" style="color:var(--accent)"></i> הצפנה בנקאית</div>
+        <div class="trust-item"><i class="fas fa-shield-alt" style="color:var(--accent)"></i> Smart Contract מאומת</div>
+        <div class="trust-item"><i class="fas fa-link" style="color:var(--accent)"></i> קוד פתוח</div>
+        <div class="trust-item"><i class="fas fa-check-circle" style="color:var(--accent)"></i> PancakeSwap V2</div>
+    </div>
+
+    <!-- Security Note -->
+    <div class="security-note">
+        <strong style="color:var(--accent)">🔐 אבטחה ושקיפות:</strong><br>
+        • כל העסקאות מאובטחות ומתועדות ב-SHA-256 audit chain<br>
+        • הטוקנים יועברו לארנק שלך לאחר אישור<br>
+        • מסחר P2P כולל escrow אוטומטי להגנה על שני הצדדים<br>
+        • <a href="/about.html" style="color:var(--accent)">ראה דף שקיפות מלא →</a>
+    </div>
+
+    <!-- FAQ — expanded to 12 questions across 4 categories -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:24px">
+        <h3 style="color:var(--text);margin:0 0 6px">❓ שאלות נפוצות — מקיף</h3>
+        <p style="color:var(--text2); font-size:.88rem; margin:0 0 18px">12 השאלות שהכי הרבה ישראלים שואלים על רכישת SLH. שאלה לא כאן? <a href="https://t.me/SLH_AIR_bot" target="_blank" style="color:var(--accent)">@SLH_AIR_bot</a></p>
+
+        <div style="font-size:.85rem; color:var(--accent); letter-spacing:.1em; text-transform:uppercase; font-weight:800; margin:8px 0">דרכי רכישה</div>
+
+        <details style="padding:12px 16px; background:rgba(255,255,255,.03); border-radius:8px; margin-bottom:8px">
+            <summary style="cursor:pointer; font-weight:600; color:var(--text); font-size:.95rem">מה ההבדל בין PancakeSwap, P2P, ו-IDO?</summary>
+            <div style="margin-top:10px; color:var(--text2); font-size:.9rem; line-height:1.7">
+                <strong>PancakeSwap:</strong> רכישה מיידית של SLH במחיר השוק (~₪444). on-chain, אנונימי, עמלה 0.25%.<br>
+                <strong>P2P:</strong> רכישה ישירה מאנשים. אפשרי תשלום ב-USDT-TON / TON / MNH. עמלה נמוכה אבל איטי יותר.<br>
+                <strong>IDO (לפני go-live בלבד):</strong> מחיר מופחת ~25%, vesting של 4 חודשים. רק דרך <a href="/ido.html" style="color:var(--accent)">/ido.html</a> ב-PinkSale.
+            </div>
+        </details>
+
+        <details style="padding:12px 16px; background:rgba(255,255,255,.03); border-radius:8px; margin-bottom:8px">
+            <summary style="cursor:pointer; font-weight:600; color:var(--text); font-size:.95rem">מה המינימום והמקסימום לרכישה?</summary>
+            <div style="margin-top:10px; color:var(--text2); font-size:.9rem; line-height:1.7">
+                <strong>PancakeSwap:</strong> אין מינימום (אפילו $1). אין מקסימום, חוץ מהנזילות בפול.<br>
+                <strong>P2P:</strong> לפי ההצעה של המוכר.<br>
+                <strong>IDO (כשייפתח):</strong> מינימום 0.05 BNB (~₪125), מקסימום 5 BNB (~₪12,500) per wallet.
+            </div>
+        </details>
+
+        <details style="padding:12px 16px; background:rgba(255,255,255,.03); border-radius:8px; margin-bottom:8px">
+            <summary style="cursor:pointer; font-weight:600; color:var(--text); font-size:.95rem">איך מקבלים את הטוקנים?</summary>
+            <div style="margin-top:10px; color:var(--text2); font-size:.9rem; line-height:1.7">
+                <strong>PancakeSwap:</strong> מיידי לארנק MetaMask/Trust שלכם.<br>
+                <strong>P2P:</strong> escrow אוטומטי, משוחרר אחרי אישור.<br>
+                <strong>IDO:</strong> 20% מיד ב-TGE, 80% ב-vesting (20% כל חודש למשך 4 חודשים).
+            </div>
+        </details>
+
+        <div style="font-size:.85rem; color:var(--accent); letter-spacing:.1em; text-transform:uppercase; font-weight:800; margin:18px 0 8px">בטיחות וסיכונים</div>
+
+        <details style="padding:12px 16px; background:rgba(255,255,255,.03); border-radius:8px; margin-bottom:8px">
+            <summary style="cursor:pointer; font-weight:600; color:var(--text); font-size:.95rem">מה אם אני שולח BNB ברשת לא נכונה?</summary>
+            <div style="margin-top:10px; color:var(--text2); font-size:.9rem; line-height:1.7">
+                ב-90% מהמקרים — <strong>הכסף אבוד לנצח</strong>. רק אם אתם מומחי קריפטו תוכלו לנסות "bridge" אבל זה מסובך.<br>
+                <strong>הפתרון:</strong> תמיד שלקו 0.01 BNB ניסיון ראשון. רק אחרי שהגיע — שלחו את השאר. <strong>BEP20 ולא ERC20.</strong>
+            </div>
+        </details>
+
+        <details style="padding:12px 16px; background:rgba(255,255,255,.03); border-radius:8px; margin-bottom:8px">
+            <summary style="cursor:pointer; font-weight:600; color:var(--text); font-size:.95rem">איך אני מזהה אתר/בוט מזויף?</summary>
+            <div style="margin-top:10px; color:var(--text2); font-size:.9rem; line-height:1.7">
+                האתר הרשמי <em>היחיד</em>: <code>slh-nft.com</code>. כל וריאציה (slh-nft-airdrop.com, slh-presale.io וכו') = הונאה.<br>
+                ה-Telegram הרשמי: <strong>@SLH_AIR_bot</strong> ו-<strong>@osifeu_prog</strong>. כל "תמיכת SLH" אחרת ב-DM = scammer.<br>
+                <strong>אנחנו לעולם לא נשלח DM ראשון. לעולם לא נבקש seed phrase.</strong>
+            </div>
+        </details>
+
+        <details style="padding:12px 16px; background:rgba(255,255,255,.03); border-radius:8px; margin-bottom:8px">
+            <summary style="cursor:pointer; font-weight:600; color:var(--text); font-size:.95rem">"Volume Bonus" — האם זה אמיתי?</summary>
+            <div style="margin-top:10px; color:var(--text2); font-size:.9rem; line-height:1.7">
+                כן, אך <strong>לא ב-PancakeSwap</strong>. PancakeSwap זה swap טהור — אין שם בונוס. הבונוס רלוונטי רק ב-Genesis Deposits ובהשתתפות ב-IDO. הבונוס מתבטא ב-ZVK rewards שמתקבלים אחרי הרכישה (לא יותר SLH).
+            </div>
+        </details>
+
+        <div style="font-size:.85rem; color:var(--accent); letter-spacing:.1em; text-transform:uppercase; font-weight:800; margin:18px 0 8px">מיסוי ו-KYC</div>
+
+        <details style="padding:12px 16px; background:rgba(255,255,255,.03); border-radius:8px; margin-bottom:8px">
+            <summary style="cursor:pointer; font-weight:600; color:var(--text); font-size:.95rem">חייב לדווח על קניית SLH?</summary>
+            <div style="margin-top:10px; color:var(--text2); font-size:.9rem; line-height:1.7">
+                <strong>לא בקנייה.</strong> מס מוחל רק במכירה ברווח (25% מס רווחי הון למשקיע פרטי).<br>
+                אם אתם <em>כבר</em> מגישים דוח שנתי 1301 — חובה לכלול את הקריפטו בנספח 1322.<br>
+                פרטים מלאים: <a href="/ido.html#tax" style="color:var(--accent)">/ido.html#tax</a> ו-<a href="/disclosure.html#tax-israel" style="color:var(--accent)">/disclosure.html#tax-israel</a>.
+            </div>
+        </details>
+
+        <details style="padding:12px 16px; background:rgba(255,255,255,.03); border-radius:8px; margin-bottom:8px">
+            <summary style="cursor:pointer; font-weight:600; color:var(--text); font-size:.95rem">יש KYC ברכישה?</summary>
+            <div style="margin-top:10px; color:var(--text2); font-size:.9rem; line-height:1.7">
+                לא ברמת PancakeSwap או הרכישה הישירה. אבל הארנק שלך נסרק אוטומטית מול OFAC/Chainabuse.<br>
+                ה-KYC האמיתי שאתה כבר עברת: בבורסה הישראלית (Bit2C) שם המרת שקלים ל-BNB. רשות המסים יודעת שיש לך קריפטו.<br>
+                4 רמות KYC מפורשות: <a href="/disclosure.html#kyc-aml" style="color:var(--accent)">/disclosure.html#kyc-aml</a>
+            </div>
+        </details>
+
+        <details style="padding:12px 16px; background:rgba(255,255,255,.03); border-radius:8px; margin-bottom:8px">
+            <summary style="cursor:pointer; font-weight:600; color:var(--text); font-size:.95rem">חוקי לי בישראל לקנות SLH?</summary>
+            <div style="margin-top:10px; color:var(--text2); font-size:.9rem; line-height:1.7">
+                כן. אין חוק שאוסר על אזרחים ישראלים לקנות טוקנים זרים. רשות ניירות ערך עוסקת בהיצע <em>לציבור הישראלי</em> מצד מי שמציע, לא בקנייה אישית.<br>
+                <strong>אסור</strong> רק לתושבי OFAC: ארה"ב, איראן, צפון קוריאה, סוריה, קובה.
+            </div>
+        </details>
+
+        <div style="font-size:.85rem; color:var(--accent); letter-spacing:.1em; text-transform:uppercase; font-weight:800; margin:18px 0 8px">תפעול</div>
+
+        <details style="padding:12px 16px; background:rgba(255,255,255,.03); border-radius:8px; margin-bottom:8px">
+            <summary style="cursor:pointer; font-weight:600; color:var(--text); font-size:.95rem">איך אני רואה את ה-SLH שלי בארנק?</summary>
+            <div style="margin-top:10px; color:var(--text2); font-size:.9rem; line-height:1.7">
+                ב-MetaMask: "Import tokens" → הדבק <code style="font-size:.8em">0xACb0A09414CEA1C879c67bB7A877E4e19480f022</code> → ה-SLH יופיע אוטומטית.<br>
+                ב-BscScan: חפש את כתובת הארנק שלך → "Token Holdings" → SLH.
+            </div>
+        </details>
+
+        <details style="padding:12px 16px; background:rgba(255,255,255,.03); border-radius:8px; margin-bottom:8px">
+            <summary style="cursor:pointer; font-weight:600; color:var(--text); font-size:.95rem">איך מוכרים SLH מאוחר יותר?</summary>
+            <div style="margin-top:10px; color:var(--text2); font-size:.9rem; line-height:1.7">
+                PancakeSwap → connect wallet → swap → SLH ל-BNB. עמלה 0.25%.<br>
+                אז ממירים BNB לשקלים ב-Bit2C / Binance → מעבירים לבנק.<br>
+                אם מכרתם ברווח — חובת דיווח לרשות המסים.
+            </div>
+        </details>
+
+        <details style="padding:12px 16px; background:rgba(255,255,255,.03); border-radius:8px">
+            <summary style="cursor:pointer; font-weight:600; color:var(--text); font-size:.95rem">איך יוצרים קשר אם יש בעיה ברכישה?</summary>
+            <div style="margin-top:10px; color:var(--text2); font-size:.9rem; line-height:1.7">
+                <strong>Telegram (קהילה):</strong> <a href="https://t.me/SLH_AIR_bot" target="_blank" style="color:var(--accent)">@SLH_AIR_bot</a> — תוך 24 שעות תגובה.<br>
+                <strong>Telegram (מייסד):</strong> <a href="https://t.me/osifeu_prog" target="_blank" style="color:var(--accent)">@osifeu_prog</a> — לבעיות דחופות.<br>
+                <strong>Email:</strong> <a href="mailto:osif.erez.ungar@gmail.com" style="color:var(--accent)">osif.erez.ungar@gmail.com</a>
+            </div>
+        </details>
+
+        <p style="margin:18px 0 0; color:var(--text2); font-size:.85rem">
+            עוד 25 שאלות מקיפות → <a href="/ido.html#faq" style="color:var(--accent)">FAQ מלא בדף ה-IDO</a>
+        </p>
+    </div>
+
+    <!-- Scam warnings -->
+    <div style="background:rgba(245,158,11,.06); border:1px solid rgba(245,158,11,.3); border-radius:14px; padding:22px 26px; margin-bottom:24px">
+        <h3 style="margin:0 0 14px; color:#fbbf24; font-size:1.05rem; font-weight:700; display:flex; align-items:center; gap:8px">
+            <i class="fas fa-shield-halved"></i> 4 סימני הונאה ספציפיים לרכישה — אל תיפלו
+        </h3>
+        <ul style="margin:0; padding:0; list-style:none">
+            <li style="padding:10px 12px; background:rgba(255,255,255,.03); border-radius:6px; margin-bottom:6px; font-size:.9rem; line-height:1.6; color:var(--text2)">
+                <strong style="color:#fbbf24">"שלח 0.1 BNB לכתובת X ותקבל 0.2 חזרה"</strong> — תמיד הונאה. PancakeSwap הרשמי לא דורש שליחה ידנית.
+            </li>
+            <li style="padding:10px 12px; background:rgba(255,255,255,.03); border-radius:6px; margin-bottom:6px; font-size:.9rem; line-height:1.6; color:var(--text2)">
+                <strong style="color:#fbbf24">DM "Osif" / "תמיכת SLH" שמציע "presale פרטי"</strong> — אנחנו לעולם לא שולחים DMs. אין presale פרטי.
+            </li>
+            <li style="padding:10px 12px; background:rgba(255,255,255,.03); border-radius:6px; margin-bottom:6px; font-size:.9rem; line-height:1.6; color:var(--text2)">
+                <strong style="color:#fbbf24">אתר "slh-presale.io" / "slh-nft-airdrop.com"</strong> — רק <code>slh-nft.com</code> רשמי.
+            </li>
+            <li style="padding:10px 12px; background:rgba(255,255,255,.03); border-radius:6px; font-size:.9rem; line-height:1.6; color:var(--text2)">
+                <strong style="color:#fbbf24">בקשה לשלוח seed phrase "לבדיקה"</strong> — זה כמו לבקש סיסמה לבנק. לעולם.
+            </li>
+        </ul>
+        <p style="margin:14px 0 0; color:var(--text2); font-size:.88rem">
+            רשימה מלאה של 8 דפוסים → <a href="/ido.html#scam" style="color:#fbbf24">דף ה-IDO</a>
+        </p>
+    </div>
+
+    <!-- Tax obligation reminder -->
+    <div style="background:rgba(80,150,220,.06); border:1px solid rgba(80,150,220,.25); border-radius:14px; padding:20px 24px; margin-bottom:24px">
+        <h3 style="margin:0 0 10px; color:#7eb6e8; font-size:1.05rem; font-weight:700; display:flex; align-items:center; gap:8px">
+            <i class="fas fa-coins"></i> תזכורת מס — קריאה חובה
+        </h3>
+        <p style="margin:0 0 8px; color:var(--text2); font-size:.92rem; line-height:1.7">
+            ברכישה <strong>אין מס</strong>. במכירה ברווח: <strong>25% מס רווחי הון</strong> למשקיע פרטי.
+        </p>
+        <p style="margin:0 0 8px; color:var(--text2); font-size:.92rem; line-height:1.7">
+            חובת דיווח: דוח שנתי 1301 לבעלי חשבונות קריפטו פעילים. עסקה > ₪50,000: טופס 5329 תוך 30 ימים.
+        </p>
+        <p style="margin:0; color:var(--text3); font-size:.85rem">
+            פרטים מלאים: <a href="/ido.html#tax" style="color:#7eb6e8">/ido.html#tax</a> · <a href="/disclosure.html#tax-israel" style="color:#7eb6e8">/disclosure.html#tax-israel</a>
+        </p>
+    </div>
+
+    <!-- Bilingual legal disclosure -->
+    <div style="margin-bottom:24px; padding:22px 26px; background:rgba(255,255,255,.025); border:1px solid var(--border); border-radius:12px">
+        <div style="text-align:right; margin-bottom:14px; padding-bottom:14px; border-bottom:1px solid var(--border); font-size:.82rem; color:var(--text3); line-height:1.75">
+            <strong style="color:var(--text2)">⚖️ גילוי משפטי</strong><br>
+            רכישת SLH ב-PancakeSwap היא עסקה ב-Binance Smart Chain — לא דרך SPARK IND או דרך SLH Sovereign DAO LLC.
+            ה-IDO הרשמי (Marshall Islands DAO LLC, MIDAO #pending) מתבצע דרך <a href="/ido.html" style="color:var(--accent)">דף ה-IDO</a> בלבד.
+            <strong style="color:var(--text2)">השקעה ב-SLH טומנת בחובה סיכון אובדן הון מלא.</strong>
+            ערך הטוקן יכול לרדת לאפס. אין הבטחה לרווחים.
+            לא זמין לתושבי OFAC (USA, איראן, צפון קוריאה, סוריה, קובה).
+            חובת דיווח לרשות המסים על רווחים בעת מכירה (25% למשקיע פרטי).
+            התוכן באתר זה איננו מהווה ייעוץ השקעות, ייעוץ מס, או המלצה לרכישה.
+            <a href="/disclosure.html" style="color:var(--accent); font-weight:700">→ קרא את גילוי הסיכון המלא</a>
+        </div>
+        <div style="text-align:left; direction:ltr; font-size:.76rem; color:var(--text3); line-height:1.7">
+            <strong style="color:var(--text2)">⚖️ Legal disclosure (English)</strong><br>
+            Purchasing SLH on PancakeSwap is a transaction on Binance Smart Chain — not through SPARK IND or SLH Sovereign DAO LLC.
+            The official IDO (Marshall Islands DAO LLC, MIDAO #pending) takes place via <a href="/ido.html" style="color:var(--accent)">the IDO page</a> only.
+            <strong style="color:var(--text2)">Investment in SLH carries full risk of capital loss.</strong>
+            Token value may fall to zero. No guaranteed returns. Not available to OFAC residents (USA, Iran, North Korea, Syria, Cuba).
+            Israeli tax obligation: 25% capital gains tax on profitable sales (individual investor).
+            <a href="/disclosure.html" style="color:var(--accent)">Read full risk disclosure →</a>
+        </div>
+    </div>
+
+    <!-- Related -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:24px">
+        <a href="/liquidity.html" style="display:block;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;text-decoration:none;text-align:center">
+            <div style="font-size:20px;margin-bottom:6px">💧</div>
+            <div style="font-size:12px;font-weight:700;color:var(--text)">Add Liquidity</div>
+        </a>
+        <a href="/earn.html" style="display:block;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;text-decoration:none;text-align:center">
+            <div style="font-size:20px;margin-bottom:6px">📈</div>
+            <div style="font-size:12px;font-weight:700;color:var(--text)">Variable Yield (4-12%) Staking</div>
+        </a>
+        <a href="/p2p.html" style="display:block;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;text-decoration:none;text-align:center">
+            <div style="font-size:20px;margin-bottom:6px">🤝</div>
+            <div style="font-size:12px;font-weight:700;color:var(--text)">P2P Trading</div>
+        </a>
+        <a href="/about.html" style="display:block;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;text-decoration:none;text-align:center">
+            <div style="font-size:20px;margin-bottom:6px">🔍</div>
+            <div style="font-size:12px;font-weight:700;color:var(--text)">About & Trust</div>
+        </a>
+    </div>
+</div>
+
+<div id="bottomnav-root"></div>
+<div id="footer-root"></div>
+
+<script src="/js/translations.js?v=20260426e"></script>
+<script src="/js/shared.js?v=20260426e"></script>
+<script>initShared({ activePage: 'trade', showBottomNav: true });</script>
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260426e"></script>
+
+<script>
+const SLH_PRICE_ILS = 444;
+const SLH_PRICE_USD = 122;
+let selectedPayment = 'pancakeswap';
+
+function setAmount(usd) {
+    const curr = document.getElementById('buy-currency').value;
+    document.getElementById('buy-amount').value = curr === 'ILS' ? Math.round(usd * 3.65) : usd;
+    document.querySelectorAll('.bonus-tier').forEach(t => t.classList.remove('active'));
+    event.target.closest('.bonus-tier').classList.add('active');
+    updateSummary();
+}
+
+function selectPayment(el, method) {
+    document.querySelectorAll('.pay-method').forEach(m => m.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedPayment = method;
+    updateSummary();
+    updateBuyLink();
+}
+
+function updateSummary() {
+    const amount = parseFloat(document.getElementById('buy-amount').value) || 0;
+    const curr = document.getElementById('buy-currency').value;
+    let amountUSD = amount;
+    if (curr === 'ILS') amountUSD = amount / 3.65;
+    else if (curr === 'BNB') amountUSD = amount * 600;
+    else if (curr === 'TON') amountUSD = amount * 1.4;
+
+    let bonusPct = 0;
+    if (amountUSD >= 5000) bonusPct = 10;
+    else if (amountUSD >= 1000) bonusPct = 5;
+    else if (amountUSD >= 500) bonusPct = 3;
+    else if (amountUSD >= 100) bonusPct = 2;
+
+    const slh = (amountUSD / SLH_PRICE_USD) * (1 + bonusPct / 100);
+    const symbols = {ILS: '₪', USD: '$', BNB: 'BNB ', USDT: 'USDT ', TON: 'TON '};
+    const methods = {pancakeswap: 'PancakeSwap', p2p: 'P2P', genesis: 'Genesis Deposit', bank: 'Bank Transfer'};
+
+    document.getElementById('sum-amount').textContent = (symbols[curr] || '') + amount.toLocaleString();
+    document.getElementById('sum-bonus').textContent = bonusPct > 0 ? `+${bonusPct}%` : 'None';
+    const buyToken = document.getElementById('buy-token')?.value || 'SLH';
+    const tokenPrices = {SLH: 122, ZVK: 1.2, MNH: 0.27};
+    const tp = tokenPrices[buyToken] || 122;
+    const tokens = amountUSD / tp * (1 + bonusPct / 100);
+    document.getElementById('sum-slh').textContent = '~' + tokens.toFixed(2) + ' ' + buyToken;
+    document.getElementById('sum-method').textContent = methods[selectedPayment] || selectedPayment;
+}
+
+function updateBuyLink() {
+    const link = document.getElementById('buy-link');
+    if (!link) return;
+    const token = document.getElementById('buy-token')?.value || 'SLH';
+    
+    const urls = {
+        pancakeswap: 'https://pancakeswap.finance/swap?outputCurrency=0xACb0A09414CEA1C879c67bB7A877E4e19480f022&chain=bsc',
+        p2p: '/p2p.html',
+        genesis: '/launch-event.html#send-bnb',
+        bank: 'https://t.me/osifeu_prog',
+        bit: 'https://t.me/osifeu_prog',
+        telegram: 'https://t.me/SLH_AIR_bot?start=buy'
+    };
+    
+    // ZVK/MNH = internal tokens, only P2P
+    if (token !== 'SLH' && selectedPayment === 'pancakeswap') {
+        link.href = '/p2p.html';
+        link.removeAttribute('target');
+        link.textContent = '🤝 רכוש ' + token + ' ב-P2P (מטבע פנימי)';
+    } else {
+        link.href = urls[selectedPayment] || urls.pancakeswap;
+        if (selectedPayment === 'p2p' || selectedPayment === 'genesis') {
+            link.removeAttribute('target');
+        } else {
+            link.target = '_blank';
+        }
+        const labels = {
+            pancakeswap: '🥞 רכוש ' + token + ' ב-PancakeSwap',
+            p2p: '🤝 רכוש ' + token + ' ב-P2P',
+            genesis: '💎 הפקד לארנק Genesis',
+            bank: '🏦 צור קשר לרכישה'
+        };
+        link.textContent = labels[selectedPayment] || labels.pancakeswap;
+    }
+}
+
+
+function handleBuy() {
+    const result = document.getElementById('buy-result');
+    if (selectedPayment === 'pancakeswap') {
+        result.innerHTML = '<span style="color:var(--accent)">🥞 PancakeSwap נפתח...</span>';
+        const a = document.createElement('a');
+        a.href = 'https://pancakeswap.finance/swap?outputCurrency=0xACb0A09414CEA1C879c67bB7A877E4e19480f022&chain=bsc';
+        a.target = '_blank'; a.rel = 'noopener'; a.click();
+        setTimeout(() => { result.innerHTML = '<span style="color:var(--accent)">🥞 לא נפתח? <a href="https://pancakeswap.finance/swap?outputCurrency=0xACb0A09414CEA1C879c67bB7A877E4e19480f022&chain=bsc" target="_blank" style="color:var(--gold);text-decoration:underline">לחץ כאן ←</a></span>'; }, 2000);
+    } else if (selectedPayment === 'p2p') {
+        window.location.href = '/p2p.html';
+    } else if (selectedPayment === 'genesis') {
+        result.innerHTML = '<span style="color:var(--gold)">💎 Genesis Wallet:<br><code style="font-size:11px;background:var(--bg);padding:6px 10px;border-radius:6px;display:inline-block;margin-top:6px;direction:ltr">0xd061de73B06d5E91bfA46b35EfB7B08b16903da4</code><br>רשת: BSC (BEP-20) · דווח אח"כ ב-<a href="/launch-event.html" style="color:var(--accent)">Launch Event</a></span>';
+    } else {
+        result.innerHTML = '<span style="color:var(--cyan)">🏦 צור קשר: <a href="https://t.me/osifeu_prog" target="_blank" style="color:var(--accent)">@osifeu_prog</a></span>';
+    }
+}
+
+updateSummary();
+updateBuyLink();
+
+// ═══════ Auto-verify logic ═══════
+let verifyNet = 'bsc';
+function setVerifyNet(net){
+    verifyNet = net;
+    document.getElementById('net-bsc').classList.toggle('net-active', net==='bsc');
+    document.getElementById('net-ton').classList.toggle('net-active', net==='ton');
+    const ph = net === 'ton'
+        ? 'TON tx hash (64+ hex characters, no 0x)'
+        : 'BSC tx hash (0x + 64 hex characters)';
+    document.getElementById('verify-txhash').placeholder = ph;
+}
+
+// Pre-fill user ID from localStorage if logged in
+try {
+    const u = JSON.parse(localStorage.getItem('slh_user') || '{}');
+    if (u.id) document.getElementById('verify-userid').value = u.id;
+} catch(e) {}
+
+async function verifyPayment(){
+    const btn = document.getElementById('verify-btn');
+    const result = document.getElementById('verify-result');
+    const tx = document.getElementById('verify-txhash').value.trim();
+    const uid = parseInt(document.getElementById('verify-userid').value, 10);
+
+    if (!tx) { result.innerHTML = '<span style="color:#ff4444">❌ חסר TX hash</span>'; return; }
+    if (!uid) { result.innerHTML = '<span style="color:#ff4444">❌ חסר User ID</span>'; return; }
+    if (verifyNet === 'bsc' && (!tx.startsWith('0x') || tx.length !== 66)) {
+        result.innerHTML = '<span style="color:#ff4444">❌ BSC hash צריך להיות 0x + 64 תווים</span>';
+        return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = '⏳ מאמת על הבלוקצ\'יין...';
+    result.innerHTML = '<span style="color:var(--text2)">מחכה לתשובה מ-' + (verifyNet === 'ton' ? 'toncenter' : 'bscscan') + '...</span>';
+
+    const endpoint = verifyNet === 'ton'
+        ? 'https://slh-api-production.up.railway.app/api/payment/ton/auto-verify'
+        : 'https://slh-api-production.up.railway.app/api/payment/bsc/auto-verify';
+
+    try {
+        const r = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_id: uid, tx_hash: tx, bot_name: 'ecosystem', plan_key: 'premium' })
+        });
+        const d = await r.json();
+        if (!r.ok) throw new Error(d.detail || 'Verification failed');
+
+        const amt = verifyNet === 'ton' ? `${d.amount_ton} TON` : `${d.amount_bnb} BNB`;
+        const receiptHtml = d.receipt
+            ? `<div style="margin-top:8px;padding:10px;background:rgba(0,255,65,.08);border-radius:8px;font-family:monospace;font-size:11px">
+                📄 קבלה דיגיטלית: <b>${d.receipt.receipt_number}</b><br>
+                <span style="color:var(--text2)">${new Date(d.receipt.issued_at).toLocaleString('he-IL')}</span>
+              </div>`
+            : '';
+        const alreadyHtml = d.already_processed
+            ? '<div style="color:var(--gold);margin-top:6px">ℹ️ העסקה כבר עובדה — Premium פעיל מקודם</div>'
+            : '';
+
+        result.innerHTML = `
+            <div style="padding:16px;background:rgba(0,255,65,.1);border:1px solid rgba(0,255,65,.3);border-radius:10px">
+                <div style="font-size:18px;font-weight:900;color:#00ff41;margin-bottom:6px">✅ Premium הופעל!</div>
+                <div style="color:var(--text)">אומת על הבלוקצ'יין: <b>${amt}</b></div>
+                ${alreadyHtml}
+                ${receiptHtml}
+                <div style="margin-top:14px">
+                    <a href="/dashboard.html" style="display:inline-block;padding:10px 20px;background:#00ff41;color:#000;border-radius:8px;font-weight:700;text-decoration:none">🎛 עבור לדשבורד</a>
+                </div>
+            </div>
+        `;
+        btn.textContent = '✅ הופעל בהצלחה';
+        btn.style.background = 'rgba(0,255,65,.2)';
+        btn.disabled = true;
+    } catch(err) {
+        result.innerHTML = `<div style="padding:12px;background:rgba(255,68,68,.1);border:1px solid #ff4444;border-radius:8px;color:#ff4444">❌ ${err.message}</div>`;
+        btn.disabled = false;
+        btn.textContent = '🔐 אמת תשלום והפעל Premium';
+    }
+}
+</script>
+
+<!-- TON Direct Payment Modal -->
+<div id="ton-pay-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.88);overflow-y:auto">
+<div style="max-width:540px;margin:30px auto;padding:28px;background:var(--bg2,#0c1018);border:1px solid rgba(38,165,228,.3);border-radius:14px;direction:rtl">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <h2 style="color:#26a5e4;font-size:20px;margin:0">💎 תשלום ב-TON</h2>
+        <button onclick="closeTonPayModal()" style="background:none;border:none;color:#fff;font-size:24px;cursor:pointer">&times;</button>
+    </div>
+    <div style="background:rgba(38,165,228,.08);border:1px solid rgba(38,165,228,.25);padding:14px;border-radius:10px;margin-bottom:16px;font-size:13px;color:#e0e0f0;line-height:1.8">
+        <strong style="color:#26a5e4">שלב 1:</strong> שלח TON לכתובת הבאה:<br>
+        <div style="margin:10px 0;padding:12px;background:rgba(0,0,0,.4);border-radius:8px;font-family:monospace;font-size:12px;color:#00ff41;direction:ltr;text-align:center;word-break:break-all" id="ton-address-display">טוען...</div>
+        <div style="display:flex;gap:8px;margin-bottom:10px">
+            <button onclick="copyTonAddress()" style="flex:1;padding:10px;background:#26a5e4;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px">📋 העתק כתובת</button>
+            <a id="ton-deeplink" href="#" target="_blank" style="flex:1;padding:10px;background:#00c832;color:#000;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px;text-align:center;text-decoration:none">💎 פתח Tonkeeper</a>
+        </div>
+        <strong style="color:#26a5e4">שלב 2:</strong> אחרי ששלחת, העתק את ה-TX hash מהארנק והדבק למטה<br>
+        <strong style="color:#26a5e4">שלב 3:</strong> לחץ "אמת" → אישור אוטומטי תוך 30 שניות
+    </div>
+    <input type="text" id="ton-tx-hash" placeholder="TX hash (מהארנק)" style="width:100%;padding:12px;background:#141924;border:1px solid rgba(255,255,255,.1);color:#fff;border-radius:8px;font-family:monospace;font-size:12px;margin-bottom:10px;direction:ltr">
+    <input type="number" id="ton-user-id" placeholder="User ID שלך (Telegram)" style="width:100%;padding:12px;background:#141924;border:1px solid rgba(255,255,255,.1);color:#fff;border-radius:8px;font-size:13px;margin-bottom:12px;direction:ltr;text-align:right">
+    <button onclick="verifyTonPayment()" id="ton-verify-btn" style="width:100%;padding:14px;background:linear-gradient(135deg,#26a5e4,#00ff41);color:#000;border:none;border-radius:10px;font-size:15px;font-weight:900;cursor:pointer">🔐 אמת והפעל Premium</button>
+    <div id="ton-verify-result" style="margin-top:12px;font-size:13px;text-align:center;min-height:20px"></div>
+</div>
+</div>
+
+<!-- BSC Direct Payment Modal -->
+<div id="bsc-pay-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.88);overflow-y:auto">
+<div style="max-width:540px;margin:30px auto;padding:28px;background:var(--bg2,#0c1018);border:1px solid rgba(243,186,47,.3);border-radius:14px;direction:rtl">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <h2 style="color:#f3ba2f;font-size:20px;margin:0">🟡 תשלום ב-BNB (BSC)</h2>
+        <button onclick="closeBscPayModal()" style="background:none;border:none;color:#fff;font-size:24px;cursor:pointer">&times;</button>
+    </div>
+    <div style="background:rgba(243,186,47,.08);border:1px solid rgba(243,186,47,.25);padding:14px;border-radius:10px;margin-bottom:16px;font-size:13px;color:#e0e0f0;line-height:1.8">
+        <strong style="color:#f3ba2f">שלב 1:</strong> שלח BNB לכתובת Genesis:<br>
+        <div style="margin:10px 0;padding:12px;background:rgba(0,0,0,.4);border-radius:8px;font-family:monospace;font-size:11px;color:#f3ba2f;direction:ltr;text-align:center;word-break:break-all">0xd061de73B06d5E91bfA46b35EfB7B08b16903da4</div>
+        <div style="display:flex;gap:8px;margin-bottom:10px">
+            <button onclick="copyBscAddress()" style="flex:1;padding:10px;background:#f3ba2f;color:#000;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px">📋 העתק כתובת</button>
+            <button onclick="connectMetaMask()" style="flex:1;padding:10px;background:#ff9900;color:#000;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px">🦊 MetaMask</button>
+        </div>
+        <div style="font-size:11px;color:#ffd700;margin-bottom:4px">💡 מינימום: 0.05 BNB (~₪180)</div>
+        <strong style="color:#f3ba2f">שלב 2:</strong> העתק TX hash מ-MetaMask/Trust<br>
+        <strong style="color:#f3ba2f">שלב 3:</strong> אמת והפעל Premium ב-30ש
+    </div>
+    <input type="text" id="bsc-tx-hash" placeholder="TX hash (0x...)" style="width:100%;padding:12px;background:#141924;border:1px solid rgba(255,255,255,.1);color:#fff;border-radius:8px;font-family:monospace;font-size:12px;margin-bottom:10px;direction:ltr">
+    <input type="number" id="bsc-user-id" placeholder="User ID שלך (Telegram)" style="width:100%;padding:12px;background:#141924;border:1px solid rgba(255,255,255,.1);color:#fff;border-radius:8px;font-size:13px;margin-bottom:12px;direction:ltr;text-align:right">
+    <button onclick="verifyBscPayment()" id="bsc-verify-btn" style="width:100%;padding:14px;background:linear-gradient(135deg,#f3ba2f,#ff9900);color:#000;border:none;border-radius:10px;font-size:15px;font-weight:900;cursor:pointer">🔐 אמת והפעל Premium</button>
+    <div id="bsc-verify-result" style="margin-top:12px;font-size:13px;text-align:center;min-height:20px"></div>
+</div>
+</div>
+
+<script>
+const TON_ADDR_FALLBACK = 'UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp';
+const BSC_ADDR = '0xd061de73B06d5E91bfA46b35EfB7B08b16903da4';
+let loadedTonAddr = null;
+
+async function loadTonAddr() {
+    try {
+        const r = await fetch('https://slh-api-production.up.railway.app/api/payment/config');
+        const d = await r.json();
+        loadedTonAddr = d.ton_address || TON_ADDR_FALLBACK;
+    } catch(e) { loadedTonAddr = TON_ADDR_FALLBACK; }
+    const el = document.getElementById('ton-address-display');
+    if (el) el.textContent = loadedTonAddr;
+    const dl = document.getElementById('ton-deeplink');
+    if (dl) dl.href = 'ton://transfer/' + loadedTonAddr + '?amount=1500000000&text=SLH%20premium';
+}
+
+function openTonPayModal() {
+    loadTonAddr();
+    document.getElementById('ton-pay-modal').style.display = 'block';
+    try {
+        const u = JSON.parse(localStorage.getItem('slh_user') || '{}');
+        if (u.id) document.getElementById('ton-user-id').value = u.id;
+    } catch(e) {}
+}
+function closeTonPayModal() { document.getElementById('ton-pay-modal').style.display = 'none'; }
+
+function openBscPayModal() {
+    document.getElementById('bsc-pay-modal').style.display = 'block';
+    try {
+        const u = JSON.parse(localStorage.getItem('slh_user') || '{}');
+        if (u.id) document.getElementById('bsc-user-id').value = u.id;
+    } catch(e) {}
+}
+function closeBscPayModal() { document.getElementById('bsc-pay-modal').style.display = 'none'; }
+
+function copyTonAddress() {
+    if (!loadedTonAddr) return;
+    navigator.clipboard.writeText(loadedTonAddr).then(() => alert('✅ כתובת TON הועתקה'));
+}
+function copyBscAddress() {
+    navigator.clipboard.writeText(BSC_ADDR).then(() => alert('✅ כתובת BSC Genesis הועתקה'));
+}
+
+async function connectMetaMask() {
+    if (!window.ethereum) {
+        alert('אין MetaMask מותקן. התקן מ-metamask.io או השתמש ב-Trust Wallet');
+        return;
+    }
+    try {
+        const accounts = await window.ethereum.request({method: 'eth_requestAccounts'});
+        const from = accounts[0];
+        // Switch to BSC
+        try {
+            await window.ethereum.request({
+                method: 'wallet_switchEthereumChain',
+                params: [{chainId: '0x38'}]
+            });
+        } catch(e) {
+            if (e.code === 4902) {
+                await window.ethereum.request({
+                    method: 'wallet_addEthereumChain',
+                    params: [{
+                        chainId: '0x38',
+                        chainName: 'BSC',
+                        rpcUrls: ['https://bsc-dataseed.binance.org'],
+                        nativeCurrency: {name: 'BNB', symbol: 'BNB', decimals: 18}
+                    }]
+                });
+            }
+        }
+        // Send TX
+        const txHash = await window.ethereum.request({
+            method: 'eth_sendTransaction',
+            params: [{
+                from: from,
+                to: BSC_ADDR,
+                value: '0xb1a2bc2ec50000' // 0.05 BNB in hex wei
+            }]
+        });
+        document.getElementById('bsc-tx-hash').value = txHash;
+        alert('✅ TX נשלח! עכשיו לחץ "אמת" למטה');
+    } catch(e) {
+        alert('שגיאה: ' + (e.message || e.code));
+    }
+}
+
+async function verifyTonPayment() {
+    const btn = document.getElementById('ton-verify-btn');
+    const res = document.getElementById('ton-verify-result');
+    const tx = document.getElementById('ton-tx-hash').value.trim();
+    const uid = parseInt(document.getElementById('ton-user-id').value, 10);
+    if (!tx || !uid) { res.innerHTML = '<span style="color:#ff4444">❌ חסר TX hash או User ID</span>'; return; }
+    btn.disabled = true; btn.textContent = '⏳ מאמת ב-toncenter...';
+    try {
+        const r = await fetch('https://slh-api-production.up.railway.app/api/payment/ton/auto-verify', {
+            method: 'POST', headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({user_id: uid, tx_hash: tx, bot_name: 'ecosystem'})
+        });
+        const d = await r.json();
+        if (!r.ok) throw new Error(d.detail);
+        res.innerHTML = '<div style="padding:14px;background:rgba(0,255,65,.1);border:1px solid rgba(0,255,65,.3);border-radius:8px;color:#00ff41;font-weight:700">✅ אומת! ' + d.amount_ton + ' TON · Premium פעיל</div>';
+        btn.textContent = '✅ הופעל';
+    } catch(e) {
+        res.innerHTML = '<div style="color:#ff4444;padding:10px">❌ ' + e.message + '</div>';
+        btn.disabled = false; btn.textContent = '🔐 אמת והפעל Premium';
+    }
+}
+
+async function verifyBscPayment() {
+    const btn = document.getElementById('bsc-verify-btn');
+    const res = document.getElementById('bsc-verify-result');
+    const tx = document.getElementById('bsc-tx-hash').value.trim();
+    const uid = parseInt(document.getElementById('bsc-user-id').value, 10);
+    if (!tx || !uid) { res.innerHTML = '<span style="color:#ff4444">❌ חסר TX hash או User ID</span>'; return; }
+    btn.disabled = true; btn.textContent = '⏳ מאמת ב-bscscan...';
+    try {
+        const r = await fetch('https://slh-api-production.up.railway.app/api/payment/bsc/auto-verify', {
+            method: 'POST', headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({user_id: uid, tx_hash: tx, bot_name: 'ecosystem'})
+        });
+        const d = await r.json();
+        if (!r.ok) throw new Error(d.detail);
+        res.innerHTML = '<div style="padding:14px;background:rgba(0,255,65,.1);border:1px solid rgba(0,255,65,.3);border-radius:8px;color:#00ff41;font-weight:700">✅ אומת! ' + d.amount_bnb + ' BNB · Premium פעיל</div>';
+        btn.textContent = '✅ הופעל';
+    } catch(e) {
+        res.innerHTML = '<div style="color:#ff4444;padding:10px">❌ ' + e.message + '</div>';
+        btn.disabled = false; btn.textContent = '🔐 אמת והפעל Premium';
+    }
+}
+
+document.getElementById('ton-pay-modal').addEventListener('click', e => { if (e.target.id === 'ton-pay-modal') closeTonPayModal(); });
+document.getElementById('bsc-pay-modal').addEventListener('click', e => { if (e.target.id === 'bsc-pay-modal') closeBscPayModal(); });
+</script>
+
+<!-- Bank Transfer Modal -->
+<div id="bank-transfer-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);overflow-y:auto">
+<div style="max-width:560px;margin:40px auto;padding:28px;background:var(--bg2,#0c1018);border:1px solid rgba(0,255,65,.2);border-radius:12px;direction:rtl">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <h2 style="color:var(--accent,#00ff41);font-size:20px;margin:0">🏦 העברה בנקאית</h2>
+        <button onclick="closeBankTransferModal()" style="background:none;border:none;color:#fff;font-size:24px;cursor:pointer">&times;</button>
+    </div>
+    <div style="background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.2);padding:14px;border-radius:8px;margin-bottom:20px;font-size:12px;color:#ffd700">
+        <strong>שלב 1:</strong> העבר את הסכום לחשבון הבנק:<br>
+        <div style="margin:8px 0;padding:10px;background:rgba(0,0,0,.3);border-radius:6px;font-size:13px;color:#fff;line-height:1.8">
+            <strong>המוטב:</strong> קאופמן צביקה<br>
+            <strong>בנק:</strong> לאומי<br>
+            <strong>סניף:</strong> הרצליה (948)<br>
+            <strong>חשבון:</strong> 738009
+        </div>
+        <strong>שלב 2:</strong> מלא את הטופס הזה עם כל 8 הפרטים<br>
+        <strong>שלב 3:</strong> צביקה יאשר את ההעברה תוך 24 שעות
+    </div>
+    <form id="bank-transfer-form" onsubmit="submitBankTransfer(event)" style="display:flex;flex-direction:column;gap:14px">
+        <div>
+            <label style="font-size:11px;color:#8a8aa0;display:block;margin-bottom:4px">1. שם הלקוח *</label>
+            <input type="text" id="bt-name" required placeholder="השם המלא כפי שמופיע בחשבון הבנק" style="width:100%;padding:10px;background:#141924;border:1px solid rgba(255,255,255,.1);color:#fff;border-radius:6px;font-size:13px">
+        </div>
+        <div>
+            <label style="font-size:11px;color:#8a8aa0;display:block;margin-bottom:4px">2. תאריך ביצוע ההעברה *</label>
+            <input type="date" id="bt-date" required style="width:100%;padding:10px;background:#141924;border:1px solid rgba(255,255,255,.1);color:#fff;border-radius:6px;font-size:13px">
+        </div>
+        <div>
+            <label style="font-size:11px;color:#8a8aa0;display:block;margin-bottom:4px">3. תעודת זהות *</label>
+            <input type="text" id="bt-id" required pattern="\d{5,9}" maxlength="9" placeholder="9 ספרות" style="width:100%;padding:10px;background:#141924;border:1px solid rgba(255,255,255,.1);color:#fff;border-radius:6px;font-size:13px;direction:ltr;text-align:right">
+        </div>
+        <div>
+            <label style="font-size:11px;color:#8a8aa0;display:block;margin-bottom:4px">4. פרטי חשבון הבנק שלך *</label>
+            <input type="text" id="bt-bank" required placeholder="שם בנק, סניף, מספר חשבון" style="width:100%;padding:10px;background:#141924;border:1px solid rgba(255,255,255,.1);color:#fff;border-radius:6px;font-size:13px">
+        </div>
+        <div>
+            <label style="font-size:11px;color:#8a8aa0;display:block;margin-bottom:4px">5. סכום בשקלים *</label>
+            <input type="number" id="bt-amount" required min="1" max="1000000" step="0.01" placeholder="₪" style="width:100%;padding:10px;background:#141924;border:1px solid rgba(255,255,255,.1);color:#fff;border-radius:6px;font-size:13px;direction:ltr;text-align:right">
+        </div>
+        <div>
+            <label style="font-size:11px;color:#8a8aa0;display:block;margin-bottom:4px">6. מהות העסקה (מה רכשת?) *</label>
+            <input type="text" id="bt-desc" required placeholder="לדוגמה: רכישת 100 SLH, קורס השקעות..." style="width:100%;padding:10px;background:#141924;border:1px solid rgba(255,255,255,.1);color:#fff;border-radius:6px;font-size:13px">
+        </div>
+        <div>
+            <label style="font-size:11px;color:#8a8aa0;display:block;margin-bottom:4px">7. מספר טלפון *</label>
+            <input type="tel" id="bt-phone" required pattern="0[2-9]\d{7,8}" placeholder="0584203384" style="width:100%;padding:10px;background:#141924;border:1px solid rgba(255,255,255,.1);color:#fff;border-radius:6px;font-size:13px;direction:ltr;text-align:right">
+        </div>
+        <div>
+            <label style="font-size:11px;color:#8a8aa0;display:block;margin-bottom:4px">8. אסמכתא של העברה בנקאית *</label>
+            <input type="text" id="bt-ref" required placeholder="מספר אסמכתא מהבנק" style="width:100%;padding:10px;background:#141924;border:1px solid rgba(255,255,255,.1);color:#fff;border-radius:6px;font-size:13px;direction:ltr;text-align:right">
+        </div>
+        <div id="bt-result" style="font-size:12px;min-height:20px"></div>
+        <button type="submit" id="bt-submit-btn" style="padding:14px;background:#00ff41;color:#000;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">שלח בקשת העברה בנקאית</button>
+    </form>
+</div>
+</div>
+
+<script>
+function openBankTransferModal() {
+    document.getElementById('bank-transfer-modal').style.display = 'block';
+    document.getElementById('bt-date').valueAsDate = new Date();
+    // Pre-fill from user profile if available
+    try {
+        const u = JSON.parse(localStorage.getItem('slh_user') || '{}');
+        if (u.first_name) document.getElementById('bt-name').value = u.first_name + (u.last_name ? ' ' + u.last_name : '');
+    } catch(e) {}
+}
+function closeBankTransferModal() {
+    document.getElementById('bank-transfer-modal').style.display = 'none';
+}
+async function submitBankTransfer(e) {
+    e.preventDefault();
+    const result = document.getElementById('bt-result');
+    const btn = document.getElementById('bt-submit-btn');
+
+    // Get user ID
+    let userId;
+    try {
+        const u = JSON.parse(localStorage.getItem('slh_user') || '{}');
+        userId = u.id;
+    } catch(e) {}
+    if (!userId) {
+        result.innerHTML = '<span style="color:#ff0055">יש להתחבר קודם דרך טלגרם</span>';
+        return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'שולח...';
+    result.innerHTML = '';
+
+    try {
+        const body = {
+            user_id: userId,
+            customer_name: document.getElementById('bt-name').value.trim(),
+            transaction_date: document.getElementById('bt-date').value,
+            id_number: document.getElementById('bt-id').value.trim().padStart(9, '0'),
+            bank_details: document.getElementById('bt-bank').value.trim(),
+            amount_ils: parseFloat(document.getElementById('bt-amount').value),
+            transaction_desc: document.getElementById('bt-desc').value.trim(),
+            phone: document.getElementById('bt-phone').value.trim(),
+            transfer_reference: document.getElementById('bt-ref').value.trim()
+        };
+        const r = await fetch('https://slh-api-production.up.railway.app/api/bank-transfer/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+        const d = await r.json();
+        if (d.ok) {
+            result.innerHTML = '<span style="color:#00ff41">✅ ' + d.message + '</span>';
+            btn.textContent = 'נשלח בהצלחה!';
+            btn.style.background = '#39ff14';
+        } else {
+            result.innerHTML = '<span style="color:#ff0055">❌ ' + (d.detail || JSON.stringify(d)) + '</span>';
+            btn.disabled = false;
+            btn.textContent = 'שלח בקשת העברה בנקאית';
+        }
+    } catch(err) {
+        result.innerHTML = '<span style="color:#ff0055">❌ שגיאה: ' + err.message + '</span>';
+        btn.disabled = false;
+        btn.textContent = 'שלח בקשת העברה בנקאית';
+    }
+}
+// Close modal on outside click
+document.getElementById('bank-transfer-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeBankTransferModal();
+});
+</script>
+</body>
+</html>

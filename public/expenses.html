@@ -1,0 +1,312 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH Expenses — ניהול הוצאות חברה</title>
+<meta name="description" content="ניהול הוצאות חברה + אישיות · Claude API · כלי פיתוח · פרסום · חומרה.">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{--bg:#050810;--bg2:#0d1220;--gold:#ffd700;--green:#00e887;--red:#ff4444;--orange:#ff9800;--blue:#3b82f6;--purple:#a855f7;--text:#f5f5f8;--text2:#9ba0b5;--text3:#5a6078;--border:rgba(168,85,247,.3)}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Rubik',sans-serif;margin:0;min-height:100vh;line-height:1.5}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(ellipse at 20% 10%,rgba(168,85,247,.06),transparent 50%),radial-gradient(ellipse at 85% 75%,rgba(59,130,246,.05),transparent 50%)}
+.header{max-width:1400px;margin:0 auto;padding:30px 20px 16px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px}
+.title{font-size:30px;font-weight:900;background:linear-gradient(135deg,var(--purple),var(--blue));-webkit-background-clip:text;background-clip:text;color:transparent;margin:0}
+.btn{padding:10px 18px;background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:12px;cursor:pointer;font-weight:700;font-size:13px;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn.primary{background:linear-gradient(135deg,var(--purple),var(--blue));color:#fff;border:none}
+.kpis{max-width:1400px;margin:0 auto 20px;padding:0 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:18px;text-align:center}
+.kpi .v{font-size:26px;font-weight:900;color:var(--purple);line-height:1;font-family:'JetBrains Mono',monospace}
+.kpi.red .v{color:var(--red)}
+.kpi.gold .v{color:var(--gold)}
+.kpi.blue .v{color:var(--blue)}
+.kpi .l{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:1.5px;margin-top:8px}
+.section{max-width:1400px;margin:0 auto 24px;padding:0 20px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:22px}
+.card h2{margin:0 0 14px;font-size:18px;font-weight:900;color:var(--purple)}
+.filter-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.filter-row select,.filter-row input{padding:10px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;font-size:13px;font-family:inherit}
+.add-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:14px}
+.add-form input,.add-form select,.add-form textarea{padding:10px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;font-size:13px;font-family:inherit}
+.add-form textarea{grid-column:1/-1;min-height:60px;resize:vertical}
+.add-form button{grid-column:1/-1;padding:12px;background:var(--purple);color:#fff;border:none;border-radius:10px;font-weight:900;cursor:pointer;font-family:inherit}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:right;padding:10px;color:var(--text2);border-bottom:1px solid var(--border);font-weight:700;text-transform:uppercase;letter-spacing:1px;font-size:11px}
+td{padding:10px;border-bottom:1px solid rgba(255,255,255,.04)}
+.scope-company{color:var(--purple)}
+.scope-personal{color:var(--gold)}
+.scope-claude{color:var(--cyan)}
+.login-gate{max-width:420px;margin:80px auto;padding:40px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;text-align:center}
+.login-gate h2{color:var(--purple);margin-bottom:14px}
+.login-gate input{width:100%;padding:14px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;font-size:16px;margin-bottom:12px;font-family:inherit}
+.login-gate button{width:100%;padding:14px;background:var(--purple);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:900;cursor:pointer;font-family:inherit}
+.hebrew-date{text-align:center;color:var(--text3);font-size:12px;padding:20px;margin-top:20px;border-top:1px solid var(--border)}
+.cyan{--cyan:#06b6d4}
+.alert{padding:10px;border-radius:10px;margin-top:10px;font-size:12px;display:none}
+.alert.show{display:block}
+.alert.success{background:rgba(0,232,135,.1);color:var(--green);border:1px solid var(--green)}
+.alert.error{background:rgba(255,68,68,.1);color:var(--red);border:1px solid var(--red)}
+</style>
+</head>
+<body>
+
+<div id="login-gate" class="login-gate" style="display:none">
+  <h2>💼 Expenses — Admin Only</h2>
+  <input type="password" id="login-pwd" placeholder="סיסמת אדמין">
+  <button onclick="doLogin()">היכנס</button>
+</div>
+
+<div id="main" style="display:none">
+  <div id="topnav-root"></div>
+
+  <div class="header">
+    <div>
+      <h1 class="title">💼 ניהול הוצאות</h1>
+      <div style="font-size:13px;color:var(--text2)">חברה + אישיות · ניכוי מס · תיעוד מלא</div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <a href="/admin.html" class="btn"><i class="fas fa-arrow-right"></i> אדמין</a>
+      <button class="btn" onclick="exportCSV()"><i class="fas fa-file-csv"></i> ייצוא CSV</button>
+      <button class="btn" onclick="exportJSON()"><i class="fas fa-file-code"></i> ייצוא JSON</button>
+    </div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="v" id="kpi-total">—</div><div class="l">סה"כ הוצאות</div></div>
+    <div class="kpi red"><div class="v" id="kpi-company">₪0</div><div class="l">הוצאות חברה</div></div>
+    <div class="kpi gold"><div class="v" id="kpi-personal">₪0</div><div class="l">הוצאות אישיות</div></div>
+    <div class="kpi blue"><div class="v" id="kpi-deductible">₪0</div><div class="l">ניכוי מס</div></div>
+    <div class="kpi"><div class="v" id="kpi-vat">₪0</div><div class="l">סה"כ מע"מ</div></div>
+  </div>
+
+  <div class="section">
+    <div class="card">
+      <h2>➕ הוסף הוצאה חדשה</h2>
+      <form class="add-form" onsubmit="addExpense(event)">
+        <select id="scope" required>
+          <option value="company">חברה</option>
+          <option value="personal">אישי (Osif)</option>
+          <option value="claude">Claude API (אוטומטי)</option>
+        </select>
+
+        <select id="category" required>
+          <option value="">קטגוריה...</option>
+          <option value="AI Services">AI Services (Claude/OpenAI)</option>
+          <option value="Infrastructure">Infrastructure (Railway/Docker/hosting)</option>
+          <option value="Development">Development (Tools/licenses)</option>
+          <option value="Marketing">Marketing</option>
+          <option value="Hardware">Hardware (ESP32/servers)</option>
+          <option value="Legal & Accounting">Legal & Accounting</option>
+          <option value="Office">Office</option>
+          <option value="Travel">Travel</option>
+          <option value="Food & Entertainment">Food & Entertainment</option>
+          <option value="Other">Other</option>
+        </select>
+
+        <input type="text" id="description" placeholder="תיאור קצר *" required>
+        <input type="number" id="amount" step="0.01" placeholder="סכום ₪ *" required>
+        <input type="date" id="payment-date" required>
+        <input type="text" id="vendor" placeholder="ספק (אופציונלי)">
+        <input type="text" id="invoice" placeholder="מספר חשבונית">
+        <select id="payment-method">
+          <option value="card">כרטיס אשראי</option>
+          <option value="bank">העברה בנקאית</option>
+          <option value="bit">Bit</option>
+          <option value="paypal">PayPal</option>
+          <option value="crypto">Crypto</option>
+          <option value="cash">מזומן</option>
+        </select>
+        <input type="number" id="vat" step="0.01" placeholder="מע״מ (0 אם אין)" value="0">
+        <textarea id="notes" placeholder="הערות (אופציונלי)"></textarea>
+        <button type="submit">הוסף הוצאה</button>
+      </form>
+      <div id="add-alert" class="alert"></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="card">
+      <h2>📋 רשימת הוצאות</h2>
+      <div class="filter-row">
+        <select id="filter-scope" onchange="loadExpenses()">
+          <option value="">כל ההיקפים</option>
+          <option value="company">חברה</option>
+          <option value="personal">אישי</option>
+          <option value="claude">Claude</option>
+        </select>
+        <select id="filter-category" onchange="loadExpenses()">
+          <option value="">כל הקטגוריות</option>
+        </select>
+        <input type="date" id="filter-from" onchange="loadExpenses()">
+        <input type="date" id="filter-to" onchange="loadExpenses()">
+        <button class="btn" onclick="loadExpenses()"><i class="fas fa-sync"></i> רענן</button>
+      </div>
+      <div id="expenses-table">טוען...</div>
+    </div>
+  </div>
+
+  <div class="hebrew-date" id="hebrew-date"></div>
+</div>
+
+<script src="/js/shared.js?v=20260426e"></script>
+<script>
+const API = 'https://slh-api-production.up.railway.app';
+const ADMIN_USER_ID = 224223270;
+
+function doLogin(){
+  const p = document.getElementById('login-pwd').value;
+  if(p && p.length >= 6){
+    localStorage.setItem('slh_admin_password', p);
+    checkAuth();
+  }
+}
+
+function checkAuth(){
+  const p = localStorage.getItem('slh_admin_password');
+  if(p && p.length >= 6){
+    document.getElementById('login-gate').style.display='none';
+    document.getElementById('main').style.display='block';
+    document.getElementById('payment-date').valueAsDate = new Date();
+    loadExpenses();
+  } else {
+    document.getElementById('login-gate').style.display='block';
+  }
+}
+
+let allExpenses = [];
+
+async function loadExpenses(){
+  const scope = document.getElementById('filter-scope').value;
+  const category = document.getElementById('filter-category').value;
+  const from = document.getElementById('filter-from').value;
+  const to = document.getElementById('filter-to').value;
+  const qs = [];
+  if(scope) qs.push('scope=' + scope);
+  if(category) qs.push('category=' + category);
+  if(from) qs.push('from_date=' + from);
+  if(to) qs.push('to_date=' + to);
+
+  try {
+    const r = await fetch(`${API}/api/expenses/list?${qs.join('&')}`, {
+      headers: {'X-Admin-Key': localStorage.getItem('slh_admin_password')}
+    });
+    const d = await r.json();
+    allExpenses = d.expenses || [];
+    renderExpenses(d);
+  } catch(e){
+    document.getElementById('expenses-table').innerHTML = `<div style="padding:30px;text-align:center;color:var(--red)">שגיאה: ${e.message}</div>`;
+  }
+}
+
+function renderExpenses(d){
+  const rows = d.expenses || [];
+  const summary = d.summary || {};
+
+  document.getElementById('kpi-total').textContent = summary.total_count || 0;
+  document.getElementById('kpi-company').textContent = '₪' + (summary.company_total || 0).toLocaleString();
+  document.getElementById('kpi-personal').textContent = '₪' + (summary.personal_total || 0).toLocaleString();
+  document.getElementById('kpi-deductible').textContent = '₪' + (summary.deductible_total || 0).toLocaleString();
+  document.getElementById('kpi-vat').textContent = '₪' + (summary.vat_total || 0).toLocaleString();
+
+  if(rows.length === 0){
+    document.getElementById('expenses-table').innerHTML = '<div style="padding:30px;text-align:center;color:var(--text2)">אין הוצאות בטווח הנבחר</div>';
+    return;
+  }
+
+  document.getElementById('expenses-table').innerHTML = `<table><thead><tr>
+    <th>תאריך</th><th>קטגוריה</th><th>תיאור</th><th>ספק</th><th>היקף</th><th>סכום</th><th>מע"מ</th><th>ניכוי מס</th>
+  </tr></thead><tbody>${
+    rows.map(r => `<tr>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:11px">${new Date(r.payment_date).toLocaleDateString('he-IL')}</td>
+      <td>${r.category}</td>
+      <td>${r.description}${r.invoice_number ? ` <small style="color:var(--text3)">#${r.invoice_number}</small>` : ''}</td>
+      <td>${r.vendor || '—'}</td>
+      <td><span class="scope-${r.scope}">${r.scope}</span></td>
+      <td style="font-family:'JetBrains Mono',monospace;font-weight:700">₪${r.amount_ils.toLocaleString()}</td>
+      <td>${r.vat_amount ? '₪' + r.vat_amount : '—'}</td>
+      <td>${r.tax_deductible ? '✅' : '❌'}</td>
+    </tr>`).join('')
+  }</tbody></table>`;
+}
+
+async function addExpense(e){
+  e.preventDefault();
+  const alertEl = document.getElementById('add-alert');
+  const body = {
+    added_by_user_id: ADMIN_USER_ID,
+    scope: document.getElementById('scope').value,
+    category: document.getElementById('category').value,
+    description: document.getElementById('description').value.trim(),
+    amount_ils: parseFloat(document.getElementById('amount').value),
+    payment_date: document.getElementById('payment-date').value,
+    vendor: document.getElementById('vendor').value.trim() || null,
+    invoice_number: document.getElementById('invoice').value.trim() || null,
+    payment_method: document.getElementById('payment-method').value,
+    vat_amount: parseFloat(document.getElementById('vat').value) || 0,
+    notes: document.getElementById('notes').value.trim() || null,
+    tax_deductible: true
+  };
+  try {
+    const r = await fetch(`${API}/api/expenses/add`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json','X-Admin-Key':localStorage.getItem('slh_admin_password')},
+      body: JSON.stringify(body)
+    });
+    const d = await r.json();
+    if(r.ok){
+      alertEl.className = 'alert show success';
+      alertEl.textContent = `✅ הוצאה #${d.expense_id} נוספה בהצלחה`;
+      document.querySelector('.add-form').reset();
+      document.getElementById('payment-date').valueAsDate = new Date();
+      loadExpenses();
+    } else throw new Error(d.detail || 'failed');
+  } catch(err){
+    alertEl.className = 'alert show error';
+    alertEl.textContent = `❌ ${err.message}`;
+  }
+}
+
+function exportCSV(){
+  if(allExpenses.length === 0){ alert('אין נתונים ליצוא'); return; }
+  const header = ['תאריך','קטגוריה','תיאור','ספק','חשבונית','היקף','סכום ₪','מטבע','מע"מ','ניכוי מס','אמצעי תשלום','הערות'];
+  const rows = allExpenses.map(r => [
+    new Date(r.payment_date).toLocaleDateString('he-IL'),
+    r.category, r.description, r.vendor || '', r.invoice_number || '',
+    r.scope, r.amount_ils, r.amount_currency || 'ILS',
+    r.vat_amount || 0, r.tax_deductible ? 'כן' : 'לא',
+    r.payment_method || '', r.notes || ''
+  ]);
+  const csv = '\ufeff' + [header, ...rows].map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8'}));
+  a.download = `expenses_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+
+function exportJSON(){
+  if(allExpenses.length === 0){ alert('אין נתונים ליצוא'); return; }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(allExpenses, null, 2)], {type:'application/json'}));
+  a.download = `expenses_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+}
+
+function updateHebDate(){
+  try{
+    const now = new Date();
+    const heb = new Intl.DateTimeFormat('he-IL-u-ca-hebrew',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(now);
+    const greg = new Intl.DateTimeFormat('he-IL',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(now);
+    document.getElementById('hebrew-date').textContent = `📅 ${heb} · ${greg} · ${now.toLocaleTimeString('he-IL')}`;
+  }catch(e){}
+}
+setInterval(updateHebDate, 1000);
+updateHebDate();
+
+checkAuth();
+</script>
+<script src="/js/ai-assistant.js"></script>
+</body>
+</html>

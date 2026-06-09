@@ -1,0 +1,430 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>בלוג SLH Spark — מאמרים, מחשבות, ולו"ז פרסום</title>
+<meta name="description" content="כל המאמרים של SLH Spark במקום אחד — פילוסופיה, טכנולוגיה, מערכת, קהילה, פיננסים. + לו"ז פרסום השבוע.">
+<meta name="author" content="Osif Ungar · SLH Spark">
+<meta name="keywords" content="SLH Spark, slhalpa, blog, בלוג, Legacy Code, AI, CBT, NLP, mindset, קריפטו">
+
+<meta property="fb:app_id" content="0">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SLH Spark Blog">
+<meta property="og:url" content="https://slh-nft.com/blog.html">
+<meta property="og:title" content="📰 בלוג SLH Spark — קטלוג המאמרים + לו"ז פרסום">
+<meta property="og:description" content="כל מה שכתבנו ועומדים לכתוב. פילוסופיה פוגשת טכנולוגיה פוגשת כסף אמיתי.">
+<meta property="og:image" content="https://slh-nft.com/assets/og/launch.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="he_IL">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="📰 בלוג SLH Spark — קטלוג המאמרים + לו"ז פרסום">
+<meta name="twitter:image" content="https://slh-nft.com/assets/og/launch.jpg">
+
+<link rel="canonical" href="https://slh-nft.com/blog.html">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/shared.css?v=20260425d">
+
+<style>
+:root{--bg:#050810;--bg2:#0d1220;--bg3:#151a2e;--gold:#ffd700;--green:#00e887;--red:#ff4444;--purple:#a855f7;--blue:#3b82f6;--cyan:#06b6d4;--text:#f5f5f8;--text2:#9ba0b5;--text3:#5a6078;--border:rgba(168,85,247,.2)}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Rubik',sans-serif;margin:0;min-height:100vh;line-height:1.6}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(ellipse at 20% 10%,rgba(168,85,247,.08),transparent 50%),radial-gradient(ellipse at 85% 80%,rgba(0,232,135,.06),transparent 50%)}
+
+.breadcrumb{max-width:1200px;margin:20px auto 0;padding:0 20px;font-size:13px;color:var(--text2)}
+.breadcrumb a{color:var(--cyan);text-decoration:none;margin:0 6px}
+
+.hero{max-width:1100px;margin:0 auto;padding:50px 20px 30px;text-align:center}
+.hero .tag{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;background:rgba(168,85,247,.15);border:1px solid var(--purple);color:var(--purple);border-radius:20px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:18px}
+.hero h1{font-size:clamp(32px,5vw,52px);font-weight:900;line-height:1.1;margin:0 0 14px;background:linear-gradient(135deg,var(--gold),var(--green),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{font-size:17px;color:var(--text2);max-width:680px;margin:0 auto}
+
+/* Featured article */
+.featured{max-width:1100px;margin:20px auto 40px;padding:0 20px}
+.featured-card{background:linear-gradient(135deg,rgba(255,215,0,.08),rgba(168,85,247,.05));border:2px solid var(--gold);border-radius:24px;padding:32px;display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center;position:relative;overflow:hidden}
+.featured-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--gold),var(--green),var(--purple))}
+.featured-card .badge{position:absolute;top:14px;inset-inline-end:18px;padding:5px 12px;background:var(--gold);color:#000;border-radius:10px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:1.5px}
+.featured-card .visual{background:linear-gradient(135deg,var(--bg2),var(--bg));border-radius:16px;height:200px;display:flex;align-items:center;justify-content:center;font-size:80px}
+.featured-card .meta{font-size:12px;color:var(--text2);margin-bottom:8px}
+.featured-card h2{margin:0 0 12px;font-size:26px;font-weight:900;color:var(--text);line-height:1.3}
+.featured-card p{font-size:14px;color:var(--text2);margin:0 0 16px;line-height:1.7}
+.featured-card .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;background:linear-gradient(135deg,var(--gold),var(--green));color:#000;text-decoration:none;border-radius:12px;font-weight:900;font-size:14px}
+@media(max-width:720px){.featured-card{grid-template-columns:1fr}}
+
+/* Articles grid */
+.section{max-width:1100px;margin:0 auto 40px;padding:0 20px}
+.section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;flex-wrap:wrap;gap:12px}
+.section-head h2{margin:0;font-size:24px;font-weight:900;color:var(--gold)}
+.section-head .count{font-size:12px;color:var(--text2);padding:4px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:12px}
+
+.articles-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.article-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:22px;text-decoration:none;color:var(--text);transition:all .2s;display:flex;flex-direction:column;position:relative}
+.article-card:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.4)}
+.article-card.published{border-left:4px solid var(--green)}
+.article-card.scheduled{border-left:4px solid var(--gold);opacity:.85}
+.article-card.planned{border-left:4px solid var(--purple);opacity:.7}
+.article-card.idea{border-left:4px solid var(--text3);opacity:.6}
+.article-card .status-badge{position:absolute;top:14px;inset-inline-end:14px;padding:3px 10px;border-radius:10px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px}
+.article-card.published .status-badge{background:var(--green);color:#000}
+.article-card.scheduled .status-badge{background:var(--gold);color:#000}
+.article-card.planned .status-badge{background:var(--purple);color:#fff}
+.article-card.idea .status-badge{background:var(--bg);color:var(--text2);border:1px solid var(--border)}
+.article-card .meta{font-size:11px;color:var(--text3);margin-bottom:10px;font-family:'JetBrains Mono',monospace}
+.article-card h3{margin:0 0 10px;font-size:17px;font-weight:900;color:var(--text);line-height:1.4}
+.article-card p{margin:0 0 12px;font-size:13px;color:var(--text2);line-height:1.6;flex:1}
+.article-card .tags{display:flex;gap:6px;flex-wrap:wrap}
+.article-card .tag{padding:2px 8px;background:rgba(168,85,247,.1);color:var(--purple);border-radius:8px;font-size:10px;font-weight:700}
+
+/* Schedule timeline */
+.schedule{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:28px}
+.schedule h2{margin:0 0 20px;color:var(--purple);font-size:20px;font-weight:900;text-align:center}
+.schedule-table{width:100%;font-size:13px}
+.schedule-item{display:flex;gap:14px;padding:14px;border-bottom:1px solid rgba(255,255,255,.05);align-items:center}
+.schedule-item:last-child{border:none}
+.schedule-item .date-badge{min-width:110px;padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;text-align:center}
+.schedule-item .date-badge .day{font-weight:900;color:var(--gold);font-size:11px;text-transform:uppercase;letter-spacing:1px}
+.schedule-item .date-badge .date{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text2);margin-top:2px}
+.schedule-item .body{flex:1}
+.schedule-item .body .title{font-weight:900;color:var(--text);margin-bottom:3px}
+.schedule-item .body .desc{font-size:12px;color:var(--text2)}
+.schedule-item .status{padding:4px 10px;border-radius:8px;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:1px}
+.schedule-item .status.published{background:var(--green);color:#000}
+.schedule-item .status.planned{background:var(--gold);color:#000}
+.schedule-item .status.idea{background:var(--bg);color:var(--text2);border:1px solid var(--border)}
+
+/* Footer */
+.footer{background:var(--bg2);border-top:1px solid var(--border);margin-top:40px;padding:40px 20px 24px}
+.footer-grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:28px}
+.footer-col h4{color:var(--gold);margin:0 0 12px;font-size:13px;text-transform:uppercase;letter-spacing:1.5px}
+.footer-col ul{list-style:none;padding:0;margin:0}
+.footer-col li{padding:4px 0}
+.footer-col a{color:var(--text2);text-decoration:none;font-size:13px}
+.footer-col a:hover{color:var(--gold)}
+.footer-bottom{max-width:1100px;margin:24px auto 0;padding-top:20px;border-top:1px solid rgba(255,255,255,.05);text-align:center;color:var(--text3);font-size:12px}
+
+#hebrew-date{text-align:center;color:var(--text3);font-size:12px;padding:20px;margin-top:20px}
+</style>
+</head>
+<body>
+
+<div id="topnav-root"></div>
+
+<div class="breadcrumb">
+  <a href="/">🏠 ראשי</a> ← <span style="color:var(--gold)">📰 בלוג</span>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="tag">📰 SLH Spark Blog · Mindset · Tech · Economy</div>
+  <h1>הבלוג של SLH Spark</h1>
+  <p>פילוסופיה פוגשת טכנולוגיה פוגשת כסף אמיתי. מאמרים שמסבירים <strong>למה</strong> המערכת שבנינו קיימת — ו<strong>איך</strong> היא יכולה לשרת אותך.</p>
+</section>
+
+<!-- FEATURED — Legacy Code -->
+<div class="featured">
+  <div class="featured-card">
+    <span class="badge">🔥 מאמר חדש</span>
+    <div class="visual">🧠</div>
+    <div>
+      <div class="meta">📅 16 באפריל 2026 · יום חמישי, כ"ט בניסן תשפ"ו · ✍️ Osif Ungar</div>
+      <h2>המוח שלנו הוא Legacy Code</h2>
+      <p>המוח האנושי הוא מערכת הפעלה מיושנת. 7 פרקים על איך לעשות Debugging לחיים עם AI + CBT + NLP — עם מיפוי מדויק ל-7 המוצרים שלנו.</p>
+      <a href="/blog-legacy-code.html" class="btn">קרא את המאמר המלא ←</a>
+    </div>
+  </div>
+</div>
+
+<!-- ALL ARTICLES -->
+<section class="section">
+  <div class="section-head">
+    <h2>📚 כל המאמרים</h2>
+    <span class="count" id="articles-count">1 פורסם · 6 מתוכננים</span>
+  </div>
+
+  <div class="articles-grid">
+
+    <a href="/blog-legacy-code.html" class="article-card published">
+      <span class="status-badge">פורסם</span>
+      <div class="meta">16/04/2026 · כ"ט בניסן</div>
+      <h3>🧠 המוח שלנו הוא Legacy Code</h3>
+      <p>Debugging לחיים עם AI + CBT + NLP. 7 פרקים שמחברים פילוסופיה לטכנולוגיה לכלכלה.</p>
+      <div class="tags">
+        <span class="tag">Mindset</span><span class="tag">AI</span><span class="tag">Philosophy</span>
+      </div>
+    </a>
+
+    <div class="article-card scheduled">
+      <span class="status-badge">מתוכנן</span>
+      <div class="meta">17/04/2026 · כ"ט בניסן · 10:00</div>
+      <h3>💎 מה זה ZVK ואיך מרוויחים?</h3>
+      <p>הטוקן הפעיל שלנו — ZVK. איך צוברים אותו, מה שווה, ואיך הוא מתחלף ב-SLH בהמשך.</p>
+      <div class="tags">
+        <span class="tag">Tokenomics</span><span class="tag">How-to</span>
+      </div>
+    </div>
+
+    <div class="article-card scheduled">
+      <span class="status-badge">מתוכנן</span>
+      <div class="meta">18/04/2026 · ל' בניסן · 10:00</div>
+      <h3>🎭 17 הכובעים — איפה אתה נכנס?</h3>
+      <p>מפת התפקידים במערכת: מבקר, קונה, שותף, Genesis, מומחה, ברוקר ועוד. בחר את שלך.</p>
+      <div class="tags">
+        <span class="tag">Roles</span><span class="tag">Community</span>
+      </div>
+    </div>
+
+    <div class="article-card scheduled">
+      <span class="status-badge">מתוכנן</span>
+      <div class="meta">20/04/2026 · ב' באייר · 12:00</div>
+      <h3>🤝 מכניקת Broker — Tzvika & Elazar</h3>
+      <p>איך ברוקרים עובדים ב-SLH? קייס סטאדי חי של השותפים שלנו — מה רואים, מה עושים, כמה מרוויחים.</p>
+      <div class="tags">
+        <span class="tag">Broker</span><span class="tag">Case Study</span>
+      </div>
+    </div>
+
+    <div class="article-card scheduled">
+      <span class="status-badge">מתוכנן</span>
+      <div class="meta">21/04/2026 · ג' באייר · 10:00</div>
+      <h3>💰 מסלול Genesis → Depositor</h3>
+      <p>מאליעזר ל-$999 דרך השקעת טסט של $1. איך ריבית דה ריבית מבטיחה שכל יום מייצר רווח.</p>
+      <div class="tags">
+        <span class="tag">Deposit</span><span class="tag">Genesis</span>
+      </div>
+    </div>
+
+    <div class="article-card scheduled">
+      <span class="status-badge">מתוכנן</span>
+      <div class="meta">22/04/2026 · ד' באייר · 10:00</div>
+      <h3>🔗 Affiliate — איך קוד הופך לכסף</h3>
+      <p>20% ZVK + 10% SLH על כל קנייה. איך מקבלים קוד, איך משתפים נכון, ואיך בונים הכנסה פסיבית.</p>
+      <div class="tags">
+        <span class="tag">Affiliate</span><span class="tag">Money</span>
+      </div>
+    </div>
+
+    <div class="article-card scheduled">
+      <span class="status-badge">מתוכנן</span>
+      <div class="meta">23/04/2026 · ה' באייר · 10:00</div>
+      <h3>🕊️ ESP32 + Kosher User</h3>
+      <p>החומרה שלנו: ארנק קריפטוגרפי כשר, ESP32 בבית + SMS לטלפון הכשר. השקה 7.11.2026.</p>
+      <div class="tags">
+        <span class="tag">Hardware</span><span class="tag">Kosher</span>
+      </div>
+    </div>
+
+    <div class="article-card planned">
+      <span class="status-badge">רעיון</span>
+      <div class="meta">שבוע הבא · 27/04</div>
+      <h3>🎭 Demo Flows + System Map Live</h3>
+      <p>דמו אינטראקטיבי לכל 17 הכובעים + מפת מערכת חיה עם נתונים אמיתיים. רק אחרי 50+ משתמשים.</p>
+      <div class="tags">
+        <span class="tag">Demo</span><span class="tag">Advanced</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PUBLISHING SCHEDULE -->
+<section class="section">
+  <div class="schedule">
+    <h2>📅 לו"ז פרסום — השבוע הקרוב</h2>
+    <div class="schedule-table">
+
+      <div class="schedule-item">
+        <div class="date-badge">
+          <div class="day">חמישי</div>
+          <div class="date">16/04</div>
+        </div>
+        <div class="body">
+          <div class="title">🧠 Legacy Code (המאמר הזה)</div>
+          <div class="desc">פילוסופיית המערכת · מיפוי לכל המוצרים</div>
+        </div>
+        <span class="status published">✅ פורסם</span>
+      </div>
+
+      <div class="schedule-item">
+        <div class="date-badge">
+          <div class="day">שישי</div>
+          <div class="date">17/04 10:00</div>
+        </div>
+        <div class="body">
+          <div class="title">💎 ZVK Tokenomics</div>
+          <div class="desc">המטבע הפעיל היומי · איך מרוויחים · המרה ל-SLH</div>
+        </div>
+        <span class="status planned">מתוכנן</span>
+      </div>
+
+      <div class="schedule-item">
+        <div class="date-badge">
+          <div class="day">שבת</div>
+          <div class="date">18/04 10:00</div>
+        </div>
+        <div class="body">
+          <div class="title">🎭 17 הכובעים</div>
+          <div class="desc">טבלה אינטראקטיבית · איזה תפקיד מתאים לך</div>
+        </div>
+        <span class="status planned">מתוכנן</span>
+      </div>
+
+      <div class="schedule-item">
+        <div class="date-badge">
+          <div class="day">ראשון</div>
+          <div class="date">20/04 12:00</div>
+        </div>
+        <div class="body">
+          <div class="title">🤝 Broker Case Study</div>
+          <div class="desc">Tzvika · המפגש הראשון · איך עובדים ביחד</div>
+        </div>
+        <span class="status planned">מתוכנן</span>
+      </div>
+
+      <div class="schedule-item">
+        <div class="date-badge">
+          <div class="day">שני</div>
+          <div class="date">21/04 10:00</div>
+        </div>
+        <div class="body">
+          <div class="title">💰 Genesis → Depositor</div>
+          <div class="desc">מסלול אליעזר · $1 test → $999 main · ריבית דה ריבית</div>
+        </div>
+        <span class="status planned">מתוכנן</span>
+      </div>
+
+      <div class="schedule-item">
+        <div class="date-badge">
+          <div class="day">שלישי</div>
+          <div class="date">22/04 10:00</div>
+        </div>
+        <div class="body">
+          <div class="title">🔗 Affiliate — איך קוד → כסף</div>
+          <div class="desc">20% ZVK + 10% SLH · 4 קודים כבר פעילים</div>
+        </div>
+        <span class="status planned">מתוכנן</span>
+      </div>
+
+      <div class="schedule-item">
+        <div class="date-badge">
+          <div class="day">רביעי</div>
+          <div class="date">23/04 10:00</div>
+        </div>
+        <div class="body">
+          <div class="title">🕊️ ESP32 + Kosher Wallet</div>
+          <div class="desc">החומרה שלנו · השקה 7/11/2026 · ₪888 במכירה מוקדמת</div>
+        </div>
+        <span class="status planned">מתוכנן</span>
+      </div>
+
+    </div>
+    <div style="text-align:center;margin-top:20px;font-size:12px;color:var(--text3);font-style:italic">
+      🔜 <strong>שבוע הבא:</strong> Demo Flows + System Map Live (רק אחרי 50+ משתמשים)
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section">
+  <div style="background:linear-gradient(135deg,rgba(255,215,0,.08),rgba(0,232,135,.04));border:1px solid var(--gold);border-radius:20px;padding:32px;text-align:center">
+    <h2 style="color:var(--gold);margin:0 0 10px">🌟 רוצים להיות חלק מהסיפור?</h2>
+    <p style="color:var(--text2);margin:0 0 20px;max-width:560px;margin-inline:auto">הצטרפו לקהילה · קבלו עדכונים כשפוסט חדש עולה · השתתפו בדיון</p>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <a href="/promo-shekel.html" style="padding:12px 24px;background:linear-gradient(135deg,var(--gold),var(--green));color:#000;text-decoration:none;border-radius:12px;font-weight:900">🔥 הצטרף ₪22.221</a>
+      <a href="/community.html" style="padding:12px 24px;background:var(--bg2);border:1px solid var(--border);color:var(--text);text-decoration:none;border-radius:12px;font-weight:700">👥 קהילה</a>
+      <a href="/experts.html" style="padding:12px 24px;background:var(--bg2);border:1px solid var(--border);color:var(--text);text-decoration:none;border-radius:12px;font-weight:700">🎓 מומחים</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-col">
+      <h4>📰 בלוג</h4>
+      <ul>
+        <li><a href="/blog.html">כל המאמרים</a></li>
+        <li><a href="/blog-legacy-code.html">Legacy Code</a></li>
+        <li><a href="/daily-blog.html">בלוג יומי</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>💼 מוצרים</h4>
+      <ul>
+        <li><a href="/promo-shekel.html">Starter Pack ₪22.221</a></li>
+        <li><a href="/kosher-wallet.html">Kosher Wallet ₪888</a></li>
+        <li><a href="/staking.html">Staking 65%</a></li>
+        <li><a href="/experts.html">Experts Network</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>🤝 קהילה</h4>
+      <ul>
+        <li><a href="/community.html">קהילה</a></li>
+        <li><a href="/about.html">אודות</a></li>
+        <li><a href="/bug-report.html">דווח באג</a></li>
+        <li><a href="https://t.me/SLH_community_bot" target="_blank">בוט טלגרם</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>📊 מערכת</h4>
+      <ul>
+        <li><a href="/dashboard.html">Dashboard</a></li>
+        <li><a href="/investment-tracker.html">פקדונות</a></li>
+        <li><a href="/whitepaper.html">Whitepaper</a></li>
+        <li><a href="/roadmap.html">Roadmap</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    🟢 Live · <span id="users-count">פעילה</span> · <span id="hebrew-date-footer"></span><br>
+    © 2026 SLH Spark · slhalpa · Build v0.5-financial-system · <a href="/terms.html" style="color:var(--text3)">תנאי שימוש</a> · <a href="/privacy.html" style="color:var(--text3)">פרטיות</a>
+  </div>
+</footer>
+
+<script src="/js/shared.js?v=20260425d"></script>
+<script src="/js/analytics.js"></script>
+<script src="/js/ai-assistant.js?v=20260425d"></script>
+
+<script>
+function updateHebDate(){
+  try{
+    const now = new Date();
+    const heb = new Intl.DateTimeFormat('he-IL-u-ca-hebrew',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(now);
+    const greg = new Intl.DateTimeFormat('he-IL',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(now);
+    const el = document.getElementById('hebrew-date-footer');
+    if(el) el.textContent = `📅 ${heb} · ${greg} · ${now.toLocaleTimeString('he-IL')}`;
+  }catch(e){}
+}
+setInterval(updateHebDate, 1000);
+updateHebDate();
+
+// Try to fetch live user count
+(async function(){
+  try{
+    const r = await fetch('https://slh-api-production.up.railway.app/api/campaign/stats/shekel_april26', {
+      headers:{'X-Admin-Key':localStorage.getItem('slh_admin_password') || ''}
+    });
+    const d = await r.json();
+    if(d.clicks?.total){
+      document.getElementById('users-count').textContent = `${d.clicks.total} קליקים · ${d.registrations?.total || 0} נרשמים`;
+    }
+  }catch(e){}
+})();
+
+// Track pageview
+try {
+  fetch('https://slh-api-production.up.railway.app/api/campaign/click', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({campaign_id:'blog_catalog',path_type:'pageview',lang:'he',source:document.referrer?new URL(document.referrer).hostname:'direct'})
+  }).catch(()=>{});
+} catch(e){}
+</script>
+
+</body>
+</html>

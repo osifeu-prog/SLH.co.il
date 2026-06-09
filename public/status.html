@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH Status · שקיפות חיה · Live & Honest</title>
+<meta name="description" content="סטטוס חי ושקוף של מערכת SLH Spark. API, משתמשים, הכנסות, באגים ידועים — כולם בזמן אמת, בלי הסתרה.">
+<meta name="robots" content="index,follow">
+<meta property="og:title" content="SLH Status · שקיפות חיה">
+<meta property="og:description" content="כל המספרים שלנו בזמן אמת. אמיתיים. ללא קישוט.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://slh-nft.com/status.html">
+<link rel="canonical" href="https://slh-nft.com/status.html">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+  --bg:#05080f; --bg2:#0c1018; --bg3:#141924; --bg4:#1a2030;
+  --green:#00ff41; --yellow:#ffd700; --red:#ff0055;
+  --cyan:#00e5ff; --purple:#a855f7; --text:#f5f5f8;
+  --text2:#9ba0b5; --text3:#5a6078; --border:rgba(255,255,255,.08);
+  --font:'Rubik',system-ui,sans-serif; --mono:'Space Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;padding-bottom:60px}
+body::before{content:'';position:fixed;inset:0;background:
+  radial-gradient(1000px 500px at 20% -5%, rgba(0,255,65,.05), transparent 60%),
+  radial-gradient(800px 500px at 90% 40%, rgba(0,229,255,.04), transparent 60%);
+  pointer-events:none;z-index:0}
+a{color:var(--cyan);text-decoration:none}
+a:hover{text-decoration:underline}
+
+.wrap{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:24px 16px}
+
+/* Header */
+.hdr{text-align:center;padding:20px 0 32px;border-bottom:1px solid var(--border);margin-bottom:32px}
+.hdr h1{font-size:36px;font-weight:900;background:linear-gradient(135deg,var(--green),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.hdr .sub{color:var(--text2);font-size:15px;margin-bottom:14px}
+.live-pill{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;background:rgba(0,255,65,.08);border:1px solid rgba(0,255,65,.3);border-radius:100px;font-size:12px;font-weight:700;color:var(--green);margin-top:8px}
+.live-pill .dot{width:8px;height:8px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* Auto-refresh bar */
+.refresh{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;margin-bottom:24px;font-size:12px;color:var(--text2);font-family:var(--mono)}
+.refresh .manual{background:transparent;border:1px solid var(--border);color:var(--cyan);padding:4px 10px;border-radius:6px;cursor:pointer;font-family:inherit;font-size:11px}
+.refresh .manual:hover{background:rgba(0,229,255,.08)}
+
+/* Section */
+.section{margin-bottom:36px}
+.section h2{font-size:20px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.section h2 .tag{font-size:11px;padding:3px 8px;border-radius:12px;font-weight:700}
+.tag-live{background:rgba(0,255,65,.1);color:var(--green);border:1px solid rgba(0,255,65,.3)}
+.tag-partial{background:rgba(255,215,0,.1);color:var(--yellow);border:1px solid rgba(255,215,0,.3)}
+.tag-planned{background:rgba(0,229,255,.1);color:var(--cyan);border:1px solid rgba(0,229,255,.3)}
+
+/* Card grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.card{background:linear-gradient(180deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:14px;padding:18px;transition:.2s}
+.card:hover{border-color:rgba(0,229,255,.2);transform:translateY(-1px)}
+.card .label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;font-weight:700}
+.card .value{font-size:28px;font-weight:900;font-family:var(--mono);margin-bottom:4px}
+.card .hint{font-size:12px;color:var(--text2)}
+.value.ok{color:var(--green)}
+.value.warn{color:var(--yellow)}
+.value.err{color:var(--red)}
+.value.muted{color:var(--text3)}
+
+/* Component list */
+.components{display:grid;gap:10px;margin-top:14px}
+.comp{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;gap:12px}
+.comp .left{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+.comp .icon{width:38px;height:38px;border-radius:8px;display:grid;place-items:center;flex-shrink:0;font-size:18px}
+.comp .icon.ok{background:rgba(0,255,65,.1);color:var(--green)}
+.comp .icon.warn{background:rgba(255,215,0,.1);color:var(--yellow)}
+.comp .icon.err{background:rgba(255,0,85,.1);color:var(--red)}
+.comp .name{font-weight:700;font-size:14px;margin-bottom:2px}
+.comp .sub{font-size:12px;color:var(--text2)}
+.comp .status{font-size:11px;font-weight:700;padding:4px 10px;border-radius:12px;white-space:nowrap;font-family:var(--mono)}
+.status.ok{background:rgba(0,255,65,.1);color:var(--green)}
+.status.warn{background:rgba(255,215,0,.1);color:var(--yellow)}
+.status.err{background:rgba(255,0,85,.1);color:var(--red)}
+
+/* Issues list */
+.issues{display:grid;gap:10px}
+.issue{padding:14px 16px;background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--yellow);border-radius:10px}
+.issue.p0{border-left-color:var(--red)}
+.issue.p1{border-left-color:var(--yellow)}
+.issue.p2{border-left-color:var(--cyan)}
+.issue .p-title{font-weight:700;font-size:14px;display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.issue .p-prio{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:800}
+.p-prio.p0{background:rgba(255,0,85,.15);color:var(--red)}
+.p-prio.p1{background:rgba(255,215,0,.15);color:var(--yellow)}
+.p-prio.p2{background:rgba(0,229,255,.15);color:var(--cyan)}
+.issue .p-desc{font-size:13px;color:var(--text2);line-height:1.7}
+
+/* Prices table */
+.prices{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.price{padding:14px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;display:flex;justify-content:space-between;align-items:center}
+.price .coin{font-weight:800;font-size:14px}
+.price .val{font-family:var(--mono);font-size:14px;color:var(--cyan)}
+
+/* Roadmap progress */
+.roadmap{display:grid;gap:14px;margin-top:14px}
+.rmap-item{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+.rmap-item .name{font-weight:700;font-size:14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.rmap-item .name .pct{font-family:var(--mono);font-size:13px;color:var(--cyan)}
+.rmap-bar{height:6px;background:var(--bg);border-radius:3px;overflow:hidden}
+.rmap-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--cyan));border-radius:3px;transition:width .5s}
+.rmap-item .desc{font-size:12px;color:var(--text2);margin-top:8px;line-height:1.6}
+
+/* Footer */
+.foot{text-align:center;padding-top:30px;border-top:1px solid var(--border);margin-top:40px;color:var(--text3);font-size:12px}
+.foot a{color:var(--text2);margin:0 10px}
+
+/* Responsive */
+@media(max-width:600px){
+  .hdr h1{font-size:28px}
+  .card .value{font-size:22px}
+}
+
+/* Loading skeleton */
+.skel{background:linear-gradient(90deg,var(--bg3) 0%,var(--bg4) 50%,var(--bg3) 100%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:4px;color:transparent}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- Header -->
+  <header class="hdr">
+    <h1><i class="fas fa-broadcast-tower"></i> SLH Status</h1>
+    <p class="sub">כל המספרים שלנו, בזמן אמת, אמיתיים. בלי קישוט.</p>
+    <span class="live-pill"><span class="dot"></span> LIVE · עדכון אוטומטי כל 30 שניות</span>
+  </header>
+
+  <!-- Refresh bar -->
+  <div class="refresh">
+    <span>עדכון אחרון: <span id="last-check">בודק...</span></span>
+    <button class="manual" onclick="loadAll()">🔄 רענן עכשיו</button>
+  </div>
+
+  <!-- CORE -->
+  <section class="section">
+    <h2>🎯 ליבת המערכת <span class="tag tag-live">LIVE</span></h2>
+    <div class="grid">
+      <div class="card">
+        <div class="label">API</div>
+        <div class="value" id="api-status"><span class="skel">___________</span></div>
+        <div class="hint" id="api-hint">slh-api-production.up.railway.app</div>
+      </div>
+      <div class="card">
+        <div class="label">Database</div>
+        <div class="value" id="db-status"><span class="skel">___________</span></div>
+        <div class="hint">PostgreSQL 15 on Railway</div>
+      </div>
+      <div class="card">
+        <div class="label">Endpoints</div>
+        <div class="value ok" id="endpoints-count">--</div>
+        <div class="hint">REST API · <a href="https://slh-api-production.up.railway.app/docs" target="_blank">Swagger Docs ↗</a></div>
+      </div>
+      <div class="card">
+        <div class="label">Version</div>
+        <div class="value" id="version"><span class="skel">__</span></div>
+        <div class="hint">Semantic versioning</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- USERS & ACTIVITY -->
+  <section class="section">
+    <h2>👥 משתמשים ופעילות <span class="tag tag-live">LIVE</span></h2>
+    <div class="grid">
+      <div class="card">
+        <div class="label">סה"כ משתמשים</div>
+        <div class="value ok" id="total-users"><span class="skel">__</span></div>
+        <div class="hint">רשומים ב-DB</div>
+      </div>
+      <div class="card">
+        <div class="label">משתמשי Premium</div>
+        <div class="value" id="premium-users"><span class="skel">__</span></div>
+        <div class="hint">עם גישה מלאה</div>
+      </div>
+      <div class="card">
+        <div class="label">בוטים פעילים</div>
+        <div class="value" id="bots-live"><span class="skel">__</span></div>
+        <div class="hint">Telegram bots on Docker</div>
+      </div>
+      <div class="card">
+        <div class="label">TON ב-Staking</div>
+        <div class="value" id="total-staked"><span class="skel">__</span></div>
+        <div class="hint">נעול ב-9 תוכניות</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVENUE - HONEST -->
+  <section class="section">
+    <h2>💰 הכנסות <span class="tag tag-partial">HONEST</span></h2>
+    <div class="grid">
+      <div class="card">
+        <div class="label">סה"כ הכנסות</div>
+        <div class="value muted" id="revenue">—</div>
+        <div class="hint">אין עדיין — אנחנו בטרום-השקה</div>
+      </div>
+      <div class="card">
+        <div class="label">Buybacks</div>
+        <div class="value muted" id="buybacks">0 SLH</div>
+        <div class="hint">10% מהכנסה פיאט → buyback SLH</div>
+      </div>
+      <div class="card">
+        <div class="label">Burns</div>
+        <div class="value muted" id="burns">0</div>
+        <div class="hint">2% מה-AIC → burn address</div>
+      </div>
+      <div class="card">
+        <div class="label">Genesis Raised</div>
+        <div class="value" style="color:var(--yellow)">0.08 BNB</div>
+        <div class="hint">~₪185 · מימון ראשוני</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GUARDIAN -->
+  <section class="section">
+    <h2>🛡 Guardian / ZUZ <span class="tag tag-live">LIVE</span></h2>
+    <div class="grid">
+      <div class="card">
+        <div class="label">דיווחים</div>
+        <div class="value" id="g-reports"><span class="skel">__</span></div>
+        <div class="hint">תלונות מאומתות</div>
+      </div>
+      <div class="card">
+        <div class="label">ZUZ הוטלו</div>
+        <div class="value" id="g-zuz"><span class="skel">__</span></div>
+        <div class="hint">Anti-fraud "אות קין"</div>
+      </div>
+      <div class="card">
+        <div class="label">משתמשים בסימון</div>
+        <div class="value" id="g-flagged"><span class="skel">__</span></div>
+        <div class="hint">נדרש סכום של 100 → ban אוטומטי</div>
+      </div>
+      <div class="card">
+        <div class="label">הודעות נסרקו</div>
+        <div class="value" id="g-scanned"><span class="skel">__</span></div>
+        <div class="hint">בקבוצות טלגרם מוגנות</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICES -->
+  <section class="section">
+    <h2>💹 מחירים חיים <span class="tag tag-live">LIVE</span></h2>
+    <div class="prices" id="prices-wrap">
+      <div class="price"><span class="skel">טוען...</span></div>
+    </div>
+  </section>
+
+  <!-- COMPONENTS -->
+  <section class="section">
+    <h2>🔧 רכיבים <span class="tag tag-partial">mixed status</span></h2>
+    <div class="components">
+      <div class="comp">
+        <div class="left">
+          <div class="icon ok"><i class="fas fa-globe"></i></div>
+          <div><div class="name">אתר (slh-nft.com)</div><div class="sub">89 עמודים · GitHub Pages · HTTPS</div></div>
+        </div>
+        <span class="status ok">LIVE</span>
+      </div>
+      <div class="comp">
+        <div class="left">
+          <div class="icon ok"><i class="fas fa-server"></i></div>
+          <div><div class="name">API (Railway)</div><div class="sub">FastAPI · PostgreSQL · 230 endpoints</div></div>
+        </div>
+        <span class="status ok">LIVE</span>
+      </div>
+      <div class="comp">
+        <div class="left">
+          <div class="icon ok"><i class="fab fa-telegram"></i></div>
+          <div><div class="name">Telegram Bots</div><div class="sub">20 בוטים פעילים · Polling mode</div></div>
+        </div>
+        <span class="status ok">LIVE</span>
+      </div>
+      <div class="comp">
+        <div class="left">
+          <div class="icon ok"><i class="fas fa-link"></i></div>
+          <div>
+            <div class="name">SLH Token (BSC)</div>
+            <div class="sub">BEP-20 · PancakeSwap pool active · <a href="https://intel.arkm.com/explorer/address/0xACb0A09414CEA1C879c67bB7A877E4e19480f022" target="_blank" style="color:var(--gold)">🔎 Arkham</a> · <a href="/admin/reality.html" style="color:var(--cyan)">Reality Dashboard</a></div>
+          </div>
+        </div>
+        <span class="status ok">LIVE</span>
+      </div>
+      <div class="comp">
+        <div class="left">
+          <div class="icon warn"><i class="fas fa-money-bill-wave"></i></div>
+          <div><div class="name">תשלומים אוטומטיים</div><div class="sub">TON + BSC · auto-verify · (bank = ידני)</div></div>
+        </div>
+        <span class="status warn">PARTIAL</span>
+      </div>
+      <div class="comp">
+        <div class="left">
+          <div class="icon warn"><i class="fas fa-microchip"></i></div>
+          <div><div class="name">ESP32 Hardware Wallet</div><div class="sub">Kosher wallet prototype · heartbeat manual</div></div>
+        </div>
+        <span class="status warn">ALPHA</span>
+      </div>
+      <div class="comp">
+        <div class="left">
+          <div class="icon warn"><i class="fas fa-exchange-alt"></i></div>
+          <div><div class="name">P2P Marketplace</div><div class="sub">Order book API ready · UI מחכה ל-Zvika</div></div>
+        </div>
+        <span class="status warn">BETA</span>
+      </div>
+      <div class="comp">
+        <div class="left">
+          <div class="icon err"><i class="fas fa-robot"></i></div>
+          <div><div class="name">Webhooks (Bots)</div><div class="sub">22 בוטים עדיין על polling · migration needed</div></div>
+        </div>
+        <span class="status err">PLANNED</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROADMAP -->
+  <section class="section">
+    <h2>🗺️ מפת דרכים <span class="tag tag-planned">2026</span></h2>
+    <div class="roadmap">
+      <div class="rmap-item">
+        <div class="name"><span>Phase 1: תשתית + תשלומים</span><span class="pct">75%</span></div>
+        <div class="rmap-bar"><div class="rmap-fill" style="width:75%"></div></div>
+        <div class="desc">API live · 230 endpoints · DB · Telegram Login · PancakeSwap pool · auto-verify payments. חסר: JWT_SECRET ב-Railway, rotation של 30 tokens.</div>
+      </div>
+      <div class="rmap-item">
+        <div class="name"><span>Phase 2: חוויית משתמש</span><span class="pct">62%</span></div>
+        <div class="rmap-bar"><div class="rmap-fill" style="width:62%"></div></div>
+        <div class="desc">89 דפים · i18n 37% · themes 42% · PWA · Hebrew RTL · OG images. חסר: השלמת i18n/themes על 27 עמודים, webhook migration.</div>
+      </div>
+      <div class="rmap-item">
+        <div class="name"><span>Phase 3: שוק + יצרנים</span><span class="pct">30%</span></div>
+        <div class="rmap-bar"><div class="rmap-fill" style="width:30%"></div></div>
+        <div class="desc">Creator economy API · Gallery UI · Shop · P2P endpoints. חסר: יצרנים רשומים, Zvika שיוצא עם ZVK, מיון אוטומטי של תכנים.</div>
+      </div>
+      <div class="rmap-item">
+        <div class="name"><span>Phase 4: חומרה + Beta launch</span><span class="pct">15%</span></div>
+        <div class="rmap-bar"><div class="rmap-fill" style="width:15%"></div></div>
+        <div class="desc">ESP32 Kosher Wallet · TFT CYD display · BLE provisioning. יעד Beta: 2026-05-03.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- KNOWN ISSUES -->
+  <section class="section">
+    <h2>⚠️ באגים ידועים (אנחנו לא מסתירים) <span class="tag tag-partial">TRANSPARENT</span></h2>
+    <div class="issues">
+      <div class="issue p0">
+        <div class="p-title"><span class="p-prio p0">P0</span> Railway env vars חסרים</div>
+        <div class="p-desc">JWT_SECRET ריק, ADMIN_API_KEYS ברירת מחדל. דורש גישה ל-Railway Dashboard · Osif בלבד.</div>
+      </div>
+      <div class="issue p0">
+        <div class="p-title"><span class="p-prio p0">P0</span> 30 bot tokens טעונים rotation</div>
+        <div class="p-desc">טוקנים נחשפו ב-git history ישן. GAME_BOT_TOKEN הוחלף. 30 נוספים ממתינים ל-BotFather.</div>
+      </div>
+      <div class="issue p1">
+        <div class="p-title"><span class="p-prio p1">P1</span> Guardian bot /menu — קידוד עברית</div>
+        <div class="p-desc">מציג mojibake במקום עברית. תיקון cp1252 → UTF-8 בבוט.</div>
+      </div>
+      <div class="issue p1">
+        <div class="p-title"><span class="p-prio p1">P1</span> payments_monitor → 404</div>
+        <div class="p-desc">חיבור async ב-main.py לא הושלם. 4 שורות תיקון נדרשות.</div>
+      </div>
+      <div class="issue p2">
+        <div class="p-title"><span class="p-prio p2">P2</span> i18n על 27 עמודים (63% נותרו)</div>
+        <div class="p-desc">translations.js מוכן (1000+ מפתחות). צריך data-i18n על כל עמוד.</div>
+      </div>
+      <div class="issue p2">
+        <div class="p-title"><span class="p-prio p2">P2</span> Theme switcher על 25 עמודים</div>
+        <div class="p-desc">shared.css (7 themes) מוכן. צריך הזרקת &lt;link id="theme-css"&gt; על כל עמוד.</div>
+      </div>
+      <div class="issue p2">
+        <div class="p-title"><span class="p-prio p2">P2</span> Webhook migration</div>
+        <div class="p-desc">22 בוטים על polling. Webhook = response מהיר + פחות ריסוגרים של שרת טלגרם.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="foot">
+    <div>עדכון אוטומטי · כל הנתונים חיים מ-<code style="color:var(--cyan)">/api/*</code></div>
+    <div style="margin-top:10px">
+      <a href="/">בית</a>
+      <a href="/about.html">אודות</a>
+      <a href="/whitepaper.html">Whitepaper</a>
+      <a href="/roadmap.html">מפת דרכים</a>
+      <a href="/agent-hub.html">🛰 Agent Hub</a>
+      <a href="https://slh-api-production.up.railway.app/docs" target="_blank">API Docs ↗</a>
+      <a href="https://github.com/osifeu-prog/slh-api" target="_blank">GitHub ↗</a>
+    </div>
+    <div style="margin-top:14px;font-family:var(--mono);font-size:10px;opacity:.6">
+      SLH Spark · שקיפות = אמון · Osif Kaufman Ungar · 2026
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const API = 'https://slh-api-production.up.railway.app';
+
+async function fetchJSON(path, timeout = 8000) {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), timeout);
+  try {
+    const r = await fetch(API + path, { signal: ctrl.signal });
+    clearTimeout(t);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return await r.json();
+  } catch (e) {
+    clearTimeout(t);
+    return null;
+  }
+}
+
+async function loadHealth() {
+  const d = await fetchJSON('/api/health');
+  const apiEl = document.getElementById('api-status');
+  const dbEl = document.getElementById('db-status');
+  const verEl = document.getElementById('version');
+  if (d && d.status === 'ok') {
+    apiEl.textContent = 'OK';
+    apiEl.className = 'value ok';
+    dbEl.textContent = d.db === 'connected' ? 'connected' : 'down';
+    dbEl.className = 'value ' + (d.db === 'connected' ? 'ok' : 'err');
+    verEl.textContent = 'v' + (d.version || '?');
+    verEl.className = 'value ok';
+  } else {
+    apiEl.textContent = 'ERROR';
+    apiEl.className = 'value err';
+    dbEl.textContent = '—';
+    dbEl.className = 'value err';
+    verEl.textContent = '—';
+  }
+}
+
+async function loadStats() {
+  const d = await fetchJSON('/api/stats');
+  if (!d) return;
+  setText('total-users', d.total_users ?? '—');
+  setText('premium-users', d.premium_users ?? '—');
+  setText('bots-live', d.bots_live ?? '—');
+  setText('total-staked', (d.total_staked_ton ?? 0) + ' TON');
+}
+
+async function loadTreasury() {
+  const d = await fetchJSON('/api/treasury/summary');
+  if (!d) return;
+  const revTotal = (d.revenue_by_currency || []).reduce((s, r) => s + (parseFloat(r.amount) || 0), 0);
+  setText('revenue', revTotal > 0 ? revTotal.toFixed(2) : '—');
+  setText('buybacks', (d.buybacks?.slh || 0) + ' SLH');
+  const burnTotal = (d.burns_by_token || []).reduce((s, b) => s + (parseFloat(b.amount) || 0), 0);
+  setText('burns', burnTotal || '0');
+}
+
+async function loadGuardian() {
+  const d = await fetchJSON('/api/guardian/stats');
+  if (!d) return;
+  setText('g-reports', d.total_reports ?? 0);
+  setText('g-zuz', (d.total_zuz_issued ?? 0).toFixed(1));
+  setText('g-flagged', d.total_flagged_users ?? 0);
+  setText('g-scanned', d.total_messages_scanned ?? 0);
+}
+
+async function loadPrices() {
+  const d = await fetchJSON('/api/prices');
+  if (!d) return;
+  const names = { bitcoin: 'BTC', ethereum: 'ETH', binancecoin: 'BNB', 'the-open-network': 'TON', solana: 'SOL', ripple: 'XRP', dogecoin: 'DOGE' };
+  const html = Object.entries(d).map(([k, v]) => {
+    const name = names[k] || k;
+    return `<div class="price"><span class="coin">${name}</span><span class="val">$${(v.usd || 0).toLocaleString()}</span></div>`;
+  }).join('');
+  document.getElementById('prices-wrap').innerHTML = html || '<div class="price"><span class="coin">—</span></div>';
+}
+
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) { el.textContent = val; el.className = 'value ok'; }
+}
+
+function updateTime() {
+  const now = new Date();
+  document.getElementById('last-check').textContent = now.toLocaleTimeString('he-IL');
+}
+
+async function loadAll() {
+  updateTime();
+  await Promise.all([loadHealth(), loadStats(), loadTreasury(), loadGuardian(), loadPrices()]);
+}
+
+// Initial load + auto-refresh
+loadAll();
+setInterval(loadAll, 30000);
+</script>
+
+</body>
+</html>

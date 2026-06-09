@@ -1,0 +1,482 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLH · איך להצטרף · מדריך מלא · Join Guide</title>
+<meta name="description" content="מדריך ויזואלי להצטרפות לקהילת SLH. 3 שלבים. בעברית, אנגלית, רוסית, ערבית, צרפתית.">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Rubik:wght@500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+  --bg:#05080f; --bg2:#0c1018; --bg3:#141924; --bg4:#1a2030;
+  --accent:#00ff41; --cyan:#00e5ff; --gold:#ffd700;
+  --red:#ff0055; --purple:#a855f7; --blue:#3b82f6;
+  --text:#f5f5f8; --text2:#9ba0b5; --text3:#5a6078;
+  --border:rgba(0,255,65,.15); --border2:rgba(255,255,255,.06);
+  --tg:#26a5e4;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Rubik','Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background:
+  radial-gradient(900px 500px at 20% -5%, rgba(38,165,228,.06), transparent 60%),
+  radial-gradient(700px 400px at 90% 30%, rgba(0,255,65,.04), transparent 60%);
+  pointer-events:none;z-index:0}
+
+.wrap{position:relative;z-index:1;max-width:880px;margin:0 auto;padding:20px 16px 50px}
+
+/* Lang bar */
+.langbar{display:flex;gap:4px;justify-content:center;margin-bottom:16px;flex-wrap:wrap}
+.langbar button{padding:6px 14px;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:18px;cursor:pointer;font-size:12px;font-weight:600;transition:.15s;font-family:inherit}
+.langbar button.active{background:rgba(38,165,228,.1);color:var(--tg);border-color:rgba(38,165,228,.3)}
+.langbar button:hover{color:var(--text)}
+
+/* Header */
+.hdr{text-align:center;padding:20px 0 26px}
+.hdr .logo{display:inline-block;font-size:56px;margin-bottom:12px;filter:drop-shadow(0 0 20px rgba(38,165,228,.5))}
+.hdr h1{font-size:30px;font-weight:900;background:linear-gradient(135deg,var(--tg),var(--accent),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.hdr .sub{color:var(--text2);font-size:15px;max-width:520px;margin:0 auto}
+
+/* Progress dots */
+.dots{display:flex;justify-content:center;gap:10px;margin:20px 0 30px}
+.dot{width:14px;height:14px;border-radius:50%;background:var(--bg4);border:2px solid var(--border2);transition:.3s}
+.dot.done{background:var(--accent);border-color:var(--accent);box-shadow:0 0 15px rgba(0,255,65,.4)}
+.dot.active{background:var(--tg);border-color:var(--tg);animation:pulse 2s infinite;box-shadow:0 0 15px rgba(38,165,228,.5)}
+@keyframes pulse{50%{opacity:.6}}
+
+/* Steps */
+.step{background:linear-gradient(180deg,var(--bg2),var(--bg3));border:1px solid var(--border2);border-radius:18px;padding:26px;margin-bottom:18px;position:relative;transition:.25s}
+.step:hover{border-color:rgba(38,165,228,.3)}
+.step.done{border-color:rgba(0,255,65,.3);opacity:.85}
+.step.active{border-color:rgba(38,165,228,.5);box-shadow:0 0 30px rgba(38,165,228,.1)}
+.step-num{position:absolute;top:-14px;right:20px;width:40px;height:40px;background:linear-gradient(135deg,var(--tg),var(--blue));border-radius:50%;display:grid;place-items:center;font-size:18px;font-weight:900;color:#fff;box-shadow:0 4px 15px rgba(38,165,228,.3)}
+.step.done .step-num{background:linear-gradient(135deg,var(--accent),#00c832)}
+.step h2{font-size:22px;font-weight:800;margin:5px 0 12px;color:var(--text)}
+.step h2 i{color:var(--tg);margin-left:8px}
+.step.done h2 i{color:var(--accent)}
+.step p{color:var(--text2);font-size:14px;margin-bottom:14px;line-height:1.7}
+
+/* Visual */
+.visual{background:var(--bg4);border:1px solid var(--border2);border-radius:12px;padding:16px;margin:14px 0;font-family:monospace;font-size:13px;color:var(--text);direction:ltr;text-align:center;line-height:2;white-space:pre}
+.visual .highlight{color:var(--accent);font-weight:700}
+.visual .muted{color:var(--text3)}
+
+/* Button */
+.big-btn{display:block;width:100%;padding:18px;background:linear-gradient(135deg,var(--tg),#1e88c4);color:#fff;border:none;border-radius:14px;font-size:17px;font-weight:900;cursor:pointer;text-align:center;text-decoration:none;margin-top:16px;font-family:inherit;transition:.2s;box-shadow:0 4px 20px rgba(38,165,228,.25)}
+.big-btn:hover{transform:translateY(-2px);box-shadow:0 6px 30px rgba(38,165,228,.4)}
+.big-btn i{font-size:20px;margin-left:10px}
+.alt-btn{display:block;width:100%;padding:14px;background:var(--bg);color:var(--text);border:1px solid var(--border2);border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;text-align:center;text-decoration:none;margin-top:10px;font-family:inherit;transition:.15s}
+.alt-btn:hover{border-color:var(--tg);color:var(--tg)}
+
+/* Tips */
+.tip{background:rgba(255,215,0,.05);border:1px solid rgba(255,215,0,.2);border-radius:10px;padding:12px 14px;margin-top:12px;font-size:13px;color:var(--gold);line-height:1.7}
+.warn{background:rgba(255,0,85,.05);border-color:rgba(255,0,85,.2);color:#ff6b95}
+.ok{background:rgba(0,255,65,.05);border-color:rgba(0,255,65,.2);color:var(--accent)}
+
+/* Chat options */
+.chat-card{background:linear-gradient(135deg,rgba(168,85,247,.08),rgba(38,165,228,.06));border:1px solid rgba(168,85,247,.2);border-radius:16px;padding:22px;margin-top:24px}
+.chat-card h3{font-size:20px;font-weight:800;margin-bottom:10px;color:var(--text)}
+.chat-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:14px}
+.chat-opt{display:block;padding:14px;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;text-decoration:none;color:var(--text);transition:.2s}
+.chat-opt:hover{border-color:var(--accent);transform:translateY(-2px)}
+.chat-opt .ico{font-size:22px;margin-bottom:6px;display:block}
+.chat-opt .ttl{font-weight:700;font-size:14px;margin-bottom:3px}
+.chat-opt .dsc{font-size:12px;color:var(--text2)}
+.chat-opt.public .ico{color:var(--accent)}
+.chat-opt.private .ico{color:var(--tg)}
+.chat-opt.voice .ico{color:var(--gold)}
+
+/* FAQ */
+.faq{margin-top:24px}
+.faq details{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:14px 16px;margin-bottom:8px}
+.faq summary{font-weight:700;cursor:pointer;color:var(--text);font-size:14px}
+.faq details[open] summary{color:var(--tg)}
+.faq details p{margin-top:10px;color:var(--text2);font-size:13px;line-height:1.8}
+
+.foot{text-align:center;color:var(--text3);font-size:11px;padding:20px 0;margin-top:30px;border-top:1px solid var(--border2)}
+.foot a{color:var(--text2)}
+
+/* RTL/LTR toggle */
+html[dir="ltr"] .step-num{right:auto;left:20px}
+</style>
+</head>
+<body>
+<style>
+.slh-beta-banner{position:sticky;top:0;z-index:9998;background:linear-gradient(90deg,#ff9900,#ffd700,#00ff41);color:#000;font-weight:700;font-size:12px;padding:6px 14px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.slh-beta-banner a{color:#000;text-decoration:underline;font-weight:800}
+.slh-beta-banner button{background:rgba(0,0,0,.15);color:#000;border:none;padding:3px 10px;border-radius:12px;font-size:11px;cursor:pointer;font-weight:700}
+.slh-bug-fab{position:fixed;bottom:20px;left:20px;z-index:9999;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#ff4444,#ff9900);display:grid;place-items:center;font-size:24px;text-decoration:none;box-shadow:0 4px 20px rgba(255,68,68,.4);transition:transform .2s;animation:bugPulse 3s infinite}
+.slh-bug-fab:hover{transform:scale(1.1)}
+@keyframes bugPulse{0%,100%{box-shadow:0 4px 20px rgba(255,68,68,.4)}50%{box-shadow:0 4px 30px rgba(255,153,0,.6)}}
+@media(max-width:600px){.slh-bug-fab{bottom:80px;width:46px;height:46px;font-size:20px}}
+</style>
+<div class="slh-beta-banner" id="slhBeta">
+  <span>🚧 <b>BETA</b></span>
+  <span style="opacity:.85">אם משהו לא עובד —</span>
+  <a href="/bug-report.html">🐛 דווח באג</a>
+  <button onclick="localStorage.setItem('slh_beta_dismissed','1');this.parentElement.remove()">✕</button>
+</div>
+<a href="/bug-report.html" class="slh-bug-fab" title="דווח באג">🐛</a>
+<script>if(localStorage.getItem('slh_beta_dismissed')==='1'){var b=document.getElementById('slhBeta');if(b)b.remove();}</script>
+
+
+<div class="wrap">
+
+  <div class="langbar">
+    <button onclick="setLang('he')" class="active" data-lang-btn="he">🇮🇱 עברית</button>
+    <button onclick="setLang('en')" data-lang-btn="en">🇺🇸 English</button>
+    <button onclick="setLang('ru')" data-lang-btn="ru">🇷🇺 Русский</button>
+    <button onclick="setLang('ar')" data-lang-btn="ar">🇸🇦 العربية</button>
+    <button onclick="setLang('fr')" data-lang-btn="fr">🇫🇷 Français</button>
+  </div>
+
+  <header class="hdr">
+    <div class="logo">👋</div>
+    <h1 data-i18n="title">ברוך הבא ל‑SLH</h1>
+    <p class="sub" data-i18n="subtitle">3 שלבים, כ‑2 דקות, ואתה בפנים. בלי טכניקה מסובכת.</p>
+  </header>
+
+  <div class="dots">
+    <div class="dot active" id="dot-1"></div>
+    <div class="dot" id="dot-2"></div>
+    <div class="dot" id="dot-3"></div>
+  </div>
+
+  <!-- STEP 1: Telegram bot -->
+  <div class="step active" id="step-1">
+    <div class="step-num">1</div>
+    <h2><i class="fa-brands fa-telegram"></i><span data-i18n="s1_title">פתח את הבוט בטלגרם</span></h2>
+    <p data-i18n="s1_desc">אין טלגרם? תוריד קודם (חינם): <a href="https://telegram.org/dl" target="_blank" style="color:var(--tg)">telegram.org/dl</a><br>יש טלגרם? לחץ על הכפתור למטה — הוא יפתח את הבוט אוטומטית.</p>
+
+    <div class="visual"><span class="muted">מה אתה עומד לראות:</span>
+<span class="highlight">@SLH_AIR_bot</span>
+┌────────────────────────┐
+│  ברוך הבא ל-SLH Spark  │
+│  /register - הרשמה     │
+│  /help - עזרה           │
+└────────────────────────┘
+[Start] ← לחץ כאן</div>
+
+    <a href="https://t.me/SLH_AIR_bot?start=join_web" target="_blank" class="big-btn">
+      <i class="fa-brands fa-telegram"></i> <span data-i18n="s1_btn">פתח @SLH_AIR_bot</span>
+    </a>
+    <a href="https://telegram.org/dl" target="_blank" class="alt-btn">
+      <i class="fa-solid fa-download"></i> <span data-i18n="s1_dl">אין לי טלגרם — הורד</span>
+    </a>
+
+    <div class="tip" data-i18n="s1_tip">
+      💡 <b>טיפ:</b> בטלגרם לחץ <code>Start</code> בפעם הראשונה. אחר כך תקבל user ID — שמור אותו, תצטרך אותו בצעד הבא.
+    </div>
+
+    <button onclick="markDone(1)" class="alt-btn" style="margin-top:14px;border-color:var(--accent);color:var(--accent)" data-i18n="s1_done">
+      ✅ סיימתי · המשך לשלב 2
+    </button>
+  </div>
+
+  <!-- STEP 2: Enter on website -->
+  <div class="step" id="step-2">
+    <div class="step-num">2</div>
+    <h2><i class="fa fa-user-plus"></i><span data-i18n="s2_title">התחבר באתר</span></h2>
+    <p data-i18n="s2_desc">חזור לאתר וכתוב את ה‑username או ה‑User ID שלך מטלגרם. זה המפתח שלך לקהילה.</p>
+
+    <div class="visual"><span class="muted">מה שאתה צריך להקליד:</span>
+username: <span class="highlight">@your_name</span>
+   או
+User ID: <span class="highlight">123456789</span></div>
+
+    <a href="/onboarding.html" class="big-btn" style="background:linear-gradient(135deg,var(--accent),#00c832)">
+      <i class="fa fa-arrow-left"></i> <span data-i18n="s2_btn">חזרה לעמוד ההרשמה</span>
+    </a>
+    <a href="/dashboard.html" class="alt-btn" data-i18n="s2_skip">
+      🏠 יש לי user ID · עבור לדשבורד ישר
+    </a>
+
+    <div class="tip ok" data-i18n="s2_tip">
+      ✅ <b>איך למצוא user ID?</b> פתח בטלגרם את <a href="https://t.me/userinfobot" target="_blank" style="color:var(--accent)">@userinfobot</a> → /start → הוא יחזיר לך את המספר.
+    </div>
+
+    <button onclick="markDone(2)" class="alt-btn" style="margin-top:14px;border-color:var(--accent);color:var(--accent)" data-i18n="s2_done">
+      ✅ התחברתי · המשך לשלב 3
+    </button>
+  </div>
+
+  <!-- STEP 3: Choose your path -->
+  <div class="step" id="step-3">
+    <div class="step-num">3</div>
+    <h2><i class="fa fa-map-marked-alt"></i><span data-i18n="s3_title">בחר מה לעשות</span></h2>
+    <p data-i18n="s3_desc">אתה בפנים! עכשיו — לאן ללכת? אלו האפשרויות:</p>
+
+    <div class="chat-opts" style="grid-template-columns:1fr;margin-top:14px">
+      <a href="/community.html" class="chat-opt public">
+        <span class="ico">💬</span>
+        <div class="ttl" data-i18n="s3_community">פיד קהילתי (ציבורי)</div>
+        <div class="dsc" data-i18n="s3_community_desc">פרסם פוסט, תגב, הצטרף לדיונים</div>
+      </a>
+      <a href="/earn.html" class="chat-opt private">
+        <span class="ico">💰</span>
+        <div class="ttl" data-i18n="s3_earn">Staking + תגמולים</div>
+        <div class="dsc" data-i18n="s3_earn_desc">Variable Yield (4-12%) · ZVK · יומי</div>
+      </a>
+      <a href="/buy.html" class="chat-opt voice">
+        <span class="ico">💎</span>
+        <div class="ttl" data-i18n="s3_buy">רכוש SLH</div>
+        <div class="dsc" data-i18n="s3_buy_desc">PancakeSwap / P2P / Genesis · תשלום אוטומטי</div>
+      </a>
+      <a href="/dashboard.html" class="chat-opt">
+        <span class="ico">🎛</span>
+        <div class="ttl" data-i18n="s3_dashboard">הדשבורד האישי שלך</div>
+        <div class="dsc" data-i18n="s3_dashboard_desc">יתרה · היסטוריה · פרופיל</div>
+      </a>
+    </div>
+
+    <button onclick="markDone(3)" class="alt-btn" style="margin-top:14px;border-color:var(--accent);color:var(--accent)" data-i18n="s3_done">
+      ✅ בחרתי · סיימתי הכל!
+    </button>
+  </div>
+
+  <!-- Chat with Osif / family -->
+  <div class="chat-card">
+    <h3 data-i18n="chat_title">💬 רוצה לדבר עם אוסיף או משפחה?</h3>
+    <p style="color:var(--text2);font-size:13px" data-i18n="chat_desc">יש 3 דרכים לשוחח — ציבורית (כולם רואים) או פרטית. בחר מה נוח לך:</p>
+
+    <div class="chat-opts">
+      <a href="/community.html" class="chat-opt public">
+        <span class="ico">🌍</span>
+        <div class="ttl" data-i18n="chat_public">שיחה ציבורית</div>
+        <div class="dsc" data-i18n="chat_public_desc">פוסט בפיד · כולם רואים · חינם</div>
+      </a>
+      <a href="https://t.me/osifeu_prog" target="_blank" class="chat-opt private">
+        <span class="ico"><i class="fa-brands fa-telegram"></i></span>
+        <div class="ttl" data-i18n="chat_tg">טלגרם פרטי</div>
+        <div class="dsc">@osifeu_prog · <span data-i18n="chat_tg_desc">אחד על אחד</span></div>
+      </a>
+      <a href="/community.html" class="chat-opt voice">
+        <span class="ico">👥</span>
+        <div class="ttl" data-i18n="chat_group">הפיד הקהילתי</div>
+        <div class="dsc" data-i18n="chat_group_desc">הצטרף לדיונים הציבוריים של כל הקהילה</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq">
+    <h3 style="font-size:18px;font-weight:800;margin-bottom:12px" data-i18n="faq_title">🆘 שאלות נפוצות</h3>
+
+    <details>
+      <summary data-i18n="faq1_q">לא מצליח להתחבר. מה לעשות?</summary>
+      <p data-i18n="faq1_a">1. ודא שטלגרם מותקן (<a href="https://telegram.org/dl" target="_blank">הורד</a>). 2. פתח את @userinfobot וקבל את ה‑user ID שלך. 3. אם עדיין לא עובד — שלח הודעה ל‑<a href="https://t.me/osifeu_prog" target="_blank">@osifeu_prog</a>.</p>
+    </details>
+
+    <details>
+      <summary data-i18n="faq2_q">מה ההבדל בין פומבי לפרטי?</summary>
+      <p data-i18n="faq2_a">פומבי = פוסט בפיד הקהילה, כולם רואים, יכולים להגיב. פרטי = הודעה בטלגרם ישירות בין שניכם, אף אחד לא רואה.</p>
+    </details>
+
+    <details>
+      <summary data-i18n="faq3_q">כמה זה עולה?</summary>
+      <p data-i18n="faq3_a">להצטרף = חינם. לרכוש SLH token = לפי המחיר שלו (~₪444). ל‑staking = אתה רק מפקיד, מקבל תשואה יומית.</p>
+    </details>
+
+    <details>
+      <summary data-i18n="faq4_q">אני חדש בקריפטו. מאיפה להתחיל?</summary>
+      <p data-i18n="faq4_a">תתחיל עם <a href="/wallet-guide.html">מדריך הארנק</a> (10 דקות). אחר כך <a href="/getting-started.html">איך המערכת עובדת</a>.</p>
+    </details>
+
+    <details>
+      <summary data-i18n="faq5_q">איך להפיץ את זה לחברים?</summary>
+      <p data-i18n="faq5_a">כל משתמש מקבל קישור הפניה אישי. פתח <a href="/invite.html">invite.html</a> → העתק → שלח. כל חבר שמצטרף דרכך נותן לך תגמול ZVK.</p>
+    </details>
+  </div>
+
+  <div class="foot">
+    SLH · Join Guide · <a href="/">בית</a> · <a href="/agent-brief.html">For AI agents</a> · <a href="/mission-control.html">Mission Control</a>
+  </div>
+
+</div>
+
+<script>
+const I18N = {
+  he: {
+    title: 'ברוך הבא ל‑SLH', subtitle: '3 שלבים, כ‑2 דקות, ואתה בפנים. בלי טכניקה מסובכת.',
+    s1_title: 'פתח את הבוט בטלגרם', s1_desc: 'אין טלגרם? תוריד קודם (חינם): telegram.org/dl. יש טלגרם? לחץ על הכפתור למטה — הוא יפתח את הבוט אוטומטית.',
+    s1_btn: 'פתח @SLH_AIR_bot', s1_dl: 'אין לי טלגרם — הורד', s1_tip: '💡 טיפ: בטלגרם לחץ Start בפעם הראשונה. אחר כך תקבל user ID — שמור אותו, תצטרך אותו בצעד הבא.',
+    s1_done: '✅ סיימתי · המשך לשלב 2',
+    s2_title: 'התחבר באתר', s2_desc: 'חזור לאתר וכתוב את ה‑username או ה‑User ID שלך מטלגרם. זה המפתח שלך לקהילה.',
+    s2_btn: 'חזרה לעמוד ההרשמה', s2_skip: '🏠 יש לי user ID · עבור לדשבורד ישר',
+    s2_tip: '✅ איך למצוא user ID? פתח בטלגרם את @userinfobot → /start → הוא יחזיר לך את המספר.',
+    s2_done: '✅ התחברתי · המשך לשלב 3',
+    s3_title: 'בחר מה לעשות', s3_desc: 'אתה בפנים! עכשיו — לאן ללכת? אלו האפשרויות:',
+    s3_community: 'פיד קהילתי (ציבורי)', s3_community_desc: 'פרסם פוסט, תגב, הצטרף לדיונים',
+    s3_earn: 'Staking + תגמולים', s3_earn_desc: 'Variable Yield (4-12%) · ZVK · יומי',
+    s3_buy: 'רכוש SLH', s3_buy_desc: 'PancakeSwap / P2P / Genesis · תשלום אוטומטי',
+    s3_dashboard: 'הדשבורד האישי שלך', s3_dashboard_desc: 'יתרה · היסטוריה · פרופיל',
+    s3_done: '✅ בחרתי · סיימתי הכל!',
+    chat_title: '💬 רוצה לדבר עם אוסיף או משפחה?', chat_desc: 'יש 3 דרכים לשוחח — ציבורית (כולם רואים) או פרטית. בחר מה נוח לך:',
+    chat_public: 'שיחה ציבורית', chat_public_desc: 'פוסט בפיד · כולם רואים · חינם',
+    chat_tg: 'טלגרם פרטי', chat_tg_desc: 'אחד על אחד',
+    chat_group: 'הפיד הקהילתי', chat_group_desc: 'הצטרף לדיונים הציבוריים של הקהילה',
+    faq_title: '🆘 שאלות נפוצות',
+    faq1_q: 'לא מצליח להתחבר. מה לעשות?', faq1_a: '1. ודא שטלגרם מותקן. 2. פתח את @userinfobot וקבל user ID. 3. אם עדיין לא עובד — שלח הודעה ל‑@osifeu_prog.',
+    faq2_q: 'מה ההבדל בין פומבי לפרטי?', faq2_a: 'פומבי = פוסט בפיד הקהילה, כולם רואים. פרטי = הודעה בטלגרם בין שניכם.',
+    faq3_q: 'כמה זה עולה?', faq3_a: 'להצטרף = חינם. לרכוש SLH = ~₪444. Staking = בלי עלות, רק הפקדה.',
+    faq4_q: 'אני חדש בקריפטו. מאיפה להתחיל?', faq4_a: 'תתחיל עם מדריך הארנק (10 דקות). אחר כך — איך המערכת עובדת.',
+    faq5_q: 'איך להפיץ לחברים?', faq5_a: 'כל משתמש מקבל קישור הפניה אישי. פתח invite.html → העתק → שלח. כל חבר שמצטרף נותן לך תגמול ZVK.'
+  },
+  en: {
+    title: 'Welcome to SLH', subtitle: '3 steps, ~2 minutes, and you are in. No complex tech.',
+    s1_title: 'Open the Telegram bot', s1_desc: 'No Telegram? Download free: telegram.org/dl. Got it? Click the button — the bot opens automatically.',
+    s1_btn: 'Open @SLH_AIR_bot', s1_dl: "Don't have Telegram — Download", s1_tip: '💡 Tip: press Start first time. You will get a user ID — save it for step 2.',
+    s1_done: '✅ Done · Continue to step 2',
+    s2_title: 'Sign in on the website', s2_desc: 'Come back to the site and enter your Telegram username or user ID. That is your key.',
+    s2_btn: 'Back to onboarding', s2_skip: '🏠 I have my ID · Go to dashboard',
+    s2_tip: '✅ How to find user ID? Open @userinfobot on Telegram → /start → it returns your number.',
+    s2_done: '✅ Signed in · Continue',
+    s3_title: 'Choose your path', s3_desc: 'You are in! Where to now? Pick:',
+    s3_community: 'Community feed (public)', s3_community_desc: 'Post, comment, join discussions',
+    s3_earn: 'Staking + rewards', s3_earn_desc: 'Variable Yield (4-12%) · ZVK · daily',
+    s3_buy: 'Buy SLH', s3_buy_desc: 'PancakeSwap / P2P / Genesis · instant payment',
+    s3_dashboard: 'Your personal dashboard', s3_dashboard_desc: 'Balance · history · profile',
+    s3_done: '✅ Chosen · All set!',
+    chat_title: '💬 Want to chat with Osif or family?', chat_desc: '3 ways — public (everyone sees) or private. Pick what suits you:',
+    chat_public: 'Public chat', chat_public_desc: 'Post in feed · everyone sees · free',
+    chat_tg: 'Private Telegram', chat_tg_desc: '1-on-1',
+    chat_group: 'Command Center group', chat_group_desc: 'Join SLH Command Center',
+    faq_title: '🆘 FAQ',
+    faq1_q: "Can't connect. What to do?", faq1_a: '1. Install Telegram. 2. Open @userinfobot for user ID. 3. Still stuck — message @osifeu_prog.',
+    faq2_q: 'Public vs private — what is the difference?', faq2_a: 'Public = post in feed, everyone sees. Private = direct Telegram between you two.',
+    faq3_q: 'How much does it cost?', faq3_a: 'Join = free. Buy SLH = ~$122. Staking = no cost, deposit only.',
+    faq4_q: "I'm new to crypto. Where to start?", faq4_a: 'Start with the wallet guide (10 min). Then — how the system works.',
+    faq5_q: 'How to share with friends?', faq5_a: 'Every user gets a personal referral link. Open invite.html → copy → send. Every friend that joins rewards you ZVK.'
+  },
+  ru: {
+    title: 'Добро пожаловать в SLH', subtitle: '3 шага, ~2 минуты, и вы внутри. Без сложной техники.',
+    s1_title: 'Откройте бота в Telegram', s1_desc: 'Нет Telegram? Скачайте бесплатно: telegram.org/dl. Есть? Нажмите кнопку — бот откроется.',
+    s1_btn: 'Открыть @SLH_AIR_bot', s1_dl: 'Нет Telegram — скачать', s1_tip: '💡 Нажмите Start впервые. Получите user ID — сохраните для шага 2.',
+    s1_done: '✅ Готово · Перейти к шагу 2',
+    s2_title: 'Войдите на сайте', s2_desc: 'Вернитесь на сайт и введите Telegram username или user ID.',
+    s2_btn: 'Вернуться к регистрации', s2_skip: '🏠 У меня есть ID · На дашборд',
+    s2_tip: '✅ Как найти user ID? @userinfobot → /start → получите номер.',
+    s2_done: '✅ Вошёл · Продолжить',
+    s3_title: 'Выберите направление', s3_desc: 'Вы внутри! Куда дальше?',
+    s3_community: 'Сообщество (публично)', s3_community_desc: 'Посты, комменты, обсуждения',
+    s3_earn: 'Стейкинг + награды', s3_earn_desc: 'Variable Yield (4-12%) · ZVK · ежедневно',
+    s3_buy: 'Купить SLH', s3_buy_desc: 'PancakeSwap / P2P / Genesis · мгновенно',
+    s3_dashboard: 'Ваш дашборд', s3_dashboard_desc: 'Баланс · история · профиль',
+    s3_done: '✅ Выбрано · Готово!',
+    chat_title: '💬 Хотите связаться?', chat_desc: '3 способа — публично или приватно:',
+    chat_public: 'Публичный чат', chat_public_desc: 'Пост в ленте · бесплатно',
+    chat_tg: 'Приватный Telegram', chat_tg_desc: '1 на 1',
+    chat_group: 'Группа Command Center', chat_group_desc: 'Присоединиться',
+    faq_title: '🆘 FAQ',
+    faq1_q: 'Не могу войти', faq1_a: '1. Установите Telegram. 2. @userinfobot для user ID. 3. Всё ещё — @osifeu_prog.',
+    faq2_q: 'Публично vs приватно?', faq2_a: 'Публично = пост в ленте. Приватно = Telegram.',
+    faq3_q: 'Сколько стоит?', faq3_a: 'Вход = бесплатно. SLH = ~$122.',
+    faq4_q: 'Я новичок в крипто', faq4_a: 'Начните с гида по кошельку.',
+    faq5_q: 'Как поделиться?', faq5_a: 'У каждого есть реферальная ссылка в invite.html.'
+  },
+  ar: {
+    title: 'مرحبا بك في SLH', subtitle: '3 خطوات، ~2 دقيقة، وأنت بالداخل.',
+    s1_title: 'افتح بوت Telegram', s1_desc: 'لا Telegram؟ حمل مجانا: telegram.org/dl.',
+    s1_btn: 'افتح @SLH_AIR_bot', s1_dl: 'ليس لدي Telegram', s1_tip: '💡 اضغط Start أول مرة واحفظ user ID.',
+    s1_done: '✅ تم · المتابعة',
+    s2_title: 'سجل الدخول بالموقع', s2_desc: 'عد واكتب username أو user ID.',
+    s2_btn: 'عد للتسجيل', s2_skip: '🏠 لدي ID',
+    s2_tip: '✅ افتح @userinfobot للحصول على ID.',
+    s2_done: '✅ دخلت · المتابعة',
+    s3_title: 'اختر وجهتك', s3_desc: 'أنت بالداخل! اختر:',
+    s3_community: 'مجتمع (عام)', s3_community_desc: 'منشورات، تعليقات',
+    s3_earn: 'Staking + مكافآت', s3_earn_desc: 'Variable Yield (4-12%)',
+    s3_buy: 'اشتر SLH', s3_buy_desc: 'دفع فوري',
+    s3_dashboard: 'لوحة القيادة', s3_dashboard_desc: 'الرصيد · السجل',
+    s3_done: '✅ انتهيت!',
+    chat_title: '💬 تريد التحدث؟', chat_desc: '3 طرق:',
+    chat_public: 'محادثة عامة', chat_public_desc: 'منشور في الخلاصة',
+    chat_tg: 'Telegram خاص', chat_tg_desc: 'واحد لواحد',
+    chat_group: 'Command Center', chat_group_desc: 'انضم',
+    faq_title: '🆘 الأسئلة',
+    faq1_q: 'لا أستطيع الدخول', faq1_a: 'ثبت Telegram. افتح @userinfobot.',
+    faq2_q: 'عام vs خاص؟', faq2_a: 'عام = الخلاصة. خاص = Telegram.',
+    faq3_q: 'التكلفة؟', faq3_a: 'مجاني للدخول.',
+    faq4_q: 'جديد في الكريبتو', faq4_a: 'ابدأ بدليل المحفظة.',
+    faq5_q: 'كيف أشارك؟', faq5_a: 'invite.html فيه رابط إحالة.'
+  },
+  fr: {
+    title: 'Bienvenue sur SLH', subtitle: '3 étapes, ~2 minutes, et vous êtes dedans.',
+    s1_title: 'Ouvrir le bot Telegram', s1_desc: "Pas de Telegram ? Téléchargez gratuitement : telegram.org/dl.",
+    s1_btn: 'Ouvrir @SLH_AIR_bot', s1_dl: "Pas de Telegram", s1_tip: '💡 Appuyez sur Start la première fois.',
+    s1_done: '✅ Fait · Continuer',
+    s2_title: 'Connexion sur le site', s2_desc: 'Revenez et entrez username ou user ID.',
+    s2_btn: "Retour à l'inscription", s2_skip: "🏠 J'ai un ID",
+    s2_tip: '✅ @userinfobot donne le user ID.',
+    s2_done: '✅ Connecté',
+    s3_title: 'Choisissez', s3_desc: 'Vous êtes dedans !',
+    s3_community: 'Communauté (public)', s3_community_desc: 'Postez, commentez',
+    s3_earn: 'Staking + récompenses', s3_earn_desc: 'Variable Yield (4-12%)',
+    s3_buy: 'Acheter SLH', s3_buy_desc: 'Paiement instantané',
+    s3_dashboard: 'Tableau de bord', s3_dashboard_desc: 'Solde · historique',
+    s3_done: '✅ Terminé !',
+    chat_title: '💬 Envie de parler ?', chat_desc: '3 façons :',
+    chat_public: 'Chat public', chat_public_desc: 'Post dans le feed',
+    chat_tg: 'Telegram privé', chat_tg_desc: '1 à 1',
+    chat_group: 'Command Center', chat_group_desc: 'Rejoindre',
+    faq_title: '🆘 FAQ',
+    faq1_q: 'Je ne peux pas me connecter', faq1_a: 'Installez Telegram. @userinfobot pour user ID.',
+    faq2_q: 'Public vs privé ?', faq2_a: 'Public = feed. Privé = Telegram.',
+    faq3_q: 'Combien ça coûte ?', faq3_a: "Inscription = gratuit.",
+    faq4_q: 'Nouveau en crypto', faq4_a: 'Commencez par le guide du portefeuille.',
+    faq5_q: 'Partager ?', faq5_a: 'Lien de parrainage sur invite.html.'
+  }
+};
+
+let currentLang = localStorage.getItem('slh_lang') || 'he';
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('slh_lang', lang);
+  document.documentElement.lang = lang;
+  document.documentElement.dir = (lang === 'he' || lang === 'ar') ? 'rtl' : 'ltr';
+  document.querySelectorAll('[data-lang-btn]').forEach(b => b.classList.toggle('active', b.dataset.langBtn === lang));
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.dataset.i18n;
+    if (I18N[lang] && I18N[lang][k]) {
+      // Preserve HTML inside spans
+      const hasChildElements = el.children.length > 0;
+      if (!hasChildElements) el.textContent = I18N[lang][k];
+    }
+  });
+}
+
+function markDone(n) {
+  document.getElementById('step-' + n).classList.remove('active');
+  document.getElementById('step-' + n).classList.add('done');
+  document.getElementById('dot-' + n).classList.remove('active');
+  document.getElementById('dot-' + n).classList.add('done');
+  const next = document.getElementById('step-' + (n + 1));
+  if (next) {
+    next.classList.add('active');
+    document.getElementById('dot-' + (n + 1)).classList.add('active');
+    next.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  // persist
+  localStorage.setItem('slh_join_step', n);
+}
+
+// Restore progress
+const saved = parseInt(localStorage.getItem('slh_join_step') || '0');
+for (let i = 1; i <= saved; i++) {
+  document.getElementById('step-' + i)?.classList.remove('active');
+  document.getElementById('step-' + i)?.classList.add('done');
+  document.getElementById('dot-' + i)?.classList.remove('active');
+  document.getElementById('dot-' + i)?.classList.add('done');
+}
+if (saved < 3) {
+  const nxt = saved + 1;
+  document.getElementById('step-' + nxt)?.classList.add('active');
+  document.getElementById('dot-' + nxt)?.classList.add('active');
+}
+
+setLang(currentLang);
+</script>
+
+</body>
+</html>

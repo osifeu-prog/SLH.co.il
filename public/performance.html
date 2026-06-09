@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Performance — SLH Research Lab</title>
+<meta name="description" content="SLH research lab — backtest snapshots of BSC tokens. Pre-launch transparency. Not investment advice.">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{--bg:#050810;--bg2:#0d1220;--bg3:#151a2e;--gold:#ffd700;--green:#00e887;--red:#ff4444;--orange:#ff9800;--purple:#a855f7;--cyan:#06b6d4;--text:#f5f5f8;--text2:#9ba0b5;--text3:#5a6078;--border:rgba(168,85,247,.25)}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Rubik',sans-serif;margin:0;min-height:100vh;line-height:1.6}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(circle at 15% 25%,rgba(168,85,247,.05),transparent 50%),radial-gradient(circle at 85% 75%,rgba(6,182,212,.05),transparent 50%)}
+
+.wrap{max-width:1200px;margin:0 auto;padding:40px 20px}
+.hero{text-align:center;margin-bottom:30px}
+.hero h1{font-size:clamp(28px,4vw,44px);margin:0 0 8px;background:linear-gradient(135deg,var(--purple),var(--cyan),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:900}
+.hero p{color:var(--text2);font-size:15px;margin:0}
+.hero .badge{display:inline-block;padding:4px 12px;background:rgba(255,215,0,.12);color:var(--gold);border-radius:20px;font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px}
+
+.disclaimer{max-width:900px;margin:0 auto 30px;padding:16px 20px;background:rgba(255,68,68,.05);border:1px solid rgba(255,68,68,.3);border-radius:12px;font-size:13px;color:var(--text2);line-height:1.8}
+.disclaimer strong{color:var(--red)}
+
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:30px}
+.stat{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px}
+.stat .lbl{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:8px}
+.stat .val{font-size:30px;font-weight:900;color:var(--text);font-family:'JetBrains Mono',monospace}
+.stat .val.gold{color:var(--gold)}.stat .val.green{color:var(--green)}.stat .val.cyan{color:var(--cyan)}
+.stat .sub{font-size:11px;color:var(--text2);margin-top:6px}
+
+.section{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:20px}
+.section h2{margin:0 0 16px;font-size:18px;color:var(--text);display:flex;align-items:center;gap:10px}
+.section h2 i{color:var(--cyan)}
+
+table{width:100%;border-collapse:collapse;font-size:13px;font-family:'JetBrains Mono',monospace}
+th{text-align:start;padding:10px;background:var(--bg3);color:var(--text2);font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);font-family:'Rubik',sans-serif}
+td{padding:10px;border-bottom:1px solid rgba(168,85,247,.1);color:var(--text)}
+tr:hover td{background:rgba(168,85,247,.04)}
+.symbol{font-weight:800;color:var(--gold)}
+.address{font-size:10px;color:var(--text3)}
+.num{text-align:end}
+
+.empty{padding:60px 20px;text-align:center;color:var(--text3)}
+.empty i{font-size:48px;margin-bottom:12px;display:block;color:var(--purple);opacity:.5}
+
+.refresh-btn{padding:10px 20px;background:linear-gradient(135deg,var(--purple),var(--cyan));color:#fff;border:none;border-radius:10px;font-weight:800;cursor:pointer;font-family:inherit;margin-bottom:20px}
+.refresh-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(168,85,247,.3)}
+
+.meta{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3)}
+a{color:var(--cyan);text-decoration:none}
+a:hover{text-decoration:underline}
+
+footer{text-align:center;padding:40px 20px;color:var(--text3);font-size:12px;border-top:1px solid var(--border);margin-top:40px}
+footer a{margin:0 10px}
+</style>
+</head>
+<body>
+
+<div id="topnav-root" data-page="performance"></div>
+<div id="ticker-root"></div>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="badge">🔬 Research Lab · Beta</div>
+    <h1>Performance Lab</h1>
+    <p>Backtest snapshots of BSC tokens. Data from SLH research scripts (<code>daily_backtest.py</code>).</p>
+  </div>
+
+  <div class="disclaimer">
+    <strong>⚠️ זהו מעבדת מחקר, לא פלטפורמת מסחר.</strong>
+    הנתונים אוספים BSC tokens (price, liquidity, volume) בזמן נתון. הם לא המלצת רכישה.
+    SLH אינה מציעה שירותי מסחר או ניהול תיק.
+    ראה <a href="/risk.html">גילוי סיכון מלא</a>.
+  </div>
+
+  <button class="refresh-btn" onclick="loadData()"><i class="fas fa-sync"></i> Refresh</button>
+  <span class="meta" id="last-updated">Loading...</span>
+
+  <div id="status-banner"></div>
+
+  <div class="summary-grid" id="summary"></div>
+
+  <div class="section">
+    <h2><i class="fas fa-trophy"></i> Top 5 by 24h Volume</h2>
+    <div id="top5"></div>
+  </div>
+
+  <div class="section">
+    <h2><i class="fas fa-table"></i> Full Snapshot</h2>
+    <div id="full-table"></div>
+  </div>
+</div>
+
+<div id="footer-root"></div>
+<div id="bottomnav-root"></div>
+<script src="/js/shared.js?v=20260421" defer></script>
+
+<script>
+const API = 'https://slh-api-production.up.railway.app';
+const fmtUSD = (n) => '$' + n.toLocaleString('en-US', {maximumFractionDigits: 0});
+const fmtUSDShort = (n) => {
+  if (n >= 1e9) return '$' + (n / 1e9).toFixed(2) + 'B';
+  if (n >= 1e6) return '$' + (n / 1e6).toFixed(2) + 'M';
+  if (n >= 1e3) return '$' + (n / 1e3).toFixed(1) + 'K';
+  return '$' + n.toFixed(2);
+};
+const fmtPrice = (n) => n < 0.01 ? '$' + n.toFixed(6) : '$' + n.toLocaleString('en-US', {maximumFractionDigits: 4});
+
+async function loadData() {
+  document.getElementById('last-updated').textContent = 'Loading...';
+  try {
+    const res = await fetch(`${API}/api/performance`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const d = await res.json();
+    render(d);
+    document.getElementById('last-updated').textContent = 'Fetched ' + new Date().toLocaleTimeString();
+  } catch (e) {
+    document.getElementById('status-banner').innerHTML =
+      `<div class="empty"><i class="fas fa-exclamation-triangle"></i><h3>Failed to load</h3><p>${e.message}</p></div>`;
+    document.getElementById('last-updated').textContent = 'Error';
+  }
+}
+
+function render(d) {
+  if (!d.available) {
+    document.getElementById('status-banner').innerHTML =
+      `<div class="empty"><i class="fas fa-flask"></i><h3>No snapshot available</h3><p>${d.message}</p><p style="font-size:12px;margin-top:12px">Run <code>python daily_backtest.py</code> on the dev machine to generate the first snapshot.</p></div>`;
+    document.getElementById('summary').innerHTML = '';
+    document.getElementById('top5').innerHTML = '';
+    document.getElementById('full-table').innerHTML = '';
+    return;
+  }
+
+  document.getElementById('status-banner').innerHTML = '';
+
+  // Summary
+  document.getElementById('summary').innerHTML = `
+    <div class="stat">
+      <div class="lbl">Tokens Tracked</div>
+      <div class="val gold">${d.token_count}</div>
+      <div class="sub">Source: ${d.source_file}</div>
+    </div>
+    <div class="stat">
+      <div class="lbl">Total Liquidity</div>
+      <div class="val green">${fmtUSDShort(d.total_liquidity_usd)}</div>
+      <div class="sub">Sum across all pools</div>
+    </div>
+    <div class="stat">
+      <div class="lbl">24h Volume</div>
+      <div class="val cyan">${fmtUSDShort(d.total_volume_24h_usd)}</div>
+      <div class="sub">Combined 24h</div>
+    </div>
+    <div class="stat">
+      <div class="lbl">Snapshot Time</div>
+      <div class="val" style="font-size:16px">${(d.generated_at || '—').slice(0, 19).replace('T', ' ')}</div>
+      <div class="sub">UTC</div>
+    </div>
+  `;
+
+  // Top 5
+  document.getElementById('top5').innerHTML = `<table><thead><tr>
+    <th>#</th><th>Symbol</th><th>Address</th><th class="num">Price</th><th class="num">Liquidity</th><th class="num">24h Volume</th>
+  </tr></thead><tbody>${d.top_5_by_volume.map((t, i) => `<tr>
+    <td>${i+1}</td>
+    <td><span class="symbol">${t.symbol || '?'}</span></td>
+    <td><a href="https://bscscan.com/token/${t.address}" target="_blank" class="address">${t.address.slice(0, 10)}…${t.address.slice(-4)}</a></td>
+    <td class="num">${fmtPrice(t.price_usd)}</td>
+    <td class="num">${fmtUSDShort(t.liquidity_usd)}</td>
+    <td class="num">${fmtUSDShort(t.volume_usd_24h)}</td>
+  </tr>`).join('')}</tbody></table>`;
+
+  // Full
+  document.getElementById('full-table').innerHTML = `<table><thead><tr>
+    <th>Symbol</th><th>Address</th><th class="num">Price</th><th class="num">Liquidity</th><th class="num">24h Volume</th>
+  </tr></thead><tbody>${d.tokens.map(t => `<tr>
+    <td><span class="symbol">${t.symbol || '?'}</span></td>
+    <td><a href="https://bscscan.com/token/${t.address}" target="_blank" class="address">${t.address.slice(0, 10)}…${t.address.slice(-4)}</a>
+        <a href="https://intel.arkm.com/explorer/address/${t.address}" target="_blank" class="address" style="margin-inline-start:8px">🔎</a></td>
+    <td class="num">${fmtPrice(t.price_usd)}</td>
+    <td class="num">${fmtUSDShort(t.liquidity_usd)}</td>
+    <td class="num">${fmtUSDShort(t.volume_usd_24h)}</td>
+  </tr>`).join('')}</tbody></table>`;
+}
+
+loadData();
+</script>
+</body>
+</html>

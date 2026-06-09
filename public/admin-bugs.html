@@ -1,0 +1,267 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta name="robots" content="noindex,nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ניהול דיווחי באגים — SLH Admin</title>
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{--bg:#050810;--bg2:#0d1220;--gold:#ffd700;--green:#00e887;--red:#ff4444;--orange:#ff9800;--blue:#2196f3;--text:#f5f5f8;--text2:#9ba0b5;--border:rgba(255,255,255,.08)}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Rubik',sans-serif;margin:0;min-height:100vh;line-height:1.5}
+.container{max-width:1400px;margin:20px auto;padding:0 20px}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.header h1{font-size:26px;font-weight:900;background:linear-gradient(135deg,var(--red),var(--orange));-webkit-background-clip:text;background-clip:text;color:transparent;margin:0}
+.header .actions{display:flex;gap:8px;align-items:center}
+.back-btn{padding:8px 14px;background:var(--bg2);border:1px solid var(--border);color:var(--text2);border-radius:8px;text-decoration:none;font-size:13px}
+.back-btn:hover{color:var(--text);border-color:var(--gold)}
+.refresh-btn{padding:8px 14px;background:var(--blue);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-family:inherit;font-weight:700}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+.stat{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px}
+.stat .label{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px}
+.stat .value{font-size:28px;font-weight:900}
+.stat.total .value{color:var(--text)}
+.stat.new .value{color:var(--blue)}
+.stat.progress .value{color:var(--orange)}
+.stat.resolved .value{color:var(--green)}
+.stat.critical .value{color:var(--red)}
+.filters{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.filter-btn{padding:8px 14px;background:var(--bg2);border:1px solid var(--border);color:var(--text2);border-radius:8px;cursor:pointer;font-size:12px;font-family:inherit;font-weight:700}
+.filter-btn.active{background:var(--gold);border-color:var(--gold);color:#000}
+.filter-btn:hover{color:var(--text)}
+.bug-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:12px}
+.bug-card.critical{border-right:4px solid var(--red)}
+.bug-card.high{border-right:4px solid var(--orange)}
+.bug-card.medium{border-right:4px solid var(--gold)}
+.bug-card.low{border-right:4px solid var(--green)}
+.bug-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px}
+.bug-id{font-family:monospace;color:var(--text2);font-size:12px}
+.bug-title{font-size:16px;font-weight:700;color:var(--text);margin:6px 0}
+.bug-desc{color:var(--text2);font-size:13px;line-height:1.6;white-space:pre-wrap;background:var(--bg);padding:10px;border-radius:8px;margin:8px 0}
+.bug-meta{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--text2);margin-top:10px}
+.bug-meta span{background:var(--bg);padding:4px 10px;border-radius:6px}
+.bug-meta a{color:var(--blue);text-decoration:none}
+.badge{display:inline-block;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+.badge-severity-critical{background:var(--red);color:#fff}
+.badge-severity-high{background:var(--orange);color:#fff}
+.badge-severity-medium{background:var(--gold);color:#000}
+.badge-severity-low{background:var(--green);color:#000}
+.badge-status-new{background:var(--blue);color:#fff}
+.badge-status-in_progress{background:var(--orange);color:#fff}
+.badge-status-resolved{background:var(--green);color:#000}
+.badge-status-rejected{background:var(--text2);color:#000}
+.actions-row{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
+.act{padding:6px 12px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:6px;cursor:pointer;font-size:12px;font-family:inherit;font-weight:700}
+.act:hover{border-color:var(--gold)}
+.act.resolve{background:var(--green);color:#000;border-color:var(--green)}
+.act.progress{background:var(--orange);color:#fff;border-color:var(--orange)}
+.act.reject{background:var(--text2);color:#000;border-color:var(--text2)}
+.empty{text-align:center;padding:60px 20px;color:var(--text2)}
+.empty i{font-size:48px;margin-bottom:12px;color:var(--green)}
+.login-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:24px;max-width:400px;margin:80px auto}
+.login-card h2{margin:0 0 16px;font-size:20px}
+.login-card input{width:100%;padding:12px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;font-size:14px;font-family:inherit;margin-bottom:12px}
+.login-card button{width:100%;padding:12px;background:linear-gradient(135deg,var(--gold),var(--orange));color:#000;border:none;border-radius:8px;font-weight:900;cursor:pointer;font-family:inherit}
+@media(max-width:600px){.stats{grid-template-columns:repeat(2,1fr)}.bug-header{flex-direction:column;align-items:flex-start}}
+</style>
+<meta name="slh-version" content="v1.0-flip">
+<script defer src="/js/slh-flip.js?v=20260426e"></script>
+</head>
+<body>
+
+<div id="login-view">
+  <div class="login-card">
+    <h2>🔐 כניסת אדמין</h2>
+    <input type="password" id="admin-key" placeholder="admin key">
+    <button onclick="doLogin()">כניסה</button>
+  </div>
+</div>
+
+<div id="app-view" style="display:none">
+  <div class="container">
+    <div class="header">
+      <h1>🐛 ניהול דיווחי באגים</h1>
+      <div class="actions">
+        <a href="/admin.html" class="back-btn">← חזרה לאדמין</a>
+        <button class="refresh-btn" onclick="loadBugs()"><i class="fas fa-sync"></i> רענן</button>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat total"><div class="label">סה״כ</div><div class="value" id="s-total">--</div></div>
+      <div class="stat new"><div class="label">חדש</div><div class="value" id="s-new">--</div></div>
+      <div class="stat progress"><div class="label">בטיפול</div><div class="value" id="s-progress">--</div></div>
+      <div class="stat resolved"><div class="label">נפתר</div><div class="value" id="s-resolved">--</div></div>
+      <div class="stat critical"><div class="label">קריטי</div><div class="value" id="s-critical">--</div></div>
+    </div>
+
+    <div class="filters">
+      <button class="filter-btn active" data-status="" onclick="setFilter('status', '', this)">כולם</button>
+      <button class="filter-btn" data-status="new" onclick="setFilter('status', 'new', this)">חדשים</button>
+      <button class="filter-btn" data-status="in_progress" onclick="setFilter('status', 'in_progress', this)">בטיפול</button>
+      <button class="filter-btn" data-status="resolved" onclick="setFilter('status', 'resolved', this)">נפתרו</button>
+      <span style="border-right:1px solid var(--border);margin:0 4px"></span>
+      <button class="filter-btn active" data-severity="" onclick="setFilter('severity', '', this)">כל החומרות</button>
+      <button class="filter-btn" data-severity="critical" onclick="setFilter('severity', 'critical', this)">קריטי</button>
+      <button class="filter-btn" data-severity="high" onclick="setFilter('severity', 'high', this)">גבוה</button>
+      <button class="filter-btn" data-severity="medium" onclick="setFilter('severity', 'medium', this)">בינוני</button>
+      <button class="filter-btn" data-severity="low" onclick="setFilter('severity', 'low', this)">נמוך</button>
+    </div>
+
+    <div id="bugs-list"></div>
+  </div>
+</div>
+
+<script>
+const API = 'https://slh-api-production.up.railway.app';
+let adminKey = localStorage.getItem('slh_admin_password') || '';
+let filters = { status: '', severity: '' };
+
+function doLogin(){
+  const k = document.getElementById('admin-key').value.trim();
+  if(!k){ alert('הזן מפתח'); return; }
+  adminKey = k;
+  localStorage.setItem('slh_admin_password', k);
+  showApp();
+}
+
+function showApp(){
+  document.getElementById('login-view').style.display = 'none';
+  document.getElementById('app-view').style.display = 'block';
+  loadBugs();
+}
+
+if(adminKey) showApp();
+
+function setFilter(type, value, btn){
+  filters[type] = value;
+  document.querySelectorAll(`.filter-btn[data-${type}]`).forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  loadBugs();
+}
+
+async function loadBugs(){
+  try {
+    const qs = new URLSearchParams();
+    if(filters.status) qs.set('status', filters.status);
+    if(filters.severity) qs.set('severity', filters.severity);
+    qs.set('limit', '200');
+    const r = await fetch(`${API}/api/admin/bugs/list?${qs}`, {
+      headers: { 'X-Admin-Key': adminKey }
+    });
+    if(r.status === 403 || r.status === 401){
+      localStorage.removeItem('slh_admin_password');
+      alert('מפתח שגוי'); location.reload(); return;
+    }
+    const d = await r.json();
+    renderStats(d.stats || {});
+    renderBugs(d.bugs || []);
+  } catch(e){
+    document.getElementById('bugs-list').innerHTML = `<div class="empty">❌ שגיאה: ${e.message}</div>`;
+  }
+}
+
+function renderStats(s){
+  document.getElementById('s-total').textContent = s.total || 0;
+  document.getElementById('s-new').textContent = s.new || 0;
+  document.getElementById('s-progress').textContent = s.in_progress || 0;
+  document.getElementById('s-resolved').textContent = s.resolved || 0;
+  document.getElementById('s-critical').textContent = s.critical || 0;
+}
+
+function renderBugs(bugs){
+  const el = document.getElementById('bugs-list');
+  if(!bugs.length){
+    el.innerHTML = `<div class="empty"><i class="fas fa-check-circle"></i><p>אין באגים פתוחים</p></div>`;
+    return;
+  }
+  el.innerHTML = bugs.map(b => `
+    <div class="bug-card ${b.severity||'medium'}">
+      <div class="bug-header">
+        <div>
+          <span class="bug-id">#${b.id}</span>
+          <span class="badge badge-severity-${b.severity||'medium'}">${sevLabel(b.severity)}</span>
+          <span class="badge badge-status-${b.status||'new'}">${statusLabel(b.status)}</span>
+          ${b.category ? `<span class="badge" style="background:var(--bg);color:var(--text2)">${b.category}</span>` : ''}
+        </div>
+        <div class="bug-meta"><span>${formatDate(b.created_at)}</span></div>
+      </div>
+      <div class="bug-title">${escapeHtml(b.title)}</div>
+      <div class="bug-desc">${escapeHtml(b.description)}</div>
+      ${b.steps_to_reproduce ? `<div class="bug-desc"><strong>שלבי שחזור:</strong>\n${escapeHtml(b.steps_to_reproduce)}</div>` : ''}
+      <div class="bug-meta">
+        ${b.reporter_name ? `<span>👤 ${escapeHtml(b.reporter_name)}</span>` : '<span>👤 אנונימי</span>'}
+        ${b.reporter_email ? `<span>📧 ${escapeHtml(b.reporter_email)}</span>` : ''}
+        ${b.reporter_user_id ? `<span>🆔 ${b.reporter_user_id}</span>` : ''}
+        ${b.page_url ? `<span>📄 <a href="${escapeHtml(b.page_url)}" target="_blank">${shortUrl(b.page_url)}</a></span>` : ''}
+        ${b.user_agent ? `<span title="${escapeHtml(b.user_agent)}">💻 ${escapeHtml((b.user_agent||'').slice(0,40))}...</span>` : ''}
+      </div>
+      <div class="actions-row">
+        ${b.status !== 'in_progress' ? `<button class="act progress" onclick="updateStatus(${b.id},'in_progress')">🔧 בטיפול</button>` : ''}
+        ${b.status !== 'resolved' ? `<button class="act resolve" onclick="updateStatus(${b.id},'resolved')">✅ נפתר</button>` : ''}
+        ${b.status !== 'rejected' ? `<button class="act reject" onclick="updateStatus(${b.id},'rejected')">❌ דחה</button>` : ''}
+        <button class="act" style="background:rgba(168,85,247,.15);color:#a855f7;border:1px solid rgba(168,85,247,.3)" onclick="aiAnalyze(${b.id}, 'claude_code')">🧠 Claude Code</button>
+        <button class="act" style="background:rgba(0,229,255,.15);color:#00e5ff;border:1px solid rgba(0,229,255,.3)" onclick="aiAnalyze(${b.id}, 'advisor')">💡 Advisor</button>
+      </div>
+      ${b.ai_analysis ? `
+        <div style="margin-top:12px;padding:12px;background:rgba(168,85,247,.06);border:1px solid rgba(168,85,247,.2);border-radius:8px;font-size:13px;line-height:1.7">
+          <div style="font-size:11px;color:#a855f7;font-weight:700;margin-bottom:6px">🧠 AI ניתוח · ${escapeHtml(b.ai_agent || 'unknown')} · ${b.ai_analyzed_at ? formatDate(b.ai_analyzed_at) : ''}</div>
+          <div style="color:var(--text);white-space:pre-wrap">${escapeHtml(b.ai_analysis)}</div>
+        </div>
+      ` : ''}
+    </div>
+  `).join('');
+}
+
+async function aiAnalyze(bugId, agent){
+  const btn = event.target;
+  const orig = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = '⏳ מנתח...';
+  try {
+    const r = await fetch(`${API}/api/admin/bugs/${bugId}/ai-analyze`, {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', 'X-Admin-Key': adminKey },
+      body: JSON.stringify({ agent })
+    });
+    const d = await r.json();
+    if(!r.ok) throw new Error(d.detail || 'API error');
+    loadBugs();  // reload to show analysis
+  } catch(e){
+    alert('❌ ' + e.message);
+    btn.disabled = false;
+    btn.textContent = orig;
+  }
+}
+
+async function updateStatus(id, status){
+  let resolution = '';
+  if(status === 'resolved'){
+    resolution = prompt('פירוט הפתרון (יישלח למשתמש אם יש לו telegram_id):', '') || '';
+  }
+  try {
+    const r = await fetch(`${API}/api/admin/bugs/${id}/status`, {
+      method: 'PATCH',
+      headers: { 'Content-Type':'application/json', 'X-Admin-Key': adminKey },
+      body: JSON.stringify({ status, resolution })
+    });
+    const d = await r.json();
+    if(!r.ok){ throw new Error(d.detail || 'API error'); }
+    loadBugs();
+  } catch(e){
+    alert('שגיאה: ' + e.message);
+  }
+}
+
+function sevLabel(s){ return {low:'נמוך',medium:'בינוני',high:'גבוה',critical:'קריטי'}[s] || s; }
+function statusLabel(s){ return {new:'חדש',in_progress:'בטיפול',resolved:'נפתר',rejected:'נדחה'}[s] || s; }
+function formatDate(d){ try { return new Date(d).toLocaleString('he-IL'); } catch { return d; } }
+function shortUrl(u){ try { return new URL(u).pathname; } catch { return (u||'').slice(0,50); } }
+function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+</script>
+<script src="/js/ai-assistant.js"></script>
+</body>
+</html>

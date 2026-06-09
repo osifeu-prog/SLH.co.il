@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta name="robots" content="noindex,nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🎯 Upgrade Tracker · SLH Spark</title>
+<meta name="description" content="מעקב ויזואלי אחר התקדמות השדרוג של 80 דפי האתר. כל דף עם meta slh-version נספר כ-upgraded.">
+<link rel="canonical" href="https://slh-nft.com/upgrade-tracker.html">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<meta name="slh-version" content="v1.0-flip">
+<script defer src="/js/slh-flip.js?v=20260417"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Rubik',system-ui,sans-serif;background:#05080f;color:#f5f5f8;min-height:100vh;padding:20px}
+.wrap{max-width:1200px;margin:0 auto}
+.hdr{text-align:center;margin-bottom:30px}
+.hdr h1{font-size:clamp(28px,4vw,42px);font-weight:900;background:linear-gradient(135deg,#00ff41,#00e5ff,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:0 0 8px}
+.hdr p{color:#9ba0b5;margin:0}
+
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin:30px 0}
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:20px;text-align:center}
+.card .v{font-size:36px;font-weight:900;font-family:'JetBrains Mono',monospace}
+.card .l{font-size:11px;color:#9ba0b5;text-transform:uppercase;letter-spacing:1.5px;margin-top:4px}
+.card.ok .v{color:#00ff41}
+.card.pending .v{color:#ffd700}
+.card.pct .v{color:#00e5ff}
+.card.total .v{color:#fff}
+
+.bar{height:16px;background:rgba(255,255,255,.05);border-radius:8px;overflow:hidden;margin:20px 0}
+.bar-fill{height:100%;background:linear-gradient(90deg,#00ff41,#00e5ff);transition:width 1s ease}
+
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}
+.btn{padding:10px 20px;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-family:inherit;font-size:13px}
+.btn.primary{background:linear-gradient(135deg,#00ff41,#00e5ff);color:#000}
+.btn.sec{background:rgba(255,255,255,.05);color:#fff;border:1px solid rgba(255,255,255,.15)}
+.btn:hover{opacity:.9}
+
+.filter{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.filter button{padding:6px 14px;background:rgba(255,255,255,.05);color:#9ba0b5;border:1px solid rgba(255,255,255,.1);border-radius:20px;cursor:pointer;font-size:12px;font-family:inherit}
+.filter button.active{background:#00e5ff;color:#000;border-color:#00e5ff}
+
+.list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+.page{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px}
+.page.upgraded{border-color:rgba(0,255,65,.3);background:rgba(0,255,65,.04)}
+.page.pending{border-color:rgba(255,215,0,.2);background:rgba(255,215,0,.03)}
+.page.error{border-color:rgba(255,68,68,.3);background:rgba(255,68,68,.04)}
+.page .status{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.page.upgraded .status{background:#00ff41}
+.page.pending .status{background:#ffd700}
+.page.error .status{background:#ff4444}
+.page.loading .status{background:#8a8aa0;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+.page a{color:#00e5ff;text-decoration:none;flex:1;font-size:13px;font-family:'JetBrains Mono',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.page a:hover{color:#fff}
+.page .ver{font-size:10px;color:#5a6078;font-family:'JetBrains Mono',monospace}
+
+.foot{text-align:center;margin-top:40px;color:#5a6078;font-size:12px}
+.foot a{color:#00e5ff}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hdr">
+    <h1 data-scramble="SLH Upgrade Tracker">SLH Upgrade Tracker</h1>
+    <p>מעקב ויזואלי אחרי שדרוג 80 דפי האתר · כל דף עם <code>&lt;meta name="slh-version"&gt;</code> נחשב upgraded</p>
+  </div>
+
+  <div class="summary">
+    <div class="card ok"><div class="v" id="c-up">—</div><div class="l">Upgraded</div></div>
+    <div class="card pending"><div class="v" id="c-pen">—</div><div class="l">Pending</div></div>
+    <div class="card total"><div class="v" id="c-total">--</div><div class="l">Total pages</div></div>
+    <div class="card pct"><div class="v" id="c-pct">—%</div><div class="l">Coverage</div></div>
+  </div>
+
+  <div class="bar"><div class="bar-fill" id="bar" style="width:0%"></div></div>
+
+  <div class="controls">
+    <button class="btn primary" onclick="scanAll()">🔄 רענן סריקה</button>
+    <button class="btn sec" onclick="downloadReport()">📄 הורד דוח JSON</button>
+    <button class="btn sec" onclick="location.href='/alpha-progress.html'">📊 Alpha Progress</button>
+  </div>
+
+  <div class="filter">
+    <button onclick="filter('all')" class="active" id="f-all">הכל</button>
+    <button onclick="filter('upgraded')" id="f-up">✅ Upgraded</button>
+    <button onclick="filter('pending')" id="f-pen">⏳ Pending</button>
+    <button onclick="filter('error')" id="f-err">⚠ Error</button>
+  </div>
+
+  <div class="list" id="list"></div>
+
+  <div class="foot">
+    <p>Generated at: <span id="stamp">—</span> · Powered by slh-flip.js</p>
+    <p style="margin-top:10px">
+      <a href="/agent-brief.html">🤖 Agent Brief</a> ·
+      <a href="/ops-dashboard.html">📊 Ops Dashboard</a> ·
+      <a href="/project-map.html">🗺 Project Map</a>
+    </p>
+  </div>
+</div>
+
+<script>
+const PAGES = ['about.html','admin-bugs.html','admin-experts.html','admin-tokens.html','admin.html','agent-brief.html','agent-tracker.html','analytics.html','blockchain.html','blog-legacy-code.html','bot-registry.html','bots.html','broadcast-composer.html','broker-dashboard.html','bug-report.html','buy.html','card-payment.html','challenge.html','community.html','control-center.html','daily-blog.html','dashboard.html','dating.html','dex-launch.html','earn.html','ecosystem-guide.html','expenses.html','experts.html','for-therapists.html','getting-started.html','guardian-diag.html','guides.html','healing-vision.html','index.html','investment-tracker.html','invite.html','join-guide.html','join.html','jubilee.html','kosher-wallet.html','launch-event.html','learning-path.html','liquidity.html','live-stats.html','live.html','mass-gift.html','member.html','mission-control.html','morning-checklist.html','morning-handoff.html','network.html','onboarding.html','ops-dashboard.html','ops-report-20260411.html','overnight-report.html','p2p.html','partner-dashboard.html','partner-launch-invite.html','pay.html','privacy.html','profile.html','project-map-advanced.html','project-map.html','promo-shekel.html','receipts.html','referral-card.html','referral.html','risk-dashboard.html','roadmap.html','rotate.html','settings.html','staking.html','sudoku.html','support-deal.html','system-health.html','terms.html','test-bots.html','tour.html','trade.html','wallet-guide.html','wallet.html','whitepaper.html'];
+
+const results = {};
+let currentFilter = 'all';
+
+function render() {
+  const list = document.getElementById('list');
+  let up = 0, pen = 0, err = 0;
+  Object.values(results).forEach(r => {
+    if (r.status === 'upgraded') up++;
+    else if (r.status === 'error') err++;
+    else if (r.status === 'pending') pen++;
+  });
+
+  document.getElementById('c-up').textContent = up;
+  document.getElementById('c-pen').textContent = pen;
+  document.getElementById('c-total').textContent = PAGES.length;
+  const pct = Math.round((up / PAGES.length) * 100);
+  document.getElementById('c-pct').textContent = pct + '%';
+  document.getElementById('bar').style.width = pct + '%';
+
+  list.innerHTML = PAGES.map(p => {
+    const r = results[p] || { status: 'loading', version: '' };
+    if (currentFilter !== 'all' && r.status !== currentFilter) return '';
+    return `<div class="page ${r.status}">
+      <div class="status"></div>
+      <a href="/${p}" target="_blank">${p}</a>
+      <span class="ver">${r.version || ''}</span>
+    </div>`;
+  }).filter(Boolean).join('');
+
+  document.getElementById('stamp').textContent = new Date().toLocaleString('he-IL');
+}
+
+async function checkPage(path) {
+  try {
+    const r = await fetch('/' + path, { cache: 'no-store' });
+    if (!r.ok) return { status: 'error', version: `HTTP ${r.status}` };
+    const html = await r.text();
+    const m = html.match(/<meta[^>]*name=["']slh-version["'][^>]*content=["']([^"']+)["']/i);
+    if (m) return { status: 'upgraded', version: m[1] };
+    return { status: 'pending', version: '' };
+  } catch (e) {
+    return { status: 'error', version: e.message };
+  }
+}
+
+async function scanAll() {
+  PAGES.forEach(p => { results[p] = { status: 'loading', version: '' }; });
+  render();
+  // Scan in batches of 10 to avoid hammering
+  const batch = 10;
+  for (let i = 0; i < PAGES.length; i += batch) {
+    const chunk = PAGES.slice(i, i + batch);
+    await Promise.all(chunk.map(async p => {
+      results[p] = await checkPage(p);
+    }));
+    render();
+  }
+}
+
+function filter(f) {
+  currentFilter = f;
+  document.querySelectorAll('.filter button').forEach(b => b.classList.remove('active'));
+  document.getElementById('f-' + (f === 'all' ? 'all' : f === 'upgraded' ? 'up' : f === 'pending' ? 'pen' : 'err')).classList.add('active');
+  render();
+}
+
+function downloadReport() {
+  const report = {
+    generated_at: new Date().toISOString(),
+    total: PAGES.length,
+    upgraded: Object.values(results).filter(r => r.status === 'upgraded').length,
+    pending: Object.values(results).filter(r => r.status === 'pending').length,
+    error: Object.values(results).filter(r => r.status === 'error').length,
+    pages: PAGES.map(p => ({ page: p, ...(results[p] || {}) })),
+  };
+  const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `slh-upgrade-report-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+}
+
+// Auto-scan on load
+scanAll();
+</script>
+</body>
+</html>
