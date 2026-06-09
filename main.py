@@ -147,6 +147,12 @@ _blog_path = _os.path.join(_os.path.dirname(__file__), "blog")
 if _os.path.exists(_blog_path):
     app.mount("/blog", StaticFiles(directory=_blog_path, html=True), name="blog")
 
+
+# Static files - main site
+import os as _os2
+_public_path = _os2.path.join(_os2.path.dirname(os.path.abspath(__file__)), "public")
+if _os2.path.exists(_public_path):
+    app.mount("/", StaticFiles(directory=_public_path, html=True), name="public")
 # ==================== ALL EXISTING ROUTERS (from your current main.py) ====================
 
 # (?????? ?? ?? ?-imports ??-include_router ??? ??? ??? - ?? ?????? ?? ?????? ????)
