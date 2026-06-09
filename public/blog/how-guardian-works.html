@@ -1,0 +1,122 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl" data-theme="neural">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guardian: מערכת האנטי-הונאה שמגנה על הקהילה | SLH Spark Blog</title>
+  <meta name="description" content="איך עובדת מערכת Guardian של SLH Spark? ZUZ marking, banhammer אוטומטי, OFAC screening.">
+  <meta name="keywords" content="Guardian, anti-fraud, ZUZ, SLH Spark, אנטי-הונאה, טלגרם">
+  <meta property="og:title" content="Guardian: מערכת האנטי-הונאה של SLH Spark">
+  <meta property="og:image" content="https://slh-nft.com/assets/og/default.png">
+  <meta property="og:url" content="https://slh-nft.com/blog/how-guardian-works.html">
+  <link rel="canonical" href="https://slh-nft.com/blog/how-guardian-works.html">
+  <link rel="icon" href="/favicon-32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/shared.css?v=20260427b">
+  <link rel="stylesheet" href="/css/slh-neural.css?v=20260427b">
+  <style>
+    .blog-hero{padding:120px 24px 60px;max-width:800px;margin:0 auto}
+    .blog-meta{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:24px;font-size:.9rem;color:var(--text3)}
+    .blog-meta .tag{background:rgba(239,68,68,.12);color:#f87171;padding:3px 10px;border-radius:99px;font-size:.8rem;font-weight:600}
+    .blog-content{max-width:800px;margin:0 auto;padding:0 24px 80px;line-height:1.8;font-size:1.05rem}
+    .blog-content h2{font-size:1.5rem;margin:48px 0 16px;border-bottom:1px solid var(--border);padding-bottom:12px}
+    .blog-content h3{font-size:1.15rem;margin:32px 0 12px;color:#f87171}
+    .blog-content p{margin:0 0 18px;color:var(--text2)}
+    .blog-content ul{margin:0 0 18px;padding-right:24px;color:var(--text2)}
+    .blog-content li{margin-bottom:8px}
+    .callout{padding:20px 24px;border-radius:12px;margin:28px 0}
+    .callout-warning{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.3)}
+    .callout-info{background:rgba(94,214,255,.06);border:1px solid rgba(94,214,255,.25)}
+    .callout-danger{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25)}
+    .zuz-bar-wrap{display:flex;gap:8px;align-items:center;margin:16px 0;font-family:'JetBrains Mono',monospace}
+    .zuz-bar{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden}
+    .zuz-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#22c55e,#f59e0b,#ef4444)}
+    .share-section{margin-top:60px;padding-top:32px;border-top:1px solid var(--border);text-align:center}
+  </style>
+</head>
+<body>
+  <div class="neural-bg" aria-hidden="true"></div>
+  <div id="topnav-root" data-page="blog"></div>
+  <article>
+    <div class="blog-hero">
+      <div class="blog-meta">
+        <span class="tag"><i class="fas fa-shield-virus"></i> Guardian</span>
+        <span><i class="fas fa-calendar" style="margin-left:4px"></i> יוני 2026</span>
+        <span><i class="fas fa-clock" style="margin-left:4px"></i> 7 דקות קריאה</span>
+        <span><i class="fas fa-user" style="margin-left:4px"></i> Osif Kaufman Ungar</span>
+      </div>
+      <h1 style="font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;line-height:1.2;margin:0 0 20px">
+        Guardian: מערכת האנטי-הונאה<br>
+        <span style="color:#f87171">שמגנה על הקהילה שלנו</span>
+      </h1>
+      <p style="font-size:1.15rem;color:var(--text2);line-height:1.7;margin:0">
+        הפרויקט SLH נולד מתוך כאב אישי — אחרי שהפסדתי 250K בהונאת ZOOZ.
+        לכן Guardian לא הוא תוספת — הוא הלב של הפרויקט. הנה איך הוא עובד.
+      </p>
+    </div>
+    <div class="blog-content">
+      <div class="callout callout-info">
+        <strong style="color:#5ed6ff"><i class="fas fa-circle-info"></i> TL;DR</strong><br>
+        Guardian הוא בוט טלגרם + מערכת backend שמזהה פעילות חשודה, מסמנת עם ZUZ, וחוסמת אוטומטית ב-100 ZUZ. הכל שקוף וניתן לבדיקה.
+      </div>
+      <h2>למה בכלל צריך Guardian?</h2>
+      <p>עולם הקריפטו מלא בהונאות — rug pulls, pump &amp; dump, fake support. הפתרון שלנו: <strong>מערכת ניקוד מבוזרת</strong> שאף אדם לא שולט בה לבד.</p>
+      <h2>מטבע ZUZ — "סימן קין" הדיגיטלי</h2>
+      <p>ZUZ הוא המטבע היחיד שאף אחד לא רוצה לקבל. כל ZUZ = אזהרה על התנהגות חשודה.</p>
+      <div class="zuz-bar-wrap">
+        <span style="font-size:.85rem;color:var(--text3);min-width:40px">0</span>
+        <div class="zuz-bar"><div class="zuz-fill" style="width:100%"></div></div>
+        <span style="font-size:.85rem;color:#ef4444;min-width:50px">100 🔴</span>
+      </div>
+      <ul>
+        <li><strong>030 ZUZ:</strong> ניטור בלבד</li>
+        <li><strong>3169 ZUZ:</strong> אזהרה למשתמש</li>
+        <li><strong>7099 ZUZ:</strong> מגבלות על פעולות</li>
+        <li><strong style="color:#ef4444">100+ ZUZ:</strong> חסימה אוטומטית מלאה</li>
+      </ul>
+      <h2>מה מפעיל ZUZ marking?</h2>
+      <h3>1. דיווחי קהילה</h3>
+      <p>3 דיווחים עצמאיים = +10 ZUZ אוטומטי. דיווח כוזב = עונש על המדווח.</p>
+      <h3>2. זיהוי אוטומטי</h3>
+      <p>האלגוריתם מנטר: DMs המוניים, בקשות seed phrase, ניסיונות phishing.</p>
+      <h3>3. OFAC Screening</h3>
+      <p>כל ארנק עובר סינון מול Chainabuse + רשימות OFAC. ארנק חשוד = ZUZ מיידי.</p>
+      <h3>4. On-chain Activity</h3>
+      <p>קשר לארנקים ידועים כהונאה מטריגר סריקה דרך BSCScan API + Chainabuse API.</p>
+      <div class="callout callout-warning">
+        <strong style="color:#fbbf24"><i class="fas fa-shield-halved"></i> חשוב לדעת</strong><br>
+        Guardian לא מחליף בית משפט. כל חסימה ניתנת לערעור. שקיפות מלאה — כל ZUZ event מתועד.
+      </div>
+      <h2>הבוט @Grdian_bot</h2>
+      <ul>
+        <li>דיווח על משתמש חשוד</li>
+        <li>בדיקת ציון ZUZ של ארנק</li>
+        <li>ערעור על חסימה</li>
+        <li>לוג ZUZ אישי</li>
+      </ul>
+      <div class="callout callout-danger">
+        <strong style="color:#f87171"><i class="fas fa-triangle-exclamation"></i> מה Guardian לא עושה</strong><br>
+        Guardian לא גונב כסף, לא פועל on-chain על הארנק שלך, ולא שולח DMs יזומים.
+        DM מ"Guardian Support" = scammer.
+      </div>
+      <h2>שקיפות מלאה</h2>
+      <p>כל event מתועד ב-DB הפומבי. בדוק בעצמך: <a href="/guardian-diag.html" style="color:var(--accent)">/guardian-diag.html</a></p>
+      <h2>סיכום</h2>
+      <p>Guardian הוא ה-reason for existence של SLH. הפרויקט נבנה אחרי הונאה אישית, וכל שורת קוד נכתבה כדי שאף אחד בקהילה לא יעבור את מה שעברתי.</p>
+      <div class="share-section">
+        <p style="color:var(--text2);margin-bottom:16px">שתפו את הפוסט:</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <a href="https://t.me/share/url?url=https://slh-nft.com/blog/how-guardian-works.html" target="_blank" class="neural-btn neural-btn-ghost" style="font-size:.9rem"><i class="fab fa-telegram"></i> שתף בטלגרם</a>
+          <a href="/blog.html" class="neural-btn neural-btn-ghost" style="font-size:.9rem"><i class="fas fa-arrow-right"></i> כל הפוסטים</a>
+          <a href="/guardian-diag.html" class="neural-btn neural-btn-ghost" style="font-size:.9rem"><i class="fas fa-shield-virus"></i> Guardian Diagnostics</a>
+        </div>
+      </div>
+    </div>
+  </article>
+  <div id="footer-root"></div>
+  <script src="/js/translations.js?v=20260428"></script>
+  <script src="/js/shared.js?v=20260428"></script>
+</body>
+</html>
