@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 SLH Ecosystem API - FastAPI Backend
 Deployed on Railway | Connected to PostgreSQL
