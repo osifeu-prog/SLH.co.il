@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 import requests
 import time
 import statistics
@@ -38,6 +38,8 @@ if __name__ == "__main__":
         print(f"  ??????: ${t['liquidity_usd']:,.0f}")
         print(f"  ??? 24h: ${t['volume_usd_24h']:,.0f}")
         print("-" * 40)
+
+
 
 
 

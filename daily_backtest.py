@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 import pandas as pd
 import numpy as np
 import requests
@@ -66,6 +66,8 @@ if __name__ == '__main__':
     df.to_csv(filename, index=False)
     print(f"\nSaved {len(tokens)} tokens to {filename}")
     print("Run this script again tomorrow to calculate actual PnL.")
+
+
 
 
 

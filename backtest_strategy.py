@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 import backtrader as bt
 import pandas as pd
 from datetime import datetime
@@ -32,7 +32,7 @@ def load_data_from_csv(filename='tokens_history.csv'):
     try:
         df = pd.read_csv(filename)
         # ???? ??? ??????: date, close, open, high, low, volume
-        # ?? ??? ן¿½ ????? ?????? ??????
+        # ?? ??? ×ŸÂ¿Â½ ????? ?????? ??????
         if 'date' not in df.columns:
             df['date'] = pd.date_range(start='2024-01-01', periods=len(df))
         df = df[['date', 'open', 'high', 'low', 'close', 'volume']]
@@ -70,5 +70,7 @@ if __name__ == '__main__':
     cerebro.run()
     print('Final Portfolio Value: %.2f' % cerebro.broker.getvalue())
     cerebro.plot()
+
+
 
 

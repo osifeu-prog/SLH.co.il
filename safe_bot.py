@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 import os, asyncio, logging
 log = logging.getLogger("safe_bot_launcher")
 
@@ -14,6 +14,8 @@ def launch_safely(name, token_var, build_func):
         log.info(f"{name} started successfully")
     except Exception as e:
         log.error(f"Failed to start {name}: {e}")
+
+
 
 
 

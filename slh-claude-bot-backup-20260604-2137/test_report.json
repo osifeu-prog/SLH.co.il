@@ -1,0 +1,128 @@
+{
+  "timestamp": "2026-05-31 13:23:31.620664",
+  "total": 30,
+  "passed": 0,
+  "failed": 30,
+  "details": [
+    {
+      "command": "/start",
+      "ok": false
+    },
+    {
+      "command": "/help",
+      "ok": false
+    },
+    {
+      "command": "/register",
+      "ok": false
+    },
+    {
+      "command": "/upgrade",
+      "ok": false
+    },
+    {
+      "command": "/donate",
+      "ok": false
+    },
+    {
+      "command": "/checkin",
+      "ok": false
+    },
+    {
+      "command": "/points",
+      "ok": false
+    },
+    {
+      "command": "/status",
+      "ok": false
+    },
+    {
+      "command": "/dashboard",
+      "ok": false
+    },
+    {
+      "command": "/stats",
+      "ok": false
+    },
+    {
+      "command": "/crm",
+      "ok": false
+    },
+    {
+      "command": "/events",
+      "ok": false
+    },
+    {
+      "command": "/segments",
+      "ok": false
+    },
+    {
+      "command": "/crypto",
+      "ok": false
+    },
+    {
+      "command": "/tap",
+      "ok": false
+    },
+    {
+      "command": "/wallet",
+      "ok": false
+    },
+    {
+      "command": "/deposit",
+      "ok": false
+    },
+    {
+      "command": "/profile",
+      "ok": false
+    },
+    {
+      "command": "/myid",
+      "ok": false
+    },
+    {
+      "command": "/leaderboard",
+      "ok": false
+    },
+    {
+      "command": "/referral",
+      "ok": false
+    },
+    {
+      "command": "/tasks",
+      "ok": false
+    },
+    {
+      "command": "/daily",
+      "ok": false
+    },
+    {
+      "command": "/roadmap",
+      "ok": false
+    },
+    {
+      "command": "/backup",
+      "ok": false
+    },
+    {
+      "command": "/admin",
+      "ok": false
+    },
+    {
+      "command": "/users",
+      "ok": false
+    },
+    {
+      "command": "/morning",
+      "ok": false
+    },
+    {
+      "command": "/doctor",
+      "ok": false
+    },
+    {
+      "command": "/statusapi",
+      "ok": false
+    }
+  ]
+}

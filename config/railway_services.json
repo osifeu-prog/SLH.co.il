@@ -1,5 +1,5 @@
-{
-  "_doc": "Maps env_var → Railway destination + tier. Populate IDs via scripts/railway_resolve_ids.py before first rotation. Schema: env_var → {project (label), service (label), environment (label), project_id, service_id, environment_id, tier, non_bot? (true for non-bot secrets)}.",
+﻿{
+  "_doc": "Maps env_var â†’ Railway destination + tier. Populate IDs via scripts/railway_resolve_ids.py before first rotation. Schema: env_var â†’ {project (label), service (label), environment (label), project_id, service_id, environment_id, tier, non_bot? (true for non-bot secrets)}.",
   "_tiers": {
     "critical": "ADMIN_API_KEYS, DATABASE_URL, ANTHROPIC_API_KEY, payment-bot tokens. 60s confirm window + broadcast to all admins.",
     "high": "Money-touching bot tokens (Wallet, BotShop, Spark, Admin). Immediate execute + broadcast.",
@@ -9,7 +9,7 @@
   "version": 1,
   "graphql_endpoint": "https://backboard.railway.app/graphql/v2",
   "services": {
-    "_BOT_TOKENS_": "─── Bot tokens (rotate via @BotFather → pipeline) ───",
+    "_BOT_TOKENS_": "â”€â”€â”€ Bot tokens (rotate via @BotFather â†’ pipeline) â”€â”€â”€",
 
     "SLH_CLAUDE_BOT_TOKEN":   {"project": "slh-api", "service": "slh-claude-bot",     "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "critical", "handle": "@SLH_Claude_bot"},
     "ACADEMIA_BOT_TOKEN":     {"project": "slh-api", "service": "slh-academia-bot",   "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "critical", "handle": "@WEWORK_teamviwer_bot"},
@@ -46,13 +46,15 @@
     "USERINFO_BOT_TOKEN":     {"project": "slh-api", "service": "slh-userinfo",       "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "low",      "handle": "@SLH_UserInfo_bot"},
     "TEST_BOT_TOKEN":         {"project": "slh-api", "service": "slh-test-bot",       "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "low",      "handle": "@SLH_Test_bot"},
 
-    "_NON_BOT_SECRETS_": "─── Non-bot critical secrets (also rotatable via pipeline) ───",
+    "_NON_BOT_SECRETS_": "â”€â”€â”€ Non-bot critical secrets (also rotatable via pipeline) â”€â”€â”€",
 
     "ADMIN_API_KEYS":         {"project": "slh-api", "service": "slh-api",            "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "critical", "non_bot": true},
     "ADMIN_BROADCAST_KEY":    {"project": "slh-api", "service": "slh-api",            "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "critical", "non_bot": true},
-    "DATABASE_URL":           {"project": "slh-api", "service": "slh-api",            "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "critical", "non_bot": true, "_warn": "rotating DB URL requires coordinated DB credential change — use Railway dashboard for now"},
+    "DATABASE_URL":           {"project": "slh-api", "service": "slh-api",            "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "critical", "non_bot": true, "_warn": "rotating DB URL requires coordinated DB credential change â€” use Railway dashboard for now"},
     "ANTHROPIC_API_KEY":      {"project": "slh-api", "service": "slh-claude-bot",     "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "critical", "non_bot": true},
     "JWT_SECRET":             {"project": "slh-api", "service": "slh-api",            "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "critical", "non_bot": true},
-    "RAILWAY_API_TOKEN":      {"project": "slh-api", "service": "slh-api",            "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "critical", "non_bot": true, "_warn": "rotating the rotation token itself — push manually via Railway dashboard, not via pipeline (chicken-and-egg)"}
+    "RAILWAY_API_TOKEN":      {"project": "slh-api", "service": "slh-api",            "environment": "production", "project_id": "", "service_id": "", "environment_id": "", "tier": "critical", "non_bot": true, "_warn": "rotating the rotation token itself â€” push manually via Railway dashboard, not via pipeline (chicken-and-egg)"}
   }
 }
+
+

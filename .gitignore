@@ -87,3 +87,37 @@ esp/include/
 esp/test/
 # Keep esp/src/ since that's actual firmware code
 
+
+# Not part of the website - exclude from tracking
+backups/
+airdrop/
+factory/
+school/
+wallet/
+expertnet/
+expertnet-bot/
+admin-bot/
+academia-bot/
+campaign-bot/
+match-bot/
+nfty-bot/
+userinfo-bot/
+wellness-bot/
+g4mebot/
+fun/
+promo/
+osif-shop/
+tonmnh-bot/
+slh-genesis/
+site/
+routes/
+routes_backup/
+archive/
+ops/
+scripts/
+shared/
+device-registry/
+api/
+slh-claude-bot/
+*.zip
+*.sql

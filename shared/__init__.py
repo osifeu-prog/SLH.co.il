@@ -1,2 +1,0 @@
-# SLH Ecosystem — shared package
-

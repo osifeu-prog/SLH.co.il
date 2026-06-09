@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 import pandas as pd
 import requests
 import time
@@ -58,6 +58,8 @@ if results:
     print(f"Risk/Reward Ratio: {rr_ratio:.2f}")
     print(f"Total PnL: {total_pnl:.1%}")
     print(f"Expectancy per trade: {total_pnl/len(results):.2%}")
+
+
 
 
 

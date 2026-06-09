@@ -1,0 +1,11 @@
+﻿.env
+*.bak
+*.backup*
+bot.py.*_backup
+bot.py.before_*
+bot.py.ascii_backup
+bot.py.final_*
+bot.py.morning_*
+bot.py.groovy_*
+services/*.bak*
+requirements-snapshot.txt

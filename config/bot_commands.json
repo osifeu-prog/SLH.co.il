@@ -1,67 +1,69 @@
-{
+﻿{
   "_doc": "Per-bot Telegram setMyCommands registry. Pushed automatically after every successful rotation via routes/rotation_pipeline.py. Each bot gets `default` + its `per_bot[handle]` extras. Hebrew descriptions OK (Telegram supports UTF-8). Max 100 commands per bot, max 256 chars per description.",
   "version": 1,
   "default": [
-    {"command": "start", "description": "התחל / Start"},
-    {"command": "help",  "description": "עזרה / Help"},
-    {"command": "menu",  "description": "תפריט / Menu"}
+    {"command": "start", "description": "×”×ª×—×œ / Start"},
+    {"command": "help",  "description": "×¢×–×¨×” / Help"},
+    {"command": "menu",  "description": "×ª×¤×¨×™×˜ / Menu"}
   ],
   "per_bot": {
     "@SLH_Claude_bot": [
-      {"command": "admin",          "description": "פאנל אדמין מלא"},
-      {"command": "railway_status", "description": "מצב Railway"},
-      {"command": "railway_logs",   "description": "לוגים של שירות"},
-      {"command": "railway_vars",   "description": "רשימת משתני סביבה"},
-      {"command": "revenue",        "description": "הכנסות 30 יום"},
-      {"command": "anthropic_status", "description": "מצב Anthropic API"}
+      {"command": "admin",          "description": "×¤×× ×œ ××“×ž×™×Ÿ ×ž×œ×"},
+      {"command": "railway_status", "description": "×ž×¦×‘ Railway"},
+      {"command": "railway_logs",   "description": "×œ×•×’×™× ×©×œ ×©×™×¨×•×ª"},
+      {"command": "railway_vars",   "description": "×¨×©×™×ž×ª ×ž×©×ª× ×™ ×¡×‘×™×‘×”"},
+      {"command": "revenue",        "description": "×”×›× ×¡×•×ª 30 ×™×•×"},
+      {"command": "anthropic_status", "description": "×ž×¦×‘ Anthropic API"}
     ],
     "@WEWORK_teamviwer_bot": [
-      {"command": "vip",       "description": "הצטרף ל-VIP"},
-      {"command": "courses",   "description": "קורסים זמינים"},
-      {"command": "approve",   "description": "אישור תשלום"}
+      {"command": "vip",       "description": "×”×¦×˜×¨×£ ×œ-VIP"},
+      {"command": "courses",   "description": "×§×•×¨×¡×™× ×–×ž×™× ×™×"},
+      {"command": "approve",   "description": "××™×©×•×¨ ×ª×©×œ×•×"}
     ],
     "@SLH_Spark_bot": [
-      {"command": "wallet",   "description": "ארנק SLH"},
+      {"command": "wallet",   "description": "××¨× ×§ SLH"},
       {"command": "stake",    "description": "Staking + Dynamic Yield"},
       {"command": "courses",  "description": "Academia"},
-      {"command": "earn",     "description": "ZVK + רווחים"}
+      {"command": "earn",     "description": "ZVK + ×¨×•×•×—×™×"}
     ],
     "@SLH_Wallet_bot": [
-      {"command": "balance",  "description": "יתרה נוכחית"},
-      {"command": "deposit",  "description": "הפקדה"},
-      {"command": "withdraw", "description": "משיכה"},
-      {"command": "history",  "description": "היסטוריית טרנזקציות"}
+      {"command": "balance",  "description": "×™×ª×¨×” × ×•×›×—×™×ª"},
+      {"command": "deposit",  "description": "×”×¤×§×“×”"},
+      {"command": "withdraw", "description": "×ž×©×™×›×”"},
+      {"command": "history",  "description": "×”×™×¡×˜×•×¨×™×™×ª ×˜×¨× ×–×§×¦×™×•×ª"}
     ],
     "@SLH_Admin_bot": [
-      {"command": "broadcast", "description": "ברודקאסט הודעה"},
-      {"command": "airdrop",   "description": "Airdrop טוקנים"},
-      {"command": "gift",      "description": "מתנה למשתמש"},
-      {"command": "users",     "description": "ניהול משתמשים"},
-      {"command": "payments",  "description": "ניהול תשלומים"}
+      {"command": "broadcast", "description": "×‘×¨×•×“×§××¡×˜ ×”×•×“×¢×”"},
+      {"command": "airdrop",   "description": "Airdrop ×˜×•×§× ×™×"},
+      {"command": "gift",      "description": "×ž×ª× ×” ×œ×ž×©×ª×ž×©"},
+      {"command": "users",     "description": "× ×™×”×•×œ ×ž×©×ª×ž×©×™×"},
+      {"command": "payments",  "description": "× ×™×”×•×œ ×ª×©×œ×•×ž×™×"}
     ],
     "@SLH_BotShop_bot": [
-      {"command": "shop",     "description": "BotShop — קטלוג"},
-      {"command": "orders",   "description": "ההזמנות שלי"}
+      {"command": "shop",     "description": "BotShop â€” ×§×˜×œ×•×’"},
+      {"command": "orders",   "description": "×”×”×–×ž× ×•×ª ×©×œ×™"}
     ],
     "@Grdian_bot": [
-      {"command": "scan",     "description": "סריקת חשבון"},
-      {"command": "report",   "description": "דווח על משתמש חשוד"}
+      {"command": "scan",     "description": "×¡×¨×™×§×ª ×—×©×‘×•×Ÿ"},
+      {"command": "report",   "description": "×“×•×•×— ×¢×œ ×ž×©×ª×ž×© ×—×©×•×“"}
     ],
     "@SLH_Airdrop_bot": [
       {"command": "claim",    "description": "Claim airdrop"},
-      {"command": "status",   "description": "מצב airdrop"}
+      {"command": "status",   "description": "×ž×¦×‘ airdrop"}
     ],
     "@SLH_Campaign_bot": [
-      {"command": "join",     "description": "הצטרפות לקמפיין"},
-      {"command": "refer",    "description": "קישור הפנייה"}
+      {"command": "join",     "description": "×”×¦×˜×¨×¤×•×ª ×œ×§×ž×¤×™×™×Ÿ"},
+      {"command": "refer",    "description": "×§×™×©×•×¨ ×”×¤× ×™×™×”"}
     ],
     "@SLH_Test_bot": [
       {"command": "ping",     "description": "Test ping"},
       {"command": "echo",     "description": "Echo back"}
     ],
     "@G4meb0t_bot": [
-      {"command": "match",    "description": "התאמת זוגיות"},
-      {"command": "profile",  "description": "פרופיל אישי"}
+      {"command": "match",    "description": "×”×ª××ž×ª ×–×•×’×™×•×ª"},
+      {"command": "profile",  "description": "×¤×¨×•×¤×™×œ ××™×©×™"}
     ]
   }
 }
+
+

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 # ============================================================
 # SLH Spark - Project Status API Endpoints
 # Provides real-time data for project-map dashboard
@@ -380,6 +380,8 @@ async def mark_task_complete(task_id: str, notes: Optional[str] = None):
 # from .routes import project
 # app = FastAPI()
 # app.include_router(project.router)
+
+
 
 
 

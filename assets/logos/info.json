@@ -1,4 +1,4 @@
-{
+﻿{
     "name": "SLH Spark",
     "symbol": "SLH",
     "type": "BEP20",
@@ -27,3 +27,5 @@
         }
     ]
 }
+
+

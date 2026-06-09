@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 import pandas as pd
 import numpy as np
 import requests
@@ -137,6 +137,8 @@ if __name__ == '__main__':
         print(f"Expectancy per trade: {stats['expectancy']:.2%}")
     else:
         print("No trades triggered. Try lowering thresholds.")
+
+
 
 
 

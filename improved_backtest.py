@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 import pandas as pd
 import numpy as np
 
@@ -45,5 +45,7 @@ if results:
     print(f"Expectancy per trade: {np.mean(results):.2%}")
 else:
     print("No trades after filtering.")
+
+
 
 

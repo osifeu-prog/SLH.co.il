@@ -1,0 +1,41 @@
+version: v4
+system: SLH Spark Ecosystem
+mode: production_blueprint
+
+domains:
+
+  users:
+    service: slh-users-service
+    db: users_db
+    endpoints:
+      - GET /api/users
+      - POST /api/users/register
+      - GET /api/users/{id}
+      - PUT /api/users/{id}
+      - DELETE /api/users/{id}
+
+  wallet:
+    service: slh-wallet-service
+    db: wallet_db
+    endpoints:
+      - GET /api/wallet/balance
+      - POST /api/wallet/transfer
+      - GET /api/wallet/history
+      - POST /api/wallet/deposit
+      - POST /api/wallet/withdraw
+
+  payments:
+    service: slh-payments-service
+    db: payments_db
+    endpoints:
+      - POST /api/payments/create
+      - POST /api/payments/confirm
+      - GET /api/payments/status
+      - GET /api/payments/history
+
+  roi:
+    service: slh-roi-service
+    db: roi_db
+    endpoints:
+      - GET /api/roi/calc
+      - GET /api/roi

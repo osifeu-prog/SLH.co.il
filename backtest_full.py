@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 import requests
 import time
 import statistics
@@ -69,5 +69,7 @@ if __name__ == '__main__':
         print(f"????? ???: ${statistics.stdev(prices):.6f}")
     else:
         print("??? ????? ???? ?????.")
+
+
 
 

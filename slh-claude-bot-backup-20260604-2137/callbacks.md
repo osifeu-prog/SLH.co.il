@@ -1,0 +1,15 @@
+﻿checkin
+crypto
+dashboard
+help
+humanity_path
+innovation_path
+oracle
+oracle_ask
+oracle_mission
+oracle_predict
+oracle_scan
+peace_path
+status
+upgrade
+wallet

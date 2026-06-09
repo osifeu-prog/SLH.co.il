@@ -1,0 +1,189 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>הארנק הכשר  הזדמנות השקעה | SLH Spark</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: linear-gradient(145deg, #0a0f1c 0%, #030617 100%); font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: #e2e8f0; line-height: 1.5; direction: rtl; }
+        .container { max-width: 1300px; margin: 0 auto; padding: 20px; }
+        /* header */
+        .header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; padding: 15px 0; border-bottom: 1px solid rgba(56,189,248,0.2); margin-bottom: 30px; }
+        .logo { display: flex; align-items: center; gap: 10px; font-size: 24px; font-weight: 800; background: linear-gradient(135deg, #fff, #38bdf8); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .nav { display: flex; gap: 20px; }
+        .nav a { color: #cbd5e1; text-decoration: none; font-weight: 500; transition: 0.2s; }
+        .nav a:hover { color: #38bdf8; }
+        /* hero */
+        .hero { display: flex; flex-wrap: wrap; gap: 40px; margin-bottom: 60px; align-items: center; }
+        .hero-text { flex: 1.5; }
+        .hero-title { font-size: 42px; font-weight: 800; background: linear-gradient(135deg, #ffffff, #94a3b8); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 20px; line-height: 1.2; }
+        .hero-sub { font-size: 18px; color: #cbd5e1; margin-bottom: 20px; }
+        .hero-badge { display: inline-block; background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3); border-radius: 40px; padding: 5px 15px; font-size: 13px; color: #4ade80; margin-bottom: 20px; }
+        .price-box { margin: 20px 0; display: flex; align-items: baseline; gap: 15px; flex-wrap: wrap; }
+        .price-old { font-size: 18px; color: #94a3b8; text-decoration: line-through; }
+        .price-new { font-size: 32px; font-weight: 800; color: #22c55e; }
+        .timer { display: flex; gap: 15px; margin: 20px 0; }
+        .timer-box { background: #0f172a; border: 1px solid #334155; border-radius: 16px; padding: 8px 16px; text-align: center; }
+        .timer-number { font-size: 28px; font-weight: 700; color: #38bdf8; }
+        .timer-label { font-size: 12px; color: #94a3b8; }
+        .btn { display: inline-block; background: linear-gradient(90deg, #22c55e, #16a34a); color: #022c22; padding: 12px 28px; border-radius: 40px; font-weight: 700; text-decoration: none; transition: 0.2s; margin-top: 10px; border: none; cursor: pointer; }
+        .btn-outline { background: transparent; border: 1px solid #38bdf8; color: #38bdf8; }
+        .hero-card { flex: 1; background: rgba(15,23,42,0.6); backdrop-filter: blur(10px); border-radius: 28px; padding: 24px; border: 1px solid #1e293b; }
+        .hero-card li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #1e293b; list-style: none; }
+        /* sections */
+        .section { margin-bottom: 60px; }
+        .section-title { font-size: 28px; font-weight: 700; margin-bottom: 15px; background: linear-gradient(135deg, #f1f5f9, #94a3b8); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .section-sub { color: #94a3b8; margin-bottom: 30px; max-width: 700px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+        .card { background: #0f172a; border-radius: 24px; padding: 24px; border: 1px solid #1e293b; transition: 0.2s; }
+        .card:hover { border-color: #38bdf8; transform: translateY(-4px); }
+        .card-title { font-size: 20px; font-weight: 700; margin-bottom: 12px; color: #f1f5f9; }
+        .card-price { font-size: 14px; color: #94a3b8; margin-bottom: 8px; }
+        .card-desc { font-size: 14px; color: #cbd5e1; margin-bottom: 20px; }
+        .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; background: #0f172a; border-radius: 28px; padding: 24px; border: 1px solid #1e293b; }
+        @media (max-width: 800px) { .calc-grid { grid-template-columns: 1fr; } }
+        .calc-group { margin-bottom: 18px; }
+        .calc-group label { display: block; margin-bottom: 6px; font-weight: 500; }
+        .calc-group input { width: 100%; padding: 10px; border-radius: 12px; border: 1px solid #334155; background: #020617; color: #f1f5f9; font-size: 16px; direction: ltr; text-align: left; }
+        .calc-result { background: #0a0f1c; border-radius: 20px; padding: 20px; }
+        .calc-result p { margin: 10px 0; font-size: 18px; font-weight: 500; }
+        .contact-card { background: #0f172a; border-radius: 24px; padding: 24px; text-align: center; }
+        .contact-link { display: inline-flex; gap: 12px; align-items: center; justify-content: center; margin: 10px; }
+        footer { text-align: center; padding: 40px 0 20px; border-top: 1px solid #1e293b; margin-top: 40px; font-size: 12px; color: #64748b; }
+        @media (max-width: 768px) { .hero-title { font-size: 32px; } .nav { display: none; } }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="header">
+        <div class="logo">⚡ הארנק הכשר</div>
+        <div class="nav">
+            <a href="#">בית</a>
+            <a href="#plans">מסלולים</a>
+            <a href="#calc">מחשבון</a>
+            <a href="#contact">צור קשר</a>
+        </div>
+    </div>
+
+    <div class="hero">
+        <div class="hero-text">
+            <div class="hero-badge">🔹 סבב אלפא  שלב ראשון</div>
+            <div class="hero-title">הארנק הכשר הראשון<br>הזדמנות השקעה ייחודית</div>
+            <div class="hero-sub">מכשיר ESP ייעודי, מאושר הלכתית, לניהול השקעות קריפטו מבלי להיחשף לאינטרנט הפתוח.</div>
+            <div class="price-box">
+                <span class="price-old">1,776</span>
+                <span class="price-new">888</span>
+                <span>למשקיעי סבב אלפא</span>
+            </div>
+            <div class="timer">
+                <div class="timer-box"><div class="timer-number" id="days">07</div><div class="timer-label">ימים</div></div>
+                <div class="timer-box"><div class="timer-number" id="hours">00</div><div class="timer-label">שעות</div></div>
+                <div class="timer-box"><div class="timer-number" id="minutes">00</div><div class="timer-label">דקות</div></div>
+            </div>
+            <a href="#contact" class="btn">🎯 הצטרף לסבב אלפא</a>
+        </div>
+        <div class="hero-card">
+            <h3 style="margin-bottom: 16px;">📊 סטטוס הפרויקט</h3>
+            <ul>
+                <li><span>פיתוח חומרה (ESP32 + TFT)</span><span>✅ הושלם</span></li>
+                <li><span>חיבור מאובטח לרשתות חינמיות</span><span>✅ פעיל</span></li>
+                <li><span>קהילת אלפא</span><span>✅ 80+ חברים</span></li>
+                <li><span>מרכזיית השקעות כשרה</span><span>⏳ 80%</span></li>
+                <li><span>הרחבת שוק</span><span>📅 Q3 2026</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section" id="plans">
+        <div class="section-title">📈 מסלולי השקעה</div>
+        <div class="section-sub">בחר את המסלול שמתאים לאסטרטגיה שלך  מכניסה ראשונית ועד שותפות אסטרטגית.</div>
+        <div class="grid-3">
+            <div class="card"><div class="card-title">מיקרו-השקעה</div><div class="card-price">1,000  10,000</div><div class="card-desc">חוזים עתידיים על מכירות  תשואה צפויה 8-12% לשנה, תשלום קבוע על כל מכשיר.</div><a href="#contact" class="btn-outline" style="padding:6px 12px;">סגירת מעגל</a></div>
+            <div class="card"><div class="card-title">משקיע בינוני</div><div class="card-price">10,000  80,000</div><div class="card-desc">שותפות ברווחים  אחוז מהרווחים נטו של החברה, דיווח רבעוני.</div><a href="#contact" class="btn-outline" style="padding:6px 12px;">פרטים נוספים</a></div>
+            <div class="card"><div class="card-title">משקיע אסטרטגי</div><div class="card-price">80,000  500,000</div><div class="card-desc">מניות בחברה + מושב בדירקטוריון מייעץ.</div><a href="#contact" class="btn-outline" style="padding:6px 12px;">קבע שיחה</a></div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">📊 תרחישי רווח (להמחשה)</div>
+        <div class="grid-3">
+            <div class="card"><div class="card-title">📉 שמרני</div><div class="card-desc">5,000 משתמשים × 10  × 12 חודשים ≈ 600,000</div></div>
+            <div class="card"><div class="card-title">📊 בינוני</div><div class="card-desc">20,000 משתמשים × 15  × 12 חודשים ≈ 3.6M</div></div>
+            <div class="card"><div class="card-title">📈 אגרסיבי</div><div class="card-desc">50,000 משתמשים × 20  × 12 חודשים ≈ 12M</div></div>
+        </div>
+    </div>
+
+    <div class="section" id="calc">
+        <div class="section-title">🧮 מחשבון החזר השקעה אישי</div>
+        <div class="calc-grid">
+            <div>
+                <div class="calc-group"><label>👥 משתמשים פעילים צפוי</label><input type="number" id="users" value="20000" step="1000"></div>
+                <div class="calc-group"><label>💰 רווח נקי חודשי למשתמש ()</label><input type="number" id="profit" value="15" step="1"></div>
+                <div class="calc-group"><label>📊 אחוז מהרווחים למשקיעים (%)</label><input type="number" id="share" value="10" step="1"></div>
+                <div class="calc-group"><label>💵 סכום ההשקעה שלך ()</label><input type="number" id="investment" value="50000" step="1000"></div>
+                <button class="btn" style="margin-top:10px;" onclick="calculateROI()">חשב החזר</button>
+            </div>
+            <div class="calc-result" id="calcResult">
+                <p>📈 רווח שנתי כולל: <span id="totalProfit"></span> </p>
+                <p>🔹 חלק המשקיעים: <span id="investorProfit"></span> </p>
+                <p>⏱️ תשואה על ההשקעה (ROI): <span id="roi"></span>%</p>
+                <p>📅 חודשים להחזר: <span id="months"></span></p>
+                <small>* החישוב להמחשה בלבד, אינו התחייבות.</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="section" id="contact">
+        <div class="section-title">📞 יצירת קשר</div>
+        <div class="contact-card">
+            <div class="contact-link">📧 <a href="mailto:osif@slh-nft.com" style="color:#38bdf8;">osif@slh-nft.com</a></div>
+            <div class="contact-link">📱 <a href="https://t.me/OsifUngar" style="color:#38bdf8;">@OsifUngar</a></div>
+            <div class="contact-link">🌐 <a href="https://slh-nft.com" style="color:#38bdf8;">slh-nft.com</a></div>
+        </div>
+    </div>
+
+    <footer>
+        © הארנק הכשר  דף משקיעים | SLH Spark<br>
+        ⚠️ גילוי סיכון: השקעה בהייטק ובקריפטו כרוכה בסיכון. אין הבטחת תשואה.
+    </footer>
+</div>
+
+<script>
+    function calculateROI() {
+        const users = parseFloat(document.getElementById('users').value) || 0;
+        const profit = parseFloat(document.getElementById('profit').value) || 0;
+        const sharePercent = parseFloat(document.getElementById('share').value) || 0;
+        const investment = parseFloat(document.getElementById('investment').value) || 0;
+
+        const yearlyTotal = users * profit * 12;
+        const investorYearly = yearlyTotal * (sharePercent / 100);
+        const roi = (investorYearly / investment) * 100;
+        const monthsToReturn = (investment / (yearlyTotal * (sharePercent/100) / 12));
+
+        document.getElementById('totalProfit').innerText = yearlyTotal.toLocaleString('he-IL');
+        document.getElementById('investorProfit').innerText = investorYearly.toLocaleString('he-IL');
+        document.getElementById('roi').innerText = roi.toFixed(1);
+        document.getElementById('months').innerText = monthsToReturn > 0 ? monthsToReturn.toFixed(1) : '∞';
+    }
+    calculateROI();
+
+    // טיימר פשוט
+    function updateTimer() {
+        const target = new Date(2026, 5, 8, 0, 0, 0); // 8 ביוני 2026
+        const now = new Date();
+        const diff = target - now;
+        if (diff <= 0) { document.getElementById('days').innerText='00'; document.getElementById('hours').innerText='00'; document.getElementById('minutes').innerText='00'; return; }
+        const days = Math.floor(diff / (1000*60*60*24));
+        const hours = Math.floor((diff % (86400000)) / (3600000));
+        const minutes = Math.floor((diff % 3600000) / 60000);
+        document.getElementById('days').innerText = days.toString().padStart(2,'0');
+        document.getElementById('hours').innerText = hours.toString().padStart(2,'0');
+        document.getElementById('minutes').innerText = minutes.toString().padStart(2,'0');
+    }
+    setInterval(updateTimer, 1000);
+    updateTimer();
+</script>
+</body>
+</html>

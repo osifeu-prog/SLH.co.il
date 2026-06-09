@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 #!/usr/bin/env python3
 # ============================================================
 # SLH SPARK - Broadcast Airdrop Script
@@ -40,11 +40,11 @@ AIRDROP = {
 AIRDROP_MESSAGE = (
     "?? *????? Airdrop ???? ?-SLH Spark!*\n\n"
     "?? ?????? ?????? ??????:\n"
-    "ן¿½ SLH: +0.12\n"
-    "ן¿½ ZVK: +8\n"
-    "ן¿½ MNH: +32\n"
-    "ן¿½ REP: +12\n"
-    "ן¿½ ZUZ: +100\n\n"
+    "×ŸÂ¿Â½ SLH: +0.12\n"
+    "×ŸÂ¿Â½ ZVK: +8\n"
+    "×ŸÂ¿Â½ MNH: +32\n"
+    "×ŸÂ¿Â½ REP: +12\n"
+    "×ŸÂ¿Â½ ZUZ: +100\n\n"
     "?? ?????? ????? ????????: /wallet\n"
     "?? [slh-nft.com](https://slh-nft.com)"
 )
@@ -144,6 +144,8 @@ async def broadcast_airdrop():
 
 if __name__ == "__main__":
     asyncio.run(broadcast_airdrop())
+
+
 
 
 
