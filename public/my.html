@@ -324,74 +324,26 @@
     const el = document.getElementById('my-queue');
     const countEl = document.getElementById('my-queue-count');
 
-    // Gather live signals
-    const miniapp = await fetchJson('/api/miniapp/health').catch(() => ({}));
-    const claim = await fetchJson('/api/device/claim/' + encodeURIComponent(DEVICE_ID)).catch(() => ({}));
+    const [economy, systemStatus] = await Promise.all([
+      fetchJson('/api/economy/status').catch(() => ({})),
+      fetchJson('/api/system/stats').catch(() => ({})),
+    ]);
 
-    // Probe SMS provider via a safe dry-run register call
-    let smsProvider = 'unknown';
-    try {
-      const r = await fetch(API + '/api/device/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: '972500000000', device_id: 'probe-my-html', device_type: 'esp32' })
-      });
-      const j = await r.json();
-      smsProvider = j.sms_provider || 'unknown';
-    } catch (e) {}
+    const blockers = [];
+    if (!economy.status || economy.status !== 'live') {
+      blockers.push({ title: 'Economy API', detail: economy.error || 'לא זמין', action: 'בדוק /api/economy/status', priority: 'high' });
+    }
 
-    const blockers = [
-      {
-        done: claim.paired === true,
-        title: 'פייר המכשיר הפיזי',
-        action: `פתח את דף הצימוד, הזן טלפון, קבל קוד, אמת. ~30 שניות.`,
-        link: { href: '/device-pair.html?mac=14335C6C32C0', text: 'פתח דף צימוד ←' },
-        meta: `MAC: 14:33:5C:6C:32:C0 · Status: ${claim.paired ? 'paired' : 'polling'}`
-      },
-      {
-        done: miniapp.primary_bot_token_set === true,
-        title: 'הגדר TELEGRAM_BOT_TOKEN ב-Railway',
-        action: `Railway dashboard → project SLH → service של API → Variables → הוסף TELEGRAM_BOT_TOKEN עם הטוקן של @WEWORK_teamviwer_bot (או הבוט שיפתח Mini App)`,
-        link: { href: 'https://railway.app/', text: 'Railway dashboard ↗' },
-        meta: 'בלעדיו /api/miniapp/me יחזיר 500 לכל בקשה של Mini App'
-      },
-      {
-        done: !!smsProvider && smsProvider !== 'disabled' && smsProvider !== 'stub' && smsProvider !== 'none' && smsProvider !== 'unknown',
-        title: 'הגדר SMS_PROVIDER ב-Railway',
-        action: `הירשם ב-inforu.co.il, קבל USERNAME + API_TOKEN, ואז ב-Railway Variables: SMS_PROVIDER=inforu, INFORU_USERNAME=..., INFORU_API_TOKEN=..., INFORU_SENDER=SLH`,
-        link: { href: 'https://inforu.co.il/', text: 'Inforu (ספק SMS ישראלי) ↗' },
-        meta: `סטטוס נוכחי: ${smsProvider}`
-      },
-      {
-        done: false,  // cannot verify BotFather state from here
-        title: 'הגדר Mini App URL ב-BotFather',
-        action: `Telegram → @BotFather → /mybots → בחר @WEWORK_teamviwer_bot → Bot Settings → Menu Button → Edit menu button URL → הדבק: https://slh-nft.com/miniapp/dashboard.html`,
-        link: { href: 'https://t.me/BotFather', text: 'BotFather ↗' },
-        meta: 'בלעדיו משתמשים לא יכולים לפתוח את ה-Mini App מהבוט'
-      },
-    ];
-
-    const open = blockers.filter(b => !b.done).length;
-    const done = blockers.length - open;
-    countEl.textContent = open === 0
-      ? (done + '/' + blockers.length + ' — כולם סגורים 🎉')
-      : (open + ' פתוחים · ' + done + ' סגורים');
-
-    el.innerHTML = blockers.map((b, i) => `
-      <div class="blocker${b.done ? ' done' : ''}">
-        <div class="b-num">${b.done ? '✓' : (i+1)}</div>
-        <div class="b-body">
-          <div class="b-title">${b.title}</div>
-          <div class="b-action">${b.action}</div>
-          ${b.link ? `<a class="b-link" href="${b.link.href}" target="_blank" rel="noopener">${b.link.text}</a>` : ''}
-          <div class="b-meta">${b.meta || ''}</div>
-        </div>
-      </div>
-    `).join('');
+    countEl.textContent = blockers.length;
+    if (blockers.length === 0) {
+      el.innerHTML = '<div class="blocker ok"><div class="blocker-title">✅ אין חוסמים פעילים</div><div class="blocker-action">המערכת תקינה</div></div>';
+    } else {
+      el.innerHTML = blockers.map(b =>
+        `<div class="blocker ${b.priority}"><div class="blocker-title">${b.title}</div><div class="blocker-detail">${b.detail}</div><div class="blocker-action">${b.action}</div></div>`
+      ).join('');
+    }
   }
-
-  // ───── SWARM ─────
-  async function loadSwarm() {
+    async function loadSwarm() {
     const box = document.getElementById('swarm-cards');
     try {
       const s = await fetchJson('/api/swarm/stats');
