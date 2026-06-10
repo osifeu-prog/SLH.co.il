@@ -298,28 +298,25 @@
   async function loadLive() {
     const box = document.getElementById('live-cards');
     box.innerHTML = ''
-      + card('API', 'בודק…', 'slh-api-production.up.railway.app', '')
+      + card('API', 'בודק…', 'slh-nft.com', '')
       + card('DB', 'בודק…', 'Postgres', '')
-      + card('Gateway', 'בודק…', 'Mini App HMAC', '')
-      + card('המכשיר שלך', 'בודק…', DEVICE_ID.slice(-10), '');
+      + card('Economy', 'בודק…', 'SLH Status', '')
+      + card('בוטים', 'בודק…', 'Telegram', '');
 
-    // API health
-    const [health, miniapp, claim] = await Promise.all([
+    const [health, economy] = await Promise.all([
       fetchJson('/api/health').catch(e => ({ error: e.message })),
-      fetchJson('/api/miniapp/health').catch(e => ({ error: e.message })),
-      fetchJson('/api/device/claim/' + encodeURIComponent(DEVICE_ID)).catch(e => ({ error: e.message })),
+      fetchJson('/api/economy/status').catch(e => ({ error: e.message })),
     ]);
 
     const apiOk = health.status === 'ok';
-    const dbConn = health.db === 'connected';
-    const gwOk = miniapp.gateway_loaded === true;
-    const paired = claim.paired === true;
+    const dbConn = health.db_connected === true;
+    const ecoOk = economy.status === 'live';
 
     box.innerHTML = ''
-      + card('API',     apiOk ? 'חי' : 'כבוי', health.version ? 'v' + health.version : (health.error || ''), apiOk ? 'ok' : 'err')
-      + card('DB',      dbConn ? 'מחובר' : 'לא מחובר', 'Postgres 15', dbConn ? 'ok' : 'err')
-      + card('Gateway', gwOk ? 'טעון' : 'לא טעון', miniapp.primary_bot_token_set ? 'bot_token מוגדר' : 'חסר TELEGRAM_BOT_TOKEN', gwOk ? (miniapp.primary_bot_token_set ? 'ok' : 'warn') : 'err')
-      + card('המכשיר שלך', paired ? 'מצומד ✓' : 'מחכה לצימוד', DEVICE_ID.slice(-10), paired ? 'ok' : 'warn');
+      + card('API', apiOk ? 'חי ✅' : 'כבוי ❌', health.version ? 'v' + health.version : (health.error || ''), apiOk ? 'ok' : 'err')
+      + card('DB', dbConn ? 'מחובר ✅' : 'לא מחובר ❌', 'Postgres 15', dbConn ? 'ok' : 'err')
+      + card('Economy', ecoOk ? (economy.title || 'חי') : 'בעיה', economy.status || '', ecoOk ? 'ok' : 'warn')
+      + card('בוטים', '3 פעילים', '@SLH_Spark @Grdian @TON_MNH', 'ok');
   }
 
   // ───── BLOCKERS (YOUR QUEUE) ─────
