@@ -309,7 +309,7 @@
     ]);
 
     const apiOk = health.status === 'ok';
-    const dbConn = health.db_connected === true;
+    const dbConn = health.db_connected === true || health.db === "connected";
     const ecoOk = economy.status === 'live';
 
     box.innerHTML = ''
