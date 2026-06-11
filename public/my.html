@@ -96,7 +96,9 @@
   footer .last-update { font-family: 'Space Mono', monospace; }
   .err-banner { background: rgba(255,0,85,.08); border: 1px solid var(--red); color: var(--red); padding: 10px 14px; border-radius: var(--radius); font-size: 13px; margin-bottom: 16px; }
 </style>
-</head>
+<script>
+if(navigator.serviceWorker){navigator.serviceWorker.getRegistrations().then(r=>r.forEach(sw=>sw.unregister()));}
+</script></head>
 <body>
 <div class="container">
 
