@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SLH Spark</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fff;--bg2:#f5f5f5;--text:#111;--text2:#666;--border:#e0e0e0}
+[data-theme=dark]{--bg:#0a0a0a;--bg2:#111;--text:#e0e0e0;--text2:#555;--border:#222}
+body{font-family:Arial,sans-serif;background:var(--bg);color:var(--text);transition:all .2s}
+.bar{position:fixed;top:0;left:0;right:0;padding:10px 20px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;z-index:99}
+.logo{font-size:12px;font-weight:700;letter-spacing:3px;color:var(--text2)}
+.tb{border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-size:11px;cursor:pointer;background:transparent;color:var(--text2)}
+.tb.on{border-color:var(--text);color:var(--text)}
+.w{max-width:540px;margin:0 auto;padding:76px 20px 60px}
+h1{font-size:clamp(26px,6vw,42px);font-weight:700;line-height:1.2;margin:32px 0 12px}
+.sub{font-size:15px;color:var(--text2);line-height:1.6;margin-bottom:28px}
+.pc{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center;margin-bottom:24px}
+.pl{font-size:12px;color:var(--text2);margin-bottom:4px}
+.pv{font-size:40px;font-weight:700}
+.ps{font-size:11px;color:var(--text2);margin-top:4px}
+.bn{display:flex;flex-direction:column;gap:8px;margin-bottom:24px}
+.bi{display:flex;gap:12px;align-items:center;padding:12px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:10px}
+.be{font-size:18px;flex-shrink:0}
+.bt{font-size:14px;font-weight:600;color:var(--text)}
+.bd{font-size:12px;color:var(--text2)}
+.cta{display:block;width:100%;padding:15px;font-size:16px;font-weight:700;border-radius:10px;border:none;background:var(--text);color:var(--bg);cursor:pointer;text-align:center;text-decoration:none;margin-bottom:10px}
+.cta2{display:block;width:100%;padding:12px;font-size:14px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text2);text-align:center;text-decoration:none;margin-bottom:28px}
+.pm{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:28px}
+.pmi{padding:10px 6px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;text-align:center;font-size:11px;color:var(--text2)}
+.pme{font-size:18px;margin-bottom:3px}
+.st{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:28px}
+.sn{font-size:22px;font-weight:700;text-align:center}
+.sl{font-size:11px;color:var(--text2);text-align:center;margin-top:2px}
+.fw{display:flex;flex-direction:column;margin-bottom:28px}
+.fs{border:1px solid var(--border);border-bottom:none;padding:12px 14px;cursor:pointer;background:var(--bg2)}
+.fs:first-child{border-radius:10px 10px 0 0}
+.fs:last-child{border-radius:0 0 10px 10px;border-bottom:1px solid var(--border)}
+.fh{display:flex;align-items:center;justify-content:space-between}
+.fn{font-size:11px;color:var(--text2);background:var(--bg);border:1px solid var(--border);border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:8px}
+.ft{font-size:14px;font-weight:600;flex:1}
+.fa{font-size:11px;color:var(--text2);transition:transform .2s}
+.fb{display:none;padding-top:10px;margin-top:10px;border-top:1px solid var(--border);font-size:13px;color:var(--text2);line-height:1.6}
+.tr{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px}
+.ti{font-size:11px;color:var(--text2)}
+.ti::before{content:"✓ "}
+.ft2{text-align:center;font-size:11px;color:var(--text2);line-height:1.8}
+.ft2 a{color:var(--text2)}
+.warn{font-size:11px;color:var(--text2);text-align:center;margin-top:12px;line-height:1.6;padding:10px;background:var(--bg2);border:1px solid var(--border);border-radius:8px}
+</style>
+</head>
+<body data-theme="light">
+<div class="bar">
+  <span class="logo">SLH SPARK</span>
+  <div style="display:flex;gap:6px">
+    <button class="tb on" onclick="sT(this,'light')">בהיר</button>
+    <button class="tb" onclick="sT(this,'dark')">כהה</button>
+  </div>
+</div>
+<div class="w">
+  <div style="text-align:center">
+    <div style="font-size:11px;letter-spacing:2px;color:var(--text2);margin-top:20px">BUILT IN ISRAEL</div>
+    <h1>הדרך לעולם חדש<br>של השקעות וקהילה</h1>
+    <p class="sub">תמורה אמיתית לכל תרומה.<br>בנקאות קהילתית חדשנית.</p>
+  </div>
+  <div class="pc">
+    <div class="pl">מחיר SLH כרגע</div>
+    <div class="pv">444</div>
+    <div class="ps">BSC · BEP-20 · PancakeSwap · 247 מחזיקים</div>
+  </div>
+  <div class="bn">
+    <div class="bi"><div class="be">🤖</div><div><div class="bt">25 בוטים בטלגרם</div><div class="bd">Guardian, Wallet, Academy ועוד</div></div></div>
+    <div class="bi"><div class="be">📈</div><div><div class="bt">Variable Yield 4-12%</div><div class="bd">Staking על SLH — חלוקת הכנסות</div></div></div>
+    <div class="bi"><div class="be">🎁</div><div><div class="bt">ZVK בונוס 10% + REP points</div><div class="bd">על כל רכישה</div></div></div>
+    <div class="bi"><div class="be">🛡️</div><div><div class="bt">Guardian אנטי-הונאה</div><div class="bd">הגנה אוטומטית 24/7</div></div></div>
+    <div class="bi"><div class="be">📚</div><div><div class="bt">אקדמיה בעברית</div><div class="bd">Dynamic Yield Course</div></div></div>
+    <div class="bi"><div class="be">🤝</div><div><div class="bt">Referral 20% + 5%</div><div class="bd">הרוויח על חברים שמצטרפים</div></div></div>
+  </div>
+  <a href="/buy.html" class="cta">קנה SLH עכשיו — 444 למטבע</a>
+  <a href="/whitepaper.html" class="cta2">קרא את ה-Whitepaper קודם</a>
+  <div style="font-size:12px;color:var(--text2);text-align:center;margin-bottom:10px">שיטות תשלום</div>
+  <div class="pm">
+    <div class="pmi"><div class="pme">🥞</div>PancakeSwap</div>
+    <div class="pmi"><div class="pme">💎</div>TON Direct</div>
+    <div class="pmi"><div class="pme">🟡</div>BNB Direct</div>
+    <div class="pmi"><div class="pme">🤝</div>P2P</div>
+    <div class="pmi"><div class="pme">🏦</div>העברה בנקאית</div>
+    <div class="pmi"><div class="pme">🤖</div>Telegram Bot</div>
+  </div>
+  <div class="st">
+    <div><div class="sn">247</div><div class="sl">מחזיקים</div></div>
+    <div><div class="sn">25</div><div class="sl">בוטים</div></div>
+    <div><div class="sn">4-12%</div><div class="sl">Yield</div></div>
+  </div>
+  <div style="font-size:13px;font-weight:600;margin-bottom:10px">איך זה עובד?</div>
+  <div class="fw">
+    <div class="fs" onclick="tF(this)"><div class="fh"><span class="fn">1</span><span class="ft">בחר סכום ושיטת תשלום</span><span class="fa">▼</span></div><div class="fb">מינימום $1 דרך PancakeSwap. ניתן גם TON, BNB, P2P או העברה בנקאית.</div></div>
+    <div class="fs" onclick="tF(this)"><div class="fh"><span class="fn">2</span><span class="ft">שלם וקבל TX hash</span><span class="fa">▼</span></div><div class="fb">שלם בארנק שלך. קבל מספר עסקה (TX hash). הדבק אותו באתר.</div></div>
+    <div class="fs" onclick="tF(this)"><div class="fh"><span class="fn">3</span><span class="ft">Premium מופעל תוך 30 שניות</span><span class="fa">▼</span></div><div class="fb">אימות אוטומטי על הבלוקציין. קבלה דיגיטלית מיידית.</div></div>
+    <div class="fs" onclick="tF(this)"><div class="fh"><span class="fn">4</span><span class="ft">גישה מלאה לכל המערכת</span><span class="fa">▼</span></div><div class="fb">25 בוטים, Staking, אקדמיה, P2P, Guardian — הכל בטלגרם.</div></div>
+  </div>
+  <div class="tr">
+    <span class="ti">טוקן אמיתי BSC</span>
+    <span class="ti">קוד פתוח GitHub</span>
+    <span class="ti">Audit Q3 2026</span>
+    <span class="ti">9 משתמשים — שקוף</span>
+  </div>
+  <div style="border-top:1px solid var(--border);padding-top:16px">
+    <div class="ft2"><a href="/disclosure.html">גילוי סיכון</a> · <a href="/whitepaper.html">Whitepaper</a> · <a href="/about.html">אודות</a> · <a href="https://t.me/+3aaoIM9WjThiOGFk">קהילה</a></div>
+    <div class="warn">⚠️ השקעה בקריפטו כרוכה בסיכון. ערך SLH יכול לרדת. אין הבטחה לרווחים. לא ייעוץ השקעות.</div>
+  </div>
+</div>
+<script>
+function sT(el,t){document.body.setAttribute('data-theme',t);document.querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));el.classList.add('on');localStorage.setItem('st',t);}
+(function(){var t=localStorage.getItem('st')||'light';document.body.setAttribute('data-theme',t);document.querySelectorAll('.tb').forEach(b=>{if((t==='light'&&b.textContent==='בהיר')||(t==='dark'&&b.textContent==='כהה'))b.classList.add('on');});})();
+function tF(el){var b=el.querySelector('.fb'),a=el.querySelector('.fa'),o=b.style.display!=='none';b.style.display=o?'none':'block';a.style.transform=o?'':'rotate(180deg)';}
+</script>
+</body>
+</html>
