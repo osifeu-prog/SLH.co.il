@@ -14,7 +14,7 @@ venv_shared/
 # Node
 node_modules/
 
-# Backups — auto-generated, never commit
+# Backups â€” auto-generated, never commit
 *.bak
 *.bak-*
 *.backup
@@ -69,18 +69,18 @@ device-registry/esp32-cyd-work/firmware/
 device-registry/*/firmware/
 **/.pio/
 
-# Personal screenshots — never commit (contains user UI screenshots from Telegram)
+# Personal screenshots â€” never commit (contains user UI screenshots from Telegram)
 incoming_screenshots/
 *screenshot*.jpg
 *screenshot*.png
 
-# Auto-generated repo snapshots — recreated on demand, no need to commit
+# Auto-generated repo snapshots â€” recreated on demand, no need to commit
 FILES.txt
 STRUCTURE.txt
 GIT_LOG.txt
 GIT_STATUS.txt
 
-# ESP firmware deps (PlatformIO downloads them — don't commit)
+# ESP firmware deps (PlatformIO downloads them â€” don't commit)
 esp/.pio/
 esp/lib/
 esp/include/
@@ -110,7 +110,6 @@ osif-shop/
 tonmnh-bot/
 slh-genesis/
 site/
-routes/
 routes_backup/
 archive/
 ops/

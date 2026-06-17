@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" data-theme="neural">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SLH IDO — מדריך מלא למשקיע הישראלי | SLH Spark (ישות משפטית בתהליך)</title>
+  <meta name="description" content="IDO סופי של SLH — מדריך שלם בעברית: מה זה IDO, איך קונים BNB בישראל, מס הכנסה, KYC, שלב-אחר-שלב במטא-מאסק, סיכונים ושאלות נפוצות.">
+  <meta name="keywords" content="SLH IDO, PinkSale, Marshall Islands DAO, anti-fraud, BSC IDO, בתהליך audit token sale, LP lock מתוכנן, מדריך קריפטו ישראל">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://slh-nft.com/ido.html">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="SLH IDO — מדריך מלא למשקיע הישראלי">
+  <meta property="og:description" content="SLH Spark (ישות משפטית בתהליך) · Audit בתהליך · LP lock מתוכנן (Q3 2026) · Soft cap 20 BNB · מדריך מלא בעברית">
+  <meta property="og:image" content="https://slh-nft.com/assets/og/default.png">
+  <meta property="og:url" content="https://slh-nft.com/ido.html">
+
+  <link rel="icon" href="/favicon.ico">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <link rel="stylesheet" href="css/shared.css?v=20260428a">
+  <link rel="stylesheet" href="css/slh-neural.css?v=20260428a">
+
+  <style>
+    body {
+      font-family: 'Heebo', system-ui, sans-serif;
+      color: var(--text); background: var(--bg);
+      margin: 0; min-height: 100vh; overflow-x: hidden;
+    }
+
+    /* ── Topbar ── */
+    .ido-topbar {
+      position: fixed; top: 0; inset-inline: 0; z-index: 50;
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      background: rgba(3, 6, 15, .65);
+      border-bottom: 1px solid var(--border);
+    }
+    .ido-topbar-inner {
+      max-width: 1280px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 24px; gap: 14px;
+    }
+    .ido-brand {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 800; font-size: 1.1rem;
+      color: var(--text); text-decoration: none;
+    }
+    .ido-brand .brand-logo {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      color: var(--bg); font-weight: 900; font-size: .9rem;
+      box-shadow: 0 0 20px rgba(255, 209, 102, .3);
+    }
+    .topbar-toc {
+      display: flex; gap: 16px; flex-wrap: wrap;
+      font-size: .88rem;
+    }
+    .topbar-toc a {
+      color: var(--text2); text-decoration: none;
+      transition: color .2s;
+    }
+    .topbar-toc a:hover { color: var(--accent); }
+    @media (max-width: 980px) { .topbar-toc { display: none; } }
+
+    /* ── Hero ── */
+    .ido-hero {
+      padding: 110px 24px 40px;
+      text-align: center;
+      position: relative;
+    }
+    .ido-hero h1 {
+      font-size: clamp(2rem, 5vw, 3.4rem); font-weight: 900;
+      margin: 0 0 10px; line-height: 1.1;
+      background: linear-gradient(135deg, var(--text), var(--accent));
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .ido-hero .subtitle {
+      font-size: clamp(1rem, 2.2vw, 1.25rem); color: var(--text2);
+      max-width: 720px; margin: 0 auto 24px; line-height: 1.6;
+    }
+    .ido-eyebrow {
+      display: inline-block; padding: 6px 14px;
+      background: rgba(255, 209, 102, .1); color: var(--accent);
+      border-radius: 999px; font-size: .8rem; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    /* Reading guide banner */
+    .reading-guide {
+      max-width: 880px; margin: 24px auto 0;
+      padding: 18px 22px;
+      background: rgba(94, 214, 255, .08);
+      border: 1px solid rgba(94, 214, 255, .25);
+      border-radius: 12px;
+      text-align: right;
+    }
+    .reading-guide h3 {
+      margin: 0 0 8px; font-size: 1rem; color: #5ed6ff;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .reading-guide ul {
+      margin: 0; padding-inline-start: 22px;
+      color: var(--text2); font-size: .92rem; line-height: 1.7;
+    }
+    .reading-guide ul li { margin-bottom: 4px; }
+    .reading-guide a { color: var(--accent); text-decoration: underline; }
+
+    /* Live progress */
+    .live-progress {
+      max-width: 720px; margin: 32px auto 0;
+      padding: 24px 28px;
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid var(--border); border-radius: 16px;
+    }
+    .live-progress .row {
+      display: flex; justify-content: space-between; align-items: baseline;
+      gap: 12px; flex-wrap: wrap; margin-bottom: 10px;
+    }
+    .live-progress .raised {
+      font-family: 'JetBrains Mono', monospace; font-size: 1.6rem;
+      font-weight: 700; color: var(--accent);
+    }
+    .live-progress .pct {
+      font-family: 'JetBrains Mono', monospace; font-size: 1.1rem;
+      color: var(--text2);
+    }
+    .live-progress .bar {
+      height: 12px; background: rgba(255, 255, 255, .04);
+      border-radius: 6px; overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .live-progress .bar-fill {
+      height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transition: width 1s ease-out; box-shadow: 0 0 12px var(--accent);
+      width: 0%;
+    }
+    .live-progress .meta {
+      display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+      font-size: .88rem; color: var(--text3);
+    }
+
+    /* CTA */
+    .ido-cta-row {
+      display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+      margin-top: 28px;
+    }
+
+    /* Section base */
+    .section {
+      max-width: 1080px; margin: 80px auto 0;
+      padding: 0 24px;
+    }
+    .section-narrow { max-width: 880px; }
+    .section h2 {
+      text-align: center; margin: 0 0 8px;
+      font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+    }
+    .section .lede {
+      text-align: center; color: var(--text2);
+      max-width: 720px; margin: 0 auto 32px;
+      font-size: 1rem; line-height: 1.65;
+    }
+
+    /* Glossary cards */
+    .glossary-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+    }
+    .glossary-card {
+      padding: 20px 22px;
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid var(--border); border-radius: 12px;
+    }
+    .glossary-card h4 {
+      margin: 0 0 6px; font-size: 1rem;
+      color: var(--accent); display: flex; align-items: center; gap: 8px;
+      flex-wrap: wrap;
+    }
+    .glossary-card h4 .glossary-en {
+      font-family: 'JetBrains Mono', monospace; font-size: .82rem;
+      color: var(--text3); font-weight: 500;
+    }
+    .glossary-card p {
+      margin: 0; color: var(--text2); font-size: .92rem; line-height: 1.6;
+    }
+
+    /* Three-pillar trust */
+    .trust-pillars {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
+    }
+    @media (max-width: 760px) { .trust-pillars { grid-template-columns: 1fr; } }
+    .trust-pillar {
+      padding: 28px;
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid var(--border); border-radius: 14px;
+      text-align: center;
+    }
+    .trust-pillar .pill-icon {
+      width: 56px; height: 56px; border-radius: 14px;
+      margin: 0 auto 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+    }
+    .trust-pillar h3 { margin: 0 0 6px; font-size: 1.2rem; }
+    .trust-pillar p {
+      margin: 0 0 14px; color: var(--text2); font-size: .95rem; line-height: 1.5;
+    }
+    .trust-pillar a.proof {
+      font-size: .85rem; color: var(--accent); text-decoration: none;
+      border-bottom: 1px dashed rgba(255, 209, 102, .35);
+    }
+
+    /* Numbers panel */
+    .numbers-panel-inner {
+      background: rgba(255, 255, 255, .025);
+      border: 1px solid var(--border); border-radius: 16px;
+      overflow: hidden;
+    }
+    .numbers-row {
+      display: grid; grid-template-columns: 200px 1fr auto;
+      align-items: center; gap: 14px;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .numbers-row:last-child { border-bottom: none; }
+    .numbers-row .label {
+      font-size: .85rem; color: var(--text3);
+      text-transform: uppercase; letter-spacing: .08em;
+    }
+    .numbers-row .value {
+      font-family: 'JetBrains Mono', monospace; font-size: 1rem;
+      color: var(--text); font-weight: 600;
+      word-break: break-all;
+    }
+    .numbers-row .verify {
+      font-size: .82rem; color: var(--accent); text-decoration: none;
+      white-space: nowrap;
+    }
+    @media (max-width: 720px) {
+      .numbers-row { grid-template-columns: 1fr; gap: 4px; }
+    }
+
+    /* Step-by-step guide */
+    .step-guide { counter-reset: step; }
+    .step-guide .step {
+      display: grid; grid-template-columns: 56px 1fr;
+      gap: 22px; padding: 24px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .step-guide .step:last-child { border-bottom: none; }
+    .step-guide .step::before {
+      counter-increment: step;
+      content: counter(step);
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: var(--bg); font-weight: 900; font-size: 1.1rem;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .step-guide .step .step-content h4 {
+      margin: 6px 0 8px; font-size: 1.1rem;
+    }
+    .step-guide .step .step-content p,
+    .step-guide .step .step-content li {
+      color: var(--text2); font-size: .94rem; line-height: 1.7;
+    }
+    .step-guide .step .step-content ul {
+      margin: 6px 0 6px 0; padding-inline-start: 22px;
+    }
+    .step-guide .step .step-content code {
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(255, 255, 255, .06);
+      padding: 2px 6px; border-radius: 4px;
+      font-size: .88rem; word-break: break-all;
+    }
+    .step-tip {
+      margin-top: 10px; padding: 10px 14px;
+      background: rgba(255, 209, 102, .07);
+      border-inline-start: 3px solid var(--accent);
+      border-radius: 6px;
+      font-size: .88rem; color: var(--text2); line-height: 1.6;
+    }
+
+    /* Tax box */
+    .tax-section {
+      background: rgba(80, 150, 220, .06);
+      border: 1px solid rgba(80, 150, 220, .25);
+      border-radius: 14px;
+      padding: 28px;
+    }
+    .tax-section h3 {
+      margin: 0 0 14px; color: #7eb6e8;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .tax-section table {
+      width: 100%; border-collapse: collapse; margin: 14px 0;
+      font-size: .92rem;
+    }
+    .tax-section th, .tax-section td {
+      padding: 10px 12px; text-align: right;
+      border-bottom: 1px solid rgba(255, 255, 255, .08);
+    }
+    .tax-section th {
+      color: var(--text2); font-weight: 700;
+      background: rgba(255, 255, 255, .03);
+    }
+    .tax-section td { color: var(--text); }
+    .tax-disclaimer {
+      margin-top: 14px; padding: 12px 14px;
+      background: rgba(255, 209, 102, .08);
+      border-radius: 8px; font-size: .85rem; color: var(--text2);
+      line-height: 1.6;
+    }
+
+    /* KYC box */
+    .kyc-section {
+      background: rgba(180, 130, 240, .06);
+      border: 1px solid rgba(180, 130, 240, .25);
+      border-radius: 14px;
+      padding: 28px;
+    }
+    .kyc-section h3 {
+      margin: 0 0 14px; color: #d4a5ff;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .kyc-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+      margin: 14px 0;
+    }
+    @media (max-width: 720px) { .kyc-grid { grid-template-columns: 1fr; } }
+    .kyc-cell {
+      padding: 16px;
+      background: rgba(255, 255, 255, .03);
+      border-radius: 10px;
+    }
+    .kyc-cell h5 {
+      margin: 0 0 6px; font-size: .92rem; color: #d4a5ff;
+    }
+    .kyc-cell p {
+      margin: 0; color: var(--text2); font-size: .9rem; line-height: 1.6;
+    }
+
+    /* Vesting calendar */
+    .vesting-calendar {
+      background: rgba(255, 255, 255, .025);
+      border: 1px solid var(--border); border-radius: 14px;
+      padding: 24px; margin-top: 20px;
+      overflow-x: auto;
+    }
+    .vesting-calendar table {
+      width: 100%; border-collapse: collapse; font-size: .92rem;
+      min-width: 480px;
+    }
+    .vesting-calendar th, .vesting-calendar td {
+      padding: 10px 12px; text-align: right;
+      border-bottom: 1px solid rgba(255, 255, 255, .08);
+    }
+    .vesting-calendar th {
+      color: var(--text2); font-weight: 700;
+      background: rgba(255, 255, 255, .04);
+    }
+    .vesting-calendar tr:last-child td { border-bottom: none; }
+    .vesting-calendar td.unlocked {
+      color: #5ed6ff; font-family: 'JetBrains Mono', monospace;
+    }
+    .vesting-calendar td.locked {
+      color: var(--text3); font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Risk disclosure */
+    .risk-section {
+      background: rgba(220, 38, 38, .05);
+      border: 1px solid rgba(220, 38, 38, .3); border-radius: 14px;
+      padding: 32px;
+    }
+    .risk-section h2 {
+      color: #ff6b6b; margin: 0 0 14px; text-align: right;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .risk-card {
+      padding: 16px 18px;
+      background: rgba(220, 38, 38, .04);
+      border-inline-start: 3px solid #ff6b6b;
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+    .risk-card h4 {
+      margin: 0 0 6px; color: #ffaaaa; font-size: 1rem;
+    }
+    .risk-card p {
+      margin: 0; color: var(--text2); font-size: .92rem; line-height: 1.65;
+    }
+    .non-negotiable {
+      margin-top: 16px; padding: 14px 18px;
+      background: rgba(220, 38, 38, .12);
+      border-radius: 8px; font-size: .9rem; color: #ffaaaa;
+      line-height: 1.6;
+    }
+
+    /* Scam warnings */
+    .scam-section {
+      background: rgba(245, 158, 11, .06);
+      border: 1px solid rgba(245, 158, 11, .3);
+      border-radius: 14px;
+      padding: 28px;
+    }
+    .scam-section h3 {
+      color: #fbbf24; margin: 0 0 14px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .scam-list { list-style: none; padding: 0; margin: 0; }
+    .scam-list li {
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, .03);
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: .92rem; line-height: 1.65;
+      color: var(--text2);
+    }
+    .scam-list li strong { color: #fbbf24; }
+
+    /* Verify-yourself */
+    .verify-section {
+      background: rgba(94, 214, 255, .05);
+      border: 1px solid rgba(94, 214, 255, .25);
+      border-radius: 14px;
+      padding: 28px;
+    }
+    .verify-section h3 {
+      color: #5ed6ff; margin: 0 0 14px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .verify-list { list-style: none; padding: 0; margin: 0; }
+    .verify-list li {
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, .03);
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-size: .92rem; line-height: 1.65;
+      color: var(--text2);
+    }
+    .verify-list li strong {
+      display: block; margin-bottom: 4px; color: #5ed6ff;
+    }
+    .verify-list li code {
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(0, 0, 0, .3); padding: 2px 6px;
+      border-radius: 4px; font-size: .85rem;
+      word-break: break-all;
+    }
+    .verify-list li a { color: #5ed6ff; text-decoration: underline; }
+
+    /* FAQ */
+    .faq-grid { display: grid; gap: 10px; }
+    .faq-category {
+      margin: 28px 0 6px;
+      font-size: .85rem; color: var(--accent);
+      letter-spacing: .12em; text-transform: uppercase;
+      font-weight: 800;
+    }
+    .faq-item {
+      background: rgba(255, 255, 255, .025);
+      border: 1px solid var(--border); border-radius: 12px;
+      overflow: hidden;
+    }
+    .faq-item summary {
+      padding: 18px 22px; cursor: pointer;
+      font-weight: 600; list-style: none;
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 12px;
+    }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary::after {
+      content: '+'; font-size: 1.4rem; color: var(--accent);
+      transition: transform .25s; flex-shrink: 0;
+    }
+    .faq-item[open] summary::after { transform: rotate(45deg); }
+    .faq-item .faq-body {
+      padding: 0 22px 18px; color: var(--text2);
+      font-size: .94rem; line-height: 1.75;
+    }
+    .faq-item .faq-body p { margin: 6px 0; }
+    .faq-item .faq-body ul { padding-inline-start: 22px; margin: 8px 0; }
+    .faq-item .faq-body a { color: var(--accent); text-decoration: underline; }
+    .faq-item .faq-body code {
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(255, 255, 255, .06);
+      padding: 2px 6px; border-radius: 4px; font-size: .85rem;
+      word-break: break-all;
+    }
+
+    /* Help footer */
+    .help-section {
+      background: linear-gradient(135deg, rgba(255, 209, 102, .08), rgba(94, 214, 255, .08));
+      border: 1px solid var(--border); border-radius: 14px;
+      padding: 32px; text-align: center;
+    }
+    .help-section h2 { margin: 0 0 10px; }
+    .help-section p {
+      max-width: 560px; margin: 0 auto 20px;
+      color: var(--text2); font-size: .96rem; line-height: 1.65;
+    }
+    .help-cta-row {
+      display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+    }
+
+    /* Footer */
+    .ido-footer {
+      margin-top: 100px;
+      padding: 40px 24px 30px;
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      text-align: center; color: var(--text3); font-size: .88rem;
+    }
+    .ido-footer .legal {
+      max-width: 720px; margin: 14px auto 0;
+      font-size: .78rem; line-height: 1.7;
+    }
+    .ido-footer a { color: var(--text2); text-decoration: none; }
+    .ido-footer a:hover { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient neural background -->
+  <div class="neural-bg" aria-hidden="true"></div>
+
+  <!-- Topbar -->
+  <header class="ido-topbar">
+    <div class="ido-topbar-inner">
+      <a href="/" class="ido-brand">
+        <span class="brand-logo">SLH</span>
+        <span>IDO</span>
+      </a>
+      <nav class="topbar-toc">
+        <a href="#glossary">מילון</a>
+        <a href="#how-buy-bnb">קונים BNB</a>
+        <a href="#how-participate">השתתפות</a>
+        <a href="#tax">מס בישראל</a>
+        <a href="#kyc">KYC</a>
+        <a href="#risk">סיכונים</a>
+        <a href="#faq">שאלות</a>
+      </nav>
+      <a href="#participate-cta" class="neural-btn neural-btn-gold" style="padding: 8px 16px; font-size: .9rem;">
+        <i class="fas fa-rocket"></i> Buy SLH
+      </a>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <div style=background:#0a1a0a;border:1px solid #00ff41;border-radius:12px;padding:16px;text-align:center;margin:24px align=center><a href=/waitlist.html style=color:#00ff41;font-weight:bold;font-size:18px>הצטרף לרשימת המתנה →</a><br><small style=color:#888>Round 2 ספטמבר 2026</small></div><section class="ido-hero">
+    <span class="ido-eyebrow">SLH Spark (ישות משפטית בתהליך) · Audit בתהליך · LP Locked 365 Days</span>
+    <h1>SLH IDO — מדריך מלא בעברית</h1>
+    <p class="subtitle">
+      המדריך הזה לוקח אותך מ-<strong>0 ידע בקריפטו</strong> עד להשתתפות בטוחה ב-IDO של SLH.
+      קוראים מלמעלה למטה. אם משהו לא ברור — שואלים אותנו ב-Telegram <em>לפני</em> שמשקיעים שקל.
+    </p>
+
+    <!-- Reading guide -->
+    <div class="reading-guide">
+      <h3><i class="fas fa-route"></i> איך לקרוא את הדף הזה</h3>
+      <ul>
+        <li><strong>חדשים לחלוטין בקריפטו?</strong> התחילו מ"מילון מונחים" → "קונים BNB בישראל" → "5 שלבים להשתתפות".</li>
+        <li><strong>כבר יש ארנק MetaMask?</strong> דלגו ל-"5 שלבים להשתתפות" ו-"וריפיקציה עצמית".</li>
+        <li><strong>חוששים ממיסוי?</strong> קראו בעיון את "מס בישראל" ו-"KYC" — שתי סקציות מלאות.</li>
+        <li><strong>סקפטים?</strong> מצוין. קראו "סיכונים" + "סימני הונאה" + "וריפיקציה עצמית" — הכל בלינקים אמיתיים שאפשר לבדוק עכשיו.</li>
+        <li>זמן קריאה משוער: <strong>15-25 דקות</strong>. שווה כל דקה לפני השקעת כסף.</li>
+      </ul>
+    </div>
+
+    <!-- Live progress -->
+    <div class="live-progress">
+      <div class="row">
+        <div>
+          <span style="font-size: .75rem; color: var(--text3); text-transform: uppercase; letter-spacing: .12em;">Total Raised</span>
+          <div class="raised" id="raisedBnb">— BNB</div>
+        </div>
+        <div class="pct" id="raisedPct">Pre-launch</div>
+      </div>
+      <div class="bar"><div class="bar-fill" id="barFill"></div></div>
+      <div class="meta">
+        <span id="participants">— contributors</span>
+        <span id="capStatus">Soft cap: 20 BNB · Hard cap: 150 BNB</span>
+        <span id="timeLeft">Round 2: ?????? 2026</span>
+      </div>
+    </div>
+
+    <div class="ido-cta-row">
+      <a href="#participate-cta" id="buyCta" class="neural-btn neural-btn-gold" style="padding: 14px 30px; font-size: 1rem;">
+        <i class="fas fa-rocket"></i> Buy on PinkSale (Day 14+)
+      </a>
+      <a href="/whitepaper.html" class="neural-btn neural-btn-ghost" style="padding: 14px 30px; font-size: 1rem;">
+        <i class="fas fa-file-lines"></i> Whitepaper
+      </a>
+    </div>
+  </section>
+
+  <!-- Three-pillar trust band -->
+  <section class="section">
+    <div class="trust-pillars">
+      <div class="trust-pillar">
+        <div class="pill-icon" style="background: linear-gradient(135deg, var(--accent), var(--accent2));">
+          <i class="fas fa-file-contract" style="color: var(--bg);"></i>
+        </div>
+        <h3>Audit בתהליך</h3>
+        <p>החוזה החכם של SLH עובר ביקורת חיצונית של חברת SolidProof (Q3 2026). הדוח המלא יתפרסם פומבית 48 שעות לפני פתיחת ה-IDO.</p>
+        <a href="#" class="proof" id="auditLink">דוח audit (SolidProof (Q3 2026))</a>
+      </div>
+
+      <div class="trust-pillar">
+        <div class="pill-icon" style="background: linear-gradient(135deg, #5096dc, #7eb6e8);">
+          <i class="fas fa-lock" style="color: white;"></i>
+        </div>
+        <h3>LP Locked 365 Days</h3>
+        <p>הנזילות שתיווצר ב-PancakeSwap נעולה ב-PinkLock (Q3 2026) לשנה שלמה. אנחנו פיזית לא יכולים למשוך אותה. הכל בדיק ב-blockchain.</p>
+        <a href="#" class="proof" id="lockLink">PinkLock (Q3 2026) URL (Day 14)</a>
+      </div>
+
+      <div class="trust-pillar">
+        <div class="pill-icon" style="background: linear-gradient(135deg, #b482f0, #d4a5ff);">
+          <i class="fas fa-globe" style="color: white;"></i>
+        </div>
+        <h3>SLH Spark (ישות משפטית בתהליך)</h3>
+        <p>ישות משפטית רשומה ומוכרת בינלאומית. מספר MIDAO ייפורסם 6 ימים לפני go-live. גיוס דרך ישות חוקית — לא דרך אדם פרטי.</p>
+        <a href="#" class="proof" id="midaoLink">MIDAO Certificate (Day 8)</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============= GLOSSARY ============= -->
+  <section class="section section-narrow" id="glossary">
+    <h2>📖 מילון מונחים — קצר ובהיר</h2>
+    <p class="lede">לפני שצוללים: 12 מילים שכל ישראלי צריך להכיר לפני שהוא נוגע ב-DeFi. אם אתם כבר מכירים — דלגו למטה.</p>
+
+    <div class="glossary-grid">
+      <div class="glossary-card">
+        <h4>IDO <span class="glossary-en">Initial DEX Offering</span></h4>
+        <p>השקה ראשונית של טוקן בבורסה מבוזרת. הציבור קונה את הטוקן <em>לפני</em> שהוא נסחר חופשית, במחיר מופחת. בניגוד ל-IPO רגיל — אין רגולטור, אין ברוקר, רק חוזה חכם.</p>
+      </div>
+      <div class="glossary-card">
+        <h4>BSC <span class="glossary-en">Binance Smart Chain</span></h4>
+        <p>הבלוקצ'יין של בורסת Binance. זול ומהיר (עמלה ~$0.20 לעסקה, 3 שניות אישור). SLH יושב על BSC.</p>
+      </div>
+      <div class="glossary-card">
+        <h4>BNB <span class="glossary-en">Binance Coin</span></h4>
+        <p>הטוקן של Binance — משמש כ"דלק" (gas) לעסקאות ב-BSC. כדי להשתתף ב-IDO צריך BNB. אין דרך אחרת.</p>
+      </div>
+      <div class="glossary-card">
+        <h4>Wallet <span class="glossary-en">ארנק קריפטו</span></h4>
+        <p>תוכנה שמחזיקה את המפתחות הפרטיים שלך לבלוקצ'יין. הפופולרי: <strong>MetaMask</strong>. אתה הבעלים — לא חברה. אובדן מפתח = אובדן כסף.</p>
+      </div>
+      <div class="glossary-card">
+        <h4>Seed Phrase <span class="glossary-en">12-24 מילים</span></h4>
+        <p>רצף מילים שיוצר את כל המפתחות הפרטיים. <strong>זה הכסף שלך</strong>. אסור לצלם, לשמור בענן, לשלוח בוואטסאפ, או לתת לאף אחד.</p>
+      </div>
+      <div class="glossary-card">
+        <h4>Gas <span class="glossary-en">דמי עסקה</span></h4>
+        <p>עמלה שמשולמת ל-validators (כמו דמי טיפול בהעברה בנקאית). ב-BSC = 0.0005-0.002 BNB (₪1-5). תמיד ב-BNB — לא ב-SLH ולא בשקלים.</p>
+      </div>
+      <div class="glossary-card">
+        <h4>Smart Contract <span class="glossary-en">חוזה חכם</span></h4>
+        <p>תוכנה שרצה על הבלוקצ'יין. ברגע שהיא נפרסה, אף אחד (כולל אנחנו) לא יכול לשנות אותה. כל הכללים נאכפים אוטומטית.</p>
+      </div>
+      <div class="glossary-card">
+        <h4>PinkSale <span class="glossary-en">Launchpad</span></h4>
+        <p>הפלטפורמה הגדולה והמוכרת ביותר ב-BSC לגיוס IDO. מעל 8,000 launches. הקוד שלהם עבר audit. לא אנחנו מנהלים את הכסף — PinkSale + הקונטרקט.</p>
+      </div>
+      <div class="glossary-card">
+        <h4>TGE <span class="glossary-en">Token Generation Event</span></h4>
+        <p>הרגע שבו הטוקנים שלך "נולדים" ומתחילים להיות נזילים. ב-SLH: 20% ישוחררו ב-TGE, והשאר ב-vesting של 4 חודשים.</p>
+      </div>
+      <div class="glossary-card">
+        <h4>Vesting <span class="glossary-en">נעילה הדרגתית</span></h4>
+        <p>שחרור הדרגתי. ב-SLH: 20% מיד + 20% כל חודש למשך 4 חודשים. למה? שמשקיעים מוקדמים לא יוכלו "לטרוף" את המחיר באבחה אחת.</p>
+      </div>
+      <div class="glossary-card">
+        <h4>LP Lock <span class="glossary-en">נעילת נזילות</span></h4>
+        <p>נעילת ה-pool של הטוקן ב-PancakeSwap למשך 365 ימים. אנחנו פיזית לא יכולים "לרוקן" את הנזילות (rug pull). PinkLock (Q3 2026) מחזיק את המפתח.</p>
+      </div>
+      <div class="glossary-card">
+        <h4>Soft / Hard Cap <span class="glossary-en">רף מינימום/מקסימום</span></h4>
+        <p><strong>Soft cap (20 BNB):</strong> אם לא מגיעים → refund אוטומטי. <strong>Hard cap (150 BNB):</strong> כשמגיעים → ה-IDO נסגר. בין השניים — הגיוס מוצלח.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============= HOW TO BUY BNB IN ISRAEL ============= -->
+  <section class="section section-narrow" id="how-buy-bnb">
+    <h2>💰 איך קונים BNB בישראל?</h2>
+    <p class="lede">לפני ה-IDO צריך BNB בארנק שלך. יש 3 דרכים לישראלים, מסודרות מהבטוחה לזולה.</p>
+
+    <div class="step-guide">
+      <div class="step">
+        <div class="step-content">
+          <h4>אופציה A — Bit2C (הבורסה הישראלית, הכי פשוט)</h4>
+          <p><strong>למי מתאים:</strong> מתחילים שרוצים חשבון בנק ישראלי שמכיר את העסקה.</p>
+          <ul>
+            <li>נכנסים ל-<a href="https://www.bit2c.co.il/" target="_blank" rel="noopener" style="color: var(--accent);">bit2c.co.il</a> ופותחים חשבון.</li>
+            <li>אימות זהות (תעודת זהות + סלפי) — 1-3 ימי עסקים. <strong>זה ה-KYC הישראלי</strong>.</li>
+            <li>מפקידים שקלים בהעברה בנקאית. עמלה: 0% הפקדה, ~0.5% עסקה.</li>
+            <li>קונים BNB ישירות. אם BNB לא מופיע — קונים USDT ואז ממירים ל-BNB.</li>
+            <li>שולחים את ה-BNB לארנק MetaMask שלכם דרך BSC (ראו שלב הבא).</li>
+          </ul>
+          <div class="step-tip">
+            💡 <strong>חשוב:</strong> ב-Bit2C, כשבוחרים "משיכה ל-BNB", חובה לבחור <code>BEP20 (BSC)</code> ולא <code>ERC20</code> או <code>BEP2</code>. בחירה שגויה = אובדן הכסף.
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-content">
+          <h4>אופציה B — Binance הבינלאומית (זול יותר, מורכב יותר)</h4>
+          <p><strong>למי מתאים:</strong> מי שכבר השתמש בבורסות זרות.</p>
+          <ul>
+            <li><strong>הערה רגולטורית:</strong> Binance אינה מורשית ישירות בישראל ולא מקבלת הפקדות שקל ישירות. צריך לעבור דרך בורסה ישראלית או P2P.</li>
+            <li>פותחים חשבון ב-<a href="https://www.binance.com/" target="_blank" rel="noopener" style="color: var(--accent);">binance.com</a>, עוברים KYC.</li>
+            <li>מפקידים USDT דרך משיכת קריפטו מ-Bit2C, או דרך P2P.</li>
+            <li>קונים BNB בעמלה של 0.1%. הרבה יותר זול מ-Bit2C על סכומים גדולים.</li>
+            <li>משיכה ל-MetaMask דרך BSC — עמלה ~0.0005 BNB.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-content">
+          <h4>אופציה C — P2P דרך Binance (הכי זול, גם המסוכן יותר)</h4>
+          <p><strong>למי מתאים:</strong> מתקדמים. צריך תשומת לב.</p>
+          <ul>
+            <li>בעמוד P2P של Binance, מוצאים מוכר ישראלי עם "Verified Merchant" + 1000+ עסקאות + 99%+ הצלחה.</li>
+            <li>מעבירים שקלים בהעברה בנקאית ישירה למוכר. הוא משחרר USDT מ-escrow אוטומטית.</li>
+            <li>עמלה: 0% עד 0.5%.</li>
+          </ul>
+          <div class="step-tip">
+            ⚠️ <strong>אזהרה:</strong> אסור לעולם להעביר כסף ישירות לארנק של אדם זר. תמיד דרך escrow של פלטפורמה. גם אם הוא "מבטיח שהוא אמין".
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 24px; padding: 16px 20px; background: rgba(255, 209, 102, .08); border-radius: 10px; font-size: .92rem; color: var(--text2); line-height: 1.65;">
+      💰 <strong>כמה לקנות?</strong> מינימום ב-IDO = 0.05 BNB (~₪125). מקסימום = 5 BNB (~₪12,500). הוסיפו ~0.005 BNB ל-gas. <strong>לעולם לא לשלוח את כל ה-BNB שיש לכם — תמיד תשאירו 0.01 BNB לעסקאות עתידיות.</strong>
+    </div>
+  </section>
+
+  <!-- ============= HOW TO PARTICIPATE ============= -->
+  <section class="section section-narrow" id="how-participate">
+    <h2>🚀 5 שלבים להשתתפות ב-IDO</h2>
+    <p class="lede">המדריך המלא, מהרגע שיש BNB ועד לקבלת ה-SLH הראשונים. אורך משוער: 30-60 דקות.</p>
+
+    <div class="step-guide">
+      <div class="step">
+        <div class="step-content">
+          <h4>התקנת MetaMask</h4>
+          <p>אם עוד אין לכם:</p>
+          <ul>
+            <li>נכנסים <strong>רק</strong> ל-<a href="https://metamask.io/" target="_blank" rel="noopener" style="color: var(--accent);">metamask.io</a> (היזהרו מאתרים מזויפים — בדקו URL).</li>
+            <li>"Download" → התקנה כתוסף לדפדפן (Chrome/Brave/Firefox/Edge).</li>
+            <li>"Create a new wallet" → סיסמה חזקה.</li>
+            <li>MetaMask מציג את ה-<strong>seed phrase</strong> — 12 מילים. <strong>רושמים על נייר. לא מצלמים. לא שומרים בענן. לא שולחים לאף אחד, גם לא לתמיכה שלנו.</strong></li>
+            <li>מאשרים את ה-seed → הארנק נוצר.</li>
+          </ul>
+          <div class="step-tip">
+            🔐 <strong>אבטחה קריטית:</strong> אם תאבדו את ה-seed phrase, אין דרך לשחזר את הכסף. אם מישהו ישיג אותה — הוא יכול להעביר את הכל תוך שניות. זאת הסיבה שאין "תמיכת לקוחות" בקריפטו.
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-content">
+          <h4>הוספת רשת BSC ל-MetaMask</h4>
+          <p>MetaMask מגיע עם Ethereum בלבד. צריך להוסיף את BSC ידנית.</p>
+          <ul>
+            <li>לחצו על אייקון הרשת בראש MetaMask → "Add network" → "Add a network manually".</li>
+            <li>מלאו בדיוק:</li>
+            <li>Network Name: <code>BNB Smart Chain</code></li>
+            <li>RPC URL: <code>https://bsc-dataseed.binance.org/</code></li>
+            <li>Chain ID: <code>56</code></li>
+            <li>Symbol: <code>BNB</code></li>
+            <li>Block Explorer: <code>https://bscscan.com</code></li>
+            <li>שומרים. עוברים לרשת BSC.</li>
+          </ul>
+          <div class="step-tip">
+            💡 קיצור דרך: בעמוד IDO ב-PinkSale יהיה כפתור "Add to MetaMask" שמוסיף את הרשת בלחיצה אחת.
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-content">
+          <h4>שליחת BNB מהבורסה ל-MetaMask</h4>
+          <ul>
+            <li>ב-MetaMask, מעתיקים את כתובת הארנק (מתחיל ב-<code>0x...</code>).</li>
+            <li>בבורסה (Bit2C/Binance): "Withdraw" → "BNB" → <strong>חובה לבחור רשת <code>BEP20 (BSC)</code></strong>.</li>
+            <li>מדביקים את הכתובת. בודקים <strong>בעיניים</strong> ש-4 התווים הראשונים והאחרונים תואמים.</li>
+            <li>שולחים בסכום קטן ראשון (0.01 BNB) לבדיקה.</li>
+            <li>אחרי שהגיע (~30 שניות), שולחים את השאר.</li>
+          </ul>
+          <div class="step-tip">
+            ⚠️ <strong>חשוב:</strong> בחירת רשת שגויה = אובדן הכסף לחלוטין. אין refund. אין תמיכה. בדקו פעמיים ש-BEP20.
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-content">
+          <h4>כניסה ל-PinkSale ביום ה-IDO</h4>
+          <ul>
+            <li>קישור רשמי יפורסם ב-<a href="https://t.me/SLH_AIR_bot" target="_blank" style="color: var(--accent);">@SLH_AIR_bot</a>, באתר slh-nft.com, ובחשבון הרשמי.</li>
+            <li><strong>אל תיכנסו לקישורים מ-DM, מקבוצות לא רשמיות, או ממיילים.</strong> רק מהמקורות שלמעלה.</li>
+            <li>בעמוד PinkSale: "Connect Wallet" → MetaMask → אישור.</li>
+            <li>בודקים שכתובת החוזה תואמת ל-<code>0xACb0A09414CEA1C879c67bB7A877E4e19480f022</code>.</li>
+            <li>מזינים סכום BNB לתרומה (0.05–5).</li>
+            <li>"Buy" → MetaMask יציג עסקה לאישור → בודקים גז → מאשרים.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-content">
+          <h4>המתנה ל-TGE וקבלת SLH</h4>
+          <ul>
+            <li>ה-IDO רץ עד hard cap (150 BNB) או סוף הזמן (30 ימים), המוקדם מבין השניים.</li>
+            <li><strong>אם soft cap (20 BNB) לא נסגר תוך 30 ימים</strong> → PinkSale מבצע refund אוטומטי לארנק שלכם. אתם לא צריכים לעשות כלום.</li>
+            <li><strong>אם soft cap נסגר</strong> → ב-TGE (יום ה-finalize):
+              <ul>
+                <li>20% מה-SLH שלכם מועברים מיד לארנק MetaMask.</li>
+                <li>80% נשארים בחוזה ה-vesting ומשתחררים 20% בכל חודש למשך 4 חודשים.</li>
+                <li>Liquidity Pool ב-PancakeSwap נוצרת ונעולה ל-365 ימים.</li>
+              </ul>
+            </li>
+            <li>הוספת SLH ל-MetaMask: "Import tokens" → מדביקים <code>0xACb0A09414CEA1C879c67bB7A877E4e19480f022</code> → מופיע אוטומטית.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div id="participate-cta" style="text-align:center; margin-top: 36px;">
+      <a href="#" class="neural-btn neural-btn-gold" style="padding: 16px 32px; font-size: 1.05rem;" id="mainBuyBtn">
+        <i class="fas fa-rocket"></i> Buy on PinkSale (Day 14+)
+      </a>
+      <p style="color: var(--text3); font-size: .85rem; margin: 12px 0 0;">הכפתור יופעל ביום ה-14 בלוח הזמנים. עד אז — לימוד, הכנה, ושאלות.</p>
+    </div>
+  </section>
+
+  <!-- ============= NUMBERS PANEL ============= -->
+  <section class="section">
+    <h2>📊 מספרים מאומתים</h2>
+    <p class="lede">כל מספר כאן ניתן לאימות עצמאי ב-blockchain — אל תסמכו עלינו, סמכו על הקוד.</p>
+    <div class="numbers-panel-inner">
+      <div class="numbers-row">
+        <span class="label">Token Address</span>
+        <span class="value" id="tokenAddr">0xACb0A09414CEA1C879c67bB7A877E4e19480f022</span>
+        <a href="https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022" target="_blank" rel="noopener" class="verify">→ BscScan</a>
+      </div>
+      <div class="numbers-row">
+        <span class="label">Treasury Safe (BSC)</span>
+        <span class="value" id="treasuryAddr">0x9DD8aF7Ac0f601CD473422311b2942DAE9D0BD09</span>
+        <a href="https://app.safe.global/home?safe=bnb:0x9DD8aF7Ac0f601CD473422311b2942DAE9D0BD09" target="_blank" rel="noopener" class="verify">→ Safe</a>
+      </div>
+      <div class="numbers-row">
+        <span class="label">Soft Cap</span>
+        <span class="value">20 BNB · ~₪50,000</span>
+        <span class="verify">PinkSale param</span>
+      </div>
+      <div class="numbers-row">
+        <span class="label">Hard Cap</span>
+        <span class="value">150 BNB · ~₪370,000</span>
+        <span class="verify">PinkSale param</span>
+      </div>
+      <div class="numbers-row">
+        <span class="label">Token Price</span>
+        <span class="value">0.000004 BNB · ~₪0.05 / SLH</span>
+        <span class="verify">~25% discount vs market</span>
+      </div>
+      <div class="numbers-row">
+        <span class="label">Listing Price</span>
+        <span class="value">0.000005 BNB · ~₪0.066 / SLH</span>
+        <span class="verify">matches Pancake</span>
+      </div>
+      <div class="numbers-row">
+        <span class="label">Min / Max Buy</span>
+        <span class="value">0.05 / 5 BNB</span>
+        <span class="verify">per wallet</span>
+      </div>
+      <div class="numbers-row">
+        <span class="label">Vesting</span>
+        <span class="value">20% TGE + 20% × 4 חודשים</span>
+        <span class="verify">smart contract enforced</span>
+      </div>
+      <div class="numbers-row">
+        <span class="label">LP Lock</span>
+        <span class="value">365 ימים @ PinkLock (Q3 2026)</span>
+        <span class="verify">anti-rug</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============= VESTING CALENDAR ============= -->
+  <section class="section section-narrow">
+    <h2>📅 לוח שחרור Vesting — דוגמה מספרית</h2>
+    <p class="lede">השקעת 1 BNB → קיבלת 250,000 SLH. ככה הם משתחררים בפועל:</p>
+    <div class="vesting-calendar">
+      <table>
+        <thead>
+          <tr>
+            <th>תאריך</th>
+            <th>אירוע</th>
+            <th>SLH מצטבר נזיל</th>
+            <th>SLH נעול</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>יום TGE (יום 14)</td>
+            <td>20% TGE</td>
+            <td class="unlocked">50,000</td>
+            <td class="locked">200,000</td>
+          </tr>
+          <tr>
+            <td>TGE + 30 ימים</td>
+            <td>שחרור #1</td>
+            <td class="unlocked">100,000</td>
+            <td class="locked">150,000</td>
+          </tr>
+          <tr>
+            <td>TGE + 60 ימים</td>
+            <td>שחרור #2</td>
+            <td class="unlocked">150,000</td>
+            <td class="locked">100,000</td>
+          </tr>
+          <tr>
+            <td>TGE + 90 ימים</td>
+            <td>שחרור #3</td>
+            <td class="unlocked">200,000</td>
+            <td class="locked">50,000</td>
+          </tr>
+          <tr>
+            <td>TGE + 120 ימים</td>
+            <td>שחרור #4 (סופי)</td>
+            <td class="unlocked">250,000</td>
+            <td class="locked">0</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top: 16px; padding: 14px 18px; background: rgba(94, 214, 255, .06); border-radius: 8px; font-size: .9rem; color: var(--text2); line-height: 1.65;">
+      ℹ️ <strong>תרגום מספרי:</strong> אם קניתם ב-IDO ב-1 BNB ומחיר ה-listing הוא 0.000005 BNB, אתם נכנסים לרווח של 25% מיד ב-TGE על ה-50,000 הראשונים. אבל זה תיאורטי — המחיר יכול גם לרדת. אין הבטחות.
+    </div>
+  </section>
+
+  <!-- ============= TAX (ISRAELI) ============= -->
+  <section class="section section-narrow" id="tax">
+    <div class="tax-section">
+      <h3><i class="fas fa-coins"></i> מס בישראל — מה צריך לדעת</h3>
+      <p style="color: var(--text2); margin: 0 0 14px; line-height: 1.65;">
+        רשות המסים בישראל רואה ב-SLH ובכל מטבע קריפטו <strong>"נכס" לעניין מס רווחי הון</strong>. מס לא חל בקנייה, רק במכירה / מימוש לרווח.
+      </p>
+
+      <table>
+        <thead>
+          <tr><th>פעולה</th><th>חבות מס</th><th>שיעור</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>קניית SLH ב-IDO</td><td>אין מס</td><td>—</td></tr>
+          <tr><td>החזקת SLH (גם כשהמחיר עולה)</td><td>אין מס (טרם מומש)</td><td>—</td></tr>
+          <tr><td>מכירת SLH ברווח (בכסף או טוקן אחר)</td><td>מס רווחי הון</td><td>25% על הרווח (משקיע פרטי)</td></tr>
+          <tr><td>קבלת SLH כתשלום עבור עבודה</td><td>מס הכנסה רגיל</td><td>מדרגות מס (10%-50%)</td></tr>
+          <tr><td>airdrop / staking rewards</td><td>מס הכנסה ביום הקבלה</td><td>מדרגות מס + מס הון בעת מכירה</td></tr>
+        </tbody>
+      </table>
+
+      <h5 style="color: #7eb6e8; margin: 18px 0 8px;">💼 חובת דיווח</h5>
+      <ul style="color: var(--text2); font-size: .92rem; line-height: 1.7; padding-inline-start: 22px;">
+        <li>אם בעלת/בעל חשבון קריפטו עם פעילות → חובה להגיש <strong>דוח שנתי 1301</strong>.</li>
+        <li>חובת דיווח על כל עסקה > <strong>₪50,000</strong> תוך 30 ימים (טופס 5329).</li>
+        <li>אי-דיווח = עבירה פלילית. מס הכנסה רואה את כל ההפקדות מהבנק לבורסות.</li>
+      </ul>
+
+      <h5 style="color: #7eb6e8; margin: 18px 0 8px;">🧮 חישוב רווח לדוגמה</h5>
+      <p style="color: var(--text2); font-size: .92rem; line-height: 1.7;">
+        קניתם 100,000 SLH ב-IDO ב-0.4 BNB (~₪1,000). מכרתם 6 חודשים אחרי ב-0.6 BNB (~₪1,500). <strong>הרווח: ₪500. המס: ₪125 (25%).</strong> שאר ה-₪1,375 — שלכם.
+      </p>
+
+      <div class="tax-disclaimer">
+        ⚠️ <strong>זה לא ייעוץ מס.</strong> כל מקרה ייחודי. אם הסכומים גדולים (>₪50,000), חובה להתייעץ עם רואה חשבון שמתמחה בקריפטו. אנחנו ממליצים על <a href="mailto:osif.erez.ungar@gmail.com" style="color: var(--accent);">תיאום ייעוץ</a> — נחבר אתכם.
+      </div>
+    </div>
+  </section>
+
+  <!-- ============= KYC ============= -->
+  <section class="section section-narrow" id="kyc">
+    <div class="kyc-section">
+      <h3><i class="fas fa-id-card"></i> KYC — האמת המלאה</h3>
+      <p style="color: var(--text2); margin: 0 0 14px; line-height: 1.65;">
+        זה הנושא שהכי הרבה ישראלים שואלים עליו. ננתק את החיבורים בין 4 רמות KYC שונות:
+      </p>
+
+      <div class="kyc-grid">
+        <div class="kyc-cell">
+          <h5>1. KYC ברמת הפרוטוקול (PinkSale + IDO)</h5>
+          <p><strong>אין.</strong> הקונטרקט מקבל BNB מכל ארנק שמתחבר. אין צורך בתעודת זהות, פספורט, או סלפי לפני הרכישה.</p>
+        </div>
+
+        <div class="kyc-cell">
+          <h5>2. סינון ארנקים (אנחנו מבצעים)</h5>
+          <p>כל ארנק שתורם נסרק אוטומטית מול: רשימות OFAC, Chainabuse, ו-cluster analysis. ארנק שעולה כחשוד — נחסם מיד.</p>
+        </div>
+
+        <div class="kyc-cell">
+          <h5>3. KYC של הבורסה הישראלית (Bit2C/בנק)</h5>
+          <p><strong>קיים, חובה.</strong> Bit2C, Binance, וכל בנק בישראל דורשים אימות זהות לפני הפקדת שקלים. <em>זה</em> ה-KYC ש-99% מהציבור הישראלי כבר עבר.</p>
+        </div>
+
+        <div class="kyc-cell">
+          <h5>4. הצהרה לרשות המסים</h5>
+          <p>לא טכנית "KYC", אבל חובה חוקית. מס הכנסה <em>יודע</em> שהעברתם כסף לבורסות. חובה לדווח על רווחים. אי-דיווח = עבירה.</p>
+        </div>
+      </div>
+
+      <h5 style="color: #d4a5ff; margin: 20px 0 8px;">✅ למה אנחנו לא דורשים KYC ברמת הפרוטוקול?</h5>
+      <ul style="color: var(--text2); font-size: .92rem; line-height: 1.7; padding-inline-start: 22px;">
+        <li><strong>פילוסופית:</strong> DeFi מבוסס על "הקוד הוא הסמכות" — KYC ברמת המשתמש סותר את זה.</li>
+        <li><strong>חוקית:</strong> SLH Spark (ישות משפטית בתהליך) לא מחויב ב-KYC בניגוד לישות אמריקאית.</li>
+        <li><strong>בטיחותית:</strong> אנחנו לא רוצים להחזיק תעודות זהות של ישראלים בשרתים שלנו. זה risk surface.</li>
+        <li><strong>פרקטית:</strong> סינון ארנקים מסנן 99% מהאיומים. KYC ברמת המשתמש לא היה מוסיף הרבה — רק חיכוך.</li>
+        <li><strong>עקבית:</strong> כל מי שתורם BNB <em>כבר</em> עבר KYC בבורסה הישראלית שלו. למה לעשות פעמיים?</li>
+      </ul>
+
+      <h5 style="color: #d4a5ff; margin: 18px 0 8px;">⚖️ חלוקה החוקית של אחריות</h5>
+      <p style="color: var(--text2); font-size: .92rem; line-height: 1.7;">
+        SLH, כישות מ-Marshall Islands, מספקת תשתית. <strong>חבות המס שלכם בישראל</strong> היא בין כל אזרח ישראלי לרשות המסים. אנחנו לא נדבר עם רשות המסים בשמכם, ולא נסתיר מידע. הבלוקצ'יין הוא <em>פומבי</em> — כל עסקה ניתנת לאיתור.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============= RISK DISCLOSURE ============= -->
+  <section class="section section-narrow" id="risk">
+    <div class="risk-section">
+      <h2>⚠️ סיכונים — פירוט מלא</h2>
+      <p style="color: var(--text2); margin: 0 0 18px; font-size: .96rem; line-height: 1.65;">
+        PinkSale + audit + LP lock = הגנה חזקה. אבל זה לא מסיר את כל הסיכונים. הנה כל מה שיכול ללכת לא טוב, בלי "שטויות":
+      </p>
+
+      <div class="risk-card">
+        <h4>1. סיכון אובדן הון מלא</h4>
+        <p>ערך SLH יכול לרדת לאפס. אם הקהילה לא בונה ערך, אם השוק קורס, אם יש באג — הטוקן יכול להיות שווה $0. <strong>לעולם אל תשקיעו כסף שלא תוכלו להפסיד</strong>.</p>
+      </div>
+
+      <div class="risk-card">
+        <h4>2. סיכון Smart Contract</h4>
+        <p>גם חוזים שעברו audit ע"י SolidProof (Q3 2026) יכולים להכיל באגים שלא נתגלו. הספרות ב-DeFi מלאה ב-exploits של חוזים "בתהליך audit". audit היא הגנה — לא הוכחה.</p>
+      </div>
+
+      <div class="risk-card">
+        <h4>3. סיכון רגולטורי בישראל</h4>
+        <p>רשות ניירות ערך בישראל יכולה בכל רגע להחליט ש-SLH הוא "נייר ערך" — מה שיגביל את הסחירות שלו, יחייב רישוי, או יחסום בורסות ישראליות מלסחור בו. אנחנו לא יכולים להבטיח שזה לא יקרה.</p>
+      </div>
+
+      <div class="risk-card">
+        <h4>4. סיכון רגולטורי בינלאומי</h4>
+        <p>SEC האמריקאית הצהירה שרוב ה-IDOs נחשבים ניירות ערך לא רשומים. גם אם אנחנו מ-Marshall Islands, פעילות בארה"ב אסורה. אם תושב אמריקאי משתתף — זה הסיכון שלו.</p>
+      </div>
+
+      <div class="risk-card">
+        <h4>5. תנודתיות שוק קריפטו</h4>
+        <p>BNB עצמו תנודתי. SLH הרבה יותר. ירידה של 50% תוך שבוע היא אירוע רגיל בקריפטו. אם זה גורם לכם להפסיק לישון בלילה — סימן שהשקעתם יותר ממה שצריך.</p>
+      </div>
+
+      <div class="risk-card">
+        <h4>6. סיכון Vesting (4 חודשים נעילה)</h4>
+        <p>80% מה-SLH שלכם נעולים. אם המחיר נופל, אתם <em>לא יכולים</em> למכור הכל. רק 20% כל חודש. זה מגן עליכם מפני dump pressure, אבל גם חוסם מימוש מהיר.</p>
+      </div>
+
+      <div class="risk-card">
+        <h4>7. סיכון Soft Cap לא נסגר</h4>
+        <p>אם פחות מ-20 BNB יגויסו ב-30 ימים — refund אוטומטי. אבל בינתיים, הכסף שלכם יושב ב-PinkSale. אתם לא תקבלו ריבית, ואין לכם BNB לעסקאות אחרות בתקופה זו.</p>
+      </div>
+
+      <div class="risk-card">
+        <h4>8. סיכון Phishing וגניבת ארנקים</h4>
+        <p>הסיכון הכי גדול בקריפטו אינו טכנולוגי — הוא חברתי. אנשים שולחים את ה-seed שלהם ל"תמיכה" וזהו. <strong>אנחנו לעולם לא נבקש את ה-seed שלכם. אנחנו לעולם לא נשלח לכם DM.</strong> אם מישהו טוען שהוא "Osif" או "תמיכת SLH" — זאת הונאה.</p>
+      </div>
+
+      <div class="risk-card">
+        <h4>9. סיכון בחירת רשת שגויה</h4>
+        <p>אם אתם שולחים BNB לארנק ב-ERC20 במקום BEP20 — הכסף נעלם. אין refund. אין שחזור. בדקו פעמיים לפני כל העברה.</p>
+      </div>
+
+      <div class="risk-card">
+        <h4>10. סיכון ספקים חיצוניים</h4>
+        <p>חלק מהבוטים שלנו תלויים ב-AI חיצוני (Anthropic, OpenAI, Telegram). אם החברות האלו ייפלו או יחסמו אותנו — שירותים מסוימים עלולים להיפגע. הטוקן עצמו לא תלוי בהם, אבל ה-UX יכול להשתנות.</p>
+      </div>
+
+      <div class="non-negotiable">
+        <strong>📵 לא זמין במדינות סנקציות OFAC:</strong> ארה"ב, איראן, צפון קוריאה, סוריה, קובה, ואזורים מסוימים ברוסיה. גילוי הסיכון הזה הוא לא אופציונלי — הוא חלק חוקי מההצעה. אם אתם תושבי אחת מהמדינות הללו, אסור לכם להשתתף.
+      </div>
+    </div>
+  </section>
+
+  <!-- ============= SCAM WARNINGS ============= -->
+  <section class="section section-narrow">
+    <div class="scam-section">
+      <h3><i class="fas fa-shield-halved"></i> 8 סימני הונאה שתראו השבוע — אל תיפלו</h3>
+      <p style="color: var(--text2); margin: 0 0 18px; line-height: 1.65;">בכל השקת IDO מצליחה, ימים אחר כך מתחילים scammers שמנסים להתחזות אלינו. רשימה מבוססת מציאות:</p>
+
+      <ul class="scam-list">
+        <li><strong>"שלח לארנק 0x... ותקבל 2x":</strong> זאת תמיד הונאה. PinkSale הרשמי לא דורש שום שליחה ידנית — תמיד דרך הקונטרקט.</li>
+        <li><strong>DM מ"Osif" / "תמיכת SLH":</strong> אנחנו לא שולחים DMs. אף פעם. נקודה. אם קיבלתם — זה scammer.</li>
+        <li><strong>"חברת השקעות SLH" שמתקשרת בטלפון:</strong> אנחנו לא מתקשרים. הכל דרך @SLH_AIR_bot או האתר.</li>
+        <li><strong>אתר "slh-nft-airdrop.com" / "slh-presale.io":</strong> רק <code>slh-nft.com</code> רשמי. כל וריאציה אחרת = הונאה.</li>
+        <li><strong>"הירשם לקבל SLH חינם, רק שלם 0.1 BNB":</strong> אם משלמים — זה לא חינם. הונאה.</li>
+        <li><strong>קבוצת Telegram "SLH Official VIP":</strong> אם הקישור לא מהאתר הרשמי — מזויפת.</li>
+        <li><strong>"אסיף שלח לי לבדוק את הארנק שלך — שלח seed phrase":</strong> זה כמו לבקש סיסמה לבנק. אנחנו לעולם לא נבקש.</li>
+        <li><strong>"רכישה מקדימה ב-WhatsApp ב-50% הנחה":</strong> אין רכישה מקדימה. רק PinkSale הרשמי. הכל מתועד on-chain.</li>
+      </ul>
+
+      <p style="color: var(--text2); font-size: .92rem; line-height: 1.65; margin-top: 14px;">
+        💬 <strong>אם משהו נראה חשוד — שלחו לנו צילום מסך ב-<a href="https://t.me/SLH_AIR_bot" target="_blank" style="color: #fbbf24;">@SLH_AIR_bot</a> לפני שאתם פועלים.</strong> נאמת תוך דקות.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============= VERIFY YOURSELF ============= -->
+  <section class="section section-narrow">
+    <div class="verify-section">
+      <h3><i class="fas fa-magnifying-glass"></i> וריפיקציה עצמית — אל תסמוך עלינו</h3>
+      <p style="color: var(--text2); margin: 0 0 18px; line-height: 1.65;">כל מה שאנחנו טוענים ניתן לאימות עצמאי ב-blockchain. זה היופי של DeFi. checklist לפני שאתם משקיעים:</p>
+
+      <ul class="verify-list">
+        <li>
+          <strong>1. בדקו שכתובת ה-Token Contract הנכונה</strong>
+          קישור: <a href="https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022" target="_blank" rel="noopener">BscScan Token Page</a>.
+          בדקו: כתובת = <code>0xACb0A09414CEA1C879c67bB7A877E4e19480f022</code>, Symbol = <code>SLH</code>, Decimals = <code>15</code>.
+        </li>
+
+        <li>
+          <strong>2. בדקו Holders ו-Total Supply</strong>
+          ב-BscScan, בלשונית "Holders" ראו כמה ארנקים מחזיקים SLH. אם יש ארנק שמחזיק > 50% — זה דגל אדום.
+        </li>
+
+        <li>
+          <strong>3. בדקו את ה-Treasury Safe</strong>
+          <a href="https://app.safe.global/home?safe=bnb:0x9DD8aF7Ac0f601CD473422311b2942DAE9D0BD09" target="_blank" rel="noopener">Gnosis Safe (בתהליך הקמה) Treasury</a>.
+          בדקו: signers ≥ 2/3, threshold ≥ 2 (לא 1/1).
+        </li>
+
+        <li>
+          <strong>4. בדקו את Audit הדוח (כשיתפרסם, יום 12)</strong>
+          הקישור יופיע ב-trust panel למעלה.
+          קראו: סיווג severity (אין critical/high), date, חתימת SolidProof (Q3 2026).
+        </li>
+
+        <li>
+          <strong>5. בדקו LP Lock (יום 14, אחרי ה-launch)</strong>
+          ב-PinkLock (Q3 2026), חפשו את כתובת ה-LP token. בדקו: lock duration ≥ 365 days.
+        </li>
+
+        <li>
+          <strong>6. בדקו את MIDAO Certificate</strong>
+          <a href="https://midao.org/" target="_blank" rel="noopener">midao.org</a> — חפשו "SLH Sovereign DAO LLC". בדקו: status = Active.
+        </li>
+
+        <li>
+          <strong>7. בדקו פעילות PinkSale Profile</strong>
+          ה-launchpad הרשמי שלנו. בדקו: KYC tag = ✅, audit score, contract verified.
+        </li>
+
+        <li>
+          <strong>8. בדקו את החוזה ב-BscScan — Verified Source Code</strong>
+          ב-BscScan, לחצו "Contract" → "Code". אם רואים Solidity קריא = ✅. אם bytecode בלבד = דגל אדום.
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============= FAQ (EXPANDED) ============= -->
+  <section class="section section-narrow" id="faq">
+    <h2>❓ שאלות נפוצות — מקיף</h2>
+    <p class="lede">25+ שאלות שישראלים שאלו אותנו השבוע. אם השאלה שלכם לא כאן — שלחו לנו ב-<a href="https://t.me/SLH_AIR_bot" target="_blank" style="color: var(--accent);">@SLH_AIR_bot</a>.</p>
+
+    <div class="faq-grid">
+
+      <div class="faq-category">הבסיס</div>
+
+      <details class="faq-item">
+        <summary>מה זה SLH ולמה שאני אקנה?</summary>
+        <div class="faq-body">
+          <p>SLH הוא טוקן BEP-20 על Binance Smart Chain שמשמש כטוקן הבסיס של אקוסיסטם SLH Spark — פלטפורמת השקעות מבוזרת עם כלים לסחר, ניתוח, ובוטים אוטומטיים. אנחנו <strong>לא</strong> מבטיחים תשואה — מי שקונה מאמין שהקהילה תבנה ערך לאורך זמן.</p>
+          <p>קוראים יותר ב-<a href="/whitepaper.html">Whitepaper</a>.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>מה זה SLH Spark (ישות משפטית בתהליך)?</summary>
+        <div class="faq-body">
+          <p>ישות משפטית רשומה ברפובליקת איי מרשל. תחת חוק ה-MIDAO (2022), DAO יכולה להיות LLC עם הכרה רשמית בינלאומית.</p>
+          <ul>
+            <li>הכרה משפטית של הקהילה כיישות חוקית</li>
+            <li>אין מס חברות במרשל איילנדס</li>
+            <li>פרטיות חברים — לא חובה לפרסם שמות</li>
+            <li>נמוך-ביצוע ל-DeFi (בניגוד למדינות עם רגולציית ניירות ערך אגרסיבית)</li>
+          </ul>
+          <p>תעודת רישום תפורסם ב-trust panel ביום 8 בלוח הזמנים.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>למה דרך PinkSale ולא בוט עצמאי?</summary>
+        <div class="faq-body">
+          <p>PinkSale היא הפלטפורמה המוכרת ביותר ב-BSC ל-IDO. הסיבות:</p>
+          <ul>
+            <li>הקוד עבר audit ופעלו 8000+ launches מוצלחות</li>
+            <li>refund אוטומטי אם soft cap לא נסגר — בנוי בקוד שלהם</li>
+            <li>anti-bot מובנה — מונע bots שגונבים allocations</li>
+            <li>vesting + LP lock אוטומטיים</li>
+            <li>אנחנו <em>לא</em> מנהלים את הכסף — PinkSale + הקונטרקט מנהלים</li>
+          </ul>
+          <p>גם אם אנחנו פתאום נעלמים, הקוד של PinkSale עדיין יחזיר לכם את הכסף.</p>
+        </div>
+      </details>
+
+      <div class="faq-category">ארנקים ועסקאות</div>
+
+      <details class="faq-item">
+        <summary>איזה ארנק מומלץ — MetaMask או Trust Wallet?</summary>
+        <div class="faq-body">
+          <p><strong>למחשב:</strong> MetaMask (תוסף לדפדפן). יותר נוח עם PinkSale.</p>
+          <p><strong>לטלפון:</strong> Trust Wallet או MetaMask Mobile. שניהם תומכים ב-BSC native.</p>
+          <p>שניהם open source ונבדקים ע"י הקהילה. בטוחים אם שומרים על ה-seed phrase.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>אם אאבד את הטלפון/מחשב, מה קורה?</summary>
+        <div class="faq-body">
+          <p>אם יש לכם את ה-seed phrase (12 המילים שכתבתם על נייר) — תורידו MetaMask על מכשיר חדש, "Import wallet", הזינו את 12 המילים, וכל הכסף חזרה. הארנק לא "מחזיק" את הכסף — הבלוקצ'יין מחזיק.</p>
+          <p><strong>אם איבדתם את ה-seed phrase</strong> — אין דרך לשחזר. הכסף אבוד לנצח. זאת הסיבה שצריך לשמור פיזית בכספת.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>כמה זה עולה לשלוח BNB מהבורסה לארנק?</summary>
+        <div class="faq-body">
+          <p>ב-Bit2C: עמלה של 0.0005-0.001 BNB (~₪1-2.5).<br>ב-Binance: 0.0005 BNB (~₪1.2).</p>
+          <p>זמן: 30 שניות עד 3 דקות.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>מה אם שלחתי BNB לרשת ERC20 במקום BEP20?</summary>
+        <div class="faq-body">
+          <p>תרחיש כואב. ב-90% מהמקרים — הכסף אבוד לנצח. רק אם אתם מומחי קריפטו תוכלו לנסות "bridge" אבל זה מסובך ולפעמים לא עובד.</p>
+          <p><strong>הפתרון:</strong> תמיד תשלחו ניסיון של 0.01 BNB ראשון. אם הגיע — שלחו את השאר. אם לא הגיע — עצרו מיד.</p>
+        </div>
+      </details>
+
+      <div class="faq-category">מס ו-KYC בישראל</div>
+
+      <details class="faq-item">
+        <summary>מס הכנסה יודע שקניתי SLH?</summary>
+        <div class="faq-body">
+          <p>כן, באופן עקיף. מס הכנסה רואה כל הפקדה לבורסה ישראלית או בינלאומית מהבנק שלכם. ברגע שהפקדתם ₪1,000 ל-Bit2C, מס הכנסה יודע שאתם קונים קריפטו.</p>
+          <p>אבל — מס הכנסה לא יודע ספציפית מה קניתם, ולא איפה זה היום. עד שאתם מוכרים ברווח (אז חייב לדווח).</p>
+          <p>הבלוקצ'יין הוא פומבי, אז ברמה תיאורטית כל אחד יכול לאתר עסקאות. בפועל — רק אם יש חקירה ספציפית.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>חייב לדווח על קניית SLH ב-IDO?</summary>
+        <div class="faq-body">
+          <p><strong>לא בקנייה.</strong> מס מוחל רק במכירה ברווח.</p>
+          <p>אבל — אם אתם <em>כבר</em> מגישים דוח שנתי (1301), חובה לכלול את כל הקריפטו שלכם בנספח טופס 1322 (פירוט נכסים בחו"ל).</p>
+          <p>אם אתם שכירים שלא הגשו דוח שנתי לפני, וזה מתחיל ב-2026 — תצטרכו לפתוח תיק במס הכנסה.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>מה השיעור המס בדיוק?</summary>
+        <div class="faq-body">
+          <ul>
+            <li><strong>משקיע פרטי</strong> — 25% על הרווח.</li>
+            <li><strong>"סוחרים מקצועיים"</strong> (מעל 100 עסקאות בשנה, פעילות יום-יומית) — מס הכנסה רגיל לפי מדרגות (10%-50%).</li>
+            <li><strong>פטור</strong> — אין פטור הוני בקריפטו (בניגוד לאופציות עובדים).</li>
+            <li><strong>הפסדים</strong> — ניתנים לקיזוז מול רווחים אחרים בקריפטו (לא מול שכר).</li>
+          </ul>
+          <p>זה לא ייעוץ מס. הסכום שלכם משפיע על הסיווג. רואה חשבון = חובה אם הסכומים גדולים.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>למה אתם לא דורשים KYC?</summary>
+        <div class="faq-body">
+          <p>5 סיבות:</p>
+          <ul>
+            <li><strong>פילוסופית</strong> — DeFi מבוסס על "הקוד הוא הסמכות". KYC ברמת המשתמש סותר את זה.</li>
+            <li><strong>חוקית</strong> — SLH Spark (ישות משפטית בתהליך) לא מחויב ב-KYC (בניגוד לישות אמריקאית).</li>
+            <li><strong>בטיחותית</strong> — אנחנו לא רוצים להחזיק תעודות זהות של ישראלים בשרתים שלנו.</li>
+            <li><strong>פרקטית</strong> — סינון ארנקים מסנן 99% מהאיומים.</li>
+            <li><strong>עקבית</strong> — כל מי שתורם BNB <em>כבר</em> עבר KYC בבורסה הישראלית שלו.</li>
+          </ul>
+          <p>אבל — אנחנו <em>כן</em> סורקים כל ארנק תורם מול רשימות OFAC ו-Chainabuse.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>אני אזרח ישראלי. זה חוקי לי לקנות?</summary>
+        <div class="faq-body">
+          <p>כן. אין שום חוק בישראל שאוסר על אזרחים לקנות טוקנים זרים. רשות ניירות ערך עוסקת בהיצע <em>לציבור הישראלי</em> מצד מי שמציע — לא בקנייה אישית.</p>
+          <p>חובה לדווח על רווחים. אסור (וגם לא ייעשה) להעביר דרך מערך תשלומים שאסור.</p>
+        </div>
+      </details>
+
+      <div class="faq-category">ה-IDO עצמו</div>
+
+      <details class="faq-item">
+        <summary>מה קורה אם soft cap לא נסגר?</summary>
+        <div class="faq-body">
+          <p>אם פחות מ-20 BNB יגויסו תוך 30 ימים — PinkSale מבצע <strong>refund אוטומטי</strong>. אין פעולה נדרשת מצדכם — הקונטרקט מבצע אוטומטית.</p>
+          <p>הכסף יחזור לאותו ארנק שתרם, באותה רשת (BSC).</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>אני יכול למכור מיד אחרי TGE?</summary>
+        <div class="faq-body">
+          <p>רק 20% מה-SLH שלכם — אותם תוכלו למכור מיד ב-PancakeSwap.</p>
+          <p>שאר ה-80% נעולים בחוזה ה-vesting:</p>
+          <ul>
+            <li>+30 ימים: שחרור 20% נוספים</li>
+            <li>+60 ימים: שחרור 20% נוספים</li>
+            <li>+90 ימים: שחרור 20% נוספים</li>
+            <li>+120 ימים: שחרור 20% אחרונים (סך הכל 100%)</li>
+          </ul>
+          <p>זה מגן עליכם מפני "dump pressure" — אם 100 משקיעים יוכלו למכור הכל מיד, המחיר היה נופל ב-90%.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>איפה הכסף שגויס הולך?</summary>
+        <div class="faq-body">
+          <p>פיצול 50/50:</p>
+          <ul>
+            <li><strong>50% → Liquidity Pool ב-PancakeSwap</strong>, נעולים 365 ימים. זה מאפשר את הסחירות החופשית של SLH.</li>
+            <li><strong>50% → DAO Treasury</strong> ב-<a href="https://app.safe.global/home?safe=bnb:0x9DD8aF7Ac0f601CD473422311b2942DAE9D0BD09" target="_blank">Gnosis Safe (בתהליך הקמה) (multisig 2/3)</a>. כל משיכה דורשת 2 חתימות + audit log on-chain.</li>
+          </ul>
+          <p>שימוש ב-treasury: שכר מפתחים, תשתית (servers, audits), שיווק. כל הוצאה > $5,000 דורשת אישור מסיבת DAO.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>מי בודק את הקוד?</summary>
+        <div class="faq-body">
+          <p><strong>SolidProof (Q3 2026)</strong> — חברת audit נחשבת המוכרת ע"י PinkSale. הדוח מתפרסם פומבית 48 שעות לפני go-live.</p>
+          <p>בנוסף:</p>
+          <ul>
+            <li>הקוד פורסם ב-BscScan כ-"verified contract" — כל אחד יכול לקרוא</li>
+            <li>הקהילה ב-Telegram יכולה להציע bug bounty (עד $500 על באג חמור)</li>
+            <li>אנחנו משתמשים בתבניות OpenZeppelin תקניות — לא קוד מאפס</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>איך אני יודע שזה לא רוג פול (rug pull)?</summary>
+        <div class="faq-body">
+          <p>4 שכבות הגנה verifiable on-chain:</p>
+          <ul>
+            <li><strong>Audit ע"י SolidProof (Q3 2026)</strong> — דוח public</li>
+            <li><strong>LP lock מתוכנן (Q3 2026) ימים ב-PinkLock (Q3 2026)</strong> — אי אפשר לסגור את ה-pool</li>
+            <li><strong>Treasury ב-Gnosis Safe (בתהליך הקמה) multisig (2/3)</strong> — שום משיכה ללא 2 חתימות</li>
+            <li><strong>Vesting אוטומטי</strong> — הצוות לא יכול לדלג. הכל מקודד בחוזה.</li>
+          </ul>
+          <p>זה לא מבטל את הסיכון, אבל הופך rug pull טכני לבלתי אפשרי. הסיכון שנשאר: שהקהילה לא תבנה ערך, ושהמחיר ירד.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>מה אם PinkSale עצמה תיפול?</summary>
+        <div class="faq-body">
+          <p>PinkSale פעלה מ-2021, יותר מ-8000 launches, ואין דיווחים על rug pulls מהפלטפורמה עצמה. אבל סיכון תיאורטי קיים.</p>
+          <p>גם אם PinkSale תיפול אחרי שה-IDO סגור: ה-LP נעול ב-PinkLock (Q3 2026) (חברה נפרדת). הטוקנים שלכם בארנק שלכם. ה-vesting רץ על חוזה עצמאי.</p>
+        </div>
+      </details>
+
+      <div class="faq-category">תפעול ואחרי ה-IDO</div>
+
+      <details class="faq-item">
+        <summary>איך אני רואה כמה SLH יש לי?</summary>
+        <div class="faq-body">
+          <p>3 דרכים:</p>
+          <ul>
+            <li><strong>ב-MetaMask:</strong> "Import tokens" → הדביקו <code>0xACb0A09414CEA1C879c67bB7A877E4e19480f022</code> → ה-SLH יופיע אוטומטית.</li>
+            <li><strong>ב-BscScan:</strong> חפשו את כתובת הארנק שלכם → "Token Holdings" → SLH.</li>
+            <li><strong>בפלטפורמה שלנו:</strong> dashboard.html — מציג גם vesting schedule.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>איך מוכרים SLH אחרי TGE?</summary>
+        <div class="faq-body">
+          <p>נכנסים ל-<a href="https://pancakeswap.finance/" target="_blank">PancakeSwap</a> → connect wallet → swap → SLH ל-BNB. עמלה: 0.25%.</p>
+          <p>שימו לב — מוכרים את ה-SLH הנזיל בלבד. את הנעולים אי אפשר למכור עד שמשתחררים.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>אם המחיר נופל אחרי TGE, מה אני עושה?</summary>
+        <div class="faq-body">
+          <p>זאת החלטה אישית. אופציות:</p>
+          <ul>
+            <li><strong>HODL</strong> — להחזיק ולחכות. אם אתם מאמינים בפרויקט.</li>
+            <li><strong>למכור את הנזיל</strong> ולשמור את הנעול — לקצור הפסד חלקי.</li>
+            <li><strong>לקזז הפסדים מס</strong> — אם הפסדתם, ניתן לקזז מול רווחים בקריפטו.</li>
+          </ul>
+          <p>אנחנו לא ייעוץ פיננסי. אנחנו ספקי תשתית.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>מתי אהיה חופשי מ-vesting לחלוטין?</summary>
+        <div class="faq-body">
+          <p>120 ימים אחרי TGE. נניח TGE ב-15 במאי 2026 → vesting מסתיים ב-12 בספטמבר 2026.</p>
+          <p>אז ולא לפני אז — תוכלו למכור 100% מה-SLH שלכם.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>יש לכם תוכנית להעלות את המחיר אחרי TGE?</summary>
+        <div class="faq-body">
+          <p>אנחנו <strong>לא יכולים ולא רוצים</strong> להבטיח עליות. הדבר היחיד שאנחנו מבטיחים:</p>
+          <ul>
+            <li>לעבוד על המוצרים (פלטפורמה, בוטים, אקדמיה)</li>
+            <li>לא למכור את ה-SLH של הצוות (שלנו ב-vesting ארוך יותר ממכם — 12 חודשים)</li>
+            <li>שקיפות מלאה — כל המהלכים האסטרטגיים מתפרסמים</li>
+          </ul>
+          <p>המחיר ייקבע לפי השוק. תוכלו לבדוק בכל רגע ב-PancakeSwap.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>איך אני יוצר קשר אם יש בעיה?</summary>
+        <div class="faq-body">
+          <p>3 דרכים רשמיות:</p>
+          <ul>
+            <li><strong>Telegram:</strong> <a href="https://t.me/SLH_AIR_bot" target="_blank">@SLH_AIR_bot</a> — תוך 24 שעות תגובה.</li>
+            <li><strong>Email:</strong> <a href="mailto:osif.erez.ungar@gmail.com">osif.erez.ungar@gmail.com</a></li>
+            <li><strong>Founder Telegram:</strong> <a href="https://t.me/osifeu_prog" target="_blank">@osifeu_prog</a> — לבעיות דחופות בלבד.</li>
+          </ul>
+          <p><strong>אנחנו לעולם לא נשלח לכם DM ראשון.</strong> אם מישהו "מ-SLH" שלח לכם DM שלא ביקשתם — זה scammer.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>אתם מתכננים להירשם בישראל בעתיד?</summary>
+        <div class="faq-body">
+          <p>לא בעתיד הקרוב. רגולציה ישראלית על קריפטו עדיין לא בשלה. רישום בישראל היה מעלה עלויות תפעול ומגביל את DeFi nature.</p>
+          <p>Marshall Islands הוא standard בעולם DAO. אם הרגולציה הישראלית תשתנה ותהיה ברורה (sandbox, license מובהק), נשקול.</p>
+        </div>
+      </details>
+
+    </div>
+  </section>
+
+  <!-- ============= HELP / CONTACT ============= -->
+  <section class="section section-narrow">
+    <div class="help-section">
+      <h2>🤝 צריכים עזרה? לא בטוחים? שאלו לפני שמשקיעים</h2>
+      <p>הסקציות למעלה לא תמיד עונות על הכל. השאלה שלכם <em>לגיטימית</em> — לא חשוב כמה היא בסיסית. עדיף לשאול 5 פעמים ולהשקיע בטוח, מלהשקיע מבולבל ולהפסיד.</p>
+      <div class="help-cta-row">
+        <a href="https://t.me/SLH_AIR_bot" target="_blank" class="neural-btn neural-btn-gold" style="padding: 14px 28px;">
+          <i class="fab fa-telegram"></i> @SLH_AIR_bot
+        </a>
+        <a href="mailto:osif.erez.ungar@gmail.com" class="neural-btn neural-btn-ghost" style="padding: 14px 28px;">
+          <i class="fas fa-envelope"></i> Email
+        </a>
+        <a href="/whitepaper.html" class="neural-btn neural-btn-ghost" style="padding: 14px 28px;">
+          <i class="fas fa-file-lines"></i> Whitepaper
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="ido-footer">
+    <div style="margin-bottom: 12px;">
+      <a href="/">SLH Spark</a> ·
+      <a href="/whitepaper.html">Whitepaper</a> ·
+      <a href="https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022" target="_blank">BscScan</a> ·
+      <a href="https://t.me/SLH_AIR_bot" target="_blank">Telegram</a> ·
+      <a href="/disclosure.html">Risk Disclosure</a> ·
+      <a href="/founder.html">Founder Panel</a>
+    </div>
+    <div class="legal">
+      Operated by SLH Sovereign DAO LLC, Republic of the Marshall Islands (MIDAO (בתהליך רישום)).
+      Not available in OFAC-restricted jurisdictions. Not investment advice. Smart contracts on Binance Smart Chain · Audit בתהליך (Q3 2026) · LP lock מתוכנן (Q3 2026) at PinkLock (Q3 2026).
+      <br>
+      התוכן באתר זה איננו מהווה ייעוץ השקעות, ייעוץ מס, או המלצה לרכישה. כל השקעה בקריפטו טומנת בחובה סיכון של אובדן ההון. התייעצו עם רואה חשבון לפני השקעה.
+      <br>
+      © 2026 SLH Spark · SPARK IND · Built in Israel
+    </div>
+  </footer>
+
+  <script>
+    const API = 'https://slh-api-production.up.railway.app';
+    const SOFT_CAP = 20;
+
+    async function refreshIDOStatus() {
+      try {
+        const r = await fetch(API + '/api/ido/status');
+        if (!r.ok) throw new Error('status ' + r.status);
+        const d = await r.json();
+        const total = parseFloat(d.total_raised_bnb || 0);
+        const pct = (total / SOFT_CAP) * 100;
+
+        document.getElementById('raisedBnb').textContent = total.toFixed(2) + ' BNB';
+        document.getElementById('raisedPct').textContent = d.soft_cap_met ? '✓ Soft cap met' : pct.toFixed(1) + '% of soft';
+        document.getElementById('barFill').style.width = Math.min(100, pct) + '%';
+        document.getElementById('participants').textContent = (d.unique_participants || 0) + ' contributors';
+
+        if (d.milestones && d.milestones.ido_started && d.milestones.ido_started.target) {
+          const target = d.milestones.ido_started.target.target_date;
+          if (target) {
+            const days = Math.ceil((new Date(target) - new Date()) / 86400000);
+            const buyCta = document.getElementById('buyCta');
+            const mainBtn = document.getElementById('mainBuyBtn');
+            if (days > 0) {
+              document.getElementById('timeLeft').textContent = days + ' days to launch';
+              if (buyCta) buyCta.innerHTML = '<i class="fas fa-rocket"></i> Buy on PinkSale (Day ' + days + ')';
+              if (mainBtn) mainBtn.innerHTML = '<i class="fas fa-rocket"></i> Buy on PinkSale (Day ' + days + ')';
+            } else {
+              document.getElementById('timeLeft').textContent = 'IDO LIVE';
+              if (buyCta) buyCta.innerHTML = '<i class="fas fa-rocket"></i> Buy on PinkSale →';
+              if (mainBtn) mainBtn.innerHTML = '<i class="fas fa-rocket"></i> Buy on PinkSale →';
+            }
+          }
+        }
+      } catch (e) {
+        document.getElementById('raisedBnb').textContent = '0.00 BNB';
+        document.getElementById('participants').textContent = 'Pre-launch';
+      }
+    }
+    refreshIDOStatus();
+    setInterval(refreshIDOStatus, 30000);
+
+    // Smooth scroll for TOC
+    document.querySelectorAll('.topbar-toc a, .reading-guide a').forEach(a => {
+      a.addEventListener('click', e => {
+        const href = a.getAttribute('href');
+        if (href && href.startsWith('#') && href.length > 1) {
+          const target = document.querySelector(href);
+          if (target) {
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>

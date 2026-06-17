@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" data-theme="neural">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SLH Spark — Anti-Fraud DeFi Ecosystem | Marshall Islands DAO</title>
+  <meta name="description" content="SLH Spark — Anti-fraud DeFi ecosystem on BSC. 5 tokens, 25 Telegram bots, ESP32 hardware integration. IDO via SLH Spark (ישות משפטית בתהליך), audit בתהליך (Q3 2026), LP lock מתוכנן (Q3 2026).">
+  <meta name="keywords" content="SLH Spark, slhalpa, SLH token, BSC BEP-20, SPARK IND, Marshall Islands DAO, IDO, PinkSale, anti-fraud, Telegram bots, crypto Israel, blockchain, Variable Yield, ESP32, kosher wallet">
+  <meta name="author" content="SPARK IND · Osif Kaufman Ungar">
+  <meta name="slh:unique-id" content="slhalpa">
+  <meta name="slh:contract" content="0xACb0A09414CEA1C879c67bB7A877E4e19480f022">
+  <meta name="slh:blockchain" content="Binance Smart Chain (BSC)">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://slh-nft.com/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="SLH Ecosystem">
+  <meta property="og:title" content="SLH Spark — Anti-Fraud DeFi Ecosystem">
+  <meta property="og:description" content="5 tokens · 25 bots · Marshall Islands DAO · Audit בתהליך · LP lock מתוכנן (Q3 2026) · Built in Israel">
+  <meta property="og:image" content="https://slh-nft.com/assets/og/default.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="SLH Spark - Anti-Fraud DeFi Ecosystem">
+  <meta property="og:url" content="https://slh-nft.com">
+  <meta property="og:locale" content="he_IL">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta property="og:locale:alternate" content="ru_RU">
+  <meta property="og:locale:alternate" content="ar_SA">
+  <meta property="og:locale:alternate" content="fr_FR">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SLH Spark — Anti-Fraud DeFi Ecosystem">
+  <meta name="twitter:description" content="5 tokens · 25 bots · Marshall Islands DAO · Audit בתהליך · LP lock מתוכנן (Q3 2026) · Built in Israel">
+  <meta name="twitter:image" content="https://slh-nft.com/assets/og/default.png">
+
+  <!-- hreflang -->
+  <link rel="alternate" hreflang="he" href="https://slh-nft.com/">
+  <link rel="alternate" hreflang="en" href="https://slh-nft.com/?lang=en">
+  <link rel="alternate" hreflang="ru" href="https://slh-nft.com/?lang=ru">
+  <link rel="alternate" hreflang="ar" href="https://slh-nft.com/?lang=ar">
+  <link rel="alternate" hreflang="fr" href="https://slh-nft.com/?lang=fr">
+  <link rel="alternate" hreflang="x-default" href="https://slh-nft.com/">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- SLH base + Neural extension -->
+  <link rel="stylesheet" href="css/shared.css?v=20260427b">
+  <link rel="stylesheet" href="css/slh-neural.css?v=20260427b">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "SLH Ecosystem",
+    "alternateName": "SPARK IND",
+    "url": "https://slh-nft.com",
+    "logo": "https://slh-nft.com/img/logo.svg",
+    "description": "Anti-fraud DeFi ecosystem on BSC — 5 tokens, 25 Telegram bots, SLH Spark (ישות משפטית בתהליך), בתהליך audit smart contracts.",
+    "foundingLocation": { "@type": "Country", "name": "Israel" },
+    "sameAs": [
+      "https://t.me/SLH_AIR_bot",
+      "https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "customer service",
+      "url": "https://t.me/SLH_AIR_bot"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "SLH Spark",
+    "url": "https://slh-nft.com",
+    "description": "Anti-fraud DeFi ecosystem with 25+ Telegram bots, blockchain on BSC, IDO via SLH Spark (ישות משפטית בתהליך)"
+  }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Heebo', 'Inter', system-ui, sans-serif;
+      color: var(--text); background: var(--bg);
+      margin: 0; min-height: 100vh; overflow-x: hidden;
+    }
+
+    /* ── Topbar ── */
+    .topbar {
+      position: fixed; top: 0; inset-inline: 0; z-index: 50;
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      background: rgba(3, 6, 15, .65);
+      border-bottom: 1px solid var(--border);
+    }
+    .topbar-inner {
+      max-width: 1280px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 24px;
+    }
+    .topbar-brand {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 800; font-size: 1.1rem;
+      color: var(--text); text-decoration: none;
+    }
+    .topbar-brand .brand-logo {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      color: var(--bg); font-weight: 900; font-size: .9rem;
+      box-shadow: 0 0 16px rgba(255, 209, 102, .35);
+    }
+    .topbar-nav { display: flex; gap: 24px; align-items: center; }
+    .topbar-nav a {
+      color: var(--text2); text-decoration: none; font-weight: 500;
+      font-size: .95rem; transition: color .2s;
+    }
+    .topbar-nav a:hover { color: var(--accent); }
+    @media (max-width: 720px) {
+      .topbar-nav .topbar-link { display: none; }
+    }
+
+    /* ── IDO ticker (top of body) ── */
+    .ido-ticker {
+      margin-top: 64px;
+      background: linear-gradient(90deg, rgba(255, 209, 102, .08), rgba(120, 180, 240, .06), rgba(255, 209, 102, .08));
+      border-bottom: 1px solid rgba(255, 209, 102, .25);
+      padding: 10px 24px; text-align: center;
+      font-size: .92rem; color: var(--text2);
+      backdrop-filter: blur(6px);
+    }
+    .ido-ticker strong { color: var(--accent); margin-inline: 6px; font-weight: 700; }
+    .ido-ticker a {
+      color: var(--accent); text-decoration: underline;
+      text-decoration-color: rgba(255, 209, 102, .4);
+      text-underline-offset: 3px; font-weight: 600;
+      margin-inline-start: 8px;
+    }
+    .ido-ticker a:hover { text-decoration-color: var(--accent); }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: calc(100vh - 100px);
+      display: flex; align-items: center;
+      padding: 80px 24px 80px;
+      position: relative;
+    }
+    .hero-grid {
+      max-width: 1280px; margin: 0 auto;
+      display: grid; gap: 48px;
+      grid-template-columns: 1.1fr 1fr;
+      align-items: center;
+      width: 100%;
+    }
+    @media (max-width: 960px) {
+      .hero-grid { grid-template-columns: 1fr; text-align: center; }
+      .hero-visual { order: -1; max-width: 380px; margin: 0 auto; }
+    }
+    .hero-cta-row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 28px; }
+    @media (max-width: 960px) { .hero-cta-row { justify-content: center; } }
+    .hero-meta-row {
+      display: flex; gap: 24px; flex-wrap: wrap; margin-top: 32px;
+      padding-top: 28px; border-top: 1px solid var(--border);
+    }
+    @media (max-width: 960px) { .hero-meta-row { justify-content: center; } }
+
+    /* ── Token constellation visual ── */
+    .token-constellation {
+      position: relative; aspect-ratio: 1; max-width: 520px; margin: 0 auto;
+    }
+    .token-constellation svg { width: 100%; height: 100%; }
+    .token-constellation .center-node {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    }
+
+    /* ── Footer ── */
+    footer {
+      padding: 48px 24px 32px; text-align: center;
+      border-top: 1px solid var(--border);
+      background: var(--bg2);
+      color: var(--text3); font-size: .9rem;
+    }
+    footer .footer-links {
+      display: flex; gap: 24px; justify-content: center; flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    footer .footer-links a {
+      color: var(--text2); text-decoration: none; font-size: .9rem;
+    }
+    footer .footer-links a:hover { color: var(--accent); }
+    footer .legal {
+      margin-top: 12px; max-width: 720px; margin-inline: auto;
+      font-size: .78rem; color: var(--text3); line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient neural background -->
+  <div class="neural-bg" aria-hidden="true"></div>
+
+  <!-- Full site navigation (rendered by shared.js — gives access to ALL site pages) -->
+  <div id="topnav-root" data-page="home"></div>
+
+  <!-- IDO ticker — auto-refreshes from /api/ido/status -->
+  <div class="ido-ticker" id="idoTicker">
+    <i class="fas fa-rocket" style="color: var(--accent); margin-inline-end: 6px;"></i>
+    <span id="tickerText">IDO via SLH Spark (ישות משפטית בתהליך) — pre-launch · ~14 days to soft cap window opens</span>
+    <a href="#ido">Learn more →</a>
+  </div>
+
+  <!-- ═══════════════════ HERO ═══════════════════ -->
+  <section class="hero">
+    <div class="hero-grid">
+      <div>
+        <span class="neural-eyebrow">Anti-Fraud DeFi · Marshall Islands DAO · LP Locked 365 Days</span>
+        <h1 class="neural-headline">
+          האקוסיסטם הדיגיטלי שמחבר<br>אנשים, ערך ואמון
+        </h1>
+        <p style="font-size: 1.15rem; color: var(--text2); line-height: 1.65; max-width: 560px;">
+          SLH Spark הוא בית השקעות דיגיטלי מבוסס בלוקצ'יין — חמישה מטבעות, עשרים וחמישה בוטים,
+          ארכיטקטורת DNA המקשרת בין משתמשים, פעילות, ומטבעות בזמן אמת.
+          IDO סופי דרך SLH Spark (ישות משפטית בתהליך), בתהליך audit, LP lock מתוכנן (Q3 2026) ימים.
+        </p>
+
+        <div class="hero-cta-row">
+          <a href="#ido" class="neural-btn neural-btn-gold">
+            <i class="fas fa-rocket"></i> השתתף ב-IDO
+          </a>
+          <a href="https://t.me/SLH_AIR_bot" class="neural-btn neural-btn-ghost">
+            <i class="fab fa-telegram"></i> התחל עכשיו
+          </a>
+        </div>
+
+        <div class="hero-meta-row">
+          <div class="trust-badge">
+            <span class="badge-dot"></span>
+            BSC · BEP-20
+          </div>
+          <div class="trust-badge">
+            <span class="badge-dot"></span>
+            PancakeSwap V2 Live
+          </div>
+          <div class="trust-badge">
+            <span class="badge-dot"></span>
+            Audit בתהליך · LP Locked
+          </div>
+        </div>
+      </div>
+
+      <!-- Token constellation — INTERACTIVE: click each node to see details + jump to its page -->
+      <div class="hero-visual">
+        <div class="token-constellation" id="tokenConstellation" aria-label="Token ecosystem — click any node">
+          <svg viewBox="0 0 400 400" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="rgba(255, 209, 102, 0.4)"/>
+                <stop offset="100%" stop-color="rgba(255, 209, 102, 0)"/>
+              </radialGradient>
+            </defs>
+            <circle cx="200" cy="200" r="160" fill="url(#centerGlow)"/>
+            <line class="synapse-line" x1="200" y1="200" x2="200" y2="60"/>
+            <line class="synapse-line" x1="200" y1="200" x2="333" y2="155" style="animation-delay:.4s"/>
+            <line class="synapse-line" x1="200" y1="200" x2="282" y2="333" style="animation-delay:.8s"/>
+            <line class="synapse-line" x1="200" y1="200" x2="118" y2="333" style="animation-delay:1.2s"/>
+            <line class="synapse-line" x1="200" y1="200" x2="67" y2="155" style="animation-delay:1.6s"/>
+            <circle cx="200" cy="200" r="140" fill="none" stroke="var(--border2)" stroke-width="1" stroke-dasharray="2 6" opacity=".4"/>
+          </svg>
+          <a href="#tokens" class="center-node" data-token-link="SLH" title="SLH — Premium Token · click for details" style="cursor:pointer;text-decoration:none">
+            <div class="token-node" data-token="SLH">SLH</div>
+          </a>
+          <a href="#tokens" data-token-link="MNH" title="MNH — Stable Coin (1 ILS) · click for details" style="position:absolute; top:7%; left:50%; transform:translateX(-50%); cursor:pointer; text-decoration:none">
+            <div class="token-node" data-token="MNH" style="width:64px; height:64px; font-size:1rem;">MNH</div>
+          </a>
+          <a href="#tokens" data-token-link="ZVK" title="ZVK — Activity Rewards · click for details" style="position:absolute; top:32%; right:6%; cursor:pointer; text-decoration:none">
+            <div class="token-node" data-token="ZVK" style="width:64px; height:64px; font-size:1rem;">ZVK</div>
+          </a>
+          <a href="#tokens" data-token-link="REP" title="REP — Reputation · click for details" style="position:absolute; bottom:7%; right:22%; cursor:pointer; text-decoration:none">
+            <div class="token-node" data-token="REP" style="width:64px; height:64px; font-size:1rem;">REP</div>
+          </a>
+          <a href="#tokens" data-token-link="ZUZ" title="ZUZ — Anti-fraud Guardian · click for details" style="position:absolute; bottom:7%; left:22%; cursor:pointer; text-decoration:none">
+            <div class="token-node" data-token="ZUZ" style="width:64px; height:64px; font-size:1rem;">ZUZ</div>
+          </a>
+          <a href="/roadmap.html" title="Future tokens — see roadmap" style="position:absolute; top:32%; left:6%; cursor:pointer; text-decoration:none">
+            <div class="token-node" data-token="MNH" style="width:48px; height:48px; font-size:.85rem; opacity:.5;">+</div>
+          </a>
+        </div>
+        <p style="text-align:center; color:var(--text3); font-size:.82rem; margin-top:14px;">
+          <i class="fas fa-hand-pointer" style="color:var(--accent);"></i>  לחץ על כל מטבע בנוירונים כדי לראות פרטים
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ "WHAT IS SLH IN PLAIN HEBREW" ═══════════════════ -->
+  <section class="neural-section" id="what-is-slh" style="padding-top: 40px; padding-bottom: 40px;">
+    <div class="neural-container">
+      <div style="max-width: 880px; margin: 0 auto; padding: 32px; background: rgba(94, 214, 255, .06); border: 1px solid rgba(94, 214, 255, .25); border-radius: 16px;">
+        <h2 style="margin: 0 0 14px; font-size: 1.6rem; color: #5ed6ff; display: flex; align-items: center; gap: 10px;">
+          <i class="fas fa-circle-info"></i> מה זה SLH? בעברית פשוטה
+        </h2>
+        <p style="color: var(--text); font-size: 1.05rem; line-height: 1.75; margin: 0 0 14px;">
+          <strong>SLH הוא טוקן קריפטו</strong> שעובד על Binance Smart Chain (BSC) — אותה רשת שמפעילה את Binance.
+          מי שמחזיק SLH משתתף ברשת של 25 בוטים בטלגרם, פלטפורמת השקעות, אקדמיה, ומערך אנטי-הונאה (Guardian).
+        </p>
+        <p style="color: var(--text2); font-size: 1rem; line-height: 1.7; margin: 0 0 14px;">
+          <strong>מי בונה את זה?</strong> Osif Kaufman Ungar — מפתח ישראלי סולו (יחד עם תורמים: Tzvika, Eli, Zohar, Yakir).
+          הוקם אחרי שאוסיף הפסיד ₪250K בהונאת ZOOZ ויצא מ-Bitnest. הפרוייקט נבנה <em>מראש</em> סביב אנטי-הונאה.
+        </p>
+        <p style="color: var(--text2); font-size: 1rem; line-height: 1.7; margin: 0;">
+          <strong>למה IDO עכשיו?</strong> כדי שהקהילה תוכל לקנות SLH במחיר מופחת לפני שהוא נסחר חופשית. גיוס דרך
+          <strong>SLH Spark (ישות משפטית בתהליך)</strong> (ישות חוקית) + <strong>PinkSale</strong> (launchpad מאומת) +
+          <strong>audit עתידי (Q3 2026)</strong> + <strong>LP נעול ל-365 ימים</strong>. אין רגולטור ישראלי בתהליך — אבל יש חבות מס ישראלית
+          כשמוכרים ברווח (ראו <a href="/ido.html#tax" style="color: #5ed6ff;">מס בישראל</a>).
+        </p>
+
+        <!-- Persona-based routing -->
+        <div style="margin-top: 20px; padding-top: 18px; border-top: 1px solid rgba(94, 214, 255, .2);">
+          <p style="margin: 0 0 12px; font-size: .95rem; color: var(--text); font-weight: 600;">
+            👇 מצא את המסלול שלך:
+          </p>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px;">
+            <a href="/ido.html#how-buy-bnb" style="padding: 12px 14px; background: rgba(255, 255, 255, .04); border-radius: 8px; text-decoration: none; color: var(--text); font-size: .92rem; line-height: 1.5; border-inline-start: 3px solid var(--accent);">
+              🆕 <strong style="color: var(--accent);">חדש לחלוטין בקריפטו?</strong><br>
+              <span style="color: var(--text2);">התחל ממדריך "איך קונים BNB"</span>
+            </a>
+            <a href="/ido.html#how-participate" style="padding: 12px 14px; background: rgba(255, 255, 255, .04); border-radius: 8px; text-decoration: none; color: var(--text); font-size: .92rem; line-height: 1.5; border-inline-start: 3px solid #5ed6ff;">
+              💼 <strong style="color: #5ed6ff;">יש לי MetaMask</strong><br>
+              <span style="color: var(--text2);">דלג ל-5 שלבים להשתתפות</span>
+            </a>
+            <a href="/ido.html#tax" style="padding: 12px 14px; background: rgba(255, 255, 255, .04); border-radius: 8px; text-decoration: none; color: var(--text); font-size: .92rem; line-height: 1.5; border-inline-start: 3px solid #fbbf24;">
+              💰 <strong style="color: #fbbf24;">חוששים ממיסוי?</strong><br>
+              <span style="color: var(--text2);">קרא את סקציית מס ישראלי + KYC</span>
+            </a>
+            <a href="/ido.html#risk" style="padding: 12px 14px; background: rgba(255, 255, 255, .04); border-radius: 8px; text-decoration: none; color: var(--text); font-size: .92rem; line-height: 1.5; border-inline-start: 3px solid #ff6b6b;">
+              🔍 <strong style="color: #ff6b6b;">סקפטי? עיתונאי?</strong><br>
+              <span style="color: var(--text2);">10 סיכונים + 8 בדיקות עצמיות</span>
+            </a>
+            <a href="/whitepaper.html" style="padding: 12px 14px; background: rgba(255, 255, 255, .04); border-radius: 8px; text-decoration: none; color: var(--text); font-size: .92rem; line-height: 1.5; border-inline-start: 3px solid #b482f0;">
+              📄 <strong style="color: #d4a5ff;">משקיע מוסדי?</strong><br>
+              <span style="color: var(--text2);">Whitepaper + Numbers panel</span>
+            </a>
+            <a href="https://t.me/SLH_AIR_bot" target="_blank" style="padding: 12px 14px; background: rgba(255, 255, 255, .04); border-radius: 8px; text-decoration: none; color: var(--text); font-size: .92rem; line-height: 1.5; border-inline-start: 3px solid #10b981;">
+              💬 <strong style="color: #34d399;">שאלה ספציפית?</strong><br>
+              <span style="color: var(--text2);">@SLH_AIR_bot — תוך 24 שעות</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ LIVE METRICS ═══════════════════ -->
+  <section class="neural-section" style="padding-top:0;">
+    <div class="neural-container">
+      <div class="neural-grid neural-grid-4">
+        <div class="neural-card neural-stat">
+          <div class="stat-value" id="stat-users">9</div>
+          <div class="stat-label">Registered Users</div>
+        </div>
+        <div class="neural-card neural-stat">
+          <div class="stat-value" id="stat-bots">25</div>
+          <div class="stat-label">Active Bots</div>
+        </div>
+        <div class="neural-card neural-stat">
+          <div class="stat-value" id="stat-endpoints">230+</div>
+          <div class="stat-label">API Endpoints</div>
+        </div>
+        <div class="neural-card neural-stat">
+          <div class="stat-value" id="stat-uptime">
+            <span class="live-indicator">LIVE</span>
+          </div>
+          <div class="stat-label">System Status</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="dna-divider" aria-hidden="true">
+    <svg viewBox="0 0 1200 60" preserveAspectRatio="none">
+      <path class="dna-strand" d="M0,30 Q100,5 200,30 T400,30 T600,30 T800,30 T1000,30 T1200,30"/>
+      <path class="dna-strand dna-strand-2" d="M0,30 Q100,55 200,30 T400,30 T600,30 T800,30 T1000,30 T1200,30"/>
+      <line class="dna-rung" x1="100"  y1="15" x2="100"  y2="45"/>
+      <line class="dna-rung" x1="300"  y1="15" x2="300"  y2="45"/>
+      <line class="dna-rung" x1="500"  y1="15" x2="500"  y2="45"/>
+      <line class="dna-rung" x1="700"  y1="15" x2="700"  y2="45"/>
+      <line class="dna-rung" x1="900"  y1="15" x2="900"  y2="45"/>
+      <line class="dna-rung" x1="1100" y1="15" x2="1100" y2="45"/>
+    </svg>
+  </div>
+
+  <!-- ═══════════════════ TOKENS ═══════════════════ -->
+  <section class="neural-section" id="tokens">
+    <div class="neural-container">
+      <div class="section-header">
+        <span class="neural-eyebrow">Token Architecture</span>
+        <h2>חמישה מטבעות, מערכת אחת</h2>
+        <p>כל מטבע הוא נוירון בעל תפקיד ייחודי. יחד הם יוצרים רשת ערך עם איזונים פנימיים שמונעים אינפלציה ופעילות מזיקה.</p>
+      </div>
+      <div class="neural-grid neural-grid-3">
+
+        <article class="neural-card">
+          <div class="card-icon" style="background: linear-gradient(135deg, #ffe18a, var(--token-slh)); color: #2a1f00;">
+            <i class="fas fa-star"></i>
+          </div>
+          <h3 style="margin:0 0 8px;">SLH</h3>
+          <p style="color: var(--text2); margin: 0 0 12px; line-height:1.6;">
+            המטבע הפרימיום ומטבע הניהול. נסחר ב-PancakeSwap. הזיכוי לבעלי תפקידים, premium membership, ו-governance.
+          </p>
+          <div class="trust-badge" style="font-size:.78rem;">
+            <span class="badge-dot"></span> BSC · 0xACb0…f022
+          </div>
+        </article>
+
+        <article class="neural-card">
+          <div class="card-icon" style="background: linear-gradient(135deg, #f4f5f7, var(--token-mnh)); color: #1f2530;">
+            <i class="fas fa-shield-halved"></i>
+          </div>
+          <h3 style="margin:0 0 8px;">MNH</h3>
+          <p style="color: var(--text2); margin: 0; line-height:1.6;">
+            מטבע יציב צמוד ל-1 שקל. משמש לתשלומים, holdings ארוכי טווח, ו-treasury פנימי. ללא תנודתיות.
+          </p>
+        </article>
+
+        <article class="neural-card">
+          <div class="card-icon" style="background: linear-gradient(135deg, #86efac, var(--token-zvk)); color: #052e16;">
+            <i class="fas fa-bolt"></i>
+          </div>
+          <h3 style="margin:0 0 8px;">ZVK</h3>
+          <p style="color: var(--text2); margin: 0; line-height:1.6;">
+            מטבע פעילות. מתקבל על תרומות, הצעות, פרסומים, ו-bug reports. שווי בסיס ~4.4 ש"ח.
+          </p>
+        </article>
+
+        <article class="neural-card">
+          <div class="card-icon" style="background: linear-gradient(135deg, #a7e9ff, var(--token-rep)); color: #003344;">
+            <i class="fas fa-user-shield"></i>
+          </div>
+          <h3 style="margin:0 0 8px;">REP</h3>
+          <p style="color: var(--text2); margin: 0; line-height:1.6;">
+            ציון מוניטין אישי. מ-0 ועד 1000+. נמדד על בסיס פעילות מתמשכת ומפעיל הרשאות מתקדמות במערכת.
+          </p>
+        </article>
+
+        <article class="neural-card">
+          <div class="card-icon" style="background: linear-gradient(135deg, #ffb3c5, var(--token-zuz)); color: #4a0014;">
+            <i class="fas fa-triangle-exclamation"></i>
+          </div>
+          <h3 style="margin:0 0 8px;">ZUZ</h3>
+          <p style="color: var(--text2); margin: 0; line-height:1.6;">
+            "סימן קין" — אות אזהרה לפעילות חשודה. מערכת Guardian אוטומטית, ב-100 ZUZ הגעה = חסימה. שקיפות מלאה.
+          </p>
+        </article>
+
+        <article class="neural-card" style="border-style: dashed; opacity: .85;">
+          <div class="card-icon" style="background: linear-gradient(135deg, var(--accent), var(--accent2));">
+            <i class="fas fa-plus"></i>
+          </div>
+          <h3 style="margin:0 0 8px;">Future Tokens</h3>
+          <p style="color: var(--text2); margin: 0; line-height:1.6;">
+            ארכיטקטורת ה-DNA מתוכננת להרחבה. מטבעות חדשים יתחברו לרשת הקיימת ללא שינוי בקוד הליבה.
+          </p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ 5 TRUST NUMBERS BEFORE INVESTING ═══════════════════ -->
+  <section class="neural-section" id="trust-numbers" style="padding-top: 30px;">
+    <div class="neural-container">
+      <div class="section-header">
+        <span class="neural-eyebrow">Verifiable On-Chain</span>
+        <h2>5 מספרים שצריך לדעת — לפני שמשקיעים</h2>
+        <p>אל תסמכו עלינו. כל מספר כאן ניתן לבדיקה עצמאית בלינק שצמוד אליו, עכשיו, מהמחשב שלכם.</p>
+      </div>
+
+      <div style="max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px;">
+        <a href="https://bscscan.com/token/0xACb0A09414CEA1C879c67bB7A877E4e19480f022" target="_blank" rel="noopener" class="neural-card" style="text-align: center; text-decoration: none; color: var(--text); padding: 22px;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 1.6rem; font-weight: 700; color: var(--accent); margin-bottom: 4px;">110.75M</div>
+          <div style="font-size: .82rem; color: var(--text2); margin-bottom: 8px;">Total Supply (SLH)</div>
+          <div style="font-size: .75rem; color: var(--text3);">→ אמת ב-BscScan</div>
+        </a>
+
+        <a href="https://app.safe.global/home?safe=bnb:0x9DD8aF7Ac0f601CD473422311b2942DAE9D0BD09" target="_blank" rel="noopener" class="neural-card" style="text-align: center; text-decoration: none; color: var(--text); padding: 22px;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 1.6rem; font-weight: 700; color: var(--accent); margin-bottom: 4px;">2/3</div>
+          <div style="font-size: .82rem; color: var(--text2); margin-bottom: 8px;">Multisig Treasury</div>
+          <div style="font-size: .75rem; color: var(--text3);">→ Gnosis Safe (בתהליך הקמה)</div>
+        </a>
+
+        <a href="/ido.html#how-participate" class="neural-card" style="text-align: center; text-decoration: none; color: var(--text); padding: 22px;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 1.6rem; font-weight: 700; color: var(--accent); margin-bottom: 4px;">365 ימים</div>
+          <div style="font-size: .82rem; color: var(--text2); margin-bottom: 8px;">LP Lock מתוכנן (Q3 2026)</div>
+          <div style="font-size: .75rem; color: var(--text3);">→ Anti-rug guarantee</div>
+        </a>
+
+        <a href="/ido.html#how-participate" class="neural-card" style="text-align: center; text-decoration: none; color: var(--text); padding: 22px;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 1.6rem; font-weight: 700; color: var(--accent); margin-bottom: 4px;">20% / 4 חודשים</div>
+          <div style="font-size: .82rem; color: var(--text2); margin-bottom: 8px;">Vesting Schedule</div>
+          <div style="font-size: .75rem; color: var(--text3);">→ Smart contract enforced</div>
+        </a>
+
+        <a href="/ido.html#how-participate" class="neural-card" style="text-align: center; text-decoration: none; color: var(--text); padding: 22px;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 1.6rem; font-weight: 700; color: var(--accent); margin-bottom: 4px;">20 / 150 BNB</div>
+          <div style="font-size: .82rem; color: var(--text2); margin-bottom: 8px;">Soft / Hard Cap</div>
+          <div style="font-size: .75rem; color: var(--text3);">→ Auto-refund אם לא נסגר</div>
+        </a>
+      </div>
+
+      <p style="text-align: center; margin-top: 24px; color: var(--text2); font-size: .92rem;">
+        רוצים את כל ה-checklist של 8 בדיקות עצמיות לפני השקעה?
+        <a href="/ido.html#verify" style="color: var(--accent); text-decoration: underline;">→ וריפיקציה עצמית בדף ה-IDO</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ INTERACTIVE NETWORK MAP ═══════════════════ -->
+  <section class="neural-section" id="network">
+    <div class="neural-container">
+      <div class="section-header">
+        <span class="neural-eyebrow">Live System Map</span>
+        <h2>הרכיבים האמיתיים — לחץ כל אחד</h2>
+        <p>זאת לא אנימציה דקורטיבית. כל נוירון = רכיב חי במערכת. קליק → דף הרכיב + כל הקשרים שלו.</p>
+      </div>
+
+      <!-- Interactive node grid (clickable nodes that open the relevant page) -->
+      <div style="max-width:1100px; margin:0 auto;">
+        <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:14px;">
+
+          <!-- Tokens -->
+          <a href="/tokens.html" class="neural-card" style="display:flex;align-items:center;gap:12px;padding:18px;text-decoration:none;color:var(--text)">
+            <div class="card-icon" style="width:44px;height:44px;background:linear-gradient(135deg,#ffe18a,var(--token-slh));color:#2a1f00;flex-shrink:0">
+              <i class="fas fa-coins"></i>
+            </div>
+            <div>
+              <div style="font-weight:700">5 Tokens</div>
+              <div style="font-size:.82rem;color:var(--text3)">SLH · MNH · ZVK · REP · ZUZ</div>
+            </div>
+          </a>
+
+          <!-- Bots -->
+          <a href="/bots.html" class="neural-card" style="display:flex;align-items:center;gap:12px;padding:18px;text-decoration:none;color:var(--text)">
+            <div class="card-icon" style="width:44px;height:44px;background:linear-gradient(135deg,#a855f7,#06b6d4);color:#fff;flex-shrink:0">
+              <i class="fas fa-robot"></i>
+            </div>
+            <div>
+              <div style="font-weight:700">25 Telegram Bots</div>
+              <div style="font-size:.82rem;color:var(--text3)">Guardian · Wallet · Game · Academy · …</div>
+            </div>
+          </a>
+
+          <!-- API -->
+          <a href="/ecosystem-guide.html" class="neural-card" style="display:flex;align-items:center;gap:12px;padding:18px;text-decoration:none;color:var(--text)">
+            <div class="card-icon" style="width:44px;height:44px;background:linear-gradient(135deg,#5096dc,#7eb6e8);color:#fff;flex-shrink:0">
+              <i class="fas fa-server"></i>
+            </div>
+            <div>
+              <div style="font-weight:700">230+ API Endpoints</div>
+              <div style="font-size:.82rem;color:var(--text3)">FastAPI · PostgreSQL · Redis</div>
+            </div>
+          </a>
+
+          <!-- Blockchain -->
+          <a href="/chain-status.html" class="neural-card" style="display:flex;align-items:center;gap:12px;padding:18px;text-decoration:none;color:var(--text)">
+            <div class="card-icon" style="width:44px;height:44px;background:linear-gradient(135deg,#f0b90b,#fcd34d);color:#1a1a00;flex-shrink:0">
+              <i class="fab fa-bitcoin"></i>
+            </div>
+            <div>
+              <div style="font-weight:700">BSC Blockchain</div>
+              <div style="font-size:.82rem;color:var(--text3)">PancakeSwap V2 · BEP-20</div>
+            </div>
+          </a>
+
+          <!-- ESP32 -->
+          <a href="/admin/devices-catalog.html" class="neural-card" style="display:flex;align-items:center;gap:12px;padding:18px;text-decoration:none;color:var(--text)">
+            <div class="card-icon" style="width:44px;height:44px;background:linear-gradient(135deg,#10b981,#34d399);color:#fff;flex-shrink:0">
+              <i class="fas fa-microchip"></i>
+            </div>
+            <div>
+              <div style="font-weight:700">ESP32 Hardware</div>
+              <div style="font-size:.82rem;color:var(--text3)">Kosher Wallet · device registry</div>
+            </div>
+          </a>
+
+          <!-- Guardian -->
+          <a href="/guardian-diag.html" class="neural-card" style="display:flex;align-items:center;gap:12px;padding:18px;text-decoration:none;color:var(--text)">
+            <div class="card-icon" style="width:44px;height:44px;background:linear-gradient(135deg,#ef4444,#f87171);color:#fff;flex-shrink:0">
+              <i class="fas fa-shield-virus"></i>
+            </div>
+            <div>
+              <div style="font-weight:700">Guardian System</div>
+              <div style="font-size:.82rem;color:var(--text3)">Anti-fraud · ZUZ marking · OFAC</div>
+            </div>
+          </a>
+
+          <!-- Academia -->
+          <a href="/learning-path.html" class="neural-card" style="display:flex;align-items:center;gap:12px;padding:18px;text-decoration:none;color:var(--text)">
+            <div class="card-icon" style="width:44px;height:44px;background:linear-gradient(135deg,#86efac,var(--token-zvk));color:#052e16;flex-shrink:0">
+              <i class="fas fa-graduation-cap"></i>
+            </div>
+            <div>
+              <div style="font-weight:700">Academia</div>
+              <div style="font-size:.82rem;color:var(--text3)">Dynamic Yield Course #1</div>
+            </div>
+          </a>
+
+          <!-- Wallet -->
+          <a href="/wallet.html" class="neural-card" style="display:flex;align-items:center;gap:12px;padding:18px;text-decoration:none;color:var(--text)">
+            <div class="card-icon" style="width:44px;height:44px;background:linear-gradient(135deg,#a7e9ff,var(--token-rep));color:#003344;flex-shrink:0">
+              <i class="fas fa-wallet"></i>
+            </div>
+            <div>
+              <div style="font-weight:700">Wallet</div>
+              <div style="font-size:.82rem;color:var(--text3)">BSC + TON · multi-token</div>
+            </div>
+          </a>
+
+          <!-- Network Map -->
+          <a href="/network.html" class="neural-card" style="display:flex;align-items:center;gap:12px;padding:18px;text-decoration:none;color:var(--text)">
+            <div class="card-icon" style="width:44px;height:44px;background:linear-gradient(135deg,#b482f0,#d4a5ff);color:#fff;flex-shrink:0">
+              <i class="fas fa-brain"></i>
+            </div>
+            <div>
+              <div style="font-weight:700">Neural Network Map</div>
+              <div style="font-size:.82rem;color:var(--text3)">61 nodes · 161 edges · all connections</div>
+            </div>
+          </a>
+
+          <!-- IDO -->
+          <a href="/ido.html" class="neural-card" style="display:flex;align-items:center;gap:12px;padding:18px;text-decoration:none;color:var(--text);border-color:rgba(255,209,102,.3)">
+            <div class="card-icon" style="width:44px;height:44px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--bg);flex-shrink:0">
+              <i class="fas fa-rocket"></i>
+            </div>
+            <div>
+              <div style="font-weight:700">IDO Pre-launch</div>
+              <div style="font-size:.82rem;color:var(--text3)">Marshall Islands DAO · ~14 days</div>
+            </div>
+          </a>
+
+          <!-- Earn -->
+          <a href="/earn.html" class="neural-card" style="display:flex;align-items:center;gap:12px;padding:18px;text-decoration:none;color:var(--text)">
+            <div class="card-icon" style="width:44px;height:44px;background:linear-gradient(135deg,#10b981,#34d399);color:#fff;flex-shrink:0">
+              <i class="fas fa-piggy-bank"></i>
+            </div>
+            <div>
+              <div style="font-weight:700">Earn / Staking</div>
+              <div style="font-size:.82rem;color:var(--text3)">Variable Yield 4-12%</div>
+            </div>
+          </a>
+
+          <!-- Project map -->
+          <a href="/project-map.html" class="neural-card" style="display:flex;align-items:center;gap:12px;padding:18px;text-decoration:none;color:var(--text)">
+            <div class="card-icon" style="width:44px;height:44px;background:linear-gradient(135deg,#9ca3af,#d1d5db);color:#111;flex-shrink:0">
+              <i class="fas fa-sitemap"></i>
+            </div>
+            <div>
+              <div style="font-weight:700">Site Map</div>
+              <div style="font-size:.82rem;color:var(--text3)">52 דפים · status indicators</div>
+            </div>
+          </a>
+
+        </div>
+
+        <p style="text-align:center; margin-top:32px; color:var(--text2); font-size:.95rem;">
+          רוצה ויזואליזציה גרפית מלאה של כל הקשרים? →
+          <a href="/network.html" style="color:var(--accent);">/network.html</a>
+          (61 nodes · 161 edges)
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ TECHNOLOGY ═══════════════════ -->
+  <section class="neural-section" id="tech" style="background: linear-gradient(180deg, transparent, var(--bg2), transparent);">
+    <div class="neural-container">
+      <div class="section-header">
+        <span class="neural-eyebrow">The Architecture</span>
+        <h2>רשת נוירונים, לא מוצר</h2>
+        <p>בניגוד ל-95% מפרוייקטי הקריפטו, SLH לא בנוי כשרת אחד שמחזיק נתונים. הוא רשת של 25 בוטים, API מרכזי, ו-44 דפי ממשק שכולם משתפים אותה DNA.</p>
+      </div>
+
+      <div class="neural-grid neural-grid-3">
+        <div class="neural-card">
+          <div class="card-icon"><i class="fas fa-robot"></i></div>
+          <h3 style="margin:0 0 8px;">25 Telegram Bots</h3>
+          <p style="color: var(--text2); margin:0; line-height:1.6;">
+            Guardian, Wallet, Botshop, Factory, Game, Airdrop, Wellness, ועוד. כל בוט = נוירון מיוחד. כולם מחוברים למסד נתונים אחד.
+          </p>
+        </div>
+
+        <div class="neural-card">
+          <div class="card-icon"><i class="fas fa-server"></i></div>
+          <h3 style="margin:0 0 8px;">FastAPI Core</h3>
+          <p style="color: var(--text2); margin:0; line-height:1.6;">
+            230+ endpoints. PostgreSQL 15 + Redis 7. SHA-256 audit chain על כל פעולה.
+          </p>
+        </div>
+
+        <div class="neural-card">
+          <div class="card-icon"><i class="fas fa-microchip"></i></div>
+          <h3 style="margin:0 0 8px;">ESP32 Hardware</h3>
+          <p style="color: var(--text2); margin:0; line-height:1.6;">
+            רשת מכשירים פיזיים מחוברת לאקוסיסטם. QR-based onboarding, OTA updates, real-world activity tracking. ארנק כשר.
+          </p>
+        </div>
+
+        <div class="neural-card">
+          <div class="card-icon"><i class="fab fa-bitcoin"></i></div>
+          <h3 style="margin:0 0 8px;">BSC + TON</h3>
+          <p style="color: var(--text2); margin:0; line-height:1.6;">
+            BEP-20 token live + PancakeSwap V2 pool. שילוב של on-chain (אמון) ו-off-chain (מהירות).
+          </p>
+        </div>
+
+        <div class="neural-card">
+          <div class="card-icon"><i class="fas fa-shield-virus"></i></div>
+          <h3 style="margin:0 0 8px;">Guardian System</h3>
+          <p style="color: var(--text2); margin:0; line-height:1.6;">
+            רשת הגנה אוטומטית. Anti-fraud detection בזמן אמת, ZUZ marking, banhammer ב-100 ZUZ. שקיפות מלאה.
+          </p>
+        </div>
+
+        <div class="neural-card">
+          <div class="card-icon"><i class="fas fa-language"></i></div>
+          <h3 style="margin:0 0 8px;">Multi-language</h3>
+          <p style="color: var(--text2); margin:0; line-height:1.6;">
+            עברית, אנגלית, רוסית, ערבית, צרפתית. RTL מובנה. יעד 100% i18n ברבעון הקרוב.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ IDO SECTION ═══════════════════ -->
+  <section class="neural-section" id="ido">
+    <div class="neural-container">
+      <div class="section-header">
+        <span class="neural-eyebrow">Initial DEX Offering · Pre-launch</span>
+        <h2>IDO סופי דרך SLH Spark (ישות משפטית בתהליך)</h2>
+        <p>גיוס DeFi-native, בתהליך audit, LP-locked. ללא רגולטור ישראלי, ללא בנקים, ללא משקיעים פרטיים. כל BNB שיתרום עובר דרך smart contract שקוף עם מנגנוני anti-rug מובנים.</p>
+      </div>
+
+      <div class="neural-grid neural-grid-3" style="margin-bottom: 32px;">
+        <div class="neural-card">
+          <div class="card-icon" style="background: linear-gradient(135deg, var(--accent), var(--accent2));">
+            <i class="fas fa-file-contract"></i>
+          </div>
+          <h3 style="margin:0 0 8px;">Audit בתהליך</h3>
+          <p style="color: var(--text2); margin: 0 0 8px; line-height:1.6;">
+            Smart contract audit בתהליך (Q3 2026). דוח public לפני go-live.
+          </p>
+          <div class="trust-badge" style="font-size:.75rem;"><span class="badge-dot"></span> Day 5-12</div>
+        </div>
+
+        <div class="neural-card">
+          <div class="card-icon" style="background: linear-gradient(135deg, #5096dc, #7eb6e8);">
+            <i class="fas fa-lock"></i>
+          </div>
+          <h3 style="margin:0 0 8px;">LP Locked 365d</h3>
+          <p style="color: var(--text2); margin: 0 0 8px; line-height:1.6;">
+            כל הנזילות נעולה ב-PinkLock (Q3 2026) לשנה שלמה. on-chain verifiable.
+          </p>
+          <div class="trust-badge" style="font-size:.75rem;"><span class="badge-dot"></span> Anti-rug</div>
+        </div>
+
+        <div class="neural-card">
+          <div class="card-icon" style="background: linear-gradient(135deg, #b482f0, #d4a5ff);">
+            <i class="fas fa-globe"></i>
+          </div>
+          <h3 style="margin:0 0 8px;">Marshall Islands DAO</h3>
+          <p style="color: var(--text2); margin: 0 0 8px; line-height:1.6;">
+            ישות חוקית מוכרת בינלאומית. Member-managed, 0% מס ברירת מחדל, פרטיות מלאה.
+          </p>
+          <div class="trust-badge" style="font-size:.75rem;"><span class="badge-dot"></span> MIDAO (בתהליך רישום)</div>
+        </div>
+      </div>
+
+      <div class="neural-card" style="max-width: 920px; margin: 0 auto; padding: 32px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 20px; margin-bottom: 24px;">
+          <div>
+            <div style="font-size: .75rem; color: var(--text3); text-transform: uppercase; letter-spacing: .12em; margin-bottom: 4px;">Soft Cap</div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 1.25rem; font-weight: 700; color: var(--accent);">20 BNB</div>
+            <div style="font-size: .8rem; color: var(--text3);">~₪50K</div>
+          </div>
+          <div>
+            <div style="font-size: .75rem; color: var(--text3); text-transform: uppercase; letter-spacing: .12em; margin-bottom: 4px;">Hard Cap</div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 1.25rem; font-weight: 700; color: var(--accent);">150 BNB</div>
+            <div style="font-size: .8rem; color: var(--text3);">~₪370K</div>
+          </div>
+          <div>
+            <div style="font-size: .75rem; color: var(--text3); text-transform: uppercase; letter-spacing: .12em; margin-bottom: 4px;">Vesting</div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 1.25rem; font-weight: 700; color: var(--accent);">20% TGE</div>
+            <div style="font-size: .8rem; color: var(--text3);">+ 20%/m × 4</div>
+          </div>
+          <div>
+            <div style="font-size: .75rem; color: var(--text3); text-transform: uppercase; letter-spacing: .12em; margin-bottom: 4px;">LP Lock</div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 1.25rem; font-weight: 700; color: var(--accent);">365 ימים</div>
+            <div style="font-size: .8rem; color: var(--text3);">PinkLock (Q3 2026)</div>
+          </div>
+        </div>
+
+        <div style="text-align: center; padding-top: 20px; border-top: 1px solid var(--border);">
+          <p style="color: var(--text2); margin: 0 0 18px; font-size: .95rem;">
+            דף ה-IDO הציבורי המלא יושק לאחר השלמת ה-audit (Day 12 בלוח הזמנים).
+            כל הפרטים: contract address, PinkSale link, כתובת DAO LLC certificate, audit PDF.
+          </p>
+          <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+            <a href="/ido.html" class="neural-btn neural-btn-gold">
+              <i class="fas fa-rocket"></i> דף IDO מלא
+            </a>
+            <a href="/whitepaper.html" class="neural-btn neural-btn-ghost">
+              <i class="fas fa-file-lines"></i> Whitepaper
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <p style="margin-top: 28px; max-width: 720px; margin-inline: auto; color: var(--text3); font-size: .82rem; line-height: 1.6; text-align: center;">
+        ⚠️ Risk disclosure: Token may fall in value. No guaranteed returns. Smart contract risk exists even with audit.
+        80% of tokens vested for 4 months. Restricted in OFAC-sanctioned jurisdictions.
+        Read full risk disclosure in <a href="/disclosure.html" style="color: var(--accent);">/disclosure</a>.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ SCAM WARNINGS + MINI-FAQ ═══════════════════ -->
+  <section class="neural-section" id="safety" style="padding-top: 30px;">
+    <div class="neural-container">
+      <div style="max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+
+        <!-- Scam warnings -->
+        <div style="padding: 28px; background: rgba(245, 158, 11, .06); border: 1px solid rgba(245, 158, 11, .3); border-radius: 14px;">
+          <h3 style="margin: 0 0 14px; color: #fbbf24; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-shield-halved"></i> 4 סימני הונאה — אל תיפלו
+          </h3>
+          <ul style="list-style: none; padding: 0; margin: 0;">
+            <li style="padding: 10px 12px; background: rgba(255, 255, 255, .03); border-radius: 8px; margin-bottom: 8px; font-size: .9rem; line-height: 1.55; color: var(--text2);">
+              <strong style="color: #fbbf24;">DM מ"Osif" / "תמיכת SLH"</strong> — אנחנו לעולם לא שולחים DMs ראשונים. כל DM כזה = scammer.
+            </li>
+            <li style="padding: 10px 12px; background: rgba(255, 255, 255, .03); border-radius: 8px; margin-bottom: 8px; font-size: .9rem; line-height: 1.55; color: var(--text2);">
+              <strong style="color: #fbbf24;">"שלח 0.1 BNB ותקבל 0.2"</strong> — תמיד הונאה. PinkSale הרשמי לא דורש שליחה ידנית.
+            </li>
+            <li style="padding: 10px 12px; background: rgba(255, 255, 255, .03); border-radius: 8px; margin-bottom: 8px; font-size: .9rem; line-height: 1.55; color: var(--text2);">
+              <strong style="color: #fbbf24;">אתר "slh-presale.io" / "slh-airdrop.com"</strong> — רק <code>slh-nft.com</code> רשמי.
+            </li>
+            <li style="padding: 10px 12px; background: rgba(255, 255, 255, .03); border-radius: 8px; margin-bottom: 0; font-size: .9rem; line-height: 1.55; color: var(--text2);">
+              <strong style="color: #fbbf24;">"שלח seed phrase לבדיקה"</strong> — זה כמו לבקש סיסמה לבנק. לעולם.
+            </li>
+          </ul>
+          <p style="margin: 12px 0 0; font-size: .85rem; color: var(--text2); line-height: 1.55;">
+            רשימה מלאה של 8 דפוסים → <a href="/ido.html#scam" style="color: #fbbf24;">דף ה-IDO</a>.
+          </p>
+        </div>
+
+        <!-- Mini-FAQ -->
+        <div style="padding: 28px; background: rgba(94, 214, 255, .06); border: 1px solid rgba(94, 214, 255, .25); border-radius: 14px;">
+          <h3 style="margin: 0 0 14px; color: #5ed6ff; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-circle-question"></i> 6 שאלות מהירות
+          </h3>
+          <details style="margin-bottom: 6px; padding: 8px 12px; background: rgba(255, 255, 255, .03); border-radius: 6px;">
+            <summary style="cursor: pointer; font-size: .92rem; font-weight: 600; color: var(--text);">חייב לדווח על קניית SLH?</summary>
+            <p style="margin: 8px 0 0; color: var(--text2); font-size: .88rem; line-height: 1.6;">לא בקנייה — רק במכירה ברווח. 25% מס רווחי הון על משקיע פרטי. <a href="/ido.html#tax" style="color: #5ed6ff;">פירוט מלא</a></p>
+          </details>
+          <details style="margin-bottom: 6px; padding: 8px 12px; background: rgba(255, 255, 255, .03); border-radius: 6px;">
+            <summary style="cursor: pointer; font-size: .92rem; font-weight: 600; color: var(--text);">למה אין KYC?</summary>
+            <p style="margin: 8px 0 0; color: var(--text2); font-size: .88rem; line-height: 1.6;">DAO LLC לא דורשת KYC ברמת המשתמש. הסינון נעשה ברמת הארנק (OFAC + Chainabuse). KYC ישראלי קיים ב-Bit2C/Binance. <a href="/ido.html#kyc" style="color: #5ed6ff;">4 רמות KYC</a></p>
+          </details>
+          <details style="margin-bottom: 6px; padding: 8px 12px; background: rgba(255, 255, 255, .03); border-radius: 6px;">
+            <summary style="cursor: pointer; font-size: .92rem; font-weight: 600; color: var(--text);">מה אם soft cap לא נסגר?</summary>
+            <p style="margin: 8px 0 0; color: var(--text2); font-size: .88rem; line-height: 1.6;">PinkSale עושה refund אוטומטי לכל מי שתרם. אין פעולה נדרשת מצדכם.</p>
+          </details>
+          <details style="margin-bottom: 6px; padding: 8px 12px; background: rgba(255, 255, 255, .03); border-radius: 6px;">
+            <summary style="cursor: pointer; font-size: .92rem; font-weight: 600; color: var(--text);">איך אני יודע שזה לא rug pull?</summary>
+            <p style="margin: 8px 0 0; color: var(--text2); font-size: .88rem; line-height: 1.6;">4 שכבות: audit עתידי (Q3 2026) + LP lock מתוכנן (Q3 2026)d + Treasury multisig 2/3 + vesting אוטומטי. הכל verifiable on-chain.</p>
+          </details>
+          <details style="margin-bottom: 6px; padding: 8px 12px; background: rgba(255, 255, 255, .03); border-radius: 6px;">
+            <summary style="cursor: pointer; font-size: .92rem; font-weight: 600; color: var(--text);">אני אזרח ישראלי - חוקי לי לקנות?</summary>
+            <p style="margin: 8px 0 0; color: var(--text2); font-size: .88rem; line-height: 1.6;">כן. אין חוק שאוסר. חובת דיווח על רווחים בעת מכירה. אסור לתושבי OFAC (USA וכו').</p>
+          </details>
+          <details style="padding: 8px 12px; background: rgba(255, 255, 255, .03); border-radius: 6px;">
+            <summary style="cursor: pointer; font-size: .92rem; font-weight: 600; color: var(--text);">איך מוכרים אחרי TGE?</summary>
+            <p style="margin: 8px 0 0; color: var(--text2); font-size: .88rem; line-height: 1.6;">PancakeSwap → swap → SLH ל-BNB. רק ה-SLH הנזיל. ב-vesting משתחרר 20% כל חודש.</p>
+          </details>
+          <p style="margin: 12px 0 0; font-size: .85rem; color: var(--text2); line-height: 1.55;">
+            עוד 25 שאלות → <a href="/ido.html#faq" style="color: #5ed6ff;">FAQ מלא בדף ה-IDO</a>.
+          </p>
+        </div>
+      </div>
+
+      <!-- Mobile: stack -->
+      <style>
+        @media (max-width: 760px) {
+          #safety .neural-container > div { grid-template-columns: 1fr !important; }
+        }
+      </style>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ ROADMAP ═══════════════════ -->
+  <section class="neural-section" id="roadmap" style="background: linear-gradient(180deg, transparent, var(--bg2), transparent);">
+    <div class="neural-container">
+      <div class="section-header">
+        <span class="neural-eyebrow">Roadmap</span>
+        <h2>מאיפה הגענו, ולאן הולכים</h2>
+      </div>
+
+      <div style="max-width: 720px; margin: 0 auto;">
+        <div class="roadmap-timeline">
+
+          <div class="roadmap-item done">
+            <span class="roadmap-date">Q1 2026 — DONE</span>
+            <h4>בנייה ראשונית</h4>
+            <p>SLH token live ב-BSC, PancakeSwap pool פתוח, 5 בוטים ראשונים בייצור.</p>
+          </div>
+
+          <div class="roadmap-item done">
+            <span class="roadmap-date">Q2 2026 — DONE</span>
+            <h4>הרחבת אקוסיסטם</h4>
+            <p>25 בוטים, 230+ endpoints, 44 דפי אתר, מערכת Guardian, 5-token economy.</p>
+          </div>
+
+          <div class="roadmap-item active">
+            <span class="roadmap-date">Q2 2026 — בעבודה</span>
+            <h4>IDO סופי דרך Marshall Islands DAO</h4>
+            <p>SLH Spark (ישות משפטית בתהליך) + Gnosis Safe (בתהליך הקמה) multisig + audit עתידי (Q3 2026) + PinkSale IDO. Soft cap 20 BNB, hard cap 150 BNB, LP lock מתוכנן (Q3 2026) ימים.</p>
+          </div>
+
+          <div class="roadmap-item">
+            <span class="roadmap-date">Q3 2026</span>
+            <h4>מובייל אפליקציה + ESP32 mass</h4>
+            <p>React Native app עם מיני-תוכנת Telegram. NFC payments. הפצת ESP32 רחבה.</p>
+          </div>
+
+          <div class="roadmap-item">
+            <span class="roadmap-date">Q4 2026</span>
+            <h4>הרחבה בינלאומית</h4>
+            <p>Multi-currency support, 5+ languages, partnerships עם exchanges אזוריים.</p>
+          </div>
+
+          <div class="roadmap-item">
+            <span class="roadmap-date">2027</span>
+            <h4>Marketplace + DAO Governance</h4>
+            <p>Course marketplace, Snapshot governance על SLH stake. P2P trading layer מלא. ארנק כשר commercial launch.</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- IDO legal disclosure — bilingual (Hebrew + English) -->
+  <section style="max-width:920px; margin: 60px auto 0; padding: 0 24px;">
+    <div style="padding: 22px 26px; border: 1px solid var(--border); border-radius: 12px; background: rgba(255, 255, 255, .02); font-size: .82rem; color: var(--text3); line-height: 1.75;">
+      <div style="text-align: right; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--border);">
+        <strong style="color: var(--text2);">⚖️ גילוי משפטי</strong><br>
+        מופעל על ידי SLH Sovereign DAO LLC, רפובליקת איי מרשל (MIDAO (בתהליך רישום)).
+        לא זמין במדינות תחת סנקציות OFAC (ארה"ב, איראן, צפון קוריאה, סוריה, קובה).
+        <strong style="color: var(--text2);">התוכן באתר זה איננו ייעוץ השקעות, ייעוץ מס, או המלצה לרכישה.</strong>
+        כל השקעה בקריפטו טומנת בחובה סיכון של אובדן ההון.
+        חובת דיווח לרשות המסים על רווחים בעת מכירה (25% מס רווחי הון למשקיע פרטי).
+        התייעצו עם רואה חשבון לפני השקעה משמעותית.
+        Smart contracts on Binance Smart Chain · Audit בתהליך (Q3 2026) · LP lock מתוכנן (Q3 2026) at PinkLock (Q3 2026).
+        <br>
+        <a href="/disclosure.html" style="color: var(--accent); text-decoration: underline; font-weight: 600;">→ קרא את גילוי הסיכון המלא</a>
+      </div>
+      <div style="text-align: left; direction: ltr; font-size: .76rem;">
+        <strong>⚖️ Legal disclosure (English)</strong><br>
+        Operated by SLH Sovereign DAO LLC, Republic of the Marshall Islands (MIDAO (בתהליך רישום)).
+        Not available in OFAC-restricted jurisdictions (USA, Iran, North Korea, Syria, Cuba).
+        Not investment advice. All crypto investments carry risk of total capital loss.
+        Israeli residents: capital gains tax (25% for individual investors) applies on profitable sales.
+        Smart contracts on Binance Smart Chain · Audit בתהליך (Q3 2026) · LP lock מתוכנן (Q3 2026) at PinkLock (Q3 2026).
+        <a href="/disclosure.html" style="color: var(--accent);">Read full risk disclosure →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bottom navigation + Full site footer (rendered by shared.js) -->
+  <div id="bottomnav-root"></div>
+  <div id="footer-root"></div>
+
+  <!-- Live data fetcher (graceful degradation) -->
+  <script>
+    (function fetchLiveStats() {
+      const API = 'https://slh-api-production.up.railway.app';
+
+      fetch(API + '/api/health', { mode: 'cors' })
+        .then(r => r.json())
+        .then(data => {
+          if (data && (data.ok || data.status === 'ok')) {
+            fetch(API + '/api/stats/public').then(r => r.json()).then(s => {
+              if (s.users) document.getElementById('stat-users').textContent = s.users.toLocaleString();
+              if (s.bots) document.getElementById('stat-bots').textContent = s.bots;
+              if (s.endpoints) document.getElementById('stat-endpoints').textContent = s.endpoints + '+';
+            }).catch(() => {});
+          }
+        })
+        .catch(() => {});
+
+      // IDO ticker — refreshes every 60s once endpoint deploys
+      function refreshTicker() {
+        fetch(API + '/api/ido/status', { mode: 'cors' })
+          .then(r => r.ok ? r.json() : null)
+          .then(d => {
+            if (!d) return;
+            const total = parseFloat(d.total_raised_bnb || 0);
+            const soft  = parseFloat(d.soft_cap_bnb || 20);
+            const pct   = ((total / soft) * 100).toFixed(1);
+            document.getElementById('tickerText').innerHTML =
+              `IDO LIVE — <strong>${total.toFixed(2)} / ${soft} BNB</strong> raised (${pct}% of soft cap) · ${d.unique_participants || 0} contributors`;
+          })
+          .catch(() => {});
+      }
+      refreshTicker();
+      setInterval(refreshTicker, 60000);
+    })();
+  </script>
+
+  <!-- Shared site infrastructure: nav, footer, i18n, theme switcher -->
+  <script src="js/translations.js?v=20260428"></script>
+  <script src="js/shared.js?v=20260428"></script>
+</body>
+</html>
