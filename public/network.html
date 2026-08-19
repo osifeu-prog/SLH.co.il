@@ -511,10 +511,10 @@ initShared({ activePage: 'network', showBottomNav: true, showTicker: true });
 
   async function loadRealCounts() {
     try {
-      const r = await fetch(SLH_API + '/api/admin/dashboard');
+      const r = await fetch(SLH_API + '/api/live-stats');
       if (!r.ok) return;
       const d = await r.json();
-      document.getElementById('live-real-users').textContent = d.total_users || '--';
+      document.getElementById('live-real-users').textContent = ((d.premium_users||0) + (d.investors||0)) || '--';
     } catch(e) { console.warn('[Network] real counts failed:', e.message); }
   }
   loadRealCounts();
