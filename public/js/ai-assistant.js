@@ -11,7 +11,7 @@
 
   /* ===== CONFIG ===== */
 
-  const AI_ENDPOINT = (typeof API_BASE !== 'undefined' ? API_BASE : 'https://web-production-22f28.up.railway.app') + '/api/ai/chat';
+  const AI_ENDPOINT = 'https://web-production-22f28.up.railway.app/api/ai/chat';
   const STORAGE_KEY = 'slh_ai_chat_history';
   const MAX_HISTORY = 50;
 
