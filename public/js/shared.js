@@ -1,11 +1,11 @@
-﻿/**
+/**
  * SLH Ecosystem — Shared Module
  * Core utilities, navigation, i18n, theme, auth, and ticker
  */
 
 /* ===== 1. CONSTANTS ===== */
 
-const API_BASE = 'https://slh-fastapi-production.up.railway.app';
+const API_BASE = 'https://slh-api-production.up.railway.app';
 const COINGECKO_API = 'https://api.coingecko.com/api/v3';
 const TON_WALLET = 'UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp';
 const BSC_CONTRACT = '0xACb0A09414CEA1C879c67bB7A877E4e19480f022';
@@ -1521,7 +1521,7 @@ function saveCookieConsent(choice) {
   if (window.__SLH_BUG_INIT__) return;
   window.__SLH_BUG_INIT__ = true;
 
-  const API = (window.SLH_API_URL) || 'https://slh-fastapi-production.up.railway.app';
+  const API = (window.SLH_API_URL) || 'https://slh-api-production.up.railway.app';
   const CAPTURE_WINDOW_MS = 60000; // dedupe identical errors within 60s
   const recentErrors = new Map();
 
