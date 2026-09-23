@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SLH — הקהילה שלכם, במקום אחד</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700&family=Heebo:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1B2A2E; --ink-2:#2E4247;
+    --cream:#F6F1E7; --card:#FFFFFF;
+    --gold:#C98A3B; --sage:#7A8F6F;
+    --text:#23201B; --text-soft:#5C554A;
+    --line: rgba(27,42,46,.12);
+  }
+  html{height:100%;}
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--cream); color:var(--text); font-family:"Heebo",sans-serif;}
+  h1,h2,h3{font-family:"Frank Ruhl Libre",serif; font-weight:700; margin:0; color:var(--ink);}
+  p{color:var(--text-soft); line-height:1.7; margin:0;}
+  .wrap{max-width:960px; margin:0 auto; padding:0 24px;}
+  header.top{padding:20px 0;}
+  .brand{display:flex; align-items:center; gap:10px; font-family:"Frank Ruhl Libre",serif; font-size:20px; font-weight:700; color:var(--ink);}
+  .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--gold);}
+  .hero{padding:56px 0 64px; border-bottom:1px solid var(--line);}
+  .hero h1{font-size:clamp(32px,6vw,52px); line-height:1.15; max-width:14ch;}
+  .hero p.lead{margin-top:18px; font-size:19px; max-width:44ch;}
+  .cta-row{margin-top:32px; display:flex; gap:14px; flex-wrap:wrap;}
+  .btn{display:inline-block; padding:14px 26px; border-radius:8px; font-weight:600; font-size:16px; text-decoration:none;}
+  .btn-primary{background:var(--ink); color:var(--cream);}
+  .btn-ghost{border:1px solid var(--line); color:var(--text);}
+  .story{padding:48px 0; border-bottom:1px solid var(--line); max-width:640px;}
+  .story .who{margin-top:14px; font-size:14px; color:var(--gold); font-weight:600;}
+  .grid{padding:56px 0; border-bottom:1px solid var(--line);}
+  .cards{margin-top:36px; display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+  @media (max-width:720px){.cards{grid-template-columns:1fr;}}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:24px;}
+  .card .mark{width:34px;height:34px;border-radius:8px;background:var(--sage); margin-bottom:16px;}
+  .card h3{font-size:20px; margin-bottom:8px;}
+  .card p{font-size:15px;}
+  .trust{padding:48px 0; border-bottom:1px solid var(--line); display:flex; gap:40px; flex-wrap:wrap;}
+  .trust .num{font-family:"Frank Ruhl Libre",serif; font-size:30px; color:var(--gold); font-weight:700;}
+  .trust .label{margin-top:4px; font-size:14px; color:var(--text-soft);}
+  .final{padding:64px 0 80px; text-align:center;}
+  footer{padding:28px 0 40px; border-top:1px solid var(--line);}
+  footer p{font-size:13px;}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap brand"><span class="dot"></span> SLH</div></header>
+<section class="hero"><div class="wrap">
+  <h1>מקום אחד לקהילה, לעסק ולעזרה שאתם צריכים</h1>
+  <p class="lead">SLH היא רשת ישראלית שבה אנשים פותחים חנות, מוצאים מטפל מתאים, ומתחברים לקהילה — בלי לשלם על פרסום ובלי אלגוריתם שמחליט מה תראו.</p>
+  <div class="cta-row">
+    <a class="btn btn-primary" href="https://t.me/SLH_AIR_bot">להצטרפות בטלגרם</a>
+    <a class="btn btn-ghost" href="#what">מה יש כאן</a>
+  </div>
+</div></section>
+<section class="story"><div class="wrap">
+  <p>הפרויקט נולד אחרי שהמייסד, אוסיף, איבד כסף בהונאת קריפטו — והחליט לבנות משהו שקוף, שבו הקהילה עצמה מחזיקה בערך, לא חברה מרכזית שגובה עמלות.</p>
+  <div class="who">אוסיף קויפמן אונגר · מפתח סולו, ישראל</div>
+</div></section>
+<section class="grid" id="what"><div class="wrap">
+  <h2>מה תמצאו כאן</h2>
+  <p style="margin-top:10px; max-width:52ch;">שלושה דברים שכבר עובדים, שאנשים אמיתיים משתמשים בהם היום.</p>
+  <div class="cards">
+    <div class="card"><div class="mark"></div><h3>חנות משלכם</h3><p>פותחים חנות דיגיטלית בתוך כמה דקות, בלי עמלות גבוהות ובלי לבנות אתר בעצמכם.</p></div>
+    <div class="card"><div class="mark"></div><h3>רשת מטפלים</h3><p>מדריך ציבורי של מטפלים עם פרופיל, זמינות ותיאום ישיר — בלי מתווכים.</p></div>
+    <div class="card"><div class="mark"></div><h3>קהילה פעילה</h3><p>פרופיל, נקודות מוניטין על פעילות אמיתית, וקבוצה שגדלה סביב עזרה הדדית.</p></div>
+  </div>
+</div></section>
+<section class="trust"><div class="wrap" style="display:flex; gap:40px; flex-wrap:wrap;">
+  <div><div class="num">25</div><div class="label">בוטים ושירותים פעילים</div></div>
+  <div><div class="num">5</div><div class="label">שפות נתמכות</div></div>
+  <div><div class="num">100%</div><div class="label">קוד פתוח לבדיקה</div></div>
+</div></section>
+<section class="final"><div class="wrap">
+  <h2>מוכנים להצטרף?</h2>
+  <p>זה מתחיל בהודעה אחת בטלגרם.</p>
+  <div class="cta-row" style="margin-top:26px; justify-content:center;">
+    <a class="btn btn-primary" href="https://t.me/SLH_AIR_bot">התחילו עכשיו</a>
+  </div>
+</div></section>
+<footer><div class="wrap"><p>SLH · נבנה בישראל · <a href="https://slh-nft.com" style="color:inherit;">slh-nft.com</a></p></div></footer>
+</body>
+</html>
