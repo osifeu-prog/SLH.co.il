@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>מצב אמת | SLH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Hebrew:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F3F6F5;
+    --sheet: #FFFFFF;
+    --ink: #1C2B2A;
+    --muted: #55606A;
+    --rule: #CBD5D2;
+    --ok: #1F6F4A;
+    --part: #8A5A00;
+    --gap: #A12A2A;
+    --none: #55606A;
+    --focus: #1D4ED8;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #121A19; --sheet: #1A2423; --ink: #E6EEEC; --muted: #A3B0AD;
+      --rule: #34423F; --ok: #5FC28F; --part: #E0A83A; --gap: #F07A7A; --none: #A3B0AD; --focus: #8AB4FF;
+    }
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: "IBM Plex Sans Hebrew", "Arial Hebrew", Arial, sans-serif;
+    font-size: 1.0625rem; line-height: 1.65;
+  }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .wrap { max-width: 60rem; margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
+
+  header h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.15; margin: 0 0 .75rem; font-weight: 700; }
+  header p { margin: 0; max-width: 42rem; color: var(--muted); }
+  .updated { margin-top: .5rem; font-weight: 500; color: var(--ink); }
+
+  .summary {
+    margin: 2rem 0 1.25rem; padding: 1.25rem 0;
+    border-top: 2px solid var(--ink); border-bottom: 1px solid var(--rule);
+    font-size: 1.25rem; font-weight: 500;
+  }
+  .filters { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 2rem; }
+  .filters button {
+    font: inherit; font-size: 1rem; cursor: pointer; min-height: 44px;
+    padding: .4rem 1rem; border-radius: 999px;
+    background: var(--sheet); color: var(--ink); border: 1px solid var(--rule);
+  }
+  .filters button[aria-pressed="true"] { background: var(--ink); color: var(--sheet); border-color: var(--ink); }
+
+  section { margin-bottom: 2.5rem; }
+  section h2 { font-size: 1.375rem; margin: 0 0 .25rem; }
+  section > p { margin: 0 0 1rem; color: var(--muted); }
+
+  .claim {
+    background: var(--sheet); border: 1px solid var(--rule);
+    border-inline-start: 6px solid var(--none);
+    padding: 1rem 1.25rem; margin-bottom: .75rem; border-radius: 4px;
+  }
+  .claim[data-s="ok"]   { border-inline-start-color: var(--ok); }
+  .claim[data-s="part"] { border-inline-start-color: var(--part); }
+  .claim[data-s="gap"]  { border-inline-start-color: var(--gap); }
+  .claim h3 { display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem .75rem; margin: 0 0 .35rem; font-size: 1.125rem; }
+  .status { font-size: .95rem; font-weight: 700; white-space: nowrap; }
+  .status[data-s="ok"] { color: var(--ok); } .status[data-s="part"] { color: var(--part); }
+  .status[data-s="gap"] { color: var(--gap); } .status[data-s="none"] { color: var(--none); }
+  .claim p { margin: .25rem 0 0; }
+  .next { color: var(--muted); }
+
+  footer { border-top: 1px solid var(--rule); padding-top: 1.5rem; color: var(--muted); }
+  footer strong { color: var(--ink); }
+  @media (prefers-reduced-motion: no-preference) { .claim { transition: opacity .15s; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>מצב אמת</h1>
+    <p>כל טענה שמופיעה על SLH, מה ידוע עליה היום, ומה עוד צריך לקרות כדי להוכיח אותה. אנחנו לא מציגים את המערכת כמושלמת; אנחנו מציגים אותה כמו שהיא.</p>
+    <p class="updated" id="updated"></p>
+  </header>
+
+  <div class="summary" id="summary" role="status"></div>
+
+  <div class="filters" role="group" aria-label="סינון לפי מצב">
+    <button type="button" data-f="all" aria-pressed="true">הכול</button>
+    <button type="button" data-f="ok" aria-pressed="false">✔ מאומת</button>
+    <button type="button" data-f="part" aria-pressed="false">◐ חלקי</button>
+    <button type="button" data-f="gap" aria-pressed="false">✖ פער</button>
+    <button type="button" data-f="none" aria-pressed="false">○ טרם נבדק</button>
+  </div>
+
+  <main id="list"></main>
+
+  <footer>
+    <p><strong>מתי ליקוי נחשב סגור:</strong> כשהוא תוקן, נבדק, הוכח ותועד. תיקון לבדו לא מספיק.</p>
+    <p><strong>לגבי אבטחה:</strong> ממצאי אבטחה מתפרסמים כאן כמספר וכמצב בלבד. הפרטים המלאים יפורסמו אחרי שכל ליקוי ייסגר, כדי לא לחשוף משתמשים בזמן הטיפול.</p>
+  </footer>
+</div>
+
+<script>
+/* ============ עדכון הטבלה: עורכים רק את הבלוק הזה ============
+   s: "ok" = מאומת | "part" = חלקי | "gap" = פער | "none" = טרם נבדק  */
+const UPDATED = "24.09.2026";
+const STAGES = [
+  { title: "אמת ציבורית", intro: "מה שכתוב באתר ובמסמכים, מול מה שקיים בפועל.", items: [
+    { c: "היצע הטוקן", s: "none", k: "נדרשת בדיקה מול החוזה ב-BSC.", n: "לפרסם היצע כולל ומחזיקים עיקריים עם קישור לבלוקצ'יין." },
+    { c: "קופה (Treasury)", s: "gap", k: "מסמך הטוקונומיקה הפנימי קובע שעדיין לא הוגדרה קופה.", n: "להגדיר כתובת קופה, מקור מימון ודוח התאמה." },
+    { c: "מבנה DAO", s: "none", k: "מופיע באתר; מסמכי ההתאגדות טרם פורסמו.", n: "לפרסם מסמכי התאגדות." },
+    { c: "ביקורת חוזה (Audit)", s: "none", k: "מופיע באתר; דוח הביקורת טרם פורסם.", n: "לפרסם את הדוח או להסיר את הטענה." },
+    { c: "נעילת נזילות (LP)", s: "none", k: "מופיע באתר; הוכחת נעילה טרם פורסמה.", n: "לפרסם קישור לנעילה בבלוקצ'יין." },
+    { c: "מספר משתמשים", s: "part", k: "קיימים משתמשים פעילים; הנתון הציבורי עדיין לא נמשך מהמערכת.", n: "להציג מספר חי מתוך מסד הנתונים." },
+    { c: "מחירים באתר", s: "gap", k: "המחירים המוצגים לטוקנים אינם נגזרים ממסחר מאומת.", n: "להסיר או לגבות במקור מחיר ציבורי." },
+  ]},
+  { title: "אמת כספית", intro: "איך כסף ויחידות פנימיות נכנסים, זזים ומחולקים.", items: [
+    { c: "רכישת Credits ב-Telegram Stars", s: "ok", k: "חבילות מתועדות; כל תשלום נרשם פעם אחת בלבד.", n: "—" },
+    { c: "רכישת Genesis Pack ב-TON", s: "part", k: "התשלום מאומת היום ידנית; אימות אוטומטי בבלוקצ'יין מוכן לפריסה.", n: "לפרוס ולבדוק רכישה מלאה." },
+    { c: "חלוקת הכנסות לסטייקרים", s: "gap", k: "המנוע קיים אך לא היה מחובר לנתוני הסטייקינג. תיקון מוכן.", n: "לפרוס, להריץ חלוקת ניסיון ולתעד." },
+    { c: "תגמול סטייקינג קבוע", s: "gap", k: "התגמול מחושב באחוז קבוע ללא מקור מימון מוגדר.", n: "להחליט על מודל ממומן ולעדכן את הגילוי הנאות." },
+    { c: "מסחר P2P", s: "part", k: "מנוע המסחר קיים; אין כרגע הזמנות פתוחות או נזילות.", n: "להציג נתוני מסחר חיים כשיהיו." },
+    { c: "עמלות הפניה", s: "part", k: "מחולקות ב-Credits פנימיים, לא במימון חיצוני.", n: "לתעד את הכלל ואת מקור המימון." },
+  ]},
+  { title: "אבטחה", intro: "מספר ומצב בלבד. פרטים יפורסמו אחרי סגירה.", items: [
+    { c: "אימות והרשאות גישה לנתונים", s: "gap", k: "נמצא פער בהרשאות. בטיפול.", n: "תיקון, בדיקה חוזרת, תיעוד." },
+    { c: "ניהול מפתחות וסודות", s: "gap", k: "נמצאו מפתחות שנחשפו בקבצים פנימיים. בתהליך החלפה.", n: "החלפת מפתחות, ניקוי, סריקה אוטומטית בכל שינוי קוד." },
+    { c: "הרשאות מנהל", s: "ok", k: "פעולות ניהול רגישות מוגבלות לבעלים בלבד.", n: "—" },
+    { c: "הגבלת קצב בקשות", s: "part", k: "קיימת בחלק מהמערכת.", n: "להרחיב לכל ה-API." },
+    { c: "יומן פעולות (Audit)", s: "part", k: "קיים; בוצע חיזוק להסתרת מידע רגיש.", n: "לפרוס את החיזוק ולאמת." },
+  ]},
+  { title: "מוצר", intro: "מה עובד היום עבור משתמש.", items: [
+    { c: "בוט SLH_AIR", s: "part", k: "פקודות הפרופיל והמידע עובדות; מסלול הרכישה בתיקון.", n: "לפרוס את התיקון." },
+    { c: "עוזר ה-AI (רובוטוש)", s: "gap", k: "הפקודות עובדות; השיחה החופשית כבויה עד לחיבור מפתח חדש.", n: "חיבור מפתח ובדיקה." },
+    { c: "אקדמיה", s: "none", k: "", n: "לבדוק מסלול משתמש מלא." },
+    { c: "ארנק", s: "part", k: "צפייה ביתרות עובדת.", n: "לאחד את היתרות בין הבוט לאתר." },
+  ]},
+];
+/* ============ סוף הבלוק לעריכה ============ */
+
+const LABEL = { ok: "✔ מאומת", part: "◐ חלקי", gap: "✖ פער", none: "○ טרם נבדק" };
+const esc = t => String(t).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+
+document.getElementById("updated").textContent = "עודכן לאחרונה: " + UPDATED;
+
+const all = STAGES.flatMap(st => st.items);
+const count = s => all.filter(i => i.s === s).length;
+document.getElementById("summary").textContent =
+  `מתוך ${all.length} טענות: ${count("ok")} מאומתות, ${count("part")} חלקיות, ${count("gap")} פערים פתוחים, ${count("none")} טרם נבדקו.`;
+
+document.getElementById("list").innerHTML = STAGES.map(st => `
+  <section>
+    <h2>${esc(st.title)}</h2>
+    <p>${esc(st.intro)}</p>
+    ${st.items.map(i => `
+      <article class="claim" data-s="${i.s}">
+        <h3>${esc(i.c)} <span class="status" data-s="${i.s}">${LABEL[i.s]}</span></h3>
+        ${i.k ? `<p>${esc(i.k)}</p>` : ""}
+        ${i.n && i.n !== "—" ? `<p class="next">השלב הבא: ${esc(i.n)}</p>` : ""}
+      </article>`).join("")}
+  </section>`).join("");
+
+document.querySelectorAll(".filters button").forEach(btn => btn.addEventListener("click", () => {
+  const f = btn.dataset.f;
+  document.querySelectorAll(".filters button").forEach(b => b.setAttribute("aria-pressed", String(b === btn)));
+  document.querySelectorAll(".claim").forEach(el => { el.hidden = !(f === "all" || el.dataset.s === f); });
+  document.querySelectorAll("section").forEach(sec => { sec.hidden = !sec.querySelector(".claim:not([hidden])"); });
+}));
+</script>
+</body>
+</html>
