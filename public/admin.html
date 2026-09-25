@@ -2914,7 +2914,7 @@ async function checkUser(){
     var uid = document.getElementById('check-uid').value;
     if(!uid){alert('Enter User ID');return;}
     try{
-        var r = await fetch(SLH_API+'/api/user/'+uid);
+        var r = await fetch(SLH_API+'/api/user/'+uid, { headers: (localStorage.getItem('slh_jwt') ? { 'Authorization': 'Bearer ' + localStorage.getItem('slh_jwt') } : {}) });
         var d = await r.json();
         alert(JSON.stringify(d, null, 2));
     }catch(e){alert('Error: '+e.message);}

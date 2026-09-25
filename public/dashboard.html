@@ -1856,6 +1856,41 @@ function applyTranslations() {
 const savedTheme = localStorage.getItem('slh_theme') || 'terminal';
 setTheme(savedTheme);
 
+// === AUTH TOKEN (login link: dashboard.html?uid=..&jwt=..) ===
+(function () {
+    try {
+        const p = new URLSearchParams(window.location.search);
+        const j = p.get('jwt');
+        if (j) {
+            localStorage.setItem('slh_jwt', j);
+            p.delete('jwt');  // keep the token out of the address bar and browser history
+            const q = p.toString();
+            history.replaceState(null, '', window.location.pathname + (q ? '?' + q : '') + window.location.hash);
+        }
+    } catch (e) {}
+})();
+
+let _reloginShown = false;
+function showReloginNotice() {
+    if (_reloginShown) return;
+    _reloginShown = true;
+    const d = document.createElement('div');
+    d.setAttribute('role', 'alert');
+    d.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;padding:14px;background:#7a1f1f;color:#fff;text-align:center;font-size:15px';
+    d.innerHTML = 'כדי לראות את הנתונים שלך צריך להתחבר מחדש: שלח <b>/login</b> לבוט <a href="https://t.me/SLH_AIR_bot" style="color:#fff;text-decoration:underline">@SLH_AIR_bot</a> ולחץ על הקישור.';
+    document.body.appendChild(d);
+}
+
+function authFetch(url, opts) {
+    opts = opts || {};
+    const j = localStorage.getItem('slh_jwt');
+    if (j) opts.headers = Object.assign({}, opts.headers || {}, { 'Authorization': 'Bearer ' + j });
+    return fetch(url, opts).then(r => {
+        if (r.status === 401 || r.status === 403) showReloginNotice();
+        return r;
+    });
+}
+
 // === AUTH ===
 function onTelegramAuth(user) {
     fetch(API + '/api/auth/telegram', {
@@ -1979,7 +2014,7 @@ function showApp() {
     document.getElementById('nav-uid').textContent = '#' + uidStr;
 
     // Refresh display_name from API in case user updated it from another device
-    fetch(`${API}/api/user/${currentUser.id}`).then(r => r.ok ? r.json() : null).then(data => {
+    authFetch(`${API}/api/user/${currentUser.id}`).then(r => r.ok ? r.json() : null).then(data => {
         if (data && data.user) {
             const freshName = data.user.display_name || data.user.first_name || data.user.username || displayName;
             document.getElementById('nav-username').textContent = freshName;
@@ -2109,7 +2144,7 @@ async function loadAllData() {
 
 async function loadUserProfile() {
     try {
-        const r = await fetch(API + '/api/user/' + currentUser.id);
+        const r = await authFetch(API + '/api/user/' + currentUser.id);
         if (!r.ok) throw new Error('API error');
         const d = await r.json();
 
@@ -2428,7 +2463,7 @@ else {
             is_registered: false // default, will be fetched from API
         };
         // Fetch real is_registered status from API before showing app
-        fetch(`${API}/api/user/${urlUid}`).then(r => r.ok ? r.json() : null).then(data => {
+        authFetch(`${API}/api/user/${urlUid}`).then(r => r.ok ? r.json() : null).then(data => {
             if (data && data.user) {
                 currentUser.is_registered = data.user.is_registered || data.user.payment_status === 'approved';
                 currentUser.first_name = data.user.first_name || currentUser.first_name;
@@ -2557,7 +2592,7 @@ async function initiateRegistration() {
     const uid = currentUser?.id;
     if (!uid) return;
     try {
-        const r = await fetch(`${API}/api/user/full/${uid}`);
+        const r = await authFetch(`${API}/api/user/full/${uid}`);
         if (r.ok) {
             const d = await r.json();
             if (d.profile?.is_registered) {

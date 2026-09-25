@@ -2099,7 +2099,7 @@
         // (stale cache sometimes shows logged-in user as not registered)
         if (!user.is_registered && user.id) {
             try {
-                const r = await fetch(API + '/api/user/' + user.id);
+                const r = await fetch(API + '/api/user/' + user.id, { headers: (localStorage.getItem('slh_jwt') ? { 'Authorization': 'Bearer ' + localStorage.getItem('slh_jwt') } : {}) });
                 if (r.ok) {
                     const d = await r.json();
                     if (d.user && d.user.is_registered) {
@@ -2895,7 +2895,7 @@
         const user = getUser();
         if (!user || !user.id) return;
         try {
-            const r = await fetch(API + '/api/user/' + user.id);
+            const r = await fetch(API + '/api/user/' + user.id, { headers: (localStorage.getItem('slh_jwt') ? { 'Authorization': 'Bearer ' + localStorage.getItem('slh_jwt') } : {}) });
             if (!r.ok) return;
             const d = await r.json();
             if (d.user) {
