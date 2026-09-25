@@ -1063,7 +1063,7 @@
         let data = null;
         try {
             const res = await fetch(`${WALLET_API.replace('/api/wallet','')}/api/user/${user.id}`, {
-                headers: { 'Content-Type': 'application/json' }
+                headers: Object.assign({ 'Content-Type': 'application/json' }, (localStorage.getItem('slh_jwt') ? { 'Authorization': 'Bearer ' + localStorage.getItem('slh_jwt') } : {}))
             });
             if (res.ok) data = await res.json();
         } catch (err) {
