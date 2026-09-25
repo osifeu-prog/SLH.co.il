@@ -2635,8 +2635,8 @@ function showRegistrationPanel() {
         <div style="background:linear-gradient(135deg,rgba(255,140,0,0.18),rgba(0,188,212,0.18));border:3px solid rgba(255,140,0,0.6);border-radius:16px;padding:24px;max-width:480px;width:100%;margin-bottom:20px;text-align:center;box-shadow:0 8px 32px rgba(255,140,0,0.25);animation:slhPulseGlow 2s ease-in-out infinite">
             <div style="font-size:28px;margin-bottom:8px">🎁 <b style="color:var(--accent)">Genesis 49</b> — חבילה דו-שלבית!</div>
             <div style="font-size:14px;color:var(--text);margin-bottom:14px;line-height:1.6">
-                <div style="margin:6px 0">💎 <b>10 ZVK</b> (~44 ₪ שווי) <span style="color:var(--text2)">להפצה מיידית</span></div>
-                <div style="margin:6px 0">🎁 <b style="color:#22c55e">+100 ZVK</b> (~444 ₪ שווי) <span style="color:var(--text2)">מתנה אחרי ההפצה</span></div>
+                <div style="margin:6px 0">💎 <b>10 ZVK</b> <span style="color:var(--text2)">להפצה מיידית</span></div>
+                <div style="margin:6px 0">🎁 <b style="color:#22c55e">+100 ZVK</b> <span style="color:var(--text2)">מתנה אחרי ההפצה</span></div>
                 <div style="margin:6px 0">🎨 <b>NFT Genesis</b> + 🔓 <b>גישה מלאה לאקוסיסטם</b></div>
             </div>
             <div style="font-size:11px;color:var(--text2);margin-bottom:12px" id="beta-remaining">⏳ טוען מלאי...</div>
@@ -2770,7 +2770,7 @@ async function redeemBetaCoupon() {
             if (data.nft_number) {
                 showRegCouponStatus(
                     `🎉 ברוכים הבאים, Genesis Member #${data.nft_number}!<br>` +
-                    `💎 קיבלת ${(data.zvk_credited || 10).toLocaleString()} ZVK (~44₪) להפצה<br>🎁 +100 ZVK (~444₪) מתנה לאחר ההפצה<br>🎨 NFT Genesis<br>` +
+                    `💎 קיבלת ${(data.zvk_credited || 10).toLocaleString()} ZVK להפצה<br>🎁 +100 ZVK מתנה לאחר ההפצה<br>🎨 NFT Genesis<br>` +
                     `⏳ נותרו ${data.remaining_slots ?? '?'} מקומות`,
                     false
                 );
