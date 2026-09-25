@@ -223,12 +223,6 @@
   <!-- Full site navigation (rendered by shared.js — gives access to ALL site pages) -->
   <div id="topnav-root" data-page="home"></div>
 
-  <!-- IDO ticker — auto-refreshes from /api/ido/status -->
-  <div class="ido-ticker" id="idoTicker">
-    <i class="fas fa-rocket" style="color: var(--accent); margin-inline-end: 6px;"></i>
-    <span id="tickerText">IDO via SLH Spark (ישות משפטית בתהליך) — pre-launch · ~14 days to soft cap window opens</span>
-    <a href="#ido">Learn more →</a>
-  </div>
 
   <!-- ═══════════════════ HERO ═══════════════════ -->
   <section class="hero">
@@ -1018,22 +1012,6 @@
         })
         .catch(() => {});
 
-      // IDO ticker — refreshes every 60s once endpoint deploys
-      function refreshTicker() {
-        fetch(API + '/api/ido/status', { mode: 'cors' })
-          .then(r => r.ok ? r.json() : null)
-          .then(d => {
-            if (!d) return;
-            const total = parseFloat(d.total_raised_bnb || 0);
-            const soft  = parseFloat(d.soft_cap_bnb || 20);
-            const pct   = ((total / soft) * 100).toFixed(1);
-            document.getElementById('tickerText').innerHTML =
-              `IDO LIVE — <strong>${total.toFixed(2)} / ${soft} BNB</strong> raised (${pct}% of soft cap) · ${d.unique_participants || 0} contributors`;
-          })
-          .catch(() => {});
-      }
-      refreshTicker();
-      setInterval(refreshTicker, 60000);
     })();
   </script>
 
