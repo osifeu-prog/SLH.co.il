@@ -17,8 +17,8 @@
     return value === 'OPEN' ? 'פתוח' : value === 'CLOSED' ? 'סגור' : fallback;
   }
 
-  function tone(value, openTone) {
-    return value === 'OPEN' ? openTone : 'closed';
+  function tone(value) {
+    return value === 'OPEN' ? 'open' : 'closed';
   }
 
   function render(data) {
