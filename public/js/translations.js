@@ -2524,3 +2524,58 @@ T._rtl = ['he', 'ar'];
 
 // Default language
 T._default = 'he';
+
+// === Canonical finance-status guard ===
+// Keep legacy translation keys from reintroducing inactive public investment/yield messaging.
+(function applyCanonicalFinanceStatusGuard() {
+  const overrides = {
+    he: {
+      landing_hero_sub: 'מערכת דיגיטלית עם מסחר פנימי ושירותים ב-SLH OS. אין כאן הצעת השקעה או הבטחת תשואה.',
+      landing_cta_earn: 'צפו בסטטוס המערכת',
+      landing_stat_apy: 'אין תשואה פעילה',
+      landing_feat1_title: 'אימות תשלומים ומערכת',
+      landing_feat1_desc: 'סטטוס ההפקדות וההתחשבנות נקבע ב-SLH OS ואינו מוצג כהצעת השקעה.',
+      landing_cta_title: 'היכנסו למערכת SLH OS',
+      landing_cta_sub: 'בדקו את המצב העדכני לפני כל פעולה פיננסית.',
+      s3t: 'פעולות במערכת', s3p: 'השתמשו בשירותים ובמסחר הפנימי לפי השערים וההרשאות של SLH OS.',
+      earn_title: 'מסלולי תשואה', earn_sub: 'אין כרגע מסלול השקעה ציבורי פעיל.', earn_plans: 'לא פעיל', earn_stake_now: 'סטטוס מערכת',
+      earn_hero_badge: 'לא פעיל', earn_hero_title: 'אין כרגע מסלול תשואה ציבורי', earn_hero_apy: 'תכנון בלבד',
+      earn_plans_title: 'מסלולים עתידיים — לא פעילים', earn_plans_sub: 'אין לקבל הפקדות או להציג תשואה על בסיס המידע הישן.',
+      earn_calc_title: 'מחשבון — לא פעיל', earn_calc_sub: 'אין להשתמש במחשבון זה לצורך קבלת החלטת השקעה.',
+      earn_how_title: 'איך זה עובד?', earn_how_sub: 'מסלולי תשואה ציבוריים אינם פעילים כרגע.',
+      earn_step1_title: 'בדיקת סטטוס', earn_step1_desc: 'בדקו קודם את סטטוס SLH OS.',
+      earn_step2_title: 'אין מסלול פעיל', earn_step2_desc: 'אין כרגע תוכנית הפקדה/תשואה ציבורית.',
+      earn_step3_title: 'אין הבטחת תשואה', earn_step3_desc: 'אין כאן התחייבות לריבית, תשואה או רווח.',
+      earn_positions: 'פוזיציות', earn_positions_title: 'פוזיציות השקעה — לא פעילות', earn_positions_sub: 'אין להסתמך על נתוני פוזיציה מהאתר הישן.',
+      earn_deals: 'מבצעים', earn_deals_title: 'אין מבצע השקעה פעיל', earn_deals_sub: 'הצעות תשואה ישנות אינן פעילות.',
+      earn_deal1_desc: 'לא פעיל. אין בונוס על הפקדת השקעה.', earn_deal2_desc: 'לא פעיל. אין תוספת תשואה.', earn_deal3_desc: 'לא פעיל. אין פרס על השקעה או הפקדה.',
+      earn_faq1_a: 'Staking השקעות ציבורי אינו פעיל כרגע.', earn_faq2_a: 'אין כרגע מינימום הפקדה למסלול השקעה ציבורי.', earn_faq3_a: 'אין כרגע מסלול השקעה ציבורי פעיל.',
+      earn_faq4_a: 'אין כרגע נוסחת תשואה פעילה למוצר ציבורי. אין להשתמש במספרים ישנים כמו 4%, 8%, 12% או 65%.',
+      earn_faq5_a: 'אין להסיק מהאתר הישן שהפקדה במוצר השקעה פעיל או מובטחת.',
+      earn_faq6_a: 'קודי תשואה/השקעה ישנים אינם פעילים.',
+      earn_mnh_sub: 'יחידת חשבון פנימית — ללא הצמדה וללא מוצר השקעה.', earn_mnh_desc: 'MNH מוצג כרכיב פנימי בלבד. אין כאן מסלול הפקדה או פדיון למשקיעים.',
+      earn_mnh_staking: 'Staking השקעות — לא פעיל', earn_mnh_deposit: 'הפקדה — לא פעילה', earn_mnh_how2: 'אין כרגע תשואה פעילה ב-MNH.',
+      earn_mnh_f2: 'אין כרגע מסלול Revenue Share ציבורי פעיל', earn_mnh_f3: 'אין לקבל הפקדות תמורת מוצר השקעה.',
+      earn_testimonials: 'אין המלצות השקעה', earn_testimonials_title: 'אין המלצות השקעה פעילות', earn_testimonials_sub: 'המלצות ישנות אינן מקור אמת.',
+      earn_login_required: 'מסלול השקעה אינו פעיל', earn_status_active: 'לא פעיל'
+    },
+    en: {
+      landing_hero_sub: 'SLH OS is a digital system with internal trading and services. No public investment offer or yield guarantee is active.',
+      landing_cta_earn: 'View system status', landing_stat_apy: 'No active yield', landing_feat1_title: 'Payments & system verification', landing_feat1_desc: 'Deposit and settlement status is determined by SLH OS and is not presented as an investment offer.', landing_cta_title: 'Open SLH OS', landing_cta_sub: 'Check the current system state before any financial action.',
+      s3t: 'System activity', s3p: 'Use system services and internal trading according to SLH OS state and permissions.',
+      earn_title: 'Yield paths', earn_sub: 'No public investment yield product is active.', earn_plans: 'Inactive', earn_stake_now: 'System status', earn_hero_badge: 'Inactive', earn_hero_title: 'No public yield product is active', earn_hero_apy: 'Design only',
+      earn_plans_title: 'Future paths — inactive', earn_plans_sub: 'Do not accept deposits or present yield based on legacy content.', earn_calc_title: 'Calculator — inactive', earn_calc_sub: 'Do not use this calculator for investment decisions.', earn_how_title: 'How it works', earn_how_sub: 'Public yield products are not active.',
+      earn_step1_title: 'Check status', earn_step1_desc: 'Check SLH OS status first.', earn_step2_title: 'No active plan', earn_step2_desc: 'No public deposit/yield plan is active.', earn_step3_title: 'No yield guarantee', earn_step3_desc: 'There is no promise of interest, yield, or profit.', earn_positions_title: 'Investment positions — inactive', earn_positions_sub: 'Legacy position data is not authoritative.', earn_deals_title: 'No active investment promotion', earn_deals_sub: 'Legacy yield offers are inactive.',
+      earn_faq1_a: 'Public investment staking is not active.', earn_faq2_a: 'There is currently no minimum deposit for a public investment product.', earn_faq3_a: 'No public investment plan is currently active.', earn_faq4_a: 'There is no active public yield formula. Do not rely on legacy numbers such as 4%, 8%, 12%, or 65%.', earn_faq5_a: 'Do not infer from legacy pages that an active or guaranteed investment deposit exists.', earn_faq6_a: 'Legacy investment/yield promo codes are inactive.',
+      earn_mnh_sub: 'Internal accounting unit — not a public investment product.', earn_mnh_desc: 'MNH is shown as an internal component only. No public investor deposit/redemption product is active.', earn_mnh_staking: 'Investment staking — inactive', earn_mnh_deposit: 'Deposit — inactive', earn_mnh_how2: 'No active MNH yield.', earn_mnh_f2: 'No active public Revenue Share product', earn_mnh_f3: 'Do not accept deposits for an investment product.', earn_testimonials: 'No investment testimonials', earn_testimonials_title: 'No active investment testimonials', earn_testimonials_sub: 'Legacy testimonials are not authoritative.', earn_login_required: 'Investment path inactive', earn_status_active: 'Inactive'
+    },
+    ru: { earn_title: 'Доходность — неактивна', earn_sub: 'Публичный инвестиционный продукт сейчас не активен.', earn_hero_badge: 'Неактивно', earn_hero_title: 'Публичная доходность не активна', earn_hero_apy: 'Только проектирование' },
+    ar: { earn_title: 'مسارات العائد — غير مفعلة', earn_sub: 'لا يوجد منتج استثماري عام نشط حالياً.', earn_hero_badge: 'غير نشط', earn_hero_title: 'لا يوجد منتج عائد عام نشط', earn_hero_apy: 'للتصميم فقط' },
+    fr: { earn_title: 'Rendement — inactif', earn_sub: 'Aucun produit d’investissement public n’est actif.', earn_hero_badge: 'Inactif', earn_hero_title: 'Aucun produit de rendement public actif', earn_hero_apy: 'Conception uniquement' }
+  };
+  Object.entries(overrides).forEach(([lang, values]) => {
+    if (!T[lang]) return;
+    Object.assign(T[lang], values);
+  });
+})();
+
