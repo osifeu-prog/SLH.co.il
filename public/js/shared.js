@@ -1113,6 +1113,14 @@ function initShared(options = {}) {
     showBottomNav = false
   } = options;
 
+  // Canonical SLH OS public truth beacon is loaded from a dedicated script.
+  if (!document.querySelector('script[src*="/js/site-truth.js"]')) {
+    const truthScript = document.createElement('script');
+    truthScript.src = '/js/site-truth.js?v=20261008a';
+    truthScript.defer = true;
+    document.head.appendChild(truthScript);
+  }
+
   // BETA banner + floating bug-report + site-map FABs (always visible across the site)
   renderBetaBanner();
   renderBugReportFAB();
