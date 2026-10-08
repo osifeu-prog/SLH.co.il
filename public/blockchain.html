@@ -223,15 +223,11 @@
         <p class="rv" data-i18n="bsc_sub">Track SLH token activity on Binance Smart Chain in real time. Fully transparent, on-chain verified.</p>
     </div>
 
-    <!-- DEX listing status banner -->
     <div id="dex-status-banner" class="rv" style="margin-bottom:20px">
-        <div style="padding:16px 20px;background:linear-gradient(135deg,rgba(255,140,0,0.10),rgba(108,92,231,0.10));border:1px solid rgba(255,140,0,0.3);border-radius:14px;display:flex;gap:14px;align-items:center;flex-wrap:wrap">
-            <div style="font-size:24px">⏳</div>
-            <div style="flex:1;min-width:200px">
-                <div style="font-weight:800;color:var(--accent);font-size:14px;margin-bottom:3px" id="dex-status-title">בודק רישום ב-DEX...</div>
-                <div style="font-size:12px;color:var(--text2)" id="dex-status-desc">סריקה דרך Dexscreener API — תשובה תוך שניות</div>
-            </div>
-            <a id="dex-status-cta" href="https://pancakeswap.finance/add/BNB/0xACb0A09414CEA1C879c67bB7A877E4e19480f022?chain=bsc" target="_blank" rel="noopener" style="padding:10px 18px;background:linear-gradient(135deg,var(--accent),var(--gold));color:#000;border-radius:10px;font-weight:700;font-size:13px;text-decoration:none;display:none">➕ הוסף נזילות</a>
+        <div style="padding:16px 20px;background:rgba(255,209,102,.06);border:1px solid rgba(255,209,102,.25);border-radius:14px">
+            <div style="font-weight:800;color:var(--gold);font-size:14px">⚠️ מסחר חיצוני / DEX אינו מקור האמת כאן</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:4px">העמוד מציג מידע על חוזה SLH ב-BSC בלבד. סטטוס המסחר וההתחשבנות הקובע נמצא ב-SLH OS.</div>
+            <a href="/status.html" style="display:inline-block;margin-top:10px;color:var(--cyan)">בדוק את הסטטוס הקנוני ↗</a>
         </div>
     </div>
 
@@ -240,8 +236,8 @@
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
             <span style="font-size:24px">⚠️</span>
             <div>
-                <div style="font-weight:800;color:var(--gold);font-size:15px">למה PancakeSwap מציג "Medium Risk"?</div>
-                <div style="font-size:12px;color:var(--text2)">זה נורמלי לכל טוקן חדש — לא אומר שהטוקן מסוכן</div>
+                <div style="font-weight:800;color:var(--gold);font-size:15px">סטטוס מסחר חיצוני</div>
+                <div style="font-size:12px;color:var(--text2)">האתר אינו קובע או מאשר סטטוס מסחר חיצוני</div>
             </div>
         </div>
         <div style="font-size:13px;color:var(--text2);line-height:1.9">
@@ -251,15 +247,15 @@
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:12px">
             <div style="padding:10px 12px;background:rgba(0,0,0,0.2);border-radius:8px;font-size:12px">
                 <strong style="color:var(--gold)">1. ריכוז Supply</strong><br>
-                <span style="color:var(--text2)">מייסד מחזיק 98% — נורמלי בהשקה ראשונית. ירד עם הזמן.</span>
+                <span style="color:var(--text2)">ריכוז החזקות: יש לבדוק ישירות ב-BSCScan</span>
             </div>
             <div style="padding:10px 12px;background:rgba(0,0,0,0.2);border-radius:8px;font-size:12px">
                 <strong style="color:var(--gold)">2. נזילות נמוכה</strong><br>
-                <span style="color:var(--text2)">$36 ב-pool. יגדל עם תורמים נוספים + GemPad presale.</span>
+                <span style="color:var(--text2)">נתוני נזילות חיצונית אינם מקור אמת של SLH OS</span>
             </div>
             <div style="padding:10px 12px;background:rgba(0,0,0,0.2);border-radius:8px;font-size:12px">
                 <strong style="color:var(--gold)">3. אין audit חיצוני</strong><br>
-                <span style="color:var(--text2)">CertiK/Halborn עולה $5K-$50K. בתכנון לQ3 2026.</span>
+                <span style="color:var(--text2)">אין להציג ביקורת חיצונית כבוצעה ללא דוח מאומת</span>
             </div>
             <div style="padding:10px 12px;background:rgba(0,0,0,0.2);border-radius:8px;font-size:12px">
                 <strong style="color:var(--gold)">4. טוקן חדש</strong><br>
@@ -544,49 +540,21 @@ async function checkDEXListing() {
         const mcapLabelEl = document.getElementById('bsc-mcap-label');
 
         if (data && data.pairs && data.pairs.length > 0) {
-            // Listed on a DEX
+            // External market data is informational only; do not equate it with SLH OS public trading state.
             const pair = data.pairs[0];
             dexListed = true;
             dexPriceUsd = parseFloat(pair.priceUsd);
-            if (titleEl) titleEl.textContent = '✅ ' + pair.dexId.toUpperCase() + ' — ' + (pair.baseToken?.symbol || 'SLH') + '/' + (pair.quoteToken?.symbol || 'BNB');
-            if (descEl) descEl.textContent = 'Liquidity: $' + fmtNum(pair.liquidity?.usd || 0, 0) + ' · 24h Volume: $' + fmtNum(pair.volume?.h24 || 0, 0);
-            if (priceLabelEl) priceLabelEl.textContent = 'SLH Market Price';
-            if (mcapLabelEl) mcapLabelEl.textContent = 'Market Cap';
-            if (ctaEl) {
-                ctaEl.textContent = '📊 View on ' + pair.dexId;
-                ctaEl.href = pair.url || 'https://pancakeswap.finance/swap?outputCurrency=' + SLH_CONTRACT + '&chain=bsc';
-                ctaEl.style.display = 'inline-block';
-            }
-            // Use real DEX price for market cap calculation
+            if (titleEl) titleEl.textContent = 'ℹ️ מידע שוק חיצוני — ' + (pair.baseToken?.symbol || 'SLH') + '/' + (pair.quoteToken?.symbol || 'BNB');
+            if (descEl) descEl.textContent = 'נתוני DEX חיצוניים לצורכי מידע בלבד. אינם קובעים את שער המסחר הקנוני של SLH OS.';
+            if (priceLabelEl) priceLabelEl.textContent = 'External DEX reference';
+            if (mcapLabelEl) mcapLabelEl.textContent = 'External reference';
             const priceEl = document.getElementById('bsc-price');
             if (priceEl) priceEl.innerHTML = '$' + fmtNum(dexPriceUsd, 4);
-            if (totalSupplyCache > 0) {
-                const realMcap = totalSupplyCache * dexPriceUsd;
-                const mcapEl = document.getElementById('bsc-mcap');
-                if (mcapEl) mcapEl.textContent = realMcap > 1e6 ? '$' + fmtNum(realMcap / 1e6, 2) + 'M' : realMcap > 1e3 ? '$' + fmtNum(realMcap / 1e3, 1) + 'K' : '$' + fmtNum(realMcap, 0);
-            }
+            if (ctaEl) ctaEl.style.display = 'none';
         } else {
-            // Dexscreener hasn't indexed yet — but we KNOW the pool exists
-            // PancakeSwap V2 Pair: 0xacea26b6e132cd45f2b8a4754170d4d0d3b8bbee
-            // Created at block 92071485 on 2026-04-12
-            dexListed = true;
-            dexPriceUsd = 0.596; // 0.04 BNB / 40 SLH * $596/BNB
-            if (titleEl) titleEl.textContent = '✅ PANCAKESWAP V2 — SLH/BNB';
-            if (descEl) descEl.textContent = 'Pool Live! Pair: 0xacea26b6...bbeE · Created block 92071485 · Dexscreener indexing may take 5-30 min.';
-            if (priceLabelEl) priceLabelEl.textContent = 'SLH DEX Price';
-            if (mcapLabelEl) mcapLabelEl.textContent = 'Market Cap (DEX)';
-            const priceEl = document.getElementById('bsc-price');
-            if (priceEl) priceEl.innerHTML = '$' + fmtNum(dexPriceUsd, 4);
-            if (totalSupplyCache > 0) {
-                const realMcap = totalSupplyCache * dexPriceUsd;
-                const mcapEl = document.getElementById('bsc-mcap');
-                if (mcapEl) mcapEl.textContent = realMcap > 1e6 ? '$' + fmtNum(realMcap / 1e6, 2) + 'M' : '$' + fmtNum(realMcap, 0);
-            }
-            if (ctaEl) {
-                ctaEl.textContent = '🛒 קנה SLH ב-PancakeSwap';
-                ctaEl.href = 'https://pancakeswap.finance/swap?outputCurrency=' + SLH_CONTRACT + '&chain=bsc';
-                ctaEl.style.display = 'inline-block';
-            }
+            if (titleEl) titleEl.textContent = 'ℹ️ אין כרגע נתון DEX חיצוני מאומת';
+            if (descEl) descEl.textContent = 'לסטטוס הקובע של המסחר וההתחשבנות עברו ל-SLH OS.';
+            if (ctaEl) ctaEl.style.display = 'none';
         }
     } catch (e) {
         console.log('[DEX] listing check error:', e);
