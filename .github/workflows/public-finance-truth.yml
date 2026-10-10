@@ -4,12 +4,22 @@ on:
   pull_request:
     paths:
       - "public/index.html"
+      - "public/js/shared.js"
+      - "public/status.html"
+      - "public/disclosure.html"
+      - "public/treasury-health.html"
+      - "public/chain-status.html"
       - "tests/test_public_finance_truth.py"
       - ".github/workflows/public-finance-truth.yml"
   push:
     branches: [main]
     paths:
       - "public/index.html"
+      - "public/js/shared.js"
+      - "public/status.html"
+      - "public/disclosure.html"
+      - "public/treasury-health.html"
+      - "public/chain-status.html"
       - "tests/test_public_finance_truth.py"
       - ".github/workflows/public-finance-truth.yml"
 
@@ -21,5 +31,5 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Test public homepage financial truth
+      - name: Test public financial claims and canonical status
         run: python -m unittest discover -s tests -p "test_public_finance_truth.py"
