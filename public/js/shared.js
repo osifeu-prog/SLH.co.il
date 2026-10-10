@@ -27,56 +27,30 @@ const THEME_META = {
 };
 
 const NAV_ITEMS = [
-  // Top 5 are shown in primary nav; rest go to "More" dropdown.
-  // 2026-04-27: investor-focus pivot — surface investors + about above sales pages.
   { key: 'home', href: '/', icon: 'fa-home' },
-  { key: 'investors', href: '/investors.html', icon: 'fa-handshake' },
+  { key: 'miniapp', href: 'https://slh-cloud-bot-production.up.railway.app/mini-app-v4', icon: 'fa-rocket' },
+  { key: 'status', href: '/status.html', icon: 'fa-signal' },
   { key: 'bots', href: '/bots.html', icon: 'fa-robot' },
   { key: 'network', href: '/network.html', icon: 'fa-project-diagram' },
-  { key: 'about', href: '/about.html', icon: 'fa-info-circle' },
-  // Sales/transactional pages — moved into "More" so investors aren't greeted by FOMO surfaces.
-  { key: 'genesis', href: '/genesis.html', icon: 'fa-dna' },
-  { key: 'trade', href: '/trade.html', icon: 'fa-chart-line' },
-  { key: 'earn', href: '/earn.html', icon: 'fa-coins' },
-  { key: 'wallet', href: '/wallet.html', icon: 'fa-wallet', auth: true },
-  { key: 'referral', href: '/referral.html', icon: 'fa-users', auth: true },
-  { key: 'community', href: '/community.html', icon: 'fa-comments' },
-  { key: 'blog', href: '/blog.html', icon: 'fa-newspaper' },
+  { key: 'academy', href: '/learning-path.html', icon: 'fa-graduation-cap' },
   { key: 'guides', href: '/guides.html', icon: 'fa-book' },
-  { key: 'wallet_guide', href: '/wallet-guide.html', icon: 'fa-graduation-cap' },
+  { key: 'about', href: '/about.html', icon: 'fa-info-circle' },
+  { key: 'community', href: '/community.html', icon: 'fa-comments' },
+  { key: 'referral', href: 'https://slh-cloud-bot-production.up.railway.app/mini-app-v4', icon: 'fa-users' },
+  { key: 'wallet', href: 'https://slh-cloud-bot-production.up.railway.app/mini-app-v4', icon: 'fa-wallet' },
   { key: 'blockchain', href: '/blockchain.html', icon: 'fa-cubes' },
-  { key: 'roadmap', href: '/roadmap.html', icon: 'fa-road' },
-  { key: 'liquidity', href: '/liquidity.html', icon: 'fa-tint' },
-  { key: 'challenge', href: '/challenge.html', icon: 'fa-fire' },
-  { key: 'healing', href: '/healing-vision.html', icon: 'fa-heart' },
-  { key: 'jubilee', href: '/jubilee.html', icon: 'fa-dove' },
-  { key: 'kosher_wallet', href: '/kosher-wallet.html', icon: 'fa-shield-alt' },
-  { key: 'p2p', href: '/p2p.html', icon: 'fa-exchange-alt' },
-  { key: 'control_center', href: '/control-center.html', icon: 'fa-satellite-dish', admin: true },
-  { key: 'diagnostics', href: '/diagnostics.html', icon: 'fa-stethoscope', admin: true },
-  { key: 'project_map', href: '/project-map.html', icon: 'fa-sitemap', admin: true },
-  { key: 'promo_shekel', href: '/promo-shekel.html', icon: 'fa-fire', admin: true },
-  { key: 'mass_gift', href: '/mass-gift.html', icon: 'fa-gift', admin: true },
-  { key: 'bot_registry', href: '/bot-registry.html', icon: 'fa-robot', admin: true },
-  { key: 'broker_dashboard', href: '/broker-dashboard.html', icon: 'fa-handshake', admin: true },
-  { key: 'investment_tracker', href: '/investment-tracker.html', icon: 'fa-piggy-bank' },
-  { key: 'expenses', href: '/expenses.html', icon: 'fa-receipt', admin: true },
-  { key: 'card_payment', href: '/card-payment.html', icon: 'fa-credit-card' },
-  { key: 'guardian_diag', href: '/guardian-diag.html', icon: 'fa-shield-virus', admin: true },
-  { key: 'live_stats', href: '/live-stats.html', icon: 'fa-chart-line', admin: true },
-  { key: 'experts', href: '/experts.html', icon: 'fa-user-graduate' },
-  { key: 'bug_report', href: '/bug-report.html', icon: 'fa-bug' },
-  { key: 'dashboard', href: '/dashboard.html', icon: 'fa-tachometer-alt', auth: true }
+  { key: 'terms', href: '/terms.html', icon: 'fa-file-contract' },
+  { key: 'privacy', href: '/privacy.html', icon: 'fa-user-shield' },
+  { key: 'bug_report', href: '/bug-report.html', icon: 'fa-bug' }
 ];
 
 const BOTTOM_NAV_ITEMS = [
   { key: 'home', href: '/', icon: 'fa-home' },
-  { key: 'wallet', href: '/wallet.html', icon: 'fa-wallet' },
-  { key: 'earn', href: '/earn.html', icon: 'fa-coins' },
-  { key: 'bots', href: '/bots.html', icon: 'fa-robot' },
-  { key: 'referral', href: '/referral.html', icon: 'fa-users' }
+  { key: 'miniapp', href: 'https://slh-cloud-bot-production.up.railway.app/mini-app-v4', icon: 'fa-rocket' },
+  { key: 'status', href: '/status.html', icon: 'fa-signal' },
+  { key: 'academy', href: '/learning-path.html', icon: 'fa-graduation-cap' },
+  { key: 'community', href: '/community.html', icon: 'fa-comments' }
 ];
-
 
 /* ===== 2. API CLIENT ===== */
 
@@ -225,7 +199,7 @@ function uploadProfilePhoto(callback) {
 
 function requireAuth() {
   if (!isLoggedIn()) {
-    window.location.href = '/dashboard.html';
+    window.location.href = 'https://slh-cloud-bot-production.up.railway.app/mini-app-v4';
     return false;
   }
   return true;
@@ -238,11 +212,11 @@ function isRegistered() {
 
 function requireRegistration() {
   if (!isLoggedIn()) {
-    window.location.href = '/dashboard.html';
+    window.location.href = 'https://slh-cloud-bot-production.up.railway.app/mini-app-v4';
     return false;
   }
   if (!isRegistered()) {
-    window.location.href = '/dashboard.html#register';
+    window.location.href = 'https://slh-cloud-bot-production.up.railway.app/mini-app-v4';
     return false;
   }
   return true;
@@ -480,7 +454,7 @@ function renderSiteMapFAB() {
       <a href="/swarm.html">🛰️ SLH Swarm — Device Mesh</a>
       <div class="divider"></div>
       <div class="label">Learn</div>
-      <a href="/academy/course-1-dynamic-yield.html">🎓 Course #1</a>
+      <a href="/learning-path.html">🎓 Academy</a>
       <a href="/risk.html">⚠️ Risk Disclosure</a>
     </div>
   `;
@@ -547,7 +521,7 @@ function renderTopNav(activePage) {
           ${walletBadges ? `<div class="pd-wallets">${walletBadges}</div>` : ''}
           <div class="pd-menu">
             <a href="javascript:void(0)" class="pd-item" onclick="uploadProfilePhoto()"><i class="fas fa-camera"></i> ${lang === 'he' ? 'שנה תמונה' : 'Change Photo'}</a>
-            <a href="/dashboard.html" class="pd-item"><i class="fas fa-tachometer-alt"></i> ${t('nav_dashboard')}</a>
+            <a href="https://slh-cloud-bot-production.up.railway.app/mini-app-v4" class="pd-item"><i class="fas fa-tachometer-alt"></i> ${t('nav_dashboard')}</a>
             <a href="/wallet.html" class="pd-item"><i class="fas fa-wallet"></i> ${t('nav_wallet')}</a>
             <a href="/community.html" class="pd-item"><i class="fas fa-comments"></i> ${t('nav_community')}</a>
             <a href="/referral.html" class="pd-item"><i class="fas fa-users"></i> ${t('nav_referral')}</a>
@@ -557,7 +531,7 @@ function renderTopNav(activePage) {
           </div>
         </div>
        </div>`
-    : `<a href="/dashboard.html" class="login-btn" data-i18n="nav_login">${t('nav_login')}</a>`;
+    : `<a href="https://slh-cloud-bot-production.up.railway.app/mini-app-v4" class="login-btn" data-i18n="nav_login">${t('nav_login')}</a>`;
 
   // Main nav: show only top 5 items, rest go to "More" dropdown
   const mainNavItems = NAV_ITEMS.filter(item => !item.auth || logged);
@@ -602,7 +576,7 @@ function renderTopNav(activePage) {
     <nav class="topnav">
       <a href="/" class="topnav-logo">
         <div class="logo-icon">⚡</div>
-        <span>SLH Spark</span>
+        <span>SLH OS</span>
       </a>
       <div class="topnav-links hide-mobile">${mainLinks}${moreDropdown}</div>
       <div class="topnav-right">
@@ -658,7 +632,7 @@ function renderMobileDrawer() {
       <div class="drawer-footer">
         ${logged
           ? `<button class="btn btn-outline full-w" onclick="logout()" data-i18n="nav_logout">${t('nav_logout')}</button>`
-          : `<a href="/dashboard.html" class="btn btn-primary full-w" data-i18n="nav_login">${t('nav_login')}</a>`
+          : `<a href="https://slh-cloud-bot-production.up.railway.app/mini-app-v4" class="btn btn-primary full-w" data-i18n="nav_login">${t('nav_login')}</a>`
         }
       </div>
     </div>`;
@@ -683,95 +657,32 @@ function renderBottomNav(activePage) {
 function renderFooter() {
   const root = document.getElementById('footer-root');
   if (!root) return;
-
   const year = new Date().getFullYear();
+  const miniApp = 'https://slh-cloud-bot-production.up.railway.app/mini-app-v4';
   root.innerHTML = `
-    <footer class="site-footer" style="margin-top:60px;padding:50px 20px 30px;background:var(--surface);border-top:1px solid var(--border)">
-      <div class="footer-sitemap" style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:30px;margin-bottom:30px">
-        <div class="footer-col">
-          <h4 style="color:var(--accent);font-size:13px;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;font-weight:700">🏠 ${t('footer_main', 'ראשי')}</h4>
-          <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px">
-            <li><a href="/" style="color:var(--text2);text-decoration:none;font-size:13px">${t('nav_home', 'ראשי')}</a></li>
-            <li><a href="/trade.html" style="color:var(--text2);text-decoration:none;font-size:13px">${t('nav_trade', 'מסחר')}</a></li>
-            <li><a href="/earn.html" style="color:var(--text2);text-decoration:none;font-size:13px">${t('nav_earn', 'הרוויח')}</a></li>
-            <li><a href="/wallet.html" style="color:var(--text2);text-decoration:none;font-size:13px">${t('nav_wallet', 'ארנק')}</a></li>
-            <li><a href="/dashboard.html" style="color:var(--text2);text-decoration:none;font-size:13px">${t('dashboard', 'לוח בקרה')}</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4 style="color:var(--accent);font-size:13px;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;font-weight:700">👥 ${t('footer_community', 'קהילה')}</h4>
-          <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px">
-            <li><a href="/community.html" style="color:var(--text2);text-decoration:none;font-size:13px">💬 ${t('nav_community', 'פורום')}</a></li>
-            <li><a href="/community.html#marketplace" style="color:var(--text2);text-decoration:none;font-size:13px">🏪 ${t('nav_marketplace', 'חנות קהילתית')}</a></li>
-            <li><a href="/blog.html" style="color:var(--text2);text-decoration:none;font-size:13px">📰 ${t('nav_blog', 'בלוג')}</a></li>
-            <li><a href="/blog-legacy-code.html" style="color:var(--text2);text-decoration:none;font-size:13px">🧠 ${t('nav_blog_legacy', 'Legacy Code')}</a></li>
-            <li><a href="/invite.html" style="color:var(--text2);text-decoration:none;font-size:13px">🎁 ${t('nav_invite', 'הזמן חברים')}</a></li>
-            <li><a href="/referral.html" style="color:var(--text2);text-decoration:none;font-size:13px">🤝 ${t('nav_referral', 'הפניות')}</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4 style="color:var(--accent);font-size:13px;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;font-weight:700">💎 ${t('footer_products', 'מוצרים')}</h4>
-          <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px">
-            <li><a href="/bots.html" style="color:var(--text2);text-decoration:none;font-size:13px">🤖 ${t('nav_bots', '20+ בוטים')}</a></li>
-            <li><a href="/staking.html" style="color:var(--text2);text-decoration:none;font-size:13px">💰 ${t('nav_staking', 'Staking • Variable Yield (4-12%)')}</a></li>
-            <li><a href="/academy/course-1-dynamic-yield.html" style="color:var(--text2);text-decoration:none;font-size:13px">🎓 ${t('nav_course_1', 'קורס #1 — Dynamic Yield')}</a></li>
-            <li><a href="/blockchain.html" style="color:var(--text2);text-decoration:none;font-size:13px">⛓️ ${t('nav_blockchain', "בלוקצ'יין")}</a></li>
-            <li><a href="/whitepaper.html" style="color:var(--text2);text-decoration:none;font-size:13px">📜 ${t('nav_whitepaper', 'ספר לבן')}</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4 style="color:var(--accent);font-size:13px;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;font-weight:700">📚 ${t('footer_learn', 'למד')}</h4>
-          <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px">
-            <li><a href="/guides.html" style="color:var(--text2);text-decoration:none;font-size:13px">📖 ${t('nav_guides', 'מדריכים')}</a></li>
-            <li><a href="/wallet-guide.html" style="color:var(--text2);text-decoration:none;font-size:13px">💼 ${t('nav_wallet_guide', 'מדריך ארנק')}</a></li>
-            <li><a href="/roadmap.html" style="color:var(--text2);text-decoration:none;font-size:13px">🗺️ ${t('nav_roadmap', 'מפת דרכים')}</a></li>
-            <li><a href="/performance.html" style="color:var(--text2);text-decoration:none;font-size:13px">🔬 ${t('nav_performance', 'Research Lab')}</a></li>
-            <li><a href="/terms.html" style="color:var(--text2);text-decoration:none;font-size:13px">${t('nav_terms', 'תנאי שימוש')}</a></li>
-            <li><a href="/privacy.html" style="color:var(--text2);text-decoration:none;font-size:13px">${t('nav_privacy', 'פרטיות')}</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4 style="color:var(--accent);font-size:13px;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;font-weight:700">🔗 ${t('footer_connect', 'התחברות')}</h4>
-          <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px">
-            <li><a href="https://t.me/SLH_AIR_bot" target="_blank" rel="noopener" style="color:var(--text2);text-decoration:none;font-size:13px"><i class="fab fa-telegram"></i> @SLH_AIR_bot</a></li>
-            <li><a href="https://t.me/SLH_community_bot" target="_blank" rel="noopener" style="color:var(--text2);text-decoration:none;font-size:13px"><i class="fab fa-telegram"></i> Community</a></li>
-            <li><a href="https://t.me/SLH_Academia_bot" target="_blank" rel="noopener" style="color:var(--text2);text-decoration:none;font-size:13px"><i class="fab fa-telegram"></i> Academia</a></li>
-            <li><a href="https://t.me/Osif83" target="_blank" rel="noopener" style="color:var(--text2);text-decoration:none;font-size:13px">💬 ${t('nav_support', 'תמיכה')}</a></li>
-          </ul>
-        </div>
+    <footer class="site-footer" style="margin-top:60px;padding:44px 20px 28px;background:var(--surface);border-top:1px solid var(--border)">
+      <div style="max-width:1120px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:26px;margin-bottom:28px">
+        <div><h4>⚡ SLH OS</h4><ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:9px">
+          <li><a href="/">ראשי</a></li><li><a href="${miniApp}">פתח Mini App</a></li><li><a href="/status.html">סטטוס חי</a></li></ul></div>
+        <div><h4>🤖 מוצרים ושירותים</h4><ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:9px">
+          <li><a href="${miniApp}">ארנק ומסחר</a></li><li><a href="/learning-path.html">Academy</a></li><li><a href="/bots.html">בוטים</a></li><li><a href="/guides.html">מדריכים</a></li></ul></div>
+        <div><h4>👥 קהילה</h4><ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:9px">
+          <li><a href="/community.html">קהילה</a></li><li><a href="${miniApp}">הפניות ותגמולים</a></li><li><a href="/blog.html">עדכונים</a></li></ul></div>
+        <div><h4>🔗 קישורים</h4><ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:9px">
+          <li><a href="https://t.me/Me_ad_main_bot" target="_blank" rel="noopener noreferrer">רובוטוש · SLH OS</a></li><li><a href="/disclosure.html">גילוי סיכון ושקיפות</a></li><li><a href="/terms.html">תנאי שימוש</a></li><li><a href="/privacy.html">פרטיות</a></li></ul></div>
       </div>
-      <div class="footer-inner" style="max-width:1200px;margin:0 auto;padding-top:24px;border-top:1px solid var(--border);text-align:center">
-        <div class="footer-brand" style="display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:10px">
-          <img src="/img/logo.svg" alt="SLH" class="footer-logo" style="width:32px;height:32px">
-          <span style="font-weight:800;font-size:16px;background:linear-gradient(135deg,var(--accent),var(--cyan));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">SLH Spark</span>
-        </div>
-        <div class="footer-copy" style="font-size:12px;color:var(--text2)">
-          &copy; ${year} SLH Spark. <span data-i18n="footer_rights">${t('footer_rights', 'כל הזכויות שמורות')}</span>
-        </div>
-        <div class="footer-powered" data-i18n="footer_powered" style="font-size:11px;color:var(--text3);margin-top:4px">${t('footer_powered', 'מופעל על ידי SLH Spark · SPARK IND')}</div>
-        <div class="footer-legal-disclaimer" style="max-width:900px;margin:18px auto 0;padding:14px 18px;background:rgba(255,68,68,.04);border:1px solid rgba(255,68,68,.2);border-radius:10px;font-size:11px;color:var(--text2);line-height:1.7;text-align:start">
-          <strong style="color:var(--gold,#ffd700)">⚠️ גילוי סיכון:</strong>
-          SLH Spark היא אקוסיסטם קריפטו בשלבים מוקדמים (Pre-launch).
-          <strong>Dynamic Yield</strong> הוא מנגנון חלוקת הכנסות פרו-רטה, <em>לא מוצר פיננסי מובטח</em>.
-          חלוקות עבר אינן מבטיחות חלוקות עתיד. APY הנגזר משתנה לפי ביצועי המערכת.
-          Circuit Breakers אוטומטיים יכולים לעצור חלוקות, להגביל משיכות, או להקפיא הפקדות להגנה על המערכת.
-          <strong>אין זה ייעוץ השקעות.</strong>
-          <a href="/risk.html" style="color:var(--cyan,#06b6d4);text-decoration:underline">גילוי סיכון מלא</a> ·
-          <a href="/terms.html" style="color:var(--cyan,#06b6d4);text-decoration:underline">תנאי שימוש</a> ·
-          <a href="/academy/course-1-dynamic-yield.html" style="color:var(--cyan,#06b6d4);text-decoration:underline">למד את המודל (קורס חינמי)</a>
+      <div style="max-width:1120px;margin:0 auto;padding-top:22px;border-top:1px solid var(--border);text-align:center">
+        <div style="display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:10px"><img src="/img/logo.svg" alt="SLH OS" style="width:32px;height:32px"><strong>SLH OS</strong></div>
+        <div style="font-size:12px;color:var(--text2)">&copy; ${year} SLH OS. כל הזכויות שמורות.</div>
+        <div style="max-width:900px;margin:16px auto 0;padding:14px 16px;background:rgba(255,255,255,.025);border:1px solid var(--border);border-radius:10px;font-size:12px;color:var(--text2);line-height:1.7;text-align:start">
+          המערכת מציגה שירותים דיגיטליים ומסחר פנימי לפי מצב קנוני. אין כאן הצעת השקעה ציבורית או הבטחת תשואה.
+          מצב OPEN של המסחר הפנימי אינו מוכיח שנזילות חיצונית או הפקדת Settlement פתוחות.
+          <a href="/status.html">בדיקת סטטוס חי</a> · <a href="/disclosure.html">גילוי סיכון מלא</a>
         </div>
       </div>
     </footer>`;
-
-  // Auto-inject footer-root if missing
-  if (!document.getElementById('footer-root-auto')) {
-    const autoFooter = document.createElement('div');
-    autoFooter.id = 'footer-root-auto';
-    // marker only — no-op
-  }
 }
 
-// Auto-create footer-root on pages that don't have one
 function ensureFooterRoot() {
   if (!document.getElementById('footer-root')) {
     const root = document.createElement('div');
@@ -1359,7 +1270,7 @@ function showPWAInstallBanner() {
   banner.id = 'slh-pwa-banner';
   banner.style.cssText = 'position:fixed;bottom:16px;inset-inline-end:16px;background:linear-gradient(135deg,#00ff41,#00e5ff);color:#000;padding:14px 18px;border-radius:14px;box-shadow:0 8px 24px rgba(0,255,65,.3);z-index:9997;max-width:320px;font-family:system-ui,sans-serif';
   banner.innerHTML = `
-    <div style="font-weight:700;margin-bottom:6px">📱 התקן את SLH Spark</div>
+    <div style="font-weight:700;margin-bottom:6px">📱 התקן את SLH OS</div>
     <div style="font-size:12px;margin-bottom:10px;opacity:.85">מסך ראשי, Offline, פחות רעש.</div>
     <button id="slh-pwa-install" style="background:#000;color:#00ff41;border:none;padding:6px 14px;border-radius:8px;font-weight:700;cursor:pointer;margin-inline-end:6px">התקן</button>
     <button id="slh-pwa-dismiss" style="background:transparent;color:#000;border:1px solid rgba(0,0,0,.2);padding:6px 14px;border-radius:8px;cursor:pointer">לא עכשיו</button>
