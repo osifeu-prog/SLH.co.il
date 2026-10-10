@@ -1,13 +1,13 @@
 /**
- * SLH Spark Service Worker v1.0
+ * SLH OS Service Worker v1.1
  * Strategy: network-first for HTML (fresh content), cache-first for static assets.
  * API calls NEVER cached.
  *
  * Cache invalidation: bump CACHE_VERSION on breaking changes.
- * Updated: 2026-04-18
+ * Updated: 2026-10-10
  */
 
-const CACHE_VERSION = 'slh-v1.0-20260418';
+const CACHE_VERSION = 'slh-v1.1-20261010';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const PAGES_CACHE = `${CACHE_VERSION}-pages`;
 
@@ -15,10 +15,11 @@ const CRITICAL_ASSETS = [
   '/',
   '/index.html',
   '/css/slh-design-system.css',
-  '/css/shared.css?v=20260417',
-  '/js/shared.js',
+  '/css/slh-neural.css?v=20261010',
+  '/css/shared.css?v=20261010',
+  '/js/shared.js?v=20261010',
   '/js/slh-flip.js?v=20260417',
-  '/js/translations.js',
+  '/js/translations.js?v=20261010',
   '/favicon-32.png',
   '/icon-192.png',
   '/icon-512.png',
@@ -101,7 +102,7 @@ async function networkFirst(request) {
     const cached = await caches.match(request);
     if (cached) return cached;
     return new Response(
-      `<!DOCTYPE html><html lang="he" dir="rtl"><head><meta charset="utf-8"><title>Offline · SLH Spark</title></head>
+      `<!DOCTYPE html><html lang="he" dir="rtl"><head><meta charset="utf-8"><title>Offline · SLH OS</title></head>
        <body style="font-family:system-ui;background:#05080f;color:#f5f5f8;text-align:center;padding:80px 20px">
        <h1 style="color:#00ff41">💡 אתה offline</h1>
        <p>אין חיבור לאינטרנט. נסה שוב כשיחזור.</p>
