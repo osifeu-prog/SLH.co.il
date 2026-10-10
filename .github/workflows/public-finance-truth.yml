@@ -33,3 +33,7 @@ jobs:
           python-version: "3.11"
       - name: Test public financial claims and canonical status
         run: python -m unittest discover -s tests -p "test_public_finance_truth.py"
+      - name: Validate shared UI and service worker JavaScript
+        run: |
+          node --check public/js/shared.js
+          node --check public/sw.js
