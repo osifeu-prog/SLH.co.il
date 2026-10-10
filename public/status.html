@@ -1,57 +1,92 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="he" dir="rtl">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SLH OS · סטטוס חי ומקור אמת</title>
-<meta name="description" content="סטטוס ציבורי לקריאה בלבד של SLH OS, המבוסס על מקור האמת הקנוני.">
-<meta name="robots" content="index,follow">
-<link rel="canonical" href="https://slh-nft.com/status.html">
-<style>
-body{margin:0;background:#05080f;color:#f5f5f8;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.6}
-main{max-width:1000px;margin:0 auto;padding:34px 18px 60px}h1{margin:0 0 8px;font-size:34px}p{color:#aeb9c9}.sub{margin-top:0}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-top:22px}
-.card{background:#0c1018;border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:18px}.label{font-size:12px;color:#78849a}.value{font-size:25px;font-weight:800;margin-top:4px}.open{color:#00e887}.closed{color:#ffd166}.design{color:#c6a7ff}.muted{color:#8b96a8}
-.banner{padding:14px 16px;border-radius:12px;background:#07101b;border:1px solid rgba(94,214,255,.18);margin:20px 0}
-.links{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}.links a{color:#5ed6ff}.stamp{font-size:12px;color:#78849a;margin-top:24px}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="index,follow">
+  <meta name="description" content="סטטוס ציבורי לקריאה בלבד של SLH OS ממקור האמת הקנוני.">
+  <link rel="canonical" href="https://slh-nft.com/status.html">
+  <title>SLH OS · סטטוס חי קנוני</title>
+  <style>
+    :root{color-scheme:dark;--bg:#070b13;--panel:#101725;--line:#283244;--text:#f5f7fb;--muted:#a7b2c5;--cyan:#62d8ff;--green:#70e4a5;--amber:#ffd166;--red:#ff9a9a}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -20%,#17283b 0,var(--bg) 50%);font:16px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--text)}
+    main{max-width:1080px;margin:0 auto;padding:32px 18px 64px}h1{font-size:clamp(1.9rem,4vw,2.7rem);margin:0 0 8px;letter-spacing:-.03em}
+    p{color:var(--muted)}.intro{max-width:760px;margin:0 0 20px}.banner{padding:16px 18px;border:1px solid #604e2b;background:#211b10;border-radius:14px;margin:24px 0;color:#ffe4a4}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:20px}
+    .card{background:linear-gradient(160deg,#131d2c,var(--panel));border:1px solid var(--line);border-radius:16px;padding:19px;min-height:118px}
+    .label{color:var(--muted);font-size:.85rem}.value{font-size:1.25rem;font-weight:750;margin-top:6px;overflow-wrap:anywhere}.value[data-state="open"]{color:var(--green)}.value[data-state="closed"]{color:var(--amber)}.value[data-state="unknown"]{color:var(--red)}.detail{font-size:.84rem;color:var(--muted);margin-top:6px}
+    .links{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}.links a{display:inline-flex;align-items:center;justify-content:center;padding:10px 15px;border-radius:10px;border:1px solid #38506a;color:var(--cyan);text-decoration:none}.links a.primary{background:#183247}
+    .updated{font-size:.82rem;color:var(--muted);margin-top:20px}.foot{border-top:1px solid var(--line);margin-top:36px;padding-top:18px;font-size:.84rem;color:var(--muted)}
+  </style>
 </head>
-<body><main>
-<h1>⚡ SLH OS · סטטוס חי</h1>
-<p class="sub">העמוד הזה הוא תצוגת קריאה בלבד. הסטטוס מגיע מ־SLH OS ולא מהעתקות תוכן ישנות באתר.</p>
-<div class="banner">⚠️ אין כאן הצעה להשקעה. אין IDO או Participation ציבורי פעיל. אין להפקיד BNB/TON בעקבות תוכן היסטורי באתר.</div>
-<div class="grid">
-<div class="card"><div class="label">מערכת</div><div class="value" id="system">בודק…</div></div>
-<div class="card"><div class="label">מסחר פנימי</div><div class="value" id="exchange">בודק…</div></div>
-<div class="card"><div class="label">TON settlement</div><div class="value" id="ton">בודק…</div></div>
-<div class="card"><div class="label">BNB settlement</div><div class="value" id="bnb">בודק…</div></div>
-<div class="card"><div class="label">Participation</div><div class="value" id="participation">בודק…</div></div>
-<div class="card"><div class="label">ממשק ראשי</div><div class="value muted" id="ui">Telegram Mini App</div></div>
-</div>
-<div class="stamp">עדכון אחרון: <span id="updated">—</span></div>
-<div class="links">
-<a href="https://slh-cloud-bot-production.up.railway.app/mini-app-v4">Telegram Mini App ↗</a>
-<a href="https://t.me/Me_ad_main_bot">Telegram Bot ↗</a>
-<a href="/">דף הבית</a>
-<a href="https://github.com/osifeu-prog/SLH.co.il">GitHub ↗</a>
-</div>
+<body>
+<main>
+  <h1>⚡ SLH OS · סטטוס חי</h1>
+  <p class="intro">העמוד מציג נתונים ציבוריים לקריאה בלבד ממקור האמת הקנוני של SLH OS. הוא אינו מבצע עסקאות ואינו מחליף את בדיקת האישור במסך הפעולה.</p>
+  <div class="banner">אין כאן הצעת השקעה ציבורית. מסחר פנימי, נכסי on-chain והתחשבנות חיצונית הם מסלולים נפרדים. אין לשלוח נכס כאשר השער סגור או כשהסטטוס אינו זמין.</div>
+
+  <div class="grid" aria-live="polite">
+    <section class="card"><div class="label">מערכת</div><div class="value" id="system" data-state="unknown">UNKNOWN</div><div class="detail">מצב שירות מהמקור הקנוני</div></section>
+    <section class="card"><div class="label">מסחר פנימי</div><div class="value" id="exchange" data-state="unknown">UNKNOWN</div><div class="detail" id="exchange-detail">מוכנות טרייה נבדקת בנתיב הביצוע</div></section>
+    <section class="card"><div class="label">TON Settlement</div><div class="value" id="ton" data-state="unknown">UNKNOWN</div><div class="detail" id="ton-detail">שער ומוכנות</div></section>
+    <section class="card"><div class="label">BNB Settlement</div><div class="value" id="bnb" data-state="unknown">UNKNOWN</div><div class="detail" id="bnb-detail">שער וסטטוס הראיה</div></section>
+    <section class="card"><div class="label">Participation</div><div class="value" id="participation" data-state="unknown">UNKNOWN</div><div class="detail">מצב שחרור של מוצר ציבורי</div></section>
+    <section class="card"><div class="label">Runtime handlers</div><div class="value" id="handlers" data-state="unknown">UNKNOWN</div><div class="detail">נתון registry בלבד</div></section>
+    <section class="card"><div class="label">פקודות ייחודיות</div><div class="value" id="commands" data-state="unknown">UNKNOWN</div><div class="detail">פקודות runtime ייחודיות</div></section>
+    <section class="card"><div class="label">התנגשויות פקודות</div><div class="value" id="collisions" data-state="unknown">UNKNOWN</div><div class="detail">מספר התנגשויות לפי registry</div></section>
+  </div>
+
+  <div class="updated">מקור: <span id="source">UNKNOWN</span><br>עדכון אחרון: <span id="updated">UNKNOWN</span><br><span id="message">ממתין לתשובה קנונית…</span></div>
+  <div class="links">
+    <a class="primary" href="https://slh-cloud-bot-production.up.railway.app/mini-app-v4" rel="noopener">פתח את SLH OS Mini App ↗</a>
+    <a href="https://t.me/Me_ad_main_bot" rel="noopener">פתח את רובוטוש בטלגרם ↗</a>
+    <a href="/">דף הבית</a>
+  </div>
+  <div class="foot">אם מקור האמת אינו זמין, הנתון נשאר UNKNOWN. אל תסיקו שמסחר חיצוני, נזילות או הפקדת BNB פתוחים מתוך סטטוס המסחר הפנימי.</div>
+</main>
 <script>
-const URL='https://slh-cloud-bot-production.up.railway.app/api/public/site-status';
-const labels={open:'פתוח',closed:'סגור'};
-function put(id,text,cls){const e=document.getElementById(id);e.textContent=text;e.className='value '+(cls||'muted')}
-async function load(){
- try{
-  const r=await fetch(URL,{cache:'no-store'}); if(!r.ok) throw new Error();
-  const d=await r.json();
-  put('system',d.system?.status||'לא זמין',d.system?.status==='ONLINE'?'open':'closed');
-  const ex=d.exchange?.gate==='OPEN'&&d.exchange?.verdict==='OPEN'; put('exchange',ex?'פתוח':'סגור',ex?'open':'closed');
-  const ton=d.settlement?.ton?.gate==='OPEN'; put('ton',ton?'פתוח':'סגור',ton?'open':'closed');
-  const bnb=d.settlement?.bnb?.gate==='OPEN'; put('bnb',bnb?'פתוח':'סגור',bnb?'open':'closed');
-  const part=d.participation?.active===true; put('participation',part?'פעיל':'תכנון בלבד',part?'open':'design');
-  document.getElementById('updated').textContent=new Date((d.system?.updated_at||Date.now())*1000).toLocaleString('he-IL');
- }catch(e){
-  for(const id of ['system','exchange','ton','bnb','participation']) put(id,'לא זמין','closed');
- }
-}
-load();setInterval(load,30000);
+(function(){
+  'use strict';
+  const URL='https://slh-cloud-bot-production.up.railway.app/api/public/site-status';
+  function put(id,value,state){const el=document.getElementById(id);if(!el)return;el.textContent=String(value??'UNKNOWN');el.dataset.state=state||'unknown';}
+  function gate(v){return v==='OPEN'?'OPEN':v==='CLOSED'?'CLOSED':'UNKNOWN';}
+  function numeric(v){return Number.isFinite(v)?v.toLocaleString('he-IL'):'UNKNOWN';}
+  function unknown(message){
+    ['system','exchange','ton','bnb','participation','handlers','commands','collisions'].forEach(id=>put(id,'UNKNOWN','unknown'));
+    put('source','UNKNOWN','unknown');put('updated','UNKNOWN','unknown');
+    put('message',message||'לא ניתן לאמת כרגע. בדקו שוב לפני כל פעולה.','unknown');
+    put('exchange-detail','לא התקבלה תשובה מהמקור הקנוני','unknown');
+    put('ton-detail','לא התקבלה תשובה מהמקור הקנוני','unknown');
+    put('bnb-detail','לא התקבלה תשובה מהמקור הקנוני','unknown');
+  }
+  async function load(){
+    try{
+      const response=await fetch(URL,{cache:'no-store',mode:'cors'});
+      if(!response.ok)throw new Error('HTTP');
+      const d=await response.json();
+      if(d?.ok!==true||d?.schema_version!==1||!d.system||!d.exchange||!d.settlement)throw new Error('SCHEMA');
+      const exGate=gate(d.exchange.gate);
+      put('system',d.system.status||'UNKNOWN',d.system.status==='ONLINE'?'open':'unknown');
+      put('exchange',exGate,exGate==='OPEN'&&d.exchange.readiness===true?'open':exGate==='CLOSED'?'closed':'unknown');
+      put('exchange-detail',String(d.exchange.verdict||'UNKNOWN')+' · readiness '+(d.exchange.readiness===true?'PASS':d.exchange.readiness===false?'BLOCKED':'UNKNOWN'),'neutral');
+      const ton=d.settlement.ton||{},tonGate=gate(ton.gate);
+      put('ton',tonGate,tonGate==='OPEN'&&ton.ready===true?'open':tonGate==='CLOSED'?'closed':'unknown');
+      put('ton-detail','Readiness: '+(ton.ready===true?'PASS':ton.ready===false?'BLOCKED':'UNKNOWN'),'neutral');
+      const bnb=d.settlement.bnb||{},bnbGate=gate(bnb.gate);
+      put('bnb',bnbGate,bnbGate==='OPEN'&&bnb.ready===true?'open':bnbGate==='CLOSED'?'closed':'unknown');
+      put('bnb-detail','Evidence: '+String(bnb.evidence_status||'UNKNOWN')+' · Readiness: '+(bnb.ready===true?'PASS':bnb.ready===false?'BLOCKED':'UNKNOWN'),'neutral');
+      put('participation',d.participation?.active===true?'ACTIVE':String(d.participation?.release||'DESIGN_ONLY'),d.participation?.active===true?'open':'closed');
+      const rt=d.runtime||{};
+      put('handlers',numeric(rt.handlers),Number.isFinite(rt.handlers)?'neutral':'unknown');
+      put('commands',numeric(rt.commands),Number.isFinite(rt.commands)?'neutral':'unknown');
+      put('collisions',numeric(rt.collisions),Number(rt.collisions)===0?'open':Number.isFinite(rt.collisions)?'closed':'unknown');
+      put('source',d.source||'UNKNOWN','neutral');
+      const ts=Number(d.system.updated_at);
+      put('updated',Number.isFinite(ts)&&ts>0?new Date(ts*1000).toLocaleString('he-IL',{timeZone:'Asia/Jerusalem'}):'UNKNOWN','neutral');
+      put('message','התקבל payload קנוני. כל שער מתאר רק את התחום המוצג.','neutral');
+    }catch(_){unknown('המקור הקנוני אינו זמין כרגע. אין להסתמך על נתונים שמורים או לבצע פעולה פיננסית.');}
+  }
+  load();setInterval(load,30000);
+})();
 </script>
-</main></body></html>
+</body></html>
