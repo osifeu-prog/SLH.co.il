@@ -2530,6 +2530,7 @@ T._default = 'he';
 (function applyCanonicalFinanceStatusGuard() {
   const overrides = {
     he: {
+      nav_miniapp: 'פתח Mini App', nav_status: 'סטטוס חי', nav_home: 'ראשי', nav_bots: 'בוטים', nav_network: 'מפת מערכת', nav_academy: 'Academy', nav_guides: 'מדריכים', nav_about: 'אודות', nav_community: 'קהילה', nav_referral: 'הפניות', nav_wallet: 'ארנק',
       landing_hero_sub: 'מערכת דיגיטלית עם מסחר פנימי ושירותים ב-SLH OS. אין כאן הצעת השקעה או הבטחת תשואה.',
       landing_cta_earn: 'צפו בסטטוס המערכת',
       landing_stat_apy: 'אין תשואה פעילה',
@@ -2560,6 +2561,7 @@ T._default = 'he';
       earn_login_required: 'מסלול השקעה אינו פעיל', earn_status_active: 'לא פעיל'
     },
     en: {
+      nav_miniapp: 'Open Mini App', nav_status: 'Live status', nav_home: 'Home', nav_bots: 'Bots', nav_network: 'System map', nav_academy: 'Academy', nav_guides: 'Guides', nav_about: 'About', nav_community: 'Community', nav_referral: 'Referrals', nav_wallet: 'Wallet',
       landing_hero_sub: 'SLH OS is a digital system with internal trading and services. No public investment offer or yield guarantee is active.',
       landing_cta_earn: 'View system status', landing_stat_apy: 'No active yield', landing_feat1_title: 'Payments & system verification', landing_feat1_desc: 'Deposit and settlement status is determined by SLH OS and is not presented as an investment offer.', landing_cta_title: 'Open SLH OS', landing_cta_sub: 'Check the current system state before any financial action.',
       s3t: 'System activity', s3p: 'Use system services and internal trading according to SLH OS state and permissions.',
@@ -2569,9 +2571,9 @@ T._default = 'he';
       earn_faq1_a: 'Public investment staking is not active.', earn_faq2_a: 'There is currently no minimum deposit for a public investment product.', earn_faq3_a: 'No public investment plan is currently active.', earn_faq4_a: 'There is no active public yield formula. Do not rely on legacy numbers such as 4%, 8%, 12%, or 65%.', earn_faq5_a: 'Do not infer from legacy pages that an active or guaranteed investment deposit exists.', earn_faq6_a: 'Legacy investment/yield promo codes are inactive.',
       earn_mnh_sub: 'Internal accounting unit — not a public investment product.', earn_mnh_desc: 'MNH is shown as an internal component only. No public investor deposit/redemption product is active.', earn_mnh_staking: 'Investment staking — inactive', earn_mnh_deposit: 'Deposit — inactive', earn_mnh_how2: 'No active MNH yield.', earn_mnh_f2: 'No active public Revenue Share product', earn_mnh_f3: 'Do not accept deposits for an investment product.', earn_testimonials: 'No investment testimonials', earn_testimonials_title: 'No active investment testimonials', earn_testimonials_sub: 'Legacy testimonials are not authoritative.', earn_login_required: 'Investment path inactive', earn_status_active: 'Inactive'
     },
-    ru: { earn_title: 'Доходность — неактивна', earn_sub: 'Публичный инвестиционный продукт сейчас не активен.', earn_hero_badge: 'Неактивно', earn_hero_title: 'Публичная доходность не активна', earn_hero_apy: 'Только проектирование' },
-    ar: { earn_title: 'مسارات العائد — غير مفعلة', earn_sub: 'لا يوجد منتج استثماري عام نشط حالياً.', earn_hero_badge: 'غير نشط', earn_hero_title: 'لا يوجد منتج عائد عام نشط', earn_hero_apy: 'للتصميم فقط' },
-    fr: { earn_title: 'Rendement — inactif', earn_sub: 'Aucun produit d’investissement public n’est actif.', earn_hero_badge: 'Inactif', earn_hero_title: 'Aucun produit de rendement public actif', earn_hero_apy: 'Conception uniquement' }
+    ru: { nav_miniapp: 'Открыть Mini App', nav_status: 'Статус системы', nav_home: 'Главная', nav_bots: 'Боты', nav_network: 'Карта системы', nav_academy: 'Академия', nav_guides: 'Руководства', nav_about: 'О проекте', nav_community: 'Сообщество', nav_referral: 'Рефералы', nav_wallet: 'Кошелёк', earn_title: 'Доходность — неактивна', earn_sub: 'Публичный инвестиционный продукт сейчас не активен.', earn_hero_badge: 'Неактивно', earn_hero_title: 'Публичная доходность не активна', earn_hero_apy: 'Только проектирование' },
+    ar: { nav_miniapp: 'افتح التطبيق المصغر', nav_status: 'الحالة المباشرة', nav_home: 'الرئيسية', nav_bots: 'الروبوتات', nav_network: 'خريطة النظام', nav_academy: 'الأكاديمية', nav_guides: 'الأدلة', nav_about: 'حول', nav_community: 'المجتمع', nav_referral: 'الإحالات', nav_wallet: 'المحفظة', earn_title: 'مسارات العائد — غير مفعلة', earn_sub: 'لا يوجد منتج استثماري عام نشط حالياً.', earn_hero_badge: 'غير نشط', earn_hero_title: 'لا يوجد منتج عائد عام نشط', earn_hero_apy: 'للتصميم فقط' },
+    fr: { nav_miniapp: 'Ouvrir la Mini App', nav_status: 'État en direct', nav_home: 'Accueil', nav_bots: 'Bots', nav_network: 'Carte système', nav_academy: 'Académie', nav_guides: 'Guides', nav_about: 'À propos', nav_community: 'Communauté', nav_referral: 'Parrainage', nav_wallet: 'Portefeuille', earn_title: 'Rendement — inactif', earn_sub: 'Aucun produit d’investissement public n’est actif.', earn_hero_badge: 'Inactif', earn_hero_title: 'Aucun produit de rendement public actif', earn_hero_apy: 'Conception uniquement' }
   };
   Object.entries(overrides).forEach(([lang, values]) => {
     if (!T[lang]) return;
