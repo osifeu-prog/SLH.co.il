@@ -10,6 +10,7 @@ FILES = {
     "disclosure": PUBLIC / "disclosure.html",
     "treasury_health": PUBLIC / "treasury-health.html",
     "chain_status": PUBLIC / "chain-status.html",
+    "service_worker": PUBLIC / "sw.js",
 }
 TEXT = {name: path.read_text(encoding="utf-8") for name, path in FILES.items()}
 
@@ -63,6 +64,16 @@ class PublicFinanceTruthTests(unittest.TestCase):
         legacy = TEXT["treasury_health"].casefold()
         self.assertIn("status.html", legacy)
         self.assertIn("noindex", legacy)
+
+    def test_primary_navigation_and_service_worker_are_fresh(self):
+        shared = TEXT["shared_navigation_and_footer"]
+        sw = TEXT["service_worker"]
+        self.assertLess(shared.index("key: 'miniapp'"), shared.index("key: 'status'"))
+        self.assertLess(shared.index("key: 'status'"), shared.index("key: 'bots'"))
+        self.assertIn("slh-v1.1-20261010", sw)
+        self.assertIn("/js/shared.js?v=20261010", sw)
+        self.assertIn("/js/translations.js?v=20261010", sw)
+        self.assertNotIn("slh-v1.0-20260418", sw)
 
 
 if __name__ == "__main__":
