@@ -10,7 +10,6 @@ const COINGECKO_API = 'https://api.coingecko.com/api/v3';
 const TON_WALLET = 'UQCr743gEr_nqV_0SBkSp3CtYS_15R3LDLBvLmKeEv7XdGvp';
 const BSC_CONTRACT = '0xACb0A09414CEA1C879c67bB7A877E4e19480f022';
 const ADMIN_BSC_WALLET = '0xD0617B54FB4b6b66307846f217b4D685800E3dA4';
-const SLH_PRICE_ILS = 444;
 
 const RTL_LANGS = ['he', 'ar'];
 const SUPPORTED_LANGS = ['he', 'en', 'ru', 'ar', 'fr'];
@@ -741,12 +740,8 @@ function renderTickerContent(prices) {
     </span>`;
   }).join('<span class="ticker-sep">|</span>');
 
-  // Add SLH
-  const slhItem = `<span class="ticker-item ticker-slh">
-    <i class="fas fa-bolt"></i> SLH ${formatCurrency(SLH_PRICE_ILS, 'ILS')}
-  </span>`;
-
-  return slhItem + '<span class="ticker-sep">|</span>' + items;
+  // Show only externally sourced quotes; SLH has no verified public fiat price.
+  return items;
 }
 
 async function initTicker() {

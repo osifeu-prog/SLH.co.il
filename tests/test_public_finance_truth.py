@@ -65,14 +65,21 @@ class PublicFinanceTruthTests(unittest.TestCase):
         self.assertIn("status.html", legacy)
         self.assertIn("noindex", legacy)
 
+    def test_shared_ticker_does_not_publish_an_unverified_slh_fiat_price(self):
+        shared = TEXT["shared_navigation_and_footer"]
+        self.assertNotIn("SLH_PRICE_ILS", shared)
+        self.assertNotIn("formatCurrency(SLH_PRICE_ILS", shared)
+
     def test_primary_navigation_and_service_worker_are_fresh(self):
         shared = TEXT["shared_navigation_and_footer"]
         sw = TEXT["service_worker"]
         self.assertLess(shared.index("key: 'miniapp'"), shared.index("key: 'status'"))
         self.assertLess(shared.index("key: 'status'"), shared.index("key: 'bots'"))
-        self.assertIn("slh-v1.1-20261010", sw)
-        self.assertIn("/js/shared.js?v=20261010", sw)
+        self.assertIn("slh-v1.2-20261012", sw)
+        self.assertIn("/js/shared.js?v=20261012", sw)
         self.assertIn("/js/translations.js?v=20261010", sw)
+        self.assertIn("fetch(request, { cache: 'reload' })", sw)
+        self.assertIn('<script src="js/shared.js?v=20261012"></script>', TEXT["homepage"])
         self.assertNotIn("slh-v1.0-20260418", sw)
 
 

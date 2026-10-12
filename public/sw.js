@@ -4,10 +4,10 @@
  * API calls NEVER cached.
  *
  * Cache invalidation: bump CACHE_VERSION on breaking changes.
- * Updated: 2026-10-10
+ * Updated: 2026-10-12
  */
 
-const CACHE_VERSION = 'slh-v1.1-20261010';
+const CACHE_VERSION = 'slh-v1.2-20261012';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const PAGES_CACHE = `${CACHE_VERSION}-pages`;
 
@@ -17,7 +17,7 @@ const CRITICAL_ASSETS = [
   '/css/slh-design-system.css',
   '/css/slh-neural.css?v=20261010',
   '/css/shared.css?v=20261010',
-  '/js/shared.js?v=20261010',
+  '/js/shared.js?v=20261012',
   '/js/slh-flip.js?v=20260417',
   '/js/translations.js?v=20261010',
   '/favicon-32.png',
@@ -76,7 +76,7 @@ async function cacheFirst(request) {
   const cached = await caches.match(request);
   if (cached) return cached;
   try {
-    const response = await fetch(request);
+    const response = await fetch(request, { cache: 'reload' });
     if (response.ok) {
       const cache = await caches.open(STATIC_CACHE);
       cache.put(request, response.clone()).catch(() => {});
