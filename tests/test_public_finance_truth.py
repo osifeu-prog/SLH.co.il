@@ -75,9 +75,11 @@ class PublicFinanceTruthTests(unittest.TestCase):
         sw = TEXT["service_worker"]
         self.assertLess(shared.index("key: 'miniapp'"), shared.index("key: 'status'"))
         self.assertLess(shared.index("key: 'status'"), shared.index("key: 'bots'"))
-        self.assertIn("slh-v1.1-20261010", sw)
-        self.assertIn("/js/shared.js?v=20261010", sw)
+        self.assertIn("slh-v1.2-20261012", sw)
+        self.assertIn("/js/shared.js?v=20261012", sw)
         self.assertIn("/js/translations.js?v=20261010", sw)
+        self.assertIn("fetch(request, { cache: 'reload' })", sw)
+        self.assertIn('<script src="js/shared.js?v=20261012"></script>', TEXT["homepage"])
         self.assertNotIn("slh-v1.0-20260418", sw)
 
 
