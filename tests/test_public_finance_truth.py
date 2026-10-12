@@ -65,6 +65,11 @@ class PublicFinanceTruthTests(unittest.TestCase):
         self.assertIn("status.html", legacy)
         self.assertIn("noindex", legacy)
 
+    def test_shared_ticker_does_not_publish_an_unverified_slh_fiat_price(self):
+        shared = TEXT["shared_navigation_and_footer"]
+        self.assertNotIn("SLH_PRICE_ILS", shared)
+        self.assertNotIn("formatCurrency(SLH_PRICE_ILS", shared)
+
     def test_primary_navigation_and_service_worker_are_fresh(self):
         shared = TEXT["shared_navigation_and_footer"]
         sw = TEXT["service_worker"]
