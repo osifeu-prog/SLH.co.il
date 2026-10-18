@@ -744,17 +744,21 @@ function joinChallenge() {
 }
 
 function updateProgress() {
-    let state = getChallengeState();
-    // Auto-start from April 12 for all visitors
-    if (!state) {
-        state = { startDate: '2026-04-12', joined: true };
-        localStorage.setItem(CHALLENGE_KEY, JSON.stringify(state));
+    const state = getChallengeState();
+    if (!state || !state.joined || !state.startDate) {
+        document.getElementById('progress-day').textContent = 'טרם הצטרפת';
+        document.getElementById('progress-fill').style.width = '0%';
+        document.getElementById('progress-status').textContent =
+            'הצטרף לאתגר כדי להתחיל. ההתקדמות נשמרת בדפדפן הזה בלבד.';
+        document.getElementById('join-btn').textContent = '🌱 הצטרף לאתגר 21 יום';
+        document.querySelectorAll('.task-item').forEach(item => item.classList.remove('done'));
+        return;
     }
 
     const start = new Date(state.startDate);
     const now = new Date();
     const diff = Math.floor((now - start) / (1000 * 60 * 60 * 24)) + 1;
-    const day = Math.min(diff, 21);
+    const day = Math.max(1, Math.min(diff, 21));
     const pct = Math.round((day / 21) * 100);
 
     document.getElementById('progress-day').textContent = 'יום ' + day + ' / 21';
@@ -792,9 +796,10 @@ function toggleTask(el, key) {
 
     // Count completed
     const done = Object.values(tasks).filter(v => v).length;
-    if (done >= 5) {
-        // All tasks done — award ZVK (would call API in production)
-        document.getElementById('progress-status').textContent = '🎉 כל המשימות של היום הושלמו! +10 ZVK';
+    const totalTasks = document.querySelectorAll('.task-item').length;
+    if (done >= totalTasks) {
+        document.getElementById('progress-status').textContent =
+            '🎉 כל המשימות של היום סומנו כהושלמו. לא הוענק תגמול — מנגנון הזיכוי אינו מחובר ומאומת.';
     }
 }
 
