@@ -744,7 +744,13 @@ function joinChallenge() {
 }
 
 function updateProgress() {
-    const state = getChallengeState();
+    let state = getChallengeState();
+    // The previous release auto-created this exact date for every visitor.
+    // Treat it as legacy auto-join state rather than claiming the user joined.
+    if (state && state.startDate === '2026-04-12') {
+        localStorage.removeItem(CHALLENGE_KEY);
+        state = null;
+    }
     if (!state || !state.joined || !state.startDate) {
         document.getElementById('progress-day').textContent = 'טרם הצטרפת';
         document.getElementById('progress-fill').style.width = '0%';
