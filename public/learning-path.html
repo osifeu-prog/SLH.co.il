@@ -154,12 +154,14 @@ body::before{content:'';position:fixed;inset:0;background:
   <div class="today-card">
     <div class="today-badge">היום</div>
     <h2 id="todayTitle">📖 קרא פוסט בלוג אחד</h2>
-    <p id="todayDesc">התחל את היום עם 5 דקות קריאה על נושא חדש. כל פוסט = +5 ZVK. אחרי 3 פוסטים — פתח את אתגר 21 הימים.</p>
+    <p id="todayDesc">התחל את היום עם 5 דקות קריאה על נושא חדש. לאחר מכן אפשר לסמן שסיימת את משימת היום. תגמולים אינם פעילים עד לחיבור ולאימות מנגנון זיכוי בשרת.</p>
     <div class="today-actions">
       <a href="/daily-blog.html" class="act-btn primary" onclick="markTaskStarted('blog')"><i class="fa fa-book-open"></i> קרא פוסט היום</a>
       <a href="/challenge.html" class="act-btn" onclick="markTaskStarted('challenge')"><i class="fa fa-yin-yang"></i> פתח אתגר 21</a>
       <a href="/community.html" class="act-btn" onclick="markTaskStarted('community')"><i class="fa fa-users"></i> הצג קהילה</a>
+      <button type="button" class="act-btn primary" onclick="completeCurrentDay()">סיימתי את משימת היום</button>
     </div>
+    <p class="progress-text">הסימון הוא הצהרה עצמית ונשמר בדפדפן הזה בלבד; הוא אינו אימות שרת או זיכוי תגמול.</p>
   </div>
 
   <!-- 3 paths -->
@@ -170,7 +172,7 @@ body::before{content:'';position:fixed;inset:0;background:
       <p>רעיונות מעמיקים מאוסיף — נוירולוגיה, מדיטציה, מוזיקה, פילוסופיה מעשית. פוסט ביום, כ-5 דקות קריאה.</p>
       <div class="meta">
         <span><i class="fa fa-clock"></i> ~5 דקות</span>
-        <span><i class="fa fa-gem" style="color:var(--gold)"></i> 5 ZVK/פוסט</span>
+        <span><i class="fa fa-gem" style="color:var(--gold)"></i> תגמול לא פעיל</span>
       </div>
       <div class="cta">פתח את הבלוג →</div>
     </a>
@@ -181,7 +183,7 @@ body::before{content:'';position:fixed;inset:0;background:
       <p>יוגה, מדיטציה, CBT, תרגילי נשימה. משימה יומית קצרה + קהילה שמעודדת. תגמול גבוה לסיום.</p>
       <div class="meta">
         <span><i class="fa fa-clock"></i> ~10 דקות/יום</span>
-        <span><i class="fa fa-trophy" style="color:var(--gold)"></i> 50 ZVK בסיום</span>
+        <span><i class="fa fa-trophy" style="color:var(--gold)"></i> תגמול לא פעיל</span>
       </div>
       <div class="cta">הצטרף לאתגר →</div>
     </a>
@@ -200,16 +202,16 @@ body::before{content:'';position:fixed;inset:0;background:
 
   <!-- Rewards -->
   <div class="rewards-card">
-    <h3><i class="fa fa-gift" style="color:var(--gold)"></i> תגמולים לאורך המסלול</h3>
+    <h3><i class="fa fa-gift" style="color:var(--gold)"></i> אבני דרך — תגמולים עדיין לא פעילים</h3>
     <div class="rewards-list">
-      <div class="reward" id="reward-day1"><div class="amount">5</div><div class="label">יום 1 · פוסט ראשון</div></div>
-      <div class="reward" id="reward-day3"><div class="amount">20</div><div class="label">יום 3 · streak</div></div>
-      <div class="reward" id="reward-day7"><div class="amount">50</div><div class="label">שבוע ראשון</div></div>
-      <div class="reward" id="reward-day14"><div class="amount">100</div><div class="label">שבועיים</div></div>
-      <div class="reward" id="reward-day21"><div class="amount">250</div><div class="label">סיום מלא 🏆</div></div>
+      <div class="reward" id="reward-day1"><div class="amount">—</div><div class="label">יום 1 · פוסט ראשון</div></div>
+      <div class="reward" id="reward-day3"><div class="amount">—</div><div class="label">יום 3 · רצף</div></div>
+      <div class="reward" id="reward-day7"><div class="amount">—</div><div class="label">שבוע ראשון</div></div>
+      <div class="reward" id="reward-day14"><div class="amount">—</div><div class="label">שבועיים</div></div>
+      <div class="reward" id="reward-day21"><div class="amount">—</div><div class="label">סיום מלא 🏆</div></div>
     </div>
     <div style="margin-top:12px;font-size:11px;color:var(--text3);text-align:center;font-family:'Space Mono',monospace">
-      ZVK זה טוקן פנימי · בעתיד ניתן להמיר ל-SLH/MNH דרך P2P
+      הצגת אבני הדרך אינה מעניקה ZVK או SLH; מנגנון התגמולים ממתין לאימות
     </div>
   </div>
 
@@ -282,8 +284,8 @@ function renderProgress() {
 
   document.getElementById('progressFill').style.width = pct + '%';
   document.getElementById('progressText').textContent =
-    streak === 0 ? 'טרם התחלת — לחץ על משימה להתחיל'
-                 : `יום ${current} מתוך 21 · ${streak} משימות הושלמו (${pct}%)`;
+    streak === 0 ? 'טרם התחלת — פתח משימה, ולאחר שסיימת אותה סמן את היום כהושלם'
+                 : `יום ${current} מתוך 21 · ${streak} ימים סומנו כהושלמו (${pct}%). נשמר בדפדפן זה בלבד.`;
   document.getElementById('streakBadge').textContent = `🔥 streak: ${streak}`;
   renderDaysGrid(p);
   renderRewards(p);
@@ -301,16 +303,11 @@ function markTaskStarted(type) {
     p.started_at = new Date().toISOString();
   }
   const current = daysSinceStart(p);
-  if (!p.completed_days) p.completed_days = [];
   p.last_action = { type, at: new Date().toISOString() };
-  // Naive completion: starting a task on a new day = completed for that day
-  if (!p.completed_days.includes(current)) {
-    p.completed_days.push(current);
-  }
   saveProgress(p);
   renderProgress();
 
-  // Log activity to server (best-effort)
+  // Opening a task is activity, not proof that the task was completed.
   const u = getUser();
   if (u && u.id) {
     fetch(API + '/api/analytics/event', {
@@ -319,10 +316,26 @@ function markTaskStarted(type) {
       body: JSON.stringify({
         user_id: u.id,
         event: 'learning_path_step',
-        metadata: { type, day: current }
+        metadata: { type, day: current, action: 'started' }
       })
     }).catch(() => {});
   }
+}
+
+function completeCurrentDay() {
+  const p = getProgress();
+  if (!p.started_at) p.started_at = new Date().toISOString();
+  const current = daysSinceStart(p);
+  if (!p.completed_days) p.completed_days = [];
+  if (p.completed_days.includes(current)) {
+    alert('היום הזה כבר סומן כהושלם.');
+    return;
+  }
+  p.completed_days.push(current);
+  p.last_action = { type: 'self_attested_completion', at: new Date().toISOString() };
+  saveProgress(p);
+  renderProgress();
+  alert('היום סומן כהושלם בדפדפן זה. זהו סימון עצמי בלבד — לא בוצע אימות שרת ולא הוענק תגמול.');
 }
 
 function openDay(day) {
